@@ -1,0 +1,19 @@
+# macOS
+.DS_Store
+
+# Large original photos — the site uses the optimized copies in Images/web/.
+# These originals are 25–33MB each and would bloat the repo (and hit GitHub's
+# file-size limits). Keep them locally; they don't need to ship to the live site.
+Images/*.jpg
+Images/*.jpeg
+Images/*.JPG
+Images/*.JPEG
+
+# Python
+__pycache__/
+*.pyc
+
+# Internal strategy docs — keep these private, never publish to the live site
+PRD-LANDING-PAGE-AND-BRAND.md
+voice.md
+time-rich-context.md

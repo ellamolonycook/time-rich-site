@@ -1,0 +1,24 @@
+# Cloudflare Worker that receives Time Rich applications and writes them to Notion.
+#
+# Deploy:
+#   cd worker
+#   npx wrangler deploy
+#
+# Set your secrets (these are NOT stored in this file):
+#   npx wrangler secret put NOTION_TOKEN          # your Notion integration token
+#   npx wrangler secret put NOTION_DATABASE_ID    # the applications database id
+#   npx wrangler secret put PROXYCURL_KEY         # OPTIONAL: enables LinkedIn autofill
+#                                                 # (get a key at nubela.co/proxycurl)
+#
+# After deploy, wrangler prints a URL like:
+#   https://time-rich-forms.<your-subdomain>.workers.dev
+# Paste that into FORM_ENDPOINT in index.html.
+
+name = "time-rich-forms"
+main = "src/index.js"
+compatibility_date = "2024-11-01"
+
+[vars]
+# Lock this to your live domain once deployed, e.g. "https://timerich.ai".
+# Leave as "*" while testing locally.
+ALLOWED_ORIGIN = "*"

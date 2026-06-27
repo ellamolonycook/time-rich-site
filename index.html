@@ -1,0 +1,1109 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Time Rich — Not AI awareness. Actual implementation.</title>
+  <meta name="description" content="Time Rich is a community for women founders, investors, and operators who want to actually use AI in their business. Not awareness. Not inspiration. Implementation." />
+
+  <link rel="icon" type="image/png" sizes="32x32" href="favicon-32.png" />
+  <link rel="icon" type="image/png" sizes="16x16" href="favicon-16.png" />
+  <link rel="apple-touch-icon" sizes="180x180" href="apple-touch-icon.png" />
+
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;600;700;800;900&family=Inter:wght@400;500;600&display=swap" rel="stylesheet" />
+
+  <style>
+    :root {
+      --indigo: #4A2E6F;   /* deep plum — headings, buttons, dark bands */
+      --gold:   #9A6DD7;   /* mid violet — accents, eyebrows */
+      --white:  #FFFFFF;
+      --charcoal: #44414D; /* ink body text */
+      --sand:   #F4EEFB;   /* light lilac wash — alternating sections */
+      --cream:  #FFFFFF;   /* main background */
+      --lilac:  #EBD1FA;   /* logo lilac — marquee, fills */
+      --red:    #7C3AED;   /* violet — stat pop / numbers */
+      --line:   rgba(74,46,111,0.12);
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+
+    /* fun robot-head cursor (hotspot near the antenna); text caret stays in fields */
+    * { cursor: url('cursor-robot.png') 16 4, auto; }
+    input, textarea { cursor: text; }
+
+    body {
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      color: var(--charcoal);
+      background: var(--cream);
+      line-height: 1.65;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    h1, h2, h3, .display {
+      font-family: 'Archivo', -apple-system, sans-serif;
+      color: var(--indigo);
+      line-height: 1.04;
+      letter-spacing: -0.015em;
+    }
+
+    .wrap { max-width: 1140px; margin: 0 auto; padding: 0 40px; }
+    .narrow { max-width: 720px; margin: 0 auto; }
+
+    /* ---------- NAV ---------- */
+    nav {
+      position: sticky; top: 0; z-index: 50;
+      background: var(--white);
+      border-bottom: 1px solid var(--line);
+    }
+    .nav-inner { display: flex; align-items: center; justify-content: space-between; height: 100px; }
+    .brand { display: flex; align-items: center; text-decoration: none; }
+    .brand img { height: 72px; display: block; }
+    .nav-links { display: flex; gap: 36px; align-items: center; }
+    .nav-links a { color: var(--charcoal); text-decoration: none; font-size: 15px; font-weight: 500; }
+    .nav-links a:hover { color: var(--indigo); }
+    .nav-links a.btn { color: var(--white); }
+    .nav-links a.btn:hover { color: var(--white); }
+
+    .btn {
+      display: inline-block; background: var(--indigo); color: var(--white);
+      font-family: 'Archivo', sans-serif; font-weight: 700; text-decoration: none;
+      padding: 13px 26px; border-radius: 40px; font-size: 15px;
+      transition: transform .14s ease, filter .14s ease;
+    }
+    .btn:hover { filter: brightness(1.05); transform: translateY(-1px); }
+    .btn-ghost {
+      background: transparent; color: var(--indigo);
+      border: 1.5px solid var(--indigo);
+    }
+    .nav-toggle { display: none; }
+
+    /* ---------- HERO ---------- */
+    .hero { background: linear-gradient(180deg, #F3E9FC 0%, #FFFFFF 100%); color: var(--charcoal); overflow: hidden; }
+    .hero-grid {
+      display: grid; grid-template-columns: 1.05fr 0.95fr; gap: 64px; align-items: center;
+      padding: 120px 0 128px;
+    }
+    .hero .eyebrow {
+      font-family:'Archivo',sans-serif; font-weight:700; letter-spacing:0.16em;
+      text-transform: uppercase; font-size: 13px; color: var(--gold); margin-bottom: 28px;
+    }
+    .hero h1 { color: var(--indigo); font-weight: 900; font-size: clamp(44px, 6.4vw, 80px); }
+    .hero p.sub { color: var(--charcoal); font-size: 20px; margin-top: 30px; max-width: 470px; }
+    .hero .btn { margin-top: 40px; padding: 16px 34px; font-size: 16px; }
+    .hero-photo {
+      width: 100%; border-radius: 14px; display: block;
+      aspect-ratio: 4 / 5; object-fit: cover; object-position: top center; background: var(--sand);
+    }
+
+    /* ---------- MARQUEE (Female Founder World inspired) ---------- */
+    .marquee {
+      background: var(--lilac); color: var(--indigo);
+      padding: 18px 0; overflow: hidden; white-space: nowrap; border: none;
+    }
+    .marquee-track {
+      display: inline-flex; align-items: center;
+      animation: scroll 28s linear infinite;
+      font-family:'Archivo',sans-serif; font-weight: 800; font-size: 18px;
+      letter-spacing: 0.05em; text-transform: uppercase;
+    }
+    .marquee-track span { padding: 0 4px; }
+    .marquee-track .star { padding: 0 26px; opacity: 0.7; }
+    @keyframes scroll { from { transform: translateX(0); } to { transform: translateX(-50%); } }
+    @media (prefers-reduced-motion: reduce) { .marquee-track { animation: none; } }
+
+    /* ---------- STATS BAND (visualization) ---------- */
+    .stats { background: var(--cream); padding: 104px 0; }
+    .stats-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 40px; text-align: center; }
+    .stat-num { font-family:'Archivo',sans-serif; font-weight:900; color: var(--red); font-size: clamp(56px, 8vw, 96px); line-height: 0.92; }
+    .stat-num.indigo { color: var(--indigo); }
+    .stat-cap { font-family:'Archivo',sans-serif; font-weight:700; color: var(--indigo); font-size: 17px; margin-top: 12px; }
+    .stat-sub { font-size: 15px; color: var(--charcoal); margin-top: 4px; }
+    .stat-col { position: relative; }
+    .stat-col + .stat-col::before {
+      content: ""; position: absolute; left: -20px; top: 12%; bottom: 12%;
+      width: 1px; background: var(--line);
+    }
+
+    /* ---------- FOUNDER BAND ---------- */
+    .founder { background: var(--sand); padding: 116px 0; }
+    .founder-grid { display: grid; grid-template-columns: 1.05fr 0.95fr; gap: 64px; align-items: center; }
+    .founder-photo { width: 100%; border-radius: 14px; display: block; aspect-ratio: 3 / 2; object-fit: cover; }
+    .founder .eyebrow { font-family:'Archivo',sans-serif; font-weight:700; letter-spacing:0.16em; text-transform:uppercase; font-size:13px; color: var(--gold); margin-bottom: 18px; }
+    .founder h2 { font-size: clamp(28px, 3.8vw, 42px); font-weight: 800; margin-bottom: 20px; }
+    .founder p { font-size: 19px; color: var(--charcoal); max-width: 520px; margin-bottom: 22px; }
+    .creds { list-style: none; display: flex; flex-direction: column; gap: 10px; }
+    .creds li { font-size: 16px; color: var(--indigo); font-weight: 600; padding-left: 22px; position: relative; }
+    .creds li::before { content: "✶"; position: absolute; left: 0; color: var(--gold); }
+
+    /* ---------- ROOM GALLERY ---------- */
+    .room-gallery { display: grid; grid-template-columns: repeat(3, 1fr); gap: 18px; margin-bottom: 56px; }
+    .room-gallery img { width: 100%; aspect-ratio: 3 / 4; object-fit: cover; border-radius: 12px; display: block; }
+
+    /* ---------- SECTION HELPERS ---------- */
+    .eyebrow-c { text-align:center; font-family:'Archivo',sans-serif; font-weight:700; letter-spacing:0.16em; text-transform:uppercase; font-size:13px; color: var(--gold); }
+    .section-head { text-align: center; margin-bottom: 60px; }
+    .section-head h2 { font-size: clamp(32px, 4.6vw, 50px); font-weight: 800; margin-top: 14px; }
+    .section-head p { margin-top: 16px; font-size: 18px; color: var(--charcoal); }
+
+    /* ---------- THE GAP (alternating, clean) ---------- */
+    .gap { background: var(--white); }
+    .gap-grid { display: grid; grid-template-columns: 0.9fr 1.1fr; gap: 72px; align-items: center; padding: 112px 0; }
+    .gap-bignum { font-family:'Archivo',sans-serif; font-weight:900; color: var(--red); font-size: clamp(96px, 16vw, 200px); line-height: 0.82; }
+    .gap-bignum small { display:block; font-size: 22px; color: var(--indigo); font-weight:700; letter-spacing:0; margin-top: 10px; }
+    .gap .eyebrow { font-family:'Archivo',sans-serif; font-weight:700; letter-spacing:0.16em; text-transform:uppercase; font-size:13px; color: var(--gold); margin-bottom: 18px; }
+    .gap h2 { font-size: clamp(28px, 3.6vw, 40px); font-weight: 800; margin-bottom: 20px; }
+    .gap p { font-size: 20px; color: var(--charcoal); max-width: 540px; }
+
+    /* ---------- WHAT TIME RICH IS ---------- */
+    .what { background: var(--sand); text-align: center; padding: 128px 0; }
+    .what h2 { font-size: clamp(32px, 4.8vw, 52px); font-weight: 800; max-width: 860px; margin: 18px auto 0; }
+    .what p { font-size: 20px; max-width: 600px; margin: 28px auto 0; }
+    .what .emphasis { color: var(--indigo); font-weight: 600; }
+
+    /* ---------- WHAT YOU GET (feature grid) ---------- */
+    .get { background: var(--cream); padding: 120px 0; }
+    .feature-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 28px; max-width: 900px; margin: 0 auto; }
+    .feature {
+      background: var(--white); border: 1px solid var(--line); border-radius: 14px;
+      padding: 38px 36px;
+    }
+    .feature .fnum { font-family:'Archivo',sans-serif; font-weight:900; color: var(--gold); font-size: 15px; letter-spacing: 0.1em; }
+    .feature h3 { font-size: 24px; font-weight: 800; margin: 14px 0 10px; }
+    .feature p { font-size: 16px; color: var(--charcoal); }
+
+    /* ---------- THE ROOM ---------- */
+    .room { background: var(--white); padding: 120px 0; }
+    .cards { display: grid; grid-template-columns: repeat(3, 1fr); gap: 26px; }
+    .card { background: var(--sand); border-radius: 14px; padding: 32px; border: 1px solid var(--line); }
+    .card .name { font-family:'Archivo',sans-serif; font-weight:800; color: var(--indigo); font-size: 19px; }
+    .card .role { font-size: 13px; color: var(--gold); font-weight: 700; margin: 6px 0 18px; text-transform: uppercase; letter-spacing: 0.06em; }
+    .card .outcome { font-size: 16px; color: var(--charcoal); }
+    .placeholder-note { text-align:center; margin-top: 38px; font-size: 14px; color: #9a9a9a; font-style: italic; }
+
+    /* ---------- HOW IT WORKS ---------- */
+    .how { background: var(--sand); padding: 120px 0; }
+    .steps { display: grid; grid-template-columns: repeat(3, 1fr); gap: 48px; }
+    .step .num { font-family:'Archivo',sans-serif; font-weight:900; color: var(--gold); font-size: 44px; }
+    .step h3 { font-size: 25px; font-weight: 800; margin: 8px 0 12px; }
+    .step p { font-size: 16px; }
+    .how-close { text-align:center; margin-top: 72px; font-family:'Archivo',sans-serif; font-weight:700; color: var(--indigo); font-size: 23px; max-width: 580px; margin-left:auto; margin-right:auto; }
+
+    /* ---------- THE ASK ---------- */
+    .ask {
+      background: linear-gradient(rgba(74,46,111,0.86), rgba(74,46,111,0.93)), url("Images/web/dinner-07.jpg");
+      background-size: cover; background-position: center;
+      color: var(--white); text-align: center; padding: 144px 0;
+    }
+    .ask h2 { color: var(--white); font-size: clamp(44px, 6.4vw, 76px); font-weight: 900; }
+    .ask p { color: rgba(255,255,255,0.74); font-size: 20px; margin: 24px 0 40px; }
+    .ask .btn { padding: 18px 44px; font-size: 17px; background: var(--lilac); color: var(--indigo); }
+    .ask .small { font-size: 14px; color: rgba(255,255,255,0.55); margin-top: 26px; }
+
+    /* ---------- FOOTER ---------- */
+    footer { background: var(--indigo); color: var(--white); border-top: 1px solid rgba(255,255,255,0.08); padding: 64px 0; }
+    .foot-grid { display: flex; justify-content: space-between; gap: 40px; flex-wrap: wrap; }
+    .foot-grid a { color: rgba(255,255,255,0.72); text-decoration: none; font-size: 15px; }
+    .foot-grid a:hover { color: var(--white); }
+    .foot-col h4 { font-family:'Archivo',sans-serif; color: var(--white); font-size: 14px; text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 18px; }
+    .foot-col ul { list-style: none; display: flex; flex-direction: column; gap: 12px; }
+    .foot-brand { font-family:'Archivo',sans-serif; font-weight:900; font-size: 26px; color: var(--white); text-transform: uppercase; letter-spacing: 0.04em; }
+    .foot-brand + p { color: rgba(255,255,255,0.55); font-size: 14px; margin-top: 12px; max-width: 240px; }
+
+    /* ---------- FREE GUIDES ---------- */
+    .guides { background: var(--white); padding: 120px 0; }
+    .guide-filters { display: flex; flex-wrap: wrap; gap: 10px; justify-content: center; margin-bottom: 52px; }
+    .chip {
+      font-family:'Archivo',sans-serif; font-weight: 700; font-size: 13px; letter-spacing: 0.04em;
+      text-transform: uppercase; padding: 9px 18px; border-radius: 40px;
+      border: 1.5px solid var(--line); background: var(--white); color: var(--charcoal);
+      cursor: pointer; transition: all .14s ease;
+    }
+    .chip:hover { border-color: var(--gold); color: var(--indigo); }
+    .chip.active { background: var(--indigo); color: var(--white); border-color: var(--indigo); }
+    .guide-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; }
+    .guide-card {
+      display: flex; flex-direction: column; background: var(--sand);
+      border: 1px solid var(--line); border-radius: 14px; padding: 32px;
+      transition: transform .14s ease, box-shadow .14s ease;
+    }
+    .guide-card:hover { transform: translateY(-3px); box-shadow: 0 16px 40px rgba(74,46,111,0.12); }
+    .guide-badge { font-family:'Archivo',sans-serif; font-weight: 800; font-size: 12px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--gold); margin-bottom: 14px; }
+    .guide-card h3 { font-size: 21px; font-weight: 800; color: var(--indigo); margin-bottom: 10px; line-height: 1.15; }
+    .guide-card p { font-size: 15px; color: var(--charcoal); flex: 1; }
+    .guide-link { margin-top: 22px; font-family:'Archivo',sans-serif; font-weight: 700; font-size: 15px; color: var(--indigo); text-decoration: none; display: inline-flex; align-items: center; gap: 7px; }
+    .guide-link:hover { color: var(--gold); }
+    .guide-link .arrow { transition: transform .14s ease; }
+    .guide-link:hover .arrow { transform: translateX(4px); }
+    .guides-optin { margin-top: 64px; background: var(--sand); border-radius: 16px; padding: 52px 40px; text-align: center; }
+    .guides-optin h3 { font-family:'Archivo',sans-serif; font-size: 28px; font-weight: 800; color: var(--indigo); }
+    .guides-optin p { font-size: 16px; color: var(--charcoal); margin: 12px auto 26px; max-width: 480px; }
+    .optin-form { display: flex; gap: 12px; max-width: 470px; margin: 0 auto; }
+    .optin-form input { flex: 1; padding: 14px 18px; border: 1.5px solid var(--line); border-radius: 40px; font-family: inherit; font-size: 15px; background: var(--white); color: var(--charcoal); }
+    .optin-form input:focus { outline: none; border-color: var(--gold); }
+    .guides-note { text-align: center; margin-top: 22px; font-size: 13px; color: #9a8ab0; font-style: italic; }
+
+    /* ---------- APPLY MODAL ---------- */
+    .modal-overlay {
+      position: fixed; inset: 0; z-index: 100; padding: 24px;
+      background: rgba(74,46,111,0.55); backdrop-filter: blur(4px);
+      display: none; align-items: center; justify-content: center;
+    }
+    .modal-overlay.open { display: flex; }
+    .modal {
+      background: var(--white); border-radius: 16px; position: relative;
+      width: min(680px, 100%); max-height: 92vh; display: flex; flex-direction: column;
+      overflow: hidden; box-shadow: 0 30px 80px rgba(0,0,0,0.32);
+    }
+    .modal-close {
+      position: absolute; top: 12px; right: 16px; z-index: 2;
+      background: none; border: none; font-size: 30px; line-height: 1;
+      color: var(--charcoal); cursor: pointer;
+    }
+    .modal-close:hover { color: var(--indigo); }
+    .modal-head { padding: 30px 34px 8px; }
+    .modal-head h3 { font-family:'Archivo',sans-serif; font-size: 25px; font-weight: 800; color: var(--indigo); }
+    .modal-head p { font-size: 15px; color: var(--charcoal); margin-top: 8px; }
+
+    /* native form */
+    .apply-form { padding: 18px 34px 32px; overflow-y: auto; }
+    .li-autofill { background: var(--sand); border: 1px solid var(--line); border-radius: 12px; padding: 20px; margin-bottom: 8px; }
+    .li-head { font-size: 14px; color: var(--charcoal); margin-bottom: 12px; }
+    .li-head strong { color: var(--indigo); }
+    .li-row { display: flex; gap: 10px; }
+    .li-row input { flex: 1; padding: 12px 14px; border: 1.5px solid var(--line); border-radius: 9px; font-family: inherit; font-size: 15px; background: var(--white); color: var(--charcoal); }
+    .li-row input:focus { outline: none; border-color: var(--gold); }
+    .li-row .btn { white-space: nowrap; }
+    .li-status { font-size: 13px; margin-top: 10px; min-height: 1px; }
+    .li-status.ok { color: #2e7d4f; }
+    .li-status.err { color: var(--red); }
+    .li-or { text-align: center; margin: 20px 0 6px; position: relative; }
+    .li-or::before { content: ""; position: absolute; left: 0; right: 0; top: 50%; height: 1px; background: var(--line); }
+    .li-or span { position: relative; background: var(--white); padding: 0 12px; font-size: 12px; text-transform: uppercase; letter-spacing: 0.08em; color: #9a8ab0; }
+    .form-section {
+      font-family:'Archivo',sans-serif; font-weight: 800; color: var(--indigo);
+      font-size: 14px; text-transform: uppercase; letter-spacing: 0.1em;
+      margin: 30px 0 16px; padding-top: 22px; border-top: 1px solid var(--line);
+    }
+    .form-section:first-of-type { border-top: none; padding-top: 4px; margin-top: 0; }
+    .field { margin-bottom: 18px; }
+    .field label { display: block; font-size: 14px; font-weight: 600; color: var(--indigo); margin-bottom: 7px; }
+    .field label span { color: var(--red); }
+    .field .hint { display: block; font-size: 13px; font-weight: 400; color: #8a8a8a; margin: -2px 0 8px; }
+    .field input[type="file"] { padding: 9px; background: var(--cream); }
+    fieldset.checks { border: none; padding: 0; margin: 0 0 18px; }
+    fieldset.checks legend { font-size: 14px; font-weight: 600; color: var(--indigo); margin-bottom: 8px; padding: 0; }
+    fieldset.checks legend .opt { font-weight: 400; color: #8a8a8a; font-size: 13px; }
+    .check {
+      display: flex; align-items: flex-start; gap: 11px; cursor: pointer;
+      font-size: 14px; font-weight: 400; color: var(--charcoal); line-height: 1.4; padding: 6px 0;
+    }
+    .check input { width: auto; margin: 2px 0 0; flex-shrink: 0; accent-color: var(--gold); }
+    .field input, .field select, .field textarea {
+      width: 100%; font-family: inherit; font-size: 15px; color: var(--charcoal);
+      padding: 12px 14px; border: 1.5px solid var(--line); border-radius: 9px;
+      background: var(--cream); transition: border-color .14s ease;
+    }
+    .field input:focus, .field select:focus, .field textarea:focus {
+      outline: none; border-color: var(--gold); background: var(--white);
+    }
+    .field textarea { resize: vertical; min-height: 72px; }
+    .form-submit {
+      width: 100%; margin-top: 6px; background: var(--indigo); color: var(--white);
+      font-family:'Archivo',sans-serif; font-weight: 700; font-size: 16px;
+      border: none; border-radius: 40px; padding: 15px; cursor: pointer;
+      transition: filter .14s ease;
+    }
+    .form-submit:hover { filter: brightness(1.12); }
+    .form-submit:disabled { opacity: 0.6; cursor: default; }
+    .form-note { font-size: 14px; color: var(--red); margin-top: 12px; text-align: center; min-height: 1px; }
+
+    .apply-success { padding: 44px 34px 40px; text-align: center; }
+    .success-mark {
+      width: 56px; height: 56px; margin: 0 auto 18px; border-radius: 50%;
+      background: var(--gold); color: var(--indigo); font-size: 28px; font-weight: 700;
+      display: flex; align-items: center; justify-content: center;
+    }
+    .apply-success h3 { font-family:'Archivo',sans-serif; font-size: 26px; font-weight: 800; color: var(--indigo); }
+    .apply-success p { font-size: 16px; color: var(--charcoal); margin: 12px 0 26px; }
+
+    /* ---------- RESPONSIVE ---------- */
+    @media (max-width: 880px) {
+      .wrap { padding: 0 24px; }
+      .hero-grid, .gap-grid, .founder-grid { grid-template-columns: 1fr; gap: 44px; }
+      .founder-photo { aspect-ratio: 3 / 2; }
+      .room-gallery { grid-template-columns: 1fr; }
+      .creds { align-items: center; }
+      .founder { padding: 80px 0; text-align: center; }
+      .founder p, .creds { margin-left: auto; margin-right: auto; }
+      .hero-grid { padding: 64px 0 72px; }
+      .hero-photo { max-width: 360px; margin: 0 auto; }
+      .gap-grid { padding: 72px 0; text-align: center; }
+      .gap p, .gap-bignum { margin-left: auto; margin-right: auto; }
+      .stats-grid, .cards, .steps, .feature-grid { grid-template-columns: 1fr; gap: 40px; }
+      .stat-col + .stat-col::before { display: none; }
+      .nav-links { display: none; }
+      .nav-links.open {
+        display: flex; flex-direction: column; position: absolute;
+        top: 100px; left: 0; right: 0; background: var(--white);
+        padding: 24px; gap: 20px; border-bottom: 1px solid var(--line);
+      }
+      .nav-toggle { display: block; background: none; border: none; cursor: pointer; color: var(--indigo); font-size: 26px; }
+      .stats, .what, .get, .room, .how, .ask, .guides { padding: 80px 0; }
+      .guide-grid { grid-template-columns: 1fr; }
+      .li-row { flex-direction: column; }
+      .optin-form { flex-direction: column; }
+      .guides-optin { padding: 40px 24px; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- NAV -->
+  <nav>
+    <div class="wrap nav-inner">
+      <a href="#top" class="brand"><img src="Logo/web/logo-plum.png" alt="Time Rich" /></a>
+      <button class="nav-toggle" aria-label="Menu" onclick="document.getElementById('navlinks').classList.toggle('open')">☰</button>
+      <div class="nav-links" id="navlinks">
+        <a href="#gap">The Gap</a>
+        <a href="#what">What We Are</a>
+        <a href="#room">The Room</a>
+        <a href="#how">How It Works</a>
+        <a href="#guides">Guides</a>
+        <a href="#apply" class="btn" onclick="openApply(event)">Apply to Join</a>
+      </div>
+    </div>
+  </nav>
+
+  <!-- HERO -->
+  <header class="hero" id="top">
+    <div class="wrap hero-grid">
+      <div>
+        <div class="eyebrow">Not AI awareness. Actual implementation.</div>
+        <h1>Women adopt AI 25% less than men.<br />We're closing the gap.</h1>
+        <p class="sub">A community for women founders, investors, and operators who want to actually use AI in their business.</p>
+        <a href="#apply" class="btn" onclick="openApply(event)">Apply to Join</a>
+      </div>
+      <div>
+        <img class="hero-photo" src="Images/web/hero.jpg" alt="Ella Molony Cook, founder of Time Rich" />
+      </div>
+    </div>
+  </header>
+
+  <!-- MARQUEE -->
+  <div class="marquee" aria-hidden="true">
+    <div class="marquee-track">
+      <span>AI Implementation</span><span class="star">✶</span>
+      <span>Weekly Calls</span><span class="star">✶</span>
+      <span>The Room</span><span class="star">✶</span>
+      <span>Slack Community</span><span class="star">✶</span>
+      <span>Founder Access</span><span class="star">✶</span>
+      <span>Resources</span><span class="star">✶</span>
+      <!-- duplicate for seamless loop -->
+      <span>AI Implementation</span><span class="star">✶</span>
+      <span>Weekly Calls</span><span class="star">✶</span>
+      <span>The Room</span><span class="star">✶</span>
+      <span>Slack Community</span><span class="star">✶</span>
+      <span>Founder Access</span><span class="star">✶</span>
+      <span>Resources</span><span class="star">✶</span>
+    </div>
+  </div>
+
+  <!-- STATS BAND -->
+  <section class="stats">
+    <div class="wrap stats-grid">
+      <div class="stat-col">
+        <div class="stat-num">25%</div>
+        <div class="stat-cap">The adoption gap</div>
+        <div class="stat-sub">Women vs. men using AI</div>
+      </div>
+      <div class="stat-col">
+        <div class="stat-num indigo">200+</div>
+        <div class="stat-cap">Women in the room</div>
+        <div class="stat-sub">Founders, investors, operators</div>
+      </div>
+      <div class="stat-col">
+        <div class="stat-num indigo">48hr</div>
+        <div class="stat-cap">Response on applications</div>
+        <div class="stat-sub">We get back to you fast</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- FOUNDER BAND -->
+  <section class="founder">
+    <div class="wrap founder-grid">
+      <div>
+        <img class="founder-photo" src="Images/web/wide-6040.jpg" alt="Ella Molony Cook speaking on a panel" />
+      </div>
+      <div>
+        <div class="eyebrow">The Founder</div>
+        <h2>Built by a founder who's been in the room.</h2>
+        <p>Ella got tired of watching the AI conversation happen in rooms women weren't in. So she built one.</p>
+        <ul class="creds">
+          <li>4x founder</li>
+          <li>Anthropic investor</li>
+          <li>Built and scaled teams across multiple industries</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <!-- THE GAP -->
+  <section class="gap" id="gap">
+    <div class="wrap gap-grid">
+      <div>
+        <div class="gap-bignum">25%<small>adoption gap</small></div>
+      </div>
+      <div>
+        <div class="eyebrow">The Gap</div>
+        <h2>Women aren't behind because they can't use AI.</h2>
+        <p>Women founders, investors, and operators are getting left behind. Not because they can't use AI. Because they're learning it alone. In rooms where the conversation isn't happening for them.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- WHAT TIME RICH IS -->
+  <section class="what" id="what">
+    <div class="wrap narrow">
+      <div class="eyebrow-c">What Time Rich Is</div>
+      <h2>A community for women who want to actually use AI in their business.</h2>
+      <p><span class="emphasis">Not awareness. Not inspiration. Implementation.</span></p>
+      <p>Application-based. Not to gatekeep. Because the quality of the room is the whole point.</p>
+    </div>
+  </section>
+
+  <!-- WHAT YOU GET -->
+  <section class="get">
+    <div class="wrap">
+      <div class="section-head">
+        <div class="eyebrow-c">Inside the Room</div>
+        <h2>What you get</h2>
+      </div>
+      <div class="feature-grid">
+        <div class="feature">
+          <div class="fnum">01</div>
+          <h3>Weekly calls</h3>
+          <p>Live sessions where members solve real implementation problems together. No theory.</p>
+        </div>
+        <div class="feature">
+          <div class="fnum">02</div>
+          <h3>The Slack</h3>
+          <p>A working channel of women shipping AI in their businesses. Ask, answer, share what works.</p>
+        </div>
+        <div class="feature">
+          <div class="fnum">03</div>
+          <h3>Resources</h3>
+          <p>Guides and playbooks for founders who need to implement AI this week, not study it this year.</p>
+        </div>
+        <div class="feature">
+          <div class="fnum">04</div>
+          <h3>Direct founder access</h3>
+          <p>200+ women you can reach directly. Peers who've already built what you're building.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- THE ROOM -->
+  <section class="room" id="room">
+    <div class="wrap">
+      <div class="section-head">
+        <div class="eyebrow-c">The Room</div>
+        <h2>Who's here</h2>
+        <p>Real founders. Specific outcomes. Numbers, not vibes.</p>
+      </div>
+      <div class="room-gallery">
+        <img src="Images/web/dinner-32.jpg" alt="Members in conversation at a Time Rich event" />
+        <img src="Images/web/dinner-88.jpg" alt="Members together at a Time Rich dinner" />
+        <img src="Images/web/event-55.jpg" alt="Members at a Time Rich rooftop event" />
+      </div>
+      <div class="cards">
+        <!-- PLACEHOLDER CARDS: replace with real member names + outcomes -->
+        <div class="card">
+          <div class="name">[Member name]</div>
+          <div class="role">Founder, [Company]</div>
+          <div class="outcome">"Shipped multi-agent workflows in product in 6 weeks."</div>
+        </div>
+        <div class="card">
+          <div class="name">[Member name]</div>
+          <div class="role">Operator, [Company]</div>
+          <div class="outcome">"Cut reporting time from a full day to under an hour."</div>
+        </div>
+        <div class="card">
+          <div class="name">[Member name]</div>
+          <div class="role">Angel Investor</div>
+          <div class="outcome">"Built an AI deal-screening process I actually trust."</div>
+        </div>
+        <div class="card">
+          <div class="name">[Member name]</div>
+          <div class="role">Founder, [Company]</div>
+          <div class="outcome">"Replaced three tools with one agent workflow."</div>
+        </div>
+        <div class="card">
+          <div class="name">[Member name]</div>
+          <div class="role">Operator, [Company]</div>
+          <div class="outcome">"Onboarded my whole team to AI in two weeks."</div>
+        </div>
+        <div class="card">
+          <div class="name">[Member name]</div>
+          <div class="role">Founder, [Company]</div>
+          <div class="outcome">"Automated support triage and kept the human voice."</div>
+        </div>
+      </div>
+      <p class="placeholder-note">Placeholder cards. Swap in real member names and outcomes before launch.</p>
+    </div>
+  </section>
+
+  <!-- HOW IT WORKS -->
+  <section class="how" id="how">
+    <div class="wrap">
+      <div class="section-head">
+        <div class="eyebrow-c">Join the Room</div>
+        <h2>How it works</h2>
+      </div>
+      <div class="steps">
+        <div class="step">
+          <div class="num">01</div>
+          <h3>Apply.</h3>
+          <p>Tell us what you're building.</p>
+        </div>
+        <div class="step">
+          <div class="num">02</div>
+          <h3>Get in.</h3>
+          <p>Meet 200+ women doing the same.</p>
+        </div>
+        <div class="step">
+          <div class="num">03</div>
+          <h3>Build.</h3>
+          <p>Weekly calls, Slack, resources, direct access to other founders.</p>
+        </div>
+      </div>
+      <p class="how-close">That's it. No cohorts. No curriculum. No graduation ceremony. Just the room.</p>
+    </div>
+  </section>
+
+  <!-- FREE GUIDES -->
+  <section class="guides" id="guides">
+    <div class="wrap">
+      <div class="section-head">
+        <div class="eyebrow-c">Free Guides</div>
+        <h2>Implementation you can use this week</h2>
+        <p>Practical AI guides for founders who have a deadline, not a data team. New ones ship to Substack and land here.</p>
+      </div>
+
+      <div class="guide-filters" id="guideFilters">
+        <button class="chip active" data-filter="all">All</button>
+        <button class="chip" data-filter="agents">AI Agents</button>
+        <button class="chip" data-filter="workflows">Workflows</button>
+        <button class="chip" data-filter="skills">Skills</button>
+        <button class="chip" data-filter="stories">Founder Stories</button>
+        <button class="chip" data-filter="adoption">Adoption Gap</button>
+        <button class="chip" data-filter="community">Community</button>
+      </div>
+
+      <div class="guide-grid" id="guideGrid">
+        <article class="guide-card" data-topic="adoption">
+          <div class="guide-badge">Adoption Gap</div>
+          <h3>The AI Adoption Gap</h3>
+          <p>The data on women and AI adoption, why it matters for founders, and how to close it inside your own team.</p>
+          <a class="guide-link" href="#">Read the guide <span class="arrow">&rarr;</span></a>
+        </article>
+        <article class="guide-card" data-topic="agents">
+          <div class="guide-badge">AI Agents</div>
+          <h3>AI Agents &amp; Automation</h3>
+          <p>How to evaluate agents for your business, a setup checklist, and the mistakes founders make first.</p>
+          <a class="guide-link" href="#">Read the guide <span class="arrow">&rarr;</span></a>
+        </article>
+        <article class="guide-card" data-topic="workflows">
+          <div class="guide-badge">Workflows</div>
+          <h3>Build Your First AI Workflow</h3>
+          <p>A step-by-step walkthrough of one simple integration: the tools, the setup, and the gotchas.</p>
+          <a class="guide-link" href="#">Read the guide <span class="arrow">&rarr;</span></a>
+        </article>
+        <article class="guide-card" data-topic="skills">
+          <div class="guide-badge">Skills</div>
+          <h3>Context Beats Prompts</h3>
+          <p>Load your AI with who you are, what you do, and how you work. Then simple prompts sound like you, not a robot.</p>
+          <a class="guide-link" href="#">Read the guide <span class="arrow">&rarr;</span></a>
+        </article>
+        <article class="guide-card" data-topic="stories">
+          <div class="guide-badge">Founder Stories</div>
+          <h3>Founder Stories</h3>
+          <p>How members shipped AI in their products, what they learned, and what they'd do differently.</p>
+          <a class="guide-link" href="#">Read the guide <span class="arrow">&rarr;</span></a>
+        </article>
+        <article class="guide-card" data-topic="community">
+          <div class="guide-badge">Playbook</div>
+          <h3>Time Rich Community Playbook</h3>
+          <p>How we work, how to participate, and how to contribute once you're in the room.</p>
+          <a class="guide-link" href="#">Read the guide <span class="arrow">&rarr;</span></a>
+        </article>
+      </div>
+
+      <div class="guides-optin">
+        <h3>Get every new guide in your inbox</h3>
+        <p>One email when a new guide ships. No spam, no fake urgency.</p>
+        <form class="optin-form" id="optinForm" novalidate>
+          <input type="email" id="optinEmail" placeholder="you@company.com" required />
+          <button type="submit" class="btn">Subscribe</button>
+        </form>
+      </div>
+      <p class="guides-note">Guides publish to Substack. Each link goes live as the guide ships.</p>
+    </div>
+  </section>
+
+  <!-- THE ASK -->
+  <section class="ask" id="apply">
+    <div class="wrap">
+      <h2>Ready?</h2>
+      <p>Apply to join Time Rich.</p>
+      <a href="#apply" class="btn" onclick="openApply(event)">Apply to Join</a>
+      <div class="small">We'll be in touch within 48 hours.</div>
+    </div>
+  </section>
+
+  <!-- FOOTER -->
+  <footer>
+    <div class="wrap foot-grid">
+      <div class="foot-col">
+        <img src="Logo/web/logo-lilac.png" alt="Time Rich" style="height:64px;display:block;margin-bottom:16px;" />
+        <p>Not AI awareness. Actual implementation.</p>
+      </div>
+      <div class="foot-col">
+        <h4>Explore</h4>
+        <ul>
+          <li><a href="#what">About</a></li>
+          <li><a href="#how">How It Works</a></li>
+          <li><a href="#guides">Free Guides</a></li>
+          <li><a href="#room">The Room</a></li>
+          <li><a href="#apply" onclick="openApply(event)">Apply</a></li>
+        </ul>
+      </div>
+      <div class="foot-col">
+        <h4>Contact</h4>
+        <ul>
+          <li><a href="mailto:emc@timerich.ai">emc@timerich.ai</a></li>
+        </ul>
+      </div>
+    </div>
+  </footer>
+
+  <!-- APPLY MODAL -->
+  <div class="modal-overlay" id="applyModal" aria-hidden="true">
+    <div class="modal" role="dialog" aria-modal="true" aria-label="Apply to Time Rich">
+      <button class="modal-close" aria-label="Close" onclick="closeApply()">&times;</button>
+      <div class="modal-head">
+        <h3>Apply to join Time Rich</h3>
+        <p>Tell us what you're building. We'll be in touch within 48 hours.</p>
+      </div>
+
+      <form id="applyForm" class="apply-form" novalidate>
+
+        <!-- spam honeypot: hidden from people, bots tend to fill it -->
+        <input type="text" name="_gotcha" tabindex="-1" autocomplete="off" aria-hidden="true" style="position:absolute;left:-9999px;width:1px;height:1px;opacity:0;" />
+
+        <div class="li-autofill">
+          <div class="li-head"><strong>Save time</strong> &mdash; autofill the basics from your LinkedIn profile.</div>
+          <div class="li-row">
+            <input type="url" id="liUrl" placeholder="https://www.linkedin.com/in/you" />
+            <button type="button" class="btn" id="liBtn" onclick="fillFromLinkedIn()">Fill using LinkedIn</button>
+          </div>
+          <p class="li-status" id="liStatus"></p>
+        </div>
+        <div class="li-or"><span>or fill in manually</span></div>
+
+        <div class="form-section">About you</div>
+        <div class="field">
+          <label for="f-name">Full name <span>*</span></label>
+          <input type="text" id="f-name" name="name" required autocomplete="name" />
+        </div>
+        <div class="field">
+          <label for="f-email">Email <span>*</span></label>
+          <input type="email" id="f-email" name="email" required autocomplete="email" />
+        </div>
+        <div class="field">
+          <label for="f-mobile">Mobile (with country code)</label>
+          <input type="tel" id="f-mobile" name="mobile" autocomplete="tel" placeholder="+1 ..." />
+        </div>
+        <div class="field">
+          <label for="f-linkedin">LinkedIn URL</label>
+          <input type="url" id="f-linkedin" name="linkedin" placeholder="https://" />
+        </div>
+        <div class="field">
+          <label for="f-instagram">Instagram handle</label>
+          <input type="text" id="f-instagram" name="instagram" placeholder="@" />
+        </div>
+        <div class="field">
+          <label for="f-city">City you're based in</label>
+          <input type="text" id="f-city" name="city" />
+        </div>
+        <div class="field">
+          <label for="f-nationality">Nationality</label>
+          <input type="text" id="f-nationality" name="nationality" />
+        </div>
+        <div class="field">
+          <label for="f-title">Title / role</label>
+          <input type="text" id="f-title" name="title" />
+        </div>
+        <div class="field">
+          <label for="f-company">Company / fund / firm</label>
+          <input type="text" id="f-company" name="company" autocomplete="organization" />
+        </div>
+        <div class="field">
+          <label for="f-website">Website</label>
+          <input type="url" id="f-website" name="website" placeholder="https://" />
+        </div>
+        <div class="field">
+          <label for="f-drew">What drew you to Time Rich?</label>
+          <textarea id="f-drew" name="drew" rows="3"></textarea>
+        </div>
+
+        <div class="form-section">Your work &amp; capital</div>
+        <fieldset class="checks">
+          <legend>Type of investor <span class="opt">(select all that apply)</span></legend>
+          <label class="check"><input type="checkbox" name="investorType" value="Private Equity" /> Private Equity</label>
+          <label class="check"><input type="checkbox" name="investorType" value="Venture Capital" /> Venture Capital</label>
+          <label class="check"><input type="checkbox" name="investorType" value="Family Office" /> Family Office</label>
+          <label class="check"><input type="checkbox" name="investorType" value="Lender" /> Lender</label>
+          <label class="check"><input type="checkbox" name="investorType" value="Angel Investor" /> Angel Investor</label>
+          <label class="check"><input type="checkbox" name="investorType" value="Institution" /> Institution</label>
+          <label class="check"><input type="checkbox" name="investorType" value="Real Estate Investor" /> Real Estate Investor</label>
+          <label class="check"><input type="checkbox" name="investorType" value="Interested in learning" /> Interested in learning!!!</label>
+        </fieldset>
+        <fieldset class="checks">
+          <legend>Your stage <span class="opt">(if raising capital, select a stage — select all that apply)</span></legend>
+          <label class="check"><input type="checkbox" name="stage" value="Leader" /> Leader</label>
+          <label class="check"><input type="checkbox" name="stage" value="Investor" /> Investor</label>
+          <label class="check"><input type="checkbox" name="stage" value="Business Owner" /> Business Owner</label>
+          <label class="check"><input type="checkbox" name="stage" value="Raising Capital" /> Raising Capital</label>
+          <label class="check"><input type="checkbox" name="stage" value="Pre-revenue" /> Pre-revenue</label>
+          <label class="check"><input type="checkbox" name="stage" value="Seed" /> Seed</label>
+          <label class="check"><input type="checkbox" name="stage" value="Series A" /> Series A</label>
+          <label class="check"><input type="checkbox" name="stage" value="Series B" /> Series B</label>
+          <label class="check"><input type="checkbox" name="stage" value="Series C+" /> Series C+</label>
+          <label class="check"><input type="checkbox" name="stage" value="Student" /> Student</label>
+          <label class="check"><input type="checkbox" name="stage" value="Exited Founder" /> Exited Founder</label>
+          <label class="check"><input type="checkbox" name="stage" value="Mother" /> Mother</label>
+          <label class="check"><input type="checkbox" name="stage" value="Nomad" /> Nomad</label>
+          <label class="check"><input type="checkbox" name="stage" value="Venture Studio" /> Venture Studio</label>
+          <label class="check"><input type="checkbox" name="stage" value="Corporate America" /> Corporate America</label>
+          <label class="check"><input type="checkbox" name="stage" value="Working at a Startup" /> Working at a Startup</label>
+        </fieldset>
+        <div class="field">
+          <label for="f-revenue">Annual revenue or AUM</label>
+          <input type="text" id="f-revenue" name="revenue" />
+        </div>
+        <div class="field">
+          <label for="f-capital">Capital raised &amp; funding type</label>
+          <input type="text" id="f-capital" name="capital" />
+        </div>
+        <div class="field">
+          <label for="f-thesis">Investment thesis</label>
+          <span class="hint">Please share as much detail as possible (if it applies).</span>
+          <textarea id="f-thesis" name="thesis" rows="3"></textarea>
+        </div>
+
+        <div class="form-section">Your profile</div>
+        <div class="field">
+          <label for="f-purpose">One sentence on your purpose</label>
+          <input type="text" id="f-purpose" name="purpose" />
+        </div>
+        <div class="field">
+          <label for="f-photo">Profile photo</label>
+          <input type="file" id="f-photo" name="photo" accept="image/*" />
+        </div>
+        <div class="field">
+          <label for="f-bio">One-line bio for the directory</label>
+          <input type="text" id="f-bio" name="bio" />
+        </div>
+        <div class="field">
+          <label for="f-working">What are you working on right now?</label>
+          <textarea id="f-working" name="working" rows="3"></textarea>
+        </div>
+        <div class="field">
+          <label for="f-connect">Who do you want to be connected to?</label>
+          <span class="hint">Inside the community we'll make introductions based on your answer.</span>
+          <textarea id="f-connect" name="connect" rows="3"></textarea>
+        </div>
+        <div class="field">
+          <label for="f-calendly">Calendly / booking link</label>
+          <span class="hint">When making introductions, we'll always get your permission before sharing your calendar.</span>
+          <input type="url" id="f-calendly" name="calendly" placeholder="https://" />
+        </div>
+
+        <div class="form-section">You &amp; Time Rich</div>
+        <fieldset class="checks">
+          <legend>Pillar that pulls you most <span class="opt">(select all that apply)</span></legend>
+          <label class="check"><input type="checkbox" name="pillar" value="Business / AI" /> Business / AI</label>
+          <label class="check"><input type="checkbox" name="pillar" value="Wellness / Longevity" /> Wellness / Longevity</label>
+          <label class="check"><input type="checkbox" name="pillar" value="Fun / Travel" /> Fun / Travel — Honey I deserve it....</label>
+          <label class="check"><input type="checkbox" name="pillar" value="Connection" /> Connection</label>
+          <label class="check"><input type="checkbox" name="pillar" value="Being a baddie" /> Being a baddie</label>
+          <label class="check"><input type="checkbox" name="pillar" value="Leadership role" /> Leadership role</label>
+        </fieldset>
+        <div class="field">
+          <label for="f-fact">List 1 interesting fact about yourself. Feel free to brag!!</label>
+          <textarea id="f-fact" name="fact" rows="2"></textarea>
+        </div>
+        <fieldset class="checks">
+          <legend>Where are you in your AI learning <span class="opt">(select all that apply)</span></legend>
+          <label class="check"><input type="checkbox" name="aiStage" value="Just getting started: I use AI occasionally, no system" /> Just getting started: I use AI occasionally, no system</label>
+          <label class="check"><input type="checkbox" name="aiStage" value="I'm confident prompting: useful outputs but I start from scratch every time" /> I'm confident prompting: I get useful outputs but I start from scratch every time</label>
+          <label class="check"><input type="checkbox" name="aiStage" value="I've built a brain: my AI knows my business, my voice, my context" /> I've built a brain: my AI knows my business, my voice, my context</label>
+          <label class="check"><input type="checkbox" name="aiStage" value="I'm running skills: repeatable SOPs the AI executes for me" /> I'm running skills: repeatable SOPs the AI executes for me</label>
+          <label class="check"><input type="checkbox" name="aiStage" value="I've automated parts of my business: agents that run end-to-end" /> I've automated parts of my business: agents that run end-to-end</label>
+          <label class="check"><input type="checkbox" name="aiStage" value="I run my business on AI: multiple systems compounding hours back every week" /> I run my business on AI: multiple systems compounding hours back every week</label>
+          <label class="check"><input type="checkbox" name="aiStage" value="I'm a technical queen: built multiple apps / agents" /> I'm a technical queen: built multiple apps / agents</label>
+        </fieldset>
+
+        <div class="form-section">Membership</div>
+        <fieldset class="checks">
+          <legend>Once accepted, as a member I will <span class="opt">(select all that apply)</span></legend>
+          <label class="check"><input type="checkbox" name="commit" value="Lead with love and good energy to every member in this community" /> I'll lead with love and good energy to every member in this community.</label>
+          <label class="check"><input type="checkbox" name="commit" value="Refer 3 incredible, aligned humans" /> I commit to referring 3 incredible humans who are aligned — multi-faceted, ambitious, building lives by design.</label>
+          <label class="check"><input type="checkbox" name="commit" value="Add Founding Member Time Rich Club to my LinkedIn" /> I'll add "Founding Member, Time Rich Club" to my LinkedIn experience.</label>
+          <label class="check"><input type="checkbox" name="commit" value="Show up for TRC members and respond within 24 hours" /> I commit to showing up for TRC members and will respond within 24 hours.</label>
+        </fieldset>
+        <fieldset class="checks">
+          <legend>Interested in joining the next retreat or in-person workshop? <span class="opt">(select all that apply)</span></legend>
+          <label class="check"><input type="checkbox" name="retreat" value="Learn more about the retreat" /> Yes, I'd love to learn more about the retreat</label>
+          <label class="check"><input type="checkbox" name="retreat" value="Learn more about in-person workshops" /> Yes, I'd love to learn more about in-person workshops</label>
+          <label class="check"><input type="checkbox" name="retreat" value="1:1 AI Coaching with Ella ($4500 USD)" /> I need 1:1 AI Coaching with Ella! ($4500 USD)</label>
+          <label class="check"><input type="checkbox" name="retreat" value="Not important right now" /> Not important to me right now</label>
+          <label class="check"><input type="checkbox" name="retreat" value="New York AI workshop this September" /> New York AI workshop this September — I'm in</label>
+        </fieldset>
+        <div class="field">
+          <label for="f-host">Would you host a Time Rich members' event in your city, or are you interested in becoming a leader?</label>
+          <span class="hint">If yes, describe the type of event you'd like to host, when &amp; where.</span>
+          <textarea id="f-host" name="host" rows="3"></textarea>
+        </div>
+        <fieldset class="checks">
+          <legend>Does Time Rich have your consent to share your story and images on social media? <span class="opt">*</span></legend>
+          <label class="check"><input type="radio" name="consent" value="Yes" required /> Yes</label>
+          <label class="check"><input type="radio" name="consent" value="No" /> No</label>
+        </fieldset>
+
+        <button type="submit" class="form-submit">Submit application</button>
+        <p class="form-note" id="formError" role="alert"></p>
+      </form>
+
+      <div class="apply-success" id="applySuccess" hidden>
+        <div class="success-mark">&#10003;</div>
+        <h3>Application sent.</h3>
+        <p>Thanks for applying to Time Rich. We'll be in touch within 48 hours.</p>
+        <button class="btn" onclick="closeApply()">Close</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // ---- Where applications go -------------------------------------------------
+    // Paste your deployed Cloudflare Worker URL here to send applications into
+    // Notion (see worker/ folder). While it's empty, the form falls back to
+    // opening a pre-filled email to APPLY_EMAIL so nothing is lost.
+    var FORM_ENDPOINT = "";  // e.g. "https://time-rich-forms.<your-subdomain>.workers.dev"
+    var APPLY_EMAIL   = "emc@timerich.ai";
+    // ---------------------------------------------------------------------------
+
+    var applyModal   = document.getElementById('applyModal');
+    var applyForm    = document.getElementById('applyForm');
+    var applySuccess = document.getElementById('applySuccess');
+    var formError    = document.getElementById('formError');
+
+    function openApply(e) {
+      if (e) e.preventDefault();
+      applyModal.classList.add('open');
+      applyModal.setAttribute('aria-hidden', 'false');
+      document.body.style.overflow = 'hidden';
+    }
+    function closeApply() {
+      applyModal.classList.remove('open');
+      applyModal.setAttribute('aria-hidden', 'true');
+      document.body.style.overflow = '';
+    }
+    applyModal.addEventListener('click', function (e) { if (e.target === applyModal) closeApply(); });
+    document.addEventListener('keydown', function (e) { if (e.key === 'Escape') closeApply(); });
+
+    // ---- LinkedIn autofill -----------------------------------------------------
+    function setIfEmpty(name, value) {
+      if (!value) return;
+      var el = applyForm.elements[name];
+      if (el && !el.value) el.value = value;
+    }
+    function fillFromLinkedIn() {
+      var url = document.getElementById('liUrl').value.trim();
+      var status = document.getElementById('liStatus');
+      var btn = document.getElementById('liBtn');
+      if (!/linkedin\.com\/in\//i.test(url)) {
+        status.className = 'li-status err';
+        status.textContent = 'Enter a LinkedIn profile URL, like linkedin.com/in/your-name.';
+        return;
+      }
+      if (!FORM_ENDPOINT) {
+        status.className = 'li-status err';
+        status.textContent = "LinkedIn autofill isn't switched on yet — please fill the form manually.";
+        return;
+      }
+      var original = btn.textContent;
+      btn.disabled = true; btn.textContent = 'Fetching...';
+      status.className = 'li-status'; status.textContent = '';
+      fetch(FORM_ENDPOINT.replace(/\/$/, '') + '/enrich', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ linkedin_url: url })
+      })
+        .then(function (r) { return r.json(); })
+        .then(function (res) {
+          btn.disabled = false; btn.textContent = original;
+          if (res && res.configured === false) {
+            status.className = 'li-status err';
+            status.textContent = "LinkedIn autofill isn't switched on yet — please fill manually.";
+            return;
+          }
+          if (!res || !res.ok) {
+            status.className = 'li-status err';
+            status.textContent = "Couldn't read that profile. Please fill the form manually.";
+            return;
+          }
+          var f = res.fields || {};
+          setIfEmpty('name', f.name);
+          setIfEmpty('title', f.title);
+          setIfEmpty('company', f.company);
+          setIfEmpty('city', f.city);
+          setIfEmpty('bio', f.bio);
+          setIfEmpty('linkedin', url);
+          status.className = 'li-status ok';
+          status.textContent = 'Filled from LinkedIn. Review the details and complete the rest.';
+        })
+        .catch(function () {
+          btn.disabled = false; btn.textContent = original;
+          status.className = 'li-status err';
+          status.textContent = "Couldn't reach the server. Please fill the form manually.";
+        });
+    }
+    window.fillFromLinkedIn = fillFromLinkedIn;
+
+    // ---- Free guides: filtering + Substack opt-in -----------------------------
+    var SUBSTACK_URL = ""; // e.g. "https://timerich.substack.com/subscribe"
+
+    var guideFilters = document.getElementById('guideFilters');
+    if (guideFilters) {
+      var guideCards = document.querySelectorAll('#guideGrid .guide-card');
+      guideFilters.addEventListener('click', function (e) {
+        var btn = e.target.closest('.chip');
+        if (!btn) return;
+        guideFilters.querySelectorAll('.chip').forEach(function (c) { c.classList.remove('active'); });
+        btn.classList.add('active');
+        var f = btn.getAttribute('data-filter');
+        guideCards.forEach(function (card) {
+          card.style.display = (f === 'all' || card.getAttribute('data-topic') === f) ? '' : 'none';
+        });
+      });
+    }
+
+    var optinForm = document.getElementById('optinForm');
+    if (optinForm) {
+      optinForm.addEventListener('submit', function (e) {
+        e.preventDefault();
+        var email = document.getElementById('optinEmail').value.trim();
+        if (!email) return;
+        if (SUBSTACK_URL) {
+          window.open(SUBSTACK_URL + '?email=' + encodeURIComponent(email), '_blank', 'noopener');
+        } else {
+          window.location.href = 'mailto:' + APPLY_EMAIL +
+            '?subject=' + encodeURIComponent('Subscribe me to Time Rich guides') +
+            '&body=' + encodeURIComponent('Please add this email to the guides list: ' + email);
+        }
+        optinForm.reset();
+      });
+    }
+
+    function showSuccess() {
+      applyForm.hidden = true;
+      applySuccess.hidden = false;
+    }
+
+    applyForm.addEventListener('submit', function (e) {
+      e.preventDefault();
+      formError.textContent = '';
+
+      if (!applyForm.checkValidity()) {
+        formError.textContent = 'Please fill in the required fields.';
+        applyForm.reportValidity();
+        return;
+      }
+
+      function val(name) {
+        var el = applyForm.elements[name];
+        return el && el.value ? el.value.trim() : '';
+      }
+      function vals(name) {
+        return Array.prototype.slice
+          .call(applyForm.querySelectorAll('input[name="' + name + '"]:checked'))
+          .map(function (c) { return c.value; }).join(', ');
+      }
+      var photoEl = applyForm.elements['photo'];
+      var data = {
+        'Full name': val('name'),
+        'Email': val('email'),
+        'Mobile': val('mobile'),
+        'LinkedIn': val('linkedin'),
+        'Instagram': val('instagram'),
+        'City': val('city'),
+        'Nationality': val('nationality'),
+        'Title / role': val('title'),
+        'Company / fund / firm': val('company'),
+        'Website': val('website'),
+        'What drew you to Time Rich': val('drew'),
+        'Type of investor': vals('investorType'),
+        'Stage': vals('stage'),
+        'Annual revenue or AUM': val('revenue'),
+        'Capital raised & funding type': val('capital'),
+        'Investment thesis': val('thesis'),
+        'Purpose (one sentence)': val('purpose'),
+        'Profile photo': (photoEl && photoEl.files && photoEl.files.length) ? photoEl.files[0].name + ' (send separately)' : '',
+        'Directory bio': val('bio'),
+        'Working on right now': val('working'),
+        'Who to connect to': val('connect'),
+        'Calendly / booking link': val('calendly'),
+        'Pillar': vals('pillar'),
+        'Interesting fact': val('fact'),
+        'AI learning stage': vals('aiStage'),
+        'Member commitments': vals('commit'),
+        'Retreat / workshop interest': vals('retreat'),
+        'Host an event / become a leader': val('host'),
+        'Social media consent': vals('consent'),
+        _gotcha: val('_gotcha')
+      };
+
+      var btn = applyForm.querySelector('.form-submit');
+      btn.disabled = true; btn.textContent = 'Sending...';
+
+      if (FORM_ENDPOINT) {
+        fetch(FORM_ENDPOINT, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
+          body: JSON.stringify(data)
+        }).then(function (res) {
+          if (res.ok) { showSuccess(); }
+          else { throw new Error('bad response'); }
+        }).catch(function () {
+          btn.disabled = false; btn.textContent = 'Submit application';
+          formError.textContent = 'Something went wrong. Please email ' + APPLY_EMAIL + '.';
+        });
+      } else {
+        // No backend configured yet: open a pre-filled email so the application is captured.
+        var body = Object.keys(data).map(function (k) { return k + ': ' + (data[k] || '-'); }).join('\n');
+        window.location.href = 'mailto:' + APPLY_EMAIL +
+          '?subject=' + encodeURIComponent('Time Rich Application - ' + data['Full name']) +
+          '&body=' + encodeURIComponent(body);
+        showSuccess();
+      }
+    });
+  </script>
+
+</body>
+</html>
