@@ -3,6 +3,15 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <!-- Google Analytics 4 — replace G-XXXXXXXXXX with your Measurement ID -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-XXXXXXXXXX"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', 'G-XXXXXXXXXX');
+  </script>
   <title>Time Rich — AI implementation community for women founders</title>
   <meta name="description" content="Time Rich is an application-based community for women founders, investors, and operators who want to actually implement AI in their business. Not awareness. Implementation." />
   <link rel="canonical" href="https://timerich.ai/" />
@@ -1339,6 +1348,12 @@
     var APPLY_EMAIL   = "emc@timerich.ai";
     // ---------------------------------------------------------------------------
 
+    // ---- Analytics: tiny vendor-agnostic event tracker ------------------------
+    // Fires to GA4 (gtag) if present. Add other vendors here if you switch later.
+    function track(name, params) {
+      try { if (window.gtag) window.gtag('event', name, params || {}); } catch (e) {}
+    }
+
     var applyModal   = document.getElementById('applyModal');
     var applyForm    = document.getElementById('applyForm');
     var applySuccess = document.getElementById('applySuccess');
@@ -1349,6 +1364,7 @@
       applyModal.classList.add('open');
       applyModal.setAttribute('aria-hidden', 'false');
       document.body.style.overflow = 'hidden';
+      track('apply_open');
     }
     function closeApply() {
       applyModal.classList.remove('open');
@@ -1435,8 +1451,9 @@
       });
     }
 
-    function subscribeWithEmail(email) {
+    function subscribeWithEmail(email, where) {
       if (!email) return;
+      track('email_subscribe', { location: where || 'unknown', connected: !!SUBSTACK_URL });
       if (SUBSTACK_URL) {
         window.open(SUBSTACK_URL + '?email=' + encodeURIComponent(email), '_blank', 'noopener');
       } else {
@@ -1450,7 +1467,7 @@
       if (!f) return;
       f.addEventListener('submit', function (e) {
         e.preventDefault();
-        subscribeWithEmail(document.getElementById(inputId).value.trim());
+        subscribeWithEmail(document.getElementById(inputId).value.trim(), formId);
         f.reset();
       });
     }
@@ -1509,7 +1526,29 @@
     function showSuccess() {
       applyForm.hidden = true;
       applySuccess.hidden = false;
+      track('apply_submit');
     }
+
+    // ---- Click tracking + stop placeholder links jumping to top ---------------
+    (function () {
+      // Workshop CTAs (links to #events) and apply links handled elsewhere.
+      document.querySelectorAll('a[href="#events"]').forEach(function (a) {
+        a.addEventListener('click', function () { track('workshop_click', { label: a.textContent.trim().slice(0, 40) }); });
+      });
+      var wa = document.querySelector('.wa-btn');
+      if (wa) wa.addEventListener('click', function (e) {
+        if (wa.getAttribute('href') === '#') e.preventDefault();
+        track('whatsapp_click');
+      });
+      document.querySelectorAll('.guide-link').forEach(function (a) {
+        a.addEventListener('click', function (e) {
+          if (a.getAttribute('href') === '#') e.preventDefault();
+          var card = a.closest('.guide-card');
+          var title = card ? (card.querySelector('h3') || {}).textContent : '';
+          track('guide_click', { guide: (title || '').trim().slice(0, 60) });
+        });
+      });
+    })();
 
     applyForm.addEventListener('submit', function (e) {
       e.preventDefault();
