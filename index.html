@@ -99,7 +99,7 @@
 
     .btn {
       display: inline-block; background: var(--rainbow); background-size: 220% 100%;
-      color: var(--white); border: none; cursor: pointer;
+      color: #14101a; border: none; cursor: pointer;
       font-family: 'Archivo', sans-serif; font-weight: 700; text-decoration: none;
       padding: 13px 26px; border-radius: 40px; font-size: 15px;
       animation: rainbowShift 9s ease-in-out infinite;
@@ -110,7 +110,7 @@
       box-shadow: 0 0 26px rgba(255,95,109,0.5), 0 0 26px rgba(54,209,220,0.45), 0 0 40px rgba(155,93,229,0.35);
     }
     /* Apply CTAs: deep purple, purple glow on hover */
-    .btn-apply { background: var(--indigo) !important; animation: none !important; }
+    .btn-apply { background: var(--indigo) !important; color: #fff !important; animation: none !important; }
     .btn-apply:hover {
       transform: translateY(-2px);
       box-shadow: 0 0 26px rgba(124,58,237,0.65), 0 0 48px rgba(74,46,111,0.55) !important;
@@ -217,7 +217,7 @@
     .wa-specs li:last-child { border-bottom: 1px solid rgba(255,255,255,0.18); }
     .wa-specs .k { font-weight: 800; }
     .wa-specs .v { color: rgba(255,255,255,0.78); }
-    .wa-btn { display: block; text-align: center; margin-top: 36px; padding: 20px; border: none; border-radius: 12px; color: var(--white); text-decoration: none; font-family:'Archivo',sans-serif; font-weight: 800; text-transform: uppercase; letter-spacing: 0.06em; background: var(--rainbow); background-size: 220% 100%; animation: rainbowShift 9s ease-in-out infinite; transition: transform .16s ease, box-shadow .25s ease; }
+    .wa-btn { display: block; text-align: center; margin-top: 36px; padding: 20px; border: none; border-radius: 12px; color: var(--white); text-decoration: none; font-family:'Archivo',sans-serif; font-weight: 800; text-transform: uppercase; letter-spacing: 0.06em; background: var(--rainbow); background-size: 220% 100%; color: #14101a; animation: rainbowShift 9s ease-in-out infinite; transition: transform .16s ease, box-shadow .25s ease; }
 
     /* ---------- IMMERSIVE AI BOOTCAMP (editorial / zine vibe) ---------- */
     .bootcamp { background: #100d14; color: #fff; padding: 88px 0; position: relative; overflow: hidden; }
@@ -438,7 +438,7 @@
     .foot-cta { text-align: center; max-width: 880px; margin: 0 auto 76px; }
     .foot-cta h2 { font-family:'Archivo',sans-serif; font-weight: 900; text-transform: uppercase; letter-spacing: -0.01em; line-height: 0.94; font-size: clamp(34px, 5.6vw, 70px); }
     .foot-cta p { color: rgba(255,255,255,0.72); font-size: 19px; margin-top: 18px; }
-    .foot-btn { display: inline-block; margin-top: 32px; padding: 18px 42px; border-radius: 999px; background: var(--rainbow); background-size: 220% 100%; color: #fff; font-family:'Archivo',sans-serif; font-weight: 800; text-transform: uppercase; letter-spacing: 0.04em; text-decoration: none; animation: rainbowShift 9s ease-in-out infinite; }
+    .foot-btn { display: inline-block; margin-top: 32px; padding: 18px 42px; border-radius: 999px; background: var(--rainbow); background-size: 220% 100%; color: #14101a; font-family:'Archivo',sans-serif; font-weight: 800; text-transform: uppercase; letter-spacing: 0.04em; text-decoration: none; animation: rainbowShift 9s ease-in-out infinite; }
     .foot-btn:hover { transform: translateY(-2px); }
     .foot-sec { display: inline-block; margin-top: 18px; margin-left: 0; color: rgba(255,255,255,0.6); font-size: 14px; font-weight: 700; }
     .foot-bar { border-top: 1px solid rgba(255,255,255,0.12); margin-top: 56px; padding-top: 26px; display: flex; justify-content: space-between; gap: 14px; flex-wrap: wrap; font-size: 13px; color: rgba(255,255,255,0.5); }
@@ -460,7 +460,7 @@
       cursor: pointer; transition: all .14s ease;
     }
     .chip:hover { border-color: var(--gold); color: var(--indigo); }
-    .chip.active { background: var(--rainbow); background-size: 220% 100%; color: var(--white); border-color: transparent; animation: rainbowShift 9s ease-in-out infinite; }
+    .chip.active { background: var(--rainbow); background-size: 220% 100%; color: #14101a; border-color: transparent; animation: rainbowShift 9s ease-in-out infinite; }
     .guide-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; }
     .guide-card {
       display: flex; flex-direction: column; background: var(--sand);
@@ -769,7 +769,7 @@
       <div class="protip" style="margin-top:48px;">
         <div class="protip-head">
           <div class="label">Steal this prompt 🔥</div>
-          <button class="btn copy-btn" type="button" onclick="copyPrompt(this)" data-prompt="Ask clarifying questions. Rate your work, I want to get to a 9/10 if you're not there. Self-verify your work by testing it end to end. Do not return control to me until you have met the requirements and it is working as expected.">Steal it</button>
+          <button class="btn copy-btn" type="button" onclick="copyPrompt(this)" data-prompt="Ask clarifying questions. Rate your work, I want to get to a 9/10 if you're not there. Self-verify your work by testing it end to end. Do not return control to me until you have met the requirements and it is working as expected.">Copy Text 😈</button>
         </div>
         <p>"Ask clarifying questions. Rate your work, I want to get to a 9/10 if you're not there. Self-verify your work by testing it end to end. Do not return control to me until you have met the requirements and it is working as expected."</p>
       </div>
@@ -1511,7 +1511,7 @@
       var text = btn.getAttribute('data-prompt') || '';
       var done = function () {
         var orig = btn.textContent;
-        btn.textContent = 'Stolen 😈';
+        btn.textContent = 'Copied 😈';
         track('prompt_copied');
         setTimeout(function () { btn.textContent = orig; }, 1600);
       };
