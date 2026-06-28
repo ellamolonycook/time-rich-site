@@ -149,8 +149,16 @@
 
     /* ---------- FOUNDER BAND ---------- */
     .founder { background: var(--sand); padding: 116px 0; }
-    .founder-grid { display: grid; grid-template-columns: 1.05fr 0.95fr; gap: 64px; align-items: center; }
+    .founder-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 56px; align-items: stretch; }
     .founder-photo { width: 100%; border-radius: 14px; display: block; aspect-ratio: 3 / 2; object-fit: cover; }
+    /* Bio image stack — auto-matches text height, two equal photos */
+    .bio-photos { display: flex; flex-direction: column; gap: 16px; }
+    .bio-photo { flex: 1 1 0; min-height: 0; border-radius: 16px; overflow: hidden; }
+    .bio-photo img { width: 100%; height: 100%; object-fit: cover; display: block; transition: transform .45s ease; }
+    .bio-photo:hover img { transform: scale(1.05); }
+    .bio-text > p { margin-bottom: 18px; }
+    .bio-chips { list-style: none; display: flex; flex-wrap: wrap; gap: 10px; margin: 24px 0 0; }
+    .bio-chips li { font-family:'Archivo',sans-serif; font-weight: 700; font-size: 13px; color: var(--indigo); background: rgba(74,46,111,0.06); border: 1px solid var(--line); padding: 8px 15px; border-radius: 999px; }
     .founder .eyebrow { font-family:'Archivo',sans-serif; font-weight:700; letter-spacing:0.16em; text-transform:uppercase; font-size:13px; color: var(--gold); margin-bottom: 18px; }
     .founder h2 { font-size: clamp(28px, 3.8vw, 42px); font-weight: 800; margin-bottom: 20px; }
     .founder p { font-size: 19px; color: var(--charcoal); max-width: 520px; margin-bottom: 22px; }
@@ -400,6 +408,8 @@
       .room-gallery { grid-template-columns: 1fr; }
       .creds { align-items: center; }
       .founder { padding: 80px 0; text-align: center; }
+      .bio-photo { flex: none; aspect-ratio: 3 / 2; }
+      .bio-chips, .bio-social { justify-content: center; }
       .founder p, .creds { margin-left: auto; margin-right: auto; }
       .hero-grid { padding: 64px 0 72px; }
       .hero-photo { max-width: 360px; margin: 0 auto; }
@@ -572,29 +582,32 @@
   <!-- BIO: ELLA MOLONY COOK -->
   <section class="founder" id="bio">
     <div class="wrap founder-grid">
-      <div>
-        <img class="founder-photo" src="Images/web/wide-6040.jpg" alt="Ella Molony Cook, founder of Time Rich, speaking on a panel" />
-        <ul class="creds" style="margin-top:28px;">
+      <div class="bio-photos">
+        <div class="bio-photo">
+          <img src="Images/web/wide-6040.jpg" alt="Ella Molony Cook speaking on a panel" />
+        </div>
+        <div class="bio-photo">
+          <img src="Images/web/portrait-01.jpg" alt="Ella Molony Cook, founder of Time Rich" />
+        </div>
+      </div>
+      <div class="bio-text">
+        <div class="eyebrow">Meet the founder</div>
+        <h2>Ella Molony Cook</h2>
+        <p>If we haven't met, I'm Ella. I bootstrapped my first company to exit, building automations the whole way, obsessed with how the right foundations give a team their time back. That curiosity never left.</p>
+        <p>For two years I've hosted at the intersection of private capital, AI, and culture. Poker games, AI bootcamps, investor dinners.</p>
+        <p>Here's what I've noticed: women are adopting AI 25% less than men.</p>
+        <p class="sit">Sit with that.</p>
+        <p>AI is deciding who leads the next decade. Most people are watching it happen to them. I want women running it. The ones who build their operations on AI instead of around it become a different kind of leader. Not busier. Not burnt out. Time-rich and in command.</p>
+        <ul class="bio-chips">
           <li>4x founder</li>
           <li>Anthropic investor</li>
-          <li>250+ events across 7 cities</li>
+          <li>250+ events · 7 cities</li>
+          <li>20 hrs/week learning AI</li>
         </ul>
         <div class="bio-social">
           <a href="https://www.linkedin.com/in/ellamolonycook/" target="_blank" rel="noopener">Ella on LinkedIn</a>
           <a href="https://www.instagram.com/baddiesloveai/" target="_blank" rel="noopener">@baddiesloveai</a>
         </div>
-      </div>
-      <div>
-        <div class="eyebrow">Meet the founder</div>
-        <h2>Ella Molony Cook</h2>
-        <p>If we haven't yet met, I'm Ella. I've always been an entrepreneur at heart. My first company I bootstrapped to exit, and the whole time I was building automations, obsessing over how the right operational foundations could genuinely give a team their time back. That curiosity never left.</p>
-        <p>For years I've been hosting experiences at the intersection of private capital, AI, and culture. The last two years specifically: private capital poker games, AI bootcamps, curated investor dinners. 250+ events across 7 cities.</p>
-        <p>Here's what I've noticed: women are adopting AI 25% less than men.</p>
-        <p class="sit">Sit with that.</p>
-        <p>AI is rewriting how companies get built, how decisions get made, who leads the next decade. Most people are watching it happen to them. I want women running it.</p>
-        <p>Right now the pattern I see is either avoiding AI entirely or handing it the keys without a strategy. Neither is leadership.</p>
-        <p>What I know from working with hundreds of women founders and operators: the ones who step into their authority now, who build their operations on AI rather than around it, become a different kind of leader. Not busier. Not burnt out. Time-rich and in command rather than constantly catching up.</p>
-        <p>I spend 4 hours every single day diving into new AI tools, frameworks, and research. That's 20 hours a week of pure learning time. Most people don't have that. So I bring it back to the room.</p>
       </div>
     </div>
   </section>
