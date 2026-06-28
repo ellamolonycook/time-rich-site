@@ -114,6 +114,8 @@
     .hero h1 { color: var(--indigo); font-weight: 900; font-size: clamp(30px, 4.2vw, 52px); line-height: 1.08; }
     .hero p.sub { color: var(--charcoal); font-size: 20px; margin-top: 30px; max-width: 470px; }
     .hero .btn { margin-top: 40px; padding: 16px 34px; font-size: 16px; }
+    .hero-secondary { display: inline-block; margin-top: 18px; margin-left: 18px; font-weight: 700; font-size: 15px; color: var(--indigo); text-decoration: underline; text-underline-offset: 3px; }
+    .hero-secondary:hover { color: var(--gold); }
     .hero-photo {
       width: 100%; border-radius: 14px; display: block;
       aspect-ratio: 4 / 5; object-fit: cover; object-position: top center; background: var(--sand);
@@ -663,7 +665,8 @@
         <div class="eyebrow">Not AI awareness. Actual implementation.</div>
         <h1>Women are adopting AI 25% less than men.<br />We're closing the gap.</h1>
         <p class="sub">You're not behind on AI. No one's shown you how to make it buy back your time.</p>
-        <a href="#apply" class="btn" onclick="openApply(event)">Apply to Join</a>
+        <a href="#events" class="btn">See upcoming workshops</a>
+        <a href="#apply" class="hero-secondary" onclick="openApply(event)">or apply to join the room →</a>
       </div>
       <div>
         <img class="hero-photo" src="Images/web/hero.jpg" alt="Ella Molony Cook, founder of Time Rich" />
@@ -687,7 +690,7 @@
         <p class="retro-kicker">No long form yet. Just grab the good stuff first 🍒</p>
         <form class="optin-form" id="heroOptin" novalidate>
           <input type="email" id="heroEmail" placeholder="you@company.com" required aria-label="Email address" />
-          <button type="submit" class="btn">Get the weekly AI drop</button>
+          <button type="submit" class="btn">Spill the weekly agent tea ☕</button>
         </form>
         <a class="retro-link" href="#events">or save a seat at the next workshop →</a>
       </div>
@@ -730,40 +733,6 @@
         <div class="stat-num indigo">48hr</div>
         <div class="stat-cap">Response on applications</div>
         <div class="stat-sub">We get back to you fast</div>
-      </div>
-    </div>
-  </section>
-
-  <!-- BIO: ELLA MOLONY COOK -->
-  <section class="founder" id="bio">
-    <div class="wrap founder-grid">
-      <div class="bio-photos">
-        <div class="bio-photo">
-          <img src="Images/web/wide-6040.jpg" alt="Ella Molony Cook speaking on a panel" />
-        </div>
-        <div class="bio-photo">
-          <img src="Images/web/dinner-79.jpg" alt="Ella Molony Cook, founder of Time Rich, at a curated investor dinner" />
-        </div>
-      </div>
-      <div class="bio-text">
-        <div class="eyebrow">Meet the founder</div>
-        <h2>Ella Molony Cook</h2>
-        <p>If we haven't met, I'm Ella. I bootstrapped my first company to exit, building automations the whole way, obsessed with how the right foundations give a team their time back. That curiosity never left.</p>
-        <p>For two years I've hosted at the intersection of private capital, AI, and culture. Poker games, AI bootcamps, investor dinners.</p>
-        <p>Here's what I've noticed: women are adopting AI 25% less than men.</p>
-        <p class="sit">Sit with that.</p>
-        <p>AI is deciding who leads the next decade. Most people are watching it happen to them. I want women running it. The ones who build their operations on AI instead of around it become a different kind of leader. Not busier. Not burnt out. Time-rich and in command.</p>
-        <ul class="bio-chips">
-          <li>4x founder</li>
-          <li>Exited founder</li>
-          <li>Anthropic investor</li>
-          <li>250+ events · 7 cities</li>
-          <li>Fractional COO</li>
-        </ul>
-        <div class="bio-social">
-          <a class="rainbow-pill" href="https://www.linkedin.com/in/ellamolonycook/" target="_blank" rel="noopener">🍒 Slide into my LinkedIn DMs, bring a good prompt</a>
-          <a href="https://www.instagram.com/baddiesloveai/" target="_blank" rel="noopener">@baddiesloveai</a>
-        </div>
       </div>
     </div>
   </section>
@@ -845,68 +814,6 @@
     </div>
   </section>
 
-  <!-- UPCOMING EVENTS (Luma) -->
-  <section class="events" id="events">
-    <div class="wrap" style="text-align:center;">
-      <div class="section-head">
-        <h2>Time Hacking Workshops</h2>
-        <p style="max-width: 620px; margin: 18px auto 0;">Stop waiting for permission to master AI. Join Time Rich workshops where badass humans build their personal AI Operating System.</p>
-      </div>
-      <iframe
-        class="events-frame"
-        src="https://luma.com/embed/calendar/cal-r3sfqEpV1vodtGb/events?lt=light"
-        frameborder="0"
-        allowfullscreen=""
-        aria-hidden="false"
-        tabindex="0"
-        title="Time Rich upcoming events"
-      ></iframe>
-    </div>
-  </section>
-
-  <!-- THE ROOM -->
-  <section class="room" id="room">
-    <div class="wrap">
-      <div class="section-head">
-        <div class="eyebrow-c">The Room</div>
-        <h2>Who's here</h2>
-        <p>Real founders, investors and operators. Here's what members said after a recent workshop.</p>
-      </div>
-      <div class="cards">
-        <div class="card">
-          <div class="name">Martha Mercogliano</div>
-          <div class="role">CEO, Mercogliano Advisors</div>
-          <div class="outcome">"Thank you, Ella. This was awesome, so glad I joined."</div>
-        </div>
-        <div class="card">
-          <div class="name">Indra Klavins</div>
-          <div class="role">Founder, People · Process · Things</div>
-          <div class="outcome">"Thank you for everything. This was insanely useful."</div>
-        </div>
-        <div class="card">
-          <div class="name">Jenni Ogden</div>
-          <div class="role">Founder &amp; CEO, Eye Q Productions</div>
-          <div class="outcome">"So much amazing information. This is so valuable."</div>
-        </div>
-        <div class="card">
-          <div class="name">Kudzani Koketso (KK)</div>
-          <div class="role">Founder, Identity Cove</div>
-          <div class="outcome">"Thank you, Ella! Looking forward to joining the Time Rich community."</div>
-        </div>
-        <div class="card">
-          <div class="name">Stacy M. Carpenter</div>
-          <div class="role">Founder, My Funding Tree</div>
-          <div class="outcome">"Thank you for this session. Great information."</div>
-        </div>
-        <div class="card">
-          <div class="name">Allison Higgins</div>
-          <div class="role">Founder, Higgins Creative Co</div>
-          <div class="outcome">"So glad to connect with others who want to become AI leaders."</div>
-        </div>
-      </div>
-    </div>
-  </section>
-
   <!-- FREE GUIDES -->
   <section class="guides" id="guides">
     <div class="wrap">
@@ -978,6 +885,102 @@
         </div>
       </div>
       <p class="guides-note">Guides publish to Substack. Each link goes live as the guide ships.</p>
+    </div>
+  </section>
+
+  <!-- UPCOMING EVENTS (Luma) -->
+  <section class="events" id="events">
+    <div class="wrap" style="text-align:center;">
+      <div class="section-head">
+        <h2>Time Hacking Workshops</h2>
+        <p style="max-width: 620px; margin: 18px auto 0;">Stop waiting for permission to master AI. Join Time Rich workshops where badass humans build their personal AI Operating System.</p>
+      </div>
+      <iframe
+        class="events-frame"
+        src="https://luma.com/embed/calendar/cal-r3sfqEpV1vodtGb/events?lt=light"
+        frameborder="0"
+        allowfullscreen=""
+        aria-hidden="false"
+        tabindex="0"
+        title="Time Rich upcoming events"
+      ></iframe>
+    </div>
+  </section>
+
+  <!-- THE ROOM -->
+  <section class="room" id="room">
+    <div class="wrap">
+      <div class="section-head">
+        <div class="eyebrow-c">The Room</div>
+        <h2>Who's here</h2>
+        <p>Real founders, investors and operators. Here's what members said after a recent workshop.</p>
+      </div>
+      <div class="cards">
+        <div class="card">
+          <div class="name">Martha Mercogliano</div>
+          <div class="role">CEO, Mercogliano Advisors</div>
+          <div class="outcome">"Thank you, Ella. This was awesome, so glad I joined."</div>
+        </div>
+        <div class="card">
+          <div class="name">Indra Klavins</div>
+          <div class="role">Founder, People · Process · Things</div>
+          <div class="outcome">"Thank you for everything. This was insanely useful."</div>
+        </div>
+        <div class="card">
+          <div class="name">Jenni Ogden</div>
+          <div class="role">Founder &amp; CEO, Eye Q Productions</div>
+          <div class="outcome">"So much amazing information. This is so valuable."</div>
+        </div>
+        <div class="card">
+          <div class="name">Kudzani Koketso (KK)</div>
+          <div class="role">Founder, Identity Cove</div>
+          <div class="outcome">"Thank you, Ella! Looking forward to joining the Time Rich community."</div>
+        </div>
+        <div class="card">
+          <div class="name">Stacy M. Carpenter</div>
+          <div class="role">Founder, My Funding Tree</div>
+          <div class="outcome">"Thank you for this session. Great information."</div>
+        </div>
+        <div class="card">
+          <div class="name">Allison Higgins</div>
+          <div class="role">Founder, Higgins Creative Co</div>
+          <div class="outcome">"So glad to connect with others who want to become AI leaders."</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- BIO: ELLA MOLONY COOK -->
+  <section class="founder" id="bio">
+    <div class="wrap founder-grid">
+      <div class="bio-photos">
+        <div class="bio-photo">
+          <img src="Images/web/wide-6040.jpg" alt="Ella Molony Cook speaking on a panel" />
+        </div>
+        <div class="bio-photo">
+          <img src="Images/web/dinner-79.jpg" alt="Ella Molony Cook, founder of Time Rich, at a curated investor dinner" />
+        </div>
+      </div>
+      <div class="bio-text">
+        <div class="eyebrow">Meet the founder</div>
+        <h2>Ella Molony Cook</h2>
+        <p>If we haven't met, I'm Ella. I bootstrapped my first company to exit, building automations the whole way, obsessed with how the right foundations give a team their time back. That curiosity never left.</p>
+        <p>For two years I've hosted at the intersection of private capital, AI, and culture. Poker games, AI bootcamps, investor dinners.</p>
+        <p>Here's what I've noticed: women are adopting AI 25% less than men.</p>
+        <p class="sit">Sit with that.</p>
+        <p>AI is deciding who leads the next decade. Most people are watching it happen to them. I want women running it. The ones who build their operations on AI instead of around it become a different kind of leader. Not busier. Not burnt out. Time-rich and in command.</p>
+        <ul class="bio-chips">
+          <li>4x founder</li>
+          <li>Exited founder</li>
+          <li>Anthropic investor</li>
+          <li>250+ events · 7 cities</li>
+          <li>Fractional COO</li>
+        </ul>
+        <div class="bio-social">
+          <a class="rainbow-pill" href="https://www.linkedin.com/in/ellamolonycook/" target="_blank" rel="noopener">🍒 Slide into my LinkedIn DMs, bring a good prompt</a>
+          <a href="https://www.instagram.com/baddiesloveai/" target="_blank" rel="noopener">@baddiesloveai</a>
+        </div>
+      </div>
     </div>
   </section>
 
