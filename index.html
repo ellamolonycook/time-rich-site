@@ -52,7 +52,7 @@
     html { scroll-behavior: smooth; }
 
     /* fun robot-head cursor (hotspot near the antenna); text caret stays in fields */
-    * { cursor: url('cursor-cherry.png') 14 6, auto; }
+    * { cursor: url('cursor-wand.png') 22 10, auto; }
     input, textarea { cursor: text; }
 
     body {
@@ -137,12 +137,17 @@
 
     /* ---------- RAINBOW THEME (pride / inclusive) ---------- */
     body { border-top: 5px solid transparent; border-image: var(--rainbow) 1; }
-    .cursor-glow {
-      position: fixed; top: 0; left: 0; width: 26px; height: 26px; margin: -13px 0 0 -13px;
-      border-radius: 50%; pointer-events: none; z-index: 9999; will-change: transform;
-      background: conic-gradient(#ff5f6d, #ffc371, #47e891, #36d1dc, #9b5de5, #ff5f6d);
-      filter: blur(3px); opacity: 0.8; mix-blend-mode: multiply;
+    .sparkle {
+      position: fixed; top: 0; left: 0; width: 9px; height: 9px; margin: -4px 0 0 -4px;
+      pointer-events: none; z-index: 9999; will-change: transform, opacity;
+      clip-path: polygon(50% 0%, 61% 35%, 98% 35%, 68% 57%, 79% 91%, 50% 70%, 21% 91%, 32% 57%, 2% 35%, 39% 35%);
+      animation: sprinkle 0.9s ease-out forwards;
     }
+    @keyframes sprinkle {
+      0% { transform: translate(0, 0) scale(1) rotate(0deg); opacity: 1; }
+      100% { transform: translate(var(--dx, 0), 28px) scale(0) rotate(120deg); opacity: 0; }
+    }
+    @media (prefers-reduced-motion: reduce) { .sparkle { display: none; } }
     @keyframes rainbowShift { to { background-position: 200% 0; } }
     .rainbow-pill {
       background: linear-gradient(100deg, #6d28d9, #a855f7, #e879c9, #ff9e7d) !important;
@@ -668,7 +673,6 @@
       <div class="pac-strip" id="pacStrip" aria-hidden="true">
         <div class="pac"><div class="pac-body"></div></div>
         <span class="food" style="left:13%">🌈</span>
-        <span class="food" style="left:24%">🤍</span>
         <span class="food" style="left:36%">👨</span>
         <span class="food" style="left:48%">💻</span>
         <span class="food" style="left:60%">⏰</span>
@@ -1515,20 +1519,27 @@
       requestAnimationFrame(frame);
     })();
 
-    /* Rainbow glow that follows the cursor (desktop, motion-safe) */
+    /* Fairy wand: sprinkle rainbow stars as the cursor moves (desktop, motion-safe) */
     (function () {
       if (window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
       if (window.matchMedia && window.matchMedia('(hover: none)').matches) return;
-      var dot = document.createElement('div');
-      dot.className = 'cursor-glow';
-      document.body.appendChild(dot);
-      var x = -100, y = -100, tx = -100, ty = -100;
-      document.addEventListener('mousemove', function (e) { tx = e.clientX; ty = e.clientY; });
-      (function loop() {
-        x += (tx - x) * 0.18; y += (ty - y) * 0.18;
-        dot.style.transform = 'translate(' + x + 'px,' + y + 'px)';
-        requestAnimationFrame(loop);
-      })();
+      var colors = ['#ff5f6d', '#ffc371', '#ffe14d', '#47e891', '#36d1dc', '#9b5de5', '#ff8fd0'];
+      var last = 0;
+      document.addEventListener('mousemove', function (e) {
+        var now = e.timeStamp || 0;
+        if (now - last < 45) return;
+        last = now;
+        var s = document.createElement('div');
+        s.className = 'sparkle';
+        s.style.left = e.clientX + 'px';
+        s.style.top = e.clientY + 'px';
+        s.style.background = colors[Math.floor(Math.random() * colors.length)];
+        s.style.setProperty('--dx', ((Math.random() - 0.5) * 34) + 'px');
+        var sz = 7 + Math.random() * 7;
+        s.style.width = sz + 'px'; s.style.height = sz + 'px';
+        document.body.appendChild(s);
+        setTimeout(function () { s.remove(); }, 900);
+      });
     })();
 
     function showSuccess() {
