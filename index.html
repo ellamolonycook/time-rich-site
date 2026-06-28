@@ -175,6 +175,15 @@
       width: 100%; max-width: 600px; height: 450px; display: block; margin: 0 auto;
       border: 1px solid #bfcbda88; border-radius: 12px;
     }
+    .optin-sub { margin-top: 10px; font-size: 14px; opacity: 0.7; }
+
+    /* ---------- FAQ ---------- */
+    .faq { background: var(--sand); padding: 120px 0; }
+    .faq-list { max-width: 760px; margin: 0 auto; }
+    .faq-item { border-top: 1px solid var(--line); padding: 28px 0; }
+    .faq-item:last-child { border-bottom: 1px solid var(--line); }
+    .faq-item h3 { font-size: 21px; font-weight: 800; color: var(--indigo); }
+    .faq-item p { margin-top: 12px; font-size: 17px; line-height: 1.6; color: var(--charcoal); }
 
     /* ---------- THE GAP (alternating, clean) ---------- */
     .gap { background: var(--white); }
@@ -379,7 +388,7 @@
         padding: 24px; gap: 20px; border-bottom: 1px solid var(--line);
       }
       .nav-toggle { display: block; background: none; border: none; cursor: pointer; color: var(--indigo); font-size: 26px; }
-      .stats, .what, .get, .room, .how, .ask, .guides { padding: 80px 0; }
+      .stats, .what, .get, .room, .how, .ask, .guides, .faq { padding: 80px 0; }
       .events { padding: 64px 0 0; }
       .events .section-head { margin-bottom: 32px; }
       .events-frame { height: 560px; border-radius: 10px; }
@@ -417,6 +426,37 @@
         "name": "Time Rich",
         "publisher": { "@id": "https://timerich.ai/#organization" },
         "inLanguage": "en"
+      },
+      {
+        "@type": "FAQPage",
+        "@id": "https://timerich.ai/#faq",
+        "mainEntity": [
+          {
+            "@type": "Question",
+            "name": "What is Time Rich?",
+            "acceptedAnswer": { "@type": "Answer", "text": "An application-based community for women founders, investors, and operators who want to actually implement AI in their business. Not awareness. Implementation." }
+          },
+          {
+            "@type": "Question",
+            "name": "Who is it for?",
+            "acceptedAnswer": { "@type": "Answer", "text": "Women founders, investors, and operators who are done learning AI alone. 200+ are already in the room, building with people doing the same." }
+          },
+          {
+            "@type": "Question",
+            "name": "Why is it application-based?",
+            "acceptedAnswer": { "@type": "Answer", "text": "Not to gatekeep. The quality of the room is the whole point, so we keep it to people who are actually building." }
+          },
+          {
+            "@type": "Question",
+            "name": "What do I get inside?",
+            "acceptedAnswer": { "@type": "Answer", "text": "Weekly calls, a working Slack channel, guides and playbooks, and direct access to 200+ women shipping AI in their businesses." }
+          },
+          {
+            "@type": "Question",
+            "name": "How do I join?",
+            "acceptedAnswer": { "@type": "Answer", "text": "Apply and tell us what you're building. We get back to you within 48 hours." }
+          }
+        ]
       }
     ]
   }
@@ -595,15 +635,15 @@
       <div class="section-head">
         <div class="eyebrow-c">The Room</div>
         <h2>Who's here</h2>
-        <p>Real founders. Specific outcomes. Numbers, not vibes.</p>
+        <p>Real founders, investors and operators. Already in the room, already building.</p>
       </div>
       <div class="room-gallery">
         <img src="Images/web/dinner-32.jpg" alt="Members in conversation at a Time Rich event" />
         <img src="Images/web/dinner-88.jpg" alt="Members together at a Time Rich dinner" />
         <img src="Images/web/event-55.jpg" alt="Members at a Time Rich rooftop event" />
       </div>
+      <!-- MEMBER CARDS HIDDEN UNTIL REAL NAMES + OUTCOMES ARE READY. Un-comment and replace placeholders to re-enable.
       <div class="cards">
-        <!-- PLACEHOLDER CARDS: replace with real member names + outcomes -->
         <div class="card">
           <div class="name">[Member name]</div>
           <div class="role">Founder, [Company]</div>
@@ -635,7 +675,7 @@
           <div class="outcome">"Automated support triage and kept the human voice."</div>
         </div>
       </div>
-      <p class="placeholder-note">Placeholder cards. Swap in real member names and outcomes before launch.</p>
+      -->
     </div>
   </section>
 
@@ -726,14 +766,47 @@
       </div>
 
       <div class="guides-optin">
-        <h3>Get every new guide in your inbox</h3>
-        <p>One email when a new guide ships. No spam, no fake urgency.</p>
+        <h3>New resources, every week</h3>
+        <p>Exclusive guides, workflows and tools to help you stay ahead, build faster, and get real results with AI. The difference between "I use AI" and "it runs my life and business" is simpler than you think.</p>
+        <p class="optin-sub">One email a week. No spam, no fake urgency.</p>
         <form class="optin-form" id="optinForm" novalidate>
           <input type="email" id="optinEmail" placeholder="you@company.com" required />
           <button type="submit" class="btn">Subscribe</button>
         </form>
       </div>
       <p class="guides-note">Guides publish to Substack. Each link goes live as the guide ships.</p>
+    </div>
+  </section>
+
+  <!-- FAQ -->
+  <section class="faq" id="faq">
+    <div class="wrap">
+      <div class="section-head">
+        <div class="eyebrow-c">Questions</div>
+        <h2>The honest answers</h2>
+      </div>
+      <div class="faq-list">
+        <div class="faq-item">
+          <h3>What is Time Rich?</h3>
+          <p>An application-based community for women founders, investors, and operators who want to actually implement AI in their business. Not awareness. Implementation.</p>
+        </div>
+        <div class="faq-item">
+          <h3>Who is it for?</h3>
+          <p>Women founders, investors, and operators who are done learning AI alone. 200+ are already in the room, building with people doing the same.</p>
+        </div>
+        <div class="faq-item">
+          <h3>Why is it application-based?</h3>
+          <p>Not to gatekeep. The quality of the room is the whole point, so we keep it to people who are actually building.</p>
+        </div>
+        <div class="faq-item">
+          <h3>What do I get inside?</h3>
+          <p>Weekly calls, a working Slack channel, guides and playbooks, and direct access to 200+ women shipping AI in their businesses.</p>
+        </div>
+        <div class="faq-item">
+          <h3>How do I join?</h3>
+          <p>Apply and tell us what you're building. We get back to you within 48 hours.</p>
+        </div>
+      </div>
     </div>
   </section>
 
