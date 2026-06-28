@@ -154,10 +154,11 @@
     .spark { display: inline-block; background: var(--rainbow); -webkit-background-clip: text; background-clip: text; color: transparent; }
 
     /* ---------- MOVING PHOTO STRIP ---------- */
-    .photo-band { background: var(--sand); padding: 56px 0; overflow: hidden; }
-    .photo-track { display: flex; gap: 18px; width: max-content; animation: photoScroll 42s linear infinite; }
+    .photo-band { background: var(--sand); padding: 14px 0; overflow: hidden; }
+    .photo-track { display: flex; gap: 20px; width: max-content; animation: photoScroll 50s linear infinite; }
+    .photo-track.rev { animation-direction: reverse; }
     .photo-band:hover .photo-track { animation-play-state: paused; }
-    .photo-track img { height: 280px; width: 220px; object-fit: cover; border-radius: 14px; display: block; flex: 0 0 auto; }
+    .photo-track img { height: 360px; width: 290px; object-fit: cover; border-radius: 16px; display: block; flex: 0 0 auto; }
     @keyframes photoScroll { from { transform: translateX(0); } to { transform: translateX(-50%); } }
     @media (prefers-reduced-motion: reduce) { .photo-track { animation: none; } }
 
@@ -342,8 +343,8 @@
     .gap p { font-size: 20px; color: var(--charcoal); max-width: 540px; }
 
     /* ---------- WHAT TIME RICH IS ---------- */
-    .what { background: var(--sand); text-align: center; padding: 128px 0; }
-    .what h2 { font-size: clamp(32px, 4.8vw, 52px); font-weight: 800; max-width: 860px; margin: 18px auto 0; }
+    .what { background: var(--sand); text-align: center; padding: 64px 0; }
+    .what h2 { font-size: clamp(28px, 4vw, 44px); font-weight: 800; max-width: 820px; margin: 18px auto 0; }
     .what p { font-size: 20px; max-width: 600px; margin: 28px auto 0; }
     .what .emphasis { color: var(--indigo); font-weight: 600; }
 
@@ -525,7 +526,8 @@
       .bio-chips, .bio-social { justify-content: center; }
       .wa-grid { grid-template-columns: 1fr; gap: 32px; }
       .wa-stat { text-align: left; }
-      .photo-track img { height: 200px; width: 160px; }
+      .photo-track img { height: 230px; width: 180px; }
+      .what { padding: 48px 0; }
       .founder p, .creds { margin-left: auto; margin-right: auto; }
       .hero-grid { padding: 64px 0 72px; }
       .hero-photo { max-width: 360px; margin: 0 auto; }
@@ -767,6 +769,25 @@
     </div>
   </section>
 
+  <!-- MOVING PHOTO STRIP (top) -->
+  <div class="photo-band" style="padding-top:28px;">
+    <div class="photo-track">
+      <img src="Images/web/dinner-76.jpg" alt="Members at a Time Rich gathering" />
+      <img src="Images/web/event-55.jpg" alt="Members at a Time Rich rooftop event" />
+      <img src="Images/web/dinner-28.jpg" alt="Members at a Time Rich dinner" />
+      <img src="Images/web/dinner-32.jpg" alt="Members in conversation at a Time Rich event" />
+      <img src="Images/web/dinner-63.jpg" alt="Members networking at a Time Rich event" />
+      <img src="Images/web/dinner-88.jpg" alt="Members together at a Time Rich dinner" />
+      <!-- duplicate set for seamless loop -->
+      <img src="Images/web/dinner-76.jpg" alt="" aria-hidden="true" />
+      <img src="Images/web/event-55.jpg" alt="" aria-hidden="true" />
+      <img src="Images/web/dinner-28.jpg" alt="" aria-hidden="true" />
+      <img src="Images/web/dinner-32.jpg" alt="" aria-hidden="true" />
+      <img src="Images/web/dinner-63.jpg" alt="" aria-hidden="true" />
+      <img src="Images/web/dinner-88.jpg" alt="" aria-hidden="true" />
+    </div>
+  </div>
+
   <!-- WHAT TIME RICH IS -->
   <section class="what" id="what">
     <div class="wrap narrow">
@@ -777,9 +798,9 @@
     </div>
   </section>
 
-  <!-- MOVING PHOTO STRIP -->
-  <div class="photo-band">
-    <div class="photo-track">
+  <!-- MOVING PHOTO STRIP (bottom, reverse) -->
+  <div class="photo-band" style="padding-bottom:28px;">
+    <div class="photo-track rev">
       <img src="Images/web/dinner-32.jpg" alt="Members in conversation at a Time Rich event" />
       <img src="Images/web/dinner-88.jpg" alt="Members together at a Time Rich dinner" />
       <img src="Images/web/event-55.jpg" alt="Members at a Time Rich rooftop event" />
