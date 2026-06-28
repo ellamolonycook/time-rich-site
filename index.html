@@ -358,15 +358,17 @@
     .what .emphasis { color: var(--indigo); font-weight: 600; }
 
     /* ---------- WHAT YOU GET (feature grid) ---------- */
-    .get { background: var(--cream); padding: 120px 0; }
-    .feature-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 28px; max-width: 900px; margin: 0 auto; }
+    .get { background: var(--cream); padding: 72px 0; }
+    .get .section-head { margin-bottom: 40px; }
+    .get .section-head h2 { font-size: clamp(24px, 3vw, 34px); }
+    .feature-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; max-width: 1080px; margin: 0 auto; }
     .feature {
-      background: var(--white); border: 1px solid var(--line); border-radius: 14px;
-      padding: 38px 36px;
+      background: var(--white); border: 1px solid var(--line); border-radius: 12px;
+      padding: 24px 22px;
     }
-    .feature .fnum { font-family:'Archivo',sans-serif; font-weight:900; color: var(--gold); font-size: 15px; letter-spacing: 0.1em; }
-    .feature h3 { font-size: 24px; font-weight: 800; margin: 14px 0 10px; }
-    .feature p { font-size: 16px; color: var(--charcoal); }
+    .feature .fnum { font-family:'Archivo',sans-serif; font-weight:900; color: var(--gold); font-size: 13px; letter-spacing: 0.1em; }
+    .feature h3 { font-size: 18px; font-weight: 800; margin: 12px 0 8px; }
+    .feature p { font-size: 14px; line-height: 1.5; color: var(--charcoal); }
 
     /* ---------- THE ROOM ---------- */
     .room { background: var(--white); padding: 120px 0; }
@@ -432,10 +434,12 @@
     .guide-link:hover { color: var(--gold); }
     .guide-link .arrow { transition: transform .14s ease; }
     .guide-link:hover .arrow { transform: translateX(4px); }
-    .guides-optin { margin-top: 64px; background: var(--sand); border-radius: 16px; padding: 52px 40px; text-align: center; }
+    .guides-optin { margin-top: 64px; background: var(--sand); border-radius: 16px; padding: 44px 44px; display: flex; align-items: center; gap: 44px; }
+    .guides-optin .optin-copy { flex: 1; }
+    .optin-img { width: 38%; max-width: 360px; aspect-ratio: 1 / 1; object-fit: cover; border-radius: 14px; display: block; }
     .guides-optin h3 { font-family:'Archivo',sans-serif; font-size: 28px; font-weight: 800; color: var(--indigo); }
-    .guides-optin p { font-size: 16px; color: var(--charcoal); margin: 12px auto 26px; max-width: 480px; }
-    .optin-form { display: flex; gap: 12px; max-width: 470px; margin: 0 auto; }
+    .guides-optin p { font-size: 16px; color: var(--charcoal); margin: 12px 0 26px; max-width: 480px; }
+    .optin-form { display: flex; gap: 12px; max-width: 470px; }
     .optin-form input { flex: 1; padding: 14px 18px; border: 1.5px solid var(--line); border-radius: 40px; font-family: inherit; font-size: 15px; background: var(--white); color: var(--charcoal); }
     .optin-form input:focus { outline: none; border-color: var(--gold); }
     .guides-note { text-align: center; margin-top: 22px; font-size: 13px; color: #9a8ab0; font-style: italic; }
@@ -559,7 +563,8 @@
       .guide-grid { grid-template-columns: 1fr; }
       .li-row { flex-direction: column; }
       .optin-form { flex-direction: column; }
-      .guides-optin { padding: 40px 24px; }
+      .guides-optin { padding: 40px 24px; flex-direction: column; gap: 28px; }
+      .optin-img { width: 100%; max-width: none; aspect-ratio: 16 / 10; order: -1; }
     }
   </style>
 
@@ -672,12 +677,12 @@
     <div class="wrap">
       <div class="pac-strip" id="pacStrip" aria-hidden="true">
         <div class="pac"><div class="pac-body"></div></div>
-        <span class="food" style="left:13%">🌈</span>
-        <span class="food" style="left:36%">👨</span>
-        <span class="food" style="left:48%">💻</span>
-        <span class="food" style="left:60%">⏰</span>
-        <span class="food" style="left:72%">🍒</span>
-        <span class="food" style="left:84%">🤖</span>
+        <span class="food" style="left:46%">🌈</span>
+        <span class="food" style="left:51%">👨</span>
+        <span class="food" style="left:56%">💻</span>
+        <span class="food" style="left:61%">⏰</span>
+        <span class="food" style="left:66%">🍒</span>
+        <span class="food" style="left:71%">🤖</span>
       </div>
       <div class="retro-cta">
         <p class="retro-kicker">No long form yet. Just grab the good stuff first 🍒</p>
@@ -860,38 +865,6 @@
     </div>
   </section>
 
-  <!-- WHAT YOU GET -->
-  <section class="get">
-    <div class="wrap">
-      <div class="section-head">
-        <div class="eyebrow-c">Inside the Room</div>
-        <h2>What you get</h2>
-      </div>
-      <div class="feature-grid">
-        <div class="feature">
-          <div class="fnum">01</div>
-          <h3>Weekly calls</h3>
-          <p>Live sessions where members solve real implementation problems together. No theory.</p>
-        </div>
-        <div class="feature">
-          <div class="fnum">02</div>
-          <h3>The Slack</h3>
-          <p>A working channel of women shipping AI in their businesses. Ask, answer, share what works.</p>
-        </div>
-        <div class="feature">
-          <div class="fnum">03</div>
-          <h3>Resources</h3>
-          <p>Guides and playbooks for founders who need to implement AI this week, not study it this year.</p>
-        </div>
-        <div class="feature">
-          <div class="fnum">04</div>
-          <h3>Direct founder access</h3>
-          <p>200+ women you can reach directly. Peers who've already built what you're building.</p>
-        </div>
-      </div>
-    </div>
-  </section>
-
   <!-- THE ROOM -->
   <section class="room" id="room">
     <div class="wrap">
@@ -959,7 +932,6 @@
           <p>Weekly calls, Slack, resources, direct access to other founders.</p>
         </div>
       </div>
-      <p class="how-close">That's it. No cohorts. No curriculum. No graduation ceremony. Just the room.</p>
     </div>
   </section>
 
@@ -984,7 +956,6 @@
 
       <div class="guide-grid" id="guideGrid">
         <article class="guide-card" data-topic="skills">
-          <img class="guide-cover" src="Images/web/agents-self-improving.jpg" alt="Self-improving agents — Agents 101" />
           <div class="guide-badge">Substack</div>
           <h3>The Self-Improvement Loop</h3>
           <p>How self-improving agents actually work: the context files, the skills, the human in the loop, and the loop that keeps going until the job's done.</p>
@@ -1023,15 +994,50 @@
       </div>
 
       <div class="guides-optin">
-        <h3>New resources, every week</h3>
-        <p>Exclusive guides, workflows and tools to help you stay ahead, build faster, and get real results with AI. The difference between "I use AI" and "it runs my life and business" is simpler than you think.</p>
-        <p class="optin-sub">One email a week. No spam, no fake urgency.</p>
-        <form class="optin-form" id="optinForm" novalidate>
-          <input type="email" id="optinEmail" placeholder="you@company.com" required />
-          <button type="submit" class="btn">Subscribe</button>
-        </form>
+        <div class="optin-copy">
+          <h3>New resources, every week</h3>
+          <p>Exclusive guides, workflows and tools to help you stay ahead, build faster, and get real results with AI. The difference between "I use AI" and "it runs my life and business" is simpler than you think.</p>
+          <p class="optin-sub">One email a week. No spam, no fake urgency.</p>
+          <form class="optin-form" id="optinForm" novalidate>
+            <input type="email" id="optinEmail" placeholder="you@company.com" required />
+            <button type="submit" class="btn">Subscribe</button>
+          </form>
+        </div>
+        <img class="optin-img" src="Images/web/agents-self-improving.jpg" alt="Self-improving agents — Agents 101" />
       </div>
       <p class="guides-note">Guides publish to Substack. Each link goes live as the guide ships.</p>
+    </div>
+  </section>
+
+  <!-- WHAT YOU GET (club perks, secondary) -->
+  <section class="get">
+    <div class="wrap">
+      <div class="section-head">
+        <div class="eyebrow-c">Inside the Room</div>
+        <h2>What you get</h2>
+      </div>
+      <div class="feature-grid">
+        <div class="feature">
+          <div class="fnum">01</div>
+          <h3>Weekly calls</h3>
+          <p>Live sessions where members solve real implementation problems together. No theory.</p>
+        </div>
+        <div class="feature">
+          <div class="fnum">02</div>
+          <h3>The Slack</h3>
+          <p>A working channel of women shipping AI in their businesses. Ask, answer, share what works.</p>
+        </div>
+        <div class="feature">
+          <div class="fnum">03</div>
+          <h3>Resources</h3>
+          <p>Guides and playbooks for founders who need to implement AI this week, not study it this year.</p>
+        </div>
+        <div class="feature">
+          <div class="fnum">04</div>
+          <h3>Direct founder access</h3>
+          <p>200+ women you can reach directly. Peers who've already built what you're building.</p>
+        </div>
+      </div>
     </div>
   </section>
 
