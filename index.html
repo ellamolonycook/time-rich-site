@@ -415,6 +415,7 @@
       transition: transform .14s ease, box-shadow .14s ease;
     }
     .guide-card:hover { transform: translateY(-3px); box-shadow: 0 16px 40px rgba(74,46,111,0.12); }
+    .guide-cover { width: 100%; aspect-ratio: 16 / 10; object-fit: cover; border-radius: 10px; margin-bottom: 18px; display: block; }
     .guide-badge { font-family:'Archivo',sans-serif; font-weight: 800; font-size: 12px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--gold); margin-bottom: 14px; }
     .guide-card h3 { font-size: 21px; font-weight: 800; color: var(--indigo); margin-bottom: 10px; line-height: 1.15; }
     .guide-card p { font-size: 15px; color: var(--charcoal); flex: 1; }
@@ -999,6 +1000,7 @@
 
       <div class="guide-grid" id="guideGrid">
         <article class="guide-card" data-topic="skills">
+          <img class="guide-cover" src="Images/web/agents-self-improving.jpg" alt="Self-improving agents — Agents 101" />
           <div class="guide-badge">Substack</div>
           <h3>The Self-Improvement Loop</h3>
           <p>How self-improving agents actually work: the context files, the skills, the human in the loop, and the loop that keeps going until the job's done.</p>
