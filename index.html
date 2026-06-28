@@ -45,6 +45,7 @@
       --lilac:  #EBD1FA;   /* logo lilac — marquee, fills */
       --red:    #7C3AED;   /* violet — stat pop / numbers */
       --line:   rgba(74,46,111,0.12);
+      --rainbow: linear-gradient(90deg, #ff5f6d, #ffc371, #47e891, #36d1dc, #9b5de5, #ff5f6d);
     }
 
     * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -117,6 +118,66 @@
       width: 100%; border-radius: 14px; display: block;
       aspect-ratio: 4 / 5; object-fit: cover; object-position: top center; background: var(--sand);
     }
+
+    /* ---------- RETRO PAC STRIP + LOW-FRICTION CAPTURE ---------- */
+    .retro { background: var(--white); padding: 12px 0 56px; text-align: center; }
+    .pac-strip { position: relative; height: 56px; max-width: 980px; margin: 0 auto 18px; overflow: hidden; }
+    .pac { position: absolute; left: 0; top: 12px; width: 32px; height: 32px; will-change: transform; z-index: 2; }
+    .pac-body { width: 100%; height: 100%; background: #FFCE00; border-radius: 50%; animation: chomp .32s linear infinite; }
+    @keyframes chomp {
+      0%, 100% { clip-path: polygon(100% 22%, 46% 50%, 100% 78%, 100% 100%, 0 100%, 0 0, 100% 0); }
+      50%      { clip-path: polygon(100% 50%, 46% 50%, 100% 50%, 100% 100%, 0 100%, 0 0, 100% 0); }
+    }
+    .food { position: absolute; top: 16px; font-size: 22px; line-height: 1; transition: opacity .14s ease, transform .14s ease; user-select: none; }
+    .food.eaten { opacity: 0; transform: scale(0.2) rotate(25deg); }
+    .retro-kicker { font-family:'Archivo',sans-serif; font-weight: 700; font-size: 14px; letter-spacing: 0.03em; color: var(--indigo); margin-bottom: 14px; }
+    .retro-cta .optin-form { justify-content: center; }
+    .retro-link { display: inline-block; margin-top: 14px; font-size: 15px; font-weight: 700; color: var(--gold); text-decoration: none; }
+    .retro-link:hover { color: var(--indigo); }
+
+    /* ---------- RAINBOW THEME (pride / inclusive) ---------- */
+    body { border-top: 5px solid transparent; border-image: var(--rainbow) 1; }
+    .cursor-glow {
+      position: fixed; top: 0; left: 0; width: 26px; height: 26px; margin: -13px 0 0 -13px;
+      border-radius: 50%; pointer-events: none; z-index: 9999; will-change: transform;
+      background: conic-gradient(#ff5f6d, #ffc371, #47e891, #36d1dc, #9b5de5, #ff5f6d);
+      filter: blur(3px); opacity: 0.8; mix-blend-mode: multiply;
+    }
+    @keyframes rainbowShift { to { background-position: 200% 0; } }
+    .rainbow-pill {
+      background: var(--rainbow) !important; background-size: 200% 100% !important;
+      color: #fff !important; border-color: transparent !important;
+      animation: rainbowShift 6s linear infinite;
+    }
+    .rainbow-pill:hover { color: #fff !important; transform: translateY(-1px); }
+    .spark { display: inline-block; background: var(--rainbow); -webkit-background-clip: text; background-clip: text; color: transparent; }
+
+    /* ---------- MOVING PHOTO STRIP ---------- */
+    .photo-band { background: var(--sand); padding: 56px 0; overflow: hidden; }
+    .photo-track { display: flex; gap: 18px; width: max-content; animation: photoScroll 42s linear infinite; }
+    .photo-band:hover .photo-track { animation-play-state: paused; }
+    .photo-track img { height: 280px; width: 220px; object-fit: cover; border-radius: 14px; display: block; flex: 0 0 auto; }
+    @keyframes photoScroll { from { transform: translateX(0); } to { transform: translateX(-50%); } }
+    @media (prefers-reduced-motion: reduce) { .photo-track { animation: none; } }
+
+    /* ---------- JOIN THE WHATSAPP ---------- */
+    .wa { background: var(--indigo); color: var(--white); padding: 110px 0; position: relative; overflow: hidden; }
+    .wa::before { content: ""; position: absolute; inset: 0; background: var(--rainbow); opacity: 0.14; mix-blend-mode: screen; pointer-events: none; }
+    .wa .wrap { position: relative; z-index: 1; }
+    .wa-top { display: flex; justify-content: space-between; align-items: flex-start; gap: 24px; flex-wrap: wrap; }
+    .wa h2 { font-family:'Archivo',sans-serif; font-weight: 900; text-transform: uppercase; letter-spacing: -0.01em; line-height: 0.92; font-size: clamp(48px, 9vw, 132px); }
+    .wa .wa-stat { text-align: right; }
+    .wa .wa-stat .big { font-family:'Archivo',sans-serif; font-weight: 900; font-size: clamp(28px, 4vw, 48px); }
+    .wa .wa-stat .small { font-size: 15px; opacity: 0.7; }
+    .wa-grid { display: grid; grid-template-columns: 1.1fr 0.9fr; gap: 56px; margin-top: 48px; align-items: start; }
+    .wa-grid > p { font-size: 21px; line-height: 1.55; color: rgba(255,255,255,0.85); max-width: 520px; }
+    .wa-specs { list-style: none; }
+    .wa-specs li { display: flex; justify-content: space-between; gap: 16px; padding: 18px 0; border-top: 1px solid rgba(255,255,255,0.18); font-size: 17px; }
+    .wa-specs li:last-child { border-bottom: 1px solid rgba(255,255,255,0.18); }
+    .wa-specs .k { font-weight: 800; }
+    .wa-specs .v { color: rgba(255,255,255,0.78); }
+    .wa-btn { display: block; text-align: center; margin-top: 36px; padding: 20px; border: 1px solid rgba(255,255,255,0.5); border-radius: 12px; color: var(--white); text-decoration: none; font-family:'Archivo',sans-serif; font-weight: 800; text-transform: uppercase; letter-spacing: 0.06em; transition: all .16s ease; }
+    .wa-btn:hover { background: var(--rainbow); border-color: transparent; }
 
     /* ---------- MARQUEE (Female Founder World inspired) ---------- */
     .marquee {
@@ -430,6 +491,9 @@
       .founder { padding: 80px 0; text-align: center; }
       .bio-photo { flex: none; aspect-ratio: 3 / 2; }
       .bio-chips, .bio-social { justify-content: center; }
+      .wa-grid { grid-template-columns: 1fr; gap: 32px; }
+      .wa-stat { text-align: left; }
+      .photo-track img { height: 200px; width: 160px; }
       .founder p, .creds { margin-left: auto; margin-right: auto; }
       .hero-grid { padding: 64px 0 72px; }
       .hero-photo { max-width: 360px; margin: 0 auto; }
@@ -559,6 +623,30 @@
     </div>
   </header>
 
+  <!-- RETRO PAC STRIP + LOW-FRICTION CAPTURE -->
+  <section class="retro">
+    <div class="wrap">
+      <div class="pac-strip" id="pacStrip" aria-hidden="true">
+        <div class="pac"><div class="pac-body"></div></div>
+        <span class="food" style="left:14%">🍒</span>
+        <span class="food" style="left:26%">🌿</span>
+        <span class="food" style="left:38%">⏳</span>
+        <span class="food" style="left:50%">🍒</span>
+        <span class="food" style="left:62%">🌿</span>
+        <span class="food" style="left:74%">⏰</span>
+        <span class="food" style="left:86%">🍒</span>
+      </div>
+      <div class="retro-cta">
+        <p class="retro-kicker">No long form yet. Just grab the good stuff first 🍒</p>
+        <form class="optin-form" id="heroOptin" novalidate>
+          <input type="email" id="heroEmail" placeholder="you@company.com" required aria-label="Email address" />
+          <button type="submit" class="btn">Get the weekly AI drop</button>
+        </form>
+        <a class="retro-link" href="#events">or save a seat at the next workshop →</a>
+      </div>
+    </div>
+  </section>
+
   <!-- MARQUEE -->
   <div class="marquee" aria-hidden="true">
     <div class="marquee-track">
@@ -626,7 +714,7 @@
           <li>20 hrs/week learning AI</li>
         </ul>
         <div class="bio-social">
-          <a href="https://www.linkedin.com/in/ellamolonycook/" target="_blank" rel="noopener">Slide into my LinkedIn DMs, bring a good prompt</a>
+          <a class="rainbow-pill" href="https://www.linkedin.com/in/ellamolonycook/" target="_blank" rel="noopener">🍒 Slide into my LinkedIn DMs, bring a good prompt</a>
           <a href="https://www.instagram.com/baddiesloveai/" target="_blank" rel="noopener">@baddiesloveai</a>
         </div>
       </div>
@@ -731,10 +819,26 @@
         <h2>Who's here</h2>
         <p>Real founders, investors and operators. Here's what members said after a recent workshop.</p>
       </div>
-      <div class="room-gallery">
-        <img src="Images/web/dinner-32.jpg" alt="Members in conversation at a Time Rich event" />
-        <img src="Images/web/dinner-88.jpg" alt="Members together at a Time Rich dinner" />
-        <img src="Images/web/event-55.jpg" alt="Members at a Time Rich rooftop event" />
+      <div class="photo-band" style="background:transparent; padding:0 0 8px;">
+        <div class="photo-track">
+          <img src="Images/web/dinner-32.jpg" alt="Members in conversation at a Time Rich event" />
+          <img src="Images/web/dinner-88.jpg" alt="Members together at a Time Rich dinner" />
+          <img src="Images/web/event-55.jpg" alt="Members at a Time Rich rooftop event" />
+          <img src="Images/web/dinner-07.jpg" alt="Members at a Time Rich investor dinner" />
+          <img src="Images/web/dinner-63.jpg" alt="Members networking at a Time Rich event" />
+          <img src="Images/web/dinner-76.jpg" alt="Members at a Time Rich gathering" />
+          <img src="Images/web/event-152.jpg" alt="Members at a Time Rich event" />
+          <img src="Images/web/dinner-28.jpg" alt="Members at a Time Rich dinner" />
+          <!-- duplicate set for seamless loop -->
+          <img src="Images/web/dinner-32.jpg" alt="" aria-hidden="true" />
+          <img src="Images/web/dinner-88.jpg" alt="" aria-hidden="true" />
+          <img src="Images/web/event-55.jpg" alt="" aria-hidden="true" />
+          <img src="Images/web/dinner-07.jpg" alt="" aria-hidden="true" />
+          <img src="Images/web/dinner-63.jpg" alt="" aria-hidden="true" />
+          <img src="Images/web/dinner-76.jpg" alt="" aria-hidden="true" />
+          <img src="Images/web/event-152.jpg" alt="" aria-hidden="true" />
+          <img src="Images/web/dinner-28.jpg" alt="" aria-hidden="true" />
+        </div>
       </div>
       <div class="cards">
         <div class="card">
@@ -867,6 +971,30 @@
         </form>
       </div>
       <p class="guides-note">Guides publish to Substack. Each link goes live as the guide ships.</p>
+    </div>
+  </section>
+
+  <!-- JOIN THE WHATSAPP -->
+  <section class="wa" id="whatsapp">
+    <div class="wrap">
+      <div class="wa-top">
+        <h2>Join the<br />WhatsApp</h2>
+        <div class="wa-stat">
+          <div class="big">200+ in the room</div>
+          <div class="small">Founders, investors &amp; operators</div>
+        </div>
+      </div>
+      <div class="wa-grid">
+        <p>One coffee chat won't change your business. A group of people in the same messy middle as you? That will. Drop into the Time Rich WhatsApp and stop figuring it out alone.</p>
+        <div>
+          <ul class="wa-specs">
+            <li><span class="k">Members</span><span class="v">200+ and growing</span></li>
+            <li><span class="k">Expect</span><span class="v">Daily chat, drops &amp; real talk</span></li>
+            <li><span class="k">Cost</span><span class="v">Free to join</span></li>
+          </ul>
+          <a class="wa-btn" href="#" data-needs-link="whatsapp">Join the WhatsApp</a>
+        </div>
+      </div>
     </div>
   </section>
 
@@ -1265,22 +1393,69 @@
       });
     }
 
-    var optinForm = document.getElementById('optinForm');
-    if (optinForm) {
-      optinForm.addEventListener('submit', function (e) {
+    function subscribeWithEmail(email) {
+      if (!email) return;
+      if (SUBSTACK_URL) {
+        window.open(SUBSTACK_URL + '?email=' + encodeURIComponent(email), '_blank', 'noopener');
+      } else {
+        window.location.href = 'mailto:' + APPLY_EMAIL +
+          '?subject=' + encodeURIComponent('Subscribe me to Time Rich guides') +
+          '&body=' + encodeURIComponent('Please add this email to the guides list: ' + email);
+      }
+    }
+    function wireOptin(formId, inputId) {
+      var f = document.getElementById(formId);
+      if (!f) return;
+      f.addEventListener('submit', function (e) {
         e.preventDefault();
-        var email = document.getElementById('optinEmail').value.trim();
-        if (!email) return;
-        if (SUBSTACK_URL) {
-          window.open(SUBSTACK_URL + '?email=' + encodeURIComponent(email), '_blank', 'noopener');
-        } else {
-          window.location.href = 'mailto:' + APPLY_EMAIL +
-            '?subject=' + encodeURIComponent('Subscribe me to Time Rich guides') +
-            '&body=' + encodeURIComponent('Please add this email to the guides list: ' + email);
-        }
-        optinForm.reset();
+        subscribeWithEmail(document.getElementById(inputId).value.trim());
+        f.reset();
       });
     }
+    wireOptin('optinForm', 'optinEmail');
+    wireOptin('heroOptin', 'heroEmail');
+
+    /* Retro Pac-Man strip: chomps along a curved path eating cherries & thyme */
+    (function () {
+      var strip = document.getElementById('pacStrip');
+      if (!strip) return;
+      if (window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+      var pac = strip.querySelector('.pac');
+      var foods = Array.prototype.slice.call(strip.querySelectorAll('.food'));
+      function measure() { foods.forEach(function (f) { f._x = f.offsetLeft; }); }
+      measure();
+      var W = strip.clientWidth;
+      window.addEventListener('resize', function () { W = strip.clientWidth; measure(); });
+      var x = -50, last = null, DUR = 9000;
+      function frame(t) {
+        if (last === null) last = t;
+        var dt = t - last; last = t;
+        x += (W + 120) / DUR * dt;
+        pac.style.transform = 'translate(' + x + 'px,' + (Math.sin(x / 80) * 9) + 'px)';
+        foods.forEach(function (f) {
+          if (!f.classList.contains('eaten') && x + 8 > f._x) f.classList.add('eaten');
+        });
+        if (x > W + 70) { x = -50; foods.forEach(function (f) { f.classList.remove('eaten'); }); }
+        requestAnimationFrame(frame);
+      }
+      requestAnimationFrame(frame);
+    })();
+
+    /* Rainbow glow that follows the cursor (desktop, motion-safe) */
+    (function () {
+      if (window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+      if (window.matchMedia && window.matchMedia('(hover: none)').matches) return;
+      var dot = document.createElement('div');
+      dot.className = 'cursor-glow';
+      document.body.appendChild(dot);
+      var x = -100, y = -100, tx = -100, ty = -100;
+      document.addEventListener('mousemove', function (e) { tx = e.clientX; ty = e.clientY; });
+      (function loop() {
+        x += (tx - x) * 0.18; y += (ty - y) * 0.18;
+        dot.style.transform = 'translate(' + x + 'px,' + y + 'px)';
+        requestAnimationFrame(loop);
+      })();
+    })();
 
     function showSuccess() {
       applyForm.hidden = true;
