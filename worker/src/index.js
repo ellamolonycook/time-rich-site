@@ -8,7 +8,7 @@ const NOTION_VERSION = "2022-06-28";
 
 export default {
   async fetch(request, env) {
-    const cors = corsHeaders(env);
+    const cors = corsHeaders(request, env);
 
     if (request.method === "OPTIONS") {
       return new Response(null, { status: 204, headers: cors });
@@ -130,9 +130,20 @@ async function handleEnrich(request, env, cors) {
   return json({ configured: true, ok: true, fields, photo_url: p.profile_pic_url || "" }, 200, cors);
 }
 
-function corsHeaders(env) {
+function corsHeaders(request, env) {
+  const allowed = (env.ALLOWED_ORIGIN || "*")
+    .split(",").map((s) => s.trim()).filter(Boolean);
+  const origin = request.headers.get("Origin") || "";
+  let allow = allowed[0] || "*";
+  if (allowed.includes("*")) {
+    allow = "*";
+  } else {
+    const isLocal = /^https?:\/\/(localhost|127\.0\.0\.1)(:\d+)?$/.test(origin);
+    if (allowed.includes(origin) || isLocal) allow = origin;
+  }
   return {
-    "Access-Control-Allow-Origin": env.ALLOWED_ORIGIN || "*",
+    "Access-Control-Allow-Origin": allow,
+    "Vary": "Origin",
     "Access-Control-Allow-Methods": "POST, OPTIONS",
     "Access-Control-Allow-Headers": "Content-Type",
   };

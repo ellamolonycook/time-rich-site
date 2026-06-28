@@ -21,4 +21,4 @@ compatibility_date = "2024-11-01"
 [vars]
 # Locked to the live domain so only timerich.ai can submit the application form.
 # Use "*" only when testing locally.
-ALLOWED_ORIGIN = "https://timerich.ai"
+ALLOWED_ORIGIN = "https://timerich.ai,https://www.timerich.ai"
