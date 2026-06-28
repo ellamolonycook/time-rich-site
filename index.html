@@ -190,6 +190,15 @@
     .photo-track img { height: 360px; width: 290px; object-fit: cover; border-radius: 16px; display: block; flex: 0 0 auto; }
     @keyframes photoScroll { from { transform: translateX(0); } to { transform: translateX(-50%); } }
     @media (prefers-reduced-motion: reduce) { .photo-track { animation: none; } }
+    /* Heart-shaped sliding photos */
+    .photo-band.hearts { background: transparent; padding: 36px 0; }
+    .photo-band.hearts .photo-track { gap: 6px; animation-duration: 55s; }
+    .photo-band.hearts .photo-track img {
+      width: 172px; height: 172px; border-radius: 0;
+      -webkit-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M12 21s-9-5.5-9-12a5 5 0 0 1 9-3 5 5 0 0 1 9 3c0 6.5-9 12-9 12z'/%3E%3C/svg%3E") center/contain no-repeat;
+              mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M12 21s-9-5.5-9-12a5 5 0 0 1 9-3 5 5 0 0 1 9 3c0 6.5-9 12-9 12z'/%3E%3C/svg%3E") center/contain no-repeat;
+    }
+    @media (max-width: 880px) { .photo-band.hearts .photo-track img { width: 120px; height: 120px; } }
 
     /* ---------- JOIN THE WHATSAPP ---------- */
     .wa { background: var(--indigo); color: var(--white); padding: 110px 0; position: relative; overflow: hidden; }
@@ -737,25 +746,6 @@
     </div>
   </section>
 
-  <!-- MOVING PHOTO STRIP (top) -->
-  <div class="photo-band" style="padding-top:28px;">
-    <div class="photo-track">
-      <img src="Images/web/dinner-76.jpg" alt="Members at a Time Rich gathering" />
-      <img src="Images/web/event-55.jpg" alt="Members at a Time Rich rooftop event" />
-      <img src="Images/web/dinner-28.jpg" alt="Members at a Time Rich dinner" />
-      <img src="Images/web/dinner-32.jpg" alt="Members in conversation at a Time Rich event" />
-      <img src="Images/web/dinner-63.jpg" alt="Members networking at a Time Rich event" />
-      <img src="Images/web/dinner-88.jpg" alt="Members together at a Time Rich dinner" />
-      <!-- duplicate set for seamless loop -->
-      <img src="Images/web/dinner-76.jpg" alt="" aria-hidden="true" />
-      <img src="Images/web/event-55.jpg" alt="" aria-hidden="true" />
-      <img src="Images/web/dinner-28.jpg" alt="" aria-hidden="true" />
-      <img src="Images/web/dinner-32.jpg" alt="" aria-hidden="true" />
-      <img src="Images/web/dinner-63.jpg" alt="" aria-hidden="true" />
-      <img src="Images/web/dinner-88.jpg" alt="" aria-hidden="true" />
-    </div>
-  </div>
-
   <!-- WHAT TIME RICH IS -->
   <section class="what" id="what">
     <div class="wrap narrow">
@@ -765,25 +755,6 @@
       <p>Application-based. Not to gatekeep, but because the quality of the room is the whole point.</p>
     </div>
   </section>
-
-  <!-- MOVING PHOTO STRIP (bottom, reverse) -->
-  <div class="photo-band" style="padding-bottom:28px;">
-    <div class="photo-track rev">
-      <img src="Images/web/dinner-32.jpg" alt="Members in conversation at a Time Rich event" />
-      <img src="Images/web/dinner-88.jpg" alt="Members together at a Time Rich dinner" />
-      <img src="Images/web/event-55.jpg" alt="Members at a Time Rich rooftop event" />
-      <img src="Images/web/dinner-63.jpg" alt="Members networking at a Time Rich event" />
-      <img src="Images/web/dinner-76.jpg" alt="Members at a Time Rich gathering" />
-      <img src="Images/web/dinner-28.jpg" alt="Members at a Time Rich dinner" />
-      <!-- duplicate set for seamless loop -->
-      <img src="Images/web/dinner-32.jpg" alt="" aria-hidden="true" />
-      <img src="Images/web/dinner-88.jpg" alt="" aria-hidden="true" />
-      <img src="Images/web/event-55.jpg" alt="" aria-hidden="true" />
-      <img src="Images/web/dinner-63.jpg" alt="" aria-hidden="true" />
-      <img src="Images/web/dinner-76.jpg" alt="" aria-hidden="true" />
-      <img src="Images/web/dinner-28.jpg" alt="" aria-hidden="true" />
-    </div>
-  </div>
 
   <!-- MANIFESTO -->
   <section class="manifesto">
@@ -1061,6 +1032,25 @@
       </div>
     </div>
   </section>
+
+  <!-- HEART PHOTO STRIP -->
+  <div class="photo-band hearts">
+    <div class="photo-track">
+      <img src="Images/web/dinner-32.jpg" alt="Members at a Time Rich event" />
+      <img src="Images/web/dinner-88.jpg" alt="Members at a Time Rich dinner" />
+      <img src="Images/web/event-55.jpg" alt="Members at a Time Rich rooftop event" />
+      <img src="Images/web/dinner-63.jpg" alt="Members networking at a Time Rich event" />
+      <img src="Images/web/dinner-76.jpg" alt="Members at a Time Rich gathering" />
+      <img src="Images/web/dinner-28.jpg" alt="Members at a Time Rich dinner" />
+      <!-- duplicate set for seamless loop -->
+      <img src="Images/web/dinner-32.jpg" alt="" aria-hidden="true" />
+      <img src="Images/web/dinner-88.jpg" alt="" aria-hidden="true" />
+      <img src="Images/web/event-55.jpg" alt="" aria-hidden="true" />
+      <img src="Images/web/dinner-63.jpg" alt="" aria-hidden="true" />
+      <img src="Images/web/dinner-76.jpg" alt="" aria-hidden="true" />
+      <img src="Images/web/dinner-28.jpg" alt="" aria-hidden="true" />
+    </div>
+  </div>
 
   <!-- THE ASK -->
   <section class="ask" id="apply">
