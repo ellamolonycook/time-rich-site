@@ -32,7 +32,7 @@
 
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;600;700;800;900&family=Inter:wght@400;500;600&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;600;700;800;900&family=DM+Serif+Display:ital@0;1&family=Inter:wght@400;500;600&display=swap" rel="stylesheet" />
 
   <style>
     :root {
@@ -179,6 +179,37 @@
     .wa-specs .v { color: rgba(255,255,255,0.78); }
     .wa-btn { display: block; text-align: center; margin-top: 36px; padding: 20px; border: 1px solid rgba(255,255,255,0.5); border-radius: 12px; color: var(--white); text-decoration: none; font-family:'Archivo',sans-serif; font-weight: 800; text-transform: uppercase; letter-spacing: 0.06em; transition: all .16s ease; }
     .wa-btn:hover { background: var(--rainbow); border-color: transparent; }
+
+    /* ---------- IMMERSIVE AI BOOTCAMP (editorial / zine vibe) ---------- */
+    .bootcamp { background: #100d14; color: #fff; padding: 110px 0 0; position: relative; overflow: hidden; }
+    .bootcamp .wrap { position: relative; z-index: 2; }
+    .bc-kicker { font-family:'Archivo',sans-serif; font-weight: 700; letter-spacing: 0.18em; text-transform: uppercase; font-size: 13px; color: #c9a9ff; margin-bottom: 18px; }
+    .bc-title { line-height: 0.86; }
+    .bc-title .im { display: block; font-family:'Archivo',sans-serif; font-weight: 900; text-transform: uppercase; letter-spacing: -0.01em; font-size: clamp(40px, 8.4vw, 116px); color: #d9b8ff; }
+    .bc-title .camp { display: block; font-family:'DM Serif Display', serif; font-size: clamp(50px, 11vw, 150px); color: #fff; }
+    .bc-virtual { font-family:'Archivo',sans-serif; letter-spacing: 0.22em; text-transform: uppercase; font-size: 14px; color: rgba(255,255,255,0.75); margin-top: 14px; }
+    .bc-days { margin-top: 52px; display: grid; gap: 20px; max-width: 640px; }
+    .bc-day { font-size: clamp(18px, 2.3vw, 24px); color: rgba(255,255,255,0.92); }
+    .bc-day b { font-family:'Archivo',sans-serif; color: #d9b8ff; }
+    .bc-hosts { margin-top: 52px; }
+    .bc-hosts .label { font-family:'Archivo',sans-serif; letter-spacing: 0.18em; text-transform: uppercase; font-size: 12px; color: rgba(255,255,255,0.55); }
+    .bc-hosts .names { font-family:'Archivo',sans-serif; font-weight: 900; text-transform: uppercase; font-size: clamp(22px, 3vw, 34px); margin-top: 6px; }
+    .bc-cta { display: inline-block; margin-top: 40px; padding: 16px 34px; border-radius: 999px; background: var(--rainbow); background-size: 220% 100%; color: #fff; font-family:'Archivo',sans-serif; font-weight: 800; text-transform: uppercase; letter-spacing: 0.04em; text-decoration: none; animation: rainbowShift 9s ease-in-out infinite; }
+    .bc-cta:hover { transform: translateY(-2px); }
+    .bc-stamp {
+      position: absolute; top: 130px; right: 6%; z-index: 2;
+      border: 2px dashed rgba(217,184,255,0.8); border-radius: 10px; padding: 14px 18px;
+      transform: rotate(8deg); text-align: center; color: #d9b8ff;
+      font-family:'Archivo',sans-serif; font-weight: 800; text-transform: uppercase; letter-spacing: 0.08em; font-size: 12px; line-height: 1.5;
+    }
+    .bc-squiggle { position: absolute; z-index: 1; opacity: 0.85; }
+    .bc-sq1 { top: 90px; right: 16%; width: 130px; }
+    .bc-sq2 { bottom: 120px; left: 8%; width: 150px; }
+    .bc-torn { display: block; width: 100%; margin-top: 70px; }
+    @media (max-width: 880px) {
+      .bc-stamp { display: none; }
+      .bc-sq1 { display: none; }
+    }
 
     /* ---------- MARQUEE (Female Founder World inspired) ---------- */
     .marquee {
@@ -799,6 +830,30 @@
         title="Time Rich upcoming events"
       ></iframe>
     </div>
+  </section>
+
+  <!-- IMMERSIVE AI BOOTCAMP -->
+  <section class="bootcamp">
+    <svg class="bc-squiggle bc-sq1" viewBox="0 0 120 40" fill="none" aria-hidden="true"><path d="M2 20 C 15 2 30 38 45 20 C 60 2 75 38 90 20 C 100 8 112 30 118 18" stroke="#d9b8ff" stroke-width="4" stroke-linecap="round"/></svg>
+    <svg class="bc-squiggle bc-sq2" viewBox="0 0 120 40" fill="none" aria-hidden="true"><path d="M2 22 C 16 4 28 36 44 18 C 58 4 74 34 88 18 C 100 8 112 28 118 16" stroke="#ffffff" stroke-width="4" stroke-linecap="round" opacity="0.7"/></svg>
+    <div class="bc-stamp">Virtual<br />Edition<br />Time Rich</div>
+    <div class="wrap">
+      <div class="bc-kicker">Flagship workshop</div>
+      <h2 class="bc-title"><span class="im">Immersive AI</span><span class="camp">Bootcamp</span></h2>
+      <div class="bc-virtual">Virtual edition · 2 days</div>
+      <div class="bc-days">
+        <div class="bc-day"><b>Day 01 —</b> Operations: the knowledge brain</div>
+        <div class="bc-day"><b>Day 02 —</b> Build your agent</div>
+      </div>
+      <div class="bc-hosts">
+        <div class="label">Your hosts</div>
+        <div class="names">Maggie &amp; Ella</div>
+      </div>
+      <a class="bc-cta" href="#events">Grab your seat →</a>
+    </div>
+    <svg class="bc-torn" viewBox="0 0 1200 60" preserveAspectRatio="none" aria-hidden="true">
+      <path d="M0,18 L50,10 L100,24 L150,9 L200,20 L250,12 L300,26 L350,11 L400,19 L450,8 L500,23 L550,13 L600,25 L650,10 L700,21 L750,9 L800,24 L850,12 L900,18 L950,10 L1000,23 L1050,11 L1100,20 L1150,9 L1200,16 L1200,60 L0,60 Z" fill="#f0b3aa"/>
+    </svg>
   </section>
 
   <!-- WHAT YOU GET -->
