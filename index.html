@@ -3,8 +3,28 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Time Rich — Not AI awareness. Actual implementation.</title>
-  <meta name="description" content="Time Rich is a community for women founders, investors, and operators who want to actually use AI in their business. Not awareness. Not inspiration. Implementation." />
+  <title>Time Rich — AI implementation community for women founders</title>
+  <meta name="description" content="Time Rich is an application-based community for women founders, investors, and operators who want to actually implement AI in their business. Not awareness. Implementation." />
+  <link rel="canonical" href="https://timerich.ai/" />
+  <meta name="robots" content="index, follow, max-image-preview:large" />
+  <meta name="theme-color" content="#4A2E6F" />
+
+  <!-- Open Graph -->
+  <meta property="og:type" content="website" />
+  <meta property="og:site_name" content="Time Rich" />
+  <meta property="og:url" content="https://timerich.ai/" />
+  <meta property="og:title" content="Time Rich — AI implementation community for women founders" />
+  <meta property="og:description" content="An application-based community for women founders, investors, and operators who want to actually implement AI in their business. Not awareness. Implementation." />
+  <meta property="og:image" content="https://timerich.ai/og-image.jpg" />
+  <meta property="og:image:width" content="1200" />
+  <meta property="og:image:height" content="630" />
+  <meta property="og:image:alt" content="Time Rich — AI implementation community for women founders" />
+
+  <!-- Twitter -->
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="Time Rich — AI implementation community for women founders" />
+  <meta name="twitter:description" content="An application-based community for women founders, investors, and operators who want to actually implement AI in their business." />
+  <meta name="twitter:image" content="https://timerich.ai/og-image.jpg" />
 
   <link rel="icon" type="image/png" sizes="32x32" href="favicon-32.png" />
   <link rel="icon" type="image/png" sizes="16x16" href="favicon-16.png" />
@@ -147,6 +167,14 @@
     .section-head { text-align: center; margin-bottom: 60px; }
     .section-head h2 { font-size: clamp(32px, 4.6vw, 50px); font-weight: 800; margin-top: 14px; }
     .section-head p { margin-top: 16px; font-size: 18px; color: var(--charcoal); }
+
+    /* ---------- EVENTS (Luma embed) ---------- */
+    .events { padding: 100px 0 0; }
+    .events .section-head { margin-bottom: 40px; }
+    .events-frame {
+      width: 100%; max-width: 600px; height: 450px; display: block; margin: 0 auto;
+      border: 1px solid #bfcbda88; border-radius: 12px;
+    }
 
     /* ---------- THE GAP (alternating, clean) ---------- */
     .gap { background: var(--white); }
@@ -352,12 +380,47 @@
       }
       .nav-toggle { display: block; background: none; border: none; cursor: pointer; color: var(--indigo); font-size: 26px; }
       .stats, .what, .get, .room, .how, .ask, .guides { padding: 80px 0; }
+      .events { padding: 64px 0 0; }
+      .events .section-head { margin-bottom: 32px; }
+      .events-frame { height: 560px; border-radius: 10px; }
       .guide-grid { grid-template-columns: 1fr; }
       .li-row { flex-direction: column; }
       .optin-form { flex-direction: column; }
       .guides-optin { padding: 40px 24px; }
     }
   </style>
+
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@graph": [
+      {
+        "@type": "Organization",
+        "@id": "https://timerich.ai/#organization",
+        "name": "Time Rich",
+        "url": "https://timerich.ai/",
+        "logo": "https://timerich.ai/favicon-512.png",
+        "image": "https://timerich.ai/og-image.jpg",
+        "email": "emc@timerich.ai",
+        "description": "An application-based community for women founders, investors, and operators who want to actually implement AI in their business.",
+        "founder": {
+          "@type": "Person",
+          "name": "Ella Molony Cook",
+          "jobTitle": "Founder",
+          "description": "4x founder and Anthropic investor."
+        }
+      },
+      {
+        "@type": "WebSite",
+        "@id": "https://timerich.ai/#website",
+        "url": "https://timerich.ai/",
+        "name": "Time Rich",
+        "publisher": { "@id": "https://timerich.ai/#organization" },
+        "inLanguage": "en"
+      }
+    ]
+  }
+  </script>
 </head>
 <body>
 
@@ -470,24 +533,22 @@
     <div class="wrap narrow">
       <div class="eyebrow-c">What Time Rich Is</div>
       <h2>A community for women who want to actually use AI in their business.</h2>
-      <p><span class="emphasis">Not awareness. Not inspiration. Implementation.</span></p>
+      <p><span class="emphasis">Not awareness. Implementation.</span></p>
       <p>Application-based. Not to gatekeep. Because the quality of the room is the whole point.</p>
     </div>
   </section>
 
   <!-- UPCOMING EVENTS (Luma) -->
-  <section class="events" style="padding: 80px 0 0;">
+  <section class="events">
     <div class="wrap" style="text-align:center;">
       <div class="section-head">
         <h2>Time Hacking Workshops</h2>
         <p style="max-width: 620px; margin: 18px auto 0;">Stop waiting for permission to master AI. Join Time Rich workshops where badass humans build their personal AI Operating System.</p>
       </div>
       <iframe
+        class="events-frame"
         src="https://luma.com/embed/calendar/cal-r3sfqEpV1vodtGb/events?lt=light"
-        width="600"
-        height="450"
         frameborder="0"
-        style="border: 1px solid #bfcbda88; border-radius: 4px; max-width: 100%;"
         allowfullscreen=""
         aria-hidden="false"
         tabindex="0"

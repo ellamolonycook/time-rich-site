@@ -1,0 +1,28 @@
+# Time Rich
+
+> Time Rich is an application-based community for women founders, investors, and operators who want to actually implement AI in their business — not just hear about it. The focus is hands-on implementation, not awareness or inspiration.
+
+## What it is
+- A private, application-based community of 200+ women founders, investors, and operators.
+- Purpose: help women close the AI adoption gap by implementing AI in their businesses together, rather than learning it alone.
+- Positioning: "Not awareness. Implementation."
+
+## What members get
+- Weekly live calls where members solve real AI implementation problems together.
+- A working Slack channel of women shipping AI in their businesses.
+- Practical guides and playbooks for implementing AI quickly.
+- Direct access to 200+ peer founders, investors, and operators.
+- Time Hacking Workshops: sessions where members build their personal AI Operating System.
+
+## Founder
+- Ella Molony Cook — 4x founder and Anthropic investor — built Time Rich after seeing the AI conversation happen in rooms women weren't in.
+
+## How to join
+- Apply via the website. Applications are reviewed and members receive a response within 48 hours.
+- Contact: emc@timerich.ai
+
+## Links
+- Home: https://timerich.ai/
+- Apply: https://timerich.ai/#apply
+- Free guides: https://timerich.ai/#guides
+- Workshops & events calendar: https://timerich.ai/#what
