@@ -368,7 +368,9 @@
 
     /* ---------- PRO TIP CALLOUT ---------- */
     .protip { max-width: 760px; margin: 0 auto; background: var(--sand); border: 1px solid var(--line); border-radius: 16px; padding: 34px 38px; text-align: left; }
-    .protip .label { font-family:'Archivo',sans-serif; font-weight: 800; font-size: 12px; letter-spacing: 0.12em; text-transform: uppercase; color: var(--gold); margin-bottom: 12px; }
+    .protip .label { font-family:'Archivo',sans-serif; font-weight: 800; font-size: 12px; letter-spacing: 0.12em; text-transform: uppercase; color: var(--gold); }
+    .protip-head { display: flex; justify-content: space-between; align-items: center; gap: 16px; margin-bottom: 14px; }
+    .copy-btn { padding: 9px 20px !important; font-size: 13px !important; flex: 0 0 auto; }
     .protip p { font-size: 17px; line-height: 1.6; color: var(--charcoal); margin: 0; }
     .protip code { background: rgba(74,46,111,0.07); padding: 2px 6px; border-radius: 5px; font-size: 15px; }
 
@@ -458,7 +460,7 @@
       cursor: pointer; transition: all .14s ease;
     }
     .chip:hover { border-color: var(--gold); color: var(--indigo); }
-    .chip.active { background: var(--indigo); color: var(--white); border-color: var(--indigo); }
+    .chip.active { background: var(--rainbow); background-size: 220% 100%; color: var(--white); border-color: transparent; animation: rainbowShift 9s ease-in-out infinite; }
     .guide-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; }
     .guide-card {
       display: flex; flex-direction: column; background: var(--sand);
@@ -761,13 +763,16 @@
   <section class="manifesto">
     <div class="wrap">
       <div class="eyebrow-c">Why we're here</div>
-      <h2>We want you to become time rich</h2>
-      <p>Because what's the use of all this AI if it doesn't buy us back a few hours to actually enjoy life? Women who step into their authority now, who build their operations on AI instead of around it, become a different kind of leader.</p>
-      <p>It's not just about learning the tools. It's about building the systems behind your work and your personal life, so you can take better care of yourself, have more fun, and deepen the relationships that matter.</p>
-      <p class="free">It's free to join. There's an application, which sounds fancier than it is. We just care a lot about who's in the room, so culture fit matters to us.</p>
+      <h2>We want you to become Time Rich</h2>
+      <p>What's the point of all this AI if it doesn't hand you back a few hours to actually live? The baddies who step into their power now, who build their business <em>on</em> AI instead of around it, become a different kind of leader. Not busier. Not burnt out. In command.</p>
+      <p>This isn't about hoarding shiny tools. It's about building the systems behind your work <em>and</em> your life, so you can take better care of yourself, have way more fun, and feed the relationships that actually matter.</p>
+      <p class="free">It's free to join. Yes, there's an application, which sounds fancier than it is. We just care who's in the room, so culture fit is everything.</p>
       <div class="protip" style="margin-top:48px;">
-        <div class="label">Steal this prompt</div>
-        <p>Add this to your prompts: "Ask clarifying questions. Rate your work, I want to get to a 9/10 if you're not there. Self-verify your work by testing it end to end. Do not return control to me until you have met the requirements and it is working as expected."</p>
+        <div class="protip-head">
+          <div class="label">Steal this prompt 🔥</div>
+          <button class="btn copy-btn" type="button" onclick="copyPrompt(this)" data-prompt="Ask clarifying questions. Rate your work, I want to get to a 9/10 if you're not there. Self-verify your work by testing it end to end. Do not return control to me until you have met the requirements and it is working as expected.">Steal it</button>
+        </div>
+        <p>"Ask clarifying questions. Rate your work, I want to get to a 9/10 if you're not there. Self-verify your work by testing it end to end. Do not return control to me until you have met the requirements and it is working as expected."</p>
       </div>
     </div>
   </section>
@@ -1502,6 +1507,25 @@
         setTimeout(function () { s.remove(); }, 900);
       });
     })();
+
+    function copyPrompt(btn) {
+      var text = btn.getAttribute('data-prompt') || '';
+      var done = function () {
+        var orig = btn.textContent;
+        btn.textContent = 'Stolen 😈';
+        track('prompt_copied');
+        setTimeout(function () { btn.textContent = orig; }, 1600);
+      };
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+        navigator.clipboard.writeText(text).then(done).catch(done);
+      } else {
+        var ta = document.createElement('textarea');
+        ta.value = text; document.body.appendChild(ta); ta.select();
+        try { document.execCommand('copy'); } catch (e) {}
+        document.body.removeChild(ta); done();
+      }
+    }
+    window.copyPrompt = copyPrompt;
 
     function showSuccess() {
       applyForm.hidden = true;
