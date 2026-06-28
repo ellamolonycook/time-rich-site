@@ -185,13 +185,33 @@
     }
     .optin-sub { margin-top: 10px; font-size: 14px; opacity: 0.7; }
 
-    /* ---------- FAQ ---------- */
+    /* ---------- FAQ (accordion) ---------- */
     .faq { background: var(--sand); padding: 120px 0; }
     .faq-list { max-width: 760px; margin: 0 auto; }
-    .faq-item { border-top: 1px solid var(--line); padding: 28px 0; }
-    .faq-item:last-child { border-bottom: 1px solid var(--line); }
-    .faq-item h3 { font-size: 21px; font-weight: 800; color: var(--indigo); }
-    .faq-item p { margin-top: 12px; font-size: 17px; line-height: 1.6; color: var(--charcoal); }
+    .faq-item { border-top: 1px solid var(--line); }
+    .faq-item:last-of-type { border-bottom: 1px solid var(--line); }
+    .faq-item summary {
+      list-style: none; cursor: pointer; position: relative;
+      padding: 26px 52px 26px 0; display: block; transition: color .15s ease;
+    }
+    .faq-item summary::-webkit-details-marker { display: none; }
+    .faq-item summary h3 { font-size: 21px; font-weight: 800; color: var(--indigo); transition: color .15s ease; }
+    .faq-item summary:hover h3 { color: var(--gold); }
+    .faq-item summary::after {
+      content: "+"; position: absolute; right: 4px; top: 24px;
+      font-size: 30px; font-weight: 400; line-height: 1; color: var(--gold);
+      transition: transform .28s ease;
+    }
+    .faq-item[open] summary::after { transform: rotate(135deg); }
+    .faq-a { overflow: hidden; padding: 0 52px 28px 0; }
+    .faq-a p { font-size: 17px; line-height: 1.65; color: var(--charcoal); }
+    .faq-a a { color: var(--indigo); font-weight: 700; text-decoration: underline; text-underline-offset: 3px; }
+    .faq-a a:hover { color: var(--gold); }
+    .faq-item[open] .faq-a { animation: faqReveal .3s ease; }
+    @keyframes faqReveal { from { opacity: 0; transform: translateY(-6px); } to { opacity: 1; transform: translateY(0); } }
+    .faq-cta { max-width: 760px; margin: 48px auto 0; text-align: center; }
+    .faq-cta p { font-size: 19px; font-weight: 700; color: var(--indigo); margin-bottom: 22px; }
+    .faq-cta .btn + .btn { margin-left: 12px; }
 
     /* ---------- BIO SOCIAL ---------- */
     .bio-social { display: flex; flex-wrap: wrap; gap: 14px; margin-top: 26px; }
@@ -478,27 +498,27 @@
           {
             "@type": "Question",
             "name": "What is Time Rich?",
-            "acceptedAnswer": { "@type": "Answer", "text": "An application-based community for women founders, investors, and operators who want to actually implement AI in their business. Not awareness. Implementation." }
+            "acceptedAnswer": { "@type": "Answer", "text": "An application-based community for women founders, investors, and operators who actually build with AI. Not awareness. Not vibes. Implementation. The fastest way to get it is to come to a workshop and feel the room for yourself." }
           },
           {
             "@type": "Question",
             "name": "Who is it for?",
-            "acceptedAnswer": { "@type": "Answer", "text": "Women founders, investors, and operators who are done learning AI alone. 200+ are already in the room, building with people doing the same." }
+            "acceptedAnswer": { "@type": "Answer", "text": "Women who are done teaching themselves AI alone. 200+ founders, investors, and operators are already in the room, building together. Come meet a few at the next live event." }
           },
           {
             "@type": "Question",
             "name": "Why is it application-based?",
-            "acceptedAnswer": { "@type": "Answer", "text": "Not to gatekeep. The quality of the room is the whole point, so we keep it to people who are actually building." }
+            "acceptedAnswer": { "@type": "Answer", "text": "Not to gatekeep. The quality of the room is the whole point, so we keep it to people who are actually building. Culture fit matters to us, and the application is lighter than it sounds." }
           },
           {
             "@type": "Question",
             "name": "What do I get inside?",
-            "acceptedAnswer": { "@type": "Answer", "text": "Weekly calls, a working Slack channel, guides and playbooks, and direct access to 200+ women shipping AI in their businesses." }
+            "acceptedAnswer": { "@type": "Answer", "text": "Weekly calls, a working Slack, guides and playbooks, and direct access to 200+ women shipping AI. Plus live workshops and events where the lightbulb actually goes on." }
           },
           {
             "@type": "Question",
             "name": "How do I join?",
-            "acceptedAnswer": { "@type": "Answer", "text": "Apply and tell us what you're building. We get back to you within 48 hours." }
+            "acceptedAnswer": { "@type": "Answer", "text": "Apply and tell us what you're building. We reply within 48 hours. Or skip the small talk and grab a seat at the next workshop." }
           }
         ]
       }
@@ -653,7 +673,7 @@
   </section>
 
   <!-- UPCOMING EVENTS (Luma) -->
-  <section class="events">
+  <section class="events" id="events">
     <div class="wrap" style="text-align:center;">
       <div class="section-head">
         <h2>Time Hacking Workshops</h2>
@@ -858,26 +878,31 @@
         <h2>The honest answers</h2>
       </div>
       <div class="faq-list">
-        <div class="faq-item">
-          <h3>What is Time Rich?</h3>
-          <p>An application-based community for women founders, investors, and operators who want to actually implement AI in their business. Not awareness. Implementation.</p>
-        </div>
-        <div class="faq-item">
-          <h3>Who is it for?</h3>
-          <p>Women founders, investors, and operators who are done learning AI alone. 200+ are already in the room, building with people doing the same.</p>
-        </div>
-        <div class="faq-item">
-          <h3>Why is it application-based?</h3>
-          <p>Not to gatekeep. The quality of the room is the whole point, so we keep it to people who are actually building.</p>
-        </div>
-        <div class="faq-item">
-          <h3>What do I get inside?</h3>
-          <p>Weekly calls, a working Slack channel, guides and playbooks, and direct access to 200+ women shipping AI in their businesses.</p>
-        </div>
-        <div class="faq-item">
-          <h3>How do I join?</h3>
-          <p>Apply and tell us what you're building. We get back to you within 48 hours.</p>
-        </div>
+        <details class="faq-item">
+          <summary><h3>What is Time Rich?</h3></summary>
+          <div class="faq-a"><p>An application-based community for women founders, investors, and operators who actually build with AI. Not awareness. Not vibes. Implementation. Honestly, the fastest way to get it is to <a href="#events">come to a workshop</a> and feel the room for yourself.</p></div>
+        </details>
+        <details class="faq-item">
+          <summary><h3>Who is it for?</h3></summary>
+          <div class="faq-a"><p>Women who are done teaching themselves AI alone in 47 browser tabs at midnight. 200+ founders, investors, and operators are already in the room, building together. Come meet a few at the <a href="#events">next live event</a>.</p></div>
+        </details>
+        <details class="faq-item">
+          <summary><h3>Why is it application-based?</h3></summary>
+          <div class="faq-a"><p>Not to gatekeep, promise. The quality of the room is the whole point, so we keep it to people who are actually building. Culture fit matters to us. The application is lighter than it sounds.</p></div>
+        </details>
+        <details class="faq-item">
+          <summary><h3>What do I get inside?</h3></summary>
+          <div class="faq-a"><p>Weekly calls, a working Slack, guides and playbooks, and direct access to 200+ women shipping AI. Plus live <a href="#events">workshops and events</a> where the lightbulb actually goes on.</p></div>
+        </details>
+        <details class="faq-item">
+          <summary><h3>How do I join?</h3></summary>
+          <div class="faq-a"><p>Apply and tell us what you're building, we reply within 48 hours. Impatient? Skip the small talk and <a href="#events">grab a seat at the next workshop</a>.</p></div>
+        </details>
+      </div>
+      <div class="faq-cta">
+        <p>Reading the FAQ is cute. Being in the room is better.</p>
+        <a href="#events" class="btn">See upcoming workshops</a>
+        <a href="#apply" class="btn" onclick="openApply(event)">Apply to join</a>
       </div>
     </div>
   </section>
