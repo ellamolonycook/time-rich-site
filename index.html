@@ -185,6 +185,32 @@
     .faq-item h3 { font-size: 21px; font-weight: 800; color: var(--indigo); }
     .faq-item p { margin-top: 12px; font-size: 17px; line-height: 1.6; color: var(--charcoal); }
 
+    /* ---------- BIO SOCIAL ---------- */
+    .bio-social { display: flex; flex-wrap: wrap; gap: 14px; margin-top: 26px; }
+    .bio-social a {
+      font-family:'Archivo',sans-serif; font-weight: 700; font-size: 13px; letter-spacing: 0.04em;
+      color: var(--indigo); text-decoration: none; border: 1px solid var(--line);
+      padding: 9px 16px; border-radius: 999px; transition: all .14s ease;
+    }
+    .bio-social a:hover { background: var(--indigo); color: var(--white); border-color: var(--indigo); }
+    .founder .sit { font-size: 22px; font-weight: 800; color: var(--indigo); margin: 4px 0 22px; }
+
+    /* ---------- MANIFESTO ---------- */
+    .manifesto { background: var(--white); text-align: center; padding: 120px 0; }
+    .manifesto .wrap { max-width: 760px; }
+    .manifesto h2 { font-size: clamp(30px, 4.4vw, 46px); font-weight: 800; color: var(--indigo); margin-top: 14px; }
+    .manifesto p { font-size: 20px; line-height: 1.6; color: var(--charcoal); margin-top: 26px; }
+    .manifesto .free { font-weight: 600; color: var(--indigo); }
+
+    /* ---------- PRO TIP CALLOUT ---------- */
+    .protip { max-width: 760px; margin: 0 auto; background: var(--sand); border: 1px solid var(--line); border-radius: 16px; padding: 34px 38px; text-align: left; }
+    .protip .label { font-family:'Archivo',sans-serif; font-weight: 800; font-size: 12px; letter-spacing: 0.12em; text-transform: uppercase; color: var(--gold); margin-bottom: 12px; }
+    .protip p { font-size: 17px; line-height: 1.6; color: var(--charcoal); margin: 0; }
+    .protip code { background: rgba(74,46,111,0.07); padding: 2px 6px; border-radius: 5px; font-size: 15px; }
+
+    /* ---------- TESTIMONIAL META ---------- */
+    .room-sub { text-align: center; }
+
     /* ---------- THE GAP (alternating, clean) ---------- */
     .gap { background: var(--white); }
     .gap-grid { display: grid; grid-template-columns: 0.9fr 1.1fr; gap: 72px; align-items: center; padding: 112px 0; }
@@ -412,11 +438,19 @@
         "image": "https://timerich.ai/og-image.jpg",
         "email": "emc@timerich.ai",
         "description": "An application-based community for women founders, investors, and operators who want to actually implement AI in their business.",
+        "sameAs": [
+          "https://www.linkedin.com/company/timerich",
+          "https://www.instagram.com/timerich.ai"
+        ],
         "founder": {
           "@type": "Person",
           "name": "Ella Molony Cook",
           "jobTitle": "Founder",
-          "description": "4x founder and Anthropic investor."
+          "description": "4x founder and Anthropic investor.",
+          "sameAs": [
+            "https://www.linkedin.com/in/ellamolonycook/",
+            "https://www.instagram.com/baddiesloveai/"
+          ]
         }
       },
       {
@@ -535,21 +569,32 @@
     </div>
   </section>
 
-  <!-- FOUNDER BAND -->
-  <section class="founder">
+  <!-- BIO: ELLA MOLONY COOK -->
+  <section class="founder" id="bio">
     <div class="wrap founder-grid">
       <div>
-        <img class="founder-photo" src="Images/web/wide-6040.jpg" alt="Ella Molony Cook speaking on a panel" />
-      </div>
-      <div>
-        <div class="eyebrow">The Founder</div>
-        <h2>Built by a founder who's been in the room.</h2>
-        <p>Ella got tired of watching the AI conversation happen in rooms women weren't in. So she built one.</p>
-        <ul class="creds">
+        <img class="founder-photo" src="Images/web/wide-6040.jpg" alt="Ella Molony Cook, founder of Time Rich, speaking on a panel" />
+        <ul class="creds" style="margin-top:28px;">
           <li>4x founder</li>
           <li>Anthropic investor</li>
-          <li>Built and scaled teams across multiple industries</li>
+          <li>250+ events across 7 cities</li>
         </ul>
+        <div class="bio-social">
+          <a href="https://www.linkedin.com/in/ellamolonycook/" target="_blank" rel="noopener">Ella on LinkedIn</a>
+          <a href="https://www.instagram.com/baddiesloveai/" target="_blank" rel="noopener">@baddiesloveai</a>
+        </div>
+      </div>
+      <div>
+        <div class="eyebrow">Meet the founder</div>
+        <h2>Ella Molony Cook</h2>
+        <p>If we haven't yet met, I'm Ella. I've always been an entrepreneur at heart. My first company I bootstrapped to exit, and the whole time I was building automations, obsessing over how the right operational foundations could genuinely give a team their time back. That curiosity never left.</p>
+        <p>For years I've been hosting experiences at the intersection of private capital, AI, and culture. The last two years specifically: private capital poker games, AI bootcamps, curated investor dinners. 250+ events across 7 cities.</p>
+        <p>Here's what I've noticed: women are adopting AI 25% less than men.</p>
+        <p class="sit">Sit with that.</p>
+        <p>AI is rewriting how companies get built, how decisions get made, who leads the next decade. Most people are watching it happen to them. I want women running it.</p>
+        <p>Right now the pattern I see is either avoiding AI entirely or handing it the keys without a strategy. Neither is leadership.</p>
+        <p>What I know from working with hundreds of women founders and operators: the ones who step into their authority now, who build their operations on AI rather than around it, become a different kind of leader. Not busier. Not burnt out. Time-rich and in command rather than constantly catching up.</p>
+        <p>I spend 4 hours every single day diving into new AI tools, frameworks, and research. That's 20 hours a week of pure learning time. Most people don't have that. So I bring it back to the room.</p>
       </div>
     </div>
   </section>
@@ -575,6 +620,21 @@
       <h2>A community for women who want to actually use AI in their business.</h2>
       <p><span class="emphasis">Not awareness. Implementation.</span></p>
       <p>Application-based. Not to gatekeep. Because the quality of the room is the whole point.</p>
+    </div>
+  </section>
+
+  <!-- MANIFESTO -->
+  <section class="manifesto">
+    <div class="wrap">
+      <div class="eyebrow-c">Why we're here</div>
+      <h2>We want you to become time rich</h2>
+      <p>Because what's the use of all this AI if it doesn't buy us back a few hours to actually enjoy life? Women who step into their authority now, who build their operations on AI instead of around it, become a different kind of leader.</p>
+      <p>It's not just about learning the tools. It's about building the systems behind your work and your personal life, so you can take better care of yourself, have more fun, and deepen the relationships that matter.</p>
+      <p class="free">It's free to join. There's an application, which sounds fancier than it is. We just care a lot about who's in the room, so culture fit matters to us.</p>
+      <div class="protip" style="margin-top:48px;">
+        <div class="label">Steal this prompt</div>
+        <p>Add this to your prompts: "Ask clarifying questions. Rate your work, I want to get to a 9/10 if you're not there. Self-verify your work by testing it end to end. Do not return control to me until you have met the requirements and it is working as expected."</p>
+      </div>
     </div>
   </section>
 
@@ -635,47 +695,45 @@
       <div class="section-head">
         <div class="eyebrow-c">The Room</div>
         <h2>Who's here</h2>
-        <p>Real founders, investors and operators. Already in the room, already building.</p>
+        <p>Real founders, investors and operators. Here's what members said after a recent workshop.</p>
       </div>
       <div class="room-gallery">
         <img src="Images/web/dinner-32.jpg" alt="Members in conversation at a Time Rich event" />
         <img src="Images/web/dinner-88.jpg" alt="Members together at a Time Rich dinner" />
         <img src="Images/web/event-55.jpg" alt="Members at a Time Rich rooftop event" />
       </div>
-      <!-- MEMBER CARDS HIDDEN UNTIL REAL NAMES + OUTCOMES ARE READY. Un-comment and replace placeholders to re-enable.
       <div class="cards">
         <div class="card">
-          <div class="name">[Member name]</div>
-          <div class="role">Founder, [Company]</div>
-          <div class="outcome">"Shipped multi-agent workflows in product in 6 weeks."</div>
+          <div class="name">Martha Mercogliano</div>
+          <div class="role">CEO, Mercogliano Advisors</div>
+          <div class="outcome">"This was awesome. I'm so glad I joined."</div>
         </div>
         <div class="card">
-          <div class="name">[Member name]</div>
-          <div class="role">Operator, [Company]</div>
-          <div class="outcome">"Cut reporting time from a full day to under an hour."</div>
+          <div class="name">Indra Klavins</div>
+          <div class="role">Founder, People · Process · Things</div>
+          <div class="outcome">"Thank you for everything. This was insanely useful."</div>
         </div>
         <div class="card">
-          <div class="name">[Member name]</div>
-          <div class="role">Angel Investor</div>
-          <div class="outcome">"Built an AI deal-screening process I actually trust."</div>
+          <div class="name">Jenni Ogden</div>
+          <div class="role">Founder &amp; CEO, Eye Q Productions</div>
+          <div class="outcome">"So much amazing information. This is so valuable."</div>
         </div>
         <div class="card">
-          <div class="name">[Member name]</div>
-          <div class="role">Founder, [Company]</div>
-          <div class="outcome">"Replaced three tools with one agent workflow."</div>
+          <div class="name">Kudzani Koketso (KK)</div>
+          <div class="role">Founder, Identity Cove</div>
+          <div class="outcome">"Looking forward to joining the Time Rich community."</div>
         </div>
         <div class="card">
-          <div class="name">[Member name]</div>
-          <div class="role">Operator, [Company]</div>
-          <div class="outcome">"Onboarded my whole team to AI in two weeks."</div>
+          <div class="name">Stacy M. Carpenter</div>
+          <div class="role">Founder, My Funding Tree</div>
+          <div class="outcome">"Thank you for this session. Great information."</div>
         </div>
         <div class="card">
-          <div class="name">[Member name]</div>
-          <div class="role">Founder, [Company]</div>
-          <div class="outcome">"Automated support triage and kept the human voice."</div>
+          <div class="name">Allison Higgins</div>
+          <div class="role">Founder, Higgins Creative Co</div>
+          <div class="outcome">"So glad to connect with others who want to become AI leaders."</div>
         </div>
       </div>
-      -->
     </div>
   </section>
 
@@ -727,6 +785,12 @@
       </div>
 
       <div class="guide-grid" id="guideGrid">
+        <article class="guide-card" data-topic="skills">
+          <div class="guide-badge">Substack</div>
+          <h3>The Self-Improvement Loop</h3>
+          <p>How self-improving agents actually work: the context files, the skills, the human in the loop, and the loop that keeps going until the job's done.</p>
+          <a class="guide-link" href="#" data-substack="self-improvement-loop">Read the guide <span class="arrow">&rarr;</span></a>
+        </article>
         <article class="guide-card" data-topic="adoption">
           <div class="guide-badge">Adoption Gap</div>
           <h3>The AI Adoption Gap</h3>
@@ -835,6 +899,15 @@
           <li><a href="#guides">Free Guides</a></li>
           <li><a href="#room">The Room</a></li>
           <li><a href="#apply" onclick="openApply(event)">Apply</a></li>
+        </ul>
+      </div>
+      <div class="foot-col">
+        <h4>Follow</h4>
+        <ul>
+          <li><a href="https://www.linkedin.com/company/timerich" target="_blank" rel="noopener">Time Rich on LinkedIn</a></li>
+          <li><a href="https://www.instagram.com/timerich.ai" target="_blank" rel="noopener">@timerich.ai on Instagram</a></li>
+          <li><a href="https://www.linkedin.com/in/ellamolonycook/" target="_blank" rel="noopener">Ella on LinkedIn</a></li>
+          <li><a href="https://www.instagram.com/baddiesloveai/" target="_blank" rel="noopener">@baddiesloveai on Instagram</a></li>
         </ul>
       </div>
       <div class="foot-col">
