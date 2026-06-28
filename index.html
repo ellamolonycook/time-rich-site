@@ -182,8 +182,12 @@
     .wa-btn:hover { background: var(--rainbow); border-color: transparent; }
 
     /* ---------- IMMERSIVE AI BOOTCAMP (editorial / zine vibe) ---------- */
-    .bootcamp { background: #100d14; color: #fff; padding: 110px 0 0; position: relative; overflow: hidden; }
+    .bootcamp { background: #100d14; color: #fff; padding: 88px 0; position: relative; overflow: hidden; }
     .bootcamp .wrap { position: relative; z-index: 2; }
+    .bc-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 56px; align-items: center; }
+    .bc-poster { width: 100%; border-radius: 18px; display: block; }
+    .bc-title-sm { font-family:'DM Serif Display', serif; font-size: clamp(28px, 3.4vw, 42px); color: #fff; margin: 10px 0; line-height: 1.05; }
+    @media (max-width: 880px) { .bc-grid { grid-template-columns: 1fr; gap: 32px; } }
     .bc-kicker { font-family:'Archivo',sans-serif; font-weight: 700; letter-spacing: 0.18em; text-transform: uppercase; font-size: 13px; color: #c9a9ff; margin-bottom: 18px; }
     .bc-title { line-height: 0.86; }
     .bc-title .im { display: block; font-family:'Archivo',sans-serif; font-weight: 900; text-transform: uppercase; letter-spacing: -0.01em; font-size: clamp(40px, 8.4vw, 116px); color: #d9b8ff; }
@@ -854,26 +858,19 @@
 
   <!-- IMMERSIVE AI BOOTCAMP -->
   <section class="bootcamp">
-    <svg class="bc-squiggle bc-sq1" viewBox="0 0 120 40" fill="none" aria-hidden="true"><path d="M2 20 C 15 2 30 38 45 20 C 60 2 75 38 90 20 C 100 8 112 30 118 18" stroke="#d9b8ff" stroke-width="4" stroke-linecap="round"/></svg>
-    <svg class="bc-squiggle bc-sq2" viewBox="0 0 120 40" fill="none" aria-hidden="true"><path d="M2 22 C 16 4 28 36 44 18 C 58 4 74 34 88 18 C 100 8 112 28 118 16" stroke="#ffffff" stroke-width="4" stroke-linecap="round" opacity="0.7"/></svg>
-    <div class="bc-stamp">Virtual<br />Edition<br />Time Rich</div>
-    <div class="wrap">
-      <div class="bc-kicker">Flagship workshop</div>
-      <h2 class="bc-title"><span class="im">Immersive AI</span><span class="camp">Bootcamp</span></h2>
-      <div class="bc-virtual">Virtual edition · 2 days</div>
-      <div class="bc-days">
-        <div class="bc-day"><b>Day 01 —</b> Operations: the knowledge brain</div>
-        <div class="bc-day"><b>Day 02 —</b> Build your agent</div>
+    <div class="wrap bc-grid">
+      <img class="bc-poster" src="Images/web/bootcamp.jpg" alt="Immersive AI Bootcamp, Virtual Edition, hosted by Maggie and Ella" />
+      <div class="bc-content">
+        <div class="bc-kicker">Flagship workshop</div>
+        <h2 class="bc-title-sm">Immersive AI Bootcamp</h2>
+        <div class="bc-virtual">Virtual edition · 2 days</div>
+        <div class="bc-days">
+          <div class="bc-day"><b>Day 01 —</b> Operations: the knowledge brain</div>
+          <div class="bc-day"><b>Day 02 —</b> Build your agent</div>
+        </div>
+        <a class="bc-cta" href="#events">Grab your seat →</a>
       </div>
-      <div class="bc-hosts">
-        <div class="label">Your hosts</div>
-        <div class="names">Maggie &amp; Ella</div>
-      </div>
-      <a class="bc-cta" href="#events">Grab your seat →</a>
     </div>
-    <svg class="bc-torn" viewBox="0 0 1200 60" preserveAspectRatio="none" aria-hidden="true">
-      <path d="M0,18 L50,10 L100,24 L150,9 L200,20 L250,12 L300,26 L350,11 L400,19 L450,8 L500,23 L550,13 L600,25 L650,10 L700,21 L750,9 L800,24 L850,12 L900,18 L950,10 L1000,23 L1050,11 L1100,20 L1150,9 L1200,16 L1200,60 L0,60 Z" fill="#f0b3aa"/>
-    </svg>
   </section>
 
   <!-- WHAT YOU GET -->
