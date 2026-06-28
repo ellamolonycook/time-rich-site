@@ -12,7 +12,8 @@
 
 ### 1. Hero H1
 - FIND: `Women aren't behind because they can't use AI.`
-- REPLACE: `You're not behind on AI. No one's shown you how to actually use it.`
+- REPLACE: `You're not behind on AI. No one's shown you how to make it buy back your time.`
+- Optional sassy subhead under it: `You're just not letting it do the boring stuff so you get your time back.`
 
 ### 2. "What Time Rich Is" headline
 - FIND: `A community for women who want to actually use AI in their business.`
