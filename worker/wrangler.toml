@@ -7,8 +7,6 @@
 # Set your secrets (these are NOT stored in this file):
 #   npx wrangler secret put NOTION_TOKEN          # your Notion integration token
 #   npx wrangler secret put NOTION_DATABASE_ID    # the applications database id
-#   npx wrangler secret put PROXYCURL_KEY         # OPTIONAL: enables LinkedIn autofill
-#                                                 # (get a key at nubela.co/proxycurl)
 #
 # After deploy, wrangler prints a URL like:
 #   https://time-rich-forms.<your-subdomain>.workers.dev

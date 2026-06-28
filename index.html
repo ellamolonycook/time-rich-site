@@ -55,10 +55,13 @@
       --red:    #7C3AED;   /* violet — stat pop / numbers */
       --line:   rgba(74,46,111,0.12);
       --rainbow: linear-gradient(90deg, #ff5f6d, #ffc371, #47e891, #36d1dc, #9b5de5, #ff5f6d);
+      --rainbow-pastel: linear-gradient(90deg, #ff8fa3, #ffc56b, #ffe85e, #6fe39a, #6fc4ff, #c08bff, #ff8fa3);
     }
 
     * { margin: 0; padding: 0; box-sizing: border-box; }
     html { scroll-behavior: smooth; }
+    html, body { overflow-x: clip; max-width: 100%; }
+    h1, h2, h3, p { overflow-wrap: break-word; }
 
     /* pink sparkle cursor; rainbow star trail still sprinkles on move; text caret stays in fields */
     * { cursor: url("data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20width='32'%20height='32'%20viewBox='0%200%2032%2032'%3E%3Cpath%20d='M14%202C15%209%2016%2010%2023%2012%2016%2014%2015%2015%2014%2022%2013%2015%2012%2014%205%2012%2012%2010%2013%209%2014%202Z'%20fill='%23ff3ea5'/%3E%3Cpath%20d='M25%2018C25.6%2021%2026%2021.4%2029%2022%2026%2022.6%2025.6%2023%2025%2026%2024.4%2023%2024%2022.6%2021%2022%2024%2021.4%2024.4%2021%2025%2018Z'%20fill='%23ff9ad5'/%3E%3C/svg%3E") 14 12, auto; }
@@ -98,7 +101,7 @@
     .nav-links a.btn:hover { color: var(--white); }
 
     .btn {
-      display: inline-block; background: var(--rainbow); background-size: 220% 100%;
+      display: inline-block; background: var(--rainbow-pastel); background-size: 220% 100%;
       color: #14101a; border: none; cursor: pointer;
       font-family: 'Archivo', sans-serif; font-weight: 700; text-decoration: none;
       padding: 13px 26px; border-radius: 40px; font-size: 15px;
@@ -175,12 +178,12 @@
     @media (prefers-reduced-motion: reduce) { .sparkle { display: none; } }
     @keyframes rainbowShift { to { background-position: 200% 0; } }
     .rainbow-pill {
-      background: linear-gradient(100deg, #6d28d9, #a855f7, #e879c9, #ff9e7d) !important;
+      background: var(--rainbow-pastel) !important;
       background-size: 220% 100% !important;
-      color: #fff !important; border-color: transparent !important;
+      color: #14101a !important; border-color: transparent !important;
       animation: rainbowShift 9s ease-in-out infinite;
     }
-    .rainbow-pill:hover { color: #fff !important; transform: translateY(-1px); }
+    .rainbow-pill:hover { color: #14101a !important; transform: translateY(-1px); }
     .spark { display: inline-block; background: var(--rainbow); -webkit-background-clip: text; background-clip: text; color: transparent; }
 
     /* ---------- MOVING PHOTO STRIP ---------- */
@@ -191,6 +194,7 @@
     .photo-track img { height: 360px; width: 290px; object-fit: cover; border-radius: 16px; display: block; flex: 0 0 auto; }
     @keyframes photoScroll { from { transform: translateX(0); } to { transform: translateX(-50%); } }
     @media (prefers-reduced-motion: reduce) { .photo-track { animation: none; } }
+    .photo-band.ring .photo-track img { box-shadow: 0 0 0 3px var(--gold); }
     /* Heart-shaped sliding photos */
     .photo-band.hearts { background: transparent; padding: 36px 0; }
     .photo-band.hearts .photo-track { gap: 6px; animation-duration: 55s; }
@@ -202,14 +206,28 @@
     @media (max-width: 880px) { .photo-band.hearts .photo-track img { width: 120px; height: 120px; } }
 
     /* ---------- JOIN THE WHATSAPP ---------- */
-    .wa { background: var(--indigo); color: var(--white); padding: 110px 0; position: relative; overflow: hidden; }
+    .wa { background: var(--indigo); color: var(--white); padding: 64px 0; position: relative; overflow: hidden; }
     .wa::before { content: ""; position: absolute; inset: 0; background: var(--rainbow); opacity: 0.14; mix-blend-mode: screen; pointer-events: none; }
     .wa .wrap { position: relative; z-index: 1; }
-    .wa-top { display: flex; justify-content: space-between; align-items: flex-start; gap: 24px; flex-wrap: wrap; }
-    .wa h2 { font-family:'Archivo',sans-serif; font-weight: 900; text-transform: uppercase; letter-spacing: -0.01em; line-height: 0.92; font-size: clamp(48px, 9vw, 132px); }
+    .wa-top { display: flex; justify-content: space-between; align-items: flex-start; gap: 32px; }
+    .wa-head { flex: 1 1 auto; min-width: 0; }
+    .wa h2 { font-family:'Archivo',sans-serif; font-weight: 900; text-transform: uppercase; letter-spacing: -0.01em; line-height: 0.92; font-size: clamp(36px, 5vw, 64px); }
     .wa .wa-stat { text-align: right; }
     .wa .wa-stat .big { font-family:'Archivo',sans-serif; font-weight: 900; font-size: clamp(28px, 4vw, 48px); }
     .wa .wa-stat .small { font-size: 15px; opacity: 0.7; }
+    .wa-sub { font-family:'Archivo',sans-serif; font-weight: 800; text-transform: uppercase; letter-spacing: 0.04em; font-size: clamp(14px, 1.6vw, 18px); opacity: 0.85; margin-top: 10px; }
+    .wa-photo { flex: 0 0 auto; width: clamp(200px, 28vw, 340px); aspect-ratio: 3 / 4; object-fit: cover; border-radius: 18px; display: block; }
+    .wa-layout { display: grid; grid-template-columns: 1.05fr 0.95fr; gap: 48px; align-items: center; }
+    .wa-copy { display: flex; flex-direction: column; align-items: flex-start; }
+    .wa-lead { font-size: 19px; line-height: 1.55; color: rgba(255,255,255,0.85); max-width: 520px; margin: 16px 0 6px; }
+    .wa-copy .wa-btn { display: inline-block; width: auto; margin: 10px 0 22px; }
+    .wa-copy .wa-specs { width: 100%; max-width: 460px; }
+    .wa-side .wa-photo { width: 100%; aspect-ratio: 3 / 4; max-height: 460px; }
+    @media (max-width: 880px) { .wa-layout { grid-template-columns: 1fr; gap: 28px; } }
+    @media (max-width: 760px) {
+      .wa-top { flex-direction: column; }
+      .wa-photo { width: 100%; aspect-ratio: 4 / 3; margin-top: 8px; }
+    }
     .wa-grid { display: grid; grid-template-columns: 1.1fr 0.9fr; gap: 56px; margin-top: 48px; align-items: start; }
     .wa-grid > p { font-size: 21px; line-height: 1.55; color: rgba(255,255,255,0.85); max-width: 520px; }
     .wa-specs { list-style: none; }
@@ -217,7 +235,7 @@
     .wa-specs li:last-child { border-bottom: 1px solid rgba(255,255,255,0.18); }
     .wa-specs .k { font-weight: 800; }
     .wa-specs .v { color: rgba(255,255,255,0.78); }
-    .wa-btn { display: block; text-align: center; margin-top: 36px; padding: 20px; border: none; border-radius: 12px; color: var(--white); text-decoration: none; font-family:'Archivo',sans-serif; font-weight: 800; text-transform: uppercase; letter-spacing: 0.06em; background: var(--rainbow); background-size: 220% 100%; color: #14101a; animation: rainbowShift 9s ease-in-out infinite; transition: transform .16s ease, box-shadow .25s ease; }
+    .wa-btn { display: block; text-align: center; margin-top: 36px; padding: 20px; border: none; border-radius: 12px; color: var(--white); text-decoration: none; font-family:'Archivo',sans-serif; font-weight: 800; text-transform: uppercase; letter-spacing: 0.06em; background: var(--rainbow-pastel); background-size: 220% 100%; color: #14101a; animation: rainbowShift 9s ease-in-out infinite; transition: transform .16s ease, box-shadow .25s ease; }
 
     /* ---------- IMMERSIVE AI BOOTCAMP (editorial / zine vibe) ---------- */
     .bootcamp { background: #100d14; color: #fff; padding: 88px 0; position: relative; overflow: hidden; }
@@ -237,7 +255,7 @@
     .bc-hosts { margin-top: 52px; }
     .bc-hosts .label { font-family:'Archivo',sans-serif; letter-spacing: 0.18em; text-transform: uppercase; font-size: 12px; color: rgba(255,255,255,0.55); }
     .bc-hosts .names { font-family:'Archivo',sans-serif; font-weight: 900; text-transform: uppercase; font-size: clamp(22px, 3vw, 34px); margin-top: 6px; }
-    .bc-cta { display: inline-block; margin-top: 40px; padding: 16px 34px; border-radius: 999px; background: var(--rainbow); background-size: 220% 100%; color: #fff; font-family:'Archivo',sans-serif; font-weight: 800; text-transform: uppercase; letter-spacing: 0.04em; text-decoration: none; animation: rainbowShift 9s ease-in-out infinite; }
+    .bc-cta { display: inline-block; margin-top: 40px; padding: 16px 34px; border-radius: 999px; background: var(--rainbow-pastel); background-size: 220% 100%; color: #14101a; font-family:'Archivo',sans-serif; font-weight: 800; text-transform: uppercase; letter-spacing: 0.04em; text-decoration: none; animation: rainbowShift 9s ease-in-out infinite; }
     .bc-cta:hover { transform: translateY(-2px); }
     .bc-stamp {
       position: absolute; top: 130px; right: 6%; z-index: 2;
@@ -360,8 +378,14 @@
     .founder .sit { font-size: 22px; font-weight: 800; color: var(--indigo); margin: 4px 0 22px; }
 
     /* ---------- MANIFESTO ---------- */
-    .manifesto { background: var(--white); text-align: center; padding: 120px 0; }
+    .manifesto { background: var(--white); text-align: center; padding: 110px 0 48px; }
     .manifesto .wrap { max-width: 760px; }
+    .manifesto .manifesto-grid { max-width: 1140px; display: grid; grid-template-columns: 0.85fr 1.15fr; gap: 40px 56px; align-items: center; text-align: left; }
+    .manifesto-photo img { width: 100%; border-radius: 18px; display: block; }
+    .manifesto-copy .eyebrow-c, .manifesto-copy h2 { text-align: center; }
+    .manifesto-grid .protip { grid-column: 1 / -1; }
+    .nowrap { white-space: nowrap; }
+    @media (max-width: 880px) { .manifesto .manifesto-grid { grid-template-columns: 1fr; gap: 32px; text-align: center; } }
     .manifesto h2 { font-size: clamp(30px, 4.4vw, 46px); font-weight: 800; color: var(--indigo); margin-top: 14px; }
     .manifesto p { font-size: 20px; line-height: 1.6; color: var(--charcoal); margin-top: 26px; }
     .manifesto .free { font-weight: 600; color: var(--indigo); }
@@ -434,24 +458,31 @@
     .ask .small { font-size: 14px; color: rgba(255,255,255,0.55); margin-top: 26px; }
 
     /* ---------- FOOTER ---------- */
-    footer { background: var(--indigo); color: var(--white); border-top: 1px solid rgba(255,255,255,0.08); padding: 88px 0 36px; }
+    footer { background: #f4eefb; color: var(--indigo); border-top: 1px solid var(--line); padding: 88px 0 36px; }
     .foot-cta { text-align: center; max-width: 880px; margin: 0 auto 76px; }
-    .foot-cta h2 { font-family:'Archivo',sans-serif; font-weight: 900; text-transform: uppercase; letter-spacing: -0.01em; line-height: 0.94; font-size: clamp(34px, 5.6vw, 70px); }
-    .foot-cta p { color: rgba(255,255,255,0.72); font-size: 19px; margin-top: 18px; }
-    .foot-btn { display: inline-block; margin-top: 32px; padding: 18px 42px; border-radius: 999px; background: var(--rainbow); background-size: 220% 100%; color: #14101a; font-family:'Archivo',sans-serif; font-weight: 800; text-transform: uppercase; letter-spacing: 0.04em; text-decoration: none; animation: rainbowShift 9s ease-in-out infinite; }
+    .foot-cta h2 { font-family:'Archivo',sans-serif; font-weight: 900; text-transform: uppercase; letter-spacing: -0.01em; line-height: 0.94; font-size: clamp(34px, 5.6vw, 70px); color: var(--indigo); }
+    .foot-cta p { color: rgba(74,46,111,0.72); font-size: 19px; margin-top: 18px; }
+    .foot-pov { font-family:'Archivo',sans-serif; font-weight: 900; letter-spacing: -0.01em; line-height: 1.04; font-size: clamp(30px, 4.4vw, 56px); color: var(--indigo); margin-bottom: 22px; }
+    .foot-pov .pov { background: var(--rainbow); background-size: 200% 100%; -webkit-background-clip: text; background-clip: text; color: transparent; animation: rainbowShift 9s ease-in-out infinite; }
+    .foot-cta-img { width: 100%; max-height: 260px; object-fit: cover; border-radius: 18px; display: block; margin: 0 auto 32px; }
+    .foot-cta-split { max-width: 1140px; display: grid; grid-template-columns: 1fr 1fr; gap: 48px; align-items: center; text-align: left; }
+    .foot-cta-split .foot-cta-img { width: 100%; height: auto; aspect-ratio: auto; max-height: none; object-fit: contain; margin: 0; }
+    .foot-cta-copy { display: flex; flex-direction: column; align-items: flex-start; }
+    @media (max-width: 880px) { .foot-cta-split { grid-template-columns: 1fr; gap: 28px; text-align: center; } .foot-cta-split .foot-cta-copy { align-items: center; } .foot-cta-split .foot-cta-img { aspect-ratio: auto; max-height: none; } }
+    .foot-btn { display: inline-block; margin-top: 32px; padding: 18px 42px; border-radius: 999px; background: var(--rainbow-pastel); background-size: 220% 100%; color: #14101a; font-family:'Archivo',sans-serif; font-weight: 800; text-transform: uppercase; letter-spacing: 0.04em; text-decoration: none; animation: rainbowShift 9s ease-in-out infinite; }
     .foot-btn:hover { transform: translateY(-2px); }
-    .foot-sec { display: inline-block; margin-top: 18px; margin-left: 0; color: rgba(255,255,255,0.6); font-size: 14px; font-weight: 700; }
-    .foot-bar { border-top: 1px solid rgba(255,255,255,0.12); margin-top: 56px; padding-top: 26px; display: flex; justify-content: space-between; gap: 14px; flex-wrap: wrap; font-size: 13px; color: rgba(255,255,255,0.5); }
+    .foot-sec { display: inline-block; margin-top: 18px; margin-left: 0; color: rgba(74,46,111,0.6); font-size: 14px; font-weight: 700; }
+    .foot-bar { border-top: 1px solid var(--line); margin-top: 56px; padding-top: 26px; display: flex; justify-content: space-between; gap: 14px; flex-wrap: wrap; font-size: 13px; color: rgba(74,46,111,0.5); }
     .foot-grid { display: flex; justify-content: space-between; gap: 40px; flex-wrap: wrap; }
-    .foot-grid a { color: rgba(255,255,255,0.72); text-decoration: none; font-size: 15px; }
-    .foot-grid a:hover { color: var(--white); }
-    .foot-col h4 { font-family:'Archivo',sans-serif; color: var(--white); font-size: 14px; text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 18px; }
+    .foot-grid a { color: rgba(74,46,111,0.72); text-decoration: none; font-size: 15px; }
+    .foot-grid a:hover { color: var(--indigo); }
+    .foot-col h4 { font-family:'Archivo',sans-serif; color: var(--indigo); font-size: 14px; text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 18px; }
     .foot-col ul { list-style: none; display: flex; flex-direction: column; gap: 12px; }
-    .foot-brand { font-family:'Archivo',sans-serif; font-weight:900; font-size: 26px; color: var(--white); text-transform: uppercase; letter-spacing: 0.04em; }
-    .foot-brand + p { color: rgba(255,255,255,0.55); font-size: 14px; margin-top: 12px; max-width: 240px; }
+    .foot-brand { font-family:'Archivo',sans-serif; font-weight:900; font-size: 26px; color: var(--indigo); text-transform: uppercase; letter-spacing: 0.04em; }
+    .foot-brand + p { color: rgba(74,46,111,0.6); font-size: 14px; margin-top: 12px; max-width: 240px; }
 
     /* ---------- FREE GUIDES ---------- */
-    .guides { background: var(--white); padding: 120px 0; }
+    .guides { background: var(--white); padding: 48px 0 110px; }
     .guide-filters { display: flex; flex-wrap: wrap; gap: 10px; justify-content: center; margin-bottom: 52px; }
     .chip {
       font-family:'Archivo',sans-serif; font-weight: 700; font-size: 13px; letter-spacing: 0.04em;
@@ -460,7 +491,7 @@
       cursor: pointer; transition: all .14s ease;
     }
     .chip:hover { border-color: var(--gold); color: var(--indigo); }
-    .chip.active { background: var(--rainbow); background-size: 220% 100%; color: #14101a; border-color: transparent; animation: rainbowShift 9s ease-in-out infinite; }
+    .chip.active { background: var(--rainbow-pastel); background-size: 220% 100%; color: #14101a; border-color: transparent; animation: rainbowShift 9s ease-in-out infinite; }
     .guide-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; }
     .guide-card {
       display: flex; flex-direction: column; background: var(--sand);
@@ -510,19 +541,6 @@
 
     /* native form */
     .apply-form { padding: 18px 34px 32px; overflow-y: auto; }
-    .li-autofill { background: var(--sand); border: 1px solid var(--line); border-radius: 12px; padding: 20px; margin-bottom: 8px; }
-    .li-head { font-size: 14px; color: var(--charcoal); margin-bottom: 12px; }
-    .li-head strong { color: var(--indigo); }
-    .li-row { display: flex; gap: 10px; }
-    .li-row input { flex: 1; padding: 12px 14px; border: 1.5px solid var(--line); border-radius: 9px; font-family: inherit; font-size: 15px; background: var(--white); color: var(--charcoal); }
-    .li-row input:focus { outline: none; border-color: var(--gold); }
-    .li-row .btn { white-space: nowrap; }
-    .li-status { font-size: 13px; margin-top: 10px; min-height: 1px; }
-    .li-status.ok { color: #2e7d4f; }
-    .li-status.err { color: var(--red); }
-    .li-or { text-align: center; margin: 20px 0 6px; position: relative; }
-    .li-or::before { content: ""; position: absolute; left: 0; right: 0; top: 50%; height: 1px; background: var(--line); }
-    .li-or span { position: relative; background: var(--white); padding: 0 12px; font-size: 12px; text-transform: uppercase; letter-spacing: 0.08em; color: #9a8ab0; }
     .form-section {
       font-family:'Archivo',sans-serif; font-weight: 800; color: var(--indigo);
       font-size: 14px; text-transform: uppercase; letter-spacing: 0.1em;
@@ -568,7 +586,15 @@
       display: flex; align-items: center; justify-content: center;
     }
     .apply-success h3 { font-family:'Archivo',sans-serif; font-size: 26px; font-weight: 800; color: var(--indigo); }
-    .apply-success p { font-size: 16px; color: var(--charcoal); margin: 12px 0 26px; }
+    .apply-success p { font-size: 16px; color: var(--charcoal); margin: 12px 0 22px; line-height: 1.55; }
+    .success-resources { display: flex; flex-direction: column; gap: 10px; margin: 0 0 26px; text-align: left; }
+    .success-resources a {
+      display: block; padding: 13px 16px; border-radius: 12px; text-decoration: none;
+      font-family:'Archivo',sans-serif; font-weight: 700; font-size: 14.5px; color: #14101a;
+      background: var(--rainbow-pastel); background-size: 220% 100%;
+      animation: rainbowShift 9s ease-in-out infinite; transition: transform .14s ease, box-shadow .25s ease;
+    }
+    .success-resources a:hover { transform: translateY(-2px); box-shadow: 0 12px 28px rgba(155,93,229,0.28); }
 
     /* ---------- RESPONSIVE ---------- */
     @media (max-width: 880px) {
@@ -586,6 +612,7 @@
       .what { padding: 48px 0; }
       .founder p, .creds { margin-left: auto; margin-right: auto; }
       .hero-grid { padding: 64px 0 72px; }
+      .hero h1 { font-size: clamp(28px, 7.6vw, 44px); }
       .hero-photo { max-width: 360px; margin: 0 auto; }
       .gap-grid { padding: 72px 0; text-align: center; }
       .gap p, .gap-bignum { margin-left: auto; margin-right: auto; }
@@ -593,17 +620,19 @@
       .stat-col + .stat-col::before { display: none; }
       .nav-links { display: none; }
       .nav-links.open {
-        display: flex; flex-direction: column; position: absolute;
-        top: 100px; left: 0; right: 0; background: var(--white);
-        padding: 24px; gap: 20px; border-bottom: 1px solid var(--line);
+        display: flex; flex-direction: column; align-items: flex-start; justify-content: center;
+        position: fixed; inset: 0; z-index: 998; text-align: left;
+        background: linear-gradient(165deg, #f3e8ff 0%, #ffe1ec 55%, #e3f2ff 100%);
+        padding: 100px 28px 48px; gap: 6px;
       }
-      .nav-toggle { display: block; background: none; border: none; cursor: pointer; color: var(--indigo); font-size: 26px; }
+      .nav-links.open a { font-family: 'Archivo', sans-serif; font-weight: 900; font-size: clamp(32px, 9vw, 52px); line-height: 1.1; color: var(--indigo); }
+      .nav-links.open a.btn { margin-top: 24px; font-size: 17px; padding: 14px 28px; color: #14101a; }
+      .nav-toggle { display: block; background: none; border: none; cursor: pointer; color: var(--indigo); font-size: 26px; position: relative; z-index: 1001; }
       .stats, .what, .get, .room, .how, .ask, .guides, .faq { padding: 80px 0; }
       .events { padding: 64px 0 0; }
       .events .section-head { margin-bottom: 32px; }
       .events-frame { height: 560px; border-radius: 10px; }
       .guide-grid { grid-template-columns: 1fr; }
-      .li-row { flex-direction: column; }
       .optin-form { flex-direction: column; }
       .guides-optin { padding: 40px 24px; flex-direction: column; gap: 28px; }
       .optin-img { width: 100%; max-width: none; aspect-ratio: 16 / 10; order: -1; }
@@ -702,7 +731,7 @@
     <div class="wrap hero-grid">
       <div>
         <div class="eyebrow">Let's be honest.</div>
-        <h1>You're not behind on&nbsp;<span class="hl-ai">AI</span>.<br />No one's shown you how to make it buy back your time.</h1>
+        <h1>You're not behind on <span class="hl-ai">AI</span>.<br />No one showed you where it hands you back your time.</h1>
         <p class="sub">Delegate the shit you hate to AI.</p>
       </div>
       <div>
@@ -748,24 +777,43 @@
     </div>
   </section>
 
+  <!-- MOVING PHOTO STRIP (top) -->
+  <div class="photo-band" style="padding-top:28px;">
+    <div class="photo-track">
+      <img src="Images/web/dinner-76.jpg" alt="Members at a Time Rich gathering" />
+      <img src="Images/web/event-55.jpg" alt="Members at a Time Rich rooftop event" />
+      <img src="Images/web/dinner-28.jpg" alt="Members at a Time Rich dinner" />
+      <img src="Images/web/dinner-32.jpg" alt="Members in conversation at a Time Rich event" />
+      <img src="Images/web/dinner-63.jpg" alt="Members networking at a Time Rich event" />
+      <img src="Images/web/dinner-88.jpg" alt="Members together at a Time Rich dinner" />
+      <!-- duplicate set for seamless loop -->
+      <img src="Images/web/dinner-76.jpg" alt="" aria-hidden="true" />
+      <img src="Images/web/event-55.jpg" alt="" aria-hidden="true" />
+      <img src="Images/web/dinner-28.jpg" alt="" aria-hidden="true" />
+      <img src="Images/web/dinner-32.jpg" alt="" aria-hidden="true" />
+      <img src="Images/web/dinner-63.jpg" alt="" aria-hidden="true" />
+      <img src="Images/web/dinner-88.jpg" alt="" aria-hidden="true" />
+    </div>
+  </div>
+
   <!-- WHAT TIME RICH IS -->
   <section class="what" id="what">
     <div class="wrap narrow">
       <div class="eyebrow-c">What Time Rich Is</div>
-      <h2>A community for women who actually use AI, to run their business and their life.</h2>
-      <p><span class="emphasis">Not awareness. Not dabbling. Implementation.</span></p>
-      <p>Application-based. Not to gatekeep, but because the quality of the room is the whole point.</p>
-    </div>
+      <h2>Not just a community. It's the education that teaches baddies to delegate the shit they hate to AI, and run their business and their life.</h2>
+      <p><span class="emphasis">I'd rather be getting a facial 💅 or building a new revenue stream 💰 than buried in busywork.</span></p>    </div>
   </section>
 
   <!-- MANIFESTO -->
   <section class="manifesto">
-    <div class="wrap">
-      <div class="eyebrow-c">Why we're here</div>
-      <h2>We want you to become Time Rich</h2>
+    <div class="wrap manifesto-grid">
+      <div class="manifesto-photo"><img src="Images/web/manifesto-ella.png" alt="Ella Molony Cook" /></div>
+      <div class="manifesto-copy">
+      <h2>We want you to become <span class="nowrap">Time Rich</span></h2>
       <p>What's the point of all this AI if it doesn't hand you back a few hours to actually live? The baddies who step into their power now, who build their business <em>on</em> AI instead of around it, become a different kind of leader. Not busier. Not burnt out. In command.</p>
       <p>This isn't about hoarding shiny tools. It's about building the systems behind your work <em>and</em> your life, so you can take better care of yourself, have way more fun, and feed the relationships that actually matter.</p>
       <p class="free">It's free to join. Yes, there's an application, which sounds fancier than it is. We just care who's in the room, so culture fit is everything.</p>
+      </div>
       <div class="protip" style="margin-top:48px;">
         <div class="protip-head">
           <div class="label">Steal this prompt 🔥</div>
@@ -853,7 +901,7 @@
   <section class="events" id="events">
     <div class="wrap" style="text-align:center;">
       <div class="section-head">
-        <h2>Time Hacking Workshops</h2>
+        <h2>Bi-weekly Spicy AI Workshops</h2>
         <p style="max-width: 620px; margin: 18px auto 0;">Stop waiting for permission to master AI. Join Time Rich workshops where badass humans build their personal AI Operating System.</p>
       </div>
       <iframe
@@ -979,27 +1027,50 @@
 
   <!-- JOIN THE WHATSAPP -->
   <section class="wa" id="whatsapp">
-    <div class="wrap">
-      <div class="wa-top">
+    <div class="wrap wa-layout">
+      <div class="wa-copy">
         <h2>Join the<br />WhatsApp</h2>
-        <div class="wa-stat">
-          <div class="big">200+ in the room</div>
-          <div class="small">Founders, investors &amp; operators</div>
-        </div>
+        <div class="wa-sub">Founders, investors &amp; operators</div>
+        <p class="wa-lead">One coffee chat won't change your business. A group of people in the same messy middle as you? That will. Drop into the Time Rich WhatsApp and stop figuring it out alone.</p>
+        <a class="wa-btn" href="https://chat.whatsapp.com/GaghtKWWopvBF6En66Rkdt?mode=gi_t" target="_blank" rel="noopener">Join the WhatsApp</a>
+        <ul class="wa-specs">
+          <li><span class="k">Members</span><span class="v">200+ and growing</span></li>
+          <li><span class="k">Expect</span><span class="v">Daily chat, drops &amp; real talk</span></li>
+          <li><span class="k">Cost</span><span class="v">Free to join</span></li>
+        </ul>
       </div>
-      <div class="wa-grid">
-        <p>One coffee chat won't change your business. A group of people in the same messy middle as you? That will. Drop into the Time Rich WhatsApp and stop figuring it out alone.</p>
-        <div>
-          <ul class="wa-specs">
-            <li><span class="k">Members</span><span class="v">200+ and growing</span></li>
-            <li><span class="k">Expect</span><span class="v">Daily chat, drops &amp; real talk</span></li>
-            <li><span class="k">Cost</span><span class="v">Free to join</span></li>
-          </ul>
-          <a class="wa-btn" href="https://chat.whatsapp.com/GaghtKWWopvBF6En66Rkdt?mode=gi_t" target="_blank" rel="noopener">Join the WhatsApp</a>
-        </div>
+      <div class="wa-side">
+        <img class="wa-photo" src="Images/web/wa-feature.jpg" alt="Time Rich members together at an event" />
       </div>
     </div>
   </section>
+
+  <!-- MOVING PHOTO STRIP (under WhatsApp, fresh photos, ringed) -->
+  <div class="photo-band ring">
+    <div class="photo-track rev">
+      <img src="Images/web/ov6-5548.jpg" alt="A Time Rich member at an event" />
+      <img src="Images/web/ella-3.jpg" alt="A Time Rich member portrait" />
+      <img src="Images/web/ov6-6723.jpg" alt="Time Rich members together" />
+      <img src="Images/web/event-152.jpg" alt="Members at a Time Rich event" />
+      <img src="Images/web/ov6-5643.jpg" alt="A Time Rich member at a gathering" />
+      <img src="Images/web/ella-laptop.jpg" alt="Ella laughing at her laptop" />
+      <img src="Images/web/ov6-6845.jpg" alt="Time Rich members connecting" />
+      <img src="Images/web/strip-1.jpg" alt="Members at a Time Rich gathering" />
+      <img src="Images/web/ov6-6256.jpg" alt="A Time Rich member at an event" />
+      <img src="Images/web/ov6-6650.jpg" alt="Time Rich members together at an event" />
+      <!-- duplicate set for seamless loop -->
+      <img src="Images/web/ov6-5548.jpg" alt="" aria-hidden="true" />
+      <img src="Images/web/ella-3.jpg" alt="" aria-hidden="true" />
+      <img src="Images/web/ov6-6723.jpg" alt="" aria-hidden="true" />
+      <img src="Images/web/event-152.jpg" alt="" aria-hidden="true" />
+      <img src="Images/web/ov6-5643.jpg" alt="" aria-hidden="true" />
+      <img src="Images/web/ella-laptop.jpg" alt="" aria-hidden="true" />
+      <img src="Images/web/ov6-6845.jpg" alt="" aria-hidden="true" />
+      <img src="Images/web/strip-1.jpg" alt="" aria-hidden="true" />
+      <img src="Images/web/ov6-6256.jpg" alt="" aria-hidden="true" />
+      <img src="Images/web/ov6-6650.jpg" alt="" aria-hidden="true" />
+    </div>
+  </div>
 
   <!-- FAQ -->
   <section class="faq" id="faq">
@@ -1038,43 +1109,19 @@
     </div>
   </section>
 
-  <!-- HEART PHOTO STRIP -->
-  <div class="photo-band hearts">
-    <div class="photo-track">
-      <img src="Images/web/dinner-32.jpg" alt="Members at a Time Rich event" />
-      <img src="Images/web/dinner-88.jpg" alt="Members at a Time Rich dinner" />
-      <img src="Images/web/event-55.jpg" alt="Members at a Time Rich rooftop event" />
-      <img src="Images/web/dinner-63.jpg" alt="Members networking at a Time Rich event" />
-      <img src="Images/web/dinner-76.jpg" alt="Members at a Time Rich gathering" />
-      <img src="Images/web/dinner-28.jpg" alt="Members at a Time Rich dinner" />
-      <!-- duplicate set for seamless loop -->
-      <img src="Images/web/dinner-32.jpg" alt="" aria-hidden="true" />
-      <img src="Images/web/dinner-88.jpg" alt="" aria-hidden="true" />
-      <img src="Images/web/event-55.jpg" alt="" aria-hidden="true" />
-      <img src="Images/web/dinner-63.jpg" alt="" aria-hidden="true" />
-      <img src="Images/web/dinner-76.jpg" alt="" aria-hidden="true" />
-      <img src="Images/web/dinner-28.jpg" alt="" aria-hidden="true" />
-    </div>
-  </div>
-
-  <!-- THE ASK -->
-  <section class="ask" id="apply">
-    <div class="wrap">
-      <h2>Ready?</h2>
-      <p>Apply to join Time Rich.</p>
-      <a href="#apply" class="btn btn-apply" onclick="openApply(event)">Apply to Join</a>
-      <div class="small">We'll be in touch within 48 hours.</div>
-    </div>
-  </section>
 
   <!-- FOOTER -->
   <footer>
     <div class="wrap">
-      <div class="foot-cta">
-        <h2>Stop watching AI happen to you</h2>
-        <p>Be the woman running it. Then go live your actual life.</p>
-        <a href="#apply" class="foot-btn" onclick="openApply(event)">Apply to join the club</a>
-        <div><a href="#top" class="foot-sec">or just spill the weekly tea ☕</a></div>
+      <div class="foot-cta foot-cta-split">
+        <div class="foot-cta-media">
+          <img class="foot-cta-img" src="Images/web/foot-cta.jpg" alt="Time Rich members outside together" />
+        </div>
+        <div class="foot-cta-copy">
+          <div class="foot-pov"><span class="pov">POV:</span> your agent holds down the laptop so you can be outside with badass humans.</div>
+          <p>Be the woman running it. Then go live your actual life.</p>
+          <a href="#apply" class="foot-btn" onclick="openApply(event)">Apply to join the club</a>
+        </div>
       </div>
 
       <div class="foot-grid">
@@ -1094,10 +1141,8 @@
         <div class="foot-col">
           <h4>Follow</h4>
           <ul>
-            <li><a href="https://www.linkedin.com/company/timerich" target="_blank" rel="noopener">Time Rich · LinkedIn</a></li>
-            <li><a href="https://www.instagram.com/timerich.ai" target="_blank" rel="noopener">@timerich.ai · IG</a></li>
-            <li><a href="https://www.linkedin.com/in/ellamolonycook/" target="_blank" rel="noopener">Ella · LinkedIn</a></li>
-            <li><a href="https://www.instagram.com/baddiesloveai/" target="_blank" rel="noopener">@baddiesloveai · IG</a></li>
+            <li><a href="https://www.linkedin.com/in/ellamolonycook/" target="_blank" rel="noopener">Ella Molony Cook · LinkedIn</a></li>
+            <li><a href="https://www.instagram.com/timerich.ai" target="_blank" rel="noopener">@timerich.ai · Instagram</a></li>
           </ul>
         </div>
         <div class="foot-col">
@@ -1121,23 +1166,13 @@
       <button class="modal-close" aria-label="Close" onclick="closeApply()">&times;</button>
       <div class="modal-head">
         <h3>Apply to join Time Rich</h3>
-        <p>Tell us what you're building. We'll be in touch within 48 hours.</p>
+        <p>We delegate the boring stuff to AI. Not this. Ella reads every application herself and replies within 48 hours. So tell us what you're building.</p>
       </div>
 
       <form id="applyForm" class="apply-form" novalidate>
 
         <!-- spam honeypot: hidden from people, bots tend to fill it -->
         <input type="text" name="_gotcha" tabindex="-1" autocomplete="off" aria-hidden="true" style="position:absolute;left:-9999px;width:1px;height:1px;opacity:0;" />
-
-        <div class="li-autofill">
-          <div class="li-head"><strong>Save time</strong> &mdash; autofill the basics from your LinkedIn profile.</div>
-          <div class="li-row">
-            <input type="url" id="liUrl" placeholder="https://www.linkedin.com/in/you" />
-            <button type="button" class="btn" id="liBtn" onclick="fillFromLinkedIn()">Fill using LinkedIn</button>
-          </div>
-          <p class="li-status" id="liStatus"></p>
-        </div>
-        <div class="li-or"><span>or fill in manually</span></div>
 
         <div class="form-section">About you</div>
         <div class="field">
@@ -1316,8 +1351,9 @@
 
       <div class="apply-success" id="applySuccess" hidden>
         <div class="success-mark">&#10003;</div>
-        <h3>Application sent.</h3>
-        <p>Thanks for applying to Time Rich. We'll be in touch within 48 hours.</p>
+        <h3 id="successHead">Application sent.</h3>
+        <p id="successBody">Thanks for applying to Time Rich. We'll be in touch within 48 hours.</p>
+        <div class="success-resources" id="successResources"></div>
         <button class="btn" onclick="closeApply()">Close</button>
       </div>
     </div>
@@ -1345,6 +1381,8 @@
 
     function openApply(e) {
       if (e) e.preventDefault();
+      // Always open on a fresh form, even after a previous submission.
+      if (applySuccess && !applySuccess.hidden) { applySuccess.hidden = true; applyForm.hidden = false; }
       applyModal.classList.add('open');
       applyModal.setAttribute('aria-hidden', 'false');
       document.body.style.overflow = 'hidden';
@@ -1357,65 +1395,6 @@
     }
     applyModal.addEventListener('click', function (e) { if (e.target === applyModal) closeApply(); });
     document.addEventListener('keydown', function (e) { if (e.key === 'Escape') closeApply(); });
-
-    // ---- LinkedIn autofill -----------------------------------------------------
-    function setIfEmpty(name, value) {
-      if (!value) return;
-      var el = applyForm.elements[name];
-      if (el && !el.value) el.value = value;
-    }
-    function fillFromLinkedIn() {
-      var url = document.getElementById('liUrl').value.trim();
-      var status = document.getElementById('liStatus');
-      var btn = document.getElementById('liBtn');
-      if (!/linkedin\.com\/in\//i.test(url)) {
-        status.className = 'li-status err';
-        status.textContent = 'Enter a LinkedIn profile URL, like linkedin.com/in/your-name.';
-        return;
-      }
-      if (!FORM_ENDPOINT) {
-        status.className = 'li-status err';
-        status.textContent = "LinkedIn autofill isn't switched on yet — please fill the form manually.";
-        return;
-      }
-      var original = btn.textContent;
-      btn.disabled = true; btn.textContent = 'Fetching...';
-      status.className = 'li-status'; status.textContent = '';
-      fetch(FORM_ENDPOINT.replace(/\/$/, '') + '/enrich', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ linkedin_url: url })
-      })
-        .then(function (r) { return r.json(); })
-        .then(function (res) {
-          btn.disabled = false; btn.textContent = original;
-          if (res && res.configured === false) {
-            status.className = 'li-status err';
-            status.textContent = "LinkedIn autofill isn't switched on yet — please fill manually.";
-            return;
-          }
-          if (!res || !res.ok) {
-            status.className = 'li-status err';
-            status.textContent = "Couldn't read that profile. Please fill the form manually.";
-            return;
-          }
-          var f = res.fields || {};
-          setIfEmpty('name', f.name);
-          setIfEmpty('title', f.title);
-          setIfEmpty('company', f.company);
-          setIfEmpty('city', f.city);
-          setIfEmpty('bio', f.bio);
-          setIfEmpty('linkedin', url);
-          status.className = 'li-status ok';
-          status.textContent = 'Filled from LinkedIn. Review the details and complete the rest.';
-        })
-        .catch(function () {
-          btn.disabled = false; btn.textContent = original;
-          status.className = 'li-status err';
-          status.textContent = "Couldn't reach the server. Please fill the form manually.";
-        });
-    }
-    window.fillFromLinkedIn = fillFromLinkedIn;
 
     // ---- Free guides: filtering + Substack opt-in -----------------------------
     var SUBSTACK_URL = "https://iiculture.substack.com/subscribe";
@@ -1526,7 +1505,76 @@
     }
     window.copyPrompt = copyPrompt;
 
-    function showSuccess() {
+    function joinNice(arr) {
+      if (!arr.length) return '';
+      if (arr.length === 1) return arr[0];
+      if (arr.length === 2) return arr[0] + ' and ' + arr[1];
+      return arr.slice(0, -1).join(', ') + ', and ' + arr[arr.length - 1];
+    }
+
+    function showSuccess(data) {
+      data = data || {};
+      var head = document.getElementById('successHead');
+      var body = document.getElementById('successBody');
+      var res  = document.getElementById('successResources');
+
+      var first = (data['Full name'] || '').trim().split(/\s+/)[0];
+      var company = (data['Company / fund / firm'] || '').trim();
+
+      // Map the pillars they picked to friendly interest words.
+      var pillarMap = {
+        'Business / AI': 'AI',
+        'Wellness / Longevity': 'longevity',
+        'Fun / Travel': 'travel',
+        'Connection': 'connection',
+        'Being a baddie': 'being a baddie',
+        'Leadership role': 'leadership'
+      };
+      var interests = (data['Pillar'] || '').split(',')
+        .map(function (s) { return s.trim(); })
+        .filter(Boolean)
+        .map(function (p) { return pillarMap[p] || p.toLowerCase(); });
+
+      // Heading
+      if (head) head.textContent = first
+        ? ('Thank you for taking the time, ' + first + ' 🍒')
+        : 'Application sent 🍒';
+
+      // Personalised body
+      if (body) {
+        var line = '';
+        if (company && interests.length) {
+          line = 'I can see you’re building ' + company + ', and you’re all about ' + joinNice(interests) + '. Love that. ';
+        } else if (company) {
+          line = 'I can see you’re building ' + company + '. Love that. ';
+        } else if (interests.length) {
+          line = 'I can see you’re all about ' + joinNice(interests) + '. Love that. ';
+        }
+        body.textContent = line + 'Here’s some good stuff to dig into while we review your application — we’ll be back to you within 48 hours.';
+      }
+
+      // A few resources, lightly tailored to what they picked.
+      if (res) {
+        var links = [
+          { href: 'https://iiculture.substack.com/', label: 'The Self-Improvement Loop on Substack ☕', ext: true },
+          { href: '#guides', label: 'Free resources — delegate the shit you hate to AI 🔥' }
+        ];
+        var wantsWorkshop = /workshop|retreat/i.test(data['Retreat / workshop interest'] || '');
+        links.push({
+          href: '#events',
+          label: wantsWorkshop ? 'Save your spot at the next workshop 🌈' : 'See the upcoming workshops 🌈'
+        });
+        res.innerHTML = '';
+        links.forEach(function (l) {
+          var a = document.createElement('a');
+          a.href = l.label ? l.href : '#';
+          a.textContent = l.label;
+          if (l.ext) { a.target = '_blank'; a.rel = 'noopener'; }
+          else { a.addEventListener('click', function () { closeApply(); }); }
+          res.appendChild(a);
+        });
+      }
+
       applyForm.hidden = true;
       applySuccess.hidden = false;
       track('apply_submit');
@@ -1615,7 +1663,7 @@
           headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
           body: JSON.stringify(data)
         }).then(function (res) {
-          if (res.ok) { showSuccess(); }
+          if (res.ok) { showSuccess(data); }
           else { throw new Error('bad response'); }
         }).catch(function () {
           btn.disabled = false; btn.textContent = 'Submit application';
@@ -1627,7 +1675,7 @@
         window.location.href = 'mailto:' + APPLY_EMAIL +
           '?subject=' + encodeURIComponent('Time Rich Application - ' + data['Full name']) +
           '&body=' + encodeURIComponent(body);
-        showSuccess();
+        showSuccess(data);
       }
     });
   </script>

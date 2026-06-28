@@ -17,13 +17,7 @@ export default {
       return json({ error: "Method not allowed" }, 405, cors);
     }
 
-    // Route: LinkedIn autofill enrichment.
-    const path = new URL(request.url).pathname.replace(/\/+$/, "");
-    if (path.endsWith("/enrich")) {
-      return handleEnrich(request, env, cors);
-    }
-
-    // Otherwise: application submission -> Notion.
+    // Application submission -> Notion.
     if (!env.NOTION_TOKEN || !env.NOTION_DATABASE_ID) {
       return json({ error: "Server not configured" }, 500, cors);
     }
@@ -95,40 +89,6 @@ export default {
     }
   },
 };
-
-// LinkedIn autofill via Proxycurl. Returns { configured, ok, fields, photo_url }.
-async function handleEnrich(request, env, cors) {
-  if (!env.PROXYCURL_KEY) {
-    return json({ configured: false }, 200, cors); // feature not turned on yet
-  }
-  let body;
-  try { body = await request.json(); } catch { return json({ error: "Invalid JSON" }, 400, cors); }
-  const url = String(body.linkedin_url || "").trim();
-  if (!/linkedin\.com\/in\//i.test(url)) {
-    return json({ configured: true, ok: false, error: "Not a LinkedIn profile URL" }, 200, cors);
-  }
-
-  const api =
-    "https://nubela.co/proxycurl/api/v2/linkedin" +
-    "?use_cache=if-present&fallback_to_cache=on-error&url=" +
-    encodeURIComponent(url);
-
-  const r = await fetch(api, { headers: { Authorization: `Bearer ${env.PROXYCURL_KEY}` } });
-  if (!r.ok) {
-    return json({ configured: true, ok: false, error: "Lookup failed", detail: await r.text() }, 200, cors);
-  }
-  const p = await r.json();
-  const exp = (p.experiences && p.experiences[0]) || {};
-  const city = [p.city, p.country_full_name].filter(Boolean).join(", ");
-  const fields = {
-    name: p.full_name || "",
-    title: exp.title || p.occupation || p.headline || "",
-    company: exp.company || "",
-    city: city,
-    bio: p.headline || "",
-  };
-  return json({ configured: true, ok: true, fields, photo_url: p.profile_pic_url || "" }, 200, cors);
-}
 
 function corsHeaders(request, env) {
   const allowed = (env.ALLOWED_ORIGIN || "*")
