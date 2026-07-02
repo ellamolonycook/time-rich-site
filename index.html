@@ -134,7 +134,9 @@
       font-family:'Archivo',sans-serif; font-weight:700; letter-spacing:0.16em;
       text-transform: uppercase; font-size: 13px; color: var(--gold); margin-bottom: 28px;
     }
-    .hero h1 { color: var(--indigo); font-weight: 900; font-size: clamp(30px, 4.2vw, 52px); line-height: 1.08; }
+    .hero h1 { color: var(--indigo); font-weight: 900; line-height: 1.08; display: flex; flex-direction: column; gap: 22px; }
+    .hero h1 .h1-lead, .hero h1 .h1-rest { font-size: clamp(26px, 3.4vw, 38px); }
+    .hero h1 .h1-lead { white-space: nowrap; }
     .hl-ai { background: var(--rainbow); background-size: 200% 100%; -webkit-background-clip: text; background-clip: text; color: transparent; font-size: 1.12em; }
     .hero p.sub { color: var(--charcoal); font-size: 20px; margin-top: 30px; max-width: 470px; }
     .hero .btn { margin-top: 40px; padding: 16px 34px; font-size: 16px; }
@@ -538,6 +540,8 @@
     .modal-head { padding: 30px 34px 8px; }
     .modal-head h3 { font-family:'Archivo',sans-serif; font-size: 25px; font-weight: 800; color: var(--indigo); }
     .modal-head p { font-size: 15px; color: var(--charcoal); margin-top: 8px; }
+    .inapp-hint { margin-top: 14px; padding: 12px 14px; border-radius: 10px; background: #fff6e6; border: 1px solid #f0d9a8; color: #6b4e17; font-size: 13.5px; line-height: 1.5; }
+    .inapp-hint strong { color: var(--indigo); }
 
     /* native form */
     .apply-form { padding: 18px 34px 32px; overflow-y: auto; }
@@ -612,7 +616,8 @@
       .what { padding: 48px 0; }
       .founder p, .creds { margin-left: auto; margin-right: auto; }
       .hero-grid { padding: 64px 0 72px; }
-      .hero h1 { font-size: clamp(28px, 7.6vw, 44px); }
+      .hero h1 .h1-lead { white-space: normal; }
+      .hero h1 .h1-lead, .hero h1 .h1-rest { font-size: clamp(28px, 7.2vw, 42px); }
       .hero-photo { max-width: 360px; margin: 0 auto; }
       .gap-grid { padding: 72px 0; text-align: center; }
       .gap p, .gap-bignum { margin-left: auto; margin-right: auto; }
@@ -637,6 +642,61 @@
       .guides-optin { padding: 40px 24px; flex-direction: column; gap: 28px; }
       .optin-img { width: 100%; max-width: none; aspect-ratio: 16 / 10; order: -1; }
     }
+
+    /* ---------- CORNER CHATBOT (the Time Rich brain) ---------- */
+    .tr-chat-fab {
+      position: fixed; right: 22px; bottom: 22px; z-index: 900;
+      display: flex; align-items: center; gap: 10px; padding: 14px 20px 14px 16px;
+      border: none; border-radius: 999px; cursor: pointer;
+      font-family:'Archivo',sans-serif; font-weight: 800; font-size: 15px; color: #14101a;
+      background: var(--rainbow-pastel); background-size: 220% 100%;
+      animation: rainbowShift 9s ease-in-out infinite;
+      box-shadow: 0 14px 34px rgba(74,46,111,0.30); transition: transform .16s ease, box-shadow .25s ease;
+    }
+    .tr-chat-fab:hover { transform: translateY(-2px); box-shadow: 0 18px 40px rgba(155,93,229,0.40); }
+    .tr-chat-fab .dot { width: 9px; height: 9px; border-radius: 50%; background: #2e7d4f; box-shadow: 0 0 0 4px rgba(46,125,79,0.18); }
+    .tr-chat-fab.hidden { display: none; }
+
+    .tr-chat-panel {
+      position: fixed; right: 22px; bottom: 22px; z-index: 950;
+      width: min(380px, calc(100vw - 32px)); height: min(580px, calc(100vh - 44px));
+      display: none; flex-direction: column; overflow: hidden;
+      background: #fff; border-radius: 20px; border: 1px solid var(--line);
+      box-shadow: 0 30px 80px rgba(0,0,0,0.30);
+    }
+    .tr-chat-panel.open { display: flex; }
+    .tr-chat-head {
+      padding: 16px 18px; color: #14101a; background: var(--rainbow-pastel); background-size: 220% 100%;
+      animation: rainbowShift 9s ease-in-out infinite; display: flex; align-items: center; justify-content: space-between;
+    }
+    .tr-chat-head .title { font-family:'Archivo',sans-serif; font-weight: 900; font-size: 16px; }
+    .tr-chat-head .subtitle { font-size: 12px; font-weight: 600; opacity: 0.8; }
+    .tr-chat-close { background: rgba(20,16,26,0.12); border: none; width: 30px; height: 30px; border-radius: 50%; cursor: pointer; font-size: 17px; color: #14101a; line-height: 1; }
+    .tr-chat-close:hover { background: rgba(20,16,26,0.22); }
+    .tr-chat-body { flex: 1; overflow-y: auto; padding: 18px; display: flex; flex-direction: column; gap: 12px; background: #faf7fe; }
+    .tr-msg { max-width: 85%; padding: 11px 14px; border-radius: 16px; font-size: 14.5px; line-height: 1.5; white-space: pre-wrap; word-wrap: break-word; }
+    .tr-msg.bot { align-self: flex-start; background: #fff; border: 1px solid var(--line); color: var(--charcoal); border-bottom-left-radius: 5px; }
+    .tr-msg.user { align-self: flex-end; background: var(--indigo); color: #fff; border-bottom-right-radius: 5px; }
+    .tr-msg.bot a { color: var(--indigo); font-weight: 700; }
+    .tr-typing { align-self: flex-start; display: flex; gap: 4px; padding: 13px 16px; background: #fff; border: 1px solid var(--line); border-radius: 16px; border-bottom-left-radius: 5px; }
+    .tr-typing span { width: 7px; height: 7px; border-radius: 50%; background: #c0b3d6; animation: trBounce 1s infinite; }
+    .tr-typing span:nth-child(2) { animation-delay: .15s; }
+    .tr-typing span:nth-child(3) { animation-delay: .3s; }
+    @keyframes trBounce { 0%, 60%, 100% { transform: translateY(0); opacity: .5; } 30% { transform: translateY(-5px); opacity: 1; } }
+    .tr-chat-foot { padding: 12px; border-top: 1px solid var(--line); display: flex; gap: 8px; background: #fff; }
+    .tr-chat-foot input {
+      flex: 1; padding: 12px 14px; border: 1.5px solid var(--line); border-radius: 999px;
+      font-family: inherit; font-size: 14.5px; color: var(--charcoal); background: #faf7fe;
+    }
+    .tr-chat-foot input:focus { outline: none; border-color: var(--gold); }
+    .tr-chat-send {
+      border: none; border-radius: 50%; width: 44px; height: 44px; cursor: pointer; flex: 0 0 auto;
+      background: var(--indigo); color: #fff; font-size: 18px; transition: transform .14s ease;
+    }
+    .tr-chat-send:hover { transform: scale(1.06); }
+    .tr-chat-send:disabled { opacity: .5; cursor: default; transform: none; }
+    .tr-chat-disclaimer { font-size: 10.5px; color: #9a8ab0; text-align: center; padding: 0 12px 10px; background: #fff; }
+    @media (max-width: 480px) { .tr-chat-fab .label { display: none; } .tr-chat-fab { padding: 14px; } }
   </style>
 
   <script type="application/ld+json">
@@ -731,7 +791,7 @@
     <div class="wrap hero-grid">
       <div>
         <div class="eyebrow">Let's be honest.</div>
-        <h1>You're not behind on <span class="hl-ai">AI</span>.<br />No one showed you where it hands you back your time.</h1>
+        <h1><span class="h1-lead">You're not behind on <span class="hl-ai">AI</span>.</span><span class="h1-rest">No one showed you where it hands you back your time.</span></h1>
         <p class="sub">Delegate the shit you hate to AI.</p>
       </div>
       <div>
@@ -842,43 +902,10 @@
         <button class="chip" data-filter="community">Community</button>
       </div>
 
-      <div class="guide-grid" id="guideGrid">
-        <article class="guide-card" data-topic="skills">
-          <div class="guide-badge">Substack</div>
-          <h3>The Self-Improvement Loop</h3>
-          <p>How self-improving agents actually work: the context files, the skills, the human in the loop, and the loop that keeps going until the job's done.</p>
-          <a class="guide-link" href="#" data-substack="self-improvement-loop">Read the guide <span class="arrow">&rarr;</span></a>
-        </article>
-        <article class="guide-card" data-topic="adoption">
-          <div class="guide-badge">Adoption Gap</div>
-          <h3>The AI Adoption Gap</h3>
-          <p>The data on women and AI adoption, why it matters for founders, and how to close it inside your own team.</p>
-          <a class="guide-link" href="#">Read the guide <span class="arrow">&rarr;</span></a>
-        </article>
-        <article class="guide-card" data-topic="agents">
-          <div class="guide-badge">AI Agents</div>
-          <h3>AI Agents &amp; Automation</h3>
-          <p>How to evaluate agents for your business, a setup checklist, and the mistakes founders make first.</p>
-          <a class="guide-link" href="#">Read the guide <span class="arrow">&rarr;</span></a>
-        </article>
-        <article class="guide-card" data-topic="workflows">
-          <div class="guide-badge">Workflows</div>
-          <h3>Build Your First AI Workflow</h3>
-          <p>A step-by-step walkthrough of one simple integration: the tools, the setup, and the gotchas.</p>
-          <a class="guide-link" href="#">Read the guide <span class="arrow">&rarr;</span></a>
-        </article>
-        <article class="guide-card" data-topic="stories">
-          <div class="guide-badge">Founder Stories</div>
-          <h3>Founder Stories</h3>
-          <p>How members shipped AI in their products, what they learned, and what they'd do differently.</p>
-          <a class="guide-link" href="#">Read the guide <span class="arrow">&rarr;</span></a>
-        </article>
-        <article class="guide-card" data-topic="community">
-          <div class="guide-badge">Playbook</div>
-          <h3>Time Rich Community Playbook</h3>
-          <p>How we work, how to participate, and how to contribute once you're in the room.</p>
-          <a class="guide-link" href="#">Read the guide <span class="arrow">&rarr;</span></a>
-        </article>
+      <!-- Cards render from resources-manifest.json (kept fresh by scripts/sync-resources.mjs) -->
+      <div class="guide-grid" id="guideGrid"></div>
+      <div style="text-align:center; margin-top:40px;">
+        <a class="btn" href="resources.html">Browse all resources&nbsp;&rarr;</a>
       </div>
 
       <div class="guides-optin">
@@ -1160,6 +1187,26 @@
     </div>
   </footer>
 
+  <!-- CORNER CHATBOT: the Time Rich brain -->
+  <button class="tr-chat-fab" id="trChatFab" onclick="trChatOpen()" aria-label="Chat with the Time Rich brain">
+    <span class="dot"></span><span class="label">Ask the brain 🍒</span>
+  </button>
+  <div class="tr-chat-panel" id="trChatPanel" role="dialog" aria-label="Time Rich chat">
+    <div class="tr-chat-head">
+      <div>
+        <div class="title">The Time Rich Brain 🌈</div>
+        <div class="subtitle">Workshops, the community & all things AI</div>
+      </div>
+      <button class="tr-chat-close" onclick="trChatClose()" aria-label="Close chat">&times;</button>
+    </div>
+    <div class="tr-chat-body" id="trChatBody"></div>
+    <div class="tr-chat-disclaimer">AI concierge — can make mistakes. For anything important, apply or DM Ella.</div>
+    <form class="tr-chat-foot" id="trChatForm">
+      <input id="trChatInput" type="text" placeholder="Ask me anything…" autocomplete="off" maxlength="1500" />
+      <button class="tr-chat-send" type="submit" id="trChatSend" aria-label="Send">↑</button>
+    </form>
+  </div>
+
   <!-- APPLY MODAL -->
   <div class="modal-overlay" id="applyModal" aria-hidden="true">
     <div class="modal" role="dialog" aria-modal="true" aria-label="Apply to Time Rich">
@@ -1167,6 +1214,7 @@
       <div class="modal-head">
         <h3>Apply to join Time Rich</h3>
         <p>We delegate the boring stuff to AI. Not this. Ella reads every application herself and replies within 48 hours. So tell us what you're building.</p>
+        <div class="inapp-hint" id="inappHint" hidden>📱 You're in an in-app browser. If the form won't submit, tap the <strong>⋯</strong> menu and choose <strong>"Open in Safari / Chrome"</strong>.</div>
       </div>
 
       <form id="applyForm" class="apply-form" novalidate>
@@ -1379,10 +1427,19 @@
     var applySuccess = document.getElementById('applySuccess');
     var formError    = document.getElementById('formError');
 
+    // Detect in-app browsers (Instagram, Facebook, TikTok, etc.) that commonly
+    // block cross-origin requests and break form submits.
+    function isInAppBrowser() {
+      var ua = navigator.userAgent || '';
+      return /Instagram|FBAN|FBAV|FB_IAB|Messenger|Line\/|TikTok|Musical_ly|Snapchat|Pinterest|Twitter|LinkedInApp/i.test(ua);
+    }
+
     function openApply(e) {
       if (e) e.preventDefault();
       // Always open on a fresh form, even after a previous submission.
       if (applySuccess && !applySuccess.hidden) { applySuccess.hidden = true; applyForm.hidden = false; }
+      var hint = document.getElementById('inappHint');
+      if (hint && isInAppBrowser()) { hint.hidden = false; track('apply_inapp_browser'); }
       applyModal.classList.add('open');
       applyModal.setAttribute('aria-hidden', 'false');
       document.body.style.overflow = 'hidden';
@@ -1400,15 +1457,37 @@
     var SUBSTACK_URL = "https://iiculture.substack.com/subscribe";
 
     var guideFilters = document.getElementById('guideFilters');
+    var guideGrid = document.getElementById('guideGrid');
+
+    function esc(s) { return String(s == null ? '' : s).replace(/[&<>"]/g, function (c) {
+      return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]; }); }
+
+    // Render the newest resources onto the homepage from the manifest, so it
+    // stays in sync with what scripts/sync-resources.mjs pulls from Substack.
+    if (guideGrid) {
+      fetch('resources-manifest.json')
+        .then(function (r) { return r.ok ? r.json() : []; })
+        .then(function (items) {
+          guideGrid.innerHTML = (items || []).slice(0, 6).map(function (r) {
+            return '<article class="guide-card" data-topic="' + esc(r.category) + '">' +
+              '<div class="guide-badge">' + esc(r.categoryLabel) + '</div>' +
+              '<h3>' + esc(r.title) + '</h3>' +
+              '<p>' + esc(r.dek) + '</p>' +
+              '<a class="guide-link" href="resources/' + esc(r.slug) + '.html">Read the guide <span class="arrow">&rarr;</span></a>' +
+              '</article>';
+          }).join('');
+        })
+        .catch(function () {});
+    }
+
     if (guideFilters) {
-      var guideCards = document.querySelectorAll('#guideGrid .guide-card');
       guideFilters.addEventListener('click', function (e) {
         var btn = e.target.closest('.chip');
         if (!btn) return;
         guideFilters.querySelectorAll('.chip').forEach(function (c) { c.classList.remove('active'); });
         btn.classList.add('active');
         var f = btn.getAttribute('data-filter');
-        guideCards.forEach(function (card) {
+        guideGrid.querySelectorAll('.guide-card').forEach(function (card) {
           card.style.display = (f === 'all' || card.getAttribute('data-topic') === f) ? '' : 'none';
         });
       });
@@ -1666,18 +1745,121 @@
           if (res.ok) { showSuccess(data); }
           else { throw new Error('bad response'); }
         }).catch(function () {
+          // Direct submit was blocked (common inside Instagram/Facebook in-app
+          // browsers, which kill cross-origin requests). Don't lose the application:
+          // fall back to a pre-filled email so it still reaches Ella.
+          track('apply_fallback_email');
+          emailApplication(data);
           btn.disabled = false; btn.textContent = 'Submit application';
-          formError.textContent = 'Something went wrong. Please email ' + APPLY_EMAIL + '.';
+          formError.innerHTML = 'Your browser blocked the direct send, so we’ve opened a pre-filled email — just hit send. ' +
+            'Tip: for the smoothest experience, tap the ⋯ menu and choose “Open in Safari / Chrome”.';
         });
       } else {
-        // No backend configured yet: open a pre-filled email so the application is captured.
-        var body = Object.keys(data).map(function (k) { return k + ': ' + (data[k] || '-'); }).join('\n');
-        window.location.href = 'mailto:' + APPLY_EMAIL +
-          '?subject=' + encodeURIComponent('Time Rich Application - ' + data['Full name']) +
-          '&body=' + encodeURIComponent(body);
+        emailApplication(data);
         showSuccess(data);
       }
     });
+
+    // Build a pre-filled email with the whole application so nothing is ever lost.
+    function emailApplication(data) {
+      var body = Object.keys(data)
+        .filter(function (k) { return k.charAt(0) !== '_'; })
+        .map(function (k) { return k + ': ' + (data[k] || '-'); }).join('\n');
+      window.location.href = 'mailto:' + APPLY_EMAIL +
+        '?subject=' + encodeURIComponent('Time Rich Application - ' + (data['Full name'] || '')) +
+        '&body=' + encodeURIComponent(body);
+    }
+
+    // ---- Corner chatbot: the Time Rich brain ----------------------------------
+    (function () {
+      var fab   = document.getElementById('trChatFab');
+      var panel = document.getElementById('trChatPanel');
+      var bodyEl = document.getElementById('trChatBody');
+      var form  = document.getElementById('trChatForm');
+      var input = document.getElementById('trChatInput');
+      var sendBtn = document.getElementById('trChatSend');
+      if (!fab || !panel || !form) return;
+
+      var history = [];          // [{role, content}] sent to the worker
+      var greeted = false;
+      var busy = false;
+
+      function scrollDown() { bodyEl.scrollTop = bodyEl.scrollHeight; }
+
+      // Render text safely, then linkify bare URLs.
+      function addMessage(role, text) {
+        var div = document.createElement('div');
+        div.className = 'tr-msg ' + (role === 'user' ? 'user' : 'bot');
+        div.textContent = text;
+        if (role !== 'user') {
+          div.innerHTML = div.innerHTML.replace(
+            /(https?:\/\/[^\s]+)/g,
+            '<a href="$1" target="_blank" rel="noopener">$1</a>'
+          );
+        }
+        bodyEl.appendChild(div);
+        scrollDown();
+      }
+
+      function showTyping() {
+        var t = document.createElement('div');
+        t.className = 'tr-typing'; t.id = 'trTyping';
+        t.innerHTML = '<span></span><span></span><span></span>';
+        bodyEl.appendChild(t); scrollDown();
+      }
+      function hideTyping() { var t = document.getElementById('trTyping'); if (t) t.remove(); }
+
+      window.trChatOpen = function () {
+        panel.classList.add('open');
+        fab.classList.add('hidden');
+        track('chat_open');
+        if (!greeted) {
+          greeted = true;
+          addMessage('bot', "Hey 🍒 I'm the Time Rich brain. Ask me about the community, upcoming workshops, how to join, or anything AI you're trying to figure out.");
+        }
+        setTimeout(function () { input.focus(); }, 120);
+      };
+      window.trChatClose = function () {
+        panel.classList.remove('open');
+        fab.classList.remove('hidden');
+      };
+
+      form.addEventListener('submit', function (e) {
+        e.preventDefault();
+        var text = input.value.trim();
+        if (!text || busy) return;
+
+        addMessage('user', text);
+        history.push({ role: 'user', content: text });
+        input.value = '';
+        busy = true; sendBtn.disabled = true;
+        showTyping();
+        track('chat_message');
+
+        fetch(FORM_ENDPOINT.replace(/\/$/, '') + '/chat', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ messages: history })
+        })
+          .then(function (r) { return r.json(); })
+          .then(function (res) {
+            hideTyping();
+            if (res && res.ok && res.reply) {
+              addMessage('bot', res.reply);
+              history.push({ role: 'assistant', content: res.reply });
+            } else if (res && res.configured === false) {
+              addMessage('bot', "I'm not switched on just yet — in the meantime, hit “Join the Club” to apply or jump in the WhatsApp 🌈");
+            } else {
+              addMessage('bot', (res && res.error) || "Something glitched. Try me again?");
+            }
+          })
+          .catch(function () {
+            hideTyping();
+            addMessage('bot', "Couldn't reach me right now. Try again in a sec?");
+          })
+          .finally(function () { busy = false; sendBtn.disabled = false; input.focus(); });
+      });
+    })();
   </script>
 
 </body>

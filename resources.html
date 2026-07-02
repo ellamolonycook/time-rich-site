@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Free AI Resources — Time Rich</title>
+  <meta name="description" content="Free AI playbooks, prompts, and agent breakdowns from Time Rich — delegate the shit you hate to AI and buy back your time." />
+  <link rel="canonical" href="https://timerich.ai/resources.html" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;700;800;900&family=Source+Serif+4:opsz,wght@8..60,400&display=swap" rel="stylesheet" />
+  <style>
+    :root { --indigo:#4A2E6F; --charcoal:#44414D; --gold:#E7A83C; --sand:#F6F1FB; --line:rgba(74,46,111,0.12);
+      --rainbow: linear-gradient(90deg,#ff5f6d,#ffc371,#47e891,#36d1dc,#9b5de5,#ff5f6d);
+      --rainbow-pastel: linear-gradient(90deg,#ff8fa3,#ffc56b,#ffe85e,#6fe39a,#6fc4ff,#c08bff,#ff8fa3); }
+    * { margin:0; padding:0; box-sizing:border-box; }
+    body { font-family:'Source Serif 4', Georgia, serif; color:var(--charcoal); background:#fff;
+      border-top:5px solid transparent; border-image:var(--rainbow) 1; }
+    .rh-nav { display:flex; align-items:center; justify-content:space-between; max-width:1080px; margin:0 auto; padding:22px 28px; }
+    .rh-nav .brand { font-family:'Archivo',sans-serif; font-weight:900; text-transform:uppercase; letter-spacing:0.04em; color:var(--indigo); text-decoration:none; font-size:19px; }
+    .rh-nav a.back { font-family:'Archivo',sans-serif; font-weight:700; font-size:14px; color:var(--indigo); text-decoration:none; }
+    .rh-head { max-width:1080px; margin:0 auto; padding:34px 28px 8px; }
+    .rh-eyebrow { font-family:'Archivo',sans-serif; font-weight:800; letter-spacing:0.14em; text-transform:uppercase; font-size:12px; color:var(--gold); }
+    .rh-h1 { font-family:'Archivo',sans-serif; font-weight:900; color:var(--indigo); font-size:clamp(32px,5vw,54px); line-height:1.04; margin:12px 0 14px; }
+    .rh-sub { font-size:19px; max-width:560px; }
+    .rh-filters { max-width:1080px; margin:0 auto; padding:26px 28px 6px; display:flex; flex-wrap:wrap; gap:10px; }
+    .rh-chip { font-family:'Archivo',sans-serif; font-weight:700; font-size:14px; padding:9px 16px; border-radius:999px; border:1.5px solid var(--line); background:#fff; color:var(--indigo); cursor:pointer; }
+    .rh-chip.active { background:var(--rainbow-pastel); background-size:220% 100%; border-color:transparent; color:#14101a; }
+    .rh-grid { max-width:1080px; margin:0 auto; padding:20px 28px 80px; display:grid; grid-template-columns:repeat(3,1fr); gap:26px; }
+    .rh-card { border:1px solid var(--line); border-radius:16px; overflow:hidden; background:#fff; transition:transform .16s ease, box-shadow .25s ease; }
+    .rh-card:hover { transform:translateY(-4px); box-shadow:0 18px 44px rgba(74,46,111,0.14); }
+    .rh-link { text-decoration:none; color:inherit; display:block; }
+    .rh-img { width:100%; aspect-ratio:16/9; object-fit:cover; display:block; background:var(--sand); }
+    .rh-noimg { display:flex; align-items:center; justify-content:center; font-size:44px; }
+    .rh-body { padding:20px; }
+    .rh-badge { font-family:'Archivo',sans-serif; font-weight:800; font-size:11px; letter-spacing:0.1em; text-transform:uppercase; color:var(--gold); margin-bottom:10px; }
+    .rh-card h3 { font-family:'Archivo',sans-serif; font-size:20px; font-weight:800; color:var(--indigo); line-height:1.18; margin-bottom:9px; }
+    .rh-card p { font-size:15px; line-height:1.5; }
+    .rh-date { font-family:'Archivo',sans-serif; font-size:12.5px; color:#9a8ab0; margin-top:14px; }
+    .rh-foot { text-align:center; padding:36px 24px 60px; font-family:'Archivo',sans-serif; font-size:13px; color:#9a8ab0; }
+    .rh-foot a { color:var(--indigo); text-decoration:none; }
+    @media (max-width:900px){ .rh-grid { grid-template-columns:1fr 1fr; } }
+    @media (max-width:600px){ .rh-grid { grid-template-columns:1fr; } }
+  </style>
+</head>
+<body>
+  <nav class="rh-nav">
+    <a class="brand" href="/">Time Rich 🍒</a>
+    <a class="back" href="/">← Back to site</a>
+  </nav>
+  <header class="rh-head">
+    <div class="rh-eyebrow">Free Resources</div>
+    <h1 class="rh-h1">Delegate the shit you hate to AI.</h1>
+    <p class="rh-sub">Playbooks, prompts and agent breakdowns — the good stuff, free. Not AI awareness. Implementation.</p>
+  </header>
+  <div class="rh-filters" id="rhFilters">
+        <button class="rh-chip active" data-filter="all">All</button>
+        <button class="rh-chip" data-filter="skills">Skills</button>
+        <button class="rh-chip" data-filter="community">Community</button>
+        <button class="rh-chip" data-filter="adoption">Adoption Gap</button>
+        <button class="rh-chip" data-filter="stories">Founder Stories</button>
+        <button class="rh-chip" data-filter="workflows">Workflows</button>
+        <button class="rh-chip" data-filter="agents">AI Agents</button>
+  </div>
+  <main class="rh-grid" id="rhGrid">
+      <article class="rh-card" data-topic="agents">
+        <a class="rh-link" href="resources/i-mapped-14-agents-im-sharing-all.html">
+          <img class="rh-img" src="Images/resources/i-mapped-14-agents-im-sharing-all.jpg" alt="I mapped 14 agents. I'm sharing all of it!" loading="lazy" />
+          <div class="rh-body">
+            <div class="rh-badge">AI Agents</div>
+            <h3>I mapped 14 agents. I'm sharing all of it!</h3>
+            <p>I spend 4 hours every single day diving into new AI tools, frameworks, and research. That&amp;#8217;s 20 hours a week of pure learning time. Most people don&amp;#8217;t have that.</p>
+            <div class="rh-date">June 25, 2026</div>
+          </div>
+        </a>
+      </article>
+
+      <article class="rh-card" data-topic="community">
+        <a class="rh-link" href="resources/self-improving-ai-agents-and-live.html">
+          <img class="rh-img" src="Images/resources/self-improving-ai-agents-and-live.jpg" alt="Self-Improving AI Agents &amp; Live Workshop" loading="lazy" />
+          <div class="rh-body">
+            <div class="rh-badge">Community</div>
+            <h3>Self-Improving AI Agents &amp; Live Workshop</h3>
+            <p>AI is rewriting how companies get built, how decisions get made, who leads the next decade. Most people are watching it happen to them. I want women running it.</p>
+            <div class="rh-date">June 23, 2026</div>
+          </div>
+        </a>
+      </article>
+
+      <article class="rh-card" data-topic="skills">
+        <a class="rh-link" href="resources/prompt-to-extract-your-origin-story.html">
+          <div class="rh-img rh-noimg">🍒</div>
+          <div class="rh-body">
+            <div class="rh-badge">Skills</div>
+            <h3>Prompt to Extract Your Origin Story (and upcoming AI Agent Workshop)</h3>
+            <p>I&amp;#8217;ve watched thousands of founders try to sell something.</p>
+            <div class="rh-date">June 18, 2026</div>
+          </div>
+        </a>
+      </article>
+
+      <article class="rh-card" data-topic="community">
+        <a class="rh-link" href="resources/saftey-is-sexy-with-ai-agents-ny.html">
+          <div class="rh-img rh-noimg">🍒</div>
+          <div class="rh-body">
+            <div class="rh-badge">Community</div>
+            <h3>Saftey is Sexy with AI Agents - NY Tech Week Events!</h3>
+            <p>Most of us are in one of two camps with AI. Avoiding it and still doing admin at 11pm. Or all in, connected to everything, nervously checking what it actually did.</p>
+            <div class="rh-date">May 29, 2026</div>
+          </div>
+        </a>
+      </article>
+  </main>
+  <div class="rh-foot">
+    New drops weekly · <a href="https://iiculture.substack.com/" target="_blank" rel="noopener">Subscribe on Substack ☕</a> · <a href="/#apply">Join the Club 🌈</a>
+  </div>
+  <script>
+    var f = document.getElementById('rhFilters');
+    f && f.addEventListener('click', function (e) {
+      var b = e.target.closest('.rh-chip'); if (!b) return;
+      f.querySelectorAll('.rh-chip').forEach(function (c){ c.classList.remove('active'); });
+      b.classList.add('active');
+      var val = b.getAttribute('data-filter');
+      document.querySelectorAll('#rhGrid .rh-card').forEach(function (card){
+        card.style.display = (val === 'all' || card.getAttribute('data-topic') === val) ? '' : 'none';
+      });
+    });
+  </script>
+</body>
+</html>

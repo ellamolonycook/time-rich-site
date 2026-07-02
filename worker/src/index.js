@@ -3,8 +3,18 @@
 // database. It reads your database schema first, so it only writes to columns
 // that actually exist — and it always writes the full submission into the page
 // body, so nothing is ever lost even if a column is missing.
+//
+// It also powers the corner chatbot ("the brain") at POST /chat — see brain.js.
+
+import { SYSTEM_PROMPT } from "./brain.js";
 
 const NOTION_VERSION = "2022-06-28";
+
+// Chatbot config
+const ANTHROPIC_MODEL = "claude-haiku-4-5-20251001"; // cheap + good; swap for a Sonnet id if you want more depth
+const MAX_USER_CHARS = 1500;   // per-message length guard (abuse / cost control)
+const MAX_TURNS = 16;          // how many prior messages we keep in context
+const MAX_OUTPUT_TOKENS = 600; // keeps replies short + cheap
 
 export default {
   async fetch(request, env) {
@@ -15,6 +25,12 @@ export default {
     }
     if (request.method !== "POST") {
       return json({ error: "Method not allowed" }, 405, cors);
+    }
+
+    // Route: corner chatbot -> Anthropic.
+    const path = new URL(request.url).pathname.replace(/\/+$/, "");
+    if (path.endsWith("/chat")) {
+      return handleChat(request, env, cors);
     }
 
     // Application submission -> Notion.
@@ -89,6 +105,59 @@ export default {
     }
   },
 };
+
+// Corner chatbot. Accepts { messages: [{role, content}, ...] }, calls Claude with
+// the Time Rich brain as the system prompt, returns { ok, reply }.
+async function handleChat(request, env, cors) {
+  if (!env.ANTHROPIC_API_KEY) {
+    return json({ ok: false, configured: false, error: "Chat isn't switched on yet." }, 200, cors);
+  }
+
+  let body;
+  try { body = await request.json(); } catch { return json({ ok: false, error: "Invalid JSON" }, 400, cors); }
+
+  // Clean + clamp the conversation we received from the browser.
+  const incoming = Array.isArray(body.messages) ? body.messages : [];
+  const messages = incoming
+    .filter((m) => m && (m.role === "user" || m.role === "assistant") && typeof m.content === "string")
+    .map((m) => ({ role: m.role, content: clip(m.content.trim(), MAX_USER_CHARS) }))
+    .filter((m) => m.content)
+    .slice(-MAX_TURNS);
+
+  if (!messages.length || messages[messages.length - 1].role !== "user") {
+    return json({ ok: false, error: "Say something first." }, 400, cors);
+  }
+
+  try {
+    const r = await fetch("https://api.anthropic.com/v1/messages", {
+      method: "POST",
+      headers: {
+        "x-api-key": env.ANTHROPIC_API_KEY,
+        "anthropic-version": "2023-06-01",
+        "content-type": "application/json",
+      },
+      body: JSON.stringify({
+        model: ANTHROPIC_MODEL,
+        max_tokens: MAX_OUTPUT_TOKENS,
+        system: SYSTEM_PROMPT,
+        messages,
+      }),
+    });
+
+    if (!r.ok) {
+      return json({ ok: false, error: "The brain is having a moment. Try again in a sec." }, 502, cors);
+    }
+    const data = await r.json();
+    const reply = (data.content || [])
+      .filter((b) => b.type === "text")
+      .map((b) => b.text)
+      .join("\n")
+      .trim();
+    return json({ ok: true, reply: reply || "Hmm, I blanked. Ask me again?" }, 200, cors);
+  } catch (err) {
+    return json({ ok: false, error: "Couldn't reach the brain. Try again." }, 500, cors);
+  }
+}
 
 function corsHeaders(request, env) {
   const allowed = (env.ALLOWED_ORIGIN || "*")
