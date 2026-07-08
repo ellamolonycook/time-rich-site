@@ -1,0 +1,387 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="robots" content="noindex, nofollow" />
+  <title>The AI Content Machine — build the system behind 10K→400K · Ajay Yadav × Ella Molony Cook</title>
+  <meta name="description" content="Part live, part on-demand. Build the exact AI content machine behind 10K→400K followers in 4 months — on-demand modules + 2 live calls, on Claude and Claude Cowork. 3 tiers, from $197. Doors close Friday, Sept 4." />
+  <meta name="theme-color" content="#0E0E0E" />
+
+  <!-- Open Graph -->
+  <meta property="og:type" content="website" />
+  <meta property="og:site_name" content="The Vibe Founder × Time Rich" />
+  <meta property="og:title" content="The AI Content Machine — the system behind 10K→400K in 4 months" />
+  <meta property="og:description" content="Not luck. Not virality. A machine. Build the agent system that produces your content while you build your company. On-demand modules + 2 live calls, on Claude + Claude Cowork. From $197." />
+
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=Geist+Mono:wght@300;400;500&display=swap" rel="stylesheet" />
+
+  <style>
+    /* Tokens mirrored from The Vibe Founder Brand Guide v11 · if guide and this disagree, guide wins */
+    :root{
+      --dark:#0E0E0E; --ink:#1A1A1A; --cream:#F0EDE8; --page:#E8E5E0;
+      --amber:#F09A1A; --amber-deep:#C77C0E;
+      --rule-d:rgba(255,255,255,0.10); --rule-l:rgba(10,10,10,0.10);
+      --on-d-1:rgba(255,255,255,0.90); --on-d-2:rgba(255,255,255,0.62); --on-d-3:rgba(255,255,255,0.40);
+      --serif:'DM Serif Display', Georgia, 'Times New Roman', serif;
+      --mono:'Geist Mono', ui-monospace, 'SF Mono', Menlo, monospace;
+      --page-pad:48px;
+    }
+    *{margin:0;padding:0;box-sizing:border-box}
+    html{scroll-behavior:smooth}
+    body{background:var(--dark);color:var(--on-d-1);font-family:var(--mono);font-size:14px;line-height:1.7;-webkit-font-smoothing:antialiased}
+    h1,h2,h3{font-family:var(--serif);font-weight:400;letter-spacing:-0.02em;line-height:1.05;color:#fff}
+    a{color:inherit}
+    .wrap{max-width:1080px;margin:0 auto;padding:0 var(--page-pad)}
+    .narrow{max-width:720px}
+    section{padding:88px 0;border-top:0.5px solid var(--rule-d)}
+
+    /* eyebrow + status */
+    .eyebrow{font-family:var(--mono);font-size:11px;letter-spacing:0.22em;text-transform:uppercase;color:var(--amber)}
+    .status{display:inline-flex;align-items:center;gap:9px;font-family:var(--mono);font-size:11px;letter-spacing:0.16em;text-transform:uppercase;color:var(--amber)}
+    .dot{width:7px;height:7px;border-radius:9999px;background:var(--amber);animation:pulse 2s ease-in-out infinite}
+    @keyframes pulse{0%,100%{opacity:.45;transform:scale(1)}50%{opacity:1;transform:scale(1.15)}}
+    @media (prefers-reduced-motion: reduce){.dot{animation:none;opacity:1}}
+
+    /* nav */
+    nav{position:sticky;top:0;z-index:50;background:rgba(14,14,14,.9);backdrop-filter:blur(8px);border-bottom:0.5px solid var(--rule-d)}
+    .nav-in{display:flex;align-items:center;justify-content:space-between;height:66px}
+    .wordmark{font-family:var(--serif);font-size:22px;color:#fff;letter-spacing:-0.02em}
+    .wordmark .recede{opacity:.30}
+    .nav-cta{font-family:var(--mono);font-size:12px;letter-spacing:0.14em;text-transform:uppercase;background:var(--amber);color:var(--dark);padding:9px 16px;text-decoration:none;font-weight:500}
+
+    /* hero */
+    .hero{padding:64px 0 80px}
+    h1{font-size:clamp(40px,7vw,80px);margin:26px 0 0}
+    h1 em{font-style:italic;color:var(--amber)}
+    .lede{font-size:17px;color:var(--on-d-2);max-width:60ch;margin-top:24px}
+    .lede b{color:#fff;font-weight:400}
+
+    /* buttons — exactly one amber per section */
+    .cta{display:inline-flex;align-items:center;gap:8px;font-family:var(--mono);font-size:13px;font-weight:500;letter-spacing:0.14em;text-transform:uppercase;background:var(--amber);color:var(--dark);padding:14px 24px;text-decoration:none;border:0;cursor:pointer;transition:opacity .12s}
+    .cta:hover{opacity:.85}
+    .ghost{display:inline-flex;align-items:center;gap:8px;font-family:var(--mono);font-size:13px;letter-spacing:0.14em;text-transform:uppercase;color:var(--on-d-1);padding:14px 24px;text-decoration:none;border:0.5px solid var(--on-d-3);transition:opacity .12s}
+    .ghost:hover{opacity:.7}
+    .cta-line{font-family:var(--mono);font-size:11px;letter-spacing:0.14em;text-transform:uppercase;color:var(--on-d-3);margin-top:16px}
+
+    /* receipts */
+    .receipts{display:grid;grid-template-columns:repeat(3,1fr);gap:2px;margin-top:40px}
+    .receipt{background:var(--ink);border-left:2px solid var(--amber);padding:18px 22px}
+    .receipt .label{font-family:var(--mono);font-size:11px;letter-spacing:0.16em;text-transform:uppercase;color:var(--amber);margin-bottom:8px}
+    .receipt .value{font-family:var(--serif);font-size:34px;color:#fff;line-height:1;margin-bottom:8px}
+    .receipt .cap{font-family:var(--mono);font-size:11px;color:var(--on-d-2);line-height:1.6}
+
+    h2{font-size:clamp(28px,4.4vw,46px)}
+    .sec-lede{font-size:18px;color:var(--on-d-2);max-width:62ch;margin-top:18px}
+    p+p{margin-top:16px}
+    .body{color:var(--on-d-2);max-width:64ch}
+    .body b{color:#fff;font-weight:400}
+
+    /* modules */
+    .mods{display:grid;gap:2px;margin-top:40px}
+    .mod{background:var(--ink);border-left:2px solid var(--rule-d);padding:26px 28px}
+    .mod.key{border-left-color:var(--amber)}
+    .mod .tag{font-family:var(--mono);font-size:11px;letter-spacing:0.16em;text-transform:uppercase;color:var(--amber)}
+    .mod h3{font-size:23px;margin:8px 0 6px}
+    .mod .meta{font-family:var(--mono);font-size:11px;letter-spacing:0.1em;text-transform:uppercase;color:var(--on-d-3);margin-bottom:12px}
+    .mod p{color:var(--on-d-2);font-size:14px}
+    .mod .leave{margin-top:12px;color:var(--amber);font-size:13px}
+
+    /* pricing */
+    .price-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:2px;margin-top:36px}
+    .price{background:var(--ink);border-top:2px solid var(--rule-d);padding:30px 28px}
+    .price.vip{border-top-color:var(--amber)}
+    .price .k{font-family:var(--mono);font-size:11px;letter-spacing:0.16em;text-transform:uppercase;color:var(--on-d-3)}
+    .price .amt{font-family:var(--serif);font-size:48px;color:#fff;line-height:1;margin:10px 0 4px}
+    .price .amt small{font-size:15px;color:var(--on-d-3);font-family:var(--mono)}
+    .price ul{list-style:none;margin:16px 0 0}
+    .price li{font-size:13px;color:var(--on-d-2);padding:7px 0 7px 18px;position:relative;border-top:0.5px solid var(--rule-d)}
+    .price li:first-child{border-top:0}
+    .price li:before{content:"·";position:absolute;left:2px;color:var(--amber)}
+
+    /* pricing — bold rebuild */
+    .tiers{display:grid;grid-template-columns:1fr 1fr 1.07fr;gap:2px;margin-top:42px;align-items:stretch}
+    .tier{background:var(--ink);border:0.5px solid var(--rule-d);border-top:2px solid var(--rule-d);padding:34px 26px 26px;position:relative;display:flex;flex-direction:column;transition:transform .16s ease}
+    .tier:hover{transform:translateY(-5px)}
+    .tier .badge{font-family:var(--mono);font-size:11px;color:var(--on-d-3);border:0.5px solid var(--rule-d);width:32px;height:26px;display:flex;align-items:center;justify-content:center;margin-bottom:18px;letter-spacing:.05em}
+    .tier .tname{font-family:var(--mono);font-size:11px;letter-spacing:.16em;text-transform:uppercase;color:var(--on-d-2)}
+    .tier .amt{font-family:var(--serif);font-size:56px;color:#fff;line-height:1;margin:12px 0 3px}
+    .tier .amt sup{font-size:22px;top:-1.4em;color:var(--on-d-3);font-family:var(--mono)}
+    .tier .delta{font-family:var(--mono);font-size:11px;letter-spacing:.04em;color:var(--amber);min-height:16px}
+    .tier .eb{align-self:flex-start;font-family:var(--mono);font-size:10px;letter-spacing:.16em;text-transform:uppercase;color:var(--amber);border:0.5px solid var(--amber);padding:3px 9px;margin:14px 0 18px}
+    .tier ul{list-style:none;margin:0 0 20px;flex:1}
+    .tier li{font-family:var(--mono);font-size:13px;color:var(--on-d-2);line-height:1.5;padding:11px 0 11px 24px;position:relative;border-top:0.5px solid var(--rule-d)}
+    .tier li:first-child{border-top:none}
+    .tier li:before{content:"→";position:absolute;left:2px;color:var(--amber)}
+    .tier li.all{color:#fff}
+    .tier li.all:before{content:"✓";left:1px}
+    .tier .foot{font-family:var(--mono);font-size:10.5px;letter-spacing:.05em;color:var(--on-d-3);border-top:0.5px solid var(--rule-d);padding-top:13px;margin-bottom:18px;line-height:1.5}
+    .tier .pick{text-align:center;font-family:var(--mono);font-size:12px;letter-spacing:.14em;text-transform:uppercase;padding:15px;text-decoration:none;border:1px solid var(--amber);color:#fff;background:rgba(240,154,26,.08);transition:background .14s ease}
+    .tier .pick:hover{background:rgba(240,154,26,.18)}
+    .tier.hero{border:2px solid var(--amber);background:linear-gradient(180deg,rgba(240,154,26,.08),var(--ink) 44%)}
+    .tier.hero .amt{font-size:66px}
+    .tier.hero .pick{background:var(--amber);color:var(--dark);border-color:var(--amber);font-weight:500}
+    .tier.hero .pick:hover{background:var(--amber);opacity:.85}
+    .tier.pop{border-top-color:var(--amber)}
+    .tier .flag{position:absolute;top:-1px;right:-1px;font-family:var(--mono);font-size:10px;letter-spacing:.12em;text-transform:uppercase;padding:5px 11px}
+    .tier .flag.hot{background:var(--amber);color:var(--dark);font-weight:500}
+    .tier .flag.mp{background:transparent;color:var(--amber);border:0.5px solid var(--amber)}
+    @media(max-width:760px){.tiers{grid-template-columns:1fr}}
+
+    /* teachers */
+    .who{display:grid;grid-template-columns:1fr 1fr;gap:2px;margin-top:36px}
+    .who .card{background:var(--ink);padding:28px}
+    .who .name{font-family:var(--serif);font-size:26px;color:#fff}
+    .who .role{font-family:var(--mono);font-size:11px;letter-spacing:0.16em;text-transform:uppercase;color:var(--amber);margin:6px 0 14px}
+    .who .stat{font-size:13px;color:var(--on-d-2);padding:5px 0;border-top:0.5px solid var(--rule-d)}
+    .who .stat:first-of-type{border-top:0}
+
+    /* faq */
+    details{border-top:0.5px solid var(--rule-d);padding:20px 0}
+    summary{font-family:var(--serif);font-size:20px;color:#fff;cursor:pointer;list-style:none;display:flex;justify-content:space-between;gap:16px}
+    summary::-webkit-details-marker{display:none}
+    summary:after{content:"+";color:var(--amber);font-family:var(--mono)}
+    details[open] summary:after{content:"–"}
+    details p{margin-top:12px;color:var(--on-d-2);font-size:14px;max-width:64ch}
+
+    hr.hair{height:0.5px;background:var(--rule-d);border:0;margin:0}
+    footer{padding:48px 0;border-top:0.5px solid var(--rule-d);font-family:var(--mono);font-size:11px;letter-spacing:0.06em;color:var(--on-d-3);text-align:center}
+    .cobrand{font-family:var(--mono);font-size:12px;letter-spacing:0.14em;text-transform:uppercase;color:var(--on-d-2)}
+    .figure{margin:0}
+    .shot{width:100%;display:block;border:0.5px solid var(--rule-d)}
+    .figure figcaption{font-family:var(--mono);font-size:10.5px;letter-spacing:.12em;text-transform:uppercase;color:var(--on-d-3);margin-top:12px;text-align:center}
+
+    @media(max-width:760px){
+      :root{--page-pad:22px}
+      .receipts,.price-grid,.who{grid-template-columns:1fr}
+    }
+  </style>
+</head>
+<body>
+
+  <nav><div class="wrap nav-in">
+    <span class="wordmark"><span class="recede">The</span>Vibe<span class="recede">Founder</span></span>
+    <a href="#seat" class="nav-cta">Build the machine →</a>
+  </div></nav>
+
+  <!-- HERO -->
+  <header class="hero"><div class="wrap">
+    <span class="status"><span class="dot" aria-hidden="true"></span>The AI Content Machine · doors close Friday, Sept 4 · part live, part on-demand</span>
+    <h1>10K to 400K in 4 months.<br>Not luck. A <em>machine.</em></h1>
+    <p class="lede"><b>Part live, part on-demand. You build the exact agent system behind my growth</b> — module by module on your own time, with 2 live calls to keep you moving, on Claude and Claude Cowork. Agents that research, write, and produce in your voice while you build your company. My content team runs on this machine. Now you get the machine, without the team.</p>
+    <div class="receipts">
+      <div class="receipt"><div class="label">Output</div><div class="value">10K → 400K</div><div class="cap">followers · 4 months · 1 machine</div></div>
+      <div class="receipt"><div class="label">Track record</div><div class="value">20M+</div><div class="cap">users · last company · Khosla &amp; Craft backed</div></div>
+      <div class="receipt"><div class="label">Your time</div><div class="value">2 calls</div><div class="cap">live · plus on-demand modules on your time · 6-month access</div></div>
+    </div>
+    <div style="margin-top:36px;display:flex;gap:12px;flex-wrap:wrap">
+      <a href="#seat" class="cta">Build the machine →</a>
+      <a href="#machine" class="ghost">See what's inside</a>
+    </div>
+    <div class="cta-line">From $197 · Early Bird Pricing · doors close Friday, Sept 4</div>
+  </div></header>
+
+  <!-- PORTRAIT BAND -->
+  <section style="padding:44px 0">
+    <div class="wrap">
+      <figure class="figure">
+        <img class="shot" src="images/ajay-ella-shot-1.png" alt="Ella Molony Cook and Ajay Yadav" style="max-height:560px;object-fit:cover;object-position:center 22%" />
+        <figcaption>Ella Molony Cook × Ajay Yadav · two operators, one machine</figcaption>
+      </figure>
+    </div>
+  </section>
+
+  <!-- THE RECEIPT -->
+  <section><div class="wrap narrow">
+    <span class="eyebrow">§01 · The receipt</span>
+    <h2 style="margin-top:16px">This machine is what my content team runs on.</h2>
+    <p class="sec-lede">3 companies. The last one crossed 20M+ users. Khosla and Craft wrote the checks. I know what a growth engine looks like.</p>
+    <p class="body" style="margin-top:20px">So when I started building an audience, I refused to do it the way everyone tells you to — grind out posts at 6am, chase trends, burn 20 hours a week feeding an algorithm that forgets you by Thursday.</p>
+    <p class="body">I built a content machine instead. Agents that research, write, and produce in my voice — running on Claude and Claude Cowork. 10K to 400K in 4 months.</p>
+    <p class="body"><b>Here's the part nobody says out loud: I have a content team. This machine is what my team runs on.</b> Every post, every caption, every carousel moves through it. Now you get the machine. Without the team.</p>
+  </div></section>
+
+  <!-- THE PROBLEM -->
+  <section><div class="wrap narrow">
+    <span class="eyebrow">§02 · What everyone gets wrong</span>
+    <h2 style="margin-top:16px">You don't have a consistency problem.<br>You have an infrastructure problem.</h2>
+    <p class="sec-lede">Every founder I know says the same thing: "I know content matters. I don't have time."</p>
+    <p class="body" style="margin-top:20px">Correct. You don't. You're running a company. Content is a full-time job and you already have one.</p>
+    <p class="body"><b>The answer isn't discipline. Discipline is a tax on people who didn't build systems.</b> The answer is a machine that knows your voice, studies your niche, and produces while you build.</p>
+  </div></section>
+
+  <!-- THE MACHINE -->
+  <section id="machine"><div class="wrap narrow">
+    <span class="eyebrow">§03 · The machine</span>
+    <h2 style="margin-top:16px">3 tiers. Cumulative. Pick your depth.</h2>
+    <p class="sec-lede">Each tier contains everything below it. You build module by module, on your own time, on your own business — not slideware.</p>
+    <div class="mods">
+      <div class="mod key">
+        <div class="tag">Tier 1 · $197 · the foundation</div>
+        <h3>the content OS</h3>
+        <div class="meta">Pre-recorded modules · everything else sits on this</div>
+        <p>The Content Operating System — the Brain that holds your positioning plus your Tone of Voice, encoded so agents write like you, not like a bot. The Research Agent that finds the top-performing content in your niche and spots trends before they peak. The Caption Writer Agent that runs on every post you publish.</p>
+        <div class="leave">You leave with: a brain that knows your voice, and 2 agents already producing.</div>
+      </div>
+      <div class="mod">
+        <div class="tag">Tier 2 · $295 · adds the long-form engines</div>
+        <h3>the written machine</h3>
+        <div class="meta">Everything in Tier 1 · plus 2 writers</div>
+        <p>The LinkedIn Writer Agent and the Substack Writer Agent. Written content that compounds — built once, producing weekly, in your voice, off the same Brain.</p>
+        <div class="leave">You leave with: long-form running on autopilot across LinkedIn and Substack.</div>
+      </div>
+      <div class="mod key">
+        <div class="tag">Tier 3 · $395 · adds the production line</div>
+        <h3>the full machine</h3>
+        <div class="meta">Everything in Tier 2 · plus video &amp; visuals</div>
+        <p>Instagram carousels. Faceless videos. The video editor pipeline. This is the complete system — the one my team runs. Every format, every channel, one machine.</p>
+        <div class="leave">You leave with: the exact stack behind 10K → 400K, front to back.</div>
+      </div>
+    </div>
+  </div></section>
+
+  <!-- DELIVERY -->
+  <section><div class="wrap narrow">
+    <span class="eyebrow">§04 · How it's delivered</span>
+    <h2 style="margin-top:16px">Part live, part on-demand.<br>On purpose.</h2>
+    <p class="sec-lede">On-demand modules you move through at your own speed — plus 2 live calls that make sure the machine actually gets built.</p>
+    <div class="mods">
+      <div class="mod">
+        <div class="tag">Format</div>
+        <h3>on-demand video modules</h3>
+        <p>Pre-recorded, yours from day one. Watch at 2x at midnight if that's your speed. Build as you go — each module ends with a working piece of the machine.</p>
+      </div>
+      <div class="mod">
+        <div class="tag">Access</div>
+        <h3>6 months, from the day you buy</h3>
+        <p>Go at your own speed — no weekly cohort grind eating your Tuesdays. The agents you build are yours — they keep running long after the modules end.</p>
+      </div>
+      <div class="mod key">
+        <div class="tag">Live · 2 calls total</div>
+        <h3>kickoff with Ella · Q&amp;A with Ajay</h3>
+        <p>A live kickoff with Ella to get your machine standing, and a live Q&amp;A with me to pressure-test it. The modules are yours on demand; these 2 calls are where it clicks — then the machine works and you don't.</p>
+      </div>
+    </div>
+    <p class="body" style="margin-top:28px"><b>Who this is for:</b> founders who know distribution decides who wins and can't spend 20 hours a week on it. Creators stuck at a plateau because output is capped by their calendar. Operators who'd rather build a system once than perform consistency forever. <b>Who it's not for:</b> people who want a magic button. You will build this. The modules show every step, but you do the reps. Once it's built, it runs.</p>
+  </div></section>
+
+  <!-- WHO'S TEACHING -->
+  <section><div class="wrap narrow">
+    <span class="eyebrow">§05 · Who's teaching</span>
+    <h2 style="margin-top:16px">2 operators. Both sides of the machine.</h2>
+    <p class="cobrand" style="margin-top:18px">AJAY YADAV &nbsp;x&nbsp; ELLA MOLONY COOK</p>
+    <figure class="figure" style="margin:24px 0 6px">
+      <img class="shot" src="images/ajay-ella-shot-3.png" alt="Ella and Ajay in the studio" style="max-height:480px;object-fit:cover;object-position:center 42%" />
+    </figure>
+    <div class="who">
+      <div class="card">
+        <div class="name">Ajay Yadav</div>
+        <div class="role">The amplifier · growth</div>
+        <div class="stat">3x founder · last company past 20M users</div>
+        <div class="stat">10K → 400K followers in 4 months</div>
+        <div class="stat">Khosla &amp; Craft backed</div>
+        <div class="stat">The machine his content team runs on · live Q&amp;A call</div>
+      </div>
+      <div class="card">
+        <div class="name">Ella Molony Cook</div>
+        <div class="role">The operator · the system</div>
+        <div class="stat">4 companies · 1 exit · early Anthropic investor</div>
+        <div class="stat">Runs Time Rich on one human and a stack of agents</div>
+        <div class="stat">Dyslexic dropout. Yes, really.</div>
+        <div class="stat">Builds these systems for a living · live kickoff call</div>
+      </div>
+    </div>
+    <p class="body" style="margin-top:28px">Ella builds these systems for a living. I use them to grow. Most courses give you one half and leave you stuck at the other. You get both sides, from the 2 people who run them daily on their own companies.</p>
+  </div></section>
+
+  <!-- PRICING -->
+  <section id="seat"><div class="wrap narrow">
+    <span class="eyebrow">§06 · Build the machine</span>
+    <h2 style="margin-top:16px">Real prices. No fake stack.</h2>
+    <p class="sec-lede">I spent months building this system with a funded company's worth of resources behind it. You get the whole architecture for $197–$395 with Early Bird Pricing. Doors close Friday, Sept 4 — that's the last day to join. The course starts Monday, Sept 7.</p>
+    <div class="tiers">
+      <div class="tier">
+        <div class="badge">01</div>
+        <div class="tname">The Content OS</div>
+        <div class="amt"><sup>$</sup>197</div>
+        <div class="delta">Where every machine starts</div>
+        <span class="eb">Early Bird</span>
+        <ul>
+          <li>The Content OS — Brain + Tone of Voice</li>
+          <li>The Research Agent — niche + trend intel</li>
+          <li>The Caption Writer — on every post</li>
+        </ul>
+        <div class="foot">On-demand modules + 2 live calls · 6-month access</div>
+        <a href="#" class="pick">Start here →</a>
+      </div>
+
+      <div class="tier pop">
+        <span class="flag mp">Most popular</span>
+        <div class="badge">02</div>
+        <div class="tname">The Written Machine</div>
+        <div class="amt"><sup>$</sup>295</div>
+        <div class="delta">+$98 on Tier 1</div>
+        <span class="eb">Early Bird</span>
+        <ul>
+          <li class="all">Everything in Tier 1</li>
+          <li>The LinkedIn Writer Agent</li>
+          <li>The Substack Writer Agent</li>
+          <li>Long-form that compounds — built once, running weekly</li>
+        </ul>
+        <div class="foot">On-demand modules + 2 live calls · 6-month access</div>
+        <a href="#" class="pick">Add the channels →</a>
+      </div>
+
+      <div class="tier hero">
+        <span class="flag hot">The full machine</span>
+        <div class="badge">03</div>
+        <div class="tname" style="color:var(--amber)">The Full Machine</div>
+        <div class="amt"><sup>$</sup>395</div>
+        <div class="delta">+$100 on Tier 2</div>
+        <span class="eb">Early Bird</span>
+        <ul>
+          <li class="all">Everything in Tier 2</li>
+          <li>Instagram carousels</li>
+          <li>Faceless videos</li>
+          <li>The video editor pipeline — the complete system my team runs</li>
+        </ul>
+        <div class="foot">On-demand modules + 2 live calls · 6-month access</div>
+        <a href="#" class="pick">Build the full machine →</a>
+      </div>
+    </div>
+    <div class="cta-line" style="margin-top:28px">Every tier is Early Bird Pricing · doors close Friday, Sept 4 · course starts Monday, Sept 7</div>
+    <p class="body" style="margin-top:26px">Do the math. The machine costs less than a single day of a freelance ghostwriter. And it doesn't quit, doesn't miss deadlines, and never forgets your voice. One good post can change your pipeline. 400K followers changed my company.</p>
+  </div></section>
+
+  <!-- FAQ -->
+  <section><div class="wrap narrow">
+    <span class="eyebrow">§07 · Questions</span>
+    <h2 style="margin-top:16px">The honest answers.</h2>
+    <div style="margin-top:20px">
+      <details><summary>Is this live or on-demand?</summary><p>Both. On-demand video modules you move through on your own time, with 6-month access from the day you buy — plus 2 live calls: a kickoff with Ella to get your machine standing, and a Q&amp;A with Ajay to pressure-test it. No weekly cohort grind. The modules are yours on demand; the live calls keep you moving.</p></details>
+      <details><summary>Which tier should I pick?</summary><p>The tiers are cumulative. Tier 1 ($197) is the foundation — the Content OS, Research Agent and Caption Writer. Tier 2 ($295) adds the long-form engines: the LinkedIn Writer and Substack Writer. Tier 3 ($395) adds the full production line: Instagram carousels, faceless videos and the video editor pipeline — the complete system Ajay's team runs. If you only publish short-form, start at Tier 1. If content is your growth channel, take the full machine.</p></details>
+      <details><summary>What tools do we build on?</summary><p>Claude and Claude Cowork. The thinking transfers to any stack, but every build is real, on your own business — not slideware.</p></details>
+      <details><summary>Do I need to be technical?</summary><p>No. The modules show every step. But this is not a magic button — you do the reps. You build the machine once, then it runs.</p></details>
+      <details><summary>What happens after 6 months?</summary><p>Module access runs 6 months from purchase. The agents you build are yours — they live in your accounts and keep producing long after the course ends.</p></details>
+      <details><summary>Why these dates?</summary><p>Doors close Friday, Sept 4 — the last day to join and the last chance at Early Bird Pricing. The course starts Monday, Sept 7 with the live kickoff with Ella. Miss the window, miss the machine.</p></details>
+    </div>
+  </div></section>
+
+  <!-- LAST CALL -->
+  <section><div class="wrap narrow" style="text-align:center">
+    <span class="status" style="justify-content:center"><span class="dot" aria-hidden="true"></span>Doors close Friday, Sept 4 · course starts Monday, Sept 7</span>
+    <h2 style="margin-top:20px">10K to 400K in 4 months.<br>The system is the story. Now it's yours.</h2>
+    <div style="margin-top:30px"><a href="#seat" class="cta">See the 3 offers →</a></div>
+    <div class="cta-line">From $197 · Early Bird Pricing until Friday, Sept 4</div>
+  </div></section>
+
+  <hr class="hair" />
+  <footer><div class="wrap">
+    The AI Content Machine · The Vibe Founder × Time Rich · Ajay Yadav x Ella Molony Cook<br>
+    Questions? <a href="mailto:emc@timerich.ai" style="color:var(--on-d-2)">emc@timerich.ai</a>
+  </div></footer>
+
+</body>
+</html>
