@@ -1,0 +1,478 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>The AI Content Machine — Member Portal</title>
+  <meta name="robots" content="noindex, nofollow" />
+  <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32.png" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;600;700;800;900&family=Inter:wght@400;500;600&display=swap" rel="stylesheet" />
+  <style>
+    /* Neutral, professional palette — black / white / purple only */
+    :root{
+      --bg:#FAFAFA;--card:#FFFFFF;--ink:#141414;--muted:#6B6B6B;--line:#E6E6E6;
+      --brand:#4A2E6F;      /* Time Rich purple — the only accent */
+      --brand-2:#4A2E6F;
+    }
+    *{margin:0;padding:0;box-sizing:border-box}
+    body{font-family:'Inter',sans-serif;color:var(--ink);background:var(--bg);line-height:1.6;-webkit-font-smoothing:antialiased}
+    h1,h2,h3{font-family:'Archivo',sans-serif;color:var(--ink);letter-spacing:-.015em;line-height:1.2}
+    a{color:var(--brand-2);text-decoration:none}
+    .wrap{max-width:760px;margin:0 auto;padding:0 22px}
+    nav{background:var(--card);border-bottom:1px solid var(--line)}
+    .nav-inner{display:flex;align-items:center;justify-content:space-between;height:64px}
+    .brand{font-family:'Archivo';font-weight:800;color:var(--ink);font-size:16px;letter-spacing:.02em}
+    .btn{display:inline-block;background:var(--brand);color:#fff;font-family:'Archivo';font-weight:700;padding:11px 20px;border-radius:8px;font-size:14px;border:none;cursor:pointer}
+    .btn:hover{opacity:.92}
+    header{padding:38px 0 6px}
+    header .eyebrow{font-family:'Archivo';font-weight:700;font-size:12px;letter-spacing:.12em;text-transform:uppercase;color:var(--muted)}
+    header h1{font-size:28px;margin:6px 0 4px}
+    header p{font-size:14px;color:var(--muted)}
+    section.block{margin:26px 0}
+    h2.sec{font-size:13px;font-family:'Archivo';font-weight:800;text-transform:uppercase;letter-spacing:.09em;color:var(--muted);margin-bottom:12px}
+    .card{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:22px}
+    /* sessions / modules */
+    .sess{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:15px 0;border-bottom:1px solid var(--line)}
+    .sess:last-child{border:none}
+    .sess>div:first-child{flex:1;min-width:0}            /* text column grows so status/lock sits flush right and aligns */
+    .sess .pill{flex:none}
+    .sess .lockmsg{display:inline-block;width:120px;text-align:right;flex:none}  /* fixed action column → all locks line up in one vertical rail */
+    .sess .t{font-family:'Archivo';font-weight:700;color:var(--ink);font-size:15px}
+    .sess .s{font-size:12px;color:var(--muted)}
+    .pill{font-size:11px;font-family:'Archivo';font-weight:700;padding:4px 10px;border-radius:6px;text-transform:uppercase;letter-spacing:.03em}
+    .pill.live{background:var(--brand);color:#fff}.pill.replay{background:#F1EEF6;color:var(--brand)}.pill.soon{background:#F1F1F2;color:#8A8A93}
+    .go{font-family:'Archivo';font-weight:700;font-size:14px;white-space:nowrap;color:var(--brand-2)}
+    /* locked / gated module rows */
+    .sess.lock .t,.sess.lock .s{color:#AEAEAE}
+    .pill.lk{background:#F1F1F2;color:#9A9AA2}
+    .lockmsg{font-family:'Archivo';font-weight:700;font-size:12px;color:var(--muted);white-space:nowrap}
+    .lockmsg a{color:var(--brand)}
+    .sec-lock{opacity:.9}
+    /* resources */
+    .res{display:flex;align-items:center;gap:12px;padding:13px 0;border-bottom:1px solid var(--line);font-size:15px}
+    .res:last-child{border:none}
+    .res .ico{width:30px;height:30px;flex:none;border-radius:6px;background:#F1EEF6;display:flex;align-items:center;justify-content:center;font-size:15px}
+    .res a{font-weight:600;color:var(--ink)}
+    .res a:hover{color:var(--brand-2)}
+    .row{display:flex;gap:14px;flex-wrap:wrap}
+    .row>*{flex:1;min-width:220px}
+    .card h3{font-family:'Archivo';color:var(--ink);font-size:17px;margin-bottom:6px}
+    .card p{font-size:14px;color:var(--muted);margin-bottom:14px}
+    .dfy-card{border-top:3px solid var(--brand)}
+    footer{text-align:center;padding:30px;font-size:12px;color:var(--muted)}
+    /* plan chip (nav) */
+    .plan-chip{display:inline-flex;align-items:center;gap:6px;font-family:'Archivo';font-weight:700;font-size:12px;color:var(--muted);white-space:nowrap}
+    .plan-chip b{color:var(--ink)}
+    .plan-chip a{color:var(--brand);font-weight:700}
+    .nav-right{display:flex;align-items:center;gap:16px}
+    /* instructor bios */
+    .bio{display:flex;gap:14px;align-items:flex-start}
+    .bio .ph{width:60px;height:60px;flex:none;border-radius:50%;object-fit:cover;background:#F1EEF6;display:flex;align-items:center;justify-content:center;font-family:'Archivo';font-weight:800;color:var(--brand);font-size:20px}
+    .bio .nm{font-family:'Archivo';font-weight:800;font-size:16px;color:var(--ink)}
+    .bio .rl{font-family:'Archivo';font-weight:700;font-size:11px;text-transform:uppercase;letter-spacing:.07em;color:var(--brand);margin:2px 0 8px}
+    .bio p{font-size:13.5px;color:var(--muted);margin:0}
+    /* social links */
+    .socials{display:flex;gap:8px;margin-top:11px}
+    .socials a{width:28px;height:28px;border-radius:6px;background:#F1EEF6;display:flex;align-items:center;justify-content:center;color:var(--brand)}
+    .socials a:hover{background:var(--brand);color:#fff}
+    .socials svg{width:15px;height:15px;fill:currentColor}
+    /* tier / upgrade cards */
+    .vip{border:1px solid var(--brand);border-radius:12px;padding:24px;background:#F7F4FB}
+    .vip .kick{font-family:'Archivo';font-weight:700;font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--brand)}
+    .vip h3{font-family:'Archivo';font-size:20px;margin:4px 0 4px;color:var(--ink)}
+    .vip .lead{font-size:14px;color:var(--muted);margin-bottom:14px}
+    .feat{list-style:none;margin:0 0 18px}
+    .feat li{font-size:14px;padding:6px 0 6px 26px;position:relative;color:var(--ink)}
+    .feat li:before{content:"✓";position:absolute;left:0;color:var(--brand);font-weight:800}
+    /* progress + secondary session links */
+    .prog{margin:16px 0 2px}
+    .prog .bar{height:6px;background:var(--line);border-radius:999px;overflow:hidden}
+    .prog .bar span{display:block;height:100%;width:33%;background:var(--brand)}
+    .prog .lbl{display:flex;justify-content:space-between;margin-top:6px;font-family:'Archivo';font-weight:700;font-size:12px;color:var(--muted)}
+    .sub{font-size:12px;font-weight:600;color:var(--muted);text-decoration:underline;text-underline-offset:2px}
+    .sub:hover{color:var(--brand)}
+    .rt{text-align:right;white-space:nowrap}
+    /* start-here steps */
+    .steps{list-style:none;counter-reset:st}
+    .steps li{position:relative;padding:13px 0 13px 44px;border-bottom:1px solid var(--line);font-size:14px}
+    .steps li:last-child{border:none}
+    .steps li:before{counter-increment:st;content:counter(st);position:absolute;left:0;top:12px;width:28px;height:28px;border-radius:50%;background:var(--brand);color:#fff;font-family:'Archivo';font-weight:800;font-size:13px;display:flex;align-items:center;justify-content:center}
+    .steps b{font-family:'Archivo'}
+    .steps a{font-weight:700}
+    .community-card{border-left:3px solid var(--brand)}
+    /* ============ Q&A CHAT WIDGET ============ */
+    #cw-btn{position:fixed;right:22px;bottom:22px;width:56px;height:56px;border-radius:50%;background:var(--brand);color:#fff;border:none;cursor:pointer;box-shadow:0 6px 20px rgba(74,46,111,.35);display:flex;align-items:center;justify-content:center;z-index:60}
+    #cw-btn svg{width:26px;height:26px;fill:#fff}
+    #cw-panel{position:fixed;right:22px;bottom:88px;width:360px;max-width:calc(100vw - 32px);height:520px;max-height:calc(100vh - 120px);background:#fff;border:1px solid var(--line);border-radius:16px;box-shadow:0 16px 50px rgba(0,0,0,.18);display:none;flex-direction:column;overflow:hidden;z-index:60}
+    #cw-panel.open{display:flex}
+    .cw-head{background:var(--brand);color:#fff;padding:15px 18px;display:flex;justify-content:space-between;align-items:flex-start}
+    .cw-head h4{font-family:'Archivo';font-weight:800;font-size:15px;color:#fff;margin:0}
+    .cw-head p{font-size:12px;opacity:.85;margin:2px 0 0}
+    .cw-x{background:none;border:none;color:#fff;font-size:18px;cursor:pointer;line-height:1;opacity:.85}
+    .cw-x:hover{opacity:1}
+    .cw-body{flex:1;overflow-y:auto;padding:16px;display:flex;flex-direction:column;gap:10px;background:var(--bg)}
+    .cw-msg{max-width:86%;padding:10px 13px;border-radius:12px;font-size:13.5px;line-height:1.5}
+    .cw-bot{background:#fff;border:1px solid var(--line);align-self:flex-start;border-bottom-left-radius:4px}
+    .cw-user{background:var(--brand);color:#fff;align-self:flex-end;border-bottom-right-radius:4px}
+    .cw-chips{display:flex;flex-wrap:wrap;gap:6px;margin-top:2px}
+    .cw-chip{font-family:'Archivo';font-weight:600;font-size:12px;background:#F1EEF6;color:var(--brand);border:none;border-radius:999px;padding:6px 12px;cursor:pointer;text-align:left}
+    .cw-chip:hover{background:var(--brand);color:#fff}
+    .cw-foot{display:flex;gap:8px;padding:12px;border-top:1px solid var(--line);background:#fff}
+    .cw-foot input{flex:1;border:1px solid var(--line);border-radius:8px;padding:9px 12px;font-family:'Inter';font-size:13.5px;outline:none}
+    .cw-foot input:focus{border-color:var(--brand)}
+    .cw-foot button{background:var(--brand);color:#fff;border:none;border-radius:8px;padding:0 14px;font-family:'Archivo';font-weight:700;cursor:pointer}
+    @media(max-width:600px){.sess{flex-wrap:wrap}}
+    @media(max-width:520px){.plan-chip{display:none}#cw-panel{right:8px;left:8px;width:auto}}
+    .btn.soon{background:#EDEDED;color:#9A9AA2;cursor:default;pointer-events:none;box-shadow:none}
+    .soonlink{color:#9A9AA2;font-weight:700;white-space:nowrap}
+    .res-soon{font-weight:600;color:#9A9AA2}
+    .res-soon em{font-style:normal;font-size:12px;color:#B4B4BA}
+  </style>
+</head>
+<body>
+  <nav><div class="wrap nav-inner">
+    <span class="brand">THE AI CONTENT MACHINE</span>
+    <div class="nav-right">
+      <!-- Show the member's current tier; drop the upgrade link for Tier 3 members -->
+      <span class="plan-chip">Plan: <b>Tier 1</b></span>
+      <span class="btn soon" aria-disabled="true">Upgrades open soon</span>
+    </div>
+  </div></nav>
+
+  <div class="wrap">
+    <header>
+      <div class="eyebrow">Part live · Part on-demand · 6 months of access</div>
+      <h1>Hi <span id="mn">there</span> — let's build your machine.</h1>
+      <p>On-demand modules you build alongside with your AI assistant — plus two live calls: a kickoff with Ella and a Q&amp;A with Ajay. The modules are yours on demand; the live calls are where it clicks. Your 6 months of access starts the day you purchase. Bookmark this page — everything lives here.</p>
+      <!-- update the bar width + label as the member progresses -->
+      <div class="prog">
+        <div class="bar"><span></span></div>
+        <div class="lbl"><span>Your build progress</span><span>Finish line: the full machine, running</span></div>
+      </div>
+    </header>
+
+    <!-- START HERE -->
+    <section class="block">
+      <h2 class="sec">Start here</h2>
+      <div class="card">
+        <ol class="steps">
+          <li><b>Set up your AI assistant.</b> Any capable AI works — Module 1 walks you through it.</li>
+          <li><b>Join the community.</b> Announcements, "show your build" wins, and quick answers between calls — all in one WhatsApp group. <a href="https://chat.whatsapp.com/CswPrbGB7VDHMJyJBTjY6y?mode=gi_t" target="_blank" rel="noopener">Join now →</a></li>
+          <li><b>Watch Module 1 and build your Brain.</b> The foundation everything else runs on — start here, don't skip it. <span class="soonlink">Opens Sept 7 →</span></li>
+          <li><b>Come to the live kickoff.</b> Monday, September 7 — we get you set up and building on day one.</li>
+        </ol>
+      </div>
+    </section>
+
+    <!-- THE 2 LIVE CALLS -->
+    <section class="block">
+      <h2 class="sec">Your two live calls</h2>
+      <div class="card">
+        <div class="sess"><div><div class="t">Live kickoff <span style="color:var(--muted)">· with Ella</span></div><div class="s">Get set up, oriented, and building on day one · Monday, September 7 · 12:00pm ET / 5:00pm BST</div></div><span class="pill live">Live</span><div class="rt"><span class="go soonlink">Link soon</span><br /><span class="sub" style="color:#9A9AA2">Calendar soon</span></div></div>
+        <div class="sess"><div><div class="t">Live Q&amp;A <span style="color:var(--muted)">· with Ajay</span></div><div class="s">Bring your questions, your half-built agents, your "why isn't this working" · Thursday, September 24 · 12:00pm ET / 5:00pm BST</div></div><span class="pill soon">Soon</span><div class="rt"><span class="go soonlink">Link soon</span><br /><span class="sub" style="color:#9A9AA2">Calendar soon</span></div></div>
+      </div>
+      <p style="font-size:13px;color:var(--muted);margin-top:10px">Two live calls, and they matter — the kickoff gets you building on day one, the Q&amp;A gets you unstuck. Around them, the on-demand modules are yours to work through on your own time. A build-it course, not a show-up-every-Tuesday grind.</p>
+    </section>
+
+    <!-- COMMUNITY -->
+    <section class="block">
+      <h2 class="sec">The community</h2>
+      <div class="card community-card">
+        <h3>Build alongside the whole cohort</h3>
+        <p>Announcements, "Show Your Build" wins, and quick answers between the live calls — the group is one of the best parts of this. Ask questions, post what you make, borrow what works.</p>
+        <a href="https://chat.whatsapp.com/CswPrbGB7VDHMJyJBTjY6y?mode=gi_t" class="btn" target="_blank" rel="noopener">Join the WhatsApp group →</a>
+      </div>
+    </section>
+
+    <!-- YOUR MODULES (Tier 1, owned) — drips weekly -->
+    <section class="block">
+      <h2 class="sec">Your modules · The Content OS</h2>
+      <div class="card">
+        <div class="sess"><div><div class="t">Module 1 · The Content Operating System</div><div class="s">Build the Brain — the central system every agent pulls from — and lock in your Tone of Voice, so the machine sounds like you, not AI soup</div></div><span class="pill soon">Soon</span><span class="go soonlink">Unlocks Sept 7</span></div>
+        <!-- To release: swap the lock markup for: <span class="pill replay">Video</span><a class="go" href="[LINK]">Watch →</a> -->
+        <div class="sess lock"><div><div class="t">Module 2 · The Research Agent</div><div class="s">Finds the top-performing content in your niche and spots trends before you'd catch them scrolling</div></div><span class="pill lk">🔒</span><span class="lockmsg">Unlocks weekly</span></div>
+        <div class="sess lock"><div><div class="t">Module 3 · The Caption Writer Agent</div><div class="s">Runs on every post you make. Caption, done, every time</div></div><span class="pill lk">🔒</span><span class="lockmsg">Unlocks weekly</span></div>
+      </div>
+      <p style="font-size:13px;color:var(--muted);margin-top:10px">New modules unlock each week — you'll get an email the moment the next one's live. Finish Tier 1 and you have a working system: a brain, a researcher, and a writer that never gets tired.</p>
+    </section>
+
+    <!-- TIER 2 — gated (not owned) -->
+    <section class="block sec-lock">
+      <h2 class="sec">🔒 Tier 2 · The Written Machine — upgrade to unlock</h2>
+      <div class="card">
+        <div class="sess lock"><div><div class="t">Module 4 · The LinkedIn Writer Agent</div><div class="s">Posts built for how LinkedIn actually works — in your voice, from your Brain</div></div><span class="pill lk">🔒</span><span class="lockmsg" style="color:#9A9AA2">Soon</span></div>
+        <div class="sess lock"><div><div class="t">Module 5 · The Substack Writer Agent</div><div class="s">Newsletters that go out without you staring at a blank page on a Sunday night</div></div><span class="pill lk">🔒</span><span class="lockmsg" style="color:#9A9AA2">Soon</span></div>
+      </div>
+      <p style="font-size:13px;color:var(--muted);margin-top:10px">The tier for anyone whose growth lives in written words. <span class="sub" style="color:#9A9AA2">Unlock for +$98 · soon</span></p>
+    </section>
+
+    <!-- TIER 3 — gated (not owned) -->
+    <section class="block sec-lock">
+      <h2 class="sec">🔒 Tier 3 · The Full Machine — upgrade to unlock</h2>
+      <div class="card">
+        <div class="sess lock"><div><div class="t">Module 6 · Instagram Carousels</div><div class="s">The full carousel production system</div></div><span class="pill lk">🔒</span><span class="lockmsg" style="color:#9A9AA2">Soon</span></div>
+        <div class="sess lock"><div><div class="t">Module 7 · Faceless Videos</div><div class="s">Video content that doesn't need your face, your ring light, or your Tuesday afternoon</div></div><span class="pill lk">🔒</span><span class="lockmsg" style="color:#9A9AA2">Soon</span></div>
+        <div class="sess lock"><div><div class="t">Module 8 · The Video Editor Pipeline</div><div class="s">The editing workflow that turns raw output into posted content</div></div><span class="pill lk">🔒</span><span class="lockmsg" style="color:#9A9AA2">Soon</span></div>
+      </div>
+      <p style="font-size:13px;color:var(--muted);margin-top:10px">The whole machine — the one Ajay's actual content team runs. <span class="sub" style="color:#9A9AA2">Unlock for +$198 · soon</span></p>
+    </section>
+
+    <!-- UPGRADE YOUR TIER (member is on Tier 1 → show only 2 & 3) -->
+    <section class="block">
+      <h2 class="sec">Upgrade your tier</h2>
+      <p style="font-size:13px;color:var(--muted);margin:-4px 0 14px">You're on <b>Tier 1</b>. Unlocking a higher tier just adds the modules below — you only pay the difference, and you keep everything you already own.</p>
+      <div class="row">
+        <div class="vip">
+          <div class="kick">Upgrade · +$98</div>
+          <h3>Tier 2 · The Written Machine</h3>
+          <p class="lead">Everything you have, plus the long-form writers.</p>
+          <ul class="feat">
+            <li><b>The LinkedIn Writer Agent</b> — built for how LinkedIn actually works.</li>
+            <li><b>The Substack Writer Agent</b> — newsletters without the blank page.</li>
+          </ul>
+          <span class="btn soon" aria-disabled="true">Opens soon</span>
+        </div>
+        <div class="vip">
+          <div class="kick">Upgrade · +$198</div>
+          <h3>Tier 3 · The Full Machine</h3>
+          <p class="lead">Everything in Tier 2, plus the visual layer.</p>
+          <ul class="feat">
+            <li><b>Instagram carousels</b> — the full production system.</li>
+            <li><b>Faceless videos + the video editor pipeline</b> — raw output to posted content.</li>
+          </ul>
+          <span class="btn soon" aria-disabled="true">Opens soon</span>
+        </div>
+      </div>
+      <p style="font-size:13px;color:var(--muted);margin-top:12px">Upgrading is boring and painless: you pay the difference, the new modules unlock, and you never re-buy anything you already own.</p>
+    </section>
+
+    <!-- MEET YOUR TEACHERS -->
+    <section class="block">
+      <h2 class="sec">Meet your teachers</h2>
+      <div class="row">
+        <div class="card">
+          <div class="bio">
+            <!-- swap .ph div for <img class="ph" src="[ELLA_HEADSHOT]" alt="Ella Molony Cook"> when you add a headshot -->
+            <div class="ph">EM</div>
+            <div>
+              <div class="nm">Ella Molony Cook</div>
+              <div class="rl">Founder · Systems Architect</div>
+              <p>Four companies, one exit, an early AI investor — and a dyslexic dropout. Ella builds the operating system: the Brain, the Tone of Voice, the agents underneath everything. She teaches the foundation modules and runs your live kickoff call.</p>
+              <div class="socials">
+                <a href="https://www.linkedin.com/in/ellamolonycook/" aria-label="Ella on LinkedIn" target="_blank" rel="noopener"><svg viewBox="0 0 24 24"><path d="M20.45 20.45h-3.56v-5.57c0-1.33-.02-3.04-1.85-3.04-1.85 0-2.14 1.45-2.14 2.94v5.67H9.34V9h3.42v1.56h.05c.48-.9 1.64-1.85 3.37-1.85 3.6 0 4.27 2.37 4.27 5.46v6.28zM5.34 7.43a2.06 2.06 0 1 1 0-4.13 2.06 2.06 0 0 1 0 4.13zM7.12 20.45H3.56V9h3.56v11.45zM22.22 0H1.77C.79 0 0 .77 0 1.72v20.56C0 23.23.79 24 1.77 24h20.45c.98 0 1.78-.77 1.78-1.72V1.72C24 .77 23.2 0 22.22 0z"/></svg></a>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="card">
+          <div class="bio">
+            <div class="ph">AJ</div>
+            <div>
+              <div class="nm">Ajay Yadav</div>
+              <div class="rl">Co-Teacher · The Machine Itself</div>
+              <p>3x founder — his last company passed 20M+ users, backed by Khosla &amp; Craft. He grew from 10K to 400K followers in 4 months on this exact machine — it's the one his content team runs every day. He teaches the growth modules and hosts your live Q&amp;A.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- GIVEAWAY -->
+    <section class="block">
+      <h2 class="sec">Giveaway</h2>
+      <!-- Confirm before publishing: IG handle to tag, entry window, draw date, T&Cs -->
+      <div class="vip">
+        <div class="kick">🎁 Win 90 minutes with Ella</div>
+        <h3>A 1:1 coaching session — on the house</h3>
+        <p class="lead">One member wins a private 90-minute 1:1 with Ella: your machine, your business, your bottlenecks — worked through live, together.</p>
+        <ul class="feat">
+          <li><b>Follow us on Instagram</b> — follow <a href="https://instagram.com/timerich.ai" target="_blank" rel="noopener">@timerich.ai</a> and <a href="https://instagram.com/thevibefounder" target="_blank" rel="noopener">@thevibefounder</a>.</li>
+          <li><b>Post your build and tag us</b> — share what you've made on your feed and tag both <b>@timerich.ai</b> and <b>@thevibefounder</b>.</li>
+          <li><b>Share it to your story</b> — put your build on your Instagram story and tag us there too.</li>
+          <li><b>Send a video testimonial</b> — 30–60 seconds, straight to camera, however it comes out.</li>
+          <li><b>Send a written testimonial</b> — a few honest lines on what changed for you.</li>
+        </ul>
+        <span class="btn soon" aria-disabled="true">Entry opens soon</span>
+        <p style="font-size:12px;color:var(--muted);margin-top:12px">Do all of the above and you're in. Winner drawn and announced on the live Q&amp;A with Ajay on Thursday, September 24.</p>
+      </div>
+    </section>
+
+    <!-- HOW TO PROGRESS -->
+    <section class="block">
+      <h2 class="sec">How to progress</h2>
+      <div class="vip">
+        <div class="kick">There's a right order</div>
+        <h3>Watch, then build. Then move on.</h3>
+        <p class="lead">Every module is watch-then-build: we show you, you do it, you move to the next one. You'll have agents running before you finish Tier 1.</p>
+        <ul class="feat">
+          <li><b>Start with the Brain and your Tone of Voice.</b> Do not skip this — a machine with a rubbish brain writes rubbish content, faster.</li>
+          <li><b>Build the Research Agent, then the Caption Writer.</b> That's a working system.</li>
+          <li><b>Stack the writers and the visual pipeline on top</b>, in whatever order matches where your audience actually lives.</li>
+        </ul>
+        <p style="font-size:12px;color:var(--muted)">Go at your own speed, with the live calls to keep you moving — that's the entire point of 6 months of access. Some of you will binge-build it in a weekend. Some of you will do one agent a week. Both are correct.</p>
+      </div>
+    </section>
+
+    <!-- RESOURCES -->
+    <section class="block">
+      <h2 class="sec">Resources</h2>
+      <div class="card">
+        <div class="res"><div class="ico">🧠</div><span class="res-soon">Content OS — Brain starter templates <em>· soon</em></span></div>
+        <div class="res"><div class="ico">🗣️</div><span class="res-soon">Tone of Voice worksheet <em>· soon</em></span></div>
+        <div class="res"><div class="ico">🔍</div><span class="res-soon">Research Agent — prompt pack <em>· soon</em></span></div>
+        <div class="res"><div class="ico">✍️</div><span class="res-soon">Caption Writer — prompt pack <em>· soon</em></span></div>
+        <div class="res"><div class="ico">💼</div><span class="res-soon">LinkedIn Writer — prompt pack <em>· soon</em></span></div>
+        <div class="res"><div class="ico">📬</div><span class="res-soon">Substack Writer — prompt pack <em>· soon</em></span></div>
+        <div class="res"><div class="ico">🖼️</div><span class="res-soon">Instagram carousel production system <em>· soon</em></span></div>
+        <div class="res"><div class="ico">🎬</div><span class="res-soon">Faceless video + editor pipeline templates <em>· soon</em></span></div>
+        <div class="res"><div class="ico">📚</div><span class="res-soon">Prompt library (all modules) <em>· soon</em></span></div>
+      </div>
+    </section>
+
+    <!-- QUICK ANSWERS + Q&A QUESTIONS -->
+    <section class="block">
+      <div class="row">
+        <div class="card">
+          <h3>Do I need to be technical?</h3>
+          <p>No. If you can follow a video and type a prompt into an AI assistant, you can build this. Ella is a dyslexic high-school dropout who runs an entire company on agents — you'll be fine. The modules walk you through everything from there.</p>
+        </div>
+        <div class="card">
+          <h3>Got a question for Ajay's Q&amp;A?</h3>
+          <p>Submit it ahead of the live call so he answers yours — half-built agents and "why isn't this working" welcome.</p>
+          <span class="btn soon" aria-disabled="true">Opens soon</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- DONE-FOR-YOU (ascension → application, not checkout) -->
+    <section class="block">
+      <div class="card dfy-card">
+        <h3>Want us to build it for you?</h3>
+        <p>Love the result, not the reps? Our team builds your entire content machine for you — configured to your business, handed over working. It's an application, not a checkout.</p>
+        <!-- [DFY_APPLICATION_LINK] → your "10 — DFY Application.html" form -->
+        <span class="btn soon" aria-disabled="true">Applications open soon</span>
+      </div>
+    </section>
+
+    <!-- FINAL CTA -->
+    <section class="block">
+      <div class="card dfy-card">
+        <h3>Keep building. Get your hours back.</h3>
+        <p>You've got Tier 1 — the foundation everything runs on. When you're ready for the written machine or the full visual layer, the upgrade path above means you lose nothing by having started with the essentials.</p>
+        <span class="btn soon" aria-disabled="true">Upgrades open soon</span>
+      </div>
+    </section>
+  </div>
+
+  <footer>The AI Content Machine · by Time Rich · Stuck? Email <a href="mailto:emc@timerich.ai">emc@timerich.ai</a>.</footer>
+
+  <!-- ============================================================
+       Q&A CHATBOT  (self-contained, no backend, no API key)
+       ⚠️ ELLA — REVIEW EVERY ANSWER IN THE FAQ ARRAY BELOW BEFORE LIVE.
+       Confirm these facts match the final offer:
+         • Prices: Tier 1 $197 · Tier 2 $295 · Tier 3 $395
+         • Upgrade deltas: T1→T2 +$98 · T2→T3 +$100 · T1→T3 +$198
+         • Course kickoff Mon Sep 7 · 6 months access from purchase date
+         • Two live calls: kickoff (Ella) + Q&A (Ajay)
+         • Refunds/terms route to emc@timerich.ai
+         • Giveaway: 90-min 1:1 with Ella — enter via IG post + video + written testimonial
+         • Community WhatsApp link is live · DFY = application (not checkout)
+       This is a KEYWORD FAQ — it does not call an AI model, so it
+       cannot invent answers. Anything it can't match routes to email.
+       ============================================================ -->
+  <button id="cw-btn" aria-label="Open Q&amp;A chat">
+    <svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.04 2 11c0 2.6 1.23 4.94 3.2 6.56L4.5 21.5l4.2-1.9c1.02.26 2.1.4 3.3.4 5.52 0 10-4.04 10-9s-4.48-9-10-9z"/></svg>
+  </button>
+  <div id="cw-panel" role="dialog" aria-label="Q&amp;A chat">
+    <div class="cw-head">
+      <div><h4>Ask us anything</h4><p>Instant answers to common questions</p></div>
+      <button class="cw-x" id="cw-close" aria-label="Close chat">✕</button>
+    </div>
+    <div class="cw-body" id="cw-body"></div>
+    <div class="cw-foot">
+      <input id="cw-input" type="text" placeholder="Type your question…" autocomplete="off" />
+      <button id="cw-send">Send</button>
+    </div>
+  </div>
+
+  <script>
+  (function(){
+    // ---- FAQ knowledge base (edit these answers freely) ----
+    var FAQ=[
+      {k:['technical','code','coding','beginner','hard','difficult','experience'],
+       a:"Not at all. If you can follow a video and type a prompt into an AI assistant, you can build this. Every module is watch-then-build."},
+      {k:['tool','tools','which ai','what ai','software','buy','claude','chatgpt','gemini','app'],
+       a:"Any capable AI assistant works — the modules teach the system, not one specific tool. Nothing else to buy or configure."},
+      {k:['access','log in','login','get in','password','welcome email','locked out','cant get','can’t get'],
+       a:"Check your inbox (plus spam / promotions) for the welcome email — it goes to the exact email you paid with, and you must log in with that same email. Still stuck? Email emc@timerich.ai with your payment confirmation and we'll sort it within 24 hours."},
+      {k:['how long','6 month','six month','expire','how much time','duration'],
+       a:"You get 6 months of access, and it starts the day you purchase — not launch day. Go at your own pace."},
+      {k:['release','weekly','unlock','when','drip','available','all at once','locked'],
+       a:"Modules unlock progressively rather than all at once, so you build in the right order. Your dashboard shows what's live now and what unlocks next, and you'll get an email each time a new one opens."},
+      {k:['upgrade','tier 2','tier 3','difference','worth','vip','higher'],
+       a:"The tiers are cumulative — you only pay the difference and never re-buy what you own. Tier 1→2 is +$98, Tier 2→3 is +$100, Tier 1→3 is +$198. Use the “Upgrade your tier” section on this page."},
+      {k:['refund','money back','cancel','terms','chargeback'],
+       a:"Refund and terms questions go straight to Ella so you get an accurate answer — email emc@timerich.ai and she'll come back to you personally."},
+      {k:['live','call','attend','make it','timezone','miss','recording','recorded'],
+       a:"There are two live calls — a kickoff with Ella and a Q&A with Ajay. Both are recorded, so you won't miss anything if you can't attend live. Everything else is on-demand."},
+      {k:['which tier','start','pick','choose','should i'],
+       a:"Start with Tier 1 — it's the foundation everything runs on, and upgrading later is painless. If your growth is written (LinkedIn/Substack), look at Tier 2; if you want video + carousels too, Tier 3."},
+      {k:['question','ajay','q&a','ask'],
+       a:"Submit your question ahead of Ajay's live Q&A using the “Submit my question” button on this page, and he'll answer it live."},
+      {k:['dates','start','begin','kickoff','september','when does'],
+       a:"The course kicks off Monday, September 7 with the live call, then modules unlock from there. Your 6 months of access runs from your purchase date."},
+      {k:['giveaway','win','prize','1:1','one to one','coaching','testimonial','free session'],
+       a:"There's a giveaway for a free 90-minute 1:1 coaching session with Ella. To enter: post your build on Instagram and tag us, then send a short video testimonial and a written one. Use the “Enter the giveaway” section on this page."},
+      {k:['community','whatsapp','group','chat group','others','cohort','forum'],
+       a:"Yes — there's a WhatsApp group for the whole cohort: announcements, “show your build,” and quick answers between calls. The join link is in the “Start here” and “The community” sections on this page."},
+      {k:['done for you','done-for-you','dfy','build it for me','build for me','hire you','agency','do it for me'],
+       a:"We do offer done-for-you builds — our team builds your whole content machine for you, handed over working. It's an application, not a checkout; see the “Want us to build it for you?” section on this page."}
+    ];
+    var CHIPS=["Do I need to be technical?","How long do I have access?","How do upgrades work?","When do modules unlock?","How do I win the 1:1 with Ella?"];
+    var FALLBACK="Good question — I don't want to guess. Email emc@timerich.ai and the team will get you a proper answer within 24 hours.";
+
+    function match(q){
+      q=(q||'').toLowerCase();var best=null,score=0;
+      for(var i=0;i<FAQ.length;i++){var s=0,ks=FAQ[i].k;
+        for(var j=0;j<ks.length;j++){if(q.indexOf(ks[j])>-1)s++;}
+        if(s>score){score=s;best=FAQ[i];}}
+      return best?best.a:FALLBACK;
+    }
+
+    var body=document.getElementById('cw-body'),
+        panel=document.getElementById('cw-panel'),
+        input=document.getElementById('cw-input');
+
+    function bubble(text,who){
+      var d=document.createElement('div');
+      d.className='cw-msg '+(who==='user'?'cw-user':'cw-bot');
+      d.textContent=text;body.appendChild(d);body.scrollTop=body.scrollHeight;
+    }
+    function chips(){
+      var wrap=document.createElement('div');wrap.className='cw-chips';
+      CHIPS.forEach(function(c){var b=document.createElement('button');b.className='cw-chip';b.textContent=c;
+        b.onclick=function(){ask(c);};wrap.appendChild(b);});
+      body.appendChild(wrap);body.scrollTop=body.scrollHeight;
+    }
+    function ask(q){bubble(q,'user');setTimeout(function(){bubble(match(q),'bot');},250);}
+
+    var started=false;
+    function open(){
+      panel.classList.add('open');
+      if(!started){started=true;
+        bubble("Hi! I'm the Content Machine helper. Ask me anything about access, tiers, tools, or the live calls — or tap a question below.",'bot');
+        chips();
+      }
+      setTimeout(function(){input.focus();},50);
+    }
+    document.getElementById('cw-btn').onclick=function(){panel.classList.contains('open')?panel.classList.remove('open'):open();};
+    document.getElementById('cw-close').onclick=function(){panel.classList.remove('open');};
+    document.getElementById('cw-send').onclick=function(){var v=input.value.trim();if(v){ask(v);input.value='';}};
+    input.addEventListener('keydown',function(e){if(e.key==='Enter'){var v=input.value.trim();if(v){ask(v);input.value='';}}});
+  })();
+  </script>
+  <script>(function(){try{var n=new URLSearchParams(location.search).get('name');if(n){var el=document.getElementById('mn');if(el)el.textContent=n.replace(/[<>]/g,'').trim().slice(0,40)||'there';}}catch(e){}})();</script>
+</body>
+</html>
