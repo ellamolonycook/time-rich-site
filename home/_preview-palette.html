@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<meta name="robots" content="noindex, nofollow" />
+<title>Time Rich — Palette + Accent Preview</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;600;700;800;900&family=DM+Serif+Display:ital@0;1&family=Inter:wght@400;500;600&display=swap" rel="stylesheet" />
+<style>
+  :root {
+    --plum:#4A2E6F; --violet:#7C3AED; --violet-2:#9A6DD7;
+    --champagne:#E8C89A; --champagne-soft:#F0DCBE; --champagne-deep:#C9A66F;
+    --plum-black:#1A1420; --lilac:#EBD1FA; --sand:#F4EEFB;
+    --charcoal:#44414D; --white:#FFFFFF;
+    --blush:#E8A9A9; --emerald:#3E8E7E;
+    --font-display:'DM Serif Display',Georgia,serif;
+    --font-struct:'Archivo',-apple-system,sans-serif;
+    --font-body:'Inter',-apple-system,sans-serif;
+  }
+  * { box-sizing: border-box; margin: 0; }
+  body { font-family: var(--font-body); color: var(--charcoal); background: var(--sand); line-height: 1.6; -webkit-font-smoothing: antialiased; }
+  .wrap { max-width: 1080px; margin: 0 auto; padding: clamp(2rem, 5vw, 4rem) 1.5rem; }
+  .eyebrow { font-family: var(--font-struct); font-weight: 800; font-size: 0.75rem; letter-spacing: 0.16em; text-transform: uppercase; color: var(--violet-2); }
+  h1 { font-family: var(--font-display); color: var(--plum); font-size: clamp(2rem, 5vw, 3rem); line-height: 1.05; margin: 0.6rem 0 0.4rem; }
+  h2 { font-family: var(--font-display); color: var(--plum); font-size: 1.5rem; margin: 2.5rem 0 1.25rem; }
+  .sub { max-width: 60ch; color: var(--charcoal); }
+  .note { font-family: var(--font-struct); font-weight: 600; font-size: 0.9rem; color: var(--violet-2); margin-top: 0.5rem; }
+
+  /* Swatches */
+  .swatches { display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 0.85rem; }
+  .sw { border-radius: 14px; overflow: hidden; border: 1px solid rgba(74,46,111,0.12); background: #fff; }
+  .sw .chip { height: 92px; }
+  .sw .meta { padding: 0.7rem 0.8rem; }
+  .sw .name { font-family: var(--font-struct); font-weight: 800; font-size: 0.82rem; color: var(--plum); }
+  .sw .hex { font-family: var(--font-struct); font-weight: 600; font-size: 0.75rem; color: var(--charcoal); letter-spacing: 0.03em; }
+
+  /* Accent options */
+  .opts { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1.25rem; }
+  @media (max-width: 820px) { .opts { grid-template-columns: 1fr; } }
+  .opt { border-radius: 20px; overflow: hidden; background: var(--plum-black); color: #fff; box-shadow: 0 24px 60px rgba(0,0,0,0.28); position: relative; }
+  .opt .glow { position: absolute; inset: 0; background: radial-gradient(120% 80% at 80% -10%, rgba(124,58,237,0.28), transparent 60%); pointer-events: none; }
+  .opt-body { position: relative; z-index: 1; padding: 1.75rem 1.5rem 1.6rem; }
+  .opt-tag { font-family: var(--font-struct); font-weight: 800; font-size: 0.72rem; letter-spacing: 0.14em; text-transform: uppercase; }
+  .opt h3 { font-family: var(--font-display); font-size: 1.7rem; line-height: 1.08; margin: 0.6rem 0 0.9rem; color: #fff; font-weight: 400; }
+  .opt .u { padding-bottom: 0.05em; background-repeat: no-repeat; background-position: 0 90%; background-size: 100% 0.16em; }
+  .opt p { font-size: 0.92rem; color: rgba(255,255,255,0.78); }
+  .opt .btn { display: inline-flex; align-items: center; font-family: var(--font-struct); font-weight: 800; font-size: 0.85rem; padding: 0.8rem 1.4rem; border-radius: 999px; margin-top: 1.4rem; color: var(--plum-black); }
+  .opt .rule { height: 2px; width: 56px; border-radius: 2px; margin: 1.1rem 0; }
+
+  .champagne .opt-tag, .champagne .u { color: var(--champagne); }
+  .champagne .u { background-image: linear-gradient(var(--champagne), var(--champagne)); }
+  .champagne .btn { background: var(--champagne); }
+  .champagne .rule { background: var(--champagne); }
+
+  .blush .opt-tag, .blush .u { color: var(--blush); }
+  .blush .u { background-image: linear-gradient(var(--blush), var(--blush)); }
+  .blush .btn { background: var(--blush); color: #3a1420; }
+  .blush .rule { background: var(--blush); }
+
+  .emerald .opt-tag, .emerald .u { color: var(--emerald); }
+  .emerald .u { background-image: linear-gradient(var(--emerald), var(--emerald)); }
+  .emerald .btn { background: var(--emerald); color: #fff; }
+  .emerald .rule { background: var(--emerald); }
+
+  .caption { text-align: center; font-family: var(--font-struct); font-weight: 700; font-size: 0.85rem; color: var(--plum); padding: 0.9rem; background: #fff; }
+  .foot { margin-top: 3rem; font-family: var(--font-struct); font-weight: 600; font-size: 0.85rem; color: var(--charcoal); }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <span class="eyebrow">Morning pick · Time Rich relaunch</span>
+  <h1>The evolved palette, and three accents to choose from.</h1>
+  <p class="sub">Plum core stays. The one open decision is the warm accent that carries buttons, underlines, and hairline rules. Champagne is the default in the build. Blush and emerald are here so you can see them on the real hero before you commit.</p>
+  <p class="note">Pick one accent in the morning. I'll swap the token across /home and /coaching in one pass.</p>
+
+  <h2>Core tokens</h2>
+  <div class="swatches">
+    <div class="sw"><div class="chip" style="background:#4A2E6F"></div><div class="meta"><div class="name">Plum</div><div class="hex">#4A2E6F</div></div></div>
+    <div class="sw"><div class="chip" style="background:#7C3AED"></div><div class="meta"><div class="name">Violet</div><div class="hex">#7C3AED</div></div></div>
+    <div class="sw"><div class="chip" style="background:#9A6DD7"></div><div class="meta"><div class="name">Violet 2</div><div class="hex">#9A6DD7</div></div></div>
+    <div class="sw"><div class="chip" style="background:#1A1420"></div><div class="meta"><div class="name">Plum-black</div><div class="hex">#1A1420</div></div></div>
+    <div class="sw"><div class="chip" style="background:#EBD1FA"></div><div class="meta"><div class="name">Lilac</div><div class="hex">#EBD1FA</div></div></div>
+    <div class="sw"><div class="chip" style="background:#F4EEFB"></div><div class="meta"><div class="name">Sand</div><div class="hex">#F4EEFB</div></div></div>
+    <div class="sw"><div class="chip" style="background:#44414D"></div><div class="meta"><div class="name">Charcoal</div><div class="hex">#44414D</div></div></div>
+  </div>
+
+  <h2>Accent candidates</h2>
+  <div class="swatches">
+    <div class="sw"><div class="chip" style="background:#E8C89A"></div><div class="meta"><div class="name">Champagne (default)</div><div class="hex">#E8C89A</div></div></div>
+    <div class="sw"><div class="chip" style="background:#E8A9A9"></div><div class="meta"><div class="name">Blush</div><div class="hex">#E8A9A9</div></div></div>
+    <div class="sw"><div class="chip" style="background:#3E8E7E"></div><div class="meta"><div class="name">Emerald</div><div class="hex">#3E8E7E</div></div></div>
+  </div>
+
+  <h2>The hero, in each accent</h2>
+  <div class="opts">
+    <div>
+      <div class="opt champagne">
+        <div class="glow"></div>
+        <div class="opt-body">
+          <span class="opt-tag">Champagne · #E8C89A</span>
+          <h3>Your business, running on AI that sounds like <span class="u">you</span>.</h3>
+          <div class="rule"></div>
+          <p>AI doesn't save you time unless you set it up right.</p>
+          <span class="btn">See the AI Content Machine</span>
+        </div>
+      </div>
+      <div class="caption">Champagne — warm, editorial, premium</div>
+    </div>
+    <div>
+      <div class="opt blush">
+        <div class="glow"></div>
+        <div class="opt-body">
+          <span class="opt-tag">Blush · #E8A9A9</span>
+          <h3>Your business, running on AI that sounds like <span class="u">you</span>.</h3>
+          <div class="rule"></div>
+          <p>AI doesn't save you time unless you set it up right.</p>
+          <span class="btn">See the AI Content Machine</span>
+        </div>
+      </div>
+      <div class="caption">Blush — softer, warmer, more feminine</div>
+    </div>
+    <div>
+      <div class="opt emerald">
+        <div class="glow"></div>
+        <div class="opt-body">
+          <span class="opt-tag">Emerald · #3E8E7E</span>
+          <h3>Your business, running on AI that sounds like <span class="u">you</span>.</h3>
+          <div class="rule"></div>
+          <p>AI doesn't save you time unless you set it up right.</p>
+          <span class="btn">See the AI Content Machine</span>
+        </div>
+      </div>
+      <div class="caption">Emerald — cooler, sharper, more contrast</div>
+    </div>
+  </div>
+
+  <p class="foot">Default in the current build: Champagne. Tell me the pick and I'll roll it through both pages.</p>
+</div>
+</body>
+</html>

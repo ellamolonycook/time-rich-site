@@ -1,0 +1,33 @@
+{
+  "_comment": "SINGLE SOURCE OF TRUTH for the Time Rich offer. Edit here, then run: node \"TR Landing Page/sync-offer.mjs\" to re-propagate into the T&Cs, privacy page, sales pages, and the reviewed coaching contract. See OFFER-SYNC-README.md.",
+  "entity": "Growth Haus LLC",
+  "jurisdiction": "Wyoming, US",
+  "effectiveDate": "2026-07-11",
+  "tiers": [
+    { "name": "The Content OS", "price": "$197" },
+    { "name": "The Written Machine", "price": "$295" },
+    { "name": "The Full Machine", "price": "$395" }
+  ],
+  "coaching": {
+    "sixWeek": { "name": "6-Week 1:1 AI System Coaching", "price": "$4,950", "spots": 4 },
+    "twelveWeek": { "name": "12-Week 1:1 COO AI Coaching", "price": "$14,950" }
+  },
+  "doorsClose": "2026-09-01",
+  "startDate": "2026-09-07",
+  "doorsCloseDisplay": "1 September",
+  "doorsCloseShort": "1 Sept",
+  "startDateDisplay": "7 September",
+  "startDateShort": "7 Sept",
+  "accessMonths": 6,
+  "refundWindowDays": 14,
+  "processors": ["Stripe", "Notion", "Cloudflare", "GitHub Pages", "Anthropic"],
+  "stripeLinks": {},
+  "_todo": [
+    "refundWindowDays: defaulted to 14. CONFIRM the real refund window with Ella before a payment is taken. The live challenge/terms.html refund clause must match this number once set.",
+    "tiers prices: canonical docs + spec set these at $197 / $295 / $395. The live /contentmachine page currently shows $297 and $495 (drift). Confirm the true tier prices, then let sync-offer.mjs re-propagate them.",
+    "doorsClose: set to 2026-09-01 per canonical README + memory. The live /contentmachine page says 'Sept 4' (drift). Confirm the true doors-close date.",
+    "stripeLinks: empty placeholder. Add the three tier checkout URLs (contentOs / writtenMachine / fullMachine) and any coaching application link once live.",
+    "coaching tier names: sourced from spec §3 ('6-Week 1:1 AI System Coaching', '12-Week 1:1 COO AI Coaching'). Confirm these are the final public names.",
+    "date display keys (doorsCloseDisplay/Short, startDateDisplay/Short): human-readable forms of doorsClose/startDate. sync-offer.mjs does literal string replacement, so pages that show '1 September' must reference these display keys, NOT the raw ISO doorsClose. If you change doorsClose/startDate, update these four display keys to match."
+  ]
+}

@@ -1,0 +1,648 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<meta name="robots" content="noindex, nofollow" />
+<title>Time Rich · AI systems that run your business in your voice</title>
+<meta name="description" content="AI doesn't save you time unless you set it up right. Build the systems that run your content and operations in your voice. The AI Content Machine from $197, or 1:1 coaching with Ella Molony Cook." />
+<meta name="theme-color" content="#1A1420" />
+
+<meta property="og:type" content="website" />
+<meta property="og:site_name" content="Time Rich" />
+<meta property="og:url" content="https://timerich.ai/home" />
+<meta property="og:title" content="Time Rich · AI systems that run your business in your voice" />
+<meta property="og:description" content="AI doesn't save you time unless you set it up right. Build the systems that run your content and operations in your voice." />
+<meta property="og:image" content="https://timerich.ai/og-image.jpg" />
+<meta property="og:image:width" content="1200" />
+<meta property="og:image:height" content="630" />
+<meta name="twitter:card" content="summary_large_image" />
+
+<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32.png" />
+<link rel="icon" type="image/png" sizes="16x16" href="/favicon-16.png" />
+<link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
+
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;600;700;800;900&family=DM+Serif+Display:ital@0;1&family=Inter:wght@400;500;600&display=swap" rel="stylesheet" />
+
+<style>
+/* ============================================================
+   TIME RICH — SHARED DESIGN LANGUAGE (inlined from home/_designsystem.css)
+   ============================================================ */
+:root {
+  --plum:        #4A2E6F;
+  --violet:      #7C3AED;
+  --violet-2:    #9A6DD7;
+  --champagne:   #E8C89A;
+  --plum-black:  #1A1420;
+  --lilac:       #EBD1FA;
+  --sand:        #F4EEFB;
+  --charcoal:    #44414D;
+  --white:       #FFFFFF;
+  --champagne-soft: #F0DCBE;
+  --champagne-deep: #C9A66F;
+  --ink:            var(--charcoal);
+  --bg:             var(--white);
+  --line:           rgba(74, 46, 111, 0.12);
+  --line-champagne: rgba(232, 200, 154, 0.55);
+  --line-dark:      rgba(255, 255, 255, 0.14);
+  --font-display: 'DM Serif Display', Georgia, 'Times New Roman', serif;
+  --font-struct:  'Archivo', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  --font-body:    'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  --step-display: clamp(2.75rem, 1.6rem + 5.6vw, 5.5rem);
+  --step-h1:      clamp(2.25rem, 1.5rem + 3.6vw, 3.75rem);
+  --step-h2:      clamp(1.75rem, 1.25rem + 2.4vw, 2.75rem);
+  --step-h3:      clamp(1.25rem, 1.05rem + 0.9vw, 1.6rem);
+  --step-lead:    clamp(1.15rem, 1.05rem + 0.5vw, 1.375rem);
+  --step-body:    clamp(1rem, 0.97rem + 0.15vw, 1.125rem);
+  --step-small:   0.875rem;
+  --step-eyebrow: 0.8125rem;
+  --space-section:   clamp(5rem, 3.5rem + 7vw, 9rem);
+  --space-band:      clamp(4rem, 3rem + 5vw, 7rem);
+  --space-gutter:    clamp(1.5rem, 1rem + 2.5vw, 2.5rem);
+  --wrap-max:        1140px;
+  --measure:         68ch;
+  --measure-narrow:  46ch;
+  --radius-sm: 10px;
+  --radius:    16px;
+  --radius-lg: 24px;
+  --radius-pill: 999px;
+  --shadow-soft:  0 18px 50px rgba(74, 46, 111, 0.10);
+  --shadow-lift:  0 26px 70px rgba(74, 46, 111, 0.16);
+  --shadow-dark:  0 30px 80px rgba(0, 0, 0, 0.45);
+  --ease:      cubic-bezier(0.22, 0.61, 0.36, 1);
+  --dur-fast:  0.16s;
+  --dur:       0.32s;
+  --dur-slow:  0.6s;
+}
+*, *::before, *::after { box-sizing: border-box; }
+body { margin: 0; }
+.ds * { margin: 0; }
+.ds {
+  font-family: var(--font-body);
+  font-size: var(--step-body);
+  line-height: 1.65;
+  color: var(--ink);
+  background: var(--bg);
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+  overflow-wrap: break-word;
+}
+.ds img, .ds picture, .ds video { max-width: 100%; display: block; }
+.ds a { color: var(--plum); text-decoration: none; }
+.ds a:hover { color: var(--violet); }
+::selection { background: var(--champagne); color: var(--plum-black); }
+
+.ds h1, .ds h2, .ds h3, .display, .h1, .h2, .h3 {
+  font-family: var(--font-display);
+  color: var(--plum);
+  line-height: 1.06;
+  letter-spacing: -0.01em;
+  font-weight: 400;
+}
+.display { font-size: var(--step-display); line-height: 1.0; letter-spacing: -0.02em; }
+.ds h1, .h1 { font-size: var(--step-h1); }
+.ds h2, .h2 { font-size: var(--step-h2); }
+.ds h3, .h3 { font-size: var(--step-h3); line-height: 1.15; }
+.eyebrow {
+  font-family: var(--font-struct);
+  font-weight: 700;
+  font-size: var(--step-eyebrow);
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--violet-2);
+  display: inline-block;
+  margin-bottom: 1.25rem;
+}
+.eyebrow--champagne { color: var(--champagne-deep); }
+.lead { font-size: var(--step-lead); line-height: 1.6; color: var(--ink); max-width: var(--measure); }
+.ds p { max-width: var(--measure); }
+.ds .measure-narrow { max-width: var(--measure-narrow); }
+.kicker {
+  font-family: var(--font-struct);
+  font-weight: 800; font-size: 0.75rem; letter-spacing: 0.1em;
+  text-transform: uppercase; color: var(--violet-2);
+}
+.underline-champagne {
+  background-image: linear-gradient(var(--champagne), var(--champagne));
+  background-repeat: no-repeat; background-position: 0 88%;
+  background-size: 100% 0.18em; padding-bottom: 0.02em;
+}
+.accent-italic { font-style: italic; }
+
+.wrap { width: 100%; max-width: var(--wrap-max); margin-inline: auto; padding-inline: var(--space-gutter); }
+.wrap--narrow { max-width: 760px; }
+.wrap--reading { max-width: 720px; }
+.section { padding-block: var(--space-section); }
+.band { padding-block: var(--space-band); }
+.section--sand { background: var(--sand); }
+.section--white { background: var(--white); }
+.section--lilac { background: var(--lilac); }
+.section-head { max-width: var(--measure); margin-bottom: clamp(2.5rem, 5vw, 4rem); }
+.section-head.center { margin-inline: auto; text-align: center; }
+.section-head .lead { margin-top: 1rem; }
+.split { display: grid; grid-template-columns: 1fr 1fr; gap: clamp(2rem, 5vw, 4rem); align-items: center; }
+.split--wide-left { grid-template-columns: 1.1fr 0.9fr; }
+.split--wide-right { grid-template-columns: 0.9fr 1.1fr; }
+
+.rule { border: 0; height: 1px; background: var(--line-champagne); margin-block: clamp(2rem, 4vw, 3rem); }
+.rule--short { width: 64px; margin-inline: auto; height: 2px; background: var(--champagne); border-radius: 2px; }
+.band-dark .rule { background: rgba(232, 200, 154, 0.4); }
+
+.btn {
+  font-family: var(--font-struct); font-weight: 800; font-size: 0.9375rem;
+  letter-spacing: 0.01em; line-height: 1;
+  display: inline-flex; align-items: center; justify-content: center; gap: 0.5rem;
+  padding: 1rem 1.75rem; border-radius: var(--radius-pill);
+  border: 1.5px solid transparent; cursor: pointer; text-decoration: none;
+  transition: transform var(--dur-fast) var(--ease), box-shadow var(--dur) var(--ease),
+              background-color var(--dur-fast) var(--ease), color var(--dur-fast) var(--ease),
+              border-color var(--dur-fast) var(--ease);
+}
+.btn--primary { background: var(--champagne); color: var(--plum-black); border-color: var(--champagne); }
+.btn--primary:hover { color: var(--plum-black); transform: translateY(-2px); box-shadow: 0 14px 34px rgba(232, 200, 154, 0.45); background: var(--champagne-soft); border-color: var(--champagne-soft); }
+.btn--secondary { background: transparent; color: var(--plum); border-color: var(--plum); }
+.btn--secondary:hover { transform: translateY(-2px); background: var(--plum); color: var(--white); border-color: var(--plum); }
+.btn--plum { background: var(--plum); color: var(--white); border-color: var(--plum); }
+.btn--plum:hover { color: var(--white); transform: translateY(-2px); box-shadow: 0 14px 34px rgba(74, 46, 111, 0.35); }
+.btn--lg { padding: 1.1875rem 2.5rem; font-size: 1rem; }
+.btn--block { display: flex; width: 100%; }
+.link-arrow { font-family: var(--font-struct); font-weight: 700; font-size: 0.9375rem; color: var(--plum); display: inline-flex; align-items: center; gap: 0.4rem; }
+.link-arrow .arrow { transition: transform var(--dur-fast) var(--ease); }
+.link-arrow:hover .arrow { transform: translateX(4px); }
+.link-underline { font-weight: 700; color: var(--plum); text-decoration: underline; text-underline-offset: 3px; text-decoration-color: var(--champagne); }
+.link-underline:hover { color: var(--violet); }
+
+.band-dark { background: var(--plum-black); color: rgba(255, 255, 255, 0.86); position: relative; }
+.band-dark::before {
+  content: ""; position: absolute; inset: 0;
+  background: radial-gradient(120% 90% at 50% -10%, rgba(124, 58, 237, 0.22) 0%, transparent 60%);
+  pointer-events: none;
+}
+.band-dark > * { position: relative; z-index: 1; }
+.band-dark h1, .band-dark h2, .band-dark h3 { color: var(--white); }
+.band-dark .eyebrow { color: var(--champagne); }
+.band-dark .lead, .band-dark p { color: rgba(255, 255, 255, 0.78); }
+.band-dark a { color: var(--champagne); }
+.band-dark a:hover { color: var(--champagne-soft); }
+.band-dark .btn--secondary { color: var(--white); border-color: rgba(255, 255, 255, 0.5); }
+.band-dark .btn--secondary:hover { background: var(--white); color: var(--plum-black); border-color: var(--white); }
+
+.card {
+  background: var(--white); border: 1px solid var(--line); border-radius: var(--radius);
+  padding: clamp(1.5rem, 3vw, 2.25rem);
+  transition: transform var(--dur) var(--ease), box-shadow var(--dur) var(--ease), border-color var(--dur) var(--ease);
+}
+.card--sand { background: var(--sand); }
+.card:hover { transform: translateY(-4px); box-shadow: var(--shadow-lift); border-color: var(--line-champagne); }
+.band-dark .card { background: rgba(255, 255, 255, 0.04); border-color: var(--line-dark); }
+.band-dark .card:hover { border-color: rgba(232, 200, 154, 0.5); }
+
+.spec-list { list-style: none; padding: 0; }
+.spec-list li { display: flex; justify-content: space-between; gap: 1rem; padding-block: 1.125rem; border-top: 1px solid var(--line-champagne); }
+.spec-list li:last-child { border-bottom: 1px solid var(--line-champagne); }
+.spec-list .k { font-family: var(--font-struct); font-weight: 800; color: var(--plum); }
+.band-dark .spec-list .k { color: var(--white); }
+.band-dark .spec-list li { border-color: rgba(232, 200, 154, 0.3); }
+
+.chip {
+  font-family: var(--font-struct); font-weight: 700; font-size: 0.8125rem;
+  color: var(--plum); background: rgba(74, 46, 111, 0.06);
+  border: 1px solid var(--line); padding: 0.5rem 0.9375rem;
+  border-radius: var(--radius-pill); display: inline-block;
+}
+.band-dark .chip { color: var(--champagne); background: rgba(232, 200, 154, 0.08); border-color: rgba(232, 200, 154, 0.28); }
+
+.stat-num { font-family: var(--font-struct); font-weight: 900; color: var(--violet); font-size: clamp(3.5rem, 8vw, 6rem); line-height: 0.9; letter-spacing: -0.02em; }
+.stat-num--plum { color: var(--plum); }
+.band-dark .stat-num { color: var(--champagne); }
+.stat-cap { font-family: var(--font-struct); font-weight: 700; color: var(--plum); font-size: 1.0625rem; margin-top: 0.75rem; }
+.band-dark .stat-cap { color: rgba(255, 255, 255, 0.85); }
+
+.media { width: 100%; border-radius: var(--radius); object-fit: cover; display: block; }
+.media--portrait { aspect-ratio: 4 / 5; }
+.media--landscape { aspect-ratio: 3 / 2; }
+.media--square { aspect-ratio: 1 / 1; }
+.media--tall { aspect-ratio: 3 / 4; }
+
+.reveal { opacity: 0; transform: translateY(22px); transition: opacity var(--dur-slow) var(--ease), transform var(--dur-slow) var(--ease); will-change: opacity, transform; }
+.reveal.is-visible { opacity: 1; transform: none; }
+.reveal-stagger > * { opacity: 0; transform: translateY(18px); transition: opacity var(--dur-slow) var(--ease), transform var(--dur-slow) var(--ease); }
+.reveal-stagger.is-visible > * { opacity: 1; transform: none; }
+.reveal-stagger.is-visible > *:nth-child(2) { transition-delay: 0.08s; }
+.reveal-stagger.is-visible > *:nth-child(3) { transition-delay: 0.16s; }
+.reveal-stagger.is-visible > *:nth-child(4) { transition-delay: 0.24s; }
+.reveal-stagger.is-visible > *:nth-child(5) { transition-delay: 0.32s; }
+.reveal-stagger.is-visible > *:nth-child(6) { transition-delay: 0.40s; }
+.hover-zoom { overflow: hidden; border-radius: var(--radius); }
+.hover-zoom img { transition: transform var(--dur-slow) var(--ease); }
+.hover-zoom:hover img { transform: scale(1.05); }
+.hover-rule { position: relative; text-decoration: none; }
+.hover-rule::after { content: ""; position: absolute; left: 0; bottom: -3px; width: 100%; height: 2px; background: var(--champagne); transform: scaleX(0); transform-origin: left; transition: transform var(--dur) var(--ease); }
+.hover-rule:hover::after { transform: scaleX(1); }
+html:not(.js) .reveal, html:not(.js) .reveal-stagger > * { opacity: 1; transform: none; }
+@media (prefers-reduced-motion: reduce) {
+  .ds *, .ds *::before, .ds *::after { animation-duration: 0.001ms !important; animation-iteration-count: 1 !important; transition-duration: 0.001ms !important; scroll-behavior: auto !important; }
+  .reveal, .reveal-stagger > * { opacity: 1 !important; transform: none !important; }
+}
+.center { text-align: center; }
+.mx-auto { margin-inline: auto; }
+.stack > * + * { margin-top: 1rem; }
+.stack-lg > * + * { margin-top: clamp(1.25rem, 3vw, 2rem); }
+.text-plum { color: var(--plum); }
+.text-violet { color: var(--violet); }
+.text-champagne { color: var(--champagne-deep); }
+.band-dark .text-champagne { color: var(--champagne); }
+.no-wrap { white-space: nowrap; }
+@media (max-width: 880px) {
+  .split, .split--wide-left, .split--wide-right { grid-template-columns: 1fr; }
+  .section-head { margin-bottom: 2.5rem; }
+}
+
+/* ============================================================
+   PAGE-SPECIFIC — /home flagship
+   ============================================================ */
+.site-header {
+  position: sticky; top: 0; z-index: 50;
+  background: rgba(255, 255, 255, 0.86);
+  backdrop-filter: saturate(160%) blur(12px);
+  -webkit-backdrop-filter: saturate(160%) blur(12px);
+  border-bottom: 1px solid var(--line);
+}
+.site-header .wrap {
+  display: flex; align-items: center; justify-content: space-between;
+  padding-block: 0.9rem; gap: 1rem;
+}
+.brand { display: inline-flex; align-items: center; gap: 0.6rem; }
+.brand img { height: 30px; width: auto; display: block; }
+.brand-word { font-family: var(--font-struct); font-weight: 900; letter-spacing: 0.02em; color: var(--plum); font-size: 1.05rem; }
+.nav-links { display: flex; align-items: center; gap: 1.75rem; }
+.nav-links a { font-family: var(--font-struct); font-weight: 700; font-size: 0.9rem; color: var(--plum); }
+.nav-cta { padding: 0.7rem 1.25rem; font-size: 0.85rem; }
+@media (max-width: 760px) { .nav-links .nav-text { display: none; } }
+
+/* Hero */
+.hero { background: linear-gradient(180deg, var(--sand) 0%, var(--white) 100%); padding-top: clamp(3rem, 2rem + 4vw, 5rem); padding-bottom: var(--space-section); position: relative; overflow: hidden; }
+.hero .split { align-items: center; }
+.hero-frame { position: relative; }
+.hero-frame img { border-radius: var(--radius-lg); box-shadow: var(--shadow-lift); aspect-ratio: 4 / 5; object-fit: cover; width: 100%; }
+.hero-badge {
+  position: absolute; left: -14px; bottom: 22px;
+  background: var(--plum-black); color: #fff; border-radius: var(--radius);
+  padding: 0.85rem 1.1rem; box-shadow: var(--shadow-dark); max-width: 240px;
+  border: 1px solid rgba(232,200,154,0.35);
+}
+.hero-badge .n { font-family: var(--font-struct); font-weight: 900; color: var(--champagne); font-size: 1.35rem; line-height: 1; letter-spacing: -0.01em; }
+.hero-badge .t { font-family: var(--font-struct); font-weight: 600; font-size: 0.8rem; color: rgba(255,255,255,0.82); margin-top: 0.35rem; line-height: 1.35; }
+.hero-cta-row { display: flex; flex-wrap: wrap; gap: 0.9rem; margin-top: 2rem; }
+.hero-note { font-family: var(--font-struct); font-weight: 600; font-size: 0.85rem; color: var(--violet-2); margin-top: 1.5rem; letter-spacing: 0.01em; }
+@media (max-width: 880px) { .hero-frame { max-width: 440px; margin-inline: auto; } .hero-badge { left: 8px; } }
+
+/* Path cards */
+.paths-grid { display: grid; grid-template-columns: 1fr 1fr; gap: clamp(1.25rem, 3vw, 2rem); }
+@media (max-width: 880px) { .paths-grid { grid-template-columns: 1fr; } }
+.path-card { display: flex; flex-direction: column; }
+.path-card .path-kicker { font-family: var(--font-struct); font-weight: 800; font-size: 0.75rem; letter-spacing: 0.14em; text-transform: uppercase; color: var(--violet-2); }
+.path-card h3 { margin-top: 0.4rem; }
+.path-card .path-body { margin-top: 0.9rem; }
+.path-card .spec-list { margin-top: 1.25rem; }
+.path-card .path-foot { margin-top: auto; }
+.path-card .fine { font-family: var(--font-struct); font-weight: 600; font-size: 0.85rem; color: var(--charcoal); margin-top: 1rem; }
+.path-card .btn { margin-top: 1.4rem; }
+.path-card--vip { background: var(--plum-black); border-color: transparent; position: relative; overflow: hidden; }
+.path-card--vip::before { content: ""; position: absolute; inset: 0; background: radial-gradient(110% 80% at 90% -10%, rgba(124,58,237,0.28) 0%, transparent 60%); pointer-events: none; }
+.path-card--vip > * { position: relative; z-index: 1; }
+.path-card--vip h3 { color: #fff; }
+.path-card--vip .path-kicker { color: var(--champagne); }
+.path-card--vip .path-body { color: rgba(255,255,255,0.8); }
+.path-card--vip .fine { color: rgba(255,255,255,0.72); }
+.path-card--vip .spec-list .k { color: #fff; }
+.path-card--vip .spec-list li { border-color: rgba(232,200,154,0.3); color: rgba(255,255,255,0.85); }
+.path-card--vip .spec-list .v { color: var(--champagne); font-family: var(--font-struct); font-weight: 800; }
+.path-card .spec-list .v { font-family: var(--font-struct); font-weight: 800; color: var(--plum); }
+
+/* Proof stat */
+.proof-stat { display: flex; align-items: baseline; gap: 0.5rem; flex-wrap: wrap; }
+.proof-arrow { font-family: var(--font-struct); font-weight: 900; color: rgba(255,255,255,0.5); font-size: clamp(2rem,5vw,3.2rem); }
+
+/* Credential chip row */
+.chip-row { display: flex; flex-wrap: wrap; gap: 0.6rem; margin-top: 1.75rem; }
+
+/* Community strip — editorial contact sheet, gap-free */
+.strip-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 0.9rem; }
+.strip-grid .cell { border-radius: var(--radius); overflow: hidden; aspect-ratio: 4 / 5; }
+.strip-grid img { width: 100%; height: 100%; object-fit: cover; display: block; transition: transform var(--dur-slow) var(--ease); }
+.strip-grid .cell:hover img { transform: scale(1.05); }
+@media (max-width: 880px) { .strip-grid { grid-template-columns: repeat(2, 1fr); } }
+@media (max-width: 480px) { .strip-grid { grid-template-columns: 1fr 1fr; } }
+.strip-note { display: flex; align-items: baseline; gap: 0.9rem; flex-wrap: wrap; margin-top: 2rem; padding-top: 1.75rem; border-top: 1px solid var(--line-champagne); }
+.strip-note .n { font-family: var(--font-struct); font-weight: 900; color: var(--violet); font-size: clamp(1.75rem, 3.5vw, 2.5rem); line-height: 1; letter-spacing: -0.01em; }
+.strip-note .t { font-family: var(--font-struct); font-weight: 600; font-size: 1.0625rem; color: var(--charcoal); max-width: 42ch; }
+.strip-note .t b { color: var(--plum); font-weight: 800; }
+
+/* Testimonial placeholder slot */
+.testi-slot {
+  border: 1.5px dashed var(--champagne-deep);
+  border-radius: var(--radius);
+  padding: clamp(1.25rem, 3vw, 2rem);
+  background: rgba(232, 200, 154, 0.08);
+  margin-top: 2.5rem;
+}
+.testi-slot .tag { font-family: var(--font-struct); font-weight: 800; font-size: 0.75rem; letter-spacing: 0.12em; text-transform: uppercase; color: var(--champagne-deep); }
+.testi-slot p { color: rgba(255,255,255,0.6); margin-top: 0.5rem; font-style: italic; }
+
+/* Deadline */
+.date-list { list-style: none; padding: 0; margin-top: 2rem; max-width: 640px; }
+.date-list li { display: grid; grid-template-columns: 140px 1fr; gap: 1.25rem; padding-block: 1.15rem; border-top: 1px solid var(--line-champagne); align-items: baseline; }
+.date-list li:last-child { border-bottom: 1px solid var(--line-champagne); }
+.date-list .d { font-family: var(--font-struct); font-weight: 900; font-size: 0.8rem; letter-spacing: 0.08em; text-transform: uppercase; color: var(--violet); }
+.date-list .t { font-size: 1rem; color: var(--charcoal); }
+.date-list .t b { color: var(--plum); font-weight: 700; }
+@media (max-width: 560px) { .date-list li { grid-template-columns: 1fr; gap: 0.3rem; } }
+
+/* Footer */
+.site-footer { background: var(--plum-black); color: rgba(255,255,255,0.7); padding-block: clamp(3rem, 5vw, 4.5rem); }
+.site-footer .wrap { display: grid; grid-template-columns: 1.4fr 1fr 1fr; gap: 2rem; }
+.site-footer .brand img { height: 34px; }
+.site-footer p { color: rgba(255,255,255,0.6); font-size: 0.92rem; margin-top: 1rem; }
+.footer-col h4 { font-family: var(--font-struct); font-weight: 800; font-size: 0.78rem; letter-spacing: 0.12em; text-transform: uppercase; color: var(--champagne); margin-bottom: 1rem; }
+.footer-col a { display: block; color: rgba(255,255,255,0.72); font-size: 0.95rem; padding-block: 0.35rem; font-family: var(--font-struct); font-weight: 600; }
+.footer-col a:hover { color: var(--champagne); }
+.footer-legal { border-top: 1px solid rgba(255,255,255,0.12); margin-top: 2.5rem; padding-top: 1.5rem; font-size: 0.82rem; color: rgba(255,255,255,0.45); }
+@media (max-width: 760px) { .site-footer .wrap { grid-template-columns: 1fr; gap: 2.25rem; } }
+
+.dual-cta { display: flex; flex-wrap: wrap; gap: 0.9rem; margin-top: 2.25rem; }
+</style>
+</head>
+
+<body class="ds">
+
+<!-- ===================== HEADER ===================== -->
+<header class="site-header">
+  <div class="wrap">
+    <a class="brand" href="/" aria-label="Time Rich home">
+      <img src="logo-plum.png" alt="Time Rich" />
+      <span class="brand-word">TIME&nbsp;RICH</span>
+    </a>
+    <nav class="nav-links" aria-label="Primary">
+      <a class="hover-rule nav-text" href="/contentmachine">The Content Machine</a>
+      <a class="hover-rule nav-text" href="/coaching">1:1 Coaching</a>
+      <a class="btn btn--plum nav-cta" href="/contentmachine">Enroll</a>
+    </nav>
+  </div>
+</header>
+
+<!-- ===================== HERO ===================== -->
+<section class="hero">
+  <div class="wrap">
+    <div class="split split--wide-left">
+      <div class="reveal">
+        <span class="eyebrow">Time Rich · AI systems for founders</span>
+        <h1 class="display">Your business, running on AI that sounds like <span class="accent-italic">you</span>.</h1>
+        <p class="lead" style="margin-top:1.5rem">AI doesn't save you time unless you set it up right. We build the systems that run your content and your operations in your voice, on your context. You keep them for good.</p>
+        <div class="hero-cta-row">
+          <a class="btn btn--plum btn--lg" href="/contentmachine">See the AI Content Machine</a>
+          <a class="btn btn--secondary btn--lg" href="/coaching">Work with Ella one to one</a>
+        </div>
+        <p class="hero-note">Built on the system that grew Ajay Yadav from 10K to 400K followers in four months.</p>
+      </div>
+      <div class="hero-frame reveal">
+        <img src="ella-on-stage.jpg" alt="Ella Molony Cook speaking on stage at a Time Rich event" />
+        <div class="hero-badge">
+          <div class="n">Context &gt; prompts</div>
+          <div class="t">Load your AI with who you are and how you work. Then it sounds like you.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===================== THE REFRAME ===================== -->
+<section class="section section--white">
+  <div class="wrap">
+    <div class="split split--wide-right">
+      <div class="hover-zoom reveal" style="order:2">
+        <img class="media media--portrait" src="ella-laptop.jpg" alt="Ella working at her laptop" />
+      </div>
+      <div class="reveal" style="order:1">
+        <span class="eyebrow">The reframe</span>
+        <h2 class="h2">Prompt engineering is not the lever. <span class="underline-champagne">Context is.</span></h2>
+        <div class="stack-lg" style="margin-top:1.5rem">
+          <p>Everyone is chasing better prompts. That's the wrong end of the problem.</p>
+          <p>Every AI tool starts knowing nothing about you. Without your context, it gives generic answers that sound like a robot. Load it with who you are, what you do, and how you work, and simple asks produce brilliant answers that sound like you.</p>
+          <p>That setup is the hard part. It's also the part you keep skipping, because you're busy running the business it's meant to help. So we build it with you.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===================== TWO PATHS ===================== -->
+<section class="section section--sand">
+  <div class="wrap">
+    <div class="section-head center reveal">
+      <span class="eyebrow">Two ways in</span>
+      <h2 class="h2">Pick the path that fits where you are.</h2>
+      <p class="lead mx-auto" style="margin-top:1rem">One is a build you do alongside a room of founders. One is a build Ella does with you, one to one. Both leave you owning the system.</p>
+    </div>
+
+    <div class="paths-grid reveal">
+      <!-- AICM -->
+      <article class="card path-card">
+        <span class="path-kicker">The AI Content Machine</span>
+        <h3 class="h3">Build your content system alongside Ella and Ajay.</h3>
+        <p class="path-body">Video modules you keep, two live calls, and six months of access. You build a system of AI agents that research, write, and produce content in your voice. Start where you are and layer from there.</p>
+        <ul class="spec-list">
+          <li><span class="k"><!--OFFER:tiers.0.name-->The Content OS<!--/OFFER:tiers.0.name--></span><span class="v"><!--OFFER:tiers.0.price-->$197<!--/OFFER:tiers.0.price--></span></li>
+          <li><span class="k"><!--OFFER:tiers.1.name-->The Written Machine<!--/OFFER:tiers.1.name--></span><span class="v"><!--OFFER:tiers.1.price-->$295<!--/OFFER:tiers.1.price--></span></li>
+          <li><span class="k"><!--OFFER:tiers.2.name-->The Full Machine<!--/OFFER:tiers.2.name--></span><span class="v"><!--OFFER:tiers.2.price-->$395<!--/OFFER:tiers.2.price--></span></li>
+        </ul>
+        <div class="path-foot">
+          <p class="fine">Start with any tier. Upgrade later and pay only the difference. Doors close <!--OFFER:doorsCloseDisplay-->1 September<!--/OFFER:doorsCloseDisplay-->, the build starts <!--OFFER:startDateDisplay-->7 September<!--/OFFER:startDateDisplay-->.</p>
+          <a class="btn btn--plum btn--block" href="/contentmachine">See the tiers and enroll</a>
+        </div>
+      </article>
+
+      <!-- 1:1 VIP -->
+      <article class="card path-card path-card--vip">
+        <span class="path-kicker">1:1 AI System Coaching · VIP</span>
+        <h3 class="h3">Work one to one with Ella.</h3>
+        <p class="path-body">She designs and ships your custom AI operating system with you. Content, operations, research, built on your context and yours to keep. The full Content Machine program is included either way.</p>
+        <ul class="spec-list">
+          <li><span class="k"><!--OFFER:coaching.sixWeek.name-->6-Week 1:1 AI System Coaching<!--/OFFER:coaching.sixWeek.name--></span><span class="v"><!--OFFER:coaching.sixWeek.price-->$4,950<!--/OFFER:coaching.sixWeek.price--></span></li>
+          <li><span class="k"><!--OFFER:coaching.twelveWeek.name-->12-Week 1:1 COO AI Coaching<!--/OFFER:coaching.twelveWeek.name--></span><span class="v"><!--OFFER:coaching.twelveWeek.price-->$14,950<!--/OFFER:coaching.twelveWeek.price--></span></li>
+        </ul>
+        <div class="path-foot">
+          <p class="fine">Only <!--OFFER:coaching.sixWeek.spots-->4<!--/OFFER:coaching.sixWeek.spots--> spots. Ella reads and replies to every application herself.</p>
+          <a class="btn btn--primary btn--block" href="/coaching">See the coaching deep-dive</a>
+        </div>
+      </article>
+    </div>
+  </div>
+</section>
+
+<!-- ===================== AJAY PROOF ===================== -->
+<section class="section band-dark">
+  <div class="wrap">
+    <div class="split split--wide-left">
+      <div class="reveal">
+        <span class="eyebrow">The proof</span>
+        <div class="proof-stat">
+          <span class="stat-num">10K</span>
+          <span class="proof-arrow">→</span>
+          <span class="stat-num">400K</span>
+        </div>
+        <p class="stat-cap">Followers in four months, on the system you'll build.</p>
+        <div class="stack-lg" style="margin-top:1.75rem">
+          <p>Ajay Yadav built the original machine over eighteen months. A system of AI agents that research, write, and produce content in his voice. It took him from ten thousand followers to four hundred thousand in four months.</p>
+          <p>Forbes 30 Under 30. Three-time founder. Backed by Khosla and Craft. His last company reached more than twenty million users.</p>
+          <p>You're not copying his posts. You're inheriting his system, then making it yours.</p>
+        </div>
+        <div class="chip-row">
+          <span class="chip">Forbes 30 Under 30</span>
+          <span class="chip">3x founder</span>
+          <span class="chip">Khosla · Craft backed</span>
+          <span class="chip">20M+ users</span>
+        </div>
+      </div>
+      <div class="hover-zoom reveal">
+        <img class="media media--tall" src="ajay-ella.jpg" alt="Ajay Yadav and Ella Molony Cook" />
+      </div>
+    </div>
+
+    <!-- Testimonial slot (no fabricated proof) -->
+    <div class="testi-slot reveal">
+      <span class="tag">[ADD REAL TESTIMONIAL]</span>
+      <p>Drop in a real member or client quote once the first run of the course delivers results. Do not fabricate.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ===================== ELLA AUTHORITY ===================== -->
+<section class="section section--white">
+  <div class="wrap">
+    <div class="split split--wide-right">
+      <div class="hover-zoom reveal" style="order:2">
+        <img class="media media--portrait" src="ella-portrait-studio.jpg" alt="Portrait of Ella Molony Cook" />
+      </div>
+      <div class="reveal" style="order:1">
+        <span class="eyebrow">Who you're building with</span>
+        <h2 class="h2">I'm Ella. I build lean businesses on AI, and I show you exactly how.</h2>
+        <div class="stack-lg" style="margin-top:1.5rem">
+          <p>I've built and scaled four companies. I invest in AI, including Anthropic. I started Time Rich because the AI conversation was happening in rooms women weren't in.</p>
+          <p>I'm not a guru and I don't do bro-science. I build the systems, with you, in the time it takes to actually use them.</p>
+        </div>
+        <div class="chip-row">
+          <span class="chip">AI System Architect</span>
+          <span class="chip">Founders AI Labs</span>
+          <span class="chip">Early investor in Anthropic</span>
+          <span class="chip">4x founder</span>
+          <span class="chip">1 exit</span>
+          <span class="chip">250+ events across 7 cities</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===================== COMMUNITY STRIP ===================== -->
+<section class="section section--sand">
+  <div class="wrap">
+    <div class="section-head reveal">
+      <span class="eyebrow">The room</span>
+      <h2 class="h2">Time Rich is the room for women building leaner businesses with AI.</h2>
+      <p class="lead" style="margin-top:1rem">No imposter syndrome. No burnout culture that pretends rest is a reward for productivity instead of the foundation of it.</p>
+    </div>
+    <div class="strip-grid reveal">
+      <div class="cell"><img src="event-audience.jpg" alt="Founders in the audience at a Time Rich event" /></div>
+      <div class="cell"><img src="the-room-dinner.jpg" alt="Founders at a Time Rich dinner" /></div>
+      <div class="cell"><img src="real-conversation.jpg" alt="Real conversation between founders" /></div>
+      <div class="cell"><img src="dinner-connection.jpg" alt="Connection over dinner at a Time Rich event" /></div>
+      <div class="cell"><img src="event-152.jpg" alt="Time Rich event room" /></div>
+      <div class="cell"><img src="event-55.jpg" alt="Founders at a Time Rich gathering" /></div>
+    </div>
+    <div class="strip-note reveal">
+      <span class="n">250+ events</span>
+      <span class="t"><b>Across seven cities.</b> Real rooms, real founders, real conversations about building leaner with AI.</span>
+    </div>
+  </div>
+</section>
+
+<!-- ===================== DEADLINE ===================== -->
+<section class="section section--white">
+  <div class="wrap wrap--reading">
+    <div class="reveal">
+      <span class="eyebrow eyebrow--champagne">The one date that matters</span>
+      <h2 class="h2">Doors close <!--OFFER:doorsCloseDisplay-->1 September<!--/OFFER:doorsCloseDisplay-->. The build starts <!--OFFER:startDateDisplay-->7 September<!--/OFFER:startDateDisplay-->.</h2>
+      <p style="margin-top:1.25rem">No countdown timers. No fake urgency. Just the real dates for the AI Content Machine, and <!--OFFER:accessMonths-->6<!--/OFFER:accessMonths--> months of access to build at your pace once you're in.</p>
+      <ul class="date-list">
+        <li><span class="d">Tue · <!--OFFER:doorsCloseShort-->1 Sept<!--/OFFER:doorsCloseShort--></span><span class="t"><b>Doors close.</b> Last day to join this run of the AI Content Machine.</span></li>
+        <li><span class="d">Mon · <!--OFFER:startDateShort-->7 Sept<!--/OFFER:startDateShort--></span><span class="t"><b>The build starts.</b> Live kickoff with Ella.</span></li>
+        <li><span class="d">Thu · 24 Sept</span><span class="t"><b>Live Q&amp;A with Ajay.</b> Bring your system, get it sharpened.</span></li>
+        <li><span class="d"><!--OFFER:accessMonths-->6<!--/OFFER:accessMonths--> months</span><span class="t"><b>Access to keep building.</b> Miss a week, catch up, keep going.</span></li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<!-- ===================== FINAL CTA ===================== -->
+<section class="section band-dark">
+  <div class="wrap wrap--narrow center">
+    <div class="reveal">
+      <span class="eyebrow">Your move</span>
+      <h2 class="h2">Set it up right, once.</h2>
+      <p class="lead mx-auto" style="margin-top:1.25rem">You can keep reading about AI, or you can spend the next few weeks building the systems that give you your week back.</p>
+      <div class="dual-cta" style="justify-content:center">
+        <a class="btn btn--primary btn--lg" href="/contentmachine">See the AI Content Machine</a>
+        <a class="btn btn--secondary btn--lg" href="/coaching">Apply for 1:1 coaching</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===================== FOOTER ===================== -->
+<footer class="site-footer">
+  <div class="wrap">
+    <div>
+      <a class="brand" href="/"><img src="logo-lilac.png" alt="Time Rich" /></a>
+      <p>AI systems that run your business in your voice. Built with you, kept for good.</p>
+    </div>
+    <div class="footer-col">
+      <h4>Offers</h4>
+      <a href="/contentmachine">The AI Content Machine</a>
+      <a href="/coaching">1:1 AI System Coaching</a>
+    </div>
+    <div class="footer-col">
+      <h4>Company</h4>
+      <a href="/challenge/terms.html">Terms</a>
+      <a href="/challenge/privacy.html">Privacy</a>
+      <a href="mailto:emc@timerich.ai">emc@timerich.ai</a>
+    </div>
+  </div>
+  <div class="wrap">
+    <div class="footer-legal">© 2026 <!--OFFER:entity-->Growth Haus LLC<!--/OFFER:entity-->. Time Rich is a Growth Haus company.</div>
+  </div>
+</footer>
+
+<script>
+  // Progressive enhancement: enable scroll-reveal only when JS runs.
+  document.documentElement.classList.add('js');
+  (function () {
+    var reduce = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    var els = document.querySelectorAll('.reveal, .reveal-stagger');
+    if (reduce || !('IntersectionObserver' in window)) {
+      els.forEach(function (el) { el.classList.add('is-visible'); });
+      return;
+    }
+    var io = new IntersectionObserver(function (entries) {
+      entries.forEach(function (e) {
+        if (e.isIntersecting) { e.target.classList.add('is-visible'); io.unobserve(e.target); }
+      });
+    }, { rootMargin: '0px 0px -8% 0px', threshold: 0.12 });
+    els.forEach(function (el) { io.observe(el); });
+  })();
+</script>
+
+</body>
+</html>
