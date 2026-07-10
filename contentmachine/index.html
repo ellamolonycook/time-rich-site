@@ -196,8 +196,8 @@
   .vrow.bonus .vval{color:var(--lime)}
   .vtotal{display:flex;justify-content:space-between;align-items:baseline;gap:16px;flex-wrap:wrap;margin-top:14px;padding:14px 20px;border:1px solid var(--lime);border-radius:14px;background:var(--lime-dim)}
   .vtotal span{font-family:var(--mono);font-size:12px;letter-spacing:.14em;text-transform:uppercase;color:var(--muted)}
-  .vtotal b{font-family:var(--display);font-size:clamp(19px,3vw,29px);color:var(--text);letter-spacing:-.01em}
-  .vtotal-was{color:var(--red);text-decoration:line-through;text-decoration-color:var(--red);text-decoration-thickness:5px;margin-right:16px;font-size:clamp(56px,9vw,104px);line-height:1;letter-spacing:-.03em;display:inline-block}
+  .vtotal b{font-family:var(--display);font-size:clamp(30px,4.6vw,48px);color:var(--text);letter-spacing:-.02em;line-height:1.05}
+  .vtotal-was{color:var(--red);text-decoration:line-through;text-decoration-color:var(--red);text-decoration-thickness:3px;margin-right:14px;font-size:inherit;letter-spacing:-.02em}
   .vskills-label{margin-top:22px;font-family:var(--mono);font-size:12px;letter-spacing:.12em;text-transform:uppercase;color:var(--lime)}
   .vskills{display:flex;flex-wrap:wrap;gap:6px;margin-top:12px}
   .vchip{font-family:var(--mono);font-size:11px;color:var(--muted);border:1px solid var(--line);border-radius:7px;padding:5px 9px;background:var(--panel);transition:border-color .15s ease,color .15s ease,transform .15s ease}
@@ -315,8 +315,7 @@
     .t-photo{aspect-ratio:4/5}
     .tier{padding:22px 20px}
     .tier .t-price{font-size:36px}
-    .vtotal-was{font-size:clamp(46px,14vw,62px)}
-    .vtotal b{font-size:22px}
+    .vtotal b{font-size:clamp(26px,7.5vw,38px)}
     .m-agent{font-size:11.5px}
     .card{padding:26px 22px}
     .final{padding:70px 0}
@@ -527,12 +526,12 @@
       <div class="vrow"><div class="vlabel">Faceless Video + Editor Pipeline<em>raw footage to posted, hands off your face</em></div><div class="vval">$900</div></div>
       <div class="vrow bonus"><div class="vlabel"><span class="btag">BONUS</span>Your own Whisper Flow-style voice tool<em>talk your content into existence with <a href="https://usevoice.xyz" target="_blank" rel="noopener">UseVoice.xyz</a> - yours to keep</em></div><div class="vval">$490</div></div>
       <div class="vrow bonus"><div class="vlabel"><span class="btag">BONUS</span>50+ marketing skills<em>a full growth playbook wired straight into your machine</em></div><div class="vval">$1,000</div></div>
-      <div class="vrow"><div class="vlabel">2 live calls<em>kickoff with Ella, plus a Q&amp;A with Ajay himself</em></div><div class="vval">$1,000</div></div>
+      <div class="vrow"><div class="vlabel">2 live calls<em>kickoff with Ella, plus a Q&amp;A with Ajay himself</em></div><div class="vval">$15,000</div></div>
       <div class="vrow"><div class="vlabel">6 months access + the WhatsApp community<em>build it properly, and never alone</em></div><div class="vval">$500</div></div>
     </div>
     <div class="vtotal">
       <span>Total real value</span>
-      <b><span class="vtotal-was">$7,790</span> <a href="https://buy.stripe.com/7sYcN772e7QQc5O3WCak005" style="color:inherit;text-decoration:underline;text-decoration-color:var(--lime);text-underline-offset:3px">yours from $197 →</a></b>
+      <b><span class="vtotal-was">$21,790</span> <a href="https://buy.stripe.com/7sYcN772e7QQc5O3WCak005" style="color:inherit;text-decoration:underline;text-decoration-color:var(--lime);text-underline-offset:3px">yours from $197 →</a></b>
     </div>
 
     <p class="vskills-label">The 50+ marketing skills, in full</p>
@@ -694,7 +693,6 @@
     <h2>Your competitors are building machines. <span class="hl">You're building burnout.</span></h2>
     <p class="lead">Every week you hand-write content is a week your machine could have been running instead. The people winning your niche aren't more talented than you. They just stopped doing robot work by hand.</p>
     <p class="lead" style="margin-top:18px">Attention is the asset. Agents are the skill. This challenge is both, in one build.</p>
-    <div class="price-line"><b><span id="ess-price-2">$197</span> ESSENTIAL</b> · the Brain, the Research Agent, the Caption Writer &nbsp;·&nbsp; <b><span id="vip-price-2">$297</span> FULL MACHINE</b> · the whole pipeline <span id="eb-note">(early bird, ends Aug 28)</span> &nbsp;·&nbsp; <b>1:1 VIP from $4,950 · only 4 spots</b></div>
     <div class="countdown" id="countdown">DOORS SLAM FRI SEPT 4 · DAY 1 IS MON SEPT 7</div>
     <a href="#tiers" class="btn big cta-btn">BUILD MY CONTENT MACHINE →</a>
     <p style="margin-top:26px;color:var(--dim);font-size:14px">The wealth transfer is real. Decide which side of it you're building on.</p>
@@ -722,16 +720,14 @@ const CONFIG = {
   const price = early ? CONFIG.earlyPrice : CONFIG.fullPrice;
   const essPrice = early ? CONFIG.essEarly : CONFIG.essFull;
   document.getElementById('vip-price').textContent = price;
-  document.getElementById('vip-price-2').textContent = price;
   document.getElementById('vip-btn').textContent = 'GET THE FULL MACHINE · ' + price + ' →';
   document.getElementById('ess-price').textContent = essPrice;
-  document.getElementById('ess-price-2').textContent = essPrice;
   document.getElementById('ess-btn').textContent = 'START WITH ESSENTIAL · ' + essPrice;
   var pcDays = Math.max(1, Math.ceil((CONFIG.earlyBirdEnds - now) / 86400000));
   document.getElementById('pc-days').textContent = pcDays + (pcDays === 1 ? ' day' : ' days');
   if(!early){
-    ['vip-badge','vip-was','vip-deadline','eb-note','ess-was','ess-deadline','price-countdown'].forEach(function(id){
-      document.getElementById(id).style.display = 'none';
+    ['vip-badge','vip-was','vip-deadline','ess-was','ess-deadline','price-countdown'].forEach(function(id){
+      var el = document.getElementById(id); if(el) el.style.display = 'none';
     });
   }
   if(now > CONFIG.doorsClose){
