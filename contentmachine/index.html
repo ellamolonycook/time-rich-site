@@ -83,6 +83,9 @@
   @media(max-width:900px){.stats{grid-template-columns:repeat(3,1fr)}}
   @media(max-width:560px){.stats{grid-template-columns:repeat(2,1fr)}}
   .stat{background:var(--panel);padding:26px 22px}
+  a.stat{text-decoration:none;color:inherit;display:block;transition:background .15s ease}
+  a.stat:hover{background:var(--panel2)}
+  a.stat:hover span{color:var(--lime)}
   .stat b{font-family:var(--display);font-size:clamp(24px,2.4vw,32px);display:block;letter-spacing:-.02em}
   .stat.sm b{font-size:clamp(19px,2vw,24px)}
   .stat span{font-family:var(--mono);font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--muted)}
@@ -317,16 +320,11 @@
     <p class="hero-sub">RUNS ON ANY AI ASSISTANT · NO CODE · DOORS CLOSE SEPT 4</p>
 
     <div class="stats">
-      <div class="stat k"><b data-count="400" data-suffix="K">400K</b><span>Instagram followers</span></div>
-      <div class="stat"><b data-count="114" data-suffix="K">114K</b><span>LinkedIn</span></div>
-      <div class="stat"><b data-count="45" data-suffix="K">45K</b><span>Substack</span></div>
-      <div class="stat k"><b data-count="30" data-suffix="M+">30M+</b><span>Simplified users<br>VC-backed</span></div>
+      <a class="stat k" href="https://www.instagram.com/thevibefounder/" target="_blank" rel="noopener"><b data-count="400" data-suffix="K">400K</b><span>Instagram ↗</span></a>
+      <a class="stat" href="https://www.linkedin.com/in/yadavajay/" target="_blank" rel="noopener"><b data-count="114" data-suffix="K">114K</b><span>LinkedIn ↗</span></a>
+      <a class="stat" href="https://substack.com/@thevibefounder" target="_blank" rel="noopener"><b data-count="45" data-suffix="K">45K</b><span>Substack ↗</span></a>
+      <a class="stat k" href="https://www.linkedin.com/company/simplifiedhq/" target="_blank" rel="noopener"><b data-count="30" data-suffix="M+">30M+</b><span>Simplified users · VC-backed ↗</span></a>
       <div class="stat k"><b data-count="4" data-suffix=" mo">4 mo</b><span>10K → 400K</span></div>
-    </div>
-    <div class="stat-links">
-      <span>See for yourself →</span>
-      <a href="https://www.instagram.com/thevibefounder/" target="_blank" rel="noopener">Instagram ↗</a>
-      <a href="https://substack.com/@thevibefounder" target="_blank" rel="noopener">Substack ↗</a>
     </div>
 
     <div class="term">
