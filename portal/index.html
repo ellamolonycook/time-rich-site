@@ -5,7 +5,21 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>The AI Content Machine — Member Portal</title>
   <meta name="robots" content="noindex, nofollow" />
-  <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32.png" />
+  <meta name="theme-color" content="#0B0B10" />
+  <meta property="og:type" content="website" />
+  <meta property="og:site_name" content="The AI Content Machine" />
+  <meta property="og:url" content="https://timerich.ai/portal" />
+  <meta property="og:title" content="The AI Content Machine — Member Portal" />
+  <meta property="og:description" content="Your modules, prompts, and the community — everything the machine runs on, in one place." />
+  <meta property="og:image" content="https://timerich.ai/og-portal.jpg" />
+  <meta property="og:image:width" content="1200" />
+  <meta property="og:image:height" content="630" />
+  <meta property="og:image:alt" content="The AI Content Machine — Member Portal" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:image" content="https://timerich.ai/og-portal.jpg" />
+  <link rel="icon" type="image/png" sizes="32x32" href="/favicon-aicm-32.png" />
+  <link rel="icon" type="image/png" sizes="16x16" href="/favicon-aicm-16.png" />
+  <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-aicm.png" />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;700&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet" />
@@ -127,6 +141,11 @@
     .feat li{font-size:14px;padding:8px 0 8px 26px;position:relative;color:var(--text)}
     .feat li:before{content:'→';position:absolute;left:0;color:var(--lime);font-family:var(--mono)}
     .feat li b{font-family:var(--display);font-weight:700}
+    /* offer prices + ownership */
+    .vip h3 .was{font-family:var(--mono);font-size:15px;color:var(--dim);text-decoration:line-through;font-weight:400;margin-left:6px}
+    .own-badge{display:inline-block;font-family:var(--mono);font-size:12px;letter-spacing:.06em;color:var(--lime);border:1px solid var(--line);background:var(--lime-dim);border-radius:8px;padding:9px 16px}
+    .cta-upgrade{width:100%}
+    #ess-deadline,#fm-deadline{color:var(--dim)}
 
     /* bios */
     .bio{display:flex;gap:14px;align-items:flex-start}
@@ -168,18 +187,45 @@
     .cw-foot input:focus{border-color:var(--lime)}
     .cw-foot button{background:var(--lime);color:#0B0B10;border:none;border-radius:8px;padding:0 14px;font-family:var(--display);font-weight:700;cursor:pointer}
 
-    @media(max-width:600px){.sess{flex-wrap:wrap}.plan-chip{display:none}}
+    /* ---------- mobile readability ---------- */
+    @media(max-width:600px){
+      body{overflow-x:clip}
+      .wrap{padding:0 16px}
+      .nav-inner{height:auto;min-height:56px;padding:10px 0;gap:10px}
+      .brand{font-size:11px;letter-spacing:.1em}
+      .brand-sfx{display:none}                 /* drop "· MEMBER PORTAL" so brand + upgrade fit */
+      .plan-chip{display:none}
+      .btn.small{padding:8px 14px;font-size:12px}
+      section.block{padding:34px 0}
+      header.hero{padding:40px 0 16px}
+      header.hero h1{font-size:26px}
+      header.hero p.lead{font-size:16px}
+      /* stack module/call rows so nothing gets crushed or clipped */
+      .sess{flex-wrap:wrap;gap:8px;align-items:flex-start}
+      .sess>div:first-child{flex:1 1 100%}
+      .sess .t{font-size:15px}
+      .sess .s{font-size:13.5px}
+      .sess .pill{order:2}
+      .lockmsg{width:auto;text-align:left}     /* was fixed 110px right-aligned — clipped on mobile */
+      .rt{text-align:left}
+      .steps li{padding-left:42px;font-size:14.5px}
+      .prog .lbl{gap:10px}
+      .prog .lbl span{font-size:10px}
+      .feat li{font-size:14.5px}
+      .res{font-size:14.5px}
+      .own-badge,.cta-upgrade{width:100%;text-align:center;box-sizing:border-box}
+    }
     @media(max-width:520px){#cw-panel{right:8px;left:8px;width:auto}}
     @media(prefers-reduced-motion:reduce){*{animation-duration:.001ms!important;animation-iteration-count:1!important;transition-duration:.001ms!important;scroll-behavior:auto!important}}
   </style>
 </head>
 <body>
   <nav><div class="wrap nav-inner">
-    <span class="brand"><b>THE AI CONTENT MACHINE</b> · MEMBER PORTAL</span>
+    <span class="brand"><b>THE AI CONTENT MACHINE</b><span class="brand-sfx"> · MEMBER PORTAL</span></span>
     <div class="nav-right">
-      <!-- Show the member's current tier; drop the upgrade chip for Tier 3 members -->
-      <span class="plan-chip">PLAN <b>TIER 1</b></span>
-      <span class="btn soon small" aria-disabled="true">Upgrades soon</span>
+      <!-- Plan + upgrade chip are set by CONFIG.plan in the script below -->
+      <span class="plan-chip">PLAN <b id="plan-chip-name">ESSENTIAL</b></span>
+      <a href="#offers" class="btn small" id="nav-upgrade">Upgrade →</a>
     </div>
   </div></nav>
 
@@ -236,70 +282,77 @@
       </div>
     </section>
 
-    <!-- YOUR MODULES (Tier 1, owned) — drips weekly -->
+    <!-- YOUR MODULES · ESSENTIAL (owned by all members) — drips weekly -->
     <section class="block">
-      <h2 class="sec">04 / Your modules · The Content OS</h2>
+      <h2 class="sec">04 / Your modules · Essential — The Content OS</h2>
       <div class="sec-h">The core engine. Yours to build.</div>
       <div class="card">
         <div class="sess"><div><div class="t">Module 1 · The Content Operating System</div><div class="s">Build the Brain — the central system every agent pulls from — and lock in your Tone of Voice, so the machine sounds like you, not AI soup</div></div><span class="pill soon">Soon</span><span class="lockmsg">Unlocks Sept 7</span></div>
         <!-- To release: swap the lock markup for: <span class="pill replay">Video</span><a class="go" href="[LINK]">Watch →</a> -->
-        <div class="sess lock"><div><div class="t">Module 2 · The Research Agent</div><div class="s">Finds the top-performing content in your niche and spots trends before you'd catch them scrolling</div></div><span class="pill lk">🔒</span><span class="lockmsg">Unlocks weekly</span></div>
-        <div class="sess lock"><div><div class="t">Module 3 · The Caption Writer Agent</div><div class="s">Runs on every post you make. Caption, done, every time</div></div><span class="pill lk">🔒</span><span class="lockmsg">Unlocks weekly</span></div>
+        <div class="sess lock"><div><div class="t">Module 2 · The Brand Guidelines Process</div><div class="s">Your visual and verbal identity, encoded once so every asset the machine makes stays on-brand</div></div><span class="pill lk">🔒</span><span class="lockmsg">Unlocks weekly</span></div>
+        <div class="sess lock"><div><div class="t">Module 3 · The Research Agent</div><div class="s">Finds the top-performing content in your niche and spots trends before you'd catch them scrolling</div></div><span class="pill lk">🔒</span><span class="lockmsg">Unlocks weekly</span></div>
+        <div class="sess lock"><div><div class="t">Module 4 · The Viral Hook Writer</div><div class="s">Scroll-stopping hooks for every post you publish — the first line that earns the rest</div></div><span class="pill lk">🔒</span><span class="lockmsg">Unlocks weekly</span></div>
+        <div class="sess lock"><div><div class="t">Module 5 · The Viral Caption Writer</div><div class="s">Runs on every post you make. Caption, done, every time</div></div><span class="pill lk">🔒</span><span class="lockmsg">Unlocks weekly</span></div>
       </div>
-      <p class="note">New modules unlock each week — you'll get an email the moment the next one's live. Finish Tier 1 and you've got a working system: a brain, a researcher, and a writer that never gets tired.</p>
+      <p class="note">New modules unlock each week — you'll get an email the moment the next one's live. Finish Essential and you've got a working system: a brain, a researcher, and writers that never get tired.</p>
     </section>
 
-    <!-- TIER 2 — gated (not owned) -->
-    <section class="block sec-lock">
-      <h2 class="sec">🔒 05 / Tier 2 · The Written Machine — upgrade to unlock</h2>
-      <div class="sec-h">The long-form engines.</div>
+    <!-- FULL MACHINE modules — gated unless member owns Full Machine (JS toggles by CONFIG.plan) -->
+    <section class="block sec-lock" id="fm-modules">
+      <h2 class="sec"><span class="fm-lock">🔒 </span>05 / The Full Machine — the complete pipeline</h2>
+      <div class="sec-h">Everything in Essential, plus the writers, the visuals, and the video line.</div>
       <div class="card">
-        <div class="sess lock"><div><div class="t">Module 4 · The LinkedIn Writer Agent</div><div class="s">Posts built for how LinkedIn actually works — in your voice, from your Brain. Founder posts, not motivational posters</div></div><span class="pill lk">🔒</span><span class="lockmsg">Soon</span></div>
-        <div class="sess lock"><div><div class="t">Module 5 · The Substack Writer Agent</div><div class="s">Newsletters that go out without you staring at a blank page on a Sunday night</div></div><span class="pill lk">🔒</span><span class="lockmsg">Soon</span></div>
+        <div class="sess lock fm-row"><div><div class="t">Module 6 · The LinkedIn Ghost Writer</div><div class="s">Posts that sound like a founder, not a motivational poster — in your voice, from your Brain</div></div><span class="pill lk">🔒</span><span class="lockmsg">Soon</span></div>
+        <div class="sess lock fm-row"><div><div class="t">Module 7 · The Humanised Substack Writer</div><div class="s">Newsletters drafted from your ideas, in your voice — no blank page on a Sunday night</div></div><span class="pill lk">🔒</span><span class="lockmsg">Soon</span></div>
+        <div class="sess lock fm-row"><div><div class="t">Module 8 · The Carousel Builder</div><div class="s">The format doing the heavy lifting on IG right now — one idea, a full carousel out</div></div><span class="pill lk">🔒</span><span class="lockmsg">Soon</span></div>
+        <div class="sess lock fm-row"><div><div class="t">Module 9 · The Infographic Builder</div><div class="s">Your ideas and data turned into shareable, saveable visuals</div></div><span class="pill lk">🔒</span><span class="lockmsg">Soon</span></div>
+        <div class="sess lock fm-row"><div><div class="t">Module 10 · The Faceless Video System</div><div class="s">Content that grows while your face stays off camera</div></div><span class="pill lk">🔒</span><span class="lockmsg">Soon</span></div>
+        <div class="sess lock fm-row"><div><div class="t">Module 11 · The Video Editor Pipeline</div><div class="s">The production line that turns raw output into posted content</div></div><span class="pill lk">🔒</span><span class="lockmsg">Soon</span></div>
+        <div class="sess lock fm-row"><div><div class="t">🎁 Bonus · UseVoice.xyz voice tool</div><div class="s">Your own Whisper Flow-style dictation — yours to keep</div></div><span class="pill lk">🔒</span><span class="lockmsg">Soon</span></div>
+        <div class="sess lock fm-row"><div><div class="t">🎁 Bonus · 50+ marketing skills</div><div class="s">A full growth playbook wired into your machine</div></div><span class="pill lk">🔒</span><span class="lockmsg">Soon</span></div>
       </div>
-      <p class="note">The tier for anyone whose growth lives in written words. <span class="sub">Unlock for +$98 · soon</span></p>
+      <!-- shown to Essential members only (JS) -->
+      <p class="note" id="fm-upgrade-note">The whole machine — the one Ajay's content team runs. On Essential? <a href="#offers">Upgrade to the Full Machine</a> for the difference.</p>
     </section>
 
-    <!-- TIER 3 — gated (not owned) -->
-    <section class="block sec-lock">
-      <h2 class="sec">🔒 06 / Tier 3 · The Full Machine — upgrade to unlock</h2>
-      <div class="sec-h">The visual layer. The whole pipeline.</div>
-      <div class="card">
-        <div class="sess lock"><div><div class="t">Module 6 · Instagram Carousels</div><div class="s">The full carousel production system — the format doing the heavy lifting on IG right now</div></div><span class="pill lk">🔒</span><span class="lockmsg">Soon</span></div>
-        <div class="sess lock"><div><div class="t">Module 7 · Faceless Videos</div><div class="s">Video content that doesn't need your face, your ring light, or your Tuesday afternoon</div></div><span class="pill lk">🔒</span><span class="lockmsg">Soon</span></div>
-        <div class="sess lock"><div><div class="t">Module 8 · The Video Editor Pipeline</div><div class="s">The editing workflow that turns raw output into posted content</div></div><span class="pill lk">🔒</span><span class="lockmsg">Soon</span></div>
-      </div>
-      <p class="note">The whole machine — the one Ajay's actual content team runs. <span class="sub">Unlock for +$198 · soon</span></p>
-    </section>
-
-    <!-- UPGRADE YOUR TIER (member is on Tier 1 → show only 2 & 3) -->
-    <section class="block">
-      <h2 class="sec">07 / Upgrade your tier</h2>
+    <!-- THE TWO OFFERS — clear side-by-side -->
+    <section class="block" id="offers">
+      <h2 class="sec">06 / The two offers</h2>
       <div class="sec-h">One decision: how much of the machine do you want?</div>
-      <p class="note" style="margin:-8px 0 18px">You're on <b style="color:var(--lime)">Tier 1</b>. Unlocking a higher tier just adds the modules below — you only pay the difference, and you keep everything you already own.</p>
+      <p class="note" style="margin:-8px 0 18px">You're on <b class="hl" id="plan-name">Essential</b>. Here's exactly what each offer includes — upgrading just adds the missing modules, you only pay the difference, and you keep everything you already own.</p>
       <div class="row">
-        <div class="vip">
-          <div class="kick">Upgrade · +$98</div>
-          <h3>Tier 2 · The Written Machine</h3>
-          <p class="lead">Everything you have, plus the long-form writers.</p>
+        <!-- ESSENTIAL -->
+        <div class="vip plain" id="offer-essential">
+          <div class="kick">Essential · The Content OS</div>
+          <h3><span id="ess-price">$197</span> <span class="was" id="ess-was">$297</span></h3>
+          <p class="lead">The foundation. Your brain, on tap. <span id="ess-deadline">$197 until Aug 28, then $297.</span></p>
           <ul class="feat">
-            <li><b>The LinkedIn Writer Agent</b> — built for how LinkedIn actually works.</li>
-            <li><b>The Substack Writer Agent</b> — newsletters without the blank page.</li>
+            <li><b>Content Operating System</b> — your knowledge, positioning and tone of voice, structured so AI sounds like you.</li>
+            <li><b>Brand Guidelines Process</b> — your identity encoded so every asset stays on-brand.</li>
+            <li><b>Research Agent</b> — finds what's winning in your niche.</li>
+            <li><b>Viral Hook Writer</b> — scroll-stopping hooks for every post.</li>
+            <li><b>Viral Caption Writer</b> — runs on every post you publish.</li>
           </ul>
-          <span class="btn soon" aria-disabled="true">Opens soon</span>
+          <span class="own-badge" id="ess-badge">✓ You own this</span>
         </div>
-        <div class="vip">
-          <div class="kick">Upgrade · +$198</div>
-          <h3>Tier 3 · The Full Machine</h3>
-          <p class="lead">Everything in Tier 2, plus the visual layer.</p>
+        <!-- FULL MACHINE -->
+        <div class="vip" id="offer-full">
+          <div class="kick">Complete · The Full Machine</div>
+          <h3><span id="fm-price">$297</span> <span class="was" id="fm-was">$495</span></h3>
+          <p class="lead">Everything. The system Ajay's content team runs on. <span id="fm-deadline">$297 until Aug 28, then $495.</span></p>
           <ul class="feat">
-            <li><b>Instagram carousels</b> — the full production system.</li>
-            <li><b>Faceless videos + the video editor pipeline</b> — raw output to posted content.</li>
+            <li><b>Everything in Essential</b>, plus:</li>
+            <li><b>LinkedIn Ghost Writer + Humanised Substack Writer</b> — the long-form engines.</li>
+            <li><b>Carousel + Infographic Builder</b> — the visual layer.</li>
+            <li><b>Faceless Video System + Video Editor Pipeline</b> — raw to posted.</li>
+            <li><b>Bonus:</b> UseVoice.xyz voice tool + 50+ marketing skills.</li>
           </ul>
-          <span class="btn soon" aria-disabled="true">Opens soon</span>
+          <!-- Essential members see the upgrade CTA; Full Machine members see "you own this" (JS) -->
+          <a href="https://buy.stripe.com/3cI3cxgCOfji1ra8cSak007" class="btn cta-upgrade" id="fm-cta" target="_blank" rel="noopener" style="text-align:center">Upgrade to the Full Machine · <span id="fm-delta">+$100</span> →</a>
+          <span class="own-badge" id="fm-badge" style="display:none">✓ You own this</span>
         </div>
       </div>
-      <p class="note">Upgrading is boring and painless: you pay the difference, the new modules unlock, and you never re-buy anything you already own.</p>
+      <p class="note">Upgrading is boring and painless: you pay the difference, the new modules unlock, and you never re-buy anything you already own. Want Ella building it <b>with</b> you, 1:1? That's the VIP tier — <a href="https://timerich.ai/coaching" target="_blank" rel="noopener">apply here</a>.</p>
     </section>
 
     <!-- MEET YOUR TEACHERS -->
@@ -313,8 +366,8 @@
             <div class="ph">EM</div>
             <div>
               <div class="nm">Ella Molony Cook</div>
-              <div class="rl">Founder · Systems Architect · Proof it transfers</div>
-              <p>Four companies, one exit, an early AI investor — and a dyslexic dropout. Ella builds the operating system: the Brain, the Tone of Voice, the agents underneath everything. She teaches the foundation modules and runs your live kickoff — building her own machine in public, right beside you.</p>
+              <div class="rl">AI System Architect · Founders AI Labs · Early investor in Anthropic · Proof it transfers</div>
+              <p>Four companies, one exit, an early AI investor — and a dyslexic dropout who now architects AI systems for a living. Ella builds the operating system: the Brain, the Tone of Voice, the agents underneath everything. She teaches the foundation modules and runs your live kickoff — building her own machine in public, right beside you.</p>
               <div class="socials">
                 <a href="https://www.linkedin.com/in/ellamolonycook/" aria-label="Ella on LinkedIn" target="_blank" rel="noopener"><svg viewBox="0 0 24 24"><path d="M20.45 20.45h-3.56v-5.57c0-1.33-.02-3.04-1.85-3.04-1.85 0-2.14 1.45-2.14 2.94v5.67H9.34V9h3.42v1.56h.05c.48-.9 1.64-1.85 3.37-1.85 3.6 0 4.27 2.37 4.27 5.46v6.28zM5.34 7.43a2.06 2.06 0 1 1 0-4.13 2.06 2.06 0 0 1 0 4.13zM7.12 20.45H3.56V9h3.56v11.45zM22.22 0H1.77C.79 0 0 .77 0 1.72v20.56C0 23.23.79 24 1.77 24h20.45c.98 0 1.78-.77 1.78-1.72V1.72C24 .77 23.2 0 22.22 0z"/></svg></a>
               </div>
@@ -326,8 +379,12 @@
             <div class="ph">AJ</div>
             <div>
               <div class="nm">Ajay Yadav</div>
-              <div class="rl">Co-Teacher · The Machine Itself · Proof it scales</div>
+              <div class="rl">AKA "The Vibe Founder" · Forbes 30 Under 30 · 3x founder · Backed by Khosla + Craft</div>
               <p>3x founder — his last company passed 20M+ users, backed by Khosla &amp; Craft. He grew from 10K to 400K followers in 4 months on this exact machine — the one his content team runs every day. He didn't become a creator; he built a system that became one for him. He teaches the growth modules and hosts your live Q&amp;A.</p>
+              <div class="socials">
+                <a href="https://www.linkedin.com/in/yadavajay/" aria-label="Ajay on LinkedIn" target="_blank" rel="noopener"><svg viewBox="0 0 24 24"><path d="M20.45 20.45h-3.56v-5.57c0-1.33-.02-3.04-1.85-3.04-1.85 0-2.14 1.45-2.14 2.94v5.67H9.34V9h3.42v1.56h.05c.48-.9 1.64-1.85 3.37-1.85 3.6 0 4.27 2.37 4.27 5.46v6.28zM5.34 7.43a2.06 2.06 0 1 1 0-4.13 2.06 2.06 0 0 1 0 4.13zM7.12 20.45H3.56V9h3.56v11.45zM22.22 0H1.77C.79 0 0 .77 0 1.72v20.56C0 23.23.79 24 1.77 24h20.45c.98 0 1.78-.77 1.78-1.72V1.72C24 .77 23.2 0 22.22 0z"/></svg></a>
+                <a href="https://instagram.com/thevibefounder" aria-label="Ajay on Instagram" target="_blank" rel="noopener"><svg viewBox="0 0 24 24"><path d="M12 2.16c3.2 0 3.58.01 4.85.07 1.17.05 1.8.25 2.23.41.56.22.96.48 1.38.9.42.42.68.82.9 1.38.16.42.36 1.06.41 2.23.06 1.27.07 1.65.07 4.85s-.01 3.58-.07 4.85c-.05 1.17-.25 1.8-.41 2.23-.22.56-.48.96-.9 1.38-.42.42-.82.68-1.38.9-.42.16-1.06.36-2.23.41-1.27.06-1.65.07-4.85.07s-3.58-.01-4.85-.07c-1.17-.05-1.8-.25-2.23-.41-.56-.22-.96-.48-1.38-.9-.42-.42-.68-.82-.9-1.38-.16-.42-.36-1.06-.41-2.23-.06-1.27-.07-1.65-.07-4.85s.01-3.58.07-4.85c.05-1.17.25-1.8.41-2.23.22-.56.48-.96.9-1.38.42-.42.82-.68 1.38-.9.42-.16 1.06-.36 2.23-.41C8.42 2.17 8.8 2.16 12 2.16zM12 0C8.74 0 8.33.01 7.05.07 5.78.13 4.9.33 4.14.63c-.79.31-1.46.72-2.13 1.38C1.35 2.68.94 3.35.63 4.14.33 4.9.13 5.78.07 7.05.01 8.33 0 8.74 0 12s.01 3.67.07 4.95c.06 1.27.26 2.15.56 2.91.31.79.72 1.46 1.38 2.13.67.66 1.34 1.07 2.13 1.38.76.3 1.64.5 2.91.56C8.33 23.99 8.74 24 12 24s3.67-.01 4.95-.07c1.27-.06 2.15-.26 2.91-.56.79-.31 1.46-.72 2.13-1.38.66-.67 1.07-1.34 1.38-2.13.3-.76.5-1.64.56-2.91.06-1.28.07-1.69.07-4.95s-.01-3.67-.07-4.95c-.06-1.27-.26-2.15-.56-2.91-.31-.79-.72-1.46-1.38-2.13C21.32 1.35 20.65.94 19.86.63 19.1.33 18.22.13 16.95.07 15.67.01 15.26 0 12 0zm0 5.84a6.16 6.16 0 1 0 0 12.32 6.16 6.16 0 0 0 0-12.32zM12 16a4 4 0 1 1 0-8 4 4 0 0 1 0 8zm6.41-10.85a1.44 1.44 0 1 0 0 2.88 1.44 1.44 0 0 0 0-2.88z"/></svg></a>
+              </div>
             </div>
           </div>
         </div>
@@ -362,7 +419,7 @@
       <div class="vip plain">
         <div class="kick">There's a right order</div>
         <h3>Every module is watch-then-build.</h3>
-        <p class="lead">We show you, you do it, you move to the next one. You'll have agents running before you finish Tier 1.</p>
+        <p class="lead">We show you, you do it, you move to the next one. You'll have agents running before you finish the Essential modules.</p>
         <ul class="feat">
           <li><b>Start with the Brain and your Tone of Voice.</b> Do not skip this — a machine with a rubbish brain writes rubbish content, faster.</li>
           <li><b>Build the Research Agent, then the Caption Writer.</b> That's a working system.</li>
@@ -420,7 +477,7 @@
     <section class="block">
       <div class="card accent">
         <h3>Keep building. Get your hours back.</h3>
-        <p>You've got Tier 1 — the foundation everything runs on. When you're ready for the written machine or the full visual layer, the upgrade path above means you lose nothing by starting with the essentials. Attention is the asset. Agents are the skill. You're building both.</p>
+        <p>You've got the Content OS — the foundation everything runs on. When you're ready for the writers, the visual layer and the video line, the Full Machine upgrade above means you lose nothing by starting with Essential. Attention is the asset. Agents are the skill. You're building both.</p>
         <span class="btn soon" aria-disabled="true" style="margin-top:14px">Upgrades open soon</span>
       </div>
     </section>
@@ -432,8 +489,9 @@
        Q&A CHATBOT  (self-contained, no backend, no API key)
        ⚠️ ELLA — REVIEW EVERY ANSWER IN THE FAQ ARRAY BELOW BEFORE LIVE.
        Confirm these facts match the final offer:
-         • Prices: Tier 1 $197 · Tier 2 $295 · Tier 3 $395
-         • Upgrade deltas: T1→T2 +$98 · T2→T3 +$100 · T1→T3 +$198
+         • Prices: Essential $197 (→$297 after Aug 28) · Full Machine $297 (→$495 after Aug 28)
+         • Upgrade Essential→Full = pay the difference: +$100 early / +$198 after Aug 28
+         • All prices + dates live in the CONFIG block in the script below — edit once, updates everywhere
          • Course kickoff Mon Sep 7 · 6 months access from purchase date
          • Two live calls: kickoff (Ella) + Q&A (Ajay, Thu Sep 24)
          • Refunds/terms route to emc@timerich.ai
@@ -471,14 +529,14 @@
        a:"You get 6 months of access, and it starts the day you purchase — not launch day. Go at your own pace."},
       {k:['release','weekly','unlock','when','drip','available','all at once','locked'],
        a:"Modules unlock progressively rather than all at once, so you build in the right order. Your dashboard shows what's live now and what unlocks next, and you'll get an email each time a new one opens."},
-      {k:['upgrade','tier 2','tier 3','difference','worth','vip','higher'],
-       a:"The tiers are cumulative — you only pay the difference and never re-buy what you own. Tier 1→2 is +$98, Tier 2→3 is +$100, Tier 1→3 is +$198. Use the “Upgrade your tier” section on this page."},
+      {k:['upgrade','full machine','complete','difference','worth','vip','higher','essential'],
+       a:"There are two offers: Essential (the Content OS) and the Full Machine (everything). Upgrading from Essential just adds the missing modules — you pay the difference and never re-buy what you own. That's +$100 during early bird, +$198 after Aug 28. Use the “The two offers” section on this page."},
       {k:['refund','money back','cancel','terms','chargeback'],
        a:"Refund and terms questions go straight to Ella so you get an accurate answer — email emc@timerich.ai and she'll come back to you personally."},
       {k:['live','call','attend','make it','timezone','miss','recording','recorded'],
        a:"There are two live calls — a kickoff with Ella and a Q&A with Ajay. Both are recorded, so you won't miss anything if you can't attend live. Everything else is on-demand."},
       {k:['which tier','start','pick','choose','should i'],
-       a:"Start with Tier 1 — it's the foundation everything runs on, and upgrading later is painless. If your growth is written (LinkedIn/Substack), look at Tier 2; if you want video + carousels too, Tier 3."},
+       a:"If you want your research and captions handled and you'll build from there: Essential. If you want the full pipeline Ajay's team runs on — the writers, the visuals and the video line: the Full Machine. You can start Essential and upgrade any time by paying the difference."},
       {k:['question','ajay','q&a','ask'],
        a:"Submit your question ahead of Ajay's live Q&A on Thursday, September 24 using the “Submit my question” button on this page, and he'll answer it live."},
       {k:['dates','start','begin','kickoff','september','when does'],
@@ -568,6 +626,60 @@
       else{li++;ci=0;cur=null;setTimeout(type,600);}
     }
     type();
+  })();
+  </script>
+
+  <!-- ============================================================
+       CONFIG · THE ONLY PLACE TO EDIT PRICES, DATES + PLAN
+       Change a value here and the whole portal updates.
+         plan        : which offer this member is on — 'essential' or 'full'
+                       (override per-link with ?plan=full in the URL)
+         earlyBirdEnds / doorsClose : ISO dates
+         prices      : essential + full, early-bird and standard
+       NOTE: the Full-Machine upgrade button currently points at the full
+       $297 Stripe checkout. For true "pay the difference" pricing, swap
+       upgradeLink for a Stripe proration/coupon link before charging members.
+       ============================================================ -->
+  <script>
+  (function(){
+    var CONFIG = {
+      plan: 'essential',                                   // 'essential' | 'full'
+      earlyBirdEnds: new Date('2026-08-29T00:00:00+01:00'),// midnight after Fri Aug 28
+      doorsClose:    new Date('2026-09-05T00:00:00+01:00'),// midnight after Fri Sept 4
+      essEarly:'$197', essFull:'$297',                     // Essential price (early / standard)
+      fmEarly: '$297', fmFull: '$495',                     // Full Machine price (early / standard)
+      upgradeLink: 'https://buy.stripe.com/3cI3cxgCOfji1ra8cSak007'
+    };
+
+    // allow ?plan=full to override (for links sent to Full Machine members)
+    try{ var qp=new URLSearchParams(location.search).get('plan'); if(qp==='full'||qp==='essential') CONFIG.plan=qp; }catch(e){}
+
+    var now = new Date();
+    var early = now < CONFIG.earlyBirdEnds;
+    var essPrice = early ? CONFIG.essEarly : CONFIG.essFull;
+    var fmPrice  = early ? CONFIG.fmEarly  : CONFIG.fmFull;
+    var delta    = early ? '+$100' : '+$198';
+    function set(id,txt){ var el=document.getElementById(id); if(el) el.textContent=txt; }
+    function hide(id){ var el=document.getElementById(id); if(el) el.style.display='none'; }
+
+    // prices
+    set('ess-price', essPrice); set('fm-price', fmPrice); set('fm-delta', delta);
+    var up=document.getElementById('fm-cta'); if(up){ up.href=CONFIG.upgradeLink; up.innerHTML='Upgrade to the Full Machine · '+delta+' →'; }
+    if(!early){ ['ess-was','ess-deadline','fm-was','fm-deadline'].forEach(hide); }
+
+    // plan gating
+    if(CONFIG.plan==='full'){
+      set('plan-chip-name','FULL MACHINE');
+      set('plan-name','the Full Machine');
+      hide('nav-upgrade'); hide('fm-cta'); hide('fm-upgrade-note');
+      var fb=document.getElementById('fm-badge'); if(fb) fb.style.display='inline-block';
+      var fl=document.querySelector('.fm-lock'); if(fl) fl.style.display='none';
+      document.querySelectorAll('#fm-modules .fm-row').forEach(function(row){
+        row.classList.remove('lock');
+        var pill=row.querySelector('.pill'); if(pill){ pill.className='pill soon'; pill.textContent='Soon'; }
+      });
+      var sec=document.getElementById('fm-modules'); if(sec) sec.classList.remove('sec-lock');
+    }
   })();
   </script>
 
