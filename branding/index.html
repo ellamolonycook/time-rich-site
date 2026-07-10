@@ -31,7 +31,7 @@
     --body:system-ui,-apple-system,'Segoe UI',sans-serif;
   }
   *{margin:0;padding:0;box-sizing:border-box}
-  html{scroll-behavior:smooth;overflow-x:clip}
+  html{overflow-x:clip;overflow-anchor:none}
   body{background:var(--bg);color:var(--text);font-family:var(--body);font-size:17px;line-height:1.65;-webkit-font-smoothing:antialiased;overflow-x:clip;max-width:100%}
   ::selection{background:var(--lime);color:#0B0B10}
   h1,h2,h3{font-family:var(--display);font-weight:700;line-height:1.08;letter-spacing:-.02em;text-wrap:balance}
@@ -291,7 +291,7 @@
   .sec-h{font-size:clamp(22px,2.8vw,32px);max-width:780px}
 
   /* scroll reveal */
-  .reveal{opacity:0;transform:translateY(18px);transition:opacity .6s ease,transform .6s ease}
+  .reveal{opacity:0;transition:opacity .5s ease}
   .reveal.in{opacity:1;transform:none}
 
   /* ---------- phone optimisation ---------- */
@@ -384,7 +384,7 @@
     <p>It won't be. Because the problem is you're doing by hand what should be running on a machine.</p>
     <p>I know this loop personally. I've built four companies, and it still felt deeply unauthentic to whip out my camera and start recording myself. Ten years in the founder trenches and a blank caption box could still beat me.</p>
     <p>Every "post every day for 90 days" guru is selling you more hours. More batching. More 5am content sprints. That's not a strategy. That's a second job with worse pay.</p>
-    <p class="statement">The people actually growing have <u>systems</u>. Ajay went from <u>10K to 400K in 4 months</u> with a content team that runs on a <u>machine</u>, not by hand-crafting captions. The world is shifting from people to <span class="hl">creators</span>, turning <u>followers into income</u>. Everyone is still figuring out the new creator economy.</p>
+    <p class="statement">The creators that have blown up have created <u>AI systems</u>. Ajay went from <u>10K to 400K in 4 months</u> with a content team that runs on a <u>machine</u>, not by hand-crafting captions. The world is shifting from people to <span class="hl">creators</span>, turning <u>followers into income</u>. Everyone is still figuring out the new creator economy.</p>
     <div class="callout">This challenge hands you the machine that has cracked the code.</div>
   </div>
 </section>
@@ -418,7 +418,6 @@
 <section>
   <div class="wrap">
     <span class="eyebrow">Who's teaching</span>
-    <h2 class="sec-h">One of us built the machine. The other's building it live, with you.</h2>
     <div class="teach">
       <div class="card">
         <img class="t-photo" src="ajay.jpg" alt="Ajay Yadav" loading="lazy" />
