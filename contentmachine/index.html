@@ -71,6 +71,8 @@
   .h-big{font-family:var(--display);font-weight:700;font-size:clamp(40px,7.6vw,86px);line-height:.97;letter-spacing:-.03em}
   .h-big .hl{color:var(--lime)}
   .h-kick{font-family:var(--mono);font-weight:600;font-size:clamp(12px,1.5vw,15px);letter-spacing:.16em;text-transform:uppercase;color:var(--lime);margin-top:.7em}
+  .hero-manifesto{font-family:var(--display);font-weight:700;font-size:clamp(21px,2.9vw,32px);line-height:1.22;color:var(--text);margin-bottom:28px;max-width:860px;letter-spacing:-.015em}
+  .hero-manifesto .hl{color:var(--lime)}
   .hero .lead{max-width:760px;margin-top:26px}
   .hero-ctas{display:flex;gap:14px;flex-wrap:wrap;margin-top:38px;align-items:center}
   .hero-sub{font-family:var(--mono);font-size:12px;color:var(--dim);margin-top:14px}
@@ -216,6 +218,9 @@
   /* ---------- VIP 1:1 band ---------- */
   .vip-band{background:linear-gradient(180deg,rgba(212,255,79,.05),transparent 60%)}
   .vip-eyebrow{color:var(--lime);font-size:15px;letter-spacing:.14em;text-decoration:underline;text-underline-offset:6px;text-decoration-thickness:2px}
+  .vip-intro{display:grid;grid-template-columns:300px 1fr;gap:36px;align-items:center;margin-bottom:8px}
+  @media(max-width:760px){.vip-intro{grid-template-columns:1fr;gap:22px}}
+  .vip-photo{width:100%;max-width:320px;border-radius:18px;border:2px solid var(--lime);box-shadow:0 0 0 6px rgba(212,255,79,.13),0 22px 50px -22px rgba(0,0,0,.7);display:block;aspect-ratio:4/5;object-fit:cover;object-position:50% 18%}
   .vip-scarcity{margin-top:32px;font-family:var(--display);font-weight:600;font-size:clamp(19px,2.5vw,26px);line-height:1.32;color:var(--text);max-width:700px}
   .vip-scarcity .hl{color:var(--lime)}
   .vip-tiers{display:grid;grid-template-columns:1fr 1fr;gap:20px;margin-top:44px}
@@ -295,6 +300,7 @@
 <!-- ============ HERO ============ -->
 <header class="hero">
   <div class="wrap">
+    <p class="hero-manifesto">Every builder needs an audience. Every company needs customers. Every creator needs <span class="hl">attention that converts.</span></p>
     <h1 class="hero-h1">
       <span class="h-setup">I followed Ajay for weeks before it clicked:</span>
       <span class="h-big">that wasn't him.</span>
@@ -471,7 +477,7 @@
     </div>
     <div class="vtotal">
       <span>Total real value</span>
-      <b><span class="vtotal-was">$7,790</span> yours from $197</b>
+      <b><span class="vtotal-was">$7,790</span> <a href="https://buy.stripe.com/7sYcN772e7QQc5O3WCak005" style="color:inherit;text-decoration:underline;text-decoration-color:var(--lime);text-underline-offset:3px">yours from $197 →</a></b>
     </div>
 
     <p class="vskills-label">The 50+ marketing skills, in full</p>
@@ -547,9 +553,14 @@
 <!-- ============ 06b THE VIP TIER · 1:1 WITH ELLA ============ -->
 <section class="vip-band" id="vip-coaching">
   <div class="wrap">
-    <span class="eyebrow vip-eyebrow">The VIP tier · 1:1 with Ella</span>
-    <h2 class="sec-h">Want the machine built with you? Go 1:1.</h2>
-    <p class="lead" style="max-width:740px;margin-top:22px">The course hands you the agents. 1:1 coaching hands you Ella. One to one, she designs and ships your custom AI operating system with you - and the full AI Content Machine program is included either way.</p>
+    <div class="vip-intro">
+      <img class="vip-photo" src="ella-editorial.jpg" alt="Ella Molony Cook" loading="lazy" />
+      <div>
+        <span class="eyebrow vip-eyebrow">The VIP tier · 1:1 with Ella</span>
+        <h2 class="sec-h" style="margin-top:12px">Want the machine built with you? Go 1:1.</h2>
+        <p class="lead" style="max-width:640px;margin-top:16px">The course hands you the agents. 1:1 coaching hands you Ella. One to one, she designs and ships your custom AI operating system with you - and the full AI Content Machine program is included either way.</p>
+      </div>
+    </div>
     <div class="vip-tiers">
       <div class="vip-card">
         <span class="vname">6-Week · 1:1 AI System Coaching</span>
