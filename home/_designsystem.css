@@ -1,0 +1,518 @@
+/* ============================================================
+   TIME RICH — SHARED DESIGN LANGUAGE
+   Imported by the flagship /home page and the /coaching deep-dive
+   so the relaunch reads as one premium editorial system.
+
+   Fonts are loaded by each page (Google Fonts, already on the site):
+     Archivo · DM Serif Display · Inter
+   This file assumes those three families are available. No @import,
+   no external URLs — self-contained, safe to inline or <link>.
+   ============================================================ */
+
+/* ---------- 1. TOKENS (evolved palette from the spec) ---------- */
+:root {
+  /* Core brand */
+  --plum:        #4A2E6F;   /* brand, headings, dark bands */
+  --violet:      #7C3AED;   /* accents, stat pops */
+  --violet-2:    #9A6DD7;   /* secondary accent, eyebrows */
+  --champagne:   #E8C89A;   /* NEW warm accent — buttons, underlines, hairline rules */
+  --plum-black:  #1A1420;   /* NEW — premium dark sections */
+  --lilac:       #EBD1FA;   /* fills, marquee */
+  --sand:        #F4EEFB;   /* light section wash */
+  --charcoal:    #44414D;   /* body ink */
+  --white:       #FFFFFF;
+
+  /* Champagne tints for warm accents on both light + dark grounds */
+  --champagne-soft: #F0DCBE;
+  --champagne-deep: #C9A66F;
+
+  /* Derived surfaces + lines */
+  --ink:            var(--charcoal);
+  --bg:             var(--white);
+  --line:           rgba(74, 46, 111, 0.12);       /* plum hairline on light */
+  --line-champagne: rgba(232, 200, 154, 0.55);     /* the signature hairline rule */
+  --line-dark:      rgba(255, 255, 255, 0.14);     /* hairline on dark bands */
+
+  /* Typography families */
+  --font-display: 'DM Serif Display', Georgia, 'Times New Roman', serif;
+  --font-struct:  'Archivo', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  --font-body:    'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+
+  /* Fluid type scale — clamp(min, preferred, max) */
+  --step-display: clamp(2.75rem, 1.6rem + 5.6vw, 5.5rem);   /* hero display */
+  --step-h1:      clamp(2.25rem, 1.5rem + 3.6vw, 3.75rem);
+  --step-h2:      clamp(1.75rem, 1.25rem + 2.4vw, 2.75rem);
+  --step-h3:      clamp(1.25rem, 1.05rem + 0.9vw, 1.6rem);
+  --step-lead:    clamp(1.15rem, 1.05rem + 0.5vw, 1.375rem); /* intro paragraphs */
+  --step-body:    clamp(1rem, 0.97rem + 0.15vw, 1.125rem);
+  --step-small:   0.875rem;
+  --step-eyebrow: 0.8125rem;
+
+  /* Spacing + rhythm */
+  --space-section:   clamp(5rem, 3.5rem + 7vw, 9rem);   /* vertical section padding */
+  --space-band:      clamp(4rem, 3rem + 5vw, 7rem);     /* tighter band padding */
+  --space-gutter:    clamp(1.5rem, 1rem + 2.5vw, 2.5rem);
+  --wrap-max:        1140px;
+  --measure:         68ch;   /* comfortable reading width */
+  --measure-narrow:  46ch;
+
+  /* Radius + elevation */
+  --radius-sm: 10px;
+  --radius:    16px;
+  --radius-lg: 24px;
+  --radius-pill: 999px;
+  --shadow-soft:  0 18px 50px rgba(74, 46, 111, 0.10);
+  --shadow-lift:  0 26px 70px rgba(74, 46, 111, 0.16);
+  --shadow-dark:  0 30px 80px rgba(0, 0, 0, 0.45);
+
+  /* Motion */
+  --ease:      cubic-bezier(0.22, 0.61, 0.36, 1);
+  --dur-fast:  0.16s;
+  --dur:       0.32s;
+  --dur-slow:  0.6s;
+}
+
+/* ---------- 2. RESET + BASE ---------- */
+*, *::before, *::after { box-sizing: border-box; }
+.ds * { margin: 0; }
+
+.ds {
+  font-family: var(--font-body);
+  font-size: var(--step-body);
+  line-height: 1.65;
+  color: var(--ink);
+  background: var(--bg);
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+  overflow-wrap: break-word;
+}
+
+.ds img,
+.ds picture,
+.ds video { max-width: 100%; display: block; }
+
+.ds a { color: var(--plum); text-decoration: none; }
+.ds a:hover { color: var(--violet); }
+
+::selection { background: var(--champagne); color: var(--plum-black); }
+
+/* ---------- 3. TYPE SCALE ---------- */
+/* DM Serif Display = editorial headlines. Archivo = structure/eyebrows/buttons.
+   Inter = body. */
+
+.ds h1, .ds h2, .ds h3,
+.display, .h1, .h2, .h3 {
+  font-family: var(--font-display);
+  color: var(--plum);
+  line-height: 1.06;
+  letter-spacing: -0.01em;
+  font-weight: 400;              /* DM Serif Display is a single weight */
+}
+
+.display {
+  font-size: var(--step-display);
+  line-height: 1.0;
+  letter-spacing: -0.02em;
+}
+
+.ds h1, .h1 { font-size: var(--step-h1); }
+.ds h2, .h2 { font-size: var(--step-h2); }
+.ds h3, .h3 { font-size: var(--step-h3); line-height: 1.15; }
+
+/* Eyebrow — Archivo, uppercase, tracked. The section's little flag. */
+.eyebrow {
+  font-family: var(--font-struct);
+  font-weight: 700;
+  font-size: var(--step-eyebrow);
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--violet-2);
+  display: inline-block;
+  margin-bottom: 1.25rem;
+}
+.eyebrow--champagne { color: var(--champagne-deep); }
+
+/* Lead / intro paragraph */
+.lead {
+  font-size: var(--step-lead);
+  line-height: 1.6;
+  color: var(--ink);
+  max-width: var(--measure);
+}
+
+.ds p { max-width: var(--measure); }
+.ds .measure-narrow { max-width: var(--measure-narrow); }
+
+/* Kicker label (Archivo, small, quiet) — for card meta, spec rows */
+.kicker {
+  font-family: var(--font-struct);
+  font-weight: 800;
+  font-size: 0.75rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--violet-2);
+}
+
+/* Champagne text underline for emphasis inside headlines */
+.underline-champagne {
+  background-image: linear-gradient(var(--champagne), var(--champagne));
+  background-repeat: no-repeat;
+  background-position: 0 88%;
+  background-size: 100% 0.18em;
+  padding-bottom: 0.02em;
+}
+
+/* Serif italic accent (DM Serif Display ships an italic) */
+.accent-italic { font-style: italic; }
+
+/* ---------- 4. LAYOUT ---------- */
+.wrap {
+  width: 100%;
+  max-width: var(--wrap-max);
+  margin-inline: auto;
+  padding-inline: var(--space-gutter);
+}
+.wrap--narrow { max-width: 760px; }
+.wrap--reading { max-width: 720px; }
+
+.section { padding-block: var(--space-section); }
+.band    { padding-block: var(--space-band); }
+
+/* Alternating light washes */
+.section--sand  { background: var(--sand); }
+.section--white { background: var(--white); }
+.section--lilac { background: var(--lilac); }
+
+/* Section header block */
+.section-head { max-width: var(--measure); margin-bottom: clamp(2.5rem, 5vw, 4rem); }
+.section-head.center { margin-inline: auto; text-align: center; }
+.section-head .lead { margin-top: 1rem; }
+
+/* Generic responsive two-column split */
+.split {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: clamp(2rem, 5vw, 4rem);
+  align-items: center;
+}
+.split--wide-left  { grid-template-columns: 1.1fr 0.9fr; }
+.split--wide-right { grid-template-columns: 0.9fr 1.1fr; }
+
+/* ---------- 5. THE HAIRLINE CHAMPAGNE RULE ---------- */
+.rule {
+  border: 0;
+  height: 1px;
+  background: var(--line-champagne);
+  margin-block: clamp(2rem, 4vw, 3rem);
+}
+/* Short centered rule — a jewel divider */
+.rule--short {
+  width: 64px;
+  margin-inline: auto;
+  height: 2px;
+  background: var(--champagne);
+  border-radius: 2px;
+}
+/* Rule that sits on a dark band */
+.band-dark .rule { background: rgba(232, 200, 154, 0.4); }
+
+/* ---------- 6. BUTTONS ---------- */
+.btn {
+  font-family: var(--font-struct);
+  font-weight: 800;
+  font-size: 0.9375rem;
+  letter-spacing: 0.01em;
+  line-height: 1;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  padding: 1rem 1.75rem;
+  border-radius: var(--radius-pill);
+  border: 1.5px solid transparent;
+  cursor: pointer;
+  text-decoration: none;
+  transition: transform var(--dur-fast) var(--ease),
+              box-shadow var(--dur) var(--ease),
+              background-color var(--dur-fast) var(--ease),
+              color var(--dur-fast) var(--ease),
+              border-color var(--dur-fast) var(--ease);
+}
+
+/* Primary — champagne on plum-black. The premium action. */
+.btn--primary {
+  background: var(--champagne);
+  color: var(--plum-black);
+  border-color: var(--champagne);
+}
+.btn--primary:hover {
+  color: var(--plum-black);
+  transform: translateY(-2px);
+  box-shadow: 0 14px 34px rgba(232, 200, 154, 0.45);
+  background: var(--champagne-soft);
+  border-color: var(--champagne-soft);
+}
+
+/* Secondary — outline. Inherits ground colour (works light or dark). */
+.btn--secondary {
+  background: transparent;
+  color: var(--plum);
+  border-color: var(--plum);
+}
+.btn--secondary:hover {
+  transform: translateY(-2px);
+  background: var(--plum);
+  color: var(--white);
+  border-color: var(--plum);
+}
+
+/* Solid plum — for light grounds where champagne would feel too soft */
+.btn--plum {
+  background: var(--plum);
+  color: var(--white);
+  border-color: var(--plum);
+}
+.btn--plum:hover {
+  color: var(--white);
+  transform: translateY(-2px);
+  box-shadow: 0 14px 34px rgba(74, 46, 111, 0.35);
+}
+
+/* Sizing modifiers */
+.btn--lg { padding: 1.1875rem 2.5rem; font-size: 1rem; }
+.btn--block { display: flex; width: 100%; }
+
+/* Text link with animated arrow */
+.link-arrow {
+  font-family: var(--font-struct);
+  font-weight: 700;
+  font-size: 0.9375rem;
+  color: var(--plum);
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+}
+.link-arrow .arrow { transition: transform var(--dur-fast) var(--ease); }
+.link-arrow:hover .arrow { transform: translateX(4px); }
+
+/* Underlined text link */
+.link-underline {
+  font-weight: 700;
+  color: var(--plum);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+  text-decoration-color: var(--champagne);
+}
+.link-underline:hover { color: var(--violet); }
+
+/* ---------- 7. DARK PREMIUM BAND (plum-black) ---------- */
+.band-dark {
+  background: var(--plum-black);
+  color: rgba(255, 255, 255, 0.86);
+  position: relative;
+}
+/* Subtle plum glow so the plum-black doesn't read as flat charcoal */
+.band-dark::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(120% 90% at 50% -10%, rgba(124, 58, 237, 0.22) 0%, transparent 60%);
+  pointer-events: none;
+}
+.band-dark > * { position: relative; z-index: 1; }
+
+.band-dark h1,
+.band-dark h2,
+.band-dark h3 { color: var(--white); }
+.band-dark .eyebrow { color: var(--champagne); }
+.band-dark .lead,
+.band-dark p { color: rgba(255, 255, 255, 0.78); }
+.band-dark a { color: var(--champagne); }
+.band-dark a:hover { color: var(--champagne-soft); }
+
+/* Buttons re-tuned for the dark band */
+.band-dark .btn--secondary {
+  color: var(--white);
+  border-color: rgba(255, 255, 255, 0.5);
+}
+.band-dark .btn--secondary:hover {
+  background: var(--white);
+  color: var(--plum-black);
+  border-color: var(--white);
+}
+
+/* ---------- 8. SURFACE CARDS ---------- */
+.card {
+  background: var(--white);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  padding: clamp(1.5rem, 3vw, 2.25rem);
+  transition: transform var(--dur) var(--ease),
+              box-shadow var(--dur) var(--ease),
+              border-color var(--dur) var(--ease);
+}
+.card--sand { background: var(--sand); }
+.card:hover {
+  transform: translateY(-4px);
+  box-shadow: var(--shadow-lift);
+  border-color: var(--line-champagne);
+}
+
+/* Card on a dark band */
+.band-dark .card {
+  background: rgba(255, 255, 255, 0.04);
+  border-color: var(--line-dark);
+}
+.band-dark .card:hover { border-color: rgba(232, 200, 154, 0.5); }
+
+/* Spec / value-stack rows separated by champagne hairlines */
+.spec-list { list-style: none; padding: 0; }
+.spec-list li {
+  display: flex;
+  justify-content: space-between;
+  gap: 1rem;
+  padding-block: 1.125rem;
+  border-top: 1px solid var(--line-champagne);
+}
+.spec-list li:last-child { border-bottom: 1px solid var(--line-champagne); }
+.spec-list .k { font-family: var(--font-struct); font-weight: 800; color: var(--plum); }
+.band-dark .spec-list .k { color: var(--white); }
+.band-dark .spec-list li { border-color: rgba(232, 200, 154, 0.3); }
+
+/* Pill chips (credentials, tags) */
+.chip {
+  font-family: var(--font-struct);
+  font-weight: 700;
+  font-size: 0.8125rem;
+  color: var(--plum);
+  background: rgba(74, 46, 111, 0.06);
+  border: 1px solid var(--line);
+  padding: 0.5rem 0.9375rem;
+  border-radius: var(--radius-pill);
+  display: inline-block;
+}
+.band-dark .chip {
+  color: var(--champagne);
+  background: rgba(232, 200, 154, 0.08);
+  border-color: rgba(232, 200, 154, 0.28);
+}
+
+/* Big stat number */
+.stat-num {
+  font-family: var(--font-struct);
+  font-weight: 900;
+  color: var(--violet);
+  font-size: clamp(3.5rem, 8vw, 6rem);
+  line-height: 0.9;
+  letter-spacing: -0.02em;
+}
+.stat-num--plum { color: var(--plum); }
+.band-dark .stat-num { color: var(--champagne); }
+.stat-cap {
+  font-family: var(--font-struct);
+  font-weight: 700;
+  color: var(--plum);
+  font-size: 1.0625rem;
+  margin-top: 0.75rem;
+}
+.band-dark .stat-cap { color: rgba(255, 255, 255, 0.85); }
+
+/* ---------- 9. IMAGERY ---------- */
+.media {
+  width: 100%;
+  border-radius: var(--radius);
+  object-fit: cover;
+  display: block;
+}
+.media--portrait { aspect-ratio: 4 / 5; }
+.media--landscape { aspect-ratio: 3 / 2; }
+.media--square { aspect-ratio: 1 / 1; }
+.media--tall { aspect-ratio: 3 / 4; }
+
+/* ---------- 10. MOTION: scroll reveal + hover (CSS-only) ---------- */
+/* Elements tagged .reveal start hidden and settle in when .is-visible is
+   added (by a tiny IntersectionObserver on the page) OR immediately if
+   no JS runs — the no-JS fallback keeps content visible. */
+.reveal {
+  opacity: 0;
+  transform: translateY(22px);
+  transition: opacity var(--dur-slow) var(--ease),
+              transform var(--dur-slow) var(--ease);
+  will-change: opacity, transform;
+}
+.reveal.is-visible { opacity: 1; transform: none; }
+
+/* Staggered children */
+.reveal-stagger > * {
+  opacity: 0;
+  transform: translateY(18px);
+  transition: opacity var(--dur-slow) var(--ease),
+              transform var(--dur-slow) var(--ease);
+}
+.reveal-stagger.is-visible > * { opacity: 1; transform: none; }
+.reveal-stagger.is-visible > *:nth-child(2) { transition-delay: 0.08s; }
+.reveal-stagger.is-visible > *:nth-child(3) { transition-delay: 0.16s; }
+.reveal-stagger.is-visible > *:nth-child(4) { transition-delay: 0.24s; }
+.reveal-stagger.is-visible > *:nth-child(5) { transition-delay: 0.32s; }
+.reveal-stagger.is-visible > *:nth-child(6) { transition-delay: 0.40s; }
+
+/* Gentle image zoom on hover, inside a clipping frame */
+.hover-zoom { overflow: hidden; border-radius: var(--radius); }
+.hover-zoom img { transition: transform var(--dur-slow) var(--ease); }
+.hover-zoom:hover img { transform: scale(1.05); }
+
+/* Champagne underline that draws in on hover (for nav / inline links) */
+.hover-rule {
+  position: relative;
+  text-decoration: none;
+}
+.hover-rule::after {
+  content: "";
+  position: absolute;
+  left: 0; bottom: -3px;
+  width: 100%; height: 2px;
+  background: var(--champagne);
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform var(--dur) var(--ease);
+}
+.hover-rule:hover::after { transform: scaleX(1); }
+
+/* NO-JS FALLBACK: if the page never sets .is-visible, show everything.
+   A page that uses reveal adds class "js" to <html>; without it, reveals
+   stay fully visible. */
+html:not(.js) .reveal,
+html:not(.js) .reveal-stagger > * { opacity: 1; transform: none; }
+
+/* prefers-reduced-motion: neutralise all transitions + reveal offsets */
+@media (prefers-reduced-motion: reduce) {
+  .ds *,
+  .ds *::before,
+  .ds *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+    scroll-behavior: auto !important;
+  }
+  .reveal,
+  .reveal-stagger > * { opacity: 1 !important; transform: none !important; }
+}
+
+/* ---------- 11. UTILITIES ---------- */
+.center { text-align: center; }
+.mx-auto { margin-inline: auto; }
+.stack > * + * { margin-top: 1rem; }
+.stack-lg > * + * { margin-top: clamp(1.25rem, 3vw, 2rem); }
+.text-plum { color: var(--plum); }
+.text-violet { color: var(--violet); }
+.text-champagne { color: var(--champagne-deep); }
+.band-dark .text-champagne { color: var(--champagne); }
+.no-wrap { white-space: nowrap; }
+
+/* ---------- 12. RESPONSIVE ---------- */
+@media (max-width: 880px) {
+  .split,
+  .split--wide-left,
+  .split--wide-right { grid-template-columns: 1fr; }
+  .section-head { margin-bottom: 2.5rem; }
+}

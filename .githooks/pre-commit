@@ -1,0 +1,29 @@
+#!/bin/sh
+#
+# Time Rich offer-sync pre-commit hook.
+# Blocks a commit if any page has drifted from offer.json (the single source of
+# truth for prices, dates, entity, tiers, refund window, etc).
+#
+# Enable it once (opt-in, not force-enabled):
+#   git config core.hooksPath "TR Landing Page/.githooks"
+#
+# It runs the drift check. If pages are stale, the commit is blocked and it
+# tells you how to fix. See TR Landing Page/OFFER-SYNC-README.md.
+
+if ! command -v node >/dev/null 2>&1; then
+  echo "offer-sync: node not found, skipping drift check." >&2
+  exit 0
+fi
+
+node "TR Landing Page/sync-offer.mjs" --check
+status=$?
+
+if [ "$status" -ne 0 ]; then
+  echo "" >&2
+  echo "COMMIT BLOCKED: pages have drifted from TR Landing Page/offer.json." >&2
+  echo "Fix it:  node \"TR Landing Page/sync-offer.mjs\"" >&2
+  echo "Then stage the updated files and commit again." >&2
+  exit 1
+fi
+
+exit 0

@@ -1,208 +1,748 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" class="js">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Apply — 1:1 AI System+ Coaching with Ella Molony Cook</title>
-  <meta name="robots" content="noindex, nofollow" />
-  <link rel="icon" type="image/png" sizes="32x32" href="../favicon-32.png" />
-  <link rel="preconnect" href="https://fonts.googleapis.com" />
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;700&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet" />
-  <style>
-    :root{
-      --bg:#0B0B10;--panel:#14141C;--panel2:#181822;
-      --line:rgba(255,255,255,.09);
-      --text:#F2F2F4;--muted:#A2A2B0;--dim:#6E6E7C;
-      --lime:#D4FF4F;--lime-dim:rgba(212,255,79,.12);
-      --display:'Space Grotesk',system-ui,-apple-system,sans-serif;
-      --mono:'JetBrains Mono',ui-monospace,SFMono-Regular,monospace;
-      --body:'Inter',system-ui,-apple-system,sans-serif;
-    }
-    *{margin:0;padding:0;box-sizing:border-box}
-    body{font-family:var(--body);color:var(--text);background:var(--bg);line-height:1.6;-webkit-font-smoothing:antialiased}
-    ::selection{background:var(--lime);color:#0B0B10}
-    h1,h2,h3{font-family:var(--display);color:var(--text);letter-spacing:-.02em;line-height:1.1;font-weight:700}
-    .wrap{max-width:660px;margin:0 auto;padding:48px 22px 80px}
-    .eyebrow{font-family:var(--mono);font-weight:600;font-size:12px;letter-spacing:.16em;text-transform:uppercase;color:var(--lime);margin-bottom:16px}
-    h1{font-size:clamp(28px,5.4vw,38px);margin:6px 0 12px}
-    .lede{font-size:17px;color:var(--muted);margin-bottom:8px}
-    .muted{color:var(--dim);font-size:14px}
-    a{color:var(--lime)}
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<meta name="robots" content="noindex, nofollow" />
+<title>1:1 AI System Coaching for Founders · with Ella Molony Cook</title>
+<meta name="description" content="Work one to one with Ella Molony Cook to build the AI system that runs your business in your voice. Six or twelve weeks, custom, yours to keep. Only 4 spots. Apply for a spot." />
+<meta name="theme-color" content="#1A1420" />
+<link rel="icon" type="image/png" sizes="32x32" href="favicon-32.png" />
+<link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=Archivo:wght@400;500;600;700;800;900&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+<style>
+/* ============================================================
+   TIME RICH — SHARED DESIGN LANGUAGE (inlined)
+   ============================================================ */
+:root{
+  --plum:#4A2E6F; --violet:#7C3AED; --violet-2:#9A6DD7;
+  --champagne:#E8C89A; --plum-black:#1A1420; --lilac:#EBD1FA;
+  --sand:#F4EEFB; --charcoal:#44414D; --white:#FFFFFF;
+  --champagne-soft:#F0DCBE; --champagne-deep:#C9A66F;
+  --ink:var(--charcoal); --bg:var(--white);
+  --line:rgba(74,46,111,0.12);
+  --line-champagne:rgba(232,200,154,0.55);
+  --line-dark:rgba(255,255,255,0.14);
+  --font-display:'DM Serif Display',Georgia,'Times New Roman',serif;
+  --font-struct:'Archivo',-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;
+  --font-body:'Inter',-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;
+  --step-display:clamp(2.75rem,1.6rem + 5.6vw,5.5rem);
+  --step-h1:clamp(2.25rem,1.5rem + 3.6vw,3.75rem);
+  --step-h2:clamp(1.75rem,1.25rem + 2.4vw,2.75rem);
+  --step-h3:clamp(1.25rem,1.05rem + 0.9vw,1.6rem);
+  --step-lead:clamp(1.15rem,1.05rem + 0.5vw,1.375rem);
+  --step-body:clamp(1rem,0.97rem + 0.15vw,1.125rem);
+  --step-small:0.875rem; --step-eyebrow:0.8125rem;
+  --space-section:clamp(5rem,3.5rem + 7vw,9rem);
+  --space-band:clamp(4rem,3rem + 5vw,7rem);
+  --space-gutter:clamp(1.5rem,1rem + 2.5vw,2.5rem);
+  --wrap-max:1140px; --measure:68ch; --measure-narrow:46ch;
+  --radius-sm:10px; --radius:16px; --radius-lg:24px; --radius-pill:999px;
+  --shadow-soft:0 18px 50px rgba(74,46,111,0.10);
+  --shadow-lift:0 26px 70px rgba(74,46,111,0.16);
+  --shadow-dark:0 30px 80px rgba(0,0,0,0.45);
+  --ease:cubic-bezier(0.22,0.61,0.36,1);
+  --dur-fast:0.16s; --dur:0.32s; --dur-slow:0.6s;
+}
+*,*::before,*::after{box-sizing:border-box}
+.ds *{margin:0}
+.ds{font-family:var(--font-body);font-size:var(--step-body);line-height:1.65;color:var(--ink);background:var(--bg);-webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility;overflow-wrap:break-word}
+.ds img,.ds picture,.ds video{max-width:100%;display:block}
+.ds a{color:var(--plum);text-decoration:none}
+.ds a:hover{color:var(--violet)}
+::selection{background:var(--champagne);color:var(--plum-black)}
+.ds h1,.ds h2,.ds h3,.display,.h1,.h2,.h3{font-family:var(--font-display);color:var(--plum);line-height:1.06;letter-spacing:-0.01em;font-weight:400}
+.display{font-size:var(--step-display);line-height:1.0;letter-spacing:-0.02em}
+.ds h1,.h1{font-size:var(--step-h1)}
+.ds h2,.h2{font-size:var(--step-h2)}
+.ds h3,.h3{font-size:var(--step-h3);line-height:1.15}
+.eyebrow{font-family:var(--font-struct);font-weight:700;font-size:var(--step-eyebrow);letter-spacing:0.16em;text-transform:uppercase;color:var(--violet-2);display:inline-block;margin-bottom:1.25rem}
+.eyebrow--champagne{color:var(--champagne-deep)}
+.lead{font-size:var(--step-lead);line-height:1.6;color:var(--ink);max-width:var(--measure)}
+.ds p{max-width:var(--measure)}
+.ds .measure-narrow{max-width:var(--measure-narrow)}
+.kicker{font-family:var(--font-struct);font-weight:800;font-size:0.75rem;letter-spacing:0.1em;text-transform:uppercase;color:var(--violet-2)}
+.underline-champagne{background-image:linear-gradient(var(--champagne),var(--champagne));background-repeat:no-repeat;background-position:0 88%;background-size:100% 0.18em;padding-bottom:0.02em}
+.accent-italic{font-style:italic}
+.wrap{width:100%;max-width:var(--wrap-max);margin-inline:auto;padding-inline:var(--space-gutter)}
+.wrap--narrow{max-width:760px}
+.wrap--reading{max-width:720px}
+.section{padding-block:var(--space-section)}
+.band{padding-block:var(--space-band)}
+.section--sand{background:var(--sand)}
+.section--white{background:var(--white)}
+.section--lilac{background:var(--lilac)}
+.section-head{max-width:var(--measure);margin-bottom:clamp(2.5rem,5vw,4rem)}
+.section-head.center{margin-inline:auto;text-align:center}
+.section-head .lead{margin-top:1rem}
+.split{display:grid;grid-template-columns:1fr 1fr;gap:clamp(2rem,5vw,4rem);align-items:center}
+.split--wide-left{grid-template-columns:1.1fr 0.9fr}
+.split--wide-right{grid-template-columns:0.9fr 1.1fr}
+.rule{border:0;height:1px;background:var(--line-champagne);margin-block:clamp(2rem,4vw,3rem)}
+.rule--short{width:64px;margin-inline:auto;height:2px;background:var(--champagne);border-radius:2px}
+.band-dark .rule{background:rgba(232,200,154,0.4)}
+.btn{font-family:var(--font-struct);font-weight:800;font-size:0.9375rem;letter-spacing:0.01em;line-height:1;display:inline-flex;align-items:center;justify-content:center;gap:0.5rem;padding:1rem 1.75rem;border-radius:var(--radius-pill);border:1.5px solid transparent;cursor:pointer;text-decoration:none;transition:transform var(--dur-fast) var(--ease),box-shadow var(--dur) var(--ease),background-color var(--dur-fast) var(--ease),color var(--dur-fast) var(--ease),border-color var(--dur-fast) var(--ease)}
+.btn--primary{background:var(--champagne);color:var(--plum-black);border-color:var(--champagne)}
+.btn--primary:hover{color:var(--plum-black);transform:translateY(-2px);box-shadow:0 14px 34px rgba(232,200,154,0.45);background:var(--champagne-soft);border-color:var(--champagne-soft)}
+.btn--secondary{background:transparent;color:var(--plum);border-color:var(--plum)}
+.btn--secondary:hover{transform:translateY(-2px);background:var(--plum);color:var(--white);border-color:var(--plum)}
+.btn--plum{background:var(--plum);color:var(--white);border-color:var(--plum)}
+.btn--plum:hover{color:var(--white);transform:translateY(-2px);box-shadow:0 14px 34px rgba(74,46,111,0.35)}
+.btn--lg{padding:1.1875rem 2.5rem;font-size:1rem}
+.btn--block{display:flex;width:100%}
+.link-arrow{font-family:var(--font-struct);font-weight:700;font-size:0.9375rem;color:var(--plum);display:inline-flex;align-items:center;gap:0.4rem}
+.link-arrow .arrow{transition:transform var(--dur-fast) var(--ease)}
+.link-arrow:hover .arrow{transform:translateX(4px)}
+.band-dark{background:var(--plum-black);color:rgba(255,255,255,0.86);position:relative}
+.band-dark::before{content:"";position:absolute;inset:0;background:radial-gradient(120% 90% at 50% -10%,rgba(124,58,237,0.22) 0%,transparent 60%);pointer-events:none}
+.band-dark>*{position:relative;z-index:1}
+.band-dark h1,.band-dark h2,.band-dark h3{color:var(--white)}
+.band-dark .eyebrow{color:var(--champagne)}
+.band-dark .lead,.band-dark p{color:rgba(255,255,255,0.78)}
+.band-dark a{color:var(--champagne)}
+.band-dark a:hover{color:var(--champagne-soft)}
+.band-dark .btn--secondary{color:var(--white);border-color:rgba(255,255,255,0.5)}
+.band-dark .btn--secondary:hover{background:var(--white);color:var(--plum-black);border-color:var(--white)}
+.card{background:var(--white);border:1px solid var(--line);border-radius:var(--radius);padding:clamp(1.5rem,3vw,2.25rem);transition:transform var(--dur) var(--ease),box-shadow var(--dur) var(--ease),border-color var(--dur) var(--ease)}
+.card--sand{background:var(--sand)}
+.card:hover{transform:translateY(-4px);box-shadow:var(--shadow-lift);border-color:var(--line-champagne)}
+.band-dark .card{background:rgba(255,255,255,0.04);border-color:var(--line-dark)}
+.band-dark .card:hover{border-color:rgba(232,200,154,0.5)}
+.spec-list{list-style:none;padding:0}
+.spec-list li{display:flex;justify-content:space-between;gap:1rem;padding-block:1.125rem;border-top:1px solid var(--line-champagne)}
+.spec-list li:last-child{border-bottom:1px solid var(--line-champagne)}
+.spec-list .k{font-family:var(--font-struct);font-weight:800;color:var(--plum)}
+.band-dark .spec-list .k{color:var(--white)}
+.band-dark .spec-list li{border-color:rgba(232,200,154,0.3)}
+.chip{font-family:var(--font-struct);font-weight:700;font-size:0.8125rem;color:var(--plum);background:rgba(74,46,111,0.06);border:1px solid var(--line);padding:0.5rem 0.9375rem;border-radius:var(--radius-pill);display:inline-block}
+.band-dark .chip{color:var(--champagne);background:rgba(232,200,154,0.08);border-color:rgba(232,200,154,0.28)}
+.stat-num{font-family:var(--font-struct);font-weight:900;color:var(--violet);font-size:clamp(3.5rem,8vw,6rem);line-height:0.9;letter-spacing:-0.02em}
+.stat-num--plum{color:var(--plum)}
+.band-dark .stat-num{color:var(--champagne)}
+.stat-cap{font-family:var(--font-struct);font-weight:700;color:var(--plum);font-size:1.0625rem;margin-top:0.75rem}
+.band-dark .stat-cap{color:rgba(255,255,255,0.85)}
+.media{width:100%;border-radius:var(--radius);object-fit:cover;display:block}
+.media--portrait{aspect-ratio:4/5}
+.media--landscape{aspect-ratio:3/2}
+.media--square{aspect-ratio:1/1}
+.media--tall{aspect-ratio:3/4}
+.reveal{opacity:0;transform:translateY(22px);transition:opacity var(--dur-slow) var(--ease),transform var(--dur-slow) var(--ease);will-change:opacity,transform}
+.reveal.is-visible{opacity:1;transform:none}
+.reveal-stagger>*{opacity:0;transform:translateY(18px);transition:opacity var(--dur-slow) var(--ease),transform var(--dur-slow) var(--ease)}
+.reveal-stagger.is-visible>*{opacity:1;transform:none}
+.reveal-stagger.is-visible>*:nth-child(2){transition-delay:0.08s}
+.reveal-stagger.is-visible>*:nth-child(3){transition-delay:0.16s}
+.reveal-stagger.is-visible>*:nth-child(4){transition-delay:0.24s}
+.reveal-stagger.is-visible>*:nth-child(5){transition-delay:0.32s}
+.reveal-stagger.is-visible>*:nth-child(6){transition-delay:0.40s}
+.hover-zoom{overflow:hidden;border-radius:var(--radius)}
+.hover-zoom img{transition:transform var(--dur-slow) var(--ease)}
+.hover-zoom:hover img{transform:scale(1.05)}
+html:not(.js) .reveal,html:not(.js) .reveal-stagger>*{opacity:1;transform:none}
+@media (prefers-reduced-motion:reduce){.ds *,.ds *::before,.ds *::after{animation-duration:0.001ms !important;animation-iteration-count:1 !important;transition-duration:0.001ms !important;scroll-behavior:auto !important}.reveal,.reveal-stagger>*{opacity:1 !important;transform:none !important}}
+.center{text-align:center}
+.mx-auto{margin-inline:auto}
+.stack>*+*{margin-top:1rem}
+.stack-lg>*+*{margin-top:clamp(1.25rem,3vw,2rem)}
+.text-plum{color:var(--plum)}
+.text-violet{color:var(--violet)}
+.text-champagne{color:var(--champagne-deep)}
+.band-dark .text-champagne{color:var(--champagne)}
+.no-wrap{white-space:nowrap}
+@media (max-width:880px){.split,.split--wide-left,.split--wide-right{grid-template-columns:1fr}.section-head{margin-bottom:2.5rem}}
 
-    /* pricing tiers */
-    .tiers{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-top:26px}
-    @media(max-width:560px){.tiers{grid-template-columns:1fr}}
-    .tier{background:var(--panel);border:1px solid var(--line);border-radius:16px;padding:22px 22px 24px}
-    .tier .tname{font-family:var(--mono);font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--muted)}
-    .tier .tprice{font-family:var(--display);font-size:30px;font-weight:700;letter-spacing:-.02em;color:var(--lime);margin:8px 0 10px}
-    .tier p{font-size:13.5px;color:var(--muted);line-height:1.5}
-    .scarcity{margin-top:22px;font-family:var(--display);font-weight:600;font-size:19px;line-height:1.35;color:var(--text)}
-    .scarcity b{color:var(--lime);font-weight:700}
+/* ---------- PAGE-SPECIFIC ---------- */
+.nav{position:sticky;top:0;z-index:50;background:rgba(26,20,32,0.82);backdrop-filter:saturate(140%) blur(12px);border-bottom:1px solid var(--line-dark)}
+.nav-inner{display:flex;align-items:center;justify-content:space-between;padding-block:0.85rem}
+.nav-inner .brand img{height:26px;display:block}
+.nav-cta{font-family:var(--font-struct);font-weight:800;font-size:0.8125rem;letter-spacing:0.02em;padding:0.65rem 1.15rem;border-radius:var(--radius-pill);background:var(--champagne);color:var(--plum-black)!important;transition:background-color var(--dur-fast) var(--ease),transform var(--dur-fast) var(--ease)}
+.nav-cta:hover{background:var(--champagne-soft);transform:translateY(-1px)}
 
-    form{background:var(--panel);border:1px solid var(--line);border-radius:20px;padding:30px;margin-top:22px}
-    label{display:block;font-family:var(--display);font-weight:700;color:var(--text);font-size:14px;margin:22px 0 7px}
-    label:first-child{margin-top:0}
-    .req{color:var(--lime)}
-    .multi{font-family:var(--body);font-weight:500;font-size:12px;color:var(--dim);text-transform:none;letter-spacing:0}
-    input,select,textarea{width:100%;font-family:var(--body);font-size:15px;color:var(--text);padding:13px 14px;border:1px solid var(--line);border-radius:12px;background:var(--panel2)}
-    input::placeholder,textarea::placeholder{color:var(--dim)}
-    input:focus,select:focus,textarea:focus{outline:none;border-color:var(--lime);box-shadow:0 0 0 3px rgba(212,255,79,.15)}
-    textarea{min-height:92px;resize:vertical}
-    .hint{font-size:12px;color:var(--dim);margin-top:5px}
-    /* checkbox chip groups */
-    .checks{display:flex;flex-wrap:wrap;gap:8px;margin-top:2px}
-    .checks label{display:inline-flex;align-items:center;gap:8px;margin:0;padding:9px 13px;border:1px solid var(--line);border-radius:12px;background:var(--panel2);font-family:var(--body);font-weight:500;font-size:14px;color:var(--text);cursor:pointer}
-    .checks label:hover{border-color:var(--lime)}
-    .checks input{width:auto;margin:0;accent-color:var(--lime)}
-    .checks input:checked+span{color:var(--lime);font-weight:600}
-    .btn{display:block;width:100%;margin-top:30px;background:var(--lime);color:#0B0B10;font-family:var(--display);font-weight:700;font-size:16px;padding:16px;border:none;border-radius:30px;cursor:pointer;transition:transform .15s ease}
-    .btn:hover{transform:translateY(-2px)}
-    .next{background:var(--panel);border:1px solid var(--line);border-radius:16px;padding:20px 22px;margin-top:22px;font-size:14px;color:var(--muted)}
-    .next b{color:var(--lime);font-family:var(--display)}
-    .state{display:none;background:var(--panel);border:1px solid var(--line);border-radius:20px;padding:34px;margin-top:26px;text-align:center}
-    .state h2{font-size:24px;margin-bottom:10px}
-    a:focus-visible,button:focus-visible,input:focus-visible{outline:2px solid var(--lime);outline-offset:2px}
-  </style>
+/* HERO */
+.hero{position:relative;overflow:hidden}
+.hero-grid{display:grid;grid-template-columns:1.05fr 0.95fr;gap:clamp(2rem,5vw,4.5rem);align-items:center}
+@media (max-width:900px){.hero-grid{grid-template-columns:1fr}}
+.hero-img{border-radius:var(--radius-lg);aspect-ratio:3/2;object-fit:cover;box-shadow:var(--shadow-dark)}
+.hero-cta-row{display:flex;flex-wrap:wrap;gap:1rem;align-items:center;margin-top:2rem}
+.hero-micro{font-family:var(--font-struct);font-weight:700;font-size:0.8125rem;letter-spacing:0.02em;color:var(--champagne);margin-top:1.15rem}
+.cred-row{display:flex;flex-wrap:wrap;gap:0.5rem;margin-top:1.75rem}
+
+/* OUTCOME two-col ledger */
+.ledger{display:grid;grid-template-columns:1fr 1fr;gap:clamp(1.25rem,3vw,2rem)}
+@media (max-width:720px){.ledger{grid-template-columns:1fr}}
+.ledger .col-h{font-family:var(--font-struct);font-weight:800;font-size:0.75rem;letter-spacing:0.12em;text-transform:uppercase;margin-bottom:1rem}
+.ledger .now .col-h{color:var(--violet-2)}
+.ledger .after .col-h{color:var(--champagne-deep)}
+.ledger ul{list-style:none;padding:0}
+.ledger li{padding-block:0.85rem;border-top:1px solid var(--line);line-height:1.5}
+.ledger .after li{border-color:var(--line-champagne)}
+
+/* FOR / NOT FOR */
+.forgrid{display:grid;grid-template-columns:1fr 1fr;gap:clamp(1.25rem,3vw,2rem)}
+@media (max-width:720px){.forgrid{grid-template-columns:1fr}}
+.forlist{list-style:none;padding:0}
+.forlist li{position:relative;padding:0.7rem 0 0.7rem 2rem;line-height:1.5;border-top:1px solid var(--line-dark)}
+.forlist li:first-child{border-top:0}
+.forlist li::before{position:absolute;left:0;top:0.6rem;font-family:var(--font-struct);font-weight:800;font-size:1rem}
+.forlist.yes li::before{content:"✓";color:var(--champagne)}
+.forlist.no li::before{content:"✕";color:var(--violet-2)}
+
+/* MECHANISM phases */
+.phase{border-top:1px solid var(--line-champagne);padding-block:clamp(1.75rem,4vw,2.5rem)}
+.phase:last-child{border-bottom:1px solid var(--line-champagne)}
+.phase-grid{display:grid;grid-template-columns:auto 1fr;gap:clamp(1.25rem,4vw,3rem);align-items:start}
+@media (max-width:640px){.phase-grid{grid-template-columns:1fr;gap:0.75rem}}
+.phase-wk{font-family:var(--font-struct);font-weight:900;font-size:0.8125rem;letter-spacing:0.12em;text-transform:uppercase;color:var(--champagne);white-space:nowrap;padding-top:0.35rem}
+.phase h3{margin-bottom:0.6rem}
+.ships{margin-top:1rem;display:inline-flex;gap:0.6rem;align-items:baseline;flex-wrap:wrap}
+.ships .lbl{font-family:var(--font-struct);font-weight:800;font-size:0.7rem;letter-spacing:0.12em;text-transform:uppercase;color:var(--champagne-deep)}
+.band-dark .ships .lbl{color:var(--champagne)}
+.ships .val{font-weight:600;color:rgba(255,255,255,0.9)}
+
+/* TIER cards */
+.tier-grid{display:grid;grid-template-columns:1fr 1fr;gap:clamp(1.25rem,3vw,2rem);align-items:stretch}
+@media (max-width:820px){.tier-grid{grid-template-columns:1fr}}
+.tier{display:flex;flex-direction:column;background:rgba(255,255,255,0.04);border:1px solid var(--line-dark);border-radius:var(--radius-lg);padding:clamp(1.75rem,3vw,2.5rem)}
+.tier.featured{border-color:rgba(232,200,154,0.5);box-shadow:0 30px 80px rgba(0,0,0,0.35)}
+.tier-flag{font-family:var(--font-struct);font-weight:800;font-size:0.7rem;letter-spacing:0.14em;text-transform:uppercase;color:var(--champagne);margin-bottom:0.9rem}
+.tier-name{font-family:var(--font-display);font-size:1.5rem;color:var(--white);line-height:1.1}
+.tier-price{font-family:var(--font-struct);font-weight:900;font-size:2.75rem;color:var(--champagne);letter-spacing:-0.02em;margin:0.6rem 0 0.2rem}
+.tier-len{font-family:var(--font-struct);font-weight:700;font-size:0.8125rem;letter-spacing:0.08em;text-transform:uppercase;color:rgba(255,255,255,0.6)}
+.tier .spec-list{margin:1.5rem 0 1.75rem}
+.tier .spec-list li{justify-content:flex-start;gap:0.75rem;color:rgba(255,255,255,0.82);border-color:rgba(232,200,154,0.22)}
+.tier .spec-list li::before{content:"→";font-family:var(--font-struct);font-weight:800;color:var(--champagne);flex:none}
+.tier .btn{margin-top:auto}
+
+/* testimonial placeholder */
+.tstm{border:2px dashed var(--line-champagne);border-radius:var(--radius);padding:clamp(1.5rem,3vw,2.25rem);background:rgba(232,200,154,0.05)}
+.tstm .slot{font-family:var(--font-struct);font-weight:800;font-size:0.75rem;letter-spacing:0.12em;text-transform:uppercase;color:var(--champagne-deep);margin-bottom:0.6rem}
+.band-dark .tstm .slot{color:var(--champagne)}
+.tstm p{color:var(--ink);font-style:italic;opacity:0.75}
+.band-dark .tstm p{color:rgba(255,255,255,0.7)}
+
+/* imagery strip */
+.strip{display:grid;grid-template-columns:repeat(3,1fr);gap:clamp(0.75rem,2vw,1.25rem)}
+@media (max-width:720px){.strip{grid-template-columns:1fr 1fr}.strip>*:last-child{grid-column:1/-1}}
+.strip img{border-radius:var(--radius);aspect-ratio:4/5;object-fit:cover;width:100%}
+
+/* FAQ */
+.faq details{border-top:1px solid var(--line-champagne);padding-block:1.15rem}
+.faq details:last-child{border-bottom:1px solid var(--line-champagne)}
+.faq summary{font-family:var(--font-struct);font-weight:800;font-size:1.0625rem;color:var(--plum);cursor:pointer;list-style:none;display:flex;justify-content:space-between;gap:1rem;align-items:center}
+.faq summary::-webkit-details-marker{display:none}
+.faq summary::after{content:"+";font-family:var(--font-struct);font-weight:700;color:var(--champagne-deep);font-size:1.35rem;line-height:1}
+.faq details[open] summary::after{content:"–"}
+.faq .a{padding-top:0.9rem}
+.faq .a p{color:var(--ink)}
+
+/* risk reversal cards */
+.rev-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:clamp(1rem,2.5vw,1.5rem)}
+@media (max-width:820px){.rev-grid{grid-template-columns:1fr}}
+
+/* footer */
+.foot{background:var(--plum-black);color:rgba(255,255,255,0.72);padding-block:clamp(3rem,6vw,4.5rem)}
+.foot .brand img{height:52px;margin-bottom:1rem}
+.foot-grid{display:grid;grid-template-columns:1.4fr 1fr 1fr;gap:2rem}
+@media (max-width:720px){.foot-grid{grid-template-columns:1fr}}
+.foot h4{font-family:var(--font-struct);font-weight:800;font-size:0.75rem;letter-spacing:0.12em;text-transform:uppercase;color:var(--champagne);margin-bottom:0.9rem}
+.foot ul{list-style:none;padding:0}
+.foot li{margin-bottom:0.5rem}
+.foot a{color:rgba(255,255,255,0.72)}
+.foot a:hover{color:var(--champagne)}
+.foot-bar{display:flex;justify-content:space-between;gap:1rem;flex-wrap:wrap;margin-top:2.5rem;padding-top:1.5rem;border-top:1px solid var(--line-dark);font-size:0.8125rem;color:rgba(255,255,255,0.5)}
+a:focus-visible,button:focus-visible,summary:focus-visible{outline:2px solid var(--champagne);outline-offset:3px}
+</style>
 </head>
-<body>
-  <div class="wrap">
-    <div class="eyebrow">1:1 AI System+ Coaching · with Ella Molony Cook</div>
-    <h1>Build your AI operating system, one to one with Ella.</h1>
-    <p class="lede">Multi-week programs to design and ship your agent operating system with Ella directly.</p>
-    <p class="muted">Quick intake to qualify for 1:1 coaching. Takes 5 minutes. This is an application, not a checkout — Ella reviews every one and comes back to you personally.</p>
+<body class="ds">
 
-    <!-- Pricing tiers: informational. Both tiers route to the same application below. -->
-    <div class="tiers">
-      <div class="tier">
-        <div class="tname">6-Week · AI System+ Coaching</div>
-        <div class="tprice">$4,950</div>
-        <p>Six weeks, one to one, building and shipping the core agents that take your highest-cost busywork off your plate for good - the full AI Content Machine program included.</p>
+<!-- NAV -->
+<nav class="nav">
+  <div class="wrap nav-inner">
+    <a href="/" class="brand" aria-label="Time Rich home"><img src="/Logo/web/logo-lilac.png" alt="Time Rich" /></a>
+    <a href="apply/" class="nav-cta">Apply for a spot</a>
+  </div>
+</nav>
+
+<!-- HERO -->
+<header class="section band-dark hero">
+  <div class="wrap hero-grid">
+    <div class="reveal">
+      <span class="eyebrow">1:1 AI System Coaching · with Ella Molony Cook</span>
+      <h1 class="display">Your business, running on <span class="underline-champagne">AI you actually own</span>.</h1>
+      <p class="lead" style="margin-top:1.5rem">One to one with Ella. We build the AI system that runs your business on your context and in your voice. Set up right the first time, and yours to keep for good.</p>
+      <div class="hero-cta-row">
+        <a href="apply/" class="btn btn--primary btn--lg">Apply for a spot →</a>
+        <a href="#mechanism" class="btn btn--secondary">See how it works</a>
       </div>
-      <div class="tier">
-        <div class="tname">12-Week · COO AI Coaching</div>
-        <div class="tprice">$14,950</div>
-        <p>Twelve weeks to wire your content, ops and research into one COO-level system you fully own and run without us - the full AI Content Machine program included.</p>
+      <p class="hero-micro">Only <!--OFFER:coaching.sixWeek.spots-->4<!--/OFFER:coaching.sixWeek.spots--> spots. Ella reads every application herself.</p>
+      <div class="cred-row">
+        <span class="chip">4x founder</span>
+        <span class="chip">1 exit</span>
+        <span class="chip">Early investor in Anthropic</span>
+        <span class="chip">AI System Architect</span>
       </div>
     </div>
-    <p class="scarcity"><b>Only 4 spots available.</b> Don't sleep on this if you want to SUPERCHARGE your AI system + strategy.</p>
-
-    <!-- Form POSTs JSON to the shared "time-rich-forms" Cloudflare Worker at its /coaching route,
-         which writes a row into the Notion "AI Coaching Intake Form" database. -->
-    <form id="coach-form" action="https://time-rich-forms.timerich.workers.dev/coaching" method="POST">
-      <label>First name <span class="req">*</span></label>
-      <input type="text" name="first_name" required />
-
-      <label>Email <span class="req">*</span></label>
-      <input type="email" name="email" required />
-
-      <label>Role <span class="multi">— select as many as apply</span></label>
-      <div class="checks">
-        <label><input type="checkbox" name="role" value="Multi-founder" /><span>Multi-founder</span></label>
-        <label><input type="checkbox" name="role" value="Exited founder" /><span>Exited founder</span></label>
-        <label><input type="checkbox" name="role" value="First-time founder" /><span>First-time founder</span></label>
-        <label><input type="checkbox" name="role" value="Starting a company" /><span>Starting a company</span></label>
-        <label><input type="checkbox" name="role" value="Investor" /><span>Investor</span></label>
-        <label><input type="checkbox" name="role" value="Creator" /><span>Creator</span></label>
-        <label><input type="checkbox" name="role" value="Team Leader" /><span>Team Leader</span></label>
-        <label><input type="checkbox" name="role" value="Coach" /><span>Coach</span></label>
-      </div>
-
-      <label>How many people on your team?</label>
-      <input type="text" name="team_size" placeholder="e.g. just me, 5, 20+" />
-
-      <label>LinkedIn profile</label>
-      <input type="url" name="linkedin" placeholder="https://linkedin.com/in/…" />
-
-      <label>Where are you at with AI? <span class="multi">— select as many as apply</span></label>
-      <div class="checks">
-        <label><input type="checkbox" name="ai_stage" value="Haven't started" /><span>Haven't started</span></label>
-        <label><input type="checkbox" name="ai_stage" value="Experimenting" /><span>Experimenting</span></label>
-        <label><input type="checkbox" name="ai_stage" value="Using daily" /><span>Using daily</span></label>
-        <label><input type="checkbox" name="ai_stage" value="Building systems" /><span>Building systems</span></label>
-        <label><input type="checkbox" name="ai_stage" value="Using AI at the code level" /><span>Using AI at the code level</span></label>
-        <label><input type="checkbox" name="ai_stage" value="Running multiple agents" /><span>Running multiple agents</span></label>
-        <label><input type="checkbox" name="ai_stage" value="Running scheduled / autonomous agent tasks" /><span>Running scheduled / autonomous agent tasks</span></label>
-      </div>
-
-      <label>What's costing you the most time right now that AI should be doing? <span class="req">*</span></label>
-      <textarea name="time_drain" required></textarea>
-
-      <label>What's holding you back? <span class="multi">— select as many as apply</span></label>
-      <div class="checks">
-        <label><input type="checkbox" name="blockers" value="Cost" /><span>Cost</span></label>
-        <label><input type="checkbox" name="blockers" value="Time" /><span>Time</span></label>
-        <label><input type="checkbox" name="blockers" value="Knowledge" /><span>Knowledge</span></label>
-        <label><input type="checkbox" name="blockers" value="Integration" /><span>Integration</span></label>
-        <label><input type="checkbox" name="blockers" value="Team buy-in" /><span>Team buy-in</span></label>
-        <label><input type="checkbox" name="blockers" value="Other" /><span>Other</span></label>
-      </div>
-
-      <label>What's the ONE thing AI could do that would change your business? <span class="req">*</span></label>
-      <textarea name="one_thing" required></textarea>
-
-      <label>What is the cost of you not implementing AI?</label>
-      <textarea name="cost_of_inaction"></textarea>
-
-      <label>Why do you want to work with Ella? <span class="req">*</span></label>
-      <textarea name="why_ella" required></textarea>
-
-      <label>When do you want to start?</label>
-      <input type="date" name="start_when" />
-
-      <button type="submit" class="btn">Apply for 1:1 coaching →</button>
-    </form>
-
-    <div class="next">
-      <b>What happens next</b><br />
-      Ella reads every application herself. If it's a fit, she'll come back to you personally with next steps and a time to talk. If the timing isn't right yet, she'll point you to the best place to start.
-    </div>
-
-    <!-- Optional states your automation can reveal after review. Hidden by default. -->
-    <div class="state" id="approved">
-      <div class="eyebrow">You're a fit</div>
-      <h2>Let's talk.</h2>
-      <p class="muted">Grab a time with Ella and come ready to talk through what you want built.</p>
-      <a href="[ELLA_CALENDAR_LINK]" class="btn" style="text-decoration:none">Book your call →</a>
-    </div>
-    <div class="state" id="declined">
-      <div class="eyebrow">Not right now</div>
-      <h2>Start with the machine.</h2>
-      <p class="muted">1:1 coaching isn't the right fit yet — the AI Content Machine is exactly where to start, and the door to coaching stays open.</p>
-      <a href="../os.html" class="btn" style="text-decoration:none">See the challenge →</a>
-    </div>
-
-    <div class="state" id="submitted">
-      <div class="eyebrow">Application received</div>
-      <h2>Thank you — you're in the queue.</h2>
-      <p class="muted">Ella reads every application herself and will come back to you personally. Keep an eye on your inbox.</p>
+    <div class="reveal">
+      <img class="hero-img" src="ella-on-stage.jpg" alt="Ella Molony Cook on stage speaking about AI systems for founders" />
     </div>
   </div>
+</header>
 
-  <script>
-    (function () {
-      var form = document.getElementById('coach-form');
-      if (!form) return;
-      var val = function (n) { var el = form.querySelector('[name="' + n + '"]'); return el ? el.value : ''; };
-      var multi = function (n) {
-        return Array.prototype.slice.call(form.querySelectorAll('[name="' + n + '"]:checked')).map(function (el) { return el.value; });
-      };
-      form.addEventListener('submit', function (e) {
-        e.preventDefault();
-        var payload = {
-          first_name: val('first_name'), email: val('email'), role: multi('role'),
-          team_size: val('team_size'), linkedin: val('linkedin'), ai_stage: multi('ai_stage'),
-          time_drain: val('time_drain'), blockers: multi('blockers'), one_thing: val('one_thing'),
-          cost_of_inaction: val('cost_of_inaction'),
-          why_ella: val('why_ella'), start_when: val('start_when')
-        };
-        var btn = form.querySelector('button[type=submit]');
-        btn.disabled = true; btn.textContent = 'Sending…';
-        fetch(form.action, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload) })
-          .then(function (r) { if (!r.ok) throw new Error(); form.style.display = 'none'; document.getElementById('submitted').style.display = 'block'; window.scrollTo({ top: 0, behavior: 'smooth' }); })
-          .catch(function () { btn.disabled = false; btn.textContent = 'Apply for 1:1 coaching →'; alert('Something went wrong — please try again, or email emc@timerich.ai.'); });
+<!-- THE OUTCOME -->
+<section class="section section--white">
+  <div class="wrap">
+    <div class="section-head reveal">
+      <span class="eyebrow">The outcome</span>
+      <h2 class="h2">You stop being the bottleneck in your own business.</h2>
+      <p class="lead">Most founders are the single point of failure in their content, their inbox, their research. The work only moves when you sit down and do it. This fixes that. Not with another tool you half-set-up, but with a system built on your context that runs the work the way you would.</p>
+    </div>
+
+    <div class="ledger reveal">
+      <div class="now">
+        <div class="col-h">Where most founders are</div>
+        <ul>
+          <li>You pay for three AI tools and barely open two of them.</li>
+          <li>The prompts work for a day, then you are back to doing it by hand.</li>
+          <li>Everything that matters waits until you personally sit down to do it.</li>
+          <li>The output either sounds like a robot, or it sounds like you because you rewrote all of it.</li>
+        </ul>
+      </div>
+      <div class="after">
+        <div class="col-h">Where you leave this</div>
+        <ul>
+          <li>One system that researches, drafts and produces in your voice, on your context.</li>
+          <li>Work that moves without you sitting in the middle of every step.</li>
+          <li>Hours back in your week, spent on the parts of the business only you can do.</li>
+          <li>You own the whole thing, and you know how to run it without me.</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- THE BELIEF / WHY IT WORKS -->
+<section class="band band-dark">
+  <div class="wrap wrap--reading center reveal">
+    <span class="eyebrow">Why this works when the tools didn't</span>
+    <h2 class="h2" style="margin-bottom:1.25rem">AI does not save you time unless you set it up right.</h2>
+    <p class="lead mx-auto" style="text-align:center">Context beats prompts. The founders getting their week back are not smarter with AI. They built a system loaded with who they are, what they do, and how they work. Then simple asks produce brilliant answers that sound like them. That setup is the hard part. It is also the part you keep skipping, because you are busy running the business it is meant to help. So we build it together, and you keep it.</p>
+  </div>
+</section>
+
+<!-- WHO IT IS FOR / NOT FOR -->
+<section class="section band-dark" style="background:#221a2b">
+  <div class="wrap">
+    <div class="section-head reveal">
+      <span class="eyebrow">Fit</span>
+      <h2 class="h2">Who this is for, and who it isn't.</h2>
+      <p class="lead">This is the high-touch tier. I take four founders at a time, so I am honest about fit up front. It saves us both a call.</p>
+    </div>
+    <div class="forgrid reveal">
+      <div class="card">
+        <div class="col-h" style="font-family:var(--font-struct);font-weight:800;font-size:0.75rem;letter-spacing:0.12em;text-transform:uppercase;color:var(--champagne);margin-bottom:1rem">This is for you if</div>
+        <ul class="forlist yes">
+          <li>You have built something real, and right now you are the bottleneck in it.</li>
+          <li>You want AI set up properly once, not another course to half-finish.</li>
+          <li>You would rather build it with an expert than guess alone for six months.</li>
+          <li>You want to stay lean and independent, not hire a team you do not need.</li>
+        </ul>
+      </div>
+      <div class="card">
+        <div class="col-h" style="font-family:var(--font-struct);font-weight:800;font-size:0.75rem;letter-spacing:0.12em;text-transform:uppercase;color:var(--violet-2);margin-bottom:1rem">It is not for you if</div>
+        <ul class="forlist no">
+          <li>You want inspiration or a webinar. This is hands-on build work.</li>
+          <li>You want someone to hand you a login and disappear. You stay the approval gate.</li>
+          <li>You are looking for the cheapest option. This is the premium tier, priced for it.</li>
+          <li>You are not ready to make decisions about your own business on the calls.</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- THE MECHANISM -->
+<section class="section section--sand" id="mechanism">
+  <div class="wrap">
+    <div class="section-head reveal">
+      <span class="eyebrow eyebrow--champagne">The mechanism</span>
+      <h2 class="h2">What "we build your AI operating system together" actually means.</h2>
+      <p class="lead">No mystery, no vague transformation. Here is the exact build, week by week. Every phase ships something real that is running before we move on. You are in every session. You approve every piece. You walk away owning all of it.</p>
+    </div>
+
+    <h3 class="h3 reveal" style="color:var(--champagne-deep);margin-bottom:0.5rem">The 6-Week arc · your content engine, owned</h3>
+    <p class="reveal" style="margin-bottom:1.5rem">Six weeks, one to one, to build and ship the core system that takes your highest-cost content work off your plate for good.</p>
+
+    <div class="reveal">
+      <div class="phase"><div class="phase-grid">
+        <div class="phase-wk">Week 1</div>
+        <div>
+          <h3 class="h3">The context layer</h3>
+          <p>We load your AI with who you are, your voice, your offers, your customer, and how you work. This is the foundation every agent reads from. Get this right and everything downstream sounds like you.</p>
+          <div class="ships"><span class="lbl">Ships</span><span class="val" style="color:var(--charcoal)">Your reusable context file that every AI tool draws from.</span></div>
+        </div>
+      </div></div>
+
+      <div class="phase"><div class="phase-grid">
+        <div class="phase-wk">Week 2</div>
+        <div>
+          <h3 class="h3">The research agent</h3>
+          <p>An agent that watches your niche, finds what is landing, and hands you angles worth writing about. You stop staring at a blank page wondering what to say.</p>
+          <div class="ships"><span class="lbl">Ships</span><span class="val" style="color:var(--charcoal)">A research agent running on your topics, feeding you angles on demand.</span></div>
+        </div>
+      </div></div>
+
+      <div class="phase"><div class="phase-grid">
+        <div class="phase-wk">Week 3</div>
+        <div>
+          <h3 class="h3">The writing engine</h3>
+          <p>Agents that draft hooks, captions and posts in your actual voice, because they run on the context layer we built in week one. Not a robot, not a template. You.</p>
+          <div class="ships"><span class="lbl">Ships</span><span class="val" style="color:var(--charcoal)">A writing system that drafts in your voice and holds your point of view.</span></div>
+        </div>
+      </div></div>
+
+      <div class="phase"><div class="phase-grid">
+        <div class="phase-wk">Week 4</div>
+        <div>
+          <h3 class="h3">Long-form and repurposing</h3>
+          <p>Turn one idea into a week of content across formats. Write the long piece once, and let the system cut it into posts, threads and captions without losing your voice.</p>
+          <div class="ships"><span class="lbl">Ships</span><span class="val" style="color:var(--charcoal)">A repurposing pipeline that turns one idea into a week of output.</span></div>
+        </div>
+      </div></div>
+
+      <div class="phase"><div class="phase-grid">
+        <div class="phase-wk">Week 5</div>
+        <div>
+          <h3 class="h3">The orchestration</h3>
+          <p>We wire the agents together so one brief moves through research, draft and polish without you babysitting each step. This is where a pile of prompts becomes a machine.</p>
+          <div class="ships"><span class="lbl">Ships</span><span class="val" style="color:var(--charcoal)">A connected content pipeline you run from a single brief.</span></div>
+        </div>
+      </div></div>
+
+      <div class="phase"><div class="phase-grid">
+        <div class="phase-wk">Week 6</div>
+        <div>
+          <h3 class="h3">Handover and independence</h3>
+          <p>You run the whole system yourself while I watch. We stress-test it, document it, and make sure you can operate and adjust it without me. That is the point.</p>
+          <div class="ships"><span class="lbl">Ships</span><span class="val" style="color:var(--charcoal)">A system you run solo, plus a plain-language runbook you keep.</span></div>
+        </div>
+      </div></div>
+    </div>
+  </div>
+</section>
+
+<!-- 12 WEEK arc -->
+<section class="section band-dark">
+  <div class="wrap">
+    <div class="section-head reveal">
+      <span class="eyebrow">The 12-Week arc · your COO-level operating system</span>
+      <h2 class="h2">Everything above, then the rest of your business.</h2>
+      <p class="lead">The twelve-week arc starts with the full content engine, then keeps going. We wire your inbox, your admin and your research into one operating system you own. This is the closest thing to hiring a COO, except it runs on your context and you keep it.</p>
+    </div>
+    <div class="reveal">
+      <div class="phase"><div class="phase-grid">
+        <div class="phase-wk">Weeks 1–6</div>
+        <div>
+          <h3 class="h3">The full content engine</h3>
+          <p>The entire six-week build above, start to finish. Context layer, research, writing, repurposing, orchestration and handover.</p>
+          <div class="ships"><span class="lbl">Ships</span><span class="val">Your content system, running and owned.</span></div>
+        </div>
+      </div></div>
+      <div class="phase"><div class="phase-grid">
+        <div class="phase-wk">Weeks 7–8</div>
+        <div>
+          <h3 class="h3">The inbox and admin COO</h3>
+          <p>Agents that triage your inbox, draft replies in your voice, and handle the recurring admin that quietly eats your week. You approve, they do the lifting.</p>
+          <div class="ships"><span class="lbl">Ships</span><span class="val">An inbox and admin system that drafts and triages in your voice.</span></div>
+        </div>
+      </div></div>
+      <div class="phase"><div class="phase-grid">
+        <div class="phase-wk">Weeks 9–10</div>
+        <div>
+          <h3 class="h3">The research and decision desk</h3>
+          <p>Deeper research agents for the real calls you make, not just content. Market questions, competitor reads, customer patterns. You brief it, it comes back with the work done.</p>
+          <div class="ships"><span class="lbl">Ships</span><span class="val">A research desk you can task on real business decisions.</span></div>
+        </div>
+      </div></div>
+      <div class="phase"><div class="phase-grid">
+        <div class="phase-wk">Week 11</div>
+        <div>
+          <h3 class="h3">The operating system</h3>
+          <p>We connect content, ops and research into one system, including scheduled tasks that run on their own. Your business starts moving while you sleep.</p>
+          <div class="ships"><span class="lbl">Ships</span><span class="val">One connected operating system, with scheduled agent tasks running.</span></div>
+        </div>
+      </div></div>
+      <div class="phase"><div class="phase-grid">
+        <div class="phase-wk">Week 12</div>
+        <div>
+          <h3 class="h3">Full handover</h3>
+          <p>You own and run all of it. We document every part, stress-test the whole thing, and train you to adjust it as your business changes. You walk away independent.</p>
+          <div class="ships"><span class="lbl">Ships</span><span class="val">The whole system, a full runbook, and you trained to run it.</span></div>
+        </div>
+      </div></div>
+    </div>
+  </div>
+</section>
+
+<!-- THE TWO TIERS -->
+<section class="section band-dark" style="background:#160f1c">
+  <div class="wrap">
+    <div class="section-head center reveal">
+      <span class="eyebrow">The two ways in</span>
+      <h2 class="h2">Pick the depth. Both are one to one with Ella.</h2>
+      <p class="lead mx-auto" style="text-align:center">Both tiers include the full AI Content Machine program. The difference is how much of your business we wire up together.</p>
+    </div>
+
+    <div class="tier-grid reveal">
+      <div class="tier">
+        <div class="tier-flag">For the founder who wants their content handled</div>
+        <div class="tier-name"><!--OFFER:coaching.sixWeek.name-->6-Week 1:1 AI System Coaching<!--/OFFER:coaching.sixWeek.name--></div>
+        <div class="tier-price"><!--OFFER:coaching.sixWeek.price-->$4,950<!--/OFFER:coaching.sixWeek.price--></div>
+        <div class="tier-len">Six weeks · one to one</div>
+        <ul class="spec-list">
+          <li>Weekly one-to-one build sessions with Ella</li>
+          <li>Your context layer, built and owned</li>
+          <li>Research, writing and repurposing agents</li>
+          <li>Your content pipeline, orchestrated end to end</li>
+          <li>Async support between calls for mid-build questions</li>
+          <li>The full AI Content Machine program included</li>
+          <li>A plain-language runbook, so you own it without me</li>
+        </ul>
+        <a href="apply/" class="btn btn--primary btn--block">Apply for the 6-week →</a>
+      </div>
+
+      <div class="tier featured">
+        <div class="tier-flag">For the founder who wants a system that runs the business</div>
+        <div class="tier-name"><!--OFFER:coaching.twelveWeek.name-->12-Week 1:1 COO AI Coaching<!--/OFFER:coaching.twelveWeek.name--></div>
+        <div class="tier-price"><!--OFFER:coaching.twelveWeek.price-->$14,950<!--/OFFER:coaching.twelveWeek.price--></div>
+        <div class="tier-len">Twelve weeks · one to one</div>
+        <ul class="spec-list">
+          <li>Everything in the 6-week arc</li>
+          <li>Inbox and admin agents in your voice</li>
+          <li>A research desk you can task on real decisions</li>
+          <li>Content, ops and research wired into one system</li>
+          <li>Scheduled and autonomous agent tasks set up</li>
+          <li>Priority async support across the full twelve weeks</li>
+          <li>Full documentation and training, so you run it solo</li>
+        </ul>
+        <a href="apply/" class="btn btn--primary btn--block">Apply for the 12-week →</a>
+      </div>
+    </div>
+
+    <p class="center reveal" style="margin:2rem auto 0;color:rgba(255,255,255,0.6);font-size:0.9375rem">Not sure which fits? Apply and tell me where your time goes. I will point you to the right one on the call, even if the answer is neither yet.</p>
+  </div>
+</section>
+
+<!-- THE 4 SPOTS REALITY -->
+<section class="section section--white">
+  <div class="wrap split split--wide-right">
+    <div class="reveal">
+      <img class="media media--portrait" src="ella-working.jpg" alt="Ella Molony Cook working on an AI system" />
+    </div>
+    <div class="reveal">
+      <span class="eyebrow eyebrow--champagne">The honest part</span>
+      <h2 class="h2">Four spots. Every application read by me.</h2>
+      <p class="lead" style="margin-top:1rem">This is built with you, not handed to you, so I can only take four founders at a time. That is not a marketing line. It is the actual number of people I can build alongside and still do the work properly.</p>
+      <p style="margin-top:1rem">There is no cart and no instant checkout. You apply, I read it myself, and if it is a fit I come back to you personally with a time to talk. If it is not the right moment, I will tell you plainly and point you to the best place to start instead. Either way, a real person reads what you wrote.</p>
+      <a href="apply/" class="btn btn--plum btn--lg" style="margin-top:1.75rem">Apply for a spot →</a>
+    </div>
+  </div>
+</section>
+
+<!-- ELLA AUTHORITY -->
+<section class="section band-dark">
+  <div class="wrap split split--wide-left">
+    <div class="reveal">
+      <span class="eyebrow">Who you are working with</span>
+      <h2 class="h2">I am Ella. I build lean businesses on AI, and I show you exactly how.</h2>
+      <p class="lead" style="margin-top:1rem">I have built and scaled four companies, with one exit behind me. I am an early investor in Anthropic, I work as an AI system architect, and I ran Founders AI Labs before the hype caught up. I host AI events for a living, more than 250 of them across seven cities, and I started Time Rich because the AI conversation was happening in rooms most women were never invited into.</p>
+      <p style="margin-top:1rem">I am not a guru and I do not do bro-science. No 12-week curriculum you graduate from and forget. Just the systems, built with you, in the time it takes to actually use them. When we are done, you own the build and you know how it runs.</p>
+      <div class="cred-row">
+        <span class="chip">4x founder</span>
+        <span class="chip">1 exit</span>
+        <span class="chip">Early investor in Anthropic</span>
+        <span class="chip">AI System Architect</span>
+        <span class="chip">Founders AI Labs</span>
+        <span class="chip">250+ events · 7 cities</span>
+      </div>
+    </div>
+    <div class="reveal">
+      <img class="media media--portrait" src="ella-portrait.jpg" alt="Ella Molony Cook, founder of Time Rich" />
+    </div>
+  </div>
+</section>
+
+<!-- AJAY PROOF -->
+<section class="section section--sand">
+  <div class="wrap">
+    <div class="section-head reveal">
+      <span class="eyebrow eyebrow--champagne">Proof the system scales</span>
+      <h2 class="h2">The same approach took Ajay from 10K to 400K.</h2>
+    </div>
+    <div class="split reveal">
+      <div>
+        <img class="media media--landscape hover-zoom" src="ajay-ella.jpg" alt="Ella Molony Cook and Ajay Yadav" style="overflow:hidden" />
+      </div>
+      <div class="stack">
+        <p class="lead">Ajay Yadav, Forbes 30 Under 30, three-time founder, backed by Khosla and Craft, spent eighteen months building a content machine that runs on agents instead of a team. That machine took him from 10,000 to 400,000 followers in four months while he ran his companies.</p>
+        <p>His build is the proof this way of working scales. In your coaching, the full AI Content Machine program is included, which is the taught version of that same system. The one-to-one work is where we adapt it to your business and wire in the rest of your operations.</p>
+        <p style="font-family:var(--font-struct);font-weight:700;color:var(--plum)">He is the proof it scales. I am the AI system architect who builds it with you.</p>
+      </div>
+    </div>
+
+    <!-- Testimonial placeholder -->
+    <div class="tstm reveal" style="margin-top:clamp(2.5rem,5vw,4rem)">
+      <div class="slot">[ADD REAL TESTIMONIAL]</div>
+      <p>A founder's own words go here, once the first coaching clients finish and give real, on-the-record results. No invented quotes, no borrowed numbers. Real proof only.</p>
+    </div>
+  </div>
+</section>
+
+<!-- COMMUNITY / THE ROOM -->
+<section class="section section--white">
+  <div class="wrap">
+    <div class="section-head reveal">
+      <span class="eyebrow">The room behind the work</span>
+      <h2 class="h2">You are not learning this alone in a browser tab.</h2>
+      <p class="lead">Time Rich is a real room of founders, investors and operators building leaner businesses with AI. Coaching is one to one, and it sits inside that room, so the people around you are building the same way.</p>
+    </div>
+    <div class="strip reveal">
+      <img src="room-1.jpg" alt="Founders at a Time Rich event" loading="lazy" />
+      <img src="room-2.jpg" alt="Time Rich dinner conversation" loading="lazy" />
+      <img src="room-3.jpg" alt="Time Rich community gathering" loading="lazy" />
+    </div>
+  </div>
+</section>
+
+<!-- FAQ -->
+<section class="section section--sand">
+  <div class="wrap wrap--reading">
+    <div class="section-head reveal">
+      <span class="eyebrow eyebrow--champagne">Questions founders ask</span>
+      <h2 class="h2">The honest answers.</h2>
+    </div>
+    <div class="faq reveal">
+      <details>
+        <summary>How is this different from the AI Content Machine?</summary>
+        <div class="a"><p>The AI Content Machine is the group program, self-paced, from <!--OFFER:tiers.0.price-->$197<!--/OFFER:tiers.0.price-->. This is one to one. It is custom to your whole business, not just content, and I am building it with you directly. Both coaching tiers include the full Content Machine program, so you get that too.</p></div>
+      </details>
+      <details>
+        <summary>Do I need to be technical?</summary>
+        <div class="a"><p>No. If you can describe how you work, we can build it. You approve the decisions, I handle the setup, and by the end you know how to run it. Staying independent is the whole point.</p></div>
+      </details>
+      <details>
+        <summary>What actually ships? Am I left with something real?</summary>
+        <div class="a"><p>Yes. Every phase ends with a working piece of your system, not notes. By the end you have a system that is running, plus a plain-language runbook so you can operate and adjust it yourself. You own all of it.</p></div>
+      </details>
+      <details>
+        <summary>Which tier should I pick?</summary>
+        <div class="a"><p>If you want your content researched, written and produced in your voice, the six-week arc is built for that. If you want your inbox, admin and research wired in too, into one system that runs the business, the twelve-week COO arc goes there. Not sure? Apply and I will tell you on the call.</p></div>
+      </details>
+      <details>
+        <summary>How much of my time does it take?</summary>
+        <div class="a"><p>The build sessions, plus the odd approval between them. The point is to give you time back, not take more of it. Most of the heavy lifting happens in our sessions and in the system we are building, not on your calendar.</p></div>
+      </details>
+      <details>
+        <summary>What if AI changes and my setup breaks?</summary>
+        <div class="a"><p>You will own the system and know how it runs, so you can adjust it. That is why the whole thing ends in handover and a runbook. You are never dependent on me or on one tool staying exactly as it is today.</p></div>
+      </details>
+      <details>
+        <summary>Will it actually sound like me?</summary>
+        <div class="a"><p>Yes. It runs on your context, not a generic model. That is the difference between built on you and sounds like a robot. We spend the first week on exactly this, because everything else depends on it.</p></div>
+      </details>
+      <details>
+        <summary>Why is it application-based?</summary>
+        <div class="a"><p>Because I only take four founders at a time and I want the fit to be right for both of us. The application tells me your business and where your time is going. If it is not a match, I will say so and point you somewhere better.</p></div>
+      </details>
+    </div>
+  </div>
+</section>
+
+<!-- RISK REVERSAL -->
+<section class="section band-dark">
+  <div class="wrap">
+    <div class="section-head center reveal">
+      <span class="eyebrow">What is true, and what I will not pretend</span>
+      <h2 class="h2">The straight version.</h2>
+    </div>
+    <div class="rev-grid reveal">
+      <div class="card">
+        <h3 class="h3" style="margin-bottom:0.6rem">You apply before you pay</h3>
+        <p>No cart, no instant checkout. We only start once we have both agreed on the call that it is the right build for you. If it is not, you have lost a five-minute application, nothing more.</p>
+      </div>
+      <div class="card">
+        <h3 class="h3" style="margin-bottom:0.6rem">You keep everything</h3>
+        <p>The system, the context layer, the agents, the runbook. It is yours to run and adjust after we finish. You are not renting access to something I hold the keys to.</p>
+      </div>
+      <div class="card">
+        <h3 class="h3" style="margin-bottom:0.6rem">I will tell you if it is a no</h3>
+        <p>If coaching is not the right fit yet, I will say so and point you to the AI Content Machine instead. I would rather send you to the right starting line than sell you the wrong tier.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FINAL CTA -->
+<section class="section band-dark" style="background:var(--plum)">
+  <div class="wrap wrap--reading center reveal">
+    <span class="eyebrow">Your move</span>
+    <h2 class="display" style="color:var(--white)">Set it up right, once.</h2>
+    <p class="lead mx-auto" style="text-align:center;margin-top:1.25rem">You can keep reading about AI, or you can spend a few weeks building the system that gives your week back and keep it for good. Four spots. Every application read by me.</p>
+    <div class="hero-cta-row" style="justify-content:center">
+      <a href="apply/" class="btn btn--primary btn--lg">Apply for a spot →</a>
+    </div>
+    <p class="hero-micro" style="color:rgba(255,255,255,0.75)">Five-minute application. If it is a fit, I come back to you personally.</p>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer class="foot">
+  <div class="wrap">
+    <div class="foot-grid">
+      <div>
+        <a href="/" class="brand"><img src="/Logo/web/logo-lilac.png" alt="Time Rich" /></a>
+        <p style="max-width:36ch">Build a time-rich business powered by AI that runs on your context, not someone else's template.</p>
+      </div>
+      <div>
+        <h4>Explore</h4>
+        <ul>
+          <li><a href="/">Time Rich</a></li>
+          <li><a href="/contentmachine">The AI Content Machine</a></li>
+          <li><a href="apply/">Apply for coaching</a></li>
+        </ul>
+      </div>
+      <div>
+        <h4>Contact</h4>
+        <ul>
+          <li><a href="https://www.linkedin.com/in/ellamolonycook/" target="_blank" rel="noopener">Ella Molony Cook · LinkedIn</a></li>
+          <li><a href="https://www.instagram.com/timerich.ai" target="_blank" rel="noopener">@timerich.ai · Instagram</a></li>
+          <li><a href="mailto:emc@timerich.ai">emc@timerich.ai</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="foot-bar">
+      <span>© 2026 Time Rich</span>
+      <span>1:1 AI System Coaching · with Ella Molony Cook</span>
+    </div>
+  </div>
+</footer>
+
+<script>
+  // Scroll reveal — no-JS fallback keeps everything visible (html.js gates it)
+  (function () {
+    var els = document.querySelectorAll('.reveal, .reveal-stagger');
+    if (!('IntersectionObserver' in window) || !els.length) {
+      els.forEach(function (el) { el.classList.add('is-visible'); });
+      return;
+    }
+    var io = new IntersectionObserver(function (entries) {
+      entries.forEach(function (e) {
+        if (e.isIntersecting) { e.target.classList.add('is-visible'); io.unobserve(e.target); }
       });
-    })();
-  </script>
+    }, { rootMargin: '0px 0px -8% 0px', threshold: 0.12 });
+    els.forEach(function (el) { io.observe(el); });
+  })();
+</script>
 </body>
 </html>
