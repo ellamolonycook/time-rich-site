@@ -23,7 +23,7 @@
   "processors": ["Stripe", "Notion", "Cloudflare", "GitHub Pages", "Anthropic"],
   "stripeLinks": {},
   "_todo": [
-    "refundWindowDays: defaulted to 14. CONFIRM the real refund window with Ella before a payment is taken. The live challenge/terms.html refund clause must match this number once set.",
+    "refundWindowDays: CONFIRMED 14 by Ella (2026-07-11). Live challenge/terms.html + /contentmachine refund FAQ both state 14-day refund and are in sync. [lawyer review of the immediate-access waiver interaction still pending]",
     "tiers prices: canonical docs + spec set these at $197 / $295 / $395. The live /contentmachine page currently shows $297 and $495 (drift). Confirm the true tier prices, then let sync-offer.mjs re-propagate them.",
     "doorsClose: set to 2026-09-01 per canonical README + memory. The live /contentmachine page says 'Sept 4' (drift). Confirm the true doors-close date.",
     "stripeLinks: empty placeholder. Add the three tier checkout URLs (contentOs / writtenMachine / fullMachine) and any coaching application link once live.",
