@@ -104,6 +104,26 @@
   .term-body .ok{color:#7DE28A}
   .caret{display:inline-block;width:8px;height:15px;background:var(--lime);vertical-align:-2px;animation:blink 1s steps(1) infinite}
   @keyframes blink{50%{opacity:0}}
+  /* animated headings: typewriter reveal, char by char, no reflow (every char is pre-placed, just hidden) */
+  .typeline .tw-char{opacity:0}
+  .typeline .tw-char.on{opacity:1}
+  .typeline .tw-caret{display:inline-block;width:.5ch;height:1.05em;background:var(--lime);vertical-align:-.15em;margin-left:1px;animation:blink 1s steps(1) infinite}
+  /* interactive story: curved scroll-drawn thread + spotlight beats */
+  .story{position:relative;padding-left:48px;margin-top:28px}
+  @media(max-width:600px){.story{padding-left:32px}}
+  .story-spine{position:absolute;left:8px;top:4px;width:24px;height:calc(100% - 8px);overflow:visible;pointer-events:none}
+  .story-spine path{fill:none;stroke-width:2;stroke-linecap:round;vector-effect:non-scaling-stroke}
+  .story-spine .track{stroke:var(--line)}
+  .story-spine .prog{stroke:var(--lime);stroke-dasharray:1;stroke-dashoffset:1;filter:drop-shadow(0 0 6px rgba(212,255,79,.55));transition:stroke-dashoffset .7s ease}
+  .story-beat{position:relative;opacity:0;transform:translateY(18px);transition:opacity .7s ease,transform .7s ease}
+  .story-beat.in{opacity:1;transform:none}
+  .story-beat::before{content:'';position:absolute;left:-34px;top:.5em;width:12px;height:12px;border-radius:50%;background:var(--panel2);border:2px solid var(--dim);transition:background .6s ease,border-color .6s ease,box-shadow .6s ease}
+  @media(max-width:600px){.story-beat::before{left:-17px;width:10px;height:10px}}
+  .story-beat.in::before{background:var(--lime);border-color:var(--lime);box-shadow:0 0 16px -1px var(--lime)}
+  @media(prefers-reduced-motion:reduce){.story-beat{opacity:1;transform:none}.story-spine .prog{stroke-dashoffset:0}}
+  .story-figure{margin:34px 0 0;text-align:center}
+  .story-figure img{width:100%;max-width:440px;height:auto;border-radius:18px;border:1px solid var(--line);box-shadow:0 20px 60px -24px rgba(0,0,0,.7)}
+  .story-figure figcaption{font-family:var(--mono);font-size:12px;letter-spacing:.06em;color:var(--muted);margin-top:12px}
 
   /* ---------- loop timeline ---------- */
   .week{border-left:2px solid var(--line);margin:44px 0;padding-left:0;list-style:none}
@@ -118,7 +138,7 @@
   .week li.lit{opacity:1}
   .week li.lit::before{background:var(--lime);border-color:var(--lime);transform:scale(1.2)}
   .callout{border:1px solid var(--line);border-left:3px solid var(--lime);background:var(--panel);border-radius:0 10px 10px 0;padding:26px 30px;margin:40px 0;font-size:19px;font-family:var(--display);font-weight:700;line-height:1.6}
-  .callout .neon{background:var(--lime);color:#0B0B10;padding:.1em .3em;border-radius:4px;box-decoration-break:clone;-webkit-box-decoration-break:clone;box-shadow:0 0 18px rgba(212,255,79,.45)}
+  .neon{background:var(--lime);color:#0B0B10;padding:.1em .3em;border-radius:4px;box-decoration-break:clone;-webkit-box-decoration-break:clone;box-shadow:0 0 18px rgba(212,255,79,.45)}
   .statement{font-family:var(--display);font-weight:500;font-size:clamp(19px,2.5vw,27px);line-height:1.42;margin:34px 0;max-width:780px;color:var(--text);letter-spacing:-.01em}
   .statement u{text-decoration-color:var(--lime);text-underline-offset:4px;text-decoration-thickness:2px}
   .statement b{color:var(--lime);font-weight:700}
@@ -197,6 +217,7 @@
   .vrow.bonus .vval{color:var(--lime)}
   .vtotal{display:flex;justify-content:space-between;align-items:baseline;gap:16px;flex-wrap:wrap;margin-top:14px;padding:14px 20px;border:1px solid var(--lime);border-radius:14px;background:var(--lime-dim)}
   .vtotal span{font-family:var(--mono);font-size:12px;letter-spacing:.14em;text-transform:uppercase;color:var(--muted)}
+<<<<<<< Updated upstream
   .vtotal b{font-family:var(--display);font-size:clamp(34px,5.2vw,54px);color:var(--text);letter-spacing:-.02em;line-height:1.05}
   .vtotal b .vtotal-was,.vtotal b a{font-size:clamp(34px,5.2vw,54px)}
   .vtotal-was{color:var(--red);text-decoration:line-through;text-decoration-color:var(--red);text-decoration-thickness:3px;margin-right:14px;font-size:inherit;letter-spacing:-.02em}
@@ -204,6 +225,23 @@
   .vskills{display:flex;flex-wrap:wrap;gap:6px;margin-top:12px}
   .vchip{font-family:var(--mono);font-size:11px;color:var(--muted);border:1px solid var(--line);border-radius:7px;padding:5px 9px;background:var(--panel);transition:border-color .15s ease,color .15s ease,transform .15s ease}
   .vchip:hover{border-color:var(--lime);color:var(--lime);transform:translateY(-2px)}
+=======
+  .vtotal b{font-family:var(--display);font-size:clamp(20px,2.9vw,29px);color:var(--text);letter-spacing:-.02em;line-height:1.15}
+  .vtotal b .vtotal-was,.vtotal b a{font-size:clamp(20px,2.9vw,29px)}
+  .vtotal-was{color:var(--red);text-decoration:line-through;text-decoration-color:var(--red);text-decoration-thickness:3px;margin-right:14px;font-size:inherit;letter-spacing:-.02em}
+  .vskills-label{margin-top:22px;font-family:var(--mono);font-size:12px;letter-spacing:.12em;text-transform:uppercase;color:var(--lime)}
+  .vskills{display:flex;flex-wrap:wrap;gap:7px;margin-top:14px}
+  .vchip{font-family:var(--mono);font-size:11.5px;letter-spacing:.02em;color:var(--muted);border-radius:6px;padding:6px 11px;background:var(--panel2);transition:color .15s ease,background .15s ease}
+  .vchip:hover{color:var(--lime);background:rgba(212,255,79,.1)}
+  /* skills marquee: two stacked rows scrolling horizontally so the 50+ list stays compact */
+  .vskills.marquee-on{display:block;overflow:hidden}
+  .vmarquee{overflow:hidden;margin-top:8px;-webkit-mask:linear-gradient(90deg,transparent,#000 5%,#000 95%,transparent);mask:linear-gradient(90deg,transparent,#000 5%,#000 95%,transparent)}
+  .vmarquee .vtrack{display:inline-flex;gap:7px;width:max-content;will-change:transform;animation:vmarq 48s linear infinite}
+  .vmarquee .vtrack.rev{animation-direction:reverse}
+  .vmarquee:hover .vtrack{animation-play-state:paused}
+  .vmarquee .vchip{white-space:nowrap;flex:0 0 auto}
+  @keyframes vmarq{from{transform:translateX(0)}to{transform:translateX(-50%)}}
+>>>>>>> Stashed changes
   /* ---------- pricing ---------- */
   .price-countdown{display:inline-flex;align-items:center;gap:10px;margin-top:16px;font-family:var(--mono);font-size:13px;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);border:1px solid rgba(212,255,79,.3);border-radius:999px;padding:11px 20px;background:var(--lime-dim)}
   .price-countdown .pcdot{width:8px;height:8px;border-radius:50%;background:var(--lime);animation:pcPulse 1.6s ease-in-out infinite}
@@ -317,7 +355,7 @@
     .t-photo{aspect-ratio:4/5}
     .tier{padding:22px 20px}
     .tier .t-price{font-size:36px}
-    .vtotal b{font-size:clamp(26px,7.5vw,38px)}
+    .vtotal b{font-size:clamp(22px,6.4vw,32px)}
     .m-agent{font-size:11.5px}
     .card{padding:26px 22px}
     .final{padding:70px 0}
@@ -354,7 +392,7 @@
       <a href="#tiers" class="btn big cta-btn">BUILD MY MACHINE →</a>
       <a href="#machine" class="btn ghost">See what it builds</a>
     </div>
-    <p class="hero-sub">RUNS ON ANY AI ASSISTANT · NO CODE · DOORS CLOSE SEPT 4</p>
+    <p class="hero-sub">RUNS ON ANY AI TOOL · NO CODE · DOORS CLOSE SEPT 4</p>
 
     <div class="stats">
       <a class="stat k" href="https://www.instagram.com/thevibefounder/" target="_blank" rel="noopener"><b data-count="400" data-suffix="K">400K</b><span>Instagram ↗</span></a>
@@ -385,7 +423,6 @@
     </ul>
     <p>It won't be. Because the problem is you're doing by hand what should be running on a machine.</p>
     <p>I know this loop personally. I've built four companies, and it still felt deeply unauthentic to whip out my camera and start recording myself. Ten years in the founder trenches and a blank caption box could still beat me.</p>
-    <p>Every "post every day for 90 days" guru is selling you more hours. More batching. More 5am content sprints. That's not a strategy. That's a second job with worse pay.</p>
     <p class="statement">The creators that have blown up have created <u>AI systems</u>. Ajay went from <u>10K to 400K in 4 months</u> with a content team that runs on a <u>machine</u>, not by hand-crafting captions. The world is shifting from people to <span class="hl">creators</span>, turning <u>followers into income</u>. Everyone is still figuring out the new creator economy.</p>
     <div class="callout"><span class="neon">This challenge hands you the machine that has cracked the code.</span></div>
   </div>
@@ -399,6 +436,10 @@
     <p style="margin-top:24px">Creators used to be the marketing budget. Now they're on the cap table. Companies hand equity to people with an audience, because attention is the one asset money can't buy directly. An audience is income you own and a seat you can't be fired from.</p>
     <p>It's the biggest wealth transfer in history, and it lands on the people who adopt AI early and build attention with it. Not the job title. Not the funding round. I had the funding round.</p>
     <div class="pull">Every builder needs an audience. Every company needs customers. Every creator needs <span class="hl">attention that converts.</span></div>
+    <figure class="story-figure">
+      <img src="ella-ajay-studio.jpg" alt="Ella Molony Cook and Ajay Yadav together in the studio" loading="lazy" />
+      <figcaption>Ella + Ajay, both exited serial founders. The AI system architect × the non-technical AI nerd turned creator = the AI Content Machine.</figcaption>
+    </figure>
   </div>
 </section>
 
@@ -407,11 +448,17 @@
   <div class="wrap narrow">
     <span class="eyebrow">03 / How this started</span>
     <h2 class="sec-h">I didn't know I was watching an AI clone.</h2>
-    <p style="margin-top:28px">Hi. If you don't know me, I'm Ella. Exited founder, AI system nerd, and until recently COO and founder of an early-stage AI startup that ran Founders AI Labs before the hype. I left to go all in on content and building a brand, which felt insane to say out loud after ten years of building companies. Here's how that happened.</p>
-    <p class="p-emph">Last year I found Ajay on Instagram. I'm an early AI investor and I host AI events for a living, and I still followed him for weeks before I clocked it: most of his content was made by <span class="key">an AI clone of himself</span>. His machine ran it while he ran his company.</p>
-    <p>I remember the feeling when it landed. Not tricked. Jealous.</p>
-    <p class="p-emph">I knew attention was the next asset to build. The old price: hire a content team, or make it my second full-time job. Then I saw what Ajay had built and realised the price had collapsed. So I asked him to mentor me, then asked the better question: why not bring both our communities along? <span class="key">That question became this challenge.</span></p>
-    <p>So here's the honest structure. Ajay built the machine over 18 months. I'm building mine with it now, live, in front of you. Every module you take, I take. Every agent you set up, I set up on my real accounts that same week, and you'll see my numbers either way.</p>
+    <div class="story">
+      <svg class="story-spine" viewBox="0 0 24 100" preserveAspectRatio="none" aria-hidden="true">
+        <path class="track" d="M12 0 L 12 100"/>
+        <path class="prog" pathLength="1" d="M12 0 L 12 100"/>
+      </svg>
+      <p class="story-beat">Hi. If you don't know me, I'm Ella. Exited founder, AI system nerd, and until recently COO and founder of an early-stage AI startup that ran Founders AI Labs before the hype. I left to go all in on content and building a brand, which felt insane to say out loud after ten years of building companies. Here's how that happened.</p>
+      <p class="story-beat p-emph">Last year I found Ajay on Instagram. I'm an early AI investor and I host AI events for a living, and I still followed him for weeks before I clocked it: most of his content was made by <span style="font-weight:700">an AI clone of himself</span>. His machine ran it while he ran his company.</p>
+      <p class="story-beat">I remember the feeling when it landed. Not tricked. Jealous.</p>
+      <p class="story-beat p-emph">I knew <span class="key">attention was the next asset to build</span>. The old price: hire a content team, or make it my second full-time job. Then I saw what Ajay had built and realised the price had collapsed. So I asked him to mentor me, then asked the better question: why not bring both our communities along? <span class="key">That question became this challenge.</span></p>
+      <p class="story-beat">So here's the honest structure. Ajay spent 18 months building the agents. I built the operating system around them - because agents on their own aren't enough. You need somewhere the data keeps flowing. So I built your <span class="key">Content Command Center</span> in Notion: a second marketing brain that keeps everything organised and pulls from your past calls, content and conversations, so fresh ideas keep coming from what's actually happening in your world.</p>
+    </div>
     <div class="pull">He's the proof it scales. <span class="hl">I'm an AI system architect.</span></div>
   </div>
 </section>
@@ -477,6 +524,9 @@
       <div class="phase"><span class="n">DAYS 24-30</span><h3>The full machine runs</h3><p>Everything wired together. Day 30 you post from a machine that runs end to end while you live your life.</p></div>
     </div>
     <p style="margin-top:36px;color:var(--muted);max-width:720px">Every builder gets all 30 days. Your tier decides how many agents you build, not how long you're in: Essential is your core content engine, the Full Machine is the full pipeline. I'm doing every day of it with you on my real accounts, Ajay is watching the builds, and your 6-month access means miss a week, catch up, keep building.</p>
+    <figure class="story-figure">
+      <img src="ella-ajay-studio-3.jpg" alt="Ella Molony Cook and Ajay Yadav in the studio" loading="lazy" />
+    </figure>
   </div>
 </section>
 
@@ -484,7 +534,7 @@
 <section id="machine">
   <div class="wrap">
     <span class="eyebrow">05 / What you're building</span>
-    <h2 class="sec-h">One idea in. A week of content out.</h2>
+    <h2 class="sec-h typeline">One idea in. A week of content out.</h2>
     <p class="lead" style="max-width:720px;margin-top:22px">Part live, part on-demand: video modules plus two live calls. You build a system of AI agents that research, write, and produce your content. In your voice, on your accounts, without you living in a caption box.</p>
 
     <div class="machine">
@@ -532,7 +582,7 @@
     </div>
     <div class="vtotal">
       <span>Total real value</span>
-      <b><span class="vtotal-was">$21,790</span> <a href="https://buy.stripe.com/7sYcN772e7QQc5O3WCak005" style="color:inherit;text-decoration:underline;text-decoration-color:var(--lime);text-underline-offset:3px">yours from $197 →</a></b>
+      <b><span class="vtotal-was">$21,790</span> <a href="https://buy.stripe.com/3cI3cxgCOfji1ra8cSak007" style="color:inherit;text-decoration:underline;text-decoration-color:var(--lime);text-underline-offset:3px">yours for $297 →</a></b>
     </div>
 
     <p class="vskills-label">The 50+ marketing skills, in full</p>
@@ -546,7 +596,7 @@
 <section>
   <div class="wrap">
     <span class="eyebrow">06 / Why it goes viral</span>
-    <h2 class="sec-h">The machine isn't guessing. It's been taught exactly what makes content spread.</h2>
+    <h2 class="sec-h typeline">Everyone else is still guessing what goes viral. Your machine has been taught the answer.</h2>
     <p class="lead" style="max-width:760px;margin-top:22px">Virality isn't luck and it isn't vibes. It's a stack of specific, learnable levers - and Ajay spent 18 months teaching his agents each one. You're not getting a "write me a post" prompt. You're getting agents perfected on the actual mechanics of what makes people stop, save, and share.</p>
     <div class="phases">
       <div class="phase"><span class="n">THE HOOK</span><h3>The first line that earns the rest</h3><p>Trained on thousands of scroll-stopping openers. The Hook Writer knows the patterns that make a thumb stop mid-scroll - and writes them in your voice, not a bot's.</p></div>
@@ -612,8 +662,9 @@
       <img class="vip-photo" src="ella-editorial.jpg" alt="Ella Molony Cook" loading="lazy" />
       <div>
         <span class="eyebrow vip-eyebrow">The VIP tier · 1:1 with Ella</span>
-        <h2 class="sec-h" style="margin-top:12px">Want the machine built with you? Go 1:1.</h2>
-        <p class="lead" style="max-width:640px;margin-top:16px">The course hands you the agents. 1:1 coaching hands you Ella. One to one, she designs and ships your custom AI operating system with you - and the full AI Content Machine program is included either way.</p>
+        <h2 class="sec-h" style="margin-top:12px">Want to go ALL IN - build your AI Operating System <em>and</em> strategise extreme GROWTH across your whole business?</h2>
+        <p class="lead" style="max-width:640px;margin-top:16px">Going 1:1 hands you the entire system. Ella has raised multiple six figures, exited her first company, and worked with thousands of founders, and her mind is wired for: <span class="neon">revenue + AI operations</span>. She'll surface the income streams you're sitting on and wire every department, content, ops, research, sales, into one integrated AI machine. Then she designs and ships your custom AI Operating System side by side with you, with the full AI Content Machine program included either way.</p>
+        <p class="statement typeline" style="margin-top:22px;font-size:clamp(16px,2vw,22px)">You're going to walk away feeling as relaxed as Ella looks in this photo, aka Time Rich!</p>
       </div>
     </div>
     <div class="vip-tiers">
@@ -646,6 +697,9 @@
       <div class="card"><span class="tag">LIVE × 2</span><h3>Exactly two live calls</h3><p>A kickoff with Ella to get your machine started right. A Q&amp;A with Ajay to get your hardest questions answered by the man himself. No weekly cohort calls, no calendar guilt.</p></div>
       <div class="card"><span class="tag">YOUR PACE</span><h3>The machine runs at its pace</h3><p>You build at yours. You get your evenings back. That's the whole point.</p></div>
     </div>
+    <figure class="story-figure">
+      <img src="ella-ajay-studio-2.jpg" alt="Ella Molony Cook and Ajay Yadav in the studio" loading="lazy" />
+    </figure>
   </div>
 </section>
 
@@ -656,13 +710,13 @@
     <span class="eyebrow">09 / Questions you're already asking</span>
     <h2 class="sec-h">Asked and answered.</h2>
     <div class="faq">
-      <details><summary>Do I need to be technical?</summary><div class="a"><p>No. If you can follow a video and copy-paste, you can build this. Everything runs on any AI assistant. No code, no APIs to wrestle.</p></div></details>
+      <details><summary>Do I need to be technical?</summary><div class="a"><p>No. If you can follow a video and copy-paste, you can build this. Everything runs on any AI tool. No code, no APIs to wrestle.</p></div></details>
       <details><summary>How much time does it take to build?</summary><div class="a"><p>More than a weekend, and anyone promising otherwise is selling you a prompt pack. Ajay took 18 months to build the original. You're inheriting his agents, so most people get the Content OS standing in their first weeks and layer from there. You have 6 months of access because real building outlasts a burst of motivation.</p></div></details>
       <details><summary>Is this just a prompt pack?</summary><div class="a"><p>No. Prompts are ingredients. This is the kitchen, the recipes, and the chef. You're building agents with memory, your tone of voice, and a research pipeline. A system, not a swipe file.</p></div></details>
       <details><summary>Will the content actually sound like me?</summary><div class="a"><p>That's literally what the Brain is for. You encode your tone of voice, your stories, and your opinions first. Then every agent writes from that. The generic AI voice happens when people skip this step. We don't skip this step.</p></div></details>
       <details><summary>Are there weekly calls?</summary><div class="a"><p>No, and that's a feature. Two live calls total: a kickoff with Ella and a Q&amp;A with Ajay. Everything else is pre-recorded so you build on your schedule, not ours.</p></div></details>
       <details><summary>Essential or the Full Machine?</summary><div class="a"><p>If you want your research and captions handled and you'll build from there: Essential. If you want the full pipeline Ajay's team runs on, written engines and video included: the Full Machine. You can start Essential and upgrade any time inside your access window by paying the difference. Want Ella building it with you one to one? That's the VIP tier above.</p></div></details>
-      <details><summary>What tools do I need?</summary><div class="a"><p>Any capable AI assistant. That's the stack. We show you exactly how to set it up inside the challenge.</p></div></details>
+      <details><summary>What tools do I need?</summary><div class="a"><p>Any capable AI tool. That's the stack. We show you exactly how to set it up inside the challenge.</p></div></details>
       <details><summary>How long do I have access?</summary><div class="a"><p>6 months from purchase. Build it once in that window and the machine is yours to run forever.</p></div></details>
       <details><summary>What if I'm starting from zero followers?</summary><div class="a"><p>Even better. You'll build the system before you build the bad habits. The Research Agent tells you what's working in your niche so you're not guessing from day one.</p></div></details>
       <details><summary>What's the refund policy?</summary><div class="a"><p>Yes. There is a 14-day refund. If it is not for you, email us within 14 days of your purchase and we will refund you in full. After that, sales are final, because you keep the whole system. The full details are in our <a href="/challenge/terms.html">Terms</a>.</p></div></details>
@@ -861,6 +915,99 @@ const CONFIG = {
     es.forEach(function(e){ if(e.isIntersecting){ e.target.classList.add('in'); ro.unobserve(e.target); } });
   }, { threshold: .12 });
   items.forEach(function(el){ ro.observe(el); });
+})();
+
+/* animated headings: TYPEWRITER reveal, char by char on scroll-in. Every char is pre-placed (just hidden) so nothing reflows. */
+(function(){
+  var reduceMo = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  var lines = Array.prototype.slice.call(document.querySelectorAll('.typeline'));
+  if(!lines.length) return;
+  if(reduceMo) return;                        // leave text intact if motion is reduced
+  lines.forEach(function(el){
+    var text = el.textContent;
+    el.textContent = '';
+    el._chars = [];
+    for(var i = 0; i < text.length; i++){
+      var s = document.createElement('span');
+      s.className = 'tw-char';
+      s.textContent = text.charAt(i);
+      el.appendChild(s);
+      el._chars.push(s);
+    }
+  });
+  function run(el){
+    var chars = el._chars || [], i = 0;
+    var caret = document.createElement('span');
+    caret.className = 'tw-caret';
+    (function step(){
+      if(caret.parentNode) caret.parentNode.removeChild(caret);
+      if(i >= chars.length){
+        var last = chars[chars.length - 1];
+        if(last) last.after(caret);
+        setTimeout(function(){ if(caret.parentNode) caret.parentNode.removeChild(caret); }, 1500);
+        return;
+      }
+      var c = chars[i];
+      c.classList.add('on');
+      c.after(caret);                         // caret sits just after the last typed char
+      i++;
+      var ch = c.textContent;
+      var delay = /[.,!?;:]/.test(ch) ? 300 : (ch === ' ' ? 60 : 46);   // pause on punctuation, like a typewriter
+      setTimeout(step, delay);
+    })();
+  }
+  var to = new IntersectionObserver(function(es){
+    es.forEach(function(e){ if(e.isIntersecting){ run(e.target); to.unobserve(e.target); } });
+  }, { threshold: .5 });
+  lines.forEach(function(el){ to.observe(el); });
+})();
+
+/* story: each paragraph starts blank and glides in as you scroll down to it. Pure scroll, once each, never re-hides. */
+(function(){
+  var story = document.querySelector('.story');
+  if(!story) return;
+  var prog = story.querySelector('.story-spine .prog');
+  var beats = Array.prototype.slice.call(story.querySelectorAll('.story-beat'));
+  if(!beats.length) return;
+  var reduceMo = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  if(reduceMo){ beats.forEach(function(b){ b.classList.add('in'); }); if(prog) prog.style.strokeDashoffset='0'; return; }
+  var revealed = 0;
+  function drawTo(n){ if(prog) prog.style.strokeDashoffset = String(1 - Math.min(1, n / beats.length)); }
+  drawTo(0);
+  // a paragraph arrives as its top enters the lower part of the viewport, so the text comes with your scroll
+  var io = new IntersectionObserver(function(es){
+    es.forEach(function(e){
+      if(e.isIntersecting && !e.target.classList.contains('in')){
+        e.target.classList.add('in');
+        revealed++;
+        drawTo(revealed);
+        io.unobserve(e.target);
+      }
+    });
+  }, { threshold: 0, rootMargin: '0px 0px -18% 0px' });
+  beats.forEach(function(b){ io.observe(b); });
+})();
+
+/* 50+ skills: turn the wrapped chip list into two stacked auto-scrolling rows */
+(function(){
+  var wrap = document.querySelector('.vskills');
+  if(!wrap) return;
+  if(window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;   // keep the static list if motion is reduced
+  var chips = Array.prototype.slice.call(wrap.querySelectorAll('.vchip'));
+  if(chips.length < 6) return;
+  var mid = Math.ceil(chips.length / 2);
+  var rows = [chips.slice(0, mid), chips.slice(mid)];
+  wrap.innerHTML = '';
+  wrap.classList.add('marquee-on');
+  rows.forEach(function(rowChips, r){
+    var m = document.createElement('div'); m.className = 'vmarquee';
+    var t = document.createElement('div'); t.className = 'vtrack' + (r === 1 ? ' rev' : '');
+    for(var pass = 0; pass < 2; pass++){                 // two identical copies = seamless -50% loop
+      rowChips.forEach(function(ch){ t.appendChild(ch.cloneNode(true)); });
+    }
+    m.appendChild(t);
+    wrap.appendChild(m);
+  });
 })();
 </script>
 </body>
