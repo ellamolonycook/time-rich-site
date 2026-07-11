@@ -217,15 +217,6 @@
   .vrow.bonus .vval{color:var(--lime)}
   .vtotal{display:flex;justify-content:space-between;align-items:baseline;gap:16px;flex-wrap:wrap;margin-top:14px;padding:14px 20px;border:1px solid var(--lime);border-radius:14px;background:var(--lime-dim)}
   .vtotal span{font-family:var(--mono);font-size:12px;letter-spacing:.14em;text-transform:uppercase;color:var(--muted)}
-<<<<<<< Updated upstream
-  .vtotal b{font-family:var(--display);font-size:clamp(34px,5.2vw,54px);color:var(--text);letter-spacing:-.02em;line-height:1.05}
-  .vtotal b .vtotal-was,.vtotal b a{font-size:clamp(34px,5.2vw,54px)}
-  .vtotal-was{color:var(--red);text-decoration:line-through;text-decoration-color:var(--red);text-decoration-thickness:3px;margin-right:14px;font-size:inherit;letter-spacing:-.02em}
-  .vskills-label{margin-top:22px;font-family:var(--mono);font-size:12px;letter-spacing:.12em;text-transform:uppercase;color:var(--lime)}
-  .vskills{display:flex;flex-wrap:wrap;gap:6px;margin-top:12px}
-  .vchip{font-family:var(--mono);font-size:11px;color:var(--muted);border:1px solid var(--line);border-radius:7px;padding:5px 9px;background:var(--panel);transition:border-color .15s ease,color .15s ease,transform .15s ease}
-  .vchip:hover{border-color:var(--lime);color:var(--lime);transform:translateY(-2px)}
-=======
   .vtotal b{font-family:var(--display);font-size:clamp(20px,2.9vw,29px);color:var(--text);letter-spacing:-.02em;line-height:1.15}
   .vtotal b .vtotal-was,.vtotal b a{font-size:clamp(20px,2.9vw,29px)}
   .vtotal-was{color:var(--red);text-decoration:line-through;text-decoration-color:var(--red);text-decoration-thickness:3px;margin-right:14px;font-size:inherit;letter-spacing:-.02em}
@@ -236,12 +227,11 @@
   /* skills marquee: two stacked rows scrolling horizontally so the 50+ list stays compact */
   .vskills.marquee-on{display:block;overflow:hidden}
   .vmarquee{overflow:hidden;margin-top:8px;-webkit-mask:linear-gradient(90deg,transparent,#000 5%,#000 95%,transparent);mask:linear-gradient(90deg,transparent,#000 5%,#000 95%,transparent)}
-  .vmarquee .vtrack{display:inline-flex;gap:7px;width:max-content;will-change:transform;animation:vmarq 48s linear infinite}
+  .vmarquee .vtrack{display:inline-flex;gap:7px;width:max-content;will-change:transform;animation:vmarq 90s linear infinite}
   .vmarquee .vtrack.rev{animation-direction:reverse}
   .vmarquee:hover .vtrack{animation-play-state:paused}
   .vmarquee .vchip{white-space:nowrap;flex:0 0 auto}
   @keyframes vmarq{from{transform:translateX(0)}to{transform:translateX(-50%)}}
->>>>>>> Stashed changes
   /* ---------- pricing ---------- */
   .price-countdown{display:inline-flex;align-items:center;gap:10px;margin-top:16px;font-family:var(--mono);font-size:13px;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);border:1px solid rgba(212,255,79,.3);border-radius:999px;padding:11px 20px;background:var(--lime-dim)}
   .price-countdown .pcdot{width:8px;height:8px;border-radius:50%;background:var(--lime);animation:pcPulse 1.6s ease-in-out infinite}
@@ -662,8 +652,8 @@
       <img class="vip-photo" src="ella-editorial.jpg" alt="Ella Molony Cook" loading="lazy" />
       <div>
         <span class="eyebrow vip-eyebrow">The VIP tier · 1:1 with Ella</span>
-        <h2 class="sec-h" style="margin-top:12px">Want to go ALL IN - build your AI Operating System <em>and</em> strategise extreme GROWTH across your whole business?</h2>
-        <p class="lead" style="max-width:640px;margin-top:16px">Going 1:1 hands you the entire system. Ella has raised multiple six figures, exited her first company, and worked with thousands of founders, and her mind is wired for: <span class="neon">revenue + AI operations</span>. She'll surface the income streams you're sitting on and wire every department, content, ops, research, sales, into one integrated AI machine. Then she designs and ships your custom AI Operating System side by side with you, with the full AI Content Machine program included either way.</p>
+        <h2 class="sec-h" style="margin-top:12px">Want to go ALL IN - build your AI Operating System?</h2>
+        <p class="lead" style="max-width:640px;margin-top:16px">Going 1:1 hands you the entire system. Ella has raised multiple six figures, exited her first company, and worked with thousands of founders, and her mind is wired for: <span style="color:var(--lime);text-shadow:0 0 18px rgba(212,255,79,.45)">revenue + AI operations</span>. She'll surface the income streams you're sitting on and wire every department, content, ops, research, sales, into one integrated AI machine. Then she designs and ships your custom AI Operating System side by side with you, with the full AI Content Machine program included either way.</p>
         <p class="statement typeline" style="margin-top:22px;font-size:clamp(16px,2vw,22px)">You're going to walk away feeling as relaxed as Ella looks in this photo, aka Time Rich!</p>
       </div>
     </div>
@@ -857,7 +847,7 @@ const CONFIG = {
     const full = lines[li][2];
     if(ci < full.length){
       cur.childNodes[1].textContent = full.slice(0, ++ci);
-      setTimeout(type, 26);
+      setTimeout(type, 55);
     } else {
       li++; ci=0; cur=null;
       setTimeout(type, 650);
@@ -952,7 +942,7 @@ const CONFIG = {
       c.after(caret);                         // caret sits just after the last typed char
       i++;
       var ch = c.textContent;
-      var delay = /[.,!?;:]/.test(ch) ? 300 : (ch === ' ' ? 60 : 46);   // pause on punctuation, like a typewriter
+      var delay = /[.,!?;:]/.test(ch) ? 460 : (ch === ' ' ? 95 : 74);   // pause on punctuation, like a typewriter
       setTimeout(step, delay);
     })();
   }
