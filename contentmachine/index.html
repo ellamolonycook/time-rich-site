@@ -124,6 +124,9 @@
   .story-figure{margin:34px 0 0;text-align:center}
   .story-figure img{width:100%;max-width:440px;height:auto;border-radius:18px;border:1px solid var(--line);box-shadow:0 20px 60px -24px rgba(0,0,0,.7)}
   .story-figure figcaption{font-family:var(--mono);font-size:12px;letter-spacing:.06em;color:var(--muted);margin-top:12px}
+  .loop-split{display:grid;grid-template-columns:minmax(0,360px) 1fr;gap:48px;align-items:start}
+  .loop-split .story-figure{margin:0}
+  @media(max-width:820px){.loop-split{grid-template-columns:1fr;gap:24px}}
 
   /* ---------- loop timeline ---------- */
   .week{border-left:2px solid var(--line);margin:44px 0;padding-left:0;list-style:none}
@@ -382,29 +385,44 @@
       <a href="#tiers" class="btn big cta-btn">BUILD MY MACHINE →</a>
       <a href="#machine" class="btn ghost">See what it builds</a>
     </div>
+    <p class="lead" style="max-width:720px;margin-top:26px">Ajay's numbers — what his content machine actually built:</p>
+    <div class="stats" style="margin-top:14px">
+      <a class="stat k" href="https://www.instagram.com/thevibefounder/" target="_blank" rel="noopener"><b data-count="400" data-suffix="K">400K</b><span>Instagram ↗</span></a>
+      <a class="stat" href="https://www.linkedin.com/in/yadavajay/" target="_blank" rel="noopener"><b data-count="114" data-suffix="K">114K</b><span>LinkedIn ↗</span></a>
+      <a class="stat" href="https://substack.com/@thevibefounder" target="_blank" rel="noopener"><b data-count="45" data-suffix="K">45K</b><span>Substack ↗</span></a>
+      <a class="stat k" href="https://www.linkedin.com/company/simplifiedhq/" target="_blank" rel="noopener"><b data-count="30" data-suffix="M+">30M+</b><span>Simplified users · VC-backed ↗</span></a>
+    </div>
     <p class="hero-sub">RUNS ON ANY AI TOOL · NO CODE · DOORS CLOSE SEPT 4</p>
   </div>
 </header>
 
 <!-- ============ 01 THE LOOP ============ -->
 <section>
-  <div class="wrap narrow">
-    <span class="eyebrow">01 / The loop you're stuck in</span>
-    <h2 class="sec-h">Let me guess how your week goes.</h2>
-    <ul class="week">
-      <li><span class="d">Sunday night</span><p>"I'm going to be consistent this week."</p></li>
-      <li><span class="d">Monday</span><p>You stare at a blank caption box for 40 minutes.</p></li>
-      <li><span class="d">Tuesday</span><p>You screenshot someone else's viral post and think "I could've written that."</p></li>
-      <li><span class="d">Wednesday</span><p>Nothing.</p></li>
-      <li><span class="d">Thursday</span><p>A guilt-post that flops.</p></li>
-      <li><span class="d">Friday</span><p>You promise yourself next week will be different.</p></li>
-    </ul>
-    <span class="eyebrow" style="margin-top:6px">What actually works</span>
-    <!-- TODO (Ella flagged): confirm Ajay's real growth number — 400K is the figure used elsewhere on the page; kept for consistency until confirmed -->
-    <p class="statement">The creators that have blown up have created <u>AI systems</u>.<br>
-    Ajay went from <u>10K → 400K</u> with a content team that runs on a <u>machine</u> — not by hand-crafting captions.<br>
-    Everyone is still figuring out the new creator economy. <span class="hl">Don't you want to be first?</span></p>
-    <div class="callout"><span class="neon">The machine that cracked the code? It's here.</span></div>
+  <div class="wrap">
+    <div class="loop-split">
+      <figure class="story-figure">
+        <img src="ella-ajay-studio.jpg" alt="Ella Molony Cook and Ajay Yadav together in the studio" loading="lazy" />
+        <figcaption>Ella + Ajay, both exited serial founders. The AI system architect × the non-technical AI nerd turned creator = the AI Content Machine.</figcaption>
+      </figure>
+      <div>
+        <span class="eyebrow">01 / The loop you're stuck in</span>
+        <h2 class="sec-h">Let me guess how your week goes.</h2>
+        <ul class="week">
+          <li><span class="d">Sunday night</span><p>"I'm going to be consistent this week."</p></li>
+          <li><span class="d">Monday</span><p>You stare at a blank caption box for 40 minutes.</p></li>
+          <li><span class="d">Tuesday</span><p>You screenshot someone else's viral post and think "I could've written that."</p></li>
+          <li><span class="d">Wednesday</span><p>Nothing.</p></li>
+          <li><span class="d">Thursday</span><p>A guilt-post that flops.</p></li>
+          <li><span class="d">Friday</span><p>You promise yourself next week will be different.</p></li>
+        </ul>
+        <span class="eyebrow" style="margin-top:6px">What actually works</span>
+        <!-- TODO (Ella flagged): confirm Ajay's real growth number — 400K is the figure used elsewhere on the page; kept for consistency until confirmed -->
+        <p class="statement" style="font-size:clamp(15px,1.7vw,19px)">The creators that have blown up have created <u>AI systems</u>.<br>
+        Ajay went from <u>10K → 400K</u> with a content team that runs on a <u>machine</u>, not by hand-crafting captions.<br>
+        Everyone is still figuring out the new creator economy. <span class="hl">Don't you want to be first?</span></p>
+        <p class="statement" style="margin-top:20px">The machine that cracked the code? <span class="neon">It's here.</span></p>
+      </div>
+    </div>
   </div>
 </section>
 
@@ -413,11 +431,7 @@
   <div class="wrap narrow">
     <span class="eyebrow">02 / Why now</span>
     <h2 class="sec-h">Attention is the new equity.</h2>
-    <div class="pull">Building a content machine is <span class="hl">how you learn to build agents.</span></div>
-    <figure class="story-figure">
-      <img src="ella-ajay-studio.jpg" alt="Ella Molony Cook and Ajay Yadav together in the studio" loading="lazy" />
-      <figcaption>Ella + Ajay, both exited serial founders. The AI system architect × the non-technical AI nerd turned creator = the AI Content Machine.</figcaption>
-    </figure>
+    <div class="pull">Every builder needs an audience. Every company needs customers. Every creator needs <span class="hl">attention that converts.</span></div>
   </div>
 </section>
 
@@ -431,7 +445,7 @@
         <path class="track" d="M12 0 L 12 100"/>
         <path class="prog" pathLength="1" d="M12 0 L 12 100"/>
       </svg>
-      <p class="story-beat">Hi. If you don't know me, I'm Ella. Exited founder, AI system nerd, and until recently COO and founder of an early-stage AI startup that ran Founders AI Labs before the hype. I left to go all in on content and building a brand, which felt insane to say out loud after ten years of building companies. Here's how that happened.</p>
+      <p class="story-beat">Hi. I'm Ella. Exited founder, AI system nerd, and until recently COO and founder of an early-stage AI startup that ran Founders AI Labs before the hype. I left to go all in on content and building a brand, which felt insane to say out loud after ten years of building companies. Here's how that happened.</p>
       <p class="story-beat p-emph">Last year I found Ajay on Instagram. I'm an early AI investor and I host AI events for a living, and I still followed him for weeks before I clocked it: most of his content was made by <span style="font-weight:700">an AI clone of himself</span>. His machine ran it while he ran his company.</p>
       <p class="story-beat">I remember the feeling when it landed. Not tricked. Jealous.</p>
       <p class="story-beat p-emph">I knew <span class="key">attention was the next asset to build</span>. The old price: hire a content team, or make it my second full-time job. Then I saw what Ajay had built and realised the price had collapsed. So I asked him to mentor me, then asked the better question: why not bring both our communities along? <span class="key">That question became this challenge.</span></p>
@@ -462,8 +476,7 @@
         <img class="t-photo" src="ella.jpg" alt="Ella Molony Cook" loading="lazy" />
         <h3>Ella Molony Cook</h3>
         <span class="cred">4X FOUNDER · 1 EXIT 2021 · EARLY INVESTOR IN ANTHROPIC · AI SYSTEM ARCHITECT · FOUNDERS AI LABS</span>
-        <p>I've always been an entrepreneur at heart. In my early 20s I bootstrapped my first company to an exit, and the whole time I was building automations, obsessing over how the right operational foundations could genuinely give a team their time back. That curiosity never left.</p>
-        <p style="margin-top:12px">For years I've hosted experiences at the intersection of private capital, AI, and culture. The last two years specifically: private capital poker games, AI bootcamps, curated investor dinners. 250+ events across 7 cities.</p>
+        <p>For years I've hosted experiences at the intersection of private capital, AI, and culture. The last two years specifically: private capital poker games, AI bootcamps, curated investor dinners. 250+ events across 7 cities.</p>
         <p style="margin-top:12px">AI is rewriting how companies get built, how decisions get made, who leads the next decade. Most people are watching it happen to them.</p>
         <div class="socials">
           <a href="https://www.linkedin.com/in/ellamolonycook" aria-label="Ella on LinkedIn" target="_blank" rel="noopener"><svg viewBox="0 0 24 24"><path d="M20.45 20.45h-3.56v-5.57c0-1.33-.02-3.04-1.85-3.04-1.85 0-2.14 1.45-2.14 2.94v5.67H9.34V9h3.42v1.56h.05c.48-.9 1.64-1.85 3.37-1.85 3.6 0 4.27 2.37 4.27 5.46v6.28zM5.34 7.43a2.06 2.06 0 1 1 0-4.13 2.06 2.06 0 0 1 0 4.13zM7.12 20.45H3.56V9h3.56v11.45zM22.22 0H1.77C.79 0 0 .77 0 1.72v20.56C0 23.23.79 24 1.77 24h20.45c.98 0 1.78-.77 1.78-1.72V1.72C24 .77 23.2 0 22.22 0z"/></svg></a>
@@ -479,13 +492,6 @@
   <div class="wrap narrow">
     <span class="eyebrow">The receipts</span>
     <h2 class="sec-h">The DMs don't lie.</h2>
-    <p class="lead" style="max-width:720px;margin-top:14px">Ajay's numbers — what his content machine actually built:</p>
-    <div class="stats" style="margin-top:18px">
-      <a class="stat k" href="https://www.instagram.com/thevibefounder/" target="_blank" rel="noopener"><b data-count="400" data-suffix="K">400K</b><span>Instagram ↗</span></a>
-      <a class="stat" href="https://www.linkedin.com/in/yadavajay/" target="_blank" rel="noopener"><b data-count="114" data-suffix="K">114K</b><span>LinkedIn ↗</span></a>
-      <a class="stat" href="https://substack.com/@thevibefounder" target="_blank" rel="noopener"><b data-count="45" data-suffix="K">45K</b><span>Substack ↗</span></a>
-      <a class="stat k" href="https://www.linkedin.com/company/simplifiedhq/" target="_blank" rel="noopener"><b data-count="30" data-suffix="M+">30M+</b><span>Simplified users · VC-backed ↗</span></a>
-    </div>
     <div class="testi-wrap">
       <div class="testi">
         <p>I wanna thank you - your videos helped my AI journey, especially the 100x series. I've grown so much, I build more and more complicated workflows, capping my RAM out every build. You showed me a better path into tech, and a new passion: <b style="color:var(--lime)">building product.</b> ❤️</p>
@@ -522,7 +528,7 @@
     <div class="grid2">
       <div class="card"><span class="tag">ON-DEMAND</span><h3>Pre-recorded modules</h3><p>Watch when you want. Pause, rewind, build alongside. 2x speed if you like.</p></div>
       <div class="card"><span class="tag">6 MONTHS</span><h3>Access from day of purchase</h3><p>Enough time to build it properly. Not so long you park it in the "someday" folder.</p></div>
-      <div class="card"><span class="tag">LIVE × 2</span><h3>Exactly two live calls</h3><p>A kickoff with Ella to get your machine started right. A Q&amp;A with Ajay to get your hardest questions answered by the man himself. No weekly cohort calls, no calendar guilt.</p></div>
+      <div class="card"><span class="tag">LIVE × 3</span><h3>Three live calls</h3><p>Two with Ella — a Day 1 kickoff to get your machine started right, and a Day 30 close to send you off running. Plus a Q&amp;A with Ajay to get your hardest questions answered by the man himself. No weekly cohort calls, no calendar guilt.</p></div>
       <div class="card"><span class="tag">YOUR PACE</span><h3>The machine runs at its pace</h3><p>You build at yours. You get your evenings back. That's the whole point.</p></div>
     </div>
     <figure class="story-figure">
@@ -531,32 +537,12 @@
   </div>
 </section>
 
-<!-- ============ 09 FAQ ============ -->
-<section>
-  <div class="wrap narrow">
-    <span class="eyebrow">06 / Questions you're already asking</span>
-    <h2 class="sec-h">Asked and answered.</h2>
-    <div class="faq">
-      <details><summary>Do I need to be technical?</summary><div class="a"><p>No. If you can follow a video and copy-paste, you can build this. Everything runs on any AI tool. No code, no APIs to wrestle.</p></div></details>
-      <details><summary>How much time does it take to build?</summary><div class="a"><p>More than a weekend, and anyone promising otherwise is selling you a prompt pack. Ajay took 18 months to build the original. You're inheriting his agents, so most people get the Content OS standing in their first weeks and layer from there. You have 6 months of access because real building outlasts a burst of motivation.</p></div></details>
-      <details><summary>Is this just a prompt pack?</summary><div class="a"><p>No. Prompts are ingredients. This is the kitchen, the recipes, and the chef. You're building agents with memory, your tone of voice, and a research pipeline. A system, not a swipe file.</p></div></details>
-      <details><summary>Will the content actually sound like me?</summary><div class="a"><p>That's literally what the Brain is for. You encode your tone of voice, your stories, and your opinions first. Then every agent writes from that. The generic AI voice happens when people skip this step. We don't skip this step.</p></div></details>
-      <details><summary>Are there weekly calls?</summary><div class="a"><p>No, and that's a feature. Two live calls total: a kickoff with Ella and a Q&amp;A with Ajay. Everything else is pre-recorded so you build on your schedule, not ours.</p></div></details>
-      <details><summary>Essential or the Full Machine?</summary><div class="a"><p>If you want your research and captions handled and you'll build from there: Essential. If you want the full pipeline Ajay's team runs on, written engines and video included: the Full Machine. You can start Essential and upgrade any time inside your access window by paying the difference. Want Ella building it with you one to one? That's the VIP tier above.</p></div></details>
-      <details><summary>What tools do I need?</summary><div class="a"><p>Any capable AI tool. That's the stack. We show you exactly how to set it up inside the challenge.</p></div></details>
-      <details><summary>How long do I have access?</summary><div class="a"><p>6 months from purchase. Build it once in that window and the machine is yours to run forever.</p></div></details>
-      <details><summary>What if I'm starting from zero followers?</summary><div class="a"><p>Even better. You'll build the system before you build the bad habits. The Research Agent tells you what's working in your niche so you're not guessing from day one.</p></div></details>
-      <details><summary>What's the refund policy?</summary><div class="a"><p>Yes. There is a 14-day refund. If it is not for you, email us within 14 days of your purchase and we will refund you in full. After that, sales are final, because you keep the whole system. The full details are in our <a href="/challenge/terms.html">Terms</a>.</p></div></details>
-    </div>
-  </div>
-</section>
-
 <!-- ============ 05 THE MACHINE ============ -->
 <section id="machine">
   <div class="wrap">
     <span class="eyebrow">07 / What you're building</span>
-    <h2 class="sec-h typeline">One idea in. A week of content out.</h2>
-    <p class="lead" style="max-width:720px;margin-top:22px">Part live, part on-demand: video modules plus two live calls. You build a system of AI agents that research, write, and produce your content. In your voice, on your accounts, without you living in a caption box.</p>
+    <h2 class="sec-h typeline">One idea in. A week of quality content out.</h2>
+    <p class="lead" style="max-width:720px;margin-top:22px">Part live, part on-demand: video modules plus three live calls. You build a system of AI agents that research, write, and produce your content. In your voice, on your accounts, without you living in a caption box.</p>
 
     <div class="term">
       <div class="term-top"><span class="dot"></span><span class="dot"></span><span class="dot"></span><span class="term-title">CONTENT_MACHINE · RUNNING</span></div>
@@ -603,7 +589,7 @@
       <div class="vrow"><div class="vlabel">Faceless Video + Editor Pipeline<em>raw footage to posted, hands off your face</em></div><div class="vval">$900</div></div>
       <div class="vrow bonus"><div class="vlabel"><span class="btag">BONUS</span>Your own Whisper Flow-style voice tool<em>talk your content into existence with <a href="https://usevoice.xyz" target="_blank" rel="noopener">UseVoice.xyz</a> - yours to keep</em></div><div class="vval">$490</div></div>
       <div class="vrow bonus"><div class="vlabel"><span class="btag">BONUS</span>50+ marketing skills<em>a full growth playbook wired straight into your machine</em></div><div class="vval">$1,000</div></div>
-      <div class="vrow"><div class="vlabel">2 live calls<em>kickoff with Ella, plus a Q&amp;A with Ajay himself</em></div><div class="vval">$15,000</div></div>
+      <div class="vrow"><div class="vlabel">3 live calls<em>kickoff + closing call with Ella, plus a Q&amp;A with Ajay himself</em></div><div class="vval">$15,000</div></div>
       <div class="vrow"><div class="vlabel">6 months access + the WhatsApp community<em>build it properly, and never alone</em></div><div class="vval">$500</div></div>
     </div>
     <div class="vtotal">
@@ -622,7 +608,7 @@
 <section>
   <div class="wrap">
     <span class="eyebrow">08 / Why it goes viral</span>
-    <h2 class="sec-h typeline">Everyone else is still guessing what goes viral. Your machine knows the answer and acts on it.</h2>
+    <h2 class="sec-h">Everyone else is still guessing what goes viral. Your machine knows the answer and <span class="neon">acts on it.</span></h2>
     <p class="lead" style="max-width:760px;margin-top:22px">Virality isn't vibes. It's a stack of specific, learnable levers. You're not getting a "write me a post" prompt — you're getting agents perfected on the actual mechanics of what makes people stop, save, and share.</p>
     <div class="phases">
       <div class="phase"><span class="n">THE HOOK</span><h3>The first line that earns the rest</h3><p>Trained on thousands of scroll-stopping openers. The Hook Writer knows the patterns that make a thumb stop mid-scroll - and writes them in your voice, not a bot's.</p></div>
@@ -722,7 +708,7 @@
       <div class="date-row slam"><div class="dd">FRI · SEPT 4</div><div class="dt"><b>Doors close. Fully.</b> Last day to join. No "can I still get in" DMs. The machine waits for no one.</div></div>
       <div class="date-row"><div class="dd">MON · SEPT 7</div><div class="dt"><b>Day 1.</b> Live kickoff with Ella. Your access opens.</div></div>
       <div class="date-row"><div class="dd">MID-CHALLENGE</div><div class="dt"><b>Live Q&amp;A with Ajay.</b> Date announced inside the challenge. Bring your hardest build question.</div></div>
-      <div class="date-row"><div class="dd">TUE · OCT 6</div><div class="dt"><b>Day 30.</b> Your machine runs end to end.</div></div>
+      <div class="date-row"><div class="dd">TUE · OCT 6</div><div class="dt"><b>Day 30.</b> Live closing call with Ella, and your machine runs end to end.</div></div>
     </div>
     <p style="margin-top:30px;color:var(--muted)">If you're reading this before the doors close: you're early. Act like it.</p>
   </div>
@@ -738,6 +724,26 @@
     <div class="countdown" id="countdown">DOORS SLAM FRI SEPT 4 · DAY 1 IS MON SEPT 7</div>
     <a href="#tiers" class="btn big cta-btn">BUILD MY CONTENT MACHINE →</a>
     <p style="margin-top:26px;color:var(--dim);font-size:14px">The wealth transfer is real. Decide which side of it you're building on.</p>
+  </div>
+</section>
+
+<!-- ============ FAQ (moved to bottom) ============ -->
+<section>
+  <div class="wrap narrow">
+    <span class="eyebrow">06 / Questions you're already asking</span>
+    <h2 class="sec-h">Asked and answered.</h2>
+    <div class="faq">
+      <details><summary>Do I need to be technical?</summary><div class="a"><p>No. If you can follow a video and copy-paste, you can build this. Everything runs on any AI tool. No code, no APIs to wrestle.</p></div></details>
+      <details><summary>How much time does it take to build?</summary><div class="a"><p>More than a weekend, and anyone promising otherwise is selling you a prompt pack. Ajay took 18 months to build the original. You're inheriting his agents, so most people get the Content OS standing in their first weeks and layer from there. You have 6 months of access because real building outlasts a burst of motivation.</p></div></details>
+      <details><summary>Is this just a prompt pack?</summary><div class="a"><p>No. Prompts are ingredients. This is the kitchen, the recipes, and the chef. You're building agents with memory, your tone of voice, and a research pipeline. A system, not a swipe file.</p></div></details>
+      <details><summary>Will the content actually sound like me?</summary><div class="a"><p>That's literally what the Brain is for. You encode your tone of voice, your stories, and your opinions first. Then every agent writes from that. The generic AI voice happens when people skip this step. We don't skip this step.</p></div></details>
+      <details><summary>Are there weekly calls?</summary><div class="a"><p>No, and that's a feature. Three live calls total: a kickoff and a closing call with Ella, plus a Q&amp;A with Ajay. Everything else is pre-recorded so you build on your schedule, not ours.</p></div></details>
+      <details><summary>Essential or the Full Machine?</summary><div class="a"><p>If you want your research and captions handled and you'll build from there: Essential. If you want the full pipeline Ajay's team runs on, written engines and video included: the Full Machine. You can start Essential and upgrade any time inside your access window by paying the difference. Want Ella building it with you one to one? That's the VIP tier above.</p></div></details>
+      <details><summary>What tools do I need?</summary><div class="a"><p>Any capable AI tool. That's the stack. We show you exactly how to set it up inside the challenge.</p></div></details>
+      <details><summary>How long do I have access?</summary><div class="a"><p>6 months from purchase. Build it once in that window and the machine is yours to run forever.</p></div></details>
+      <details><summary>What if I'm starting from zero followers?</summary><div class="a"><p>Even better. You'll build the system before you build the bad habits. The Research Agent tells you what's working in your niche so you're not guessing from day one.</p></div></details>
+      <details><summary>What's the refund policy?</summary><div class="a"><p>Yes. There is a 14-day refund. If it is not for you, email us within 14 days of your purchase and we will refund you in full. After that, sales are final, because you keep the whole system. The full details are in our <a href="/challenge/terms.html">Terms</a>.</p></div></details>
+    </div>
   </div>
 </section>
 
