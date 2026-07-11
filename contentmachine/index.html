@@ -146,6 +146,10 @@
   .statement u{text-decoration-color:var(--lime);text-underline-offset:4px;text-decoration-thickness:2px}
   .statement b{color:var(--lime);font-weight:700}
   .statement .hl{color:var(--lime)}
+  .works-full{margin-top:52px;padding-top:40px;border-top:1px solid var(--line)}
+  .works-full .statement{max-width:none;font-size:clamp(18px,2vw,23px);margin:0}
+  .works-full .works-cracked{font-size:clamp(21px,2.7vw,30px);margin-top:22px}
+  @media(max-width:600px){.works-full{margin-top:32px;padding-top:28px}.works-full .statement{font-size:17px}.works-full .works-cracked{font-size:22px}}
   .p-emph{font-weight:500;font-size:18px}
   .key{font-weight:700;color:var(--text);text-decoration:underline;text-decoration-color:var(--lime);text-underline-offset:3px;text-decoration-thickness:2px}
 
@@ -415,13 +419,15 @@
           <li><span class="d">Thursday</span><p>A guilt-post that flops.</p></li>
           <li><span class="d">Friday</span><p>You promise yourself next week will be different.</p></li>
         </ul>
-        <span class="eyebrow" style="margin-top:6px">What actually works</span>
-        <!-- TODO (Ella flagged): confirm Ajay's real growth number — 400K is the figure used elsewhere on the page; kept for consistency until confirmed -->
-        <p class="statement" style="font-size:clamp(15px,1.7vw,19px)">The creators that have blown up have created <u>AI systems</u>.<br>
-        Ajay went from <u>10K → 400K</u> with a content team that runs on a <u>machine</u>, not by hand-crafting captions.<br>
-        Everyone is still figuring out the new creator economy. <span class="hl">Don't you want to be first?</span></p>
-        <p class="statement" style="margin-top:20px">The machine that cracked the code? <span class="neon">It's here.</span></p>
       </div>
+    </div>
+    <div class="works-full">
+      <span class="eyebrow">What actually works</span>
+      <!-- TODO (Ella flagged): confirm Ajay's real growth number — 400K is the figure used elsewhere on the page; kept for consistency until confirmed -->
+      <p class="statement">The creators that have blown up have created <u>AI systems</u>.<br>
+      Ajay went from <u>10K → 400K</u> with a content team that runs on a <u>machine</u>, not by hand-crafting captions.<br>
+      Everyone is still figuring out the new creator economy. <span class="hl">Don't you want to be first?</span></p>
+      <p class="statement works-cracked">The machine that cracked the code? <span class="neon">It's here.</span></p>
     </div>
   </div>
 </section>
