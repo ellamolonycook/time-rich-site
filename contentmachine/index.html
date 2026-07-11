@@ -147,8 +147,10 @@
   .statement b{color:var(--lime);font-weight:700}
   .statement .hl{color:var(--lime)}
   .works-full{margin-top:52px;padding-top:40px;border-top:1px solid var(--line)}
-  .works-full .statement{max-width:none;font-size:clamp(18px,2vw,23px);margin:0}
-  .works-full .works-cracked{font-size:clamp(21px,2.7vw,30px);margin-top:22px}
+  .works-full .statement{max-width:none;font-size:clamp(18px,2vw,23px);margin:0;line-height:1.5}
+  .works-full .works-lead > span{display:block;text-wrap:balance}
+  .works-full .works-lead > span + span{margin-top:.5em}
+  .works-full .works-cracked{font-size:clamp(21px,2.7vw,30px);margin-top:1.25em;line-height:1.3;text-wrap:balance}
   @media(max-width:600px){.works-full{margin-top:32px;padding-top:28px}.works-full .statement{font-size:17px}.works-full .works-cracked{font-size:22px}}
   .p-emph{font-weight:500;font-size:18px}
   .key{font-weight:700;color:var(--text);text-decoration:underline;text-decoration-color:var(--lime);text-underline-offset:3px;text-decoration-thickness:2px}
@@ -424,9 +426,11 @@
     <div class="works-full">
       <span class="eyebrow">What actually works</span>
       <!-- TODO (Ella flagged): confirm Ajay's real growth number — 400K is the figure used elsewhere on the page; kept for consistency until confirmed -->
-      <p class="statement">The creators that have blown up have created <u>AI systems</u>.<br>
-      Ajay went from <u>10K → 400K</u> with a content team that runs on a <u>machine</u>, not by hand-crafting captions.<br>
-      Everyone is still figuring out the new creator economy. <span class="hl">Don't you want to be first?</span></p>
+      <p class="statement works-lead">
+        <span>The creators that have blown up have created <u>AI systems</u>.</span>
+        <span>Ajay went from <u>10K → 400K</u> with a content team that runs on a <u>machine</u>, not by hand-crafting captions.</span>
+        <span>Everyone is still figuring out the new creator economy. <span class="hl">Don't you want to be first?</span></span>
+      </p>
       <p class="statement works-cracked">The machine that cracked the code? <span class="neon">It's here.</span></p>
     </div>
   </div>
@@ -482,7 +486,8 @@
         <img class="t-photo" src="ella.jpg" alt="Ella Molony Cook" loading="lazy" />
         <h3>Ella Molony Cook</h3>
         <span class="cred">4X FOUNDER · 1 EXIT 2021 · EARLY INVESTOR IN ANTHROPIC · AI SYSTEM ARCHITECT · FOUNDERS AI LABS</span>
-        <p>For years I've hosted experiences at the intersection of private capital, AI, and culture. The last two years specifically: private capital poker games, AI bootcamps, curated investor dinners. 250+ events across 7 cities.</p>
+        <p>I bootstrapped my first company to an exit, and the whole time I was building automations, obsessing over how the right operational foundations could genuinely give a team their time back. That curiosity never left.</p>
+        <p style="margin-top:12px">For years I've hosted experiences at the intersection of private capital, AI, and culture. The last two years specifically: private capital poker games, AI bootcamps, curated investor dinners. 250+ events across 7 cities.</p>
         <p style="margin-top:12px">AI is rewriting how companies get built, how decisions get made, who leads the next decade. Most people are watching it happen to them.</p>
         <div class="socials">
           <a href="https://www.linkedin.com/in/ellamolonycook" aria-label="Ella on LinkedIn" target="_blank" rel="noopener"><svg viewBox="0 0 24 24"><path d="M20.45 20.45h-3.56v-5.57c0-1.33-.02-3.04-1.85-3.04-1.85 0-2.14 1.45-2.14 2.94v5.67H9.34V9h3.42v1.56h.05c.48-.9 1.64-1.85 3.37-1.85 3.6 0 4.27 2.37 4.27 5.46v6.28zM5.34 7.43a2.06 2.06 0 1 1 0-4.13 2.06 2.06 0 0 1 0 4.13zM7.12 20.45H3.56V9h3.56v11.45zM22.22 0H1.77C.79 0 0 .77 0 1.72v20.56C0 23.23.79 24 1.77 24h20.45c.98 0 1.78-.77 1.78-1.72V1.72C24 .77 23.2 0 22.22 0z"/></svg></a>
