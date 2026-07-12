@@ -125,12 +125,15 @@
   .story-spine path{fill:none;stroke-width:2;stroke-linecap:round;vector-effect:non-scaling-stroke}
   .story-spine .track{stroke:var(--line)}
   .story-spine .prog{stroke:var(--lime);stroke-dasharray:1;stroke-dashoffset:1;filter:drop-shadow(0 0 6px rgba(212,255,79,.55));transition:stroke-dashoffset .7s ease}
-  .story-beat{position:relative;opacity:0;transform:translateY(18px);transition:opacity .7s ease,transform .7s ease}
-  .story-beat.in{opacity:1;transform:none}
-  .story-beat::before{content:'';position:absolute;left:-34px;top:.5em;width:12px;height:12px;border-radius:50%;background:var(--panel2);border:2px solid var(--dim);transition:background .6s ease,border-color .6s ease,box-shadow .6s ease}
-  @media(max-width:600px){.story-beat::before{left:-17px;width:10px;height:10px}}
-  .story-beat.in::before{background:var(--lime);border-color:var(--lime);box-shadow:0 0 16px -1px var(--lime)}
-  @media(prefers-reduced-motion:reduce){.story-beat{opacity:1;transform:none}.story-spine .prog{stroke-dashoffset:0}}
+  .story-group{position:relative;opacity:0;transform:translateY(20px);transition:opacity .8s ease,transform .8s ease}
+  .story-group + .story-group{margin-top:34px}
+  .story-group.in{opacity:1;transform:none}
+  .story-group::before{content:'';position:absolute;left:-34px;top:.55em;width:13px;height:13px;border-radius:50%;background:var(--panel2);border:2px solid var(--dim);transition:background .7s ease,border-color .7s ease,box-shadow .7s ease}
+  @media(max-width:600px){.story-group::before{left:-17px;width:11px;height:11px}}
+  .story-group.in::before{background:var(--lime);border-color:var(--lime);box-shadow:0 0 18px -1px var(--lime)}
+  .story-line{margin:0}
+  .story-line + .story-line{margin-top:15px}
+  @media(prefers-reduced-motion:reduce){.story-group{opacity:1;transform:none}.story-spine .prog{stroke-dashoffset:0}}
   .story-figure{margin:34px 0 0;text-align:center}
   .story-figure img{width:100%;max-width:440px;height:auto;border-radius:18px;border:1px solid var(--line);box-shadow:0 20px 60px -24px rgba(0,0,0,.7)}
   .story-figure figcaption{font-family:var(--mono);font-size:12px;letter-spacing:.06em;color:var(--muted);margin-top:12px}
@@ -483,17 +486,23 @@
         <path class="track" d="M12 0 L 12 100"/>
         <path class="prog" pathLength="1" d="M12 0 L 12 100"/>
       </svg>
-      <p class="story-beat">The day I found Ajay on Instagram my jaw dropped. So much value.</p>
-      <p class="story-beat p-emph">I remember the feeling when it landed: this was an AI clone. <span style="font-weight:700">GENIUS.</span></p>
-      <p class="story-beat">His carousels were on fire. His scripts? Flawless. The hooks were original every. single. time.</p>
-      <p class="story-beat">It's one thing to capture attention, it's another to convert and build community. He did all three.</p>
-      <p class="story-beat">The crazy part? He's working full time, building companies WHILE building a massive following.</p>
-      <p class="story-beat">I wanted that. I bet you want that too - <span class="key">that's why you're here.</span></p>
-      <p class="story-beat">The only two options: hire a content team or make it a second full-time job.</p>
-      <p class="story-beat">No way. I got brave, and reached out to Ajay to come on my podcast Time Rich - all about AI optimizing our lives.</p>
-      <p class="story-beat">By the end of that show, I made the case: the world needs his decades of expertise.</p>
-      <p class="story-beat p-emph">We decided to join forces, combine communities, and unleash this challenge for a fraction of the price it actually is worth.</p>
-      <p class="story-beat">Why? AJ and I believe that someone in this cohort is going to change the world and we want it to be <span class="key">an easy yes.</span></p>
+      <div class="story-group">
+        <p class="story-line">The day I found Ajay on Instagram my jaw dropped. So much value.</p>
+        <p class="story-line p-emph">I remember the feeling when it landed: this was an AI clone. <span style="font-weight:700">GENIUS.</span></p>
+        <p class="story-line">His carousels were on fire. His scripts? Flawless. The hooks were original every. single. time.</p>
+        <p class="story-line">It's one thing to capture attention, it's another to convert and build community. He did all three.</p>
+      </div>
+      <div class="story-group">
+        <p class="story-line">The crazy part? He's working full time, building companies WHILE building a massive following.</p>
+        <p class="story-line">I wanted that. I bet you want that too - <span class="key">that's why you're here.</span></p>
+        <p class="story-line">The only two options: hire a content team or make it a second full-time job.</p>
+        <p class="story-line">No way. I got brave, and reached out to Ajay to come on my podcast Time Rich - all about AI optimizing our lives.</p>
+      </div>
+      <div class="story-group">
+        <p class="story-line">By the end of that show, I made the case: the world needs his decades of expertise.</p>
+        <p class="story-line p-emph">We decided to join forces, combine communities, and unleash this challenge for a fraction of the price it actually is worth.</p>
+        <p class="story-line">Why? AJ and I believe that someone in this cohort is going to change the world and we want it to be <span class="key">an easy yes.</span></p>
+      </div>
     </div>
     <div class="pull">He's the proof it scales. <span class="hl">I'm the proof it transfers.</span></div>
   </div>
@@ -636,7 +645,7 @@
     </div>
     <div class="vtotal">
       <span>Total real value</span>
-      <b><span class="vtotal-was">$21,790</span> <a href="https://buy.stripe.com/3cI3cxgCOfji1ra8cSak007" style="color:inherit;text-decoration:underline;text-decoration-color:var(--lime);text-underline-offset:3px">yours for $297 →</a></b>
+      <b><span class="vtotal-was">$21,790</span> <a href="https://buy.stripe.com/3cI3cxgCOfji1ra8cSak007" style="color:inherit;text-decoration:underline;text-decoration-color:var(--lime);text-underline-offset:3px">yours for $395 →</a></b>
     </div>
 
     <p class="vskills-label">The 50+ marketing skills, in full</p>
@@ -688,8 +697,8 @@
       <div class="tier featured">
         <span class="badge" id="vip-badge">EARLY BIRD ENDS FRI AUG 28</span>
         <span class="t-name">COMPLETE · THE FULL MACHINE</span>
-        <div class="t-price"><span id="vip-price">$297</span><span class="t-was" id="vip-was">$495</span></div>
-        <span class="t-deadline" id="vip-deadline">$297 until Aug 28 · then $495 until doors close</span>
+        <div class="t-price"><span id="vip-price">$395</span><span class="t-was" id="vip-was">$495</span></div>
+        <span class="t-deadline" id="vip-deadline">$395 until Aug 28 · then $495 until doors close</span>
         <p class="t-sub">Everything. The system Ajay's content team runs on.</p>
         <ul>
           <li>Everything in Essential</li>
@@ -702,7 +711,7 @@
           <li>Bonus · UseVoice.xyz voice tool<em>your own Whisper Flow-style dictation, yours to keep</em></li>
           <li>Bonus · 50+ marketing skills<em>a full growth playbook wired into your machine</em></li>
         </ul>
-        <a href="https://buy.stripe.com/3cI3cxgCOfji1ra8cSak007" class="btn cta-btn" style="text-align:center" id="vip-btn">GET THE FULL MACHINE · $297 →</a>
+        <a href="https://buy.stripe.com/3cI3cxgCOfji1ra8cSak007" class="btn cta-btn" style="text-align:center" id="vip-btn">GET THE FULL MACHINE · $395 →</a>
       </div>
     </div>
     <p class="upgrade-note">Start with Essential and upgrade to the Full Machine any time inside your 6-month access window. You pay the difference, nothing more.</p>
@@ -746,7 +755,7 @@
     <h2 class="sec-h">Doors close Friday, September 4. That's the whole countdown.</h2>
     <div class="dates">
       <div class="date-row"><div class="dd">OPEN NOW</div><div class="dt"><b>Doors are open.</b> Early-bird pricing on the Full Machine live right now.</div></div>
-      <div class="date-row"><div class="dd">FRI · AUG 28</div><div class="dt"><b>Early bird ends.</b> Essential goes $197 to $297, the Full Machine $297 to $495, at midnight.</div></div>
+      <div class="date-row"><div class="dd">FRI · AUG 28</div><div class="dt"><b>Early bird ends.</b> Essential goes $197 to $297, the Full Machine $395 to $495, at midnight.</div></div>
       <div class="date-row slam"><div class="dd">FRI · SEPT 4</div><div class="dt"><b>Doors close. Fully.</b> Last day to join. No "can I still get in" DMs. The machine waits for no one.</div></div>
       <div class="date-row"><div class="dd">MON · SEPT 7</div><div class="dt"><b>Day 1.</b> Live kickoff with Ella. Your access opens.</div></div>
       <div class="date-row"><div class="dd">MID-CHALLENGE</div><div class="dt"><b>Live Q&amp;A with Ajay.</b> Date announced inside the challenge. Bring your hardest build question.</div></div>
@@ -809,7 +818,7 @@ const CONFIG = {
   earlyBirdEnds: new Date('2026-08-29T00:00:00+01:00'),   // midnight Lisbon after Fri Aug 28
   doorsClose:    new Date('2026-09-05T00:00:00+01:00'),   // midnight Lisbon after Fri Sept 4
   essEarly:  '$197', essFull: '$297',   // Essential
-  earlyPrice: '$297', fullPrice: '$495' // Full Machine
+  earlyPrice: '$395', fullPrice: '$495' // Full Machine
 };
 
 /* pricing flip */
@@ -1043,12 +1052,12 @@ const CONFIG = {
   var story = document.querySelector('.story');
   if(!story) return;
   var prog = story.querySelector('.story-spine .prog');
-  var beats = Array.prototype.slice.call(story.querySelectorAll('.story-beat'));
-  if(!beats.length) return;
+  var groups = Array.prototype.slice.call(story.querySelectorAll('.story-group'));
+  if(!groups.length) return;
   var reduceMo = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-  if(reduceMo){ beats.forEach(function(b){ b.classList.add('in'); }); if(prog) prog.style.strokeDashoffset='0'; return; }
+  if(reduceMo){ groups.forEach(function(b){ b.classList.add('in'); }); if(prog) prog.style.strokeDashoffset='0'; return; }
   var revealed = 0;
-  function drawTo(n){ if(prog) prog.style.strokeDashoffset = String(1 - Math.min(1, n / beats.length)); }
+  function drawTo(n){ if(prog) prog.style.strokeDashoffset = String(1 - Math.min(1, n / groups.length)); }
   drawTo(0);
   // a paragraph arrives as its top enters the lower part of the viewport, so the text comes with your scroll
   var io = new IntersectionObserver(function(es){
@@ -1061,7 +1070,7 @@ const CONFIG = {
       }
     });
   }, { threshold: 0, rootMargin: '0px 0px -18% 0px' });
-  beats.forEach(function(b){ io.observe(b); });
+  groups.forEach(function(b){ io.observe(b); });
 })();
 
 /* 50+ skills: turn the wrapped chip list into two stacked auto-scrolling rows */
