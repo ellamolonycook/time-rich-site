@@ -148,8 +148,8 @@
   /* ---------- loop timeline ---------- */
   .week{border-left:2px solid var(--line);margin:44px 0;padding-left:0;list-style:none}
   .week li{position:relative;padding:0 0 26px 34px}
-  .week li::before{content:'';position:absolute;left:-7px;top:8px;width:12px;height:12px;border-radius:50%;background:var(--panel2);border:2px solid var(--dim)}
-  .week li:last-child::before{background:var(--lime);border-color:var(--lime)}
+  .week li::before{content:'';position:absolute;left:-5px;top:0;width:0;height:26px;border-right:2px solid var(--lime);opacity:0}
+  .week li.lit::before{opacity:1}
   .week .d{font-family:var(--mono);font-size:12px;letter-spacing:.14em;text-transform:uppercase;color:var(--lime);display:block;margin-bottom:4px}
   .week p{color:var(--muted)}
   /* timeline lights up as you scroll it */
