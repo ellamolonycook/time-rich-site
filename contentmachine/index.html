@@ -25,7 +25,8 @@
     --bg:#0B0B10; --panel:#14141C; --panel2:#181822;
     --line:rgba(255,255,255,.09);
     --text:#F2F2F4; --muted:#A2A2B0; --dim:#6E6E7C;
-    --lime:#D4FF4F; --lime-dim:rgba(212,255,79,.12); --red:#FF5C5C;
+    --lime:#D4FF4F; --lime-dim:rgba(212,255,79,.12); --red:#FF5C5C; --red-deep:#B0141C;
+    --urgent-h:40px;
     --display:'Space Grotesk',system-ui,-apple-system,sans-serif;
     --mono:'JetBrains Mono',ui-monospace,SFMono-Regular,monospace;
     --body:system-ui,-apple-system,'Segoe UI',sans-serif;
@@ -46,13 +47,22 @@
   a:focus-visible,summary:focus-visible,.btn:focus-visible{outline:2px solid var(--lime);outline-offset:3px;border-radius:6px}
 
   /* ---------- sticky bar ---------- */
-  .bar{position:fixed;top:0;left:0;right:0;z-index:50;background:rgba(11,11,16,.94);-webkit-backdrop-filter:blur(10px);backdrop-filter:blur(10px);border-bottom:1px solid var(--line)}
+  .bar{position:fixed;top:var(--urgent-h);left:0;right:0;z-index:50;background:rgba(11,11,16,.94);-webkit-backdrop-filter:blur(10px);backdrop-filter:blur(10px);border-bottom:1px solid var(--line)}
   .bar-in{max-width:1080px;margin:0 auto;padding:12px 24px;display:flex;align-items:center;justify-content:space-between;gap:16px}
   .bar-brand{font-family:var(--mono);font-size:12px;letter-spacing:.14em;color:var(--text);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;min-width:0;flex:1}
   .bar-in .btn{flex-shrink:0;min-height:44px;display:inline-flex;align-items:center}
   .bar-brand b{color:var(--lime)}
   .bar-count{font-family:var(--mono);font-size:12px;color:var(--muted);display:none}
   @media(min-width:760px){.bar-count{display:block}}
+  /* ---------- urgent red bar ---------- */
+  .urgent-bar{position:fixed;top:0;left:0;right:0;z-index:60;display:flex;align-items:center;justify-content:center;gap:11px;min-height:var(--urgent-h);padding:8px 18px;text-align:center;background:linear-gradient(90deg,#E11D2A,var(--red-deep));box-shadow:0 6px 22px -6px rgba(225,29,42,.65);font-family:var(--mono);font-size:12.5px;letter-spacing:.05em;color:#fff;line-height:1.3}
+  .urgent-bar .ub-dot{width:8px;height:8px;border-radius:50%;background:#fff;flex-shrink:0;animation:ubPulse 1.15s ease-in-out infinite}
+  @keyframes ubPulse{0%{box-shadow:0 0 0 0 rgba(255,255,255,.6)}70%{box-shadow:0 0 0 7px rgba(255,255,255,0)}100%{box-shadow:0 0 0 0 rgba(255,255,255,0)}}
+  .urgent-bar .ub-msg{font-weight:700;text-transform:uppercase}
+  .urgent-bar .ub-soft{font-weight:400;text-transform:none;opacity:.92;letter-spacing:.02em}
+  .urgent-bar .ub-count{font-weight:700;background:rgba(0,0,0,.24);border:1px solid rgba(255,255,255,.38);border-radius:6px;padding:3px 9px;font-variant-numeric:tabular-nums;white-space:nowrap;flex-shrink:0}
+  @media(max-width:600px){.urgent-bar{font-size:11px;gap:7px;row-gap:5px;flex-wrap:wrap;padding:8px 12px;letter-spacing:.02em}.urgent-bar .ub-hide-sm{display:none}.urgent-bar .ub-count{flex-basis:100%;padding:3px 7px}}
+  @media(prefers-reduced-motion:reduce){.urgent-bar .ub-dot{animation:none}}
   .btn{display:inline-block;font-family:var(--display);font-weight:700;font-size:16px;letter-spacing:.01em;text-decoration:none;padding:15px 30px;border-radius:8px;background:var(--lime);color:#0B0B10;transition:transform .12s ease,box-shadow .12s ease;border:none;cursor:pointer}
   .btn:hover{transform:translateY(-2px);box-shadow:0 8px 30px rgba(212,255,79,.25)}
   .btn.small{padding:9px 18px;font-size:13px}
@@ -61,7 +71,7 @@
   .btn.big{font-size:19px;padding:19px 44px}
 
   /* ---------- hero ---------- */
-  .hero{padding:140px 0 40px;border-top:none;position:relative;overflow:hidden}
+  .hero{padding:calc(140px + var(--urgent-h)) 0 40px;border-top:none;position:relative;overflow:hidden}
   .hero::before{content:'';position:absolute;top:-300px;right:-200px;width:700px;height:700px;background:radial-gradient(closest-side,rgba(212,255,79,.07),transparent);pointer-events:none;animation:glowDrift 16s ease-in-out infinite}
   @keyframes glowDrift{0%,100%{transform:translate(0,0)}50%{transform:translate(-40px,26px)}}
   .hero h1{font-size:clamp(34px,5.4vw,62px);max-width:900px}
@@ -341,7 +351,7 @@
   @media(max-width:600px){
     body{font-size:16px;line-height:1.55}
     .wrap{padding:0 18px}
-    .hero{padding:100px 0 30px}
+    .hero{padding:calc(100px + var(--urgent-h)) 0 30px}
     .h-setup{font-size:15px;margin-bottom:.2em}
     .h-big{font-size:clamp(29px,8.4vw,38px);line-height:1.04;letter-spacing:-.02em}
     .h-kick{font-size:11px;margin-top:.5em}
@@ -372,6 +382,13 @@
 </style>
 </head>
 <body>
+<!-- URGENT RED BAR -->
+<div class="urgent-bar" id="urgent-bar">
+  <span class="ub-dot" aria-hidden="true"></span>
+  <span class="ub-msg" id="ub-msg">This price never comes back <span class="ub-soft ub-hide-sm">· early-bird ends Aug 28</span></span>
+  <span class="ub-count" id="urgent-count">··d ··h ··m ··s</span>
+</div>
+
 <!-- STICKY BAR -->
 <div class="bar">
   <div class="bar-in">
@@ -466,10 +483,17 @@
         <path class="track" d="M12 0 L 12 100"/>
         <path class="prog" pathLength="1" d="M12 0 L 12 100"/>
       </svg>
-      <p class="story-beat">Hi. I'm Ella. Exited founder, AI system nerd, and until recently COO and founder of an early-stage AI startup that ran Founders AI Labs before the hype. I left to go all in on content and building a brand, which felt insane to say out loud after ten years of building companies. Here's how that happened.</p>
-      <p class="story-beat p-emph">Last year I found Ajay on Instagram. I'm an early AI investor and I host AI events for a living, and I still followed him for weeks before I clocked it: most of his content was made by <span style="font-weight:700">an AI clone of himself</span>. His machine ran it while he ran his company.</p>
-      <p class="story-beat">I remember the feeling when it landed. Not tricked. Jealous.</p>
-      <p class="story-beat p-emph">I knew <span class="key">attention was the next asset to build</span>. The old price: hire a content team, or make it my second full-time job. Then I saw what Ajay had built and realised the price had collapsed. So I asked him to mentor me, then asked the better question: why not bring both our communities along? <span class="key">That question became this challenge.</span></p>
+      <p class="story-beat">The day I found Ajay on Instagram my jaw dropped. So much value.</p>
+      <p class="story-beat p-emph">I remember the feeling when it landed: this was an AI clone. <span style="font-weight:700">GENIUS.</span></p>
+      <p class="story-beat">His carousels were on fire. His scripts? Flawless. The hooks were original every. single. time.</p>
+      <p class="story-beat">It's one thing to capture attention, it's another to convert and build community. He did all three.</p>
+      <p class="story-beat">The crazy part? He's working full time, building companies WHILE building a massive following.</p>
+      <p class="story-beat">I wanted that. I bet you want that too - <span class="key">that's why you're here.</span></p>
+      <p class="story-beat">The only two options: hire a content team or make it a second full-time job.</p>
+      <p class="story-beat">No way. I got brave, and reached out to Ajay to come on my podcast Time Rich - all about AI optimizing our lives.</p>
+      <p class="story-beat">By the end of that show, I made the case: the world needs his decades of expertise.</p>
+      <p class="story-beat p-emph">We decided to join forces, combine communities, and unleash this challenge for a fraction of the price it actually is worth.</p>
+      <p class="story-beat">Why? AJ and I believe that someone in this cohort is going to change the world and we want it to be <span class="key">an easy yes.</span></p>
     </div>
     <div class="pull">He's the proof it scales. <span class="hl">I'm the proof it transfers.</span></div>
   </div>
@@ -485,7 +509,6 @@
         <img class="t-photo" src="ajay.jpg" alt="Ajay Yadav" loading="lazy" />
         <h3>Ajay Yadav</h3>
         <span class="cred">AKA "THE VIBE FOUNDER" · FORBES 30 UNDER 30 · 3X FOUNDER · BACKED BY KHOSLA + CRAFT</span>
-        <p style="font-family:var(--display);font-weight:500;font-size:18px;line-height:1.4;color:var(--text);margin:0 0 16px"><span class="hl">He didn't just build an audience.</span> He spent over 12 months building agents that have gone viral, over and over again.</p>
         <p>Ajay built venture-backed companies before going all in on AI and the attention economy. Over 18 months he built his content machine: an AI clone of himself, wired into one orchestrator that researches, writes, and produces. It took him from 10K to 400K followers in 4 months, and he has run the same playbook across other profiles since.</p>
         <p style="margin-top:14px">Ajay is the best agent builder I have watched work. This challenge doesn't just describe his system. It hands it to you.</p>
         <div class="socials">
@@ -497,9 +520,9 @@
         <img class="t-photo" src="ella.jpg" alt="Ella Molony Cook" loading="lazy" />
         <h3>Ella Molony Cook</h3>
         <span class="cred">4X FOUNDER · 1 EXIT 2021 · EARLY INVESTOR IN ANTHROPIC · AI SYSTEM ARCHITECT · FOUNDERS AI LABS</span>
-        <p>I bootstrapped my first company to an exit, and the whole time I was building automations, obsessing over how the right operational foundations could genuinely give a team their time back. That curiosity never left.</p>
-        <p style="margin-top:12px">For years I've hosted experiences at the intersection of private capital, AI, and culture. The last two years specifically: private capital poker games, AI bootcamps, curated investor dinners. 250+ events across 7 cities.</p>
-        <p style="margin-top:12px">AI is rewriting how companies get built, how decisions get made, who leads the next decade. Most people are watching it happen to them.</p>
+        <p>After building for four companies, I noticed that a company will either rise or fall to the level of their systems. I became obsessed with AI strategy for business, invested early in Anthropic, and created a Founders AI lab teaching thousands of global entrepreneurs with my curriculum.</p>
+        <p style="margin-top:12px">Today, I've teamed up with the best in the game, Ajay, to bring world-class AI education to you with a simple belief: the next level of your success depends on visibility and execution with AI.</p>
+        <p style="margin-top:12px">My mission is to empower the next generation of leaders to be fluent in AI so that they can have more time, creativity, and space to innovate.</p>
         <div class="socials">
           <a href="https://www.linkedin.com/in/ellamolonycook" aria-label="Ella on LinkedIn" target="_blank" rel="noopener"><svg viewBox="0 0 24 24"><path d="M20.45 20.45h-3.56v-5.57c0-1.33-.02-3.04-1.85-3.04-1.85 0-2.14 1.45-2.14 2.94v5.67H9.34V9h3.42v1.56h.05c.48-.9 1.64-1.85 3.37-1.85 3.6 0 4.27 2.37 4.27 5.46v6.28zM5.34 7.43a2.06 2.06 0 1 1 0-4.13 2.06 2.06 0 0 1 0 4.13zM7.12 20.45H3.56V9h3.56v11.45zM22.22 0H1.77C.79 0 0 .77 0 1.72v20.56C0 23.23.79 24 1.77 24h20.45c.98 0 1.78-.77 1.78-1.72V1.72C24 .77 23.2 0 22.22 0z"/></svg></a>
           <a href="https://www.instagram.com/timerich.ai/" aria-label="Time Rich on Instagram" target="_blank" rel="noopener"><svg viewBox="0 0 24 24"><path d="M12 2.16c3.2 0 3.58.01 4.85.07 1.17.05 1.8.25 2.23.41.56.22.96.48 1.38.9.42.42.68.82.9 1.38.16.42.36 1.06.41 2.23.06 1.27.07 1.65.07 4.85s-.01 3.58-.07 4.85c-.05 1.17-.25 1.8-.41 2.23-.22.56-.48.96-.9 1.38-.42.42-.82.68-1.38.9-.42.16-1.06.36-2.23.41-1.27.06-1.65.07-4.85.07s-3.58-.01-4.85-.07c-1.17-.05-1.8-.25-2.23-.41-.56-.22-.96-.48-1.38-.9-.42-.42-.68-.82-.9-1.38-.16-.42-.36-1.06-.41-2.23-.06-1.27-.07-1.65-.07-4.85s.01-3.58.07-4.85c.05-1.17.25-1.8.41-2.23.22-.56.48-.96.9-1.38.42-.42.82-.68 1.38-.9.42-.16 1.06-.36 2.23-.41C8.42 2.17 8.8 2.16 12 2.16zM12 0C8.74 0 8.33.01 7.05.07 5.78.13 4.9.33 4.14.63c-.79.31-1.46.72-2.13 1.38C1.35 2.68.94 3.35.63 4.14.33 4.9.13 5.78.07 7.05.01 8.33 0 8.74 0 12s.01 3.67.07 4.95c.06 1.27.26 2.15.56 2.91.31.79.72 1.46 1.38 2.13.67.66 1.34 1.07 2.13 1.38.76.3 1.64.5 2.91.56C8.33 23.99 8.74 24 12 24s3.67-.01 4.95-.07c1.27-.06 2.15-.26 2.91-.56.79-.31 1.46-.72 2.13-1.38.66-.67 1.07-1.34 1.38-2.13.3-.76.5-1.64.56-2.91.06-1.28.07-1.69.07-4.95s-.01-3.67-.07-4.95c-.06-1.27-.26-2.15-.56-2.91-.31-.79-.72-1.46-1.38-2.13C21.32 1.35 20.65.94 19.86.63 19.1.33 18.22.13 16.95.07 15.67.01 15.26 0 12 0zm0 5.84a6.16 6.16 0 1 0 0 12.32 6.16 6.16 0 0 0 0-12.32zM12 16a4 4 0 1 1 0-8 4 4 0 0 1 0 8zm6.41-10.85a1.44 1.44 0 1 0 0 2.88 1.44 1.44 0 0 0 0-2.88z"/></svg></a>
@@ -694,7 +717,7 @@
       <div>
         <span class="eyebrow vip-eyebrow">The VIP tier · 1:1 with Ella</span>
         <h2 class="sec-h" style="margin-top:12px">Want to go ALL IN - build your AI Operating System?</h2>
-        <p class="lead" style="max-width:640px;margin-top:16px">Going 1:1 hands you the entire system. Ella has raised multiple six figures, exited her first company, and worked with thousands of founders, and her mind is wired for: <span style="color:var(--lime);text-shadow:0 0 18px rgba(212,255,79,.45)">revenue + AI operations</span>. She'll surface the income streams you're sitting on and wire every department, content, ops, research, sales, into one integrated AI machine. Then she designs and ships your custom AI Operating System side by side with you, with the full AI Content Machine program included either way.</p>
+        <p class="lead" style="max-width:640px;margin-top:16px">The deeper dive transforms your business from good to undeniably efficient. Ella begins with three goals in mind: <span style="color:var(--lime);text-shadow:0 0 18px rgba(212,255,79,.45)">growing revenue, scaling, and AI operations</span>. By diagnosing the income streams you're sitting on, she wires every department - content, ops, research, sales - into one custom integrated AI system. Working side by side with you, every problem holds an AI solution. The result? Grow faster than you thought possible, with more efficiency than you thought imaginable.</p>
         <p class="statement typeline" style="margin-top:22px;font-size:clamp(16px,2vw,22px)">You're going to walk away feeling as relaxed as Ella looks in this photo, aka Time Rich!</p>
       </div>
     </div>
@@ -833,6 +856,38 @@ const CONFIG = {
     }
   }
   tick(); timer = setInterval(tick, 60000);
+})();
+
+/* urgent red bar: live countdown + height sync */
+(function(){
+  var bar = document.getElementById('urgent-bar');
+  var el  = document.getElementById('urgent-count');
+  var msg = document.getElementById('ub-msg');
+  if(!bar || !el || !msg) return;
+  var state = '';
+  function pad(n){ return (n<10?'0':'')+n; }
+  function fmt(ms){
+    var d=Math.floor(ms/86400000), h=Math.floor(ms%86400000/3600000),
+        m=Math.floor(ms%3600000/60000), s=Math.floor(ms%60000/1000);
+    return (d>0?d+'d ':'') + pad(h)+'h '+pad(m)+'m '+pad(s)+'s';
+  }
+  function sync(){ document.documentElement.style.setProperty('--urgent-h', bar.offsetHeight+'px'); }
+  var timer;
+  function setState(s){
+    if(state===s) return; state=s;
+    if(s==='early'){ msg.innerHTML='This price never comes back <span class="ub-soft ub-hide-sm">· early-bird ends Aug 28</span>'; }
+    else if(s==='doors'){ msg.textContent='Doors close Fri Sept 4 · last chance to get in'; }
+    else { msg.textContent='Doors closed · next run TBA'; el.style.display='none'; }
+    sync();
+  }
+  function tick(){
+    var now = new Date();
+    if(now < CONFIG.earlyBirdEnds){ setState('early'); el.textContent = fmt(CONFIG.earlyBirdEnds - now); }
+    else if(now < CONFIG.doorsClose){ setState('doors'); el.textContent = fmt(CONFIG.doorsClose - now); }
+    else { setState('closed'); clearInterval(timer); }
+  }
+  tick(); timer = setInterval(tick, 1000);
+  window.addEventListener('resize', sync); sync();
 })();
 
 /* terminal typing loop */
