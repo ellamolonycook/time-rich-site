@@ -131,6 +131,7 @@
   .story-group::before{content:'';position:absolute;left:-34px;top:.55em;width:13px;height:13px;border-radius:50%;background:var(--panel2);border:2px solid var(--dim);transition:background .7s ease,border-color .7s ease,box-shadow .7s ease}
   @media(max-width:600px){.story-group::before{left:-17px;width:11px;height:11px}}
   .story-group.in::before{background:var(--lime);border-color:var(--lime);box-shadow:0 0 18px -1px var(--lime)}
+  .story .story-group::before{display:none}
   .story-line{margin:0}
   .story-line + .story-line{margin-top:15px}
   @media(prefers-reduced-motion:reduce){.story-group{opacity:1;transform:none}.story-spine .prog{stroke-dashoffset:0}}
@@ -389,7 +390,6 @@
 <div class="urgent-bar" id="urgent-bar">
   <span class="ub-dot" aria-hidden="true"></span>
   <span class="ub-msg" id="ub-msg">This price never comes back <span class="ub-soft ub-hide-sm">· early-bird special ends in 48 hours</span></span>
-  <span class="ub-count" id="urgent-count">··d ··h ··m ··s</span>
 </div>
 
 <!-- STICKY BAR -->
@@ -504,7 +504,6 @@
         <p class="story-line">Why? AJ and I believe that someone in this cohort is going to change the world and we want it to be <span class="key">an easy yes.</span></p>
       </div>
     </div>
-    <div class="pull">He's the proof it scales. <span class="hl">I'm the proof it transfers.</span></div>
   </div>
 </section>
 
@@ -528,7 +527,7 @@
       <div class="card">
         <img class="t-photo" src="ella.jpg" alt="Ella Molony Cook" loading="lazy" />
         <h3>Ella Molony Cook</h3>
-        <span class="cred">4X FOUNDER · 1 EXIT 2021 · EARLY INVESTOR IN ANTHROPIC · AI SYSTEM ARCHITECT · FOUNDERS AI LABS</span>
+        <span class="cred">4X FOUNDER · 1 EXIT 2021 · EARLY INVESTOR IN ANTHROPIC · AI SYSTEM ARCHITECT</span>
         <p>After building for four companies, I noticed that a company will either rise or fall to the level of their systems. I became obsessed with AI strategy for business, invested early in Anthropic, and created a Founders AI lab teaching thousands of global entrepreneurs with my curriculum.</p>
         <p style="margin-top:12px">Today, I've teamed up with the best in the game, Ajay, to bring world-class AI education to you with a simple belief: the next level of your success depends on visibility and execution with AI.</p>
         <p style="margin-top:12px">My mission is to empower the next generation of leaders to be fluent in AI so that they can have more time, creativity, and space to innovate.</p>
@@ -567,9 +566,6 @@
       <div class="phase"><span class="n">DAYS 21-30</span><h3>One idea becomes a week</h3><p>Layer on the agents that fan a single idea out across every platform you post on.</p></div>
       <div class="phase"><span class="n">DAYS 31-40</span><h3>The full machine runs</h3><p>Everything wired together. Day 40 you post from a machine that runs end to end while you live your life.</p></div>
     </div>
-    <figure class="story-figure">
-      <img src="ella-ajay-studio-3.jpg" alt="Ella Molony Cook and Ajay Yadav in the studio" loading="lazy" />
-    </figure>
   </div>
 </section>
 
@@ -577,7 +573,7 @@
 <section>
   <div class="wrap narrow">
     <span class="eyebrow">05 / How it works</span>
-    <h2 class="sec-h">Part live, part on-demand. On purpose.</h2>
+    <h2 class="sec-h">Part live, part on-demand.</h2>
     <p style="margin-top:28px">I'm not going to trap you in weekly Zoom calls at dinnertime. That's the hustle model wearing a lanyard. Here's the actual deal:</p>
     <div class="grid2">
       <div class="card"><span class="tag">ON-DEMAND</span><h3>Pre-recorded modules</h3><p>Watch when you want. Pause, rewind, build alongside. 2x speed if you like.</p></div>
@@ -641,7 +637,7 @@
       <div class="vrow bonus"><div class="vlabel"><span class="btag">BONUS</span>Your own Whisper Flow-style voice tool<em>talk your content into existence with <a href="https://usevoice.xyz" target="_blank" rel="noopener">UseVoice.xyz</a> - yours to keep</em></div><div class="vval">$490</div></div>
       <div class="vrow bonus"><div class="vlabel"><span class="btag">BONUS</span>50+ marketing skills<em>a full growth playbook wired straight into your machine</em></div><div class="vval">$1,000</div></div>
       <div class="vrow"><div class="vlabel">3 live calls<em>kickoff + closing call with Ella, plus a Q&amp;A with Ajay himself</em></div><div class="vval">$15,000</div></div>
-      <div class="vrow"><div class="vlabel">6 months access + the WhatsApp community<em>build it properly, and never alone</em></div><div class="vval">$500</div></div>
+      <div class="vrow"><div class="vlabel">6 months access<em>build it properly, and never alone</em></div><div class="vval">$500</div></div>
     </div>
     <div class="vtotal">
       <span>Total real value</span>
@@ -750,25 +746,23 @@
 
 <!-- ============ 10 DATES ============ -->
 <section>
-  <div class="wrap narrow">
-    <span class="eyebrow">10 / The dates</span>
-    <h2 class="sec-h">Doors close once we hit capacity. Limited spots available.</h2>
-    <div class="dates">
-      <div class="date-row slam"><div class="dd">AT CAPACITY</div><div class="dt"><b>Doors fully close.</b> Limited spots available. Once we're in, we're in. No waitlist.</div></div>
-      <div class="date-row"><div class="dd">MON · SEPT 7</div><div class="dt"><b>Day 1.</b> Live kickoff with Ella. Your access opens.</div></div>
-      <div class="date-row"><div class="dd">MID-CHALLENGE</div><div class="dt"><b>Live Q&amp;A with Ajay.</b> Date announced inside the challenge. Bring your hardest build question.</div></div>
-      <div class="date-row"><div class="dd">FRI · OCT 16</div><div class="dt"><b>Day 40.</b> Live closing call with Ella, and your machine runs end to end.</div></div>
-    </div>
-    <p style="margin-top:30px;color:var(--muted)">If you're reading this before the doors close: you're early. Act like it.</p>
-  </div>
-</section>
-
-<!-- ============ 10b STUDIO (moved above final CTA) ============ -->
-<section>
   <div class="wrap">
-    <figure class="story-figure">
-      <img src="ella-ajay-studio-2.jpg" alt="Ella Molony Cook and Ajay Yadav in the studio" loading="lazy" />
-    </figure>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:3rem;align-items:start;">
+      <div class="narrow">
+        <span class="eyebrow">10 / The dates</span>
+        <h2 class="sec-h">Doors close once we hit capacity. Limited spots available.</h2>
+        <div class="dates">
+          <div class="date-row slam"><div class="dd">AT CAPACITY</div><div class="dt"><b>Doors fully close.</b> Limited spots available. Once we're in, we're in.</div></div>
+          <div class="date-row"><div class="dd">MON · SEPT 7</div><div class="dt"><b>Day 1.</b> Live kickoff with Ella. Your access opens.</div></div>
+          <div class="date-row"><div class="dd">MID-CHALLENGE</div><div class="dt"><b>Live Q&amp;A with Ajay.</b> Date announced inside the challenge. Bring your hardest build question.</div></div>
+          <div class="date-row"><div class="dd">FRI · OCT 16</div><div class="dt"><b>Day 40.</b> Live closing call with Ella, and your machine runs end to end.</div></div>
+        </div>
+        <p style="margin-top:30px;color:var(--muted)">If you're reading this before the doors close: you're early. Act like it.</p>
+      </div>
+      <figure class="story-figure" style="margin:0">
+        <img src="ella-ajay-studio-2.jpg" alt="Ella Molony Cook and Ajay Yadav in the studio" loading="lazy" />
+      </figure>
+    </div>
   </div>
 </section>
 
