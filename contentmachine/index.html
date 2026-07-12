@@ -388,7 +388,7 @@
 <!-- URGENT RED BAR -->
 <div class="urgent-bar" id="urgent-bar">
   <span class="ub-dot" aria-hidden="true"></span>
-  <span class="ub-msg" id="ub-msg">This price never comes back <span class="ub-soft ub-hide-sm">· early-bird ends Aug 28</span></span>
+  <span class="ub-msg" id="ub-msg">This price never comes back <span class="ub-soft ub-hide-sm">· early-bird special ends in 48 hours</span></span>
   <span class="ub-count" id="urgent-count">··d ··h ··m ··s</span>
 </div>
 
@@ -396,7 +396,7 @@
 <div class="bar">
   <div class="bar-in">
     <div class="bar-brand"><b>THE AI CONTENT MACHINE</b><span class="bar-suffix"> · 40 DAY CHALLENGE</span></div>
-    <div class="bar-count" id="bar-count">EARLY BIRD · LIMITED TIME</div>
+    <div class="bar-count" id="bar-count">EARLY BIRD SPECIAL ENDS IN 48 HOURS</div>
     <a href="#tiers" class="btn small cta-btn">BUILD MY MACHINE</a>
   </div>
 </div>
@@ -695,10 +695,10 @@
         <a href="https://buy.stripe.com/7sYcN772e7QQc5O3WCak005" class="btn ghost cta-btn" style="text-align:center" id="ess-btn">START WITH ESSENTIAL · $197</a>
       </div>
       <div class="tier featured">
-        <span class="badge" id="vip-badge">EARLY BIRD ENDS FRI AUG 28</span>
+        <span class="badge" id="vip-badge">EARLY BIRD SPECIAL ENDS IN 48 HOURS</span>
         <span class="t-name">COMPLETE · THE FULL MACHINE</span>
         <div class="t-price"><span id="vip-price">$395</span><span class="t-was" id="vip-was">$495</span></div>
-        <span class="t-deadline" id="vip-deadline">$395 until Aug 28 · then $495 until doors close</span>
+        <span class="t-deadline" id="vip-deadline">$395 early-bird price · then $495</span>
         <p class="t-sub">Everything. The system Ajay's content team runs on.</p>
         <ul>
           <li>Everything in Essential</li>
@@ -849,10 +849,11 @@ const CONFIG = {
 })();
 
 /* countdown in sticky bar: early-bird first, then doors-close */
+/* TEMPORARILY DISABLED: static 48hr message instead of countdown */
 (function(){
   const el = document.getElementById('bar-count');
   let timer;
-  function fmt(ms){ const d=Math.floor(ms/86400000), h=Math.floor(ms%86400000/3600000); return d+'D '+h+'H'; }
+  /* function fmt(ms){ const d=Math.floor(ms/86400000), h=Math.floor(ms%86400000/3600000); return d+'D '+h+'H'; }
   function tick(){
     const now = new Date();
     if(now < CONFIG.earlyBirdEnds){
@@ -864,7 +865,7 @@ const CONFIG = {
       clearInterval(timer);
     }
   }
-  tick(); timer = setInterval(tick, 60000);
+  tick(); timer = setInterval(tick, 60000); */
 })();
 
 /* urgent red bar: live countdown + height sync */
@@ -884,7 +885,7 @@ const CONFIG = {
   var timer;
   function setState(s){
     if(state===s) return; state=s;
-    if(s==='early'){ msg.innerHTML='This price never comes back <span class="ub-soft ub-hide-sm">· early-bird ends Aug 28</span>'; }
+    if(s==='early'){ msg.innerHTML='This price never comes back <span class="ub-soft ub-hide-sm">· early-bird special ends in 48 hours</span>'; }
     else if(s==='doors'){ msg.textContent='Doors close Fri Sept 4 · last chance to get in'; }
     else { msg.textContent='Doors closed · next run TBA'; el.style.display='none'; }
     sync();
