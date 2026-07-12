@@ -1,0 +1,643 @@
+<!DOCTYPE html>
+<html lang="en" data-state="early">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Time Rich · AI systems that buy your time back · Ella Molony Cook</title>
+<meta name="description" content="Build the AI system that researches, writes, and runs your content in your voice. Join the AI Content Machine cohort or build your full operating system 1:1 with Ella Molony Cook, AI systems coach.">
+<link rel="canonical" href="https://timerich.ai/newhome/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Time Rich">
+<meta property="og:url" content="https://timerich.ai/newhome/">
+<meta property="og:title" content="Time Rich · AI systems that buy your time back">
+<meta property="og:description" content="Two ways in: build your content machine with the cohort, or build your whole AI operating system 1:1 with Ella Molony Cook.">
+<meta property="og:image" content="https://timerich.ai/og-image.jpg">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32.png">
+<link rel="apple-touch-icon" href="/apple-touch-icon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;500;700;900&family=DM+Serif+Display:ital@1&display=swap" rel="stylesheet">
+<!-- Analytics: paste the real GA4 snippet here once the property exists.
+     The tag on the old home page is a placeholder (G-XXXXXXXXXX) and records nothing. -->
+<style>
+  :root{
+    --ink:#14101A;
+    --panel:#1F1829;
+    --panel-2:#171221;
+    --plum:#4A2E6F;
+    --orchid:#9A6DD7;
+    --violet:#7C3AED;
+    --violet-soft:#A78BFA;
+    --lilac:#EBD1FA;
+    --sand:#F4EEFB;
+    --muted:#A79DB8;
+    --line:rgba(235,209,250,.13);
+    --radius:20px;
+    --wrap:1140px;
+    --ease:cubic-bezier(.22,.61,.36,1);
+    --step-display:clamp(2.4rem,1.3rem + 4.4vw,4.4rem);
+    --step-h2:clamp(1.9rem,1.3rem + 2.6vw,3.1rem);
+    --step-h3:clamp(1.2rem,1.05rem + .7vw,1.5rem);
+    --step-lead:clamp(1.08rem,1rem + .5vw,1.3rem);
+    --step-body:1.04rem;
+    --step-eyebrow:.78rem;
+    --step-stat:clamp(3.4rem,2rem + 7vw,6.4rem);
+    --space:clamp(4.5rem,3rem + 6vw,8rem);
+  }
+  *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+  html{scroll-behavior:smooth}
+  @media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}}
+  body{
+    font-family:'Archivo',-apple-system,BlinkMacSystemFont,'Segoe UI',system-ui,sans-serif;
+    font-size:var(--step-body);
+    line-height:1.68;
+    background:var(--ink);
+    color:var(--sand);
+    -webkit-font-smoothing:antialiased;
+    text-rendering:optimizeLegibility;
+    overflow-x:hidden;
+  }
+  img{max-width:100%;display:block}
+  a{color:var(--lilac);text-decoration:none}
+  a:hover{color:#fff}
+  :focus-visible{outline:2px solid var(--lilac);outline-offset:3px;border-radius:4px}
+  .wrap{max-width:var(--wrap);margin:0 auto;padding:0 clamp(1.25rem,4vw,2.5rem)}
+  .skip{position:absolute;left:-999px;top:0;background:var(--orchid);color:var(--ink);padding:.7rem 1.2rem;z-index:99;font-weight:700}
+  .skip:focus{left:1rem;top:1rem}
+
+  .eyebrow{
+    font-size:var(--step-eyebrow);font-weight:700;letter-spacing:.22em;
+    text-transform:uppercase;color:var(--violet-soft);margin-bottom:1.1rem;
+  }
+  .serif{font-family:'DM Serif Display',Georgia,'Times New Roman',serif;font-style:italic;font-weight:400;color:var(--lilac)}
+  h1,h2{font-weight:900;line-height:1.04;letter-spacing:-.02em;color:var(--sand)}
+  h2{font-size:var(--step-h2);max-width:22ch}
+  .lead{font-size:var(--step-lead);color:var(--muted);max-width:58ch;margin-top:1.4rem}
+  .lead strong{color:var(--sand);font-weight:600}
+
+  /* ---------- buttons ---------- */
+  .btn{
+    display:inline-flex;align-items:center;gap:.5rem;
+    background:var(--orchid);color:var(--ink);
+    font-weight:800;font-size:1rem;letter-spacing:.01em;
+    padding:1rem 1.7rem;border-radius:999px;border:0;cursor:pointer;
+    min-height:48px;
+    transition:transform .18s var(--ease),box-shadow .18s var(--ease),background .18s var(--ease);
+    box-shadow:0 0 0 rgba(154,109,215,0);
+  }
+  .btn:hover{transform:translateY(-2px);box-shadow:0 14px 40px rgba(154,109,215,.35);color:var(--ink);background:#AC85E0}
+  .btn-ghost{
+    display:inline-flex;align-items:center;gap:.5rem;
+    color:var(--lilac);font-weight:600;font-size:1rem;
+    padding:1rem .4rem;min-height:48px;
+    border-bottom:1px solid var(--line);border-radius:0;
+    transition:border-color .18s var(--ease);
+  }
+  .btn-ghost:hover{border-color:var(--lilac);color:#fff}
+
+  /* ---------- nav ---------- */
+  .nav{
+    position:sticky;top:0;z-index:50;
+    background:rgba(20,16,26,.82);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);
+    border-bottom:1px solid var(--line);
+  }
+  .nav-in{display:flex;align-items:center;justify-content:space-between;height:72px}
+  .wordmark{font-weight:900;letter-spacing:.18em;font-size:1rem;color:var(--lilac)}
+  .nav-links{display:flex;align-items:center;gap:1.6rem;list-style:none}
+  .nav-links a{font-size:.92rem;font-weight:600;color:var(--muted)}
+  .nav-links a:hover{color:var(--sand)}
+  .nav .btn{padding:.65rem 1.25rem;min-height:42px;font-size:.92rem}
+  @media (max-width:760px){.nav-links li.hide-m{display:none}}
+
+  /* ---------- hero ---------- */
+  .hero{position:relative;padding:calc(var(--space) * .9) 0 var(--space);overflow:hidden}
+  .hero::before{
+    content:"";position:absolute;inset:-20% -10% auto auto;width:70vw;height:70vw;max-width:900px;max-height:900px;
+    background:radial-gradient(circle at center,rgba(124,58,237,.22),transparent 62%);
+    pointer-events:none;
+  }
+  .hero-grid{display:grid;grid-template-columns:1.15fr .85fr;gap:clamp(2rem,5vw,4.5rem);align-items:center;position:relative}
+  .hero h1{font-size:var(--step-display);max-width:17ch}
+  .hero h1 .serif{font-size:.96em}
+  .hero-ctas{display:flex;flex-wrap:wrap;gap:1.1rem 1.6rem;align-items:center;margin-top:2.2rem}
+  .hero-note{margin-top:1.1rem;font-size:.88rem;color:var(--muted)}
+  .hero-media{position:relative}
+  .hero-media img{
+    width:100%;aspect-ratio:4/5;object-fit:cover;border-radius:var(--radius);
+    filter:saturate(.85) contrast(1.04);
+    -webkit-mask-image:linear-gradient(180deg,#000 78%,transparent 100%);
+    mask-image:linear-gradient(180deg,#000 78%,transparent 100%);
+  }
+  .stat-chip{
+    position:absolute;left:-1.2rem;bottom:1.6rem;
+    background:var(--panel);border:1px solid var(--line);border-radius:16px;
+    padding:1.1rem 1.4rem;max-width:270px;box-shadow:0 30px 80px rgba(0,0,0,.45);
+  }
+  .stat-chip .num{font-size:2.6rem;font-weight:900;color:var(--violet-soft);line-height:1;font-variant-numeric:tabular-nums}
+  .stat-chip p{font-size:.85rem;color:var(--muted);margin-top:.35rem;line-height:1.5}
+  @media (max-width:900px){
+    .hero-grid{grid-template-columns:1fr}
+    .hero-media{max-width:440px}
+    .stat-chip{left:auto;right:-.4rem}
+  }
+
+  /* ---------- trust strip ---------- */
+  .trust{border-top:1px solid var(--line);border-bottom:1px solid var(--line);padding:1.3rem 0}
+  .trust ul{display:flex;flex-wrap:wrap;gap:.8rem 2.4rem;justify-content:center;list-style:none}
+  .trust li{font-size:.82rem;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--muted)}
+  .trust li b{color:var(--violet-soft);font-weight:900}
+
+  /* ---------- sections ---------- */
+  section{padding:var(--space) 0}
+  .panel{background:var(--panel-2)}
+  .cards{display:grid;grid-template-columns:repeat(3,1fr);gap:1.2rem;margin-top:2.6rem}
+  .card{
+    background:var(--panel);border:1px solid var(--line);border-radius:var(--radius);
+    padding:1.8rem 1.6rem;transition:transform .25s var(--ease),border-color .25s var(--ease);
+  }
+  .card:hover{transform:translateY(-4px);border-color:rgba(235,209,250,.3)}
+  .card h3{font-size:var(--step-h3);font-weight:700;color:var(--sand);margin-bottom:.7rem}
+  .card p{font-size:.96rem;color:var(--muted)}
+  @media (max-width:860px){.cards{grid-template-columns:1fr}}
+  .kicker{margin-top:2.4rem;font-size:var(--step-lead);font-weight:700;color:var(--sand)}
+  .kicker .serif{font-size:1.05em}
+
+  /* ---------- pipeline ---------- */
+  .pipeline{display:flex;flex-wrap:wrap;gap:.7rem;align-items:stretch;margin-top:2.6rem}
+  .node{
+    flex:1 1 150px;background:var(--panel);border:1px solid var(--line);border-radius:14px;
+    padding:1rem;text-align:center;position:relative;min-width:140px;
+  }
+  .node .t{font-size:.72rem;font-weight:800;letter-spacing:.16em;text-transform:uppercase;color:var(--violet-soft)}
+  .node .d{font-size:.85rem;color:var(--muted);margin-top:.35rem;line-height:1.45}
+  .node + .node::before{
+    content:"→";position:absolute;left:-.85rem;top:50%;transform:translateY(-50%);
+    color:var(--orchid);font-weight:900;
+  }
+  @media (max-width:700px){
+    .pipeline{flex-direction:column}
+    .node + .node::before{content:"↓";left:50%;top:-1.15rem;transform:translateX(-50%)}
+  }
+  .pipeline-caption{margin-top:1.4rem;font-size:.92rem;color:var(--muted)}
+
+  /* ---------- paths ---------- */
+  .paths{display:grid;grid-template-columns:1fr 1fr;gap:1.4rem;margin-top:2.8rem}
+  @media (max-width:920px){.paths{grid-template-columns:1fr}}
+  .path{
+    background:var(--panel);border:1px solid var(--line);border-radius:var(--radius);
+    padding:2.2rem 2rem;display:flex;flex-direction:column;gap:1.05rem;position:relative;
+  }
+  .path.featured{border-color:rgba(154,109,215,.55);box-shadow:0 30px 90px rgba(124,58,237,.14)}
+  .badge{
+    align-self:flex-start;font-size:.72rem;font-weight:800;letter-spacing:.18em;text-transform:uppercase;
+    color:var(--ink);background:var(--lilac);border-radius:999px;padding:.38rem .9rem;
+  }
+  .badge.alt{background:transparent;color:var(--violet-soft);border:1px solid rgba(167,139,250,.5)}
+  .path h3{font-size:clamp(1.45rem,1.2rem + 1.2vw,1.9rem);font-weight:900;letter-spacing:-.01em}
+  .path .sub{font-size:.95rem;font-weight:700;color:var(--violet-soft)}
+  .path p{color:var(--muted);font-size:.98rem}
+  .price-row{display:flex;align-items:baseline;gap:.7rem;flex-wrap:wrap;border-top:1px solid var(--line);padding-top:1.05rem}
+  .price-row .p{font-size:1.7rem;font-weight:900;color:var(--violet-soft);font-variant-numeric:tabular-nums}
+  .price-row .l{font-size:.9rem;color:var(--muted)}
+  .fine{font-size:.85rem;color:var(--muted)}
+  .fine b{color:var(--sand);font-weight:700}
+  .path .btn,.path .btn-ghost{align-self:flex-start;margin-top:.4rem}
+  .teacher{display:flex;align-items:center;gap:.85rem;border-top:1px solid var(--line);padding-top:1.05rem}
+  .teacher img{width:44px;height:44px;border-radius:50%;object-fit:cover}
+  .teacher p{font-size:.85rem;line-height:1.5}
+  .rubric{
+    margin-top:1.6rem;border:1px dashed rgba(235,209,250,.25);border-radius:16px;
+    padding:1.3rem 1.5rem;font-size:.98rem;color:var(--muted);
+  }
+  .rubric b{color:var(--sand)}
+
+  /* ---------- founder ---------- */
+  .founder-grid{display:grid;grid-template-columns:.8fr 1.2fr;gap:clamp(2rem,5vw,4rem);align-items:center}
+  @media (max-width:860px){.founder-grid{grid-template-columns:1fr}}
+  .founder-grid img{aspect-ratio:4/5;object-fit:cover;border-radius:var(--radius);max-width:420px;width:100%}
+  .founder-grid .body p{color:var(--muted);margin-top:1.1rem;max-width:56ch}
+  .founder-grid .body p b{color:var(--sand);font-weight:700}
+
+  /* ---------- proof ---------- */
+  .proof-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:1.2rem;margin-top:2.6rem}
+  @media (max-width:860px){.proof-grid{grid-template-columns:1fr}}
+  .proof{
+    background:var(--panel);border:1px solid var(--line);border-radius:var(--radius);padding:2rem 1.6rem;
+  }
+  .proof .num{font-size:var(--step-stat);font-weight:900;color:var(--violet-soft);line-height:1;letter-spacing:-.03em;font-variant-numeric:tabular-nums}
+  .proof p{font-size:.94rem;color:var(--muted);margin-top:.8rem}
+  .proof-note{margin-top:2rem;font-size:.98rem;color:var(--muted);max-width:62ch}
+  .proof-note b{color:var(--sand)}
+  .room-photo{margin-top:2.6rem}
+  .room-photo img{width:100%;aspect-ratio:21/9;object-fit:cover;border-radius:var(--radius);filter:saturate(.9)}
+  .room-photo figcaption{font-size:.82rem;color:var(--muted);margin-top:.7rem}
+
+  /* ---------- funnel hook ---------- */
+  .hook{border-top:1px solid var(--line)}
+  .hook-in{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:1.6rem}
+  .hook-in > div{max-width:640px}
+  .hook .lead{margin-top:.9rem}
+
+  /* ---------- faq ---------- */
+  .faq{max-width:760px;margin:2.4rem auto 0}
+  details{border-bottom:1px solid var(--line)}
+  summary{
+    cursor:pointer;list-style:none;display:flex;justify-content:space-between;align-items:center;gap:1rem;
+    padding:1.25rem 0;font-weight:700;font-size:1.05rem;color:var(--sand);min-height:48px;
+  }
+  summary::-webkit-details-marker{display:none}
+  summary::after{content:"+";font-size:1.5rem;font-weight:400;color:var(--orchid);transition:transform .2s var(--ease)}
+  details[open] summary::after{transform:rotate(45deg)}
+  details p{padding:0 0 1.35rem;color:var(--muted);max-width:60ch}
+
+  /* ---------- final ---------- */
+  .final{text-align:center;position:relative;overflow:hidden}
+  .final::before{
+    content:"";position:absolute;left:50%;bottom:-40%;transform:translateX(-50%);
+    width:80vw;height:60vw;max-width:1000px;
+    background:radial-gradient(circle,rgba(124,58,237,.18),transparent 65%);pointer-events:none;
+  }
+  .final h2{margin:0 auto;max-width:18ch}
+  .final .lead{margin:1.4rem auto 0}
+  .final-ctas{display:flex;flex-wrap:wrap;gap:1.1rem 1.6rem;justify-content:center;align-items:center;margin-top:2.4rem;position:relative}
+  .final .fine{margin-top:1.3rem}
+
+  /* ---------- footer ---------- */
+  footer{border-top:1px solid var(--line);padding:3rem 0 3.4rem;font-size:.88rem;color:var(--muted)}
+  .foot{display:flex;flex-wrap:wrap;gap:1.4rem 3rem;justify-content:space-between;align-items:flex-start}
+  .foot ul{list-style:none;display:flex;flex-wrap:wrap;gap:.4rem 1.6rem}
+  .foot a{color:var(--muted)}
+  .foot a:hover{color:var(--sand)}
+  .foot .legal{margin-top:1.2rem;font-size:.8rem}
+
+  /* ---------- state machine ---------- */
+  [data-state="closed"] .only-open{display:none !important}
+  [data-state="early"] .only-closed,[data-state="standard"] .only-closed{display:none !important}
+  [data-state="standard"] .only-early,[data-state="closed"] .only-early{display:none !important}
+
+  /* ---------- reveal motion ---------- */
+  .reveal{opacity:0;transform:translateY(22px);transition:opacity .7s var(--ease),transform .7s var(--ease)}
+  .reveal.in{opacity:1;transform:none}
+  @media (prefers-reduced-motion:reduce){
+    .reveal{opacity:1;transform:none;transition:none}
+    .btn,.card,.path{transition:none}
+  }
+</style>
+</head>
+<body>
+<a class="skip" href="#main">Skip to content</a>
+
+<nav class="nav" aria-label="Main">
+  <div class="wrap nav-in">
+    <a class="wordmark" href="/">TIME RICH</a>
+    <ul class="nav-links">
+      <li class="hide-m"><a href="/contentmachine">The Content Machine</a></li>
+      <li class="hide-m"><a href="/coaching">1:1 Coaching</a></li>
+      <li class="hide-m"><a href="/">The Club</a></li>
+      <li><a class="btn only-open" href="/contentmachine">Start the Content Machine</a>
+          <a class="btn only-closed" href="/coaching">Apply for 1:1 coaching</a></li>
+    </ul>
+  </div>
+</nav>
+
+<main id="main">
+
+  <!-- ============ HERO ============ -->
+  <header class="hero">
+    <div class="wrap hero-grid">
+      <div>
+        <p class="eyebrow reveal">Ella Molony Cook · AI systems coach · 4x founder, 1 exit</p>
+        <h1 class="reveal">Stop renting your <span class="serif">time</span> to a business you own.</h1>
+        <p class="lead reveal">AI can research, write, and run your admin in your voice, once someone sets it up right. That is my job. <strong>Two ways in:</strong> build your content machine alongside the cohort, or build your whole operating system with me, one to one.</p>
+        <div class="hero-ctas reveal">
+          <a class="btn only-open" href="/contentmachine">Start the Content Machine →</a>
+          <a class="btn only-closed" href="/coaching">Apply for 1:1 coaching →</a>
+          <a class="btn-ghost only-open" href="/coaching">Work with me 1:1 →</a>
+          <a class="btn-ghost only-closed" href="mailto:emc@timerich.ai?subject=Next%20Content%20Machine%20cohort">Get first in line for the next cohort →</a>
+        </div>
+        <p class="hero-note reveal only-open" data-doors>Doors close Friday, September 4. Day 1 is Monday, September 7.</p>
+        <p class="hero-note reveal only-closed">Cohort enrollment is closed. The 1:1 runs year round, four spots at a time.</p>
+      </div>
+      <div class="hero-media reveal">
+        <img src="/branding/ella-editorial.jpg" alt="Ella Molony Cook, AI systems coach" width="760" height="950" fetchpriority="high">
+        <div class="stat-chip">
+          <div class="num">25%</div>
+          <p>Women are adopting AI 25% less than men. Time Rich exists to close that gap.</p>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- ============ TRUST STRIP ============ -->
+  <div class="trust" role="presentation">
+    <div class="wrap">
+      <ul>
+        <li>AI systems coach</li>
+        <li><b>4x</b> founder · <b>1</b> exit</li>
+        <li>Early AI investor</li>
+        <li><b>200+</b> founders in the room</li>
+        <li><b>250+</b> events · <b>7</b> cities</li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- ============ PROBLEM ============ -->
+  <section aria-labelledby="problem-h">
+    <div class="wrap">
+      <p class="eyebrow reveal">The week you keep having</p>
+      <h2 id="problem-h" class="reveal">You did not start a company to spend Thursday reformatting a caption.</h2>
+      <div class="cards">
+        <div class="card reveal">
+          <h3>The blank doc</h3>
+          <p>Monday: you open the doc, type a hook, delete it, and answer email instead. The post ships Thursday. Or never.</p>
+        </div>
+        <div class="card reveal">
+          <h3>The prompt spiral</h3>
+          <p>You rewrote the same prompt four times and still got robot copy. So you wrote the post yourself, again, at 11pm.</p>
+        </div>
+        <div class="card reveal">
+          <h3>The one-woman show</h3>
+          <p>Research, writing, design, posting, replies. Five jobs you do every week before your actual job starts.</p>
+        </div>
+      </div>
+      <p class="kicker reveal">None of this is a discipline problem. It is a <span class="serif">systems</span> problem.</p>
+    </div>
+  </section>
+
+  <!-- ============ MECHANISM ============ -->
+  <section class="panel" aria-labelledby="mech-h">
+    <div class="wrap">
+      <p class="eyebrow reveal">What I actually do</p>
+      <h2 id="mech-h" class="reveal">Context beats prompts. That is the whole trick.</h2>
+      <p class="lead reveal">Everyone is out there collecting prompts. Prompts are rented: fine output today, stranger tomorrow. I set up systems you own. We load an AI with your context: who you are, how you talk, what you sell, what you would never say. Then we wire agents on top. One researches. One drafts. One repurposes. <strong>You stop operating and start approving.</strong></p>
+      <div class="pipeline reveal" role="img" aria-label="Pipeline: your context feeds the brain, which feeds a research agent, a writing engine, and finally your channels">
+        <div class="node"><div class="t">Your context</div><div class="d">Voice, offer, audience, boundaries</div></div>
+        <div class="node"><div class="t">The brain</div><div class="d">One source of truth every agent reads</div></div>
+        <div class="node"><div class="t">Research agent</div><div class="d">Reads what is winning now, briefs you</div></div>
+        <div class="node"><div class="t">Writing engine</div><div class="d">Drafts in your voice, not robot voice</div></div>
+        <div class="node"><div class="t">Your channels</div><div class="d">One idea becomes a week of content</div></div>
+      </div>
+      <p class="pipeline-caption reveal">Built once. Runs every week. Yours, on whatever AI assistant you already pay for.</p>
+    </div>
+  </section>
+
+  <!-- ============ TWO PATHS ============ -->
+  <section id="paths" aria-labelledby="paths-h">
+    <div class="wrap">
+      <p class="eyebrow reveal">Two ways in</p>
+      <h2 id="paths-h" class="reveal">Same system. Two ways to <span class="serif">build</span> it.</h2>
+      <p class="lead reveal">Both end with agents running your content in your voice. The difference is who is in the room while you build.</p>
+
+      <div class="paths">
+        <!-- Path A: cohort -->
+        <article class="path featured reveal" aria-labelledby="path-a">
+          <span class="badge only-open" data-badge>Doors close Sept 4</span>
+          <span class="badge only-closed">Next cohort TBA</span>
+          <h3 id="path-a">The AI Content Machine</h3>
+          <p class="sub">Build it with the cohort. 40 days, part live, part on demand.</p>
+          <p>The agent system Ajay Yadav used to grow from 10K to 400K followers in four months, taught step by step. You leave with the research agent, the writing engine, and the pipeline that turns one idea into a week of content.</p>
+          <div class="teacher">
+            <img src="/branding/ajay.jpg" alt="Ajay Yadav" width="44" height="44" loading="lazy">
+            <p>Co-taught with Ajay Yadav. His last company passed 20M+ users, backed by Khosla and Craft.</p>
+          </div>
+          <div class="price-row only-open">
+            <span class="p" data-price-essential>$197</span>
+            <span class="l" data-price-label>Essential · rises to $297 after Aug 28</span>
+          </div>
+          <div class="price-row only-open">
+            <span class="p" data-price-full>$297</span>
+            <span class="l" data-price-full-label>Full Machine · rises to $495 after Aug 28</span>
+          </div>
+          <div class="price-row only-closed">
+            <span class="l">Enrollment is closed. Join the list and you hear first when doors open.</span>
+          </div>
+          <p class="fine only-open"><b>14-day refund.</b> If it is not for you, email us within 14 days and the money comes back.</p>
+          <p class="fine only-open" data-day1>Day 1: Monday, September 7. Two live calls with Ella and Ajay.</p>
+          <a class="btn only-open" href="/contentmachine">See the Content Machine →</a>
+          <a class="btn-ghost only-closed" href="mailto:emc@timerich.ai?subject=Next%20Content%20Machine%20cohort">Get first in line →</a>
+        </article>
+
+        <!-- Path B: 1:1 -->
+        <article class="path reveal" aria-labelledby="path-b">
+          <span class="badge alt">4 spots · application only</span>
+          <h3 id="path-b">1:1 AI System Coaching</h3>
+          <p class="sub">Build it with Ella. Six or twelve weeks, one to one.</p>
+          <p>We build your AI operating system together on weekly calls: your content engine first, then research, inbox, and the admin you never want to touch again. Custom to your business. Yours to keep when we are done.</p>
+          <div class="price-row">
+            <span class="p">$4,950</span>
+            <span class="l">6 weeks · your content engine, owned</span>
+          </div>
+          <div class="price-row">
+            <span class="p">$14,950</span>
+            <span class="l">12 weeks · your full operating system</span>
+          </div>
+          <p class="fine">Includes everything in the Content Machine. <b>You apply before you pay.</b> I read every application, and I will tell you if it is a no.</p>
+          <a class="btn-ghost only-open" href="/coaching">Apply for 1:1 coaching →</a>
+          <a class="btn only-closed" href="/coaching">Apply for 1:1 coaching →</a>
+        </article>
+      </div>
+
+      <p class="rubric reveal"><b>Not sure which is yours?</b> If you want the skill, join the cohort. If you want the system installed with you, week by week, apply for the 1:1. The 1:1 already includes the full cohort, so you never pay for both.</p>
+    </div>
+  </section>
+
+  <!-- ============ FOUNDER ============ -->
+  <section class="panel" aria-labelledby="founder-h">
+    <div class="wrap founder-grid">
+      <img src="/branding/ella.jpg" alt="Ella Molony Cook" width="820" height="1230" loading="lazy" class="reveal">
+      <div class="body">
+        <p class="eyebrow reveal">Who is teaching</p>
+        <h2 id="founder-h" class="reveal">I am dyslexic. My brain refuses admin. So I built agents that do it.</h2>
+        <p class="reveal">AI did not level the playing field for me. It tilted the field in my favour, and that is exactly what I teach.</p>
+        <p class="reveal">Four companies, one exit, no playbook and no MBA. I spent ten years doing every job in the building before I made AI do the ones I hate. Now I coach founders to build the same systems, and <b>I run my own business on them</b>. When one of my agents breaks, you see it break in the community first. Every win and every failure is a teaching moment. That is the deal.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ PROOF ============ -->
+  <section aria-labelledby="proof-h">
+    <div class="wrap">
+      <p class="eyebrow reveal">Receipts, not vibes</p>
+      <h2 id="proof-h" class="reveal">Judge the numbers, then decide.</h2>
+      <div class="proof-grid">
+        <div class="proof reveal">
+          <div class="num" data-count="400" data-suffix="K">400K</div>
+          <p>Ajay's follower count four months after moving his content onto the machine. It started at 10K.</p>
+        </div>
+        <div class="proof reveal">
+          <div class="num" data-count="250" data-suffix="+">250+</div>
+          <p>Events run with the Time Rich community across 7 cities. Real rooms, real founders.</p>
+        </div>
+        <div class="proof reveal">
+          <div class="num" data-count="200" data-suffix="+">200+</div>
+          <p>Founders, investors and operators inside. Application-based on purpose: the quality of the room is the point.</p>
+        </div>
+      </div>
+      <p class="proof-note reveal">You will not find a testimonial wall here. The machine is new and I would rather show you the system than dress up borrowed quotes. <b>The receipts above are checkable.</b> The rest you can judge on a call, or from inside the cohort with the 14-day refund in your pocket.</p>
+      <figure class="room-photo reveal">
+        <img src="/Images/web/dinner-63.jpg" alt="Ella teaching an AI systems session at a Time Rich dinner" loading="lazy">
+        <figcaption>A Time Rich session in New York. The room is the other half of the product.</figcaption>
+      </figure>
+    </div>
+  </section>
+
+  <!-- ============ FUNNEL HOOK (free reading) ============ -->
+  <section class="hook" aria-labelledby="hook-h">
+    <div class="wrap hook-in">
+      <div>
+        <p class="eyebrow reveal">Start free</p>
+        <h2 id="hook-h" class="reveal">There are forty AI tools and you are using one of them <span class="serif">badly</span>.</h2>
+        <p class="lead reveal">Two minutes, seven questions. Find out which AI team you should be running and how many hours a week it would hand back.</p>
+      </div>
+      <a class="btn reveal" href="/stack/">Find my stack →</a>
+    </div>
+  </section>
+
+  <!-- ============ FAQ ============ -->
+  <section class="panel" aria-labelledby="faq-h">
+    <div class="wrap">
+      <p class="eyebrow reveal">Asked and answered</p>
+      <h2 id="faq-h" class="reveal">The honest answers.</h2>
+      <div class="faq reveal">
+        <details>
+          <summary>Do I need to be technical?</summary>
+          <p>No. If you can write an email you can do this. Everything is watch-then-build, and on the 1:1 track I set it up with you, on your accounts, in your tools.</p>
+        </details>
+        <details>
+          <summary>Which AI tool does this run on?</summary>
+          <p>Whichever assistant you already use. The system is context plus agents, not a subscription to one vendor. You plug it into the tool you already pay for, and it moves with you if you switch.</p>
+        </details>
+        <details>
+          <summary>Cohort or 1:1: what is the real difference?</summary>
+          <p>The cohort teaches you to build the content machine over 40 days with the group. The 1:1 is me in the room every week, building your whole operating system with you, custom to your business. The 1:1 includes the full cohort.</p>
+        </details>
+        <details>
+          <summary>How much time does it take?</summary>
+          <p>The cohort runs on demand plus two live calls; most builders put in a few focused hours a week. The 1:1 is one call a week plus the build we do inside it. Both are designed around a founder's calendar, not a student's.</p>
+        </details>
+        <details>
+          <summary>What if it is not for me?</summary>
+          <p>The Content Machine has a 14-day refund: email emc@timerich.ai within 14 days of purchase and you get your money back. Coaching starts with an application and a conversation, so we both decide before any money moves.</p>
+        </details>
+        <details>
+          <summary>When does it start?</summary>
+          <p class="only-open" data-faq-when>Doors close Friday, September 4. Day 1 is Monday, September 7. The 1:1 starts when you do: four spots at a time, year round.</p>
+          <p class="only-closed">The next cohort date is not announced yet. Email us and you hear first. The 1:1 runs year round, four spots at a time.</p>
+        </details>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ FINAL CTA ============ -->
+  <section class="final" aria-labelledby="final-h">
+    <div class="wrap">
+      <p class="eyebrow reveal">Set it up once</p>
+      <h2 id="final-h" class="reveal">Keep the business. <span class="serif">Buy back</span> the time.</h2>
+      <p class="lead reveal only-open">Doors close Friday, September 4. After that the machine builds without you until the next run.</p>
+      <p class="lead reveal only-closed">Cohort doors are closed for now. The 1:1 is open: four spots, application first, money later.</p>
+      <div class="final-ctas reveal">
+        <a class="btn only-open" href="/contentmachine">Start the Content Machine →</a>
+        <a class="btn only-closed" href="/coaching">Apply for 1:1 coaching →</a>
+        <a class="btn-ghost only-open" href="/coaching">Apply for 1:1 coaching →</a>
+        <a class="btn-ghost only-closed" href="mailto:emc@timerich.ai?subject=Next%20Content%20Machine%20cohort">Get first in line for the next cohort →</a>
+      </div>
+      <p class="fine reveal only-open">From $197 · 14-day refund · built in your voice, on your tools</p>
+      <p class="fine reveal only-closed">$4,950 for 6 weeks · $14,950 for 12 · includes the full Content Machine</p>
+    </div>
+  </section>
+</main>
+
+<footer>
+  <div class="wrap foot">
+    <div>
+      <p class="wordmark">TIME RICH</p>
+      <p class="legal">Growth Haus LLC, trading as Time Rich.<br>Questions: <a href="mailto:emc@timerich.ai">emc@timerich.ai</a></p>
+    </div>
+    <ul>
+      <li><a href="/">The Club</a></li>
+      <li><a href="/contentmachine">The Content Machine</a></li>
+      <li><a href="/coaching">1:1 Coaching</a></li>
+      <li><a href="/portal">Member Portal</a></li>
+      <li><a href="/challenge/terms.html">Terms</a></li>
+      <li><a href="/challenge/privacy.html">Privacy</a></li>
+      <li><a href="https://www.instagram.com/timerich.ai" rel="noopener">Instagram</a></li>
+      <li><a href="https://www.linkedin.com/in/ellamolonycook/" rel="noopener">LinkedIn</a></li>
+    </ul>
+  </div>
+</footer>
+
+<script>
+/* ---------- offer state machine ----------
+   Single source of volatile facts. The page reads state at load and
+   renders the honest version of itself, so it never needs a manual edit.
+   early    -> until Aug 28 2026 (early-bird prices)
+   standard -> Aug 29 to Sept 4 2026 (full launch prices)
+   closed   -> after doors close (waitlist + 1:1 primary)              */
+(function () {
+  var OFFER = {
+    earlyBirdEnds: new Date('2026-08-29T00:00:00+01:00'),
+    doorsClose:    new Date('2026-09-05T00:00:00+01:00'),
+    prices: { essential: [197, 297], full: [297, 495] }
+  };
+  var now = new Date();
+  var state = now < OFFER.earlyBirdEnds ? 'early' : (now < OFFER.doorsClose ? 'standard' : 'closed');
+  document.documentElement.setAttribute('data-state', state);
+
+  if (state === 'standard') {
+    var e = document.querySelector('[data-price-essential]');
+    var el = document.querySelector('[data-price-label]');
+    var f = document.querySelector('[data-price-full]');
+    var fl = document.querySelector('[data-price-full-label]');
+    if (e)  e.textContent  = '$297';
+    if (el) el.textContent = 'Essential · until doors close Sept 4';
+    if (f)  f.textContent  = '$495';
+    if (fl) fl.textContent = 'Full Machine · until doors close Sept 4';
+    var b = document.querySelector('[data-badge]');
+    if (b) b.textContent = 'Doors close Sept 4';
+  }
+
+  /* count-up on stat numbers */
+  var reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  var nums = document.querySelectorAll('[data-count]');
+  function animate(el) {
+    var target = parseInt(el.getAttribute('data-count'), 10);
+    var suffix = el.getAttribute('data-suffix') || '';
+    var t0 = null, dur = 1100;
+    function step(ts) {
+      if (!t0) t0 = ts;
+      var p = Math.min((ts - t0) / dur, 1);
+      var eased = 1 - Math.pow(1 - p, 3);
+      el.textContent = Math.round(target * eased) + suffix;
+      if (p < 1) requestAnimationFrame(step);
+    }
+    requestAnimationFrame(step);
+  }
+
+  /* reveal on scroll */
+  var reveals = document.querySelectorAll('.reveal');
+  if ('IntersectionObserver' in window && !reduce) {
+    var seen = new WeakSet();
+    var io = new IntersectionObserver(function (entries) {
+      entries.forEach(function (en) {
+        if (en.isIntersecting) {
+          en.target.classList.add('in');
+          en.target.querySelectorAll('[data-count]').forEach(function (n) {
+            if (!seen.has(n)) { seen.add(n); animate(n); }
+          });
+          if (en.target.hasAttribute('data-count') && !seen.has(en.target)) {
+            seen.add(en.target); animate(en.target);
+          }
+          io.unobserve(en.target);
+        }
+      });
+    }, { threshold: 0.14 });
+    reveals.forEach(function (r) { io.observe(r); });
+    nums.forEach(function (n) { if (!n.closest('.reveal')) io.observe(n); });
+  } else {
+    reveals.forEach(function (r) { r.classList.add('in'); });
+  }
+})();
+</script>
+</body>
+</html>
