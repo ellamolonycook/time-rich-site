@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Apply — 1:1 AI System+ Coaching with Ella Molony Cook</title>
+  <meta name="robots" content="noindex, nofollow" />
+  <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32.png" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;700&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet" />
+  <style>
+    :root{
+      --bg:#0B0B10;--panel:#14141C;--panel2:#181822;
+      --line:rgba(255,255,255,.09);
+      --text:#F2F2F4;--muted:#A2A2B0;--dim:#6E6E7C;
+      --lime:#D4FF4F;--lime-dim:rgba(212,255,79,.12);
+      --display:'Space Grotesk',system-ui,-apple-system,sans-serif;
+      --mono:'JetBrains Mono',ui-monospace,SFMono-Regular,monospace;
+      --body:'Inter',system-ui,-apple-system,sans-serif;
+    }
+    *{margin:0;padding:0;box-sizing:border-box}
+    body{font-family:var(--body);color:var(--text);background:var(--bg);line-height:1.6;-webkit-font-smoothing:antialiased}
+    ::selection{background:var(--lime);color:#0B0B10}
+    h1,h2,h3{font-family:var(--display);color:var(--text);letter-spacing:-.02em;line-height:1.1;font-weight:700}
+    .wrap{max-width:660px;margin:0 auto;padding:48px 22px 80px}
+    .eyebrow{font-family:var(--mono);font-weight:600;font-size:12px;letter-spacing:.16em;text-transform:uppercase;color:var(--lime);margin-bottom:16px}
+    h1{font-size:clamp(28px,5.4vw,38px);margin:6px 0 12px}
+    .lede{font-size:17px;color:var(--muted);margin-bottom:8px}
+    .muted{color:var(--dim);font-size:14px}
+    a{color:var(--lime)}
+
+    /* pricing tiers */
+    .tiers{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-top:26px}
+    @media(max-width:560px){.tiers{grid-template-columns:1fr}}
+    .tier{background:var(--panel);border:1px solid var(--line);border-radius:16px;padding:22px 22px 24px}
+    .tier .tname{font-family:var(--mono);font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--muted)}
+    .tier .tprice{font-family:var(--display);font-size:30px;font-weight:700;letter-spacing:-.02em;color:var(--lime);margin:8px 0 10px}
+    .tier p{font-size:13.5px;color:var(--muted);line-height:1.5}
+    .scarcity{margin-top:22px;font-family:var(--display);font-weight:600;font-size:19px;line-height:1.35;color:var(--text)}
+    .scarcity b{color:var(--lime);font-weight:700}
+
+    form{background:var(--panel);border:1px solid var(--line);border-radius:20px;padding:30px;margin-top:22px}
+    label{display:block;font-family:var(--display);font-weight:700;color:var(--text);font-size:14px;margin:22px 0 7px}
+    label:first-child{margin-top:0}
+    .req{color:var(--lime)}
+    .multi{font-family:var(--body);font-weight:500;font-size:12px;color:var(--dim);text-transform:none;letter-spacing:0}
+    input,select,textarea{width:100%;font-family:var(--body);font-size:15px;color:var(--text);padding:13px 14px;border:1px solid var(--line);border-radius:12px;background:var(--panel2)}
+    input::placeholder,textarea::placeholder{color:var(--dim)}
+    input:focus,select:focus,textarea:focus{outline:none;border-color:var(--lime);box-shadow:0 0 0 3px rgba(212,255,79,.15)}
+    textarea{min-height:92px;resize:vertical}
+    .hint{font-size:12px;color:var(--dim);margin-top:5px}
+    /* checkbox chip groups */
+    .checks{display:flex;flex-wrap:wrap;gap:8px;margin-top:2px}
+    .checks label{display:inline-flex;align-items:center;gap:8px;margin:0;padding:9px 13px;border:1px solid var(--line);border-radius:12px;background:var(--panel2);font-family:var(--body);font-weight:500;font-size:14px;color:var(--text);cursor:pointer}
+    .checks label:hover{border-color:var(--lime)}
+    .checks input{width:auto;margin:0;accent-color:var(--lime)}
+    .checks input:checked+span{color:var(--lime);font-weight:600}
+    .btn{display:block;width:100%;margin-top:30px;background:var(--lime);color:#0B0B10;font-family:var(--display);font-weight:700;font-size:16px;padding:16px;border:none;border-radius:30px;cursor:pointer;transition:transform .15s ease}
+    .btn:hover{transform:translateY(-2px)}
+    .next{background:var(--panel);border:1px solid var(--line);border-radius:16px;padding:20px 22px;margin-top:22px;font-size:14px;color:var(--muted)}
+    .next b{color:var(--lime);font-family:var(--display)}
+    .state{display:none;background:var(--panel);border:1px solid var(--line);border-radius:20px;padding:34px;margin-top:26px;text-align:center}
+    .state h2{font-size:24px;margin-bottom:10px}
+    a:focus-visible,button:focus-visible,input:focus-visible{outline:2px solid var(--lime);outline-offset:2px}
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <div class="eyebrow">1:1 AI System+ Coaching · with Ella Molony Cook</div>
+    <h1>Build your AI operating system, one to one with Ella.</h1>
+    <p class="lede">Multi-week programs to design and ship your agent operating system with Ella directly.</p>
+    <p class="muted">Quick intake to qualify for 1:1 coaching. Takes 5 minutes. This is an application, not a checkout — Ella reviews every one and comes back to you personally.</p>
+
+    <!-- Pricing tiers: informational. Both tiers route to the same application below. -->
+    <div class="tiers">
+      <div class="tier">
+        <div class="tname">6-Week · AI System+ Coaching</div>
+        <div class="tprice">$4,950</div>
+        <p>Six weeks, one to one, building and shipping the core agents that take your highest-cost busywork off your plate for good - the full AI Content Machine program included.</p>
+      </div>
+      <div class="tier">
+        <div class="tname">12-Week · COO AI Coaching</div>
+        <div class="tprice">$14,950</div>
+        <p>Twelve weeks to wire your content, ops and research into one COO-level system you fully own and run without us - the full AI Content Machine program included.</p>
+      </div>
+    </div>
+    <p class="scarcity"><b>Only 4 spots available.</b> Don't sleep on this if you want to SUPERCHARGE your AI system + strategy.</p>
+
+    <!-- Form POSTs JSON to the shared "time-rich-forms" Cloudflare Worker at its /coaching route,
+         which writes a row into the Notion "AI Coaching Intake Form" database. -->
+    <form id="coach-form" action="https://time-rich-forms.timerich.workers.dev/coaching" method="POST">
+      <label>First name <span class="req">*</span></label>
+      <input type="text" name="first_name" required />
+
+      <label>Email <span class="req">*</span></label>
+      <input type="email" name="email" required />
+
+      <label>Role <span class="multi">— select as many as apply</span></label>
+      <div class="checks">
+        <label><input type="checkbox" name="role" value="Multi-founder" /><span>Multi-founder</span></label>
+        <label><input type="checkbox" name="role" value="Exited founder" /><span>Exited founder</span></label>
+        <label><input type="checkbox" name="role" value="First-time founder" /><span>First-time founder</span></label>
+        <label><input type="checkbox" name="role" value="Starting a company" /><span>Starting a company</span></label>
+        <label><input type="checkbox" name="role" value="Investor" /><span>Investor</span></label>
+        <label><input type="checkbox" name="role" value="Creator" /><span>Creator</span></label>
+        <label><input type="checkbox" name="role" value="Team Leader" /><span>Team Leader</span></label>
+        <label><input type="checkbox" name="role" value="Coach" /><span>Coach</span></label>
+      </div>
+
+      <label>How many people on your team?</label>
+      <input type="text" name="team_size" placeholder="e.g. just me, 5, 20+" />
+
+      <label>LinkedIn profile</label>
+      <input type="url" name="linkedin" placeholder="https://linkedin.com/in/…" />
+
+      <label>Where are you at with AI? <span class="multi">— select as many as apply</span></label>
+      <div class="checks">
+        <label><input type="checkbox" name="ai_stage" value="Haven't started" /><span>Haven't started</span></label>
+        <label><input type="checkbox" name="ai_stage" value="Experimenting" /><span>Experimenting</span></label>
+        <label><input type="checkbox" name="ai_stage" value="Using daily" /><span>Using daily</span></label>
+        <label><input type="checkbox" name="ai_stage" value="Building systems" /><span>Building systems</span></label>
+        <label><input type="checkbox" name="ai_stage" value="Using AI at the code level" /><span>Using AI at the code level</span></label>
+        <label><input type="checkbox" name="ai_stage" value="Running multiple agents" /><span>Running multiple agents</span></label>
+        <label><input type="checkbox" name="ai_stage" value="Running scheduled / autonomous agent tasks" /><span>Running scheduled / autonomous agent tasks</span></label>
+      </div>
+
+      <label>What's costing you the most time right now that AI should be doing? <span class="req">*</span></label>
+      <textarea name="time_drain" required></textarea>
+
+      <label>What's holding you back? <span class="multi">— select as many as apply</span></label>
+      <div class="checks">
+        <label><input type="checkbox" name="blockers" value="Cost" /><span>Cost</span></label>
+        <label><input type="checkbox" name="blockers" value="Time" /><span>Time</span></label>
+        <label><input type="checkbox" name="blockers" value="Knowledge" /><span>Knowledge</span></label>
+        <label><input type="checkbox" name="blockers" value="Integration" /><span>Integration</span></label>
+        <label><input type="checkbox" name="blockers" value="Team buy-in" /><span>Team buy-in</span></label>
+        <label><input type="checkbox" name="blockers" value="Other" /><span>Other</span></label>
+      </div>
+
+      <label>What's the ONE thing AI could do that would change your business? <span class="req">*</span></label>
+      <textarea name="one_thing" required></textarea>
+
+      <label>What is the cost of you not implementing AI?</label>
+      <textarea name="cost_of_inaction"></textarea>
+
+      <label>Why do you want to work with Ella? <span class="req">*</span></label>
+      <textarea name="why_ella" required></textarea>
+
+      <label>When do you want to start?</label>
+      <input type="date" name="start_when" />
+
+      <button type="submit" class="btn">Apply for 1:1 coaching →</button>
+    </form>
+
+    <div class="next">
+      <b>What happens next</b><br />
+      Ella reads every application herself. If it's a fit, she'll come back to you personally with next steps and a time to talk. If the timing isn't right yet, she'll point you to the best place to start.
+    </div>
+
+    <!-- Optional states your automation can reveal after review. Hidden by default. -->
+    <div class="state" id="approved">
+      <div class="eyebrow">You're a fit</div>
+      <h2>Let's talk.</h2>
+      <p class="muted">Grab a time with Ella and come ready to talk through what you want built.</p>
+      <a href="[ELLA_CALENDAR_LINK]" class="btn" style="text-decoration:none">Book your call →</a>
+    </div>
+    <div class="state" id="declined">
+      <div class="eyebrow">Not right now</div>
+      <h2>Start with the machine.</h2>
+      <p class="muted">1:1 coaching isn't the right fit yet — the AI Content Machine is exactly where to start, and the door to coaching stays open.</p>
+      <a href="/contentmachine/" class="btn" style="text-decoration:none">See the challenge →</a>
+    </div>
+
+    <div class="state" id="submitted">
+      <div class="eyebrow">Application received</div>
+      <h2>Thank you — you're in the queue.</h2>
+      <p class="muted">Ella reads every application herself and will come back to you personally. Keep an eye on your inbox.</p>
+    </div>
+  </div>
+
+  <script>
+    (function () {
+      var form = document.getElementById('coach-form');
+      if (!form) return;
+      var val = function (n) { var el = form.querySelector('[name="' + n + '"]'); return el ? el.value : ''; };
+      var multi = function (n) {
+        return Array.prototype.slice.call(form.querySelectorAll('[name="' + n + '"]:checked')).map(function (el) { return el.value; });
+      };
+      form.addEventListener('submit', function (e) {
+        e.preventDefault();
+        var payload = {
+          first_name: val('first_name'), email: val('email'), role: multi('role'),
+          team_size: val('team_size'), linkedin: val('linkedin'), ai_stage: multi('ai_stage'),
+          time_drain: val('time_drain'), blockers: multi('blockers'), one_thing: val('one_thing'),
+          cost_of_inaction: val('cost_of_inaction'),
+          why_ella: val('why_ella'), start_when: val('start_when')
+        };
+        var btn = form.querySelector('button[type=submit]');
+        btn.disabled = true; btn.textContent = 'Sending…';
+        fetch(form.action, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload) })
+          .then(function (r) { if (!r.ok) throw new Error(); form.style.display = 'none'; document.getElementById('submitted').style.display = 'block'; window.scrollTo({ top: 0, behavior: 'smooth' }); })
+          .catch(function () { btn.disabled = false; btn.textContent = 'Apply for 1:1 coaching →'; alert('Something went wrong — please try again, or email emc@timerich.ai.'); });
+      });
+    })();
+  </script>
+</body>
+</html>
