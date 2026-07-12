@@ -33,6 +33,11 @@ export default {
       return handleChat(request, env, cors);
     }
 
+    // Route: 1:1 AI OS Coaching intake -> its own Notion database (precise field mapping).
+    if (path.endsWith("/coaching")) {
+      return handleCoaching(request, env, cors);
+    }
+
     // Application submission -> Notion.
     if (!env.NOTION_TOKEN || !env.NOTION_DATABASE_ID) {
       return json({ error: "Server not configured" }, 500, cors);
@@ -156,6 +161,68 @@ async function handleChat(request, env, cors) {
     return json({ ok: true, reply: reply || "Hmm, I blanked. Ask me again?" }, 200, cors);
   } catch (err) {
     return json({ ok: false, error: "Couldn't reach the brain. Try again." }, 500, cors);
+  }
+}
+
+// 1:1 AI OS Coaching intake -> the "AI Coaching Intake Form" Notion database.
+// Uses an exact field map (this form's columns are known + fixed), including the
+// date property and multi-selects. Writes to env.NOTION_COACHING_DATABASE_ID.
+async function handleCoaching(request, env, cors) {
+  const dbId = env.NOTION_COACHING_DATABASE_ID;
+  if (!env.NOTION_TOKEN || !dbId) {
+    return json({ ok: false, error: "Coaching intake not configured" }, 500, cors);
+  }
+
+  let d;
+  try { d = await request.json(); } catch { return json({ ok: false, error: "Invalid JSON" }, 400, cors); }
+  if (d._gotcha) return json({ ok: true }, 200, cors);           // honeypot: silently accept bots
+  if (!d.first_name || !d.email) return json({ ok: false, error: "Missing name or email" }, 400, cors);
+
+  // Form option value -> exact Notion option name (only where they differ), so the
+  // tool-agnostic form labels never create duplicate select options in the DB.
+  const NORMALIZE = {
+    role: { "First-time founder": "First time Founder" },
+    ai_stage: {
+      "Using daily": "Using Daily",
+      "Building systems": "Building Systems",
+      "Using AI at the code level": "Leveraging Claude Code",
+      "Running scheduled / autonomous agent tasks": "Scheduled Tasks in Cowork",
+    },
+    blockers: { "Team buy-in": "Team Buy-in" },
+  };
+  const norm = (f, arr) => (arr || []).map((v) => (NORMALIZE[f] && NORMALIZE[f][v]) || v);
+  const rich = (s) => (s ? [{ text: { content: clip(String(s), 2000) } }] : []);
+  const opts = (arr) => (arr || []).map((name) => ({ name }));
+  const url = (s) => (s ? (/^https?:\/\//i.test(s) ? s : `https://${s}`) : null);
+
+  const properties = {
+    "First Name (1)": { title: rich(d.first_name) },
+    Email: { email: d.email || null },
+    Role: { multi_select: opts(norm("role", d.role)) },
+    "How many people on your team? ": { rich_text: rich(d.team_size) },
+    "LinkedIn Profile": { url: url(d.linkedin) },
+    "Where are you at with AI?": { multi_select: opts(norm("ai_stage", d.ai_stage)) },
+    "What's costing you the most time right now?": { rich_text: rich(d.time_drain) },
+    "What's holding you back?": { multi_select: opts(norm("blockers", d.blockers)) },
+    "What's the ONE thing AI could do that would change your business?": { rich_text: rich(d.one_thing) },
+    "What is the cost of you not implementing AI?": { rich_text: rich(d.cost_of_inaction) },
+    "Which offer do you want? ": { multi_select: opts(d.offer) },
+    "Whats your budget?": { rich_text: rich(d.budget) },
+    "Why do you want to work with Ella?": { rich_text: rich(d.why_ella) },
+    Status: { select: { name: "New Inquiry" } },
+  };
+  if (d.start_when) properties["How urgent is this for you?"] = { date: { start: d.start_when } };
+
+  try {
+    const res = await fetch("https://api.notion.com/v1/pages", {
+      method: "POST",
+      headers: { ...authHeaders(env), "Content-Type": "application/json" },
+      body: JSON.stringify({ parent: { database_id: dbId }, properties }),
+    });
+    if (!res.ok) return json({ ok: false, error: "Notion create failed", detail: await res.text() }, 502, cors);
+    return json({ ok: true }, 200, cors);
+  } catch (err) {
+    return json({ ok: false, error: "Unexpected error", detail: String(err) }, 500, cors);
   }
 }
 

@@ -11,7 +11,9 @@
 #
 # After deploy, wrangler prints a URL like:
 #   https://time-rich-forms.<your-subdomain>.workers.dev
-# Paste that into FORM_ENDPOINT in index.html.
+# Paste that into FORM_ENDPOINT in index.html (the application form),
+# and set the coaching form's action to <that URL>/coaching
+# (in "17 — AI Coaching Intake.html", replace [WORKER_URL] with that base URL).
 
 name = "time-rich-forms"
 main = "src/index.js"
@@ -21,3 +23,8 @@ compatibility_date = "2024-11-01"
 # Locked to the live domain so only timerich.ai can submit the application form.
 # Use "*" only when testing locally.
 ALLOWED_ORIGIN = "https://timerich.ai,https://www.timerich.ai"
+
+# 1:1 AI OS Coaching intake form (POST /coaching) -> its own Notion database.
+# Id is from the database URL. IMPORTANT: connect the SAME Notion integration
+# (NOTION_TOKEN) to this database too (••• -> Connections), or writes will 404.
+NOTION_COACHING_DATABASE_ID = "f4f0b1c4-1b81-463c-8ff3-3e625aaf847a"
