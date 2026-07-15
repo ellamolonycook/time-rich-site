@@ -220,7 +220,7 @@
   .founder-grid .body p b{color:var(--sand);font-weight:700}
 
   /* ---------- proof ---------- */
-  .proof-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:1.2rem;margin-top:2.6rem}
+  .proof-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:1.2rem;margin-top:2.6rem}
   @media (max-width:860px){.proof-grid{grid-template-columns:1fr}}
   .proof{
     background:var(--panel);border:1px solid var(--line);border-radius:var(--radius);padding:2rem 1.6rem;
@@ -321,10 +321,6 @@
       </div>
       <div class="hero-media reveal">
         <img src="/branding/ella-editorial.jpg" alt="Ella Molony Cook, AI systems coach" width="760" height="950" fetchpriority="high">
-        <div class="stat-chip">
-          <div class="num">25%</div>
-          <p>Women are adopting AI 25% less than men. Time Rich exists to close that gap.</p>
-        </div>
       </div>
     </div>
   </header>
@@ -472,6 +468,10 @@
         <div class="proof reveal">
           <div class="num" data-count="200" data-suffix="+">200+</div>
           <p>Founders, investors and operators inside. Application-based on purpose: the quality of the room is the point.</p>
+        </div>
+        <div class="proof reveal">
+          <div class="num" data-count="25" data-suffix="%">25%</div>
+          <p>Women are adopting AI 25% less than men. Time Rich exists to close that gap.</p>
         </div>
       </div>
       <p class="proof-note reveal">You will not find a testimonial wall here. The machine is new and I would rather show you the system than dress up borrowed quotes. <b>The receipts above are checkable.</b> The rest you can judge on a call, or from inside the cohort with the 14-day refund in your pocket.</p>
