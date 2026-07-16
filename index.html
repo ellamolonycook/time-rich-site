@@ -41,27 +41,29 @@
 
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;700&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=Archivo:wght@500;600;700;800;900&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
 
   <style>
     /* ============================================================
        TIME RICH — brand flow shared with timerich.ai/contentmachine
        ============================================================ */
     :root{
-      --bg:#0B0B10; --panel:#14141C; --panel2:#181822;
-      --line:rgba(255,255,255,.09);
-      --text:#F2F2F4; --muted:#A2A2B0; --dim:#6E6E7C;
+      --bg:#1A1420; --panel:#1F1829; --panel2:#241C31;
+      --plum:#4A2E6F; --violet:#7C3AED; --violet-2:#9A6DD7; --lilac:#EBD1FA;
+      --line:rgba(235,209,250,.12);
+      --text:#F3EEF7; --muted:#C6BCD2; --dim:#8E85A0;
       --lime:#D4FF4F; --lime-dim:rgba(212,255,79,.12); --red:#FF5C5C;
-      --display:'Space Grotesk',system-ui,-apple-system,sans-serif;
-      --mono:'JetBrains Mono',ui-monospace,SFMono-Regular,monospace;
-      --body:system-ui,-apple-system,'Segoe UI',sans-serif;
+      --serif:'DM Serif Display',Georgia,'Times New Roman',serif;
+      --display:'Archivo',-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;
+      --mono:'Archivo',-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;
+      --body:'Inter',-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;
     }
     *{margin:0;padding:0;box-sizing:border-box}
     html{scroll-behavior:smooth;overflow-x:clip}
     html,body{max-width:100%}
-    body{background:var(--bg);color:var(--text);font-family:var(--body);font-size:17px;line-height:1.65;-webkit-font-smoothing:antialiased;overflow-x:clip}
-    ::selection{background:var(--lime);color:#0B0B10}
-    h1,h2,h3{font-family:var(--display);font-weight:700;line-height:1.08;letter-spacing:-.02em;text-wrap:balance;overflow-wrap:break-word}
+    body{background:radial-gradient(120% 70% at 50% -8%,rgba(124,58,237,.20) 0%,transparent 55%) fixed,var(--bg);color:var(--text);font-family:var(--body);font-size:17px;line-height:1.65;-webkit-font-smoothing:antialiased;overflow-x:clip}
+    ::selection{background:var(--lime);color:#1A1420}
+    h1,h2,h3{font-family:var(--serif);font-weight:400;line-height:1.08;letter-spacing:-.01em;text-wrap:balance;overflow-wrap:break-word}
     p{overflow-wrap:break-word}
     p+p{margin-top:.65em}
     a{color:inherit}
@@ -83,7 +85,7 @@
     .btn.ghost:hover{border-color:var(--lime);color:var(--lime);box-shadow:none}
 
     /* ---------- NAV ---------- */
-    nav{position:sticky;top:0;z-index:50;background:rgba(11,11,16,.94);-webkit-backdrop-filter:blur(10px);backdrop-filter:blur(10px);border-bottom:1px solid var(--line)}
+    nav{position:sticky;top:0;z-index:50;background:rgba(26,20,32,.94);-webkit-backdrop-filter:blur(10px);backdrop-filter:blur(10px);border-bottom:1px solid var(--line)}
     .nav-inner{display:flex;align-items:center;justify-content:space-between;height:84px}
     .brand{display:flex;align-items:center;text-decoration:none}
     .brand img{height:56px;display:block}
@@ -392,8 +394,7 @@
           "jobTitle": "Founder",
           "description": "4x founder and Anthropic investor.",
           "sameAs": [
-            "https://www.linkedin.com/in/ellamolonycook/",
-            "https://www.instagram.com/baddiesloveai/"
+            "https://www.linkedin.com/in/ellamolonycook/"
           ]
         }
       },
@@ -602,7 +603,7 @@
     <div class="wrap" style="text-align:center;">
       <div class="section-head">
         <span class="eyebrow">Live &amp; bi-weekly</span>
-        <h2>Bi-weekly Spicy AI Workshops</h2>
+        <h2>Bi-weekly Revenue Generating Workshops</h2>
         <p style="max-width: 620px; margin: 18px auto 0;">Stop waiting for permission to master AI. Join Time Rich workshops where badass humans build their personal AI Operating System.</p>
       </div>
       <iframe
@@ -688,7 +689,7 @@
         </ul>
         <div class="bio-social">
           <a class="pill" href="https://www.linkedin.com/in/ellamolonycook/" target="_blank" rel="noopener">🍒 Slide into my LinkedIn DMs, bring a good prompt</a>
-          <a href="https://www.instagram.com/baddiesloveai/" target="_blank" rel="noopener">@baddiesloveai</a>
+          <a href="https://www.instagram.com/timerich.ai" target="_blank" rel="noopener">@timerich.ai</a>
         </div>
       </div>
     </div>
@@ -730,11 +731,12 @@
           <span class="t-tag">The VIP build · by application</span>
           <h3>1:1 AI System Coaching</h3>
           <p class="t-body">One to one with me. We build the AI operating system that runs your business — content, ops, research — on your context, set up right the first time, and yours to keep for good. The full Content Machine program is included either way.</p>
+          <p class="t-body">We provide a custom solution for the hardware, meaning you'll be able to run the LLM locally to stop paying for tokens and keep your data private.</p>
           <ul class="t-specs">
-            <li><span class="k">6-Week · 1:1 AI System Coaching</span><span class="v">$4,950</span></li>
-            <li><span class="k">12-Week · 1:1 COO AI Coaching</span><span class="v">$14,950</span></li>
+            <li><span class="k">Time Rich is always custom-designed for your business</span><span class="v">By application</span></li>
+            <li><span class="k">Limited availability</span><span class="v">A handful of spots</span></li>
           </ul>
-          <p class="t-fine">ONLY 4 SPOTS · NO CART, NO INSTANT CHECKOUT · YOU APPLY, AND I READ AND REPLY TO EVERY APPLICATION MYSELF</p>
+          <p class="t-fine">I READ AND REPLY TO EVERY APPLICATION MYSELF, AND ONLY TAKE THE HANDFUL OF PEOPLE IT'S TRULY RIGHT FOR · ALIGNMENT MATTERS MOST</p>
           <div class="cta-slot">
             <a class="btn" href="/coaching/apply/" onclick="track('offer_coaching_apply_click')">Apply for 1:1 coaching →</a>
             <p class="t-sub">Five-minute application · <a href="/coaching">or read the full deep-dive first</a></p>
@@ -1091,7 +1093,7 @@
           <legend>Interested in joining the next retreat or in-person workshop? <span class="opt">(select all that apply)</span></legend>
           <label class="check"><input type="checkbox" name="retreat" value="Learn more about the retreat" /> Yes, I'd love to learn more about the retreat</label>
           <label class="check"><input type="checkbox" name="retreat" value="Learn more about in-person workshops" /> Yes, I'd love to learn more about in-person workshops</label>
-          <label class="check"><input type="checkbox" name="retreat" value="1:1 AI System Coaching with Ella (from $4,950)" /> I need 1:1 AI System Coaching with Ella! (from $4,950)</label>
+          <label class="check"><input type="checkbox" name="retreat" value="1:1 AI System Coaching with Ella" /> I need 1:1 AI System Coaching with Ella!</label>
           <label class="check"><input type="checkbox" name="retreat" value="Not important right now" /> Not important to me right now</label>
           <label class="check"><input type="checkbox" name="retreat" value="New York AI workshop this September" /> New York AI workshop this September — I'm in</label>
         </fieldset>

@@ -18,12 +18,12 @@
    ============================================================ */
 :root{
   --plum:#4A2E6F; --violet:#7C3AED; --violet-2:#9A6DD7;
-  --champagne:#E8C89A; --plum-black:#1A1420; --lilac:#EBD1FA;
+  --champagne:#D4FF4F; --plum-black:#1A1420; --lilac:#EBD1FA;
   --sand:#F4EEFB; --charcoal:#44414D; --white:#FFFFFF;
-  --champagne-soft:#F0DCBE; --champagne-deep:#C9A66F;
+  --champagne-soft:#E4FF85; --champagne-deep:#7C3AED;
   --ink:var(--charcoal); --bg:var(--white);
   --line:rgba(74,46,111,0.12);
-  --line-champagne:rgba(232,200,154,0.55);
+  --line-champagne:rgba(212, 255, 79,0.55);
   --line-dark:rgba(255,255,255,0.14);
   --font-display:'DM Serif Display',Georgia,'Times New Roman',serif;
   --font-struct:'Archivo',-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;
@@ -82,10 +82,10 @@
 .split--wide-right{grid-template-columns:0.9fr 1.1fr}
 .rule{border:0;height:1px;background:var(--line-champagne);margin-block:clamp(2rem,4vw,3rem)}
 .rule--short{width:64px;margin-inline:auto;height:2px;background:var(--champagne);border-radius:2px}
-.band-dark .rule{background:rgba(232,200,154,0.4)}
+.band-dark .rule{background:rgba(212, 255, 79,0.4)}
 .btn{font-family:var(--font-struct);font-weight:800;font-size:0.9375rem;letter-spacing:0.01em;line-height:1;display:inline-flex;align-items:center;justify-content:center;gap:0.5rem;padding:1rem 1.75rem;border-radius:var(--radius-pill);border:1.5px solid transparent;cursor:pointer;text-decoration:none;transition:transform var(--dur-fast) var(--ease),box-shadow var(--dur) var(--ease),background-color var(--dur-fast) var(--ease),color var(--dur-fast) var(--ease),border-color var(--dur-fast) var(--ease)}
 .btn--primary{background:var(--champagne);color:var(--plum-black);border-color:var(--champagne)}
-.btn--primary:hover{color:var(--plum-black);transform:translateY(-2px);box-shadow:0 14px 34px rgba(232,200,154,0.45);background:var(--champagne-soft);border-color:var(--champagne-soft)}
+.btn--primary:hover{color:var(--plum-black);transform:translateY(-2px);box-shadow:0 14px 34px rgba(212, 255, 79,0.45);background:var(--champagne-soft);border-color:var(--champagne-soft)}
 .btn--secondary{background:transparent;color:var(--plum);border-color:var(--plum)}
 .btn--secondary:hover{transform:translateY(-2px);background:var(--plum);color:var(--white);border-color:var(--plum)}
 .btn--plum{background:var(--plum);color:var(--white);border-color:var(--plum)}
@@ -109,15 +109,15 @@
 .card--sand{background:var(--sand)}
 .card:hover{transform:translateY(-4px);box-shadow:var(--shadow-lift);border-color:var(--line-champagne)}
 .band-dark .card{background:rgba(255,255,255,0.04);border-color:var(--line-dark)}
-.band-dark .card:hover{border-color:rgba(232,200,154,0.5)}
+.band-dark .card:hover{border-color:rgba(212, 255, 79,0.5)}
 .spec-list{list-style:none;padding:0}
 .spec-list li{display:flex;justify-content:space-between;gap:1rem;padding-block:1.125rem;border-top:1px solid var(--line-champagne)}
 .spec-list li:last-child{border-bottom:1px solid var(--line-champagne)}
 .spec-list .k{font-family:var(--font-struct);font-weight:800;color:var(--plum)}
 .band-dark .spec-list .k{color:var(--white)}
-.band-dark .spec-list li{border-color:rgba(232,200,154,0.3)}
+.band-dark .spec-list li{border-color:rgba(212, 255, 79,0.3)}
 .chip{font-family:var(--font-struct);font-weight:700;font-size:0.8125rem;color:var(--plum);background:rgba(74,46,111,0.06);border:1px solid var(--line);padding:0.5rem 0.9375rem;border-radius:var(--radius-pill);display:inline-block}
-.band-dark .chip{color:var(--champagne);background:rgba(232,200,154,0.08);border-color:rgba(232,200,154,0.28)}
+.band-dark .chip{color:var(--champagne);background:rgba(212, 255, 79,0.08);border-color:rgba(212, 255, 79,0.28)}
 .stat-num{font-family:var(--font-struct);font-weight:900;color:var(--violet);font-size:clamp(3.5rem,8vw,6rem);line-height:0.9;letter-spacing:-0.02em}
 .stat-num--plum{color:var(--plum)}
 .band-dark .stat-num{color:var(--champagne)}
@@ -205,18 +205,18 @@ html:not(.js) .reveal,html:not(.js) .reveal-stagger>*{opacity:1;transform:none}
 .tier-grid{display:grid;grid-template-columns:1fr 1fr;gap:clamp(1.25rem,3vw,2rem);align-items:stretch}
 @media (max-width:820px){.tier-grid{grid-template-columns:1fr}}
 .tier{display:flex;flex-direction:column;background:rgba(255,255,255,0.04);border:1px solid var(--line-dark);border-radius:var(--radius-lg);padding:clamp(1.75rem,3vw,2.5rem)}
-.tier.featured{border-color:rgba(232,200,154,0.5);box-shadow:0 30px 80px rgba(0,0,0,0.35)}
+.tier.featured{border-color:rgba(212, 255, 79,0.5);box-shadow:0 30px 80px rgba(0,0,0,0.35)}
 .tier-flag{font-family:var(--font-struct);font-weight:800;font-size:0.7rem;letter-spacing:0.14em;text-transform:uppercase;color:var(--champagne);margin-bottom:0.9rem}
 .tier-name{font-family:var(--font-display);font-size:1.5rem;color:var(--white);line-height:1.1}
 .tier-price{font-family:var(--font-struct);font-weight:900;font-size:2.75rem;color:var(--champagne);letter-spacing:-0.02em;margin:0.6rem 0 0.2rem}
 .tier-len{font-family:var(--font-struct);font-weight:700;font-size:0.8125rem;letter-spacing:0.08em;text-transform:uppercase;color:rgba(255,255,255,0.6)}
 .tier .spec-list{margin:1.5rem 0 1.75rem}
-.tier .spec-list li{justify-content:flex-start;gap:0.75rem;color:rgba(255,255,255,0.82);border-color:rgba(232,200,154,0.22)}
+.tier .spec-list li{justify-content:flex-start;gap:0.75rem;color:rgba(255,255,255,0.82);border-color:rgba(212, 255, 79,0.22)}
 .tier .spec-list li::before{content:"→";font-family:var(--font-struct);font-weight:800;color:var(--champagne);flex:none}
 .tier .btn{margin-top:auto}
 
 /* testimonial placeholder */
-.tstm{border:2px dashed var(--line-champagne);border-radius:var(--radius);padding:clamp(1.5rem,3vw,2.25rem);background:rgba(232,200,154,0.05)}
+.tstm{border:2px dashed var(--line-champagne);border-radius:var(--radius);padding:clamp(1.5rem,3vw,2.25rem);background:rgba(212, 255, 79,0.05)}
 .tstm .slot{font-family:var(--font-struct);font-weight:800;font-size:0.75rem;letter-spacing:0.12em;text-transform:uppercase;color:var(--champagne-deep);margin-bottom:0.6rem}
 .band-dark .tstm .slot{color:var(--champagne)}
 .tstm p{color:var(--ink);font-style:italic;opacity:0.75}
