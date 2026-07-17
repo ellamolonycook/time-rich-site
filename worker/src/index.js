@@ -38,11 +38,6 @@ export default {
       return handleCoaching(request, env, cors);
     }
 
-    // Application submission -> Notion.
-    if (!env.NOTION_TOKEN || !env.NOTION_DATABASE_ID) {
-      return json({ error: "Server not configured" }, 500, cors);
-    }
-
     let data;
     try {
       data = await request.json();
@@ -50,16 +45,45 @@ export default {
       return json({ error: "Invalid JSON" }, 400, cors);
     }
 
+    // Route: AI Revenue Accelerator application -> its own Notion database.
+    // Same schema-driven mapping as the club form; stamps Status = New so the
+    // "Call today" / pipeline views pick fresh applications up.
+    if (path.endsWith("/accelerator")) {
+      const res = await createApplication(data, env, cors, env.NOTION_ACCELERATOR_DATABASE_ID, { Status: "New" });
+      if (res.status < 500) return res;
+      // Safety net: if the accelerator DB isn't shared with the integration (yet),
+      // capture the application in the main applications DB instead of losing it.
+      const marked = { ...data, "Full name": "ACCELERATOR — " + (data["Name"] || data["Full name"] || "Applicant") };
+      return createApplication(marked, env, cors, env.NOTION_DATABASE_ID);
+    }
+
+    // Application submission (club form) -> Notion.
+    return createApplication(data, env, cors, env.NOTION_DATABASE_ID);
+  },
+};
+
+// Generic application intake: reads the target database schema, maps matching
+// fields, and always dumps the full submission into the page body.
+async function createApplication(data, env, cors, dbId, defaults) {
+    if (!env.NOTION_TOKEN || !dbId) {
+      return json({ error: "Server not configured" }, 500, cors);
+    }
+
     // Anti-spam: silently accept bot submissions (honeypot field filled in).
     if (data._gotcha) return json({ ok: true }, 200, cors);
     if (!data["Email"] && !data.email) {
       return json({ error: "Email is required" }, 400, cors);
     }
+    if (defaults) {
+      for (const [k, v] of Object.entries(defaults)) {
+        if (!String(data[k] || "").trim()) data[k] = v;
+      }
+    }
 
     try {
       // 1) Read the database schema to learn property names + types.
       const dbRes = await fetch(
-        `https://api.notion.com/v1/databases/${env.NOTION_DATABASE_ID}`,
+        `https://api.notion.com/v1/databases/${dbId}`,
         { headers: authHeaders(env) }
       );
       if (!dbRes.ok) {
@@ -96,7 +120,7 @@ export default {
         method: "POST",
         headers: { ...authHeaders(env), "Content-Type": "application/json" },
         body: JSON.stringify({
-          parent: { database_id: env.NOTION_DATABASE_ID },
+          parent: { database_id: dbId },
           properties,
           children: children.slice(0, 100), // Notion caps children at 100 per request
         }),
@@ -108,8 +132,7 @@ export default {
     } catch (err) {
       return json({ error: "Unexpected error", detail: String(err) }, 500, cors);
     }
-  },
-};
+}
 
 // Corner chatbot. Accepts { messages: [{role, content}, ...] }, calls Claude with
 // the Time Rich brain as the system prompt, returns { ok, reply }.

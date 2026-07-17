@@ -24,6 +24,10 @@ compatibility_date = "2024-11-01"
 # Use "*" only when testing locally.
 ALLOWED_ORIGIN = "https://timerich.ai,https://www.timerich.ai"
 
+# AI Revenue Accelerator application (POST /accelerator) -> its own Notion database.
+# Same NOTION_TOKEN integration must be connected to this database too.
+NOTION_ACCELERATOR_DATABASE_ID = "fd7e0a3f-2d74-4104-ab08-0f438260d487"
+
 # 1:1 AI OS Coaching intake form (POST /coaching) -> its own Notion database.
 # Id is from the database URL. IMPORTANT: connect the SAME Notion integration
 # (NOTION_TOKEN) to this database too (••• -> Connections), or writes will 404.
