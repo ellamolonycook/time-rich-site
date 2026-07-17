@@ -1,0 +1,16 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+  <rect width="512" height="512" rx="104" fill="#0B0B10"/>
+  <!-- money bag body -->
+  <path d="M210 206 C144 244 108 312 108 364 C108 442 174 470 256 470 C338 470 404 442 404 364 C404 312 368 244 302 206 Z" fill="#D4FF4F"/>
+  <!-- top folds -->
+  <path d="M180 140 C196 94 316 94 332 140 L303 188 C272 173 240 173 209 188 Z" fill="#D4FF4F"/>
+  <!-- tie band -->
+  <rect x="198" y="176" width="116" height="32" rx="16" fill="#A8CC3F"/>
+  <!-- soft highlight -->
+  <ellipse cx="185" cy="300" rx="38" ry="60" fill="#E8FFA3" opacity="0.5" transform="rotate(18 185 300)"/>
+  <!-- dollar sign -->
+  <g stroke="#0B0B10" stroke-width="26" stroke-linecap="round" fill="none">
+    <path d="M293 314 C293 295 276 285 256 285 C236 285 221 296 221 313 C221 333 239 340 256 344 C273 348 291 356 291 376 C291 393 276 404 256 404 C236 404 219 394 219 375"/>
+    <path d="M256 262 L256 285 M256 404 L256 427"/>
+  </g>
+</svg>
