@@ -12,7 +12,7 @@
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%230B0B10'/%3E%3Ccircle cx='16' cy='21' r='4.5' fill='%23D4FF4F'/%3E%3C/svg%3E">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;700&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;700&family=JetBrains+Mono:wght@400;500;600;700&family=Dancing+Script:wght@600;700&display=swap" rel="stylesheet">
 <style>
 :root{
   color-scheme:dark;
@@ -345,6 +345,11 @@ table.dtable td .k{font-family:var(--mono);font-size:12px;color:var(--fg);white-
 .emoji-card .e{font-size:34px;line-height:1;margin-bottom:12px}
 .emoji-card b{font-family:var(--mono);font-weight:600;text-transform:uppercase;letter-spacing:.04em;font-size:11.5px;color:var(--fg);display:block}
 .emoji-card span{font-size:12.5px;color:var(--muted);display:block;margin-top:6px;line-height:1.45}
+.emoji-card .etier{display:inline-block;font-family:var(--mono);font-weight:700;font-size:9px;letter-spacing:.1em;text-transform:uppercase;padding:2px 8px;border-radius:5px;margin-bottom:12px}
+.emoji-card .etier.main{background:var(--lime);color:#0B0B10}
+.emoji-card .etier.supp{background:var(--lime-dim);color:var(--lime-ink)}
+.emoji-card .etier.util{background:var(--panel-2);color:var(--dim);border:1px solid var(--line)}
+.emoji-grid.util3{grid-template-columns:repeat(3,1fr)}
 .emoji-rules{display:grid;grid-template-columns:1fr 1fr;gap:12px 36px;margin-top:26px}
 .avoid{margin-top:22px;font-size:14px;color:var(--muted)}
 .avoid b{color:var(--fg)} .avoid .x{font-size:19px;filter:grayscale(.2);opacity:.7;margin-right:3px}
@@ -378,6 +383,29 @@ table.dtable td .k{font-family:var(--mono);font-size:12px;color:var(--fg);white-
 .vid .lm b{font-family:var(--mono);font-weight:600;text-transform:uppercase;letter-spacing:.05em;font-size:10px;color:var(--lime-ink);display:block;margin-bottom:5px}
 .vid:hover{transform:translateY(-3px);box-shadow:var(--shadow);border-color:var(--line-2)}
 .vid-formula{margin-top:22px}
+
+/* content example reels */
+.reel-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-top:22px}
+.reel{position:relative;border:1px solid var(--line);border-radius:16px;overflow:hidden;aspect-ratio:4/5;background:#0B0B10}
+.reel img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+.reel .scrim{position:absolute;inset:0;background:linear-gradient(180deg,rgba(11,11,16,.55),rgba(11,11,16,.12) 42%,rgba(11,11,16,.5))}
+.reel .ov{position:absolute;left:0;right:0;top:0;padding:26px 26px 0}
+.reel .ov h4{font-family:var(--sans);font-weight:700;letter-spacing:-.02em;line-height:1.03;color:#F2F2F4;margin:0;font-size:clamp(19px,3vw,29px);text-shadow:0 2px 18px rgba(0,0,0,.55)}
+.reel .ov h4 u{color:#D4FF4F;text-decoration:none}
+.reel .ov .sub{font-family:var(--sans);font-weight:500;font-size:clamp(13px,2vw,18px);color:#E8E8EE;margin-top:7px;text-shadow:0 2px 14px rgba(0,0,0,.6)}
+.reel .ov .sub u{color:#D4FF4F;text-decoration:none;font-weight:700}
+.reel .sig{position:absolute;right:22px;bottom:18px;font-family:'Dancing Script',cursive;font-weight:700;font-size:30px;color:#fff;text-shadow:0 2px 12px rgba(0,0,0,.6)}
+.reel .sig .hrt{color:#D4FF4F}
+.reel .rlab{position:absolute;left:22px;bottom:20px;font-family:var(--mono);font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:rgba(255,255,255,.72)}
+
+/* downloads */
+.dl-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-top:22px}
+.dl-card{border:1px solid var(--line);border-radius:14px;background:var(--panel);padding:20px 22px}
+.dl-card .dl-h{display:flex;align-items:baseline;justify-content:space-between;gap:12px;margin-bottom:14px}
+.dl-card .dl-h b{font-family:var(--sans);font-weight:700;font-size:16px;color:var(--fg)}
+.dl-card .dl-h span{font-size:11px;color:var(--dim);font-family:var(--mono);letter-spacing:.03em;text-transform:uppercase}
+.dl-row{display:flex;flex-wrap:wrap;gap:9px}
+.dl-row a.cxbtn,.dl-row button.cxbtn{text-decoration:none}
 
 /* context pack copy blocks */
 .cx-actions{display:flex;flex-wrap:wrap;gap:12px;margin-top:22px}
@@ -451,9 +479,9 @@ footer b{color:var(--muted)}
 @media (max-width:860px){
   .hero h1{font-size:clamp(52px,17vw,92px)}
   .grid3,.pillars,.forwho,.founder-hero,.photo-row,.comm-hero,.logo-grid,.swatches,.vgrid,.copy-grid,
-  .emoji-rules,.role-list,.posttypes,.offer-body,.rules,.gfx-grid,.check,.path-list,.pair-grid,.vid-grid,.links-grid{grid-template-columns:1fr}
+  .emoji-rules,.role-list,.posttypes,.offer-body,.rules,.gfx-grid,.check,.path-list,.pair-grid,.vid-grid,.links-grid,.reel-grid,.dl-grid{grid-template-columns:1fr}
   .comm-hero .side{grid-template-rows:none;grid-template-columns:1fr 1fr}
-  .swatches,.emoji-grid,.social-grid,.avatar-grid{grid-template-columns:1fr 1fr}
+  .swatches,.emoji-grid,.emoji-grid.util3,.social-grid,.avatar-grid{grid-template-columns:1fr 1fr}
   .part-d{margin-left:0}
   section{padding:54px 0}
 }
@@ -484,6 +512,7 @@ footer b{color:var(--muted)}
       <a href="#context">Context</a>
       <a href="#eden">Eden</a>
       <a href="#links">Links</a>
+      <a href="#downloads">Downloads</a>
     </div>
     <button class="toggle" id="themeBtn" aria-label="Toggle light or dark theme">Theme</button>
   </div>
@@ -492,14 +521,14 @@ footer b{color:var(--muted)}
 <header class="hero" id="top">
   <div class="hero-grid" aria-hidden="true"></div>
   <div class="hero-in">
-    <p class="hero-kicker">Brand · Voice · Context Bible <span class="badge">v4.0 · one system</span></p>
+    <p class="hero-kicker">Brand · Voice · Context Bible <span class="badge">v4.1 · one system</span></p>
     <h1>TIME<br>RICH<span class="u">.</span><span class="hero-blink">_</span></h1>
     <p class="hero-sub">The single source of truth for how Time Rich <b>looks</b>, <b>sounds</b>, and <b>thinks</b>. The room for women who build their business <b>on</b> AI, not around it. Dark, sharp, a little cheeky. <b>Delegate the shit you hate to AI</b> — and buy your time back.</p>
     <div class="meta-row">
       <span class="tag lime">Visual identity</span>
       <span class="tag">Voice &amp; verbal</span>
       <span class="tag">Content &amp; video</span>
-      <span class="tag">Paste-ready context 🌈🍒</span>
+      <span class="tag">Paste-ready context 💸💰</span>
     </div>
     <p class="hero-sub" style="margin-top:20px;font-family:var(--mono);font-size:12.5px;letter-spacing:.04em;color:var(--dim);text-transform:uppercase">Four parts · <span style="color:var(--muted)">I</span> how it looks · <span style="color:var(--muted)">II</span> how it sounds · <span style="color:var(--muted)">III</span> how it shows up · <span style="color:var(--muted)">IV</span> how it thinks</p>
   </div>
@@ -848,17 +877,24 @@ footer b{color:var(--muted)}
 <section class="wrap" id="emoji">
   <p class="eyebrow">10 — Emoji</p>
   <h2 class="display">Emoji with a job</h2>
-  <p class="lead">Emoji are punctuation, not decoration. A tight approved set, one or two per caption, never in website headlines. <span class="hl">🌈🍒 is the signature pair</span> — the sign-off that closes a caption. The purple heart is retired with the purple.</p>
+  <p class="lead">Emoji are punctuation, not decoration. The <span class="hl">money marks lead</span> — 💸 flying money and 💰 money bag carry the whole thesis: get smarter with AI, make more money. <span class="hl">🍒 cherry and 🌈 rainbow are the supplement</span> — the signature close that ends a caption. One or two per caption, never in website headlines. The purple heart is retired with the purple.</p>
   <div class="emoji-grid">
-    <div class="emoji-card"><div class="e">🌈🍒</div><b>Signature close</b><span>The Time Rich sign-off. Ends a caption or note. Reserved — don't scatter it.</span></div>
-    <div class="emoji-card"><div class="e">🤖</div><b>The AI / the build</b><span>Agents, machines, "delegate to AI." The workhorse mark.</span></div>
-    <div class="emoji-card"><div class="e">💻</div><b>Ship / implementation</b><span>Playbooks, builds, women who ship. Doing, not watching.</span></div>
-    <div class="emoji-card"><div class="e">⚡</div><b>Time back / speed</b><span>For the payoff line — AI doing the boring stuff, fast.</span></div>
+    <div class="emoji-card"><span class="etier main">Main</span><div class="e">💸</div><b>Flying money</b><span>The thesis. Revenue, getting paid, aiming AI at money not admin. Leads a post or a brand tag.</span></div>
+    <div class="emoji-card"><span class="etier main">Main</span><div class="e">💰</div><b>Money bag</b><span>Profit kept, the payoff, time-rich and paid. The revenue win.</span></div>
+    <div class="emoji-card"><span class="etier supp">Supplement</span><div class="e">🍒</div><b>Cherry</b><span>The Time Rich cherry. Heat and personality — half of the signature close.</span></div>
+    <div class="emoji-card"><span class="etier supp">Supplement</span><div class="e">🌈</div><b>Rainbow</b><span>The other half of the sign-off, paired with the cherry: 🍒🌈. It closes, it doesn't garnish.</span></div>
+  </div>
+  <h3 style="margin-top:34px">Working set</h3>
+  <p class="lead" style="margin-bottom:4px">Functional accents inside a caption, subordinate to the main money marks and the supplement close.</p>
+  <div class="emoji-grid util3">
+    <div class="emoji-card"><span class="etier util">Utility</span><div class="e">🤖</div><b>The AI / the build</b><span>Agents, machines, "delegate to AI." The workhorse mark.</span></div>
+    <div class="emoji-card"><span class="etier util">Utility</span><div class="e">💻</div><b>Ship / implementation</b><span>Playbooks, builds, women who ship. Doing, not watching.</span></div>
+    <div class="emoji-card"><span class="etier util">Utility</span><div class="e">⚡</div><b>Time back / speed</b><span>For the payoff line — AI doing the boring stuff, fast.</span></div>
   </div>
   <div class="emoji-rules">
-    <div class="rule do"><span class="m">✓</span><span><b>Max one or two per caption.</b> One idea, one accent.</span></div>
+    <div class="rule do"><span class="m">✓</span><span><b>Lead with the money marks.</b> 💸 or 💰 opens a post or tags the brand's thesis.</span></div>
     <div class="rule dont"><span class="m">✕</span><span><b>Never mid-sentence</b> as decoration or in a string of five.</span></div>
-    <div class="rule do"><span class="m">✓</span><span><b>🌈🍒 is the sign-off.</b> It closes, it doesn't garnish.</span></div>
+    <div class="rule do"><span class="m">✓</span><span><b>🍒🌈 is the sign-off.</b> The supplement closes a caption; it doesn't garnish.</span></div>
     <div class="rule dont"><span class="m">✕</span><span><b>None in landing-page headlines.</b> The copy carries it.</span></div>
   </div>
   <p class="avoid"><b>Avoid:</b> <span class="x">🚀</span><span class="x">🔥</span><span class="x">💯</span><span class="x">🙏</span><span class="x">✨</span> hype and hustle emoji. They read like the bro content we're the opposite of.</p>
@@ -882,7 +918,7 @@ footer b{color:var(--muted)}
   </div>
   <div class="bio-card">
     <div class="divlabel">Instagram bio</div>
-    <div class="b">The room for women who build their business on AI 🤖<br>Delegate the shit you hate. Not awareness — implementation.<br>Free playbooks every week ↓ 🌈🍒</div>
+    <div class="b">The room for women who build their business on AI 💸<br>Delegate the shit you hate. Not awareness — implementation.<br>Free playbooks every week ↓ 🍒🌈</div>
   </div>
   <h3 style="margin-top:34px">Caption formula</h3>
   <div class="formula">
@@ -890,7 +926,7 @@ footer b{color:var(--muted)}
     <span class="step">Context — 2-3 short lines</span><span class="arrow">→</span>
     <span class="step">Payoff ⚡</span><span class="arrow">→</span>
     <span class="step">CTA — comment / link</span><span class="arrow">→</span>
-    <span class="step">Sign-off 🌈🍒</span>
+    <span class="step">Sign-off 🍒🌈</span>
   </div>
   <p class="note">Then pin a reply that keeps the conversation going. Hashtags, used sparingly: <b>#TimeRich #WomenInAI #AIForFounders #BuildLean</b>. Never a wall of 30 tags.</p>
   <div class="posttypes">
@@ -898,7 +934,7 @@ footer b{color:var(--muted)}
     <div class="pt"><b>Founder POV</b><span>Ella on camera or a hot take. Direct, warm, a little cheeky.</span></div>
     <div class="pt"><b>Community moment</b><span>Dinners, events, the room. Proof it's real.</span></div>
     <div class="pt"><b>Build / product news</b><span>Dark lime-accent graphic slides. Space Grotesk + mono label.</span></div>
-    <div class="pt"><b>Signature stamp</b><span>Stories closed with the wordmark + the lime stop and 🌈🍒.</span></div>
+    <div class="pt"><b>Signature stamp</b><span>Stories closed with the wordmark + the lime stop and 🍒🌈.</span></div>
     <div class="pt"><b>Playbook drop</b><span>New Substack post → carousel + link. "Steal them all."</span></div>
   </div>
 </section>
@@ -906,7 +942,7 @@ footer b{color:var(--muted)}
 <section class="wrap" id="video">
   <p class="eyebrow">12 — Video &amp; reels</p>
   <h2 class="display">The video format, and the creators we steal it from</h2>
-  <p class="lead">Reels and short video are how the room gets found. The three creators below are the <em>inspiration set for video content only</em> — the reference for pacing, on-camera energy, and how to teach AI without the hype. <span class="hl">They are a moodboard, not a voice.</span> The voice stays Time Rich: direct, warm, a little cheeky, no exclamation marks, 🌈🍒 to close.</p>
+  <p class="lead">Reels and short video are how the room gets found. The three creators below are the <em>inspiration set for video content only</em> — the reference for pacing, on-camera energy, and how to teach AI without the hype. <span class="hl">They are a moodboard, not a voice.</span> The voice stays Time Rich: direct, warm, a little cheeky, no exclamation marks, 🍒🌈 to close.</p>
   <div class="vid-grid">
     <a class="vid" href="https://www.instagram.com/sabrina_ramonov/" target="_blank" rel="noopener">
       <div class="hd"><span class="n">Sabrina Ramonov</span><span class="go">IG ↗</span></div>
@@ -935,7 +971,7 @@ footer b{color:var(--muted)}
     <span class="step">One idea, one AI system</span><span class="arrow">→</span>
     <span class="step">Show the receipt on screen</span><span class="arrow">→</span>
     <span class="step">Payoff ⚡</span><span class="arrow">→</span>
-    <span class="step">🌈🍒</span>
+    <span class="step">🍒🌈</span>
   </div>
   <div class="rules">
     <div class="rule do"><span class="m">✓</span><span><b>Teach, don't perform.</b> One system per video, shown working. Mariah's clarity, not a dance.</span></div>
@@ -945,6 +981,27 @@ footer b{color:var(--muted)}
     <div class="rule do"><span class="m">✓</span><span><b>Text overlays in Space Grotesk</b>, one lime accent, digits as digits. Captions burned in for silent autoplay.</span></div>
     <div class="rule dont"><span class="m">✕</span><span><b>No exclamation marks</b> in the overlay or the caption. Confidence, not scarcity.</span></div>
   </div>
+
+  <h3 style="margin-top:44px">Content examples · the reel hook style</h3>
+  <p class="lead">Two examples of the format on brand: a founder photo, a Space Grotesk hook with one lime keyword, the script <span style="font-family:'Dancing Script',cursive;font-weight:700">Time Rich</span> signature. This is what "keep the format, keep the brand" looks like on a reel cover.</p>
+  <div class="reel-grid">
+    <div class="reel">
+      <img src="img/ella-laptop.jpg" alt="Time Rich reel cover — the revenue hook">
+      <div class="scrim"></div>
+      <div class="ov"><h4>You've talked to AI for over a year</h4><div class="sub">But it hasn't increased your <u>REVENUE</u>, yet…</div></div>
+      <span class="rlab">Reel cover · revenue hook</span>
+      <span class="sig">Time Rich<span class="hrt"> ♥</span></span>
+    </div>
+    <div class="reel">
+      <img src="img/ella-editorial.jpg" alt="Time Rich reel cover — Time Rich B*tch hook">
+      <div class="scrim"></div>
+      <div class="ov"><h4>2026 you're using AI to become a <u>Time Rich B*tch</u></h4></div>
+      <span class="rlab">Founder POV · B&amp;W</span>
+      <span class="sig">Time Rich<span class="hrt"> ♥</span></span>
+    </div>
+  </div>
+  <p class="note"><b>These are on-brand recreations</b> (your exact Canva graphics could not be read from the chat, so they use the closest founder photos on file). To swap in the originals, drop the two files into <code>brand/img/content/</code> as <code>reel-revenue.jpg</code> and <code>reel-btch.jpg</code> and they slot straight in.</p>
+
   <p class="note">Sources for this reference set: <a href="https://www.instagram.com/sabrina_ramonov/" target="_blank" rel="noopener">@sabrina_ramonov</a>, <a href="https://www.instagram.com/itsmariahbrunner/" target="_blank" rel="noopener">@itsmariahbrunner</a>, <a href="https://www.instagram.com/thevaleriaramirez/" target="_blank" rel="noopener">@thevaleriaramirez</a>. Use them for study only — never re-post their footage or lift their scripts.</p>
 </section>
 
@@ -957,7 +1014,7 @@ footer b{color:var(--muted)}
       <div class="canvas dark grid-bg">
         <span class="lab">› PLAYBOOK / 01</span>
         <span class="big">Delegate the shit you <u>hate</u> to AI.</span>
-        <span class="sign">timerich.ai · 🌈🍒</span>
+        <span class="sign">timerich.ai · 🍒🌈</span>
       </div>
       <div class="cap"><b>Statement slide</b>Dark canvas, lime grid, one bold claim.</div>
     </div>
@@ -1152,6 +1209,34 @@ Never "Ella x." Never "Cheers," "Talk soon," or "Best,".</pre>
       <li>Chief of Staff - Eden/EDEN-CONTEXT-PACK.md — the context pack</li>
     </ul>
   </div>
+
+  <h3 id="downloads" style="margin-top:48px">Fonts &amp; logos — download</h3>
+  <p class="lead">Grab the actual files. Fonts are OFL-licensed variable TTFs — every weight in one file, install them in Canva, Keynote, or any editor. The wordmark ships as vector SVG (with the font baked in, so it renders true anywhere) and as a transparent PNG.</p>
+  <div class="dl-grid">
+    <div class="dl-card">
+      <div class="dl-h"><b>Fonts</b><span>OFL · install anywhere</span></div>
+      <div class="dl-row">
+        <a class="cxbtn primary" href="fonts/SpaceGrotesk-Variable.ttf" download>↓ Space Grotesk .ttf</a>
+        <a class="cxbtn primary" href="fonts/JetBrainsMono-Variable.ttf" download>↓ JetBrains Mono .ttf</a>
+        <button class="cxbtn" id="copyFontCss">Copy @font-face CSS</button>
+        <button class="cxbtn" id="copyStack">Copy font stack</button>
+        <a class="cxbtn" href="fonts/SpaceGrotesk-OFL.txt" download>License</a>
+      </div>
+    </div>
+    <div class="dl-card">
+      <div class="dl-h"><b>Logos</b><span>wordmark = Space Grotesk + lime stop</span></div>
+      <div class="dl-row">
+        <a class="cxbtn primary" href="logo/time-rich-wordmark-dark.svg" download>↓ Wordmark dark SVG</a>
+        <a class="cxbtn" href="logo/time-rich-wordmark-dark.png" download>PNG</a>
+        <a class="cxbtn primary" href="logo/time-rich-wordmark-light.svg" download>↓ Wordmark light SVG</a>
+        <a class="cxbtn" href="logo/time-rich-wordmark-light.png" download>PNG</a>
+        <a class="cxbtn" href="logo/time-rich-favicon.svg" download>↓ Favicon SVG</a>
+        <a class="cxbtn" href="logo/time-rich-logo-black.png" download>↓ Black logo PNG</a>
+      </div>
+    </div>
+  </div>
+  <p class="note">The wordmark is type, so it can also just be re-set live in Space Grotesk Bold with a lime full-stop. The SVGs have the font embedded, so they render true even where Space Grotesk is not installed. Fonts are Open Font License (redistribution allowed); the photography and wordmark are Time Rich's.</p>
+
   <p class="note">The old purple wordmark, signature scripts and TR monogram PNGs are <b>retired</b> — archive them, don't ship them. If a mark isn't Space Grotesk on the new palette, it isn't the brand.</p>
 </section>
 
@@ -1169,15 +1254,15 @@ Never "Ella x." Never "Cheers," "Talk soon," or "Best,".</pre>
     <label><input type="checkbox">Register matched to the surface; the rules never moved</label>
     <label><input type="checkbox">Stats stated plainly as digits; contrast passes AA</label>
     <label><input type="checkbox">Photography is real (founder or the room), not stock</label>
-    <label><input type="checkbox">Video keeps the format, not the borrowed voice — 🌈🍒 to close</label>
-    <label><input type="checkbox">Emoji: one or two max, 🌈🍒 only as the sign-off</label>
+    <label><input type="checkbox">Video keeps the format, not the borrowed voice — 🍒🌈 to close</label>
+    <label><input type="checkbox">Emoji: 💸💰 lead, 🍒🌈 closes; one or two max, none in headlines</label>
     <label><input type="checkbox">Offer pricing matches live timerich.ai/contentmachine</label>
     <label><input type="checkbox">Sounds like Ella, not ChatGPT or a brand deck</label>
   </div>
 </section>
 
 <footer class="wrap">
-  <p><b>Time Rich — Brand, Voice &amp; Context Bible v4.0</b> · Owner: Ella Molony Cook · Updated 2026-07-18</p>
+  <p><b>Time Rich — Brand, Voice &amp; Context Bible v4.1</b> · Owner: Ella Molony Cook · Updated 2026-07-18</p>
   <p>One system: the visual identity (near-black, lime + moss green, cherry heat, Space Grotesk &amp; JetBrains Mono) merged with the paste-ready context pack and the video reference set. Built from timerich.ai and cross-referenced against the live checkout. Canonical source: <b>Time Rich / 07 Media / Brand /</b> and <b>Chief of Staff - Eden / EDEN-CONTEXT-PACK.md</b>. Voice is canonical in <b>voice-style.md</b> — if anything here disagrees, that file wins.</p>
 </footer>
 </main>
@@ -1230,6 +1315,13 @@ Never "Ella x." Never "Cheers," "Talk soon," or "Best,".</pre>
   document.querySelectorAll('button[data-target]').forEach(function(btn){
     btn.addEventListener('click',function(){var el=document.getElementById(btn.dataset.target);copyText(el.textContent.trim(),function(){flash(btn);});});
   });
+  var FONTCSS="@font-face{font-family:'Space Grotesk';font-weight:400 700;font-display:swap;src:url('fonts/SpaceGrotesk-Variable.ttf') format('truetype');}\n@font-face{font-family:'JetBrains Mono';font-weight:400 700;font-display:swap;src:url('fonts/JetBrainsMono-Variable.ttf') format('truetype');}";
+  var STACK="Display: 'Space Grotesk', system-ui, -apple-system, 'Segoe UI', sans-serif;\nBody:    system-ui, -apple-system, 'Segoe UI', Roboto, Helvetica, sans-serif;\nMono:    'JetBrains Mono', ui-monospace, SFMono-Regular, Menlo, monospace;";
+  var cssBtn=document.getElementById('copyFontCss');
+  if(cssBtn){cssBtn.addEventListener('click',function(){copyText(FONTCSS,function(){flash(cssBtn);});});}
+  var stackBtn=document.getElementById('copyStack');
+  if(stackBtn){stackBtn.addEventListener('click',function(){copyText(STACK,function(){flash(stackBtn);});});}
+
   var allBtn=document.querySelector('button[data-copy="all"]');
   if(allBtn){allBtn.addEventListener('click',function(){
     var parts=ORDER.map(function(id){return '## '+TITLES[id]+'\n\n'+document.getElementById(id).textContent.trim();});
