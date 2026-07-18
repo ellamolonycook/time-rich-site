@@ -397,6 +397,9 @@ table.dtable td .k{font-family:var(--mono);font-size:12px;color:var(--fg);white-
 .reel .sig{position:absolute;right:22px;bottom:18px;font-family:'Dancing Script',cursive;font-weight:700;font-size:30px;color:#fff;text-shadow:0 2px 12px rgba(0,0,0,.6)}
 .reel .sig .hrt{color:#D4FF4F}
 .reel .rlab{position:absolute;left:22px;bottom:20px;font-family:var(--mono);font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:rgba(255,255,255,.72)}
+.reel.story{aspect-ratio:9/16}
+.story-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-top:22px}
+.reel .script{font-family:'Dancing Script',cursive;font-weight:700}
 
 /* downloads */
 .dl-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-top:22px}
@@ -479,7 +482,7 @@ footer b{color:var(--muted)}
 @media (max-width:860px){
   .hero h1{font-size:clamp(52px,17vw,92px)}
   .grid3,.pillars,.forwho,.founder-hero,.photo-row,.comm-hero,.logo-grid,.swatches,.vgrid,.copy-grid,
-  .emoji-rules,.role-list,.posttypes,.offer-body,.rules,.gfx-grid,.check,.path-list,.pair-grid,.vid-grid,.links-grid,.reel-grid,.dl-grid{grid-template-columns:1fr}
+  .emoji-rules,.role-list,.posttypes,.offer-body,.rules,.gfx-grid,.check,.path-list,.pair-grid,.vid-grid,.links-grid,.reel-grid,.dl-grid,.story-grid{grid-template-columns:1fr}
   .comm-hero .side{grid-template-rows:none;grid-template-columns:1fr 1fr}
   .swatches,.emoji-grid,.emoji-grid.util3,.social-grid,.avatar-grid{grid-template-columns:1fr 1fr}
   .part-d{margin-left:0}
@@ -521,7 +524,7 @@ footer b{color:var(--muted)}
 <header class="hero" id="top">
   <div class="hero-grid" aria-hidden="true"></div>
   <div class="hero-in">
-    <p class="hero-kicker">Brand · Voice · Context Bible <span class="badge">v4.1 · one system</span></p>
+    <p class="hero-kicker">Brand · Voice · Context Bible <span class="badge">v4.2 · one system</span></p>
     <h1>TIME<br>RICH<span class="u">.</span><span class="hero-blink">_</span></h1>
     <p class="hero-sub">The single source of truth for how Time Rich <b>looks</b>, <b>sounds</b>, and <b>thinks</b>. The room for women who build their business <b>on</b> AI, not around it. Dark, sharp, a little cheeky. <b>Delegate the shit you hate to AI</b> — and buy your time back.</p>
     <div class="meta-row">
@@ -669,7 +672,7 @@ footer b{color:var(--muted)}
   </div>
   <div class="rules">
     <div class="rule do"><span class="m">✓</span><span><b>Off-white on dark, ink on light.</b> The lime stop is the only colour that moves.</span></div>
-    <div class="rule dont"><span class="m">✕</span><span><b>No purple, ever.</b> The lilac/plum wordmark is retired. Lime is the signal now.</span></div>
+    <div class="rule dont"><span class="m">✕</span><span><b>No purple in the mark.</b> The lilac/plum wordmark is retired; lime is the signal. Lavender lives in the palette as a soft secondary, never in the wordmark.</span></div>
     <div class="rule do"><span class="m">✓</span><span><b>Clear space</b> of one cap-height all around. Minimum 40px tall.</span></div>
     <div class="rule dont"><span class="m">✕</span><span><b>No stretch, skew, shadow, gradient or outline.</b> Set it in Space Grotesk or not at all.</span></div>
   </div>
@@ -687,10 +690,10 @@ footer b{color:var(--muted)}
 
 <section class="wrap" id="colour">
   <p class="eyebrow">05 — Colour</p>
-  <h2 class="display">Near-black, two greens, one cherry</h2>
-  <p class="lead">A dark operating-system palette. Void black as the ground, cool greys for structure, a green family — <span class="hl">acid lime</span> that signals and a <b style="color:var(--fg)">deep moss</b> for depth — and <span class="cherry">cherry red</span> for heat: urgency, the 🍒, the things you must not do. Click any swatch to copy its hex.</p>
+  <h2 class="display">Near-black, two greens, a cherry, a lavender</h2>
+  <p class="lead">A dark operating-system palette. Void black as the ground, cool greys for structure, a green family — <span class="hl">acid lime</span> that signals and a <b style="color:var(--fg)">deep moss</b> for depth — <span class="cherry">cherry red</span> for heat, and <b style="color:var(--fg)">light lavender</b> as the one soft secondary. Click any swatch to copy its hex.</p>
   <div class="swatches" id="swatches"></div>
-  <p class="note">Discipline: <b>lime</b> is for action and emphasis only — CTAs, the wordmark stop, one highlighted phrase. <b>Moss</b> is its darker companion — pressed states, tonal depth, and the text-safe green on light. <b>Cherry</b> is urgency and warnings, never body text. No purple, no pastels-as-wellness, no gradient heroes. On light grounds lime darkens to moss <code>#3E5400</code> for legible text while staying bright as a fill — the tokens handle it. The values here are the source of truth.</p>
+  <p class="note">Discipline: <b>lime</b> is for action and emphasis only — CTAs, the wordmark stop, one highlighted phrase. <b>Moss</b> is its darker companion — pressed states, tonal depth, and the text-safe green on light. <b>Cherry</b> is urgency and warnings, never body text. <b>Light lavender <code>#EBD7FF</code></b> is the one sanctioned secondary — a soft fill for tints, quiet backgrounds and supporting accents on dark, never a CTA and never the wordmark. The retired plum/lilac brand purple stays retired; lavender is a pastel accent, not a return to it. No gradient heroes. On light grounds lime darkens to moss <code>#3E5400</code> for legible text while staying bright as a fill — the tokens handle it. The values here are the source of truth.</p>
 
   <h3 style="margin-top:44px">Contrast &amp; access</h3>
   <p class="lead">Dark ground, high-contrast text — and one rule that trips everyone up: bright lime is a <em>fill</em> colour, never text on white. These pairings pass WCAG AA; the last one doesn't.</p>
@@ -700,7 +703,9 @@ footer b{color:var(--muted)}
     <div class="pair pass"><span class="swtiny" style="background:#D4FF4F"></span><div class="txt"><b>Ink on lime</b><span>Primary buttons · #0B0B10 on #D4FF4F</span></div></div>
     <div class="pair pass"><span class="swtiny" style="background:#F6F6F2;border:1px solid var(--line-2)"></span><div class="txt"><b>Moss on white</b><span>Accent text on light · #3E5400 on #F6F6F2</span></div></div>
     <div class="pair pass"><span class="swtiny" style="background:#F6F6F2;border:1px solid var(--line-2)"></span><div class="txt"><b>Ink on white</b><span>Body on light · #12121A on #F6F6F2</span></div></div>
+    <div class="pair pass"><span class="swtiny" style="background:#EBD7FF"></span><div class="txt"><b>Ink on lavender</b><span>Secondary tint panels · #12121A on #EBD7FF</span></div></div>
     <div class="pair fail"><span class="swtiny" style="background:#F6F6F2;border:1px solid var(--line-2)"></span><div class="txt"><b>Lime on white</b><span>Illegible — swap to moss for any text</span></div></div>
+    <div class="pair fail"><span class="swtiny" style="background:#F6F6F2;border:1px solid var(--line-2)"></span><div class="txt"><b>Lavender on white</b><span>Too pale for text — it's a fill, like lime</span></div></div>
   </div>
   <p class="note">Also: keep body copy at 16px+ with room to breathe, size stats as plain digits, and never rely on colour alone — cherry warnings carry an ✕, lime confirmations a ✓. Accessible reads as considered, not clinical.</p>
 </section>
@@ -937,6 +942,33 @@ footer b{color:var(--muted)}
     <div class="pt"><b>Signature stamp</b><span>Stories closed with the wordmark + the lime stop and 🍒🌈.</span></div>
     <div class="pt"><b>Playbook drop</b><span>New Substack post → carousel + link. "Steal them all."</span></div>
   </div>
+
+  <h3 style="margin-top:44px">Content in the wild · the three pillars on a story</h3>
+  <p class="lead">Real story covers across the pillars — health, sales, revenue. Founder photo, Space Grotesk hook, one lime keyword, the script <span class="script">Time Rich</span> mark. Same system as the <a href="#video">reel covers</a>.</p>
+  <div class="story-grid">
+    <div class="reel story">
+      <img src="img/content/reel-longevity.jpg" alt="Story cover — build your AI longevity coach" loading="lazy">
+      <div class="scrim"></div>
+      <div class="ov"><h4>BUILD YOUR AI<br>LONGEVITY COACH<span style="color:#D4FF4F"> ♥</span></h4></div>
+      <span class="rlab">Health &amp; longevity</span>
+    </div>
+    <div class="reel story">
+      <img src="img/content/reel-pipeline.jpg" alt="Story cover — turn your dead CRM into a live hot pipeline" loading="lazy">
+      <div class="scrim"></div>
+      <div class="ov" style="text-align:center">
+        <div class="script" style="color:#fff;font-size:26px;margin-bottom:6px;text-shadow:0 2px 12px rgba(0,0,0,.6)">Time Rich<span style="color:#D4FF4F">♥</span></div>
+        <h4 style="font-size:clamp(16px,2.3vw,22px)">Turn your <u style="color:#D4FF4F">dead</u> CRM into a live<br><span style="font-size:1.5em;display:inline-block;margin-top:5px;color:#D4FF4F">HOT PIPELINE</span></h4>
+      </div>
+      <span class="rlab">Sales &amp; pipeline</span>
+    </div>
+    <div class="reel story">
+      <img src="img/content/reel-revenue.jpg" alt="Story cover — has AI increased your revenue" loading="lazy">
+      <div class="scrim"></div>
+      <div class="ov"><h4>You've talked to AI for over a year</h4><div class="sub">but has it increased your <u>REVENUE</u>?</div></div>
+      <span class="rlab">Read caption…</span>
+    </div>
+  </div>
+  <p class="note"><b>On-brand recreations</b> built from Ella's own Ibiza photos with the exact hooks (the pasted Canva stories can't be read from chat). Swap in the originals at <code>brand/img/content/</code> — <code>reel-longevity.jpg</code>, <code>reel-pipeline.jpg</code>, <code>reel-revenue.jpg</code>.</p>
 </section>
 
 <section class="wrap" id="video">
@@ -1246,7 +1278,7 @@ Never "Ella x." Never "Cheers," "Talk soon," or "Best,".</pre>
   <div class="check">
     <label><input type="checkbox">Wordmark is Space Grotesk with the lime stop — off-white on dark, ink on light</label>
     <label><input type="checkbox">Lime only for action/emphasis; moss for depth; cherry only for urgency</label>
-    <label><input type="checkbox">No purple anywhere — the old palette is retired</label>
+    <label><input type="checkbox">No purple in the wordmark — old plum retired; lavender is a secondary tint only</label>
     <label><input type="checkbox">Headlines in Space Grotesk; labels &amp; data in JetBrains Mono</label>
     <label><input type="checkbox">One primary (lime) button per screen, with a → on every CTA</label>
     <label><input type="checkbox">Lime never as text on white — moss for that</label>
@@ -1262,7 +1294,7 @@ Never "Ella x." Never "Cheers," "Talk soon," or "Best,".</pre>
 </section>
 
 <footer class="wrap">
-  <p><b>Time Rich — Brand, Voice &amp; Context Bible v4.1</b> · Owner: Ella Molony Cook · Updated 2026-07-18</p>
+  <p><b>Time Rich — Brand, Voice &amp; Context Bible v4.2</b> · Owner: Ella Molony Cook · Updated 2026-07-18</p>
   <p>One system: the visual identity (near-black, lime + moss green, cherry heat, Space Grotesk &amp; JetBrains Mono) merged with the paste-ready context pack and the video reference set. Built from timerich.ai and cross-referenced against the live checkout. Canonical source: <b>Time Rich / 07 Media / Brand /</b> and <b>Chief of Staff - Eden / EDEN-CONTEXT-PACK.md</b>. Voice is canonical in <b>voice-style.md</b> — if anything here disagrees, that file wins.</p>
 </footer>
 </main>
@@ -1291,6 +1323,7 @@ Never "Ella x." Never "Cheers," "Talk soon," or "Best,".</pre>
     {n:'Moss',h:'#4C6600',job:'Deep green — pressed states, on-light text, tonal depth',light:false},
     {n:'Cherry',h:'#FF5C5C',job:'Urgency, warnings, the 🍒 — never body text',light:true},
     {n:'Deep Cherry',h:'#B0141C',job:'Pressed urgency, deep accent',light:false},
+    {n:'Light Lavender',h:'#EBD7FF',job:'Secondary — soft fills, tints & supporting accents on dark',light:true},
     {n:'Void',h:'#0B0B10',job:'Primary dark ground — the whole system lives here',light:false},
     {n:'Panel',h:'#14141C',job:'Cards, panels, raised surfaces',light:false},
     {n:'Text',h:'#F2F2F4',job:'Primary text on dark',light:true},
