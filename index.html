@@ -398,7 +398,8 @@
     /* ---------- WHATSAPP ---------- */
     .wa{position:relative;overflow:hidden}
     .wa::before{content:"";position:absolute;inset:0;background:radial-gradient(80% 80% at 85% 10%,rgba(212,255,79,.06) 0%,transparent 55%);pointer-events:none}
-    .wa-layout{display:grid;grid-template-columns:1.05fr .95fr;gap:48px;align-items:center;position:relative;z-index:1}
+    .wa-layout{display:grid;grid-template-columns:.95fr 1.05fr;gap:48px;align-items:center;position:relative;z-index:1}
+    .wa-side{order:-1}
     .wa h2{font-size:clamp(34px,5.4vw,62px);line-height:.95;letter-spacing:-.03em}
     .wa-sub{font-family:var(--mono);font-size:12.5px;letter-spacing:.14em;text-transform:uppercase;color:var(--lime);margin-top:14px}
     .wa-lead{font-size:18px;line-height:1.6;color:var(--muted);max-width:520px;margin:18px 0 6px}
@@ -610,9 +611,6 @@
       <div class="bio-photos">
         <div class="bio-photo">
           <img width="860" height="573" loading="lazy" decoding="async" src="/revenue/img/rev-11.jpg" alt="Ella Molony Cook speaking on a panel" />
-        </div>
-        <div class="bio-photo">
-          <img width="573" height="860" loading="lazy" decoding="async" src="/revenue/img/rev-12.jpg" alt="Ella Molony Cook, founder of Time Rich, at a curated investor dinner" />
         </div>
       </div>
       <div class="bio-text">
@@ -1171,7 +1169,7 @@ body{background:#000 !important}
 .cards .q-feature{grid-column:1/-1;padding:clamp(28px,4vw,42px)}
 .cards .q-feature .outcome{font-size:clamp(20px,2.6vw,29px);line-height:1.45;max-width:66ch}
 .foot-bar a{color:var(--muted);text-decoration:none}.foot-bar a:hover{color:var(--lime)}
-.gap-photo{width:100%;border-radius:18px;border:1px solid var(--line-2);box-shadow:0 24px 60px rgba(0,0,0,.45);aspect-ratio:4/5;object-fit:cover;display:block}
+.gap-photo{width:100%;height:auto;border-radius:18px;border:1px solid var(--line-2);box-shadow:0 24px 60px rgba(0,0,0,.45);object-fit:contain;display:block}
 .wall{padding-top:clamp(40px,6vw,72px);padding-bottom:clamp(48px,7vw,88px)}
 .wall .section-head{margin-bottom:6px}
 .wall-strip{display:flex;gap:16px;overflow-x:auto;scroll-snap-type:x mandatory;padding:16px 24px 14px;scrollbar-width:thin;scrollbar-color:var(--line-2) transparent;cursor:grab;-webkit-overflow-scrolling:touch}
