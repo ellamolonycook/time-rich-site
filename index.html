@@ -293,7 +293,7 @@
 
     /* ---------- MANIFESTO ---------- */
     .manifesto-grid{display:grid;grid-template-columns:.85fr 1.15fr;gap:56px;align-items:start}
-    .manifesto-photo img{width:100%;border-radius:16px;display:block;border:1px solid var(--line)}
+    .manifesto-photo img{width:100%;height:auto;border-radius:16px;display:block;object-fit:cover;aspect-ratio:4/5;border:1px solid var(--line)}
     .manifesto-copy h2{font-size:clamp(26px,3.6vw,42px);margin-bottom:18px}
     .manifesto-copy p{color:var(--muted)}
     .manifesto-copy em{color:var(--text);font-style:italic}
@@ -1184,7 +1184,7 @@ body{background:#000 !important}
 .nav-links a:not(.btn)::after{content:"";position:absolute;left:0;right:0;bottom:-3px;height:1.5px;background:var(--lime);transform:scaleX(0);transform-origin:left;transition:transform .2s ease}
 .nav-links a:not(.btn):hover::after{transform:scaleX(1)}
 .trap-grid{display:grid;grid-template-columns:.8fr 1.2fr;gap:48px;align-items:center}
-.trap-photo img{width:100%;border-radius:16px;display:block;object-fit:cover;aspect-ratio:4/5}
+.trap-photo img{width:100%;height:auto;border-radius:16px;display:block;object-fit:cover;aspect-ratio:4/5}
 .trap-copy .trap-narrow{max-width:60ch}
 .q-punch{display:block;margin-top:.7em;font-weight:800;color:var(--lime,#D4FF4F)}
 .manifesto-close{margin-top:22px;font-weight:800;font-size:1.25rem}
