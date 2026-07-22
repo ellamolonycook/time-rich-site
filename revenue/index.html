@@ -672,14 +672,92 @@
     </div>
   </section>
 
+  <style>
+    .sched-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:12px}
+    .sched-cell{background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:22px 20px}
+    .sched-cell .sc-k{font-family:var(--mono);font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--lime);margin-bottom:8px}
+    .sched-cell .sc-v{font-size:19px;font-weight:700;color:var(--text);letter-spacing:-.01em}
+    .wk-list{display:flex;flex-direction:column;gap:12px}
+    .wk{display:grid;grid-template-columns:auto 1fr;gap:18px;align-items:start;background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:20px 22px;transition:border-color .16s ease}
+    .wk:hover{border-color:rgba(212,255,79,.4)}
+    .wk-n{width:36px;height:36px;border-radius:10px;background:var(--lime-dim);color:var(--lime);font-family:var(--mono);font-size:15px;font-weight:800;display:flex;align-items:center;justify-content:center;flex:none}
+    .wk-t h3{font-size:17px;margin:0 0 4px;letter-spacing:-.01em;line-height:1.25}
+    .wk-t p{color:var(--muted);font-size:15px;margin:0;line-height:1.5}
+    .wk-note{margin-top:20px;font-family:var(--mono);font-size:12.5px;color:var(--dim);letter-spacing:.02em;max-width:660px;line-height:1.6}
+    .ns-list{display:flex;flex-direction:column;gap:12px}
+    .ns{display:grid;grid-template-columns:auto 1fr;gap:16px;align-items:start;background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:16px 18px}
+    .ns-n{width:30px;height:30px;border-radius:8px;background:var(--lime-dim);color:var(--lime);font-family:var(--mono);font-weight:800;font-size:14px;display:flex;align-items:center;justify-content:center;flex:none}
+    .ns p{margin:0;font-size:15.5px;color:var(--muted);line-height:1.5}
+    .ns b{color:var(--text)}
+    .ns-cta{margin-top:26px}
+    @media(max-width:820px){.sched-grid{grid-template-columns:repeat(3,1fr)}}
+    @media(max-width:520px){.sched-grid{grid-template-columns:repeat(2,1fr)}.sched-cell{padding:16px}.sched-cell .sc-v{font-size:17px}.wk{gap:14px;padding:16px}.wk-t h3{font-size:15.5px}}
+  </style>
+
+  <!-- TIME RICH SCHEDULE -->
+  <section class="sched" id="schedule">
+    <div class="wrap">
+      <div class="section-head">
+        <span class="eyebrow">Time Rich Schedule</span>
+        <h2>The cohort at a glance.</h2>
+      </div>
+      <div class="sched-grid">
+        <div class="sched-cell"><div class="sc-k">Prep</div><div class="sc-v">2 weeks</div></div>
+        <div class="sched-cell"><div class="sc-k">Live sessions</div><div class="sc-v">8 weeks</div></div>
+        <div class="sched-cell"><div class="sc-k">Format</div><div class="sc-v">Pre-recorded + live</div></div>
+        <div class="sched-cell"><div class="sc-k">Kick-off</div><div class="sc-v">Oct 5</div></div>
+        <div class="sched-cell"><div class="sc-k">Seats</div><div class="sc-v">8-12 women</div></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- HOW THE 8 WEEKS RUN -->
+  <section class="weeks" id="weeks">
+    <div class="wrap">
+      <div class="section-head">
+        <span class="eyebrow">The build, week by week</span>
+        <h2>Two weeks to prep. Eight to build an engine that <span class="hl">runs</span>.</h2>
+      </div>
+      <div class="wk-list">
+        <div class="wk"><div class="wk-n">→</div><div class="wk-t"><h3>Apply and fit call</h3><p>I read every application myself, reply in 48 hours, and book a short call if it's a fit.</p></div></div>
+        <div class="wk"><div class="wk-n">P</div><div class="wk-t"><h3>2 prep weeks</h3><p>You get set up before the live kick-off on Oct 5, so nobody starts cold.</p></div></div>
+        <div class="wk"><div class="wk-n">1</div><div class="wk-t"><h3>Your Context · Highest-ROI Chief Revenue Agent</h3><p>We load your business into the engine and build the agent that runs revenue like a CRO, aimed at your real buyer.</p></div></div>
+        <div class="wk"><div class="wk-n">2</div><div class="wk-t"><h3>Super Connectors &amp; LinkedIn Automation</h3><p>Surface who's ready to buy and reach them in your voice, so your network works while you build.</p></div></div>
+        <div class="wk"><div class="wk-n">3</div><div class="wk-t"><h3>Partnership Agent &amp; Affiliate Structure</h3><p>Turn other people's audiences into your pipeline: a partnership engine and an affiliate model that pays when you do.</p></div></div>
+        <div class="wk"><div class="wk-n">4</div><div class="wk-t"><h3>Sell Through Story · ViKA</h3><p>The guest teacher you already feature. Pipeline gets the meeting, story gets you paid.</p></div></div>
+        <div class="wk"><div class="wk-n">5</div><div class="wk-t"><h3>Your Funnel &amp; Community-Led Value</h3><p>One clear path from stranger to sold, and a community that brings its own people.</p></div></div>
+        <div class="wk"><div class="wk-n">6</div><div class="wk-t"><h3>AI Revenue Engine</h3><p>Wire the agents into one system, so Monday starts with pipeline instead of a blank page.</p></div></div>
+        <div class="wk"><div class="wk-n">7</div><div class="wk-t"><h3>Luma &amp; Substack Formula</h3><p>Events and email that feed your pipeline on repeat.</p></div></div>
+        <div class="wk"><div class="wk-n">8</div><div class="wk-t"><h3>Chief Revenue Officer + Closer Prep</h3><p>You leave running revenue like a CRO, briefed for the calls that close.</p></div></div>
+      </div>
+      <p class="wk-note">Every cohort is different. These weeks are built around the women in the room, and some tools get swapped for what that cohort actually needs.</p>
+    </div>
+  </section>
+
+  <!-- NEXT STEPS -->
+  <section class="nextsteps">
+    <div class="wrap narrow">
+      <div class="section-head">
+        <span class="eyebrow">Next steps to increase profitability</span>
+        <h2>Applying costs you nothing but the <span class="hl">truth</span>.</h2>
+      </div>
+      <div class="ns-list">
+        <div class="ns"><span class="ns-n">1</span><p><b>I read it myself.</b> Every application, with a reply within 48 hours.</p></div>
+        <div class="ns"><span class="ns-n">2</span><p><b>A short, no-pressure fit call</b> if there's a match. We both decide.</p></div>
+        <div class="ns"><span class="ns-n">3</span><p><b>If it's not a fit, I say so straight,</b> and point you somewhere better.</p></div>
+      </div>
+      <div class="ns-cta"><a class="btn" href="/apply/" onclick="track('apply_open')">Apply to the Accelerator →</a></div>
+    </div>
+  </section>
+
   <!-- (1:1 coaching now lives in the feature section below) -->
 
   <!-- WHAT YOU GET (club perks, secondary) -->
   <section class="what">
     <div class="wrap trap-grid">
-      <div class="trap-photo"><img width="900" height="1125" loading="lazy" decoding="async" src="img/rev-31.jpg" alt="ViKA, the award-winning international story speaker who teaches Week 3" /></div>
+      <div class="trap-photo"><img width="900" height="1125" loading="lazy" decoding="async" src="img/rev-31.jpg" alt="ViKA, the award-winning international story speaker who teaches Week 4" /></div>
       <div class="trap-copy">
-      <span class="eyebrow">Week 3 · Guest teacher</span>
+      <span class="eyebrow">Week 4 · Guest teacher</span>
       <h2>Pipeline gets you the meeting. Story gets you paid.</h2>
       <div class="trap-narrow">
         <p>You can build the cleanest pipeline in the world and still lose the deal in the room, because the buyer felt nothing. The best offer doesn't win, the best-told one does. So Week 3 is run by <strong>ViKA</strong>, who's closed multi-million-dollar deals on the strength of story, keynoted on global stages, and founded BRAVE NEW STORY.</p>
