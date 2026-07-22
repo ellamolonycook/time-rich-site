@@ -710,7 +710,16 @@
     .ns b{color:var(--text)}
     .ns-cta{margin-top:26px}
     @media(max-width:820px){.sched-grid{grid-template-columns:repeat(3,1fr)}}
-    @media(max-width:520px){.sched-grid{grid-template-columns:repeat(2,1fr)}.sched-cell{padding:16px}.sched-cell .sc-v{font-size:17px}.tl2::before{left:14px;bottom:84px}.wk2,.pre,.endpoint{grid-template-columns:30px 1fr;gap:13px}.wk2-n,.pre-n,.end-n{width:30px;height:30px;font-size:13px}.phase-label,.wk-note{padding-left:43px}.wk2-card h3{font-size:15.5px}}
+    .sched-cell{transition:transform .16s ease,border-color .16s ease,box-shadow .16s ease}
+    .sched-cell:hover{transform:translateY(-3px);border-color:rgba(212,255,79,.4);box-shadow:0 12px 30px -18px rgba(212,255,79,.45)}
+    .wk2-n{transition:background .16s ease,color .16s ease,transform .16s ease,border-color .16s ease}
+    .wk2-card{transition:transform .18s ease,border-color .18s ease,box-shadow .18s ease}
+    .wk2:hover .wk2-n{background:var(--lime);color:#0A0A0A;border-color:var(--lime);transform:scale(1.06)}
+    .wk2:hover .wk2-card{transform:translateY(-2px);border-color:rgba(212,255,79,.45);box-shadow:0 12px 30px -20px rgba(212,255,79,.4)}
+    .tl2-fill{position:absolute;left:17px;top:8px;width:2px;height:0;background:var(--lime);border-radius:2px;box-shadow:0 0 12px rgba(212,255,79,.55);z-index:0}
+    .pre{transition:opacity .18s ease}
+    .pre:hover{opacity:1}
+    @media(max-width:520px){.sched-grid{grid-template-columns:repeat(2,1fr)}.sched-cell{padding:16px}.sched-cell .sc-v{font-size:17px}.tl2::before{left:14px;bottom:84px}.tl2-fill{left:14px}.wk2,.pre,.endpoint{grid-template-columns:30px 1fr;gap:13px}.wk2-n,.pre-n,.end-n{width:30px;height:30px;font-size:13px}.phase-label,.wk-note{padding-left:43px}.wk2-card h3{font-size:15.5px}}
   </style>
 
   <!-- TIME RICH SCHEDULE -->
@@ -721,8 +730,8 @@
         <h2>The cohort at a glance.</h2>
       </div>
       <div class="sched-grid">
-        <div class="sched-cell"><div class="sc-k">Prep</div><div class="sc-v">2 weeks</div></div>
-        <div class="sched-cell"><div class="sc-k">Live sessions</div><div class="sc-v">8 weeks</div></div>
+        <div class="sched-cell"><div class="sc-k">Prep</div><div class="sc-v"><span data-count="2">2</span> weeks</div></div>
+        <div class="sched-cell"><div class="sc-k">Live sessions</div><div class="sc-v"><span data-count="8">8</span> weeks</div></div>
         <div class="sched-cell"><div class="sc-k">Format</div><div class="sc-v">Pre-recorded + live</div></div>
         <div class="sched-cell"><div class="sc-k">Kick-off</div><div class="sc-v">Oct 5</div></div>
         <div class="sched-cell"><div class="sc-k">Seats</div><div class="sc-v">8-12 women</div></div>
@@ -739,11 +748,12 @@
         <p class="wk-sub">Every week ships one working piece of your revenue system. You start with your context and leave running the whole engine.</p>
       </div>
 
-      <div class="plabel">Before kick-off</div>
+      <div class="plabel">Prep Work</div>
       <div class="pre"><div class="pre-n">→</div><div><b>Apply and fit call</b><span>I read every application myself, reply in 48 hours, and book a short call if it's a fit.</span></div></div>
       <div class="pre"><div class="pre-n">P</div><div><b>2 prep weeks</b><span>You get set up before the live kick-off on Oct 5, so nobody starts cold.</span></div></div>
 
       <div class="tl2">
+        <div class="tl2-fill" aria-hidden="true"></div>
         <div class="phase-label">Phase 1 · Foundation <span class="ct">weeks 1-2</span></div>
         <div class="wk2"><div class="wk2-n">1</div><div class="wk2-card"><div class="wk2-hd"><h3>Your Context · Highest-ROI Chief Revenue Agent</h3></div><p>We load your business into the engine and build the agent that runs revenue like a CRO, aimed at your real buyer.</p></div></div>
         <div class="wk2"><div class="wk2-n">2</div><div class="wk2-card"><div class="wk2-hd"><h3>Super Connectors &amp; LinkedIn Automation</h3></div><p>Surface who's ready to buy and reach them in your voice, so your network works while you build.</p></div></div>
@@ -1791,5 +1801,38 @@ body{background:#000 !important}
 <script>
 window.track = window.track || function(){};
 window.gtag = window.gtag || function(){};
+</script>
+<script>
+(function(){
+  var reduce = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  // reveal the week cards + endpoint as they scroll in (reuses .reveal/.in from the site)
+  var items = document.querySelectorAll('.wk2,.endpoint');
+  if(!reduce && 'IntersectionObserver' in window && items.length){
+    items.forEach(function(el){ el.classList.add('reveal'); });
+    var ro = new IntersectionObserver(function(es){
+      es.forEach(function(e){ if(e.isIntersecting){ e.target.classList.add('in'); ro.unobserve(e.target); } });
+    }, {threshold:.12, rootMargin:'0px 0px -6% 0px'});
+    items.forEach(function(el){ ro.observe(el); });
+  }
+  // lime spine fills as you scroll through the timeline
+  var tls = document.querySelectorAll('.tl2');
+  if(!reduce && tls.length){
+    var upd = function(){
+      var trig = window.innerHeight * 0.62;
+      tls.forEach(function(tl){
+        var fill = tl.querySelector('.tl2-fill'); if(!fill) return;
+        var track = tl.offsetHeight - 86; if(track < 8){ track = tl.offsetHeight; }
+        var top = tl.getBoundingClientRect().top + 8;
+        var prog = (trig - top) / track;
+        prog = prog < 0 ? 0 : (prog > 1 ? 1 : prog);
+        fill.style.height = (prog * track) + 'px';
+      });
+    };
+    var tick = false;
+    window.addEventListener('scroll', function(){ if(!tick){ requestAnimationFrame(function(){ upd(); tick = false; }); tick = true; } }, {passive:true});
+    window.addEventListener('resize', upd, {passive:true});
+    upd();
+  }
+})();
 </script>
 </html>
