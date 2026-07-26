@@ -1290,6 +1290,74 @@ footer .brand-word{color:var(--cream)}
 }
 </style>
 
+<style id="mobile-polish">
+/* ===== PHONE POLISH =====
+   Measured on iPhone 13 (390x664 usable). Fixes, in order of impact:
+   1. chrome budget  — nav 85px + sticky bar 73px ate 24% of the screen
+   2. type floor     — 21 elements rendered under 14px, some at 9.5px
+   3. tap targets    — hamburger was 23x32; 44px is the Apple/WCAG minimum
+   4. clipped footer — 73px fixed bar sat over 38px of footer padding      */
+@media (max-width:880px){
+
+  /* --- 1. chrome budget: give the content back ~40px of screen --- */
+  .nav-inner{height:60px}
+  .brand img{height:42px}
+  .brand.brand-word{font-size:20px}
+  nav{background:var(--cream) !important}   /* was 93% alpha — body text ghosted through */
+  html{scroll-padding-top:72px}           /* anchor jumps clear the sticky nav */
+  .announce{padding:6px 16px;gap:10px;line-height:1.35}
+  .stickybar{padding:10px 14px calc(10px + env(safe-area-inset-bottom));gap:12px}
+  .stickybar .btn{padding:12px 20px;font-size:15px}
+
+  /* --- 2. tap targets: 44px minimum --- */
+  .nav-toggle{display:flex;align-items:center;justify-content:center;
+    width:44px;height:44px;margin-right:-10px;font-size:24px;line-height:1;padding:0}
+  .announce a{display:inline-flex;align-items:center;min-height:44px;padding:4px 2px}
+  .brand{min-height:44px;align-items:center}
+  .foot-col a,.bio-social a.pill,.copy-btn{min-height:44px;display:inline-flex;
+    align-items:center;justify-content:center}
+  .bio-social a{min-height:44px;display:inline-flex;align-items:center;font-size:14px}
+  .foot-col li{margin-bottom:2px}
+  /* the hero's secondary text link is a 32px-tall target — grow the hit box,
+     not the underline, so the design reads the same */
+  .hero-cta a:not(.btn){display:inline-flex;align-items:center;min-height:44px}
+
+  /* --- 3. type floor: 13px on labels, 15px on prose ---
+     Wide tracking at small sizes is the worst case for readability, so the
+     bump comes with tighter letter-spacing rather than just a bigger number. */
+  html{-webkit-text-size-adjust:100%;text-size-adjust:100%}
+  .announce,.announce a{font-size:13px;letter-spacing:.05em}
+  .eyebrow{font-size:13px;letter-spacing:.12em}
+  .hero p.sub{font-size:14px;letter-spacing:.08em}
+  .gap-bignum small{font-size:14px;letter-spacing:.06em}
+  .card .name,.card .role{font-size:13px;letter-spacing:.05em}
+  .protip .label,.wa-sub,.t-fine{font-size:13px;letter-spacing:.08em}
+  .podcast-figure figcaption{font-size:13px}
+  .wall-hint{font-size:13px;letter-spacing:.06em}
+  .ov-tag{font-size:13px;letter-spacing:.09em}
+  .foot-col h4{font-size:13px;letter-spacing:.1em}
+  .bio-social a.pill,.bio-social .pill{font-size:14px}
+  .bio-chips li,.tease-chips li{font-size:13px;letter-spacing:.05em}
+  .ms span{font-size:13px;letter-spacing:.04em}
+  /* #prompts wins on specificity, so these have to match it to take effect */
+  #prompts .pcard p,#prompts .pcard p em{font-size:15px;line-height:1.5}
+  .pcard p,.pcard em{font-size:15px;line-height:1.55}
+  .foot-bar,.foot-bar span,.foot-bar a{font-size:13px}
+
+  /* --- 4. stop the fixed bar from covering the end of the page --- */
+  footer{padding-bottom:calc(96px + env(safe-area-inset-bottom))}
+}
+
+@media (max-width:520px){
+  .nav-inner{height:56px}
+  .brand img{height:38px}
+  html{scroll-padding-top:66px}
+  .stickybar .sb-txt{display:none}
+  .stickybar .btn{width:100%;text-align:center}
+  .announce{font-size:13px;letter-spacing:.03em;line-height:1.5}
+}
+</style>
+
   <!-- STICKY APPLY BAR -->
   <div class="stickybar" id="stickybar" aria-hidden="true">
     <span class="sb-txt">Twelve seats. Eight weeks.<br />Build your AI revenue engine</span>

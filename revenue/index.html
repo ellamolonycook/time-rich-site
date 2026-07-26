@@ -1318,6 +1318,86 @@ footer .brand-word{color:var(--cream)}
 .faq-cta .btn-xl:hover{box-shadow:0 18px 44px -14px rgba(66,75,54,.65)}
 </style>
 
+<style id="mobile-polish">
+/* ===== PHONE POLISH =====
+   Measured on iPhone 13 (390x664 usable). Fixes, in order of impact:
+   1. chrome budget  — nav 85px + sticky bar 73px ate 24% of the screen
+   2. type floor     — 25 elements rendered under 14px, the week tags at 9.5px
+   3. tap targets    — hamburger was 23x32; 44px is the Apple/WCAG minimum
+   4. clipped bottom — 73px fixed bar sat over the legal bar                */
+@media (max-width:880px){
+
+  /* --- 1. chrome budget: give the content back ~40px of screen --- */
+  .nav-inner{height:60px}
+  .brand img{height:42px}
+  .brand.brand-word{font-size:20px}
+  nav{background:var(--cream) !important}   /* was 93% alpha — body text ghosted through */
+  html{scroll-padding-top:72px}           /* anchor jumps clear the sticky nav */
+  .announce{padding:6px 16px;gap:10px;line-height:1.35}
+  .stickybar{padding:10px 14px calc(10px + env(safe-area-inset-bottom));gap:12px}
+  .stickybar .btn{padding:12px 20px;font-size:15px}
+
+  /* --- 2. tap targets: 44px minimum --- */
+  .nav-toggle{display:flex;align-items:center;justify-content:center;
+    width:44px;height:44px;margin-right:-10px;font-size:24px;line-height:1;padding:0}
+  .announce a{display:inline-flex;align-items:center;min-height:44px;padding:4px 2px}
+  .brand{min-height:44px;align-items:center}
+  .foot-col a,.bio-social a.pill{min-height:44px;display:inline-flex;
+    align-items:center;justify-content:center}
+  .bio-social a{min-height:44px;display:inline-flex;align-items:center;font-size:14px}
+  .foot-col li{margin-bottom:2px}
+  /* the hero's secondary text link is a 32px-tall target — grow the hit box,
+     not the underline, so the design reads the same */
+  .hero-cta a:not(.btn){display:inline-flex;align-items:center;min-height:44px}
+  .fitgrid .fit h4{font-size:13px;letter-spacing:.08em}
+
+  /* --- 3. type floor: 13px on labels, 15px on prose ---
+     Wide tracking at small sizes is the worst case for readability, so the
+     bump comes with tighter letter-spacing rather than just a bigger number. */
+  html{-webkit-text-size-adjust:100%;text-size-adjust:100%}
+  .announce,.announce a{font-size:13px;letter-spacing:.05em}
+  .eyebrow{font-size:13px;letter-spacing:.12em}
+  .hero p.sub{font-size:14px;letter-spacing:.08em}
+  .bio-chips li{font-size:13px;letter-spacing:.05em}
+  .bio-social a.pill,.bio-social .pill{font-size:14px}
+  .card .name,.card .role{font-size:13px;letter-spacing:.05em}
+  .t-fine,.t-tag,.t-sub{font-size:13px;letter-spacing:.07em}
+  .accel-micro{font-size:14px}
+  .foot-col h4{font-size:13px;letter-spacing:.1em}
+  .legalbar{font-size:13px;letter-spacing:.03em}
+
+  /* the "machine" diagram — stacked on phones, so it can afford real sizes */
+  .m-io{font-size:14px;letter-spacing:.06em;padding:14px 18px}
+  .m-brain{font-size:13px;letter-spacing:.06em}
+  .m-agent{font-size:14px;line-height:1.45}
+  .m-agent em{font-size:13px}
+
+  /* the eight-week timeline — the densest block on the page */
+  .sched-cell .sc-k{font-size:13px;letter-spacing:.08em}
+  .plabel{font-size:13px;letter-spacing:.1em}
+  .phase-label{font-size:13px;letter-spacing:.09em}
+  .phase-label .ct{font-size:13px;display:block;margin-left:0;margin-top:3px}
+  .wk-tag{font-size:11.5px;letter-spacing:.07em;padding:4px 9px}
+  .wk-note{font-size:14px;line-height:1.65}
+  .pre span{font-size:15px;line-height:1.5}
+  .wk2-card p{font-size:15px}
+
+  /* --- 4. stop the fixed bar from covering the end of the page --- */
+  .legalbar{padding-bottom:calc(96px + env(safe-area-inset-bottom))}
+}
+
+@media (max-width:520px){
+  .nav-inner{height:56px}
+  .brand img{height:38px}
+  html{scroll-padding-top:66px}
+  .stickybar .sb-txt{display:none}
+  .stickybar .btn{width:100%;text-align:center}
+  .announce{font-size:13px;letter-spacing:.03em;line-height:1.5}
+  /* the phase label wraps to two lines at 390px — let it breathe */
+  .phase-label{line-height:1.4}
+}
+</style>
+
   <!-- STICKY APPLY BAR -->
   <div class="stickybar" id="stickybar" aria-hidden="true">
     <span class="sb-txt">Twelve seats · Starts 7 Sep<br />Early bird $1,497</span>
