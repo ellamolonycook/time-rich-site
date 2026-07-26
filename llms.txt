@@ -30,7 +30,9 @@
 
 ## Links
 - Home: https://timerich.ai/
-- Apply: https://timerich.ai/#apply
-- Free guides: https://timerich.ai/#guides
-- Workshops & events calendar: https://timerich.ai/#what
-- AI Revenue Accelerator: https://timerich.ai/revenue/
+- Free prompts: https://timerich.ai/#prompts
+- Workshops & events calendar: https://timerich.ai/#events
+- About Ella: https://timerich.ai/#bio
+- AI Revenue Accelerator (full details + application): https://timerich.ai/revenue/
+- 1:1 AI System Coaching: https://timerich.ai/coaching/
+- Time Rich Club: https://timerich.ai/club/
