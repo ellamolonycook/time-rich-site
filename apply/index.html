@@ -650,6 +650,74 @@ body{background:#000 !important}
   .club-foot a{color:var(--dim)}
   .club-foot a:hover{color:var(--lime)}
 </style>
+<style id="cream-system">
+/* ===== CREAM / DEEP GREEN / SAGE — abundant light system =====
+   Matches the live system on the homepage and /revenue/.
+   Lime (--pop) appears only as a highlighter swipe or on deep green. */
+:root{
+  color-scheme:light;
+  --cream:#FFFCEB; --sage:#DCDEBF; --sage-lt:#E9EAD5; --sage-dk:#C9CCA6;
+  --green:#424B36; --green-deep:#333A28; --green-mid:#4E5840;
+  --pop:#D4FF4F;
+  --bg:#FFFCEB; --panel:#DCDEBF; --panel2:#E9EAD5;
+  --line:rgba(66,75,54,.20); --line-2:rgba(66,75,54,.34);
+  --text:#424B36; --muted:#5B6449; --dim:#7E8768;
+  --lime:#67762E; --lime-dim:#EDF7C6; --red:#A8492F;
+  --lilac:#4E5840; --violet-2:#8E9A5E;
+}
+body{background:#FFFCEB !important;color:var(--text)}
+h1,h2,h3{color:var(--green-deep)}
+::selection{background:var(--pop);color:var(--green-deep)}
+a{color:var(--lime)}
+
+/* nav */
+nav{background:rgba(255,252,235,.93) !important;border-bottom:1px solid var(--line)}
+.nav-links a{color:var(--muted)}
+.nav-links a:hover{color:var(--lime)}
+.brand-word{color:var(--text)}
+.brand-word .wm-dot{color:var(--lime)}
+
+/* the lime highlight is a highlighter swipe, never a text colour */
+.hl{color:inherit;background:linear-gradient(180deg,transparent 62%,rgba(212,255,79,.9) 62%);padding:0 .05em}
+
+/* buttons: deep green on cream */
+.btn,.form-submit{background:var(--green);color:var(--cream)}
+.btn:hover,.form-submit:hover{box-shadow:0 12px 30px -12px rgba(66,75,54,.55)}
+.btn.ghost{background:transparent;color:var(--text);border:1px solid var(--line-2)}
+.btn.ghost:hover{border-color:var(--green);color:var(--green-deep)}
+
+/* hero, panel, footer */
+.club-hero p{color:var(--muted)}
+.club-nav-back{color:var(--dim)}
+.club-nav-back:hover{color:var(--lime)}
+.club-panel{background:var(--panel);border-color:var(--line);border-radius:6px 18px 18px 18px}
+.club-foot{border-top-color:var(--line)}
+.club-foot p,.club-foot a{color:var(--dim)}
+.club-foot a:hover{color:var(--lime)}
+
+/* form on cream */
+.form-section{color:var(--lime);border-bottom-color:var(--line)}
+.field label{color:var(--green-deep)}
+.field label span{color:var(--red)}
+.field .hint{color:var(--green-mid)}
+.field input[type="text"],.field input[type="email"],.field input[type="tel"],.field input[type="url"],.field textarea{
+  background:var(--cream);border-color:var(--line-2);color:var(--text)}
+.field input:focus,.field textarea:focus{border-color:var(--green);box-shadow:0 0 0 3px rgba(66,75,54,.13)}
+.field input[type="file"]{color:var(--muted)}
+.checks legend{color:var(--green-deep)}
+.checks legend .opt{color:var(--green-mid)}
+.check{color:var(--green-mid)}
+.check input{accent-color:#67762E}
+.form-note{color:var(--red)}
+.inapp-hint{background:var(--lime-dim);border-color:rgba(103,118,46,.4);color:var(--green-deep)}
+.modal-head p{color:var(--muted)}
+
+/* success state */
+.success-mark{background:var(--pop);color:var(--green-deep)}
+.apply-success p{color:var(--muted)}
+.success-resources a,.success-social a{background:var(--cream);border-color:var(--line);color:var(--text)}
+.success-resources a:hover,.success-social a:hover{border-color:var(--green);color:var(--green-deep)}
+</style>
 </head>
 <body>
   <nav>
