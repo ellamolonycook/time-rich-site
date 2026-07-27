@@ -353,18 +353,6 @@ nav{background:rgba(255,252,235,.94);-webkit-backdrop-filter:blur(10px);backdrop
 .lq-note{margin-top:22px;padding-top:18px;border-top:1px solid rgba(255,252,235,.2);font-family:var(--mono);font-size:12.5px;letter-spacing:.03em;color:rgba(255,252,235,.66);line-height:1.65}
 .lq-note b{color:var(--pop)}
 
-/* ---------- PROOF SLOTS ---------- */
-.proof-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}
-.proof{background:var(--panel2);border:1px dashed var(--line-2);border-radius:14px;overflow:hidden;display:flex;flex-direction:column}
-.proof img{width:100%;height:auto;display:block;aspect-ratio:4/3;object-fit:cover;border-bottom:1px solid var(--line)}
-.proof-ph{aspect-ratio:4/3;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px;text-align:center;padding:20px;background:repeating-linear-gradient(45deg,var(--panel2),var(--panel2) 12px,rgba(66,75,54,.05) 12px,rgba(66,75,54,.05) 24px)}
-.proof-ph .ph-n{font-family:var(--display);font-weight:700;font-size:30px;color:var(--sage-dk);line-height:1}
-.proof-ph .ph-t{font-family:var(--mono);font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--dim)}
-.proof-cap{padding:14px 16px}
-.proof-cap b{display:block;font-family:var(--display);font-size:15px;color:var(--green-deep);font-weight:600}
-.proof-cap span{display:block;margin-top:4px;font-size:13.5px;color:var(--muted);line-height:1.45}
-.proof-note{margin-top:20px;font-family:var(--mono);font-size:12px;letter-spacing:.04em;color:var(--dim);text-align:center}
-
 /* ---------- NOT FOR ---------- */
 .notfor{background:var(--panel);border:1px solid var(--line);border-radius:16px;padding:clamp(28px,4vw,44px);text-align:center}
 .notfor h2{font-size:clamp(24px,3.2vw,36px);max-width:20ch;margin:0 auto}
@@ -427,11 +415,6 @@ nav{background:rgba(255,252,235,.94);-webkit-backdrop-filter:blur(10px);backdrop
 .legalbar a{color:rgba(255,252,235,.86);text-decoration:none}
 .legalbar a:hover{color:var(--pop)}
 
-/* ---------- DRAFT FLAG (removed automatically once checkout is wired) ---------- */
-.draftflag{position:fixed;left:14px;bottom:76px;z-index:9999;max-width:280px;background:var(--red);color:#fff;font-family:var(--mono);font-size:11px;line-height:1.5;letter-spacing:.04em;padding:12px 14px;border-radius:12px;box-shadow:0 14px 34px -12px rgba(0,0,0,.5)}
-.draftflag b{display:block;font-size:10.5px;letter-spacing:.16em;text-transform:uppercase;margin-bottom:4px}
-.draftflag.flash{animation:flashFlag .5s ease 2}
-@keyframes flashFlag{0%,100%{transform:none}50%{transform:scale(1.06)}}
 
 /* ---------- SPARKLE TRAIL ---------- */
 .sparkle{position:fixed;top:0;left:0;width:9px;height:9px;margin:-4px 0 0 -4px;pointer-events:none;z-index:9999;will-change:transform,opacity;clip-path:polygon(50% 0%,61% 35%,98% 35%,68% 57%,79% 91%,50% 70%,21% 91%,32% 57%,2% 35%,39% 35%);animation:sprinkle .9s ease-out forwards}
@@ -461,7 +444,6 @@ nav{background:rgba(255,252,235,.94);-webkit-backdrop-filter:blur(10px);backdrop
   .hero{padding:40px 0 48px}
   .hero-grid,.story-grid,.bio-grid{grid-template-columns:1fr;gap:36px}
   .pricebox{max-width:none}
-  .proof-grid{grid-template-columns:1fr}
   .mech-grid,.reach-grid{grid-template-columns:1fr}
   .story-photo,.bio-photo{max-width:400px;margin:0 auto}
 }
@@ -489,7 +471,6 @@ nav{background:rgba(255,252,235,.94);-webkit-backdrop-filter:blur(10px);backdrop
   .cn-out{grid-column:2;justify-self:start}
   .promptbox pre{font-size:12px;padding:18px 16px}
   .stickybar{gap:10px;padding:10px 14px}
-  .draftflag{left:10px;right:10px;max-width:none;bottom:84px}
 }
 @media (prefers-reduced-motion:reduce){
   html{scroll-behavior:auto}
@@ -771,33 +752,6 @@ nav{background:rgba(255,252,235,.94);-webkit-backdrop-filter:blur(10px);backdrop
   </div>
 </section>
 
-<!-- 6 · PROOF -->
-<section class="proof-sec" id="proof">
-  <div class="wrap">
-    <div class="section-head">
-      <span class="eyebrow">Receipts</span>
-      <h2>What it looks like when it's running.</h2>
-    </div>
-
-    <div class="proof-grid">
-      <!-- SWAP: replace each .proof-ph block with <img src="img/proof-1.jpg" alt="..." /> -->
-      <figure class="proof">
-        <div class="proof-ph"><span class="ph-n">01</span><span class="ph-t">Lead Finder · top 10</span></div>
-        <figcaption class="proof-cap"><b>The ranked list</b><span>Ten names out of your own data, each with the reason it surfaced.</span></figcaption>
-      </figure>
-      <figure class="proof">
-        <div class="proof-ph"><span class="ph-n">02</span><span class="ph-t">Outreach · one draft</span></div>
-        <figcaption class="proof-cap"><b>A first touch in your voice</b><span>Written from the Sales Brain. Sent by a human, unedited.</span></figcaption>
-      </figure>
-      <figure class="proof">
-        <div class="proof-ph"><span class="ph-n">03</span><span class="ph-t">Follow-up · the pulse</span></div>
-        <figcaption class="proof-cap"><b>Who went quiet</b><span>Every open thread with its next touch already drafted.</span></figcaption>
-      </figure>
-    </div>
-
-    <p class="proof-note">Three real screenshots go here — your own data, names redacted. Not mockups.</p>
-  </div>
-</section>
 
 <!-- 6 · NOT FOR -->
 <section>
@@ -1112,9 +1066,4 @@ agents, and hand it to founders for less than a dinner out.
 })();
 </script>
 
-<!-- Delete this block before publishing. -->
-<div class="draftflag" id="draftflag">
-  <b>Not published yet</b>
-  Checkout is live ($97 → $197 on 29 Jul, automatic) and the Q&amp;A date is set. Optional before launch: the Q&amp;A time + join link — search <code>data-todo="qa-time"</code>. Delete this flag when you publish.
-</div>
 </html>
