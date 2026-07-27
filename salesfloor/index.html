@@ -8,17 +8,17 @@
 <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32.png" />
 <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16.png" />
 <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
-<meta name="description" content="One Sales Brain plus three AI agents that find buyers, open conversations, and follow up. Every send approved by you. Self-led, built in a weekend, plus a live Q&amp;A with Ella every month. $97 until Wednesday 29 July, 9am ET. Then $197." />
+<meta name="description" content="One Sales Brain plus three AI agents that find buyers, open conversations, and follow up. Every send approved by you. Self-led, a weekend to build, opens 14 August, plus a live Q&amp;A with Ella every month. $97 until Wednesday 29 July, 9am ET. Then $197." />
 <link rel="canonical" href="https://timerich.ai/salesfloor/" />
 <meta property="og:type" content="product" />
 <meta property="og:site_name" content="Time Rich" />
 <meta property="og:title" content="The Sales Floor — you are the entire sales department" />
-<meta property="og:description" content="One Sales Brain plus three AI agents that find buyers, open conversations, and follow up. Self-led, built in a weekend, plus a live Q&amp;A with Ella every month. $97 until 29 July, 9am ET." />
+<meta property="og:description" content="One Sales Brain plus three AI agents that find buyers, open conversations, and follow up. Self-led, a weekend to build, opens 14 August, plus a live Q&amp;A with Ella every month. $97 until 29 July, 9am ET." />
 <meta property="og:url" content="https://timerich.ai/salesfloor/" />
 <meta property="og:image" content="https://timerich.ai/revenue/img/rev-01.jpg" />
 <meta name="twitter:card" content="summary_large_image" />
 <meta name="twitter:title" content="The Sales Floor — you are the entire sales department" />
-<meta name="twitter:description" content="One Sales Brain plus three AI agents that find buyers, open conversations, and follow up. Self-led, built in a weekend, plus a live Q&amp;A with Ella every month. $97 until 29 July, 9am ET." />
+<meta name="twitter:description" content="One Sales Brain plus three AI agents that find buyers, open conversations, and follow up. Self-led, a weekend to build, opens 14 August, plus a live Q&amp;A with Ella every month. $97 until 29 July, 9am ET." />
 <meta name="twitter:image" content="https://timerich.ai/revenue/img/rev-01.jpg" />
 
 <link rel="preload" as="font" type="font/woff2" href="fonts/space-grotesk.woff2" crossorigin />
@@ -32,7 +32,7 @@
    "@type": "Product",
    "@id": "https://timerich.ai/salesfloor/#product",
    "name": "The Sales Floor",
-   "description": "A self-led build: one Sales Brain plus three AI agents that find buyers, open conversations, and follow up. Five builds, each with a short video, a template, the exact prompt, and a pass/fail test, plus a live Q&A with Ella every month. Works with Claude or ChatGPT. No code.",
+   "description": "A self-led build: one Sales Brain plus three AI agents that find buyers, open conversations, and follow up. Five builds, each with a short video, a template, the exact prompt, and a pass/fail test. Also includes a LinkedIn strategy, the Substack email engine, and an AEO agent and process so buyers find you when they ask AI who to hire, plus a live Q&A with Ella every month. Works with Claude or ChatGPT. No code.",
    "brand": { "@id": "https://timerich.ai/#organization" },
    "image": "https://timerich.ai/revenue/img/rev-01.jpg",
    "url": "https://timerich.ai/salesfloor/",
@@ -41,7 +41,8 @@
     "price": "97.00",
     "priceCurrency": "USD",
     "priceValidUntil": "2026-07-29",
-    "availability": "https://schema.org/InStock",
+    "availability": "https://schema.org/PreOrder",
+    "availabilityStarts": "2026-08-14",
     "url": "https://timerich.ai/salesfloor/"
    }
   },
@@ -87,7 +88,7 @@
     {
      "@type": "Question",
      "name": "How long does it take?",
-     "acceptedAnswer": { "@type": "Answer", "text": "A weekend. Or one build per evening for a week. The Sales Brain is 90 minutes and each agent is about 45." }
+     "acceptedAnswer": { "@type": "Answer", "text": "A weekend. Or one build per evening for a week. The Sales Brain is 90 minutes and each agent is about 45. The builds open on Friday 14 August; buying before then locks your price and holds your place." }
     },
     {
      "@type": "Question",
@@ -107,7 +108,7 @@
     {
      "@type": "Question",
      "name": "Is this a cohort? Do I have to start on a certain date?",
-     "acceptedAnswer": { "@type": "Answer", "text": "No. The five builds are self-led and open the moment you pay. The only dated thing is the monthly Q&A, and you are welcome at every one from the day you buy." }
+     "acceptedAnswer": { "@type": "Answer", "text": "No. Everything opens on Friday 14 August, and from then it is entirely self-led. The only dated things are the open date and the monthly Q&A, and you are welcome at every Q&A from the day you buy." }
     },
     {
      "@type": "Question",
@@ -117,7 +118,7 @@
     {
      "@type": "Question",
      "name": "Refunds?",
-     "acceptedAnswer": { "@type": "Answer", "text": "14 days, action-based. Show me your Sales Brain build and tell me why it did not deliver. Did the work, no result: money back. Never opened it: no." }
+     "acceptedAnswer": { "@type": "Answer", "text": "14 days, action-based, counted from 14 August when access opens, never from the day you paid. Show me your Sales Brain build and tell me why it did not deliver. Did the work, no result: money back. Never opened it: no." }
     }
    ]
   }
@@ -159,6 +160,7 @@
   --lime:#67762E;                /* lime family, readable on cream */
   --lime-dim:#EDF7C6;
   --red:#A8492F;
+  --alert:#B23A22;               /* launch-banner red, deep enough for cream text */
 
   --display:'Space Grotesk',system-ui,-apple-system,'Segoe UI',sans-serif;
   --mono:'Archivo',-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;
@@ -167,7 +169,7 @@
 }
 *{margin:0;padding:0;box-sizing:border-box}
 [hidden]{display:none !important}   /* beats the display:flex/grid rules below */
-html{scroll-behavior:smooth;overflow-x:clip;scroll-padding-top:96px}
+html{scroll-behavior:smooth;overflow-x:clip;scroll-padding-top:128px}
 html,body{max-width:100%}
 body{background:var(--bg);color:var(--text);font-family:var(--body);font-size:17px;line-height:1.65;-webkit-font-smoothing:antialiased;overflow-x:clip}
 ::selection{background:var(--pop);color:var(--green-deep)}
@@ -202,14 +204,24 @@ section{padding:72px 0;border-top:1px solid var(--line)}
 .btn.cta-todo:hover{transform:none;box-shadow:none}
 .btn-xl.cta-todo::after,.pb-cta.cta-todo::after{content:" · checkout not wired";font-family:var(--mono);font-size:11px;letter-spacing:.08em;text-transform:uppercase;opacity:.75}
 
-/* ---------- ANNOUNCE + NAV ---------- */
-.announce{display:flex;gap:14px;align-items:center;justify-content:center;flex-wrap:wrap;background:var(--green);color:rgba(255,252,235,.86);padding:11px 16px;font-family:var(--mono);font-size:12px;letter-spacing:.06em;text-transform:uppercase;text-align:center}
-.announce .dot{width:8px;height:8px;border-radius:50%;background:var(--pop);animation:ubPulse 2s infinite}
-.announce b{color:var(--pop);font-weight:700}
-.announce a{color:var(--pop);text-decoration:none;font-weight:600;border-bottom:1px solid rgba(212,255,79,.45)}
-@keyframes ubPulse{0%{box-shadow:0 0 0 0 rgba(212,255,79,.6)}70%{box-shadow:0 0 0 8px rgba(212,255,79,0)}100%{box-shadow:0 0 0 0 rgba(212,255,79,0)}}
+/* ---------- ANNOUNCE + NAV ----------
+   Banner and nav ride together in one sticky rail, so the launch price
+   and the deadline stay on screen for the whole scroll. */
+.topbar{position:sticky;top:0;z-index:70}
 
-nav{position:sticky;top:0;z-index:50;background:rgba(255,252,235,.94);-webkit-backdrop-filter:blur(10px);backdrop-filter:blur(10px);border-bottom:1px solid var(--line)}
+.announce{display:flex;gap:14px;align-items:center;justify-content:center;flex-wrap:wrap;background:var(--alert);color:rgba(255,252,235,.92);padding:11px 16px;font-family:var(--mono);font-size:12px;letter-spacing:.06em;text-transform:uppercase;text-align:center}
+.announce .dot{width:8px;height:8px;border-radius:50%;background:var(--cream);animation:ubPulse 2s infinite}
+.announce b{color:#fff;font-weight:700}
+.announce a{color:#fff;text-decoration:none;font-weight:700;border-bottom:1px solid rgba(255,255,255,.5)}
+.announce a:hover{border-bottom-color:#fff}
+@keyframes ubPulse{0%{box-shadow:0 0 0 0 rgba(255,252,235,.55)}70%{box-shadow:0 0 0 8px rgba(255,252,235,0)}100%{box-shadow:0 0 0 0 rgba(255,252,235,0)}}
+/* once the deadline passes there is nothing urgent left to shout about */
+.announce[data-expired]{background:var(--green);color:rgba(255,252,235,.86)}
+.announce[data-expired] b,.announce[data-expired] a{color:var(--pop)}
+.announce[data-expired] a{border-bottom-color:rgba(212,255,79,.45)}
+.announce[data-expired] .dot{background:var(--pop)}
+
+nav{background:rgba(255,252,235,.94);-webkit-backdrop-filter:blur(10px);backdrop-filter:blur(10px);border-bottom:1px solid var(--line)}
 .nav-inner{display:flex;align-items:center;justify-content:space-between;height:68px;gap:16px}
 .brand-word{font-family:var(--display);font-weight:700;letter-spacing:-.02em;font-size:19px;color:var(--green-deep);text-decoration:none;line-height:1}
 .brand-word .wm-dot{color:var(--lime)}
@@ -233,6 +245,7 @@ nav{position:sticky;top:0;z-index:50;background:rgba(255,252,235,.94);-webkit-ba
 .pb-now{font-family:var(--display);font-weight:700;font-size:clamp(40px,6vw,58px);line-height:1;letter-spacing:-.04em;color:var(--pop);font-variant-numeric:tabular-nums}
 .pb-then{font-family:var(--mono);font-size:12.5px;letter-spacing:.1em;text-transform:uppercase;color:rgba(255,252,235,.72)}
 .pb-deadline{margin-top:6px;font-family:var(--mono);font-size:12.5px;letter-spacing:.08em;text-transform:uppercase;color:rgba(255,252,235,.78)}
+.pb-access{margin-top:12px;padding:9px 13px;border:1px solid rgba(212,255,79,.4);background:rgba(212,255,79,.1);border-radius:8px;font-family:var(--mono);font-size:11.5px;letter-spacing:.09em;text-transform:uppercase;color:var(--pop);display:inline-block}
 .countdown{display:flex;gap:10px;margin-top:18px}
 .cd-cell{flex:1;background:rgba(255,252,235,.09);border:1px solid rgba(255,252,235,.18);border-radius:10px;padding:12px 8px;text-align:center;min-width:0}
 .cd-n{display:block;font-family:var(--display);font-weight:700;font-size:clamp(22px,3.6vw,30px);line-height:1;color:var(--cream);font-variant-numeric:tabular-nums;letter-spacing:-.02em}
@@ -311,6 +324,19 @@ nav{position:sticky;top:0;z-index:50;background:rgba(255,252,235,.94);-webkit-ba
 .bd-endcard p{margin:5px 0 0;color:var(--muted);font-size:14.5px}
 .tools{margin-top:26px;padding-left:58px;font-family:var(--mono);font-size:12.5px;letter-spacing:.04em;color:var(--dim);line-height:1.7}
 .tools b{color:var(--green-deep)}
+
+/* ---------- THE REACH LAYER ---------- */
+.reach-lead{font-size:18px;color:var(--muted);max-width:60ch;margin-top:14px}
+.reach-lead b{color:var(--green-deep)}
+.reach-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-top:34px}
+.rcard{background:var(--panel);border:1px solid var(--line);border-radius:16px;padding:28px;display:flex;flex-direction:column;transition:transform .16s ease,border-color .16s ease,box-shadow .16s ease}
+.rcard:hover{transform:translateY(-3px);border-color:rgba(66,75,54,.42);box-shadow:0 14px 34px -20px rgba(66,75,54,.45)}
+.r-tag{display:inline-block;align-self:flex-start;font-family:var(--mono);font-size:9.5px;letter-spacing:.16em;text-transform:uppercase;font-weight:700;color:var(--lime);background:var(--lime-dim);border:1px solid rgba(103,118,46,.35);border-radius:99px;padding:5px 11px;margin-bottom:16px}
+.rcard h3{font-size:20px;margin-bottom:9px;line-height:1.2}
+.rcard p{color:var(--muted);font-size:15.5px}
+.rcard p b{color:var(--green-deep)}
+.reach-foot{margin-top:24px;padding:18px 22px;background:var(--lime-dim);border:1px solid rgba(103,118,46,.35);border-radius:12px;color:var(--green-deep);font-size:16px}
+.reach-foot b{color:var(--lime)}
 
 /* ---------- LIVE Q&A ---------- */
 .liveqa{background:var(--green);border-radius:20px;padding:clamp(30px,4.4vw,52px);color:var(--cream);box-shadow:0 30px 74px -44px rgba(66,75,54,.9)}
@@ -436,7 +462,7 @@ nav{position:sticky;top:0;z-index:50;background:rgba(255,252,235,.94);-webkit-ba
   .hero-grid,.story-grid,.bio-grid{grid-template-columns:1fr;gap:36px}
   .pricebox{max-width:none}
   .proof-grid{grid-template-columns:1fr}
-  .mech-grid{grid-template-columns:1fr}
+  .mech-grid,.reach-grid{grid-template-columns:1fr}
   .story-photo,.bio-photo{max-width:400px;margin:0 auto}
 }
 @media (max-width:560px){
@@ -445,11 +471,16 @@ nav{position:sticky;top:0;z-index:50;background:rgba(255,252,235,.94);-webkit-ba
   .bd-n,.bd-endn{width:32px;height:32px;font-size:13px}
   .builds::before,.bd-fill{left:15px}
   .tools{padding-left:45px}
-  .announce{font-size:11px;letter-spacing:.04em;gap:8px;padding:10px 14px}
+  /* the sticky rail must not eat the phone screen */
+  .announce{font-size:10.5px;letter-spacing:.03em;gap:6px;padding:9px 12px;line-height:1.45}
+  .nav-inner{height:58px}
+  .nav-right .btn{padding:10px 18px;font-size:14px}
+  html{scroll-padding-top:118px}
   .pricebox{padding:20px 18px}
   .countdown{gap:7px}
   .cd-cell{padding:10px 2px}
   .lq-facts{grid-template-columns:1fr;gap:10px}
+  .reach-grid{grid-template-columns:1fr}
   .cd-k{font-size:8.5px;letter-spacing:.1em}
   .btn,.btn-xl{padding:15px 22px;font-size:15.5px}
   .btn-xl{font-size:16.5px;padding:17px 24px}
@@ -471,6 +502,9 @@ nav{position:sticky;top:0;z-index:50;background:rgba(255,252,235,.94);-webkit-ba
 <a class="skip" href="#main">Skip to content</a>
 <div class="scrollprog" id="scrollprog" aria-hidden="true"></div>
 
+<!-- STICKY RAIL: launch banner + nav, on screen for the whole scroll -->
+<div class="topbar">
+
 <!-- ANNOUNCE -->
 <div class="announce" data-urgency>
   <span class="dot" aria-hidden="true"></span>
@@ -478,7 +512,7 @@ nav{position:sticky;top:0;z-index:50;background:rgba(255,252,235,.94);-webkit-ba
   <a href="#buy">Build your floor →</a>
 </div>
 <div class="announce" data-expired hidden>
-  The Sales Floor · <b data-price="then">$197</b> · one payment, instant access
+  The Sales Floor · <b data-price="then">$197</b> · access opens 14 August
   <a href="#buy">Build your floor →</a>
 </div>
 
@@ -493,6 +527,8 @@ nav{position:sticky;top:0;z-index:50;background:rgba(255,252,235,.94);-webkit-ba
   </div>
 </nav>
 
+</div><!-- /.topbar -->
+
 <main id="main">
 
 <!-- 1 · HERO -->
@@ -502,7 +538,7 @@ nav{position:sticky;top:0;z-index:50;background:rgba(255,252,235,.94);-webkit-ba
     <div>
       <span class="eyebrow">AI is cool. Revenue is the point.</span>
       <h1>You are the entire <span class="hl">sales department</span>.</h1>
-      <p class="h-sub">The Sales Floor: one Sales Brain plus three AI agents that find buyers, open conversations, and follow up. <strong>Every send approved by you. Built in a weekend.</strong></p>
+      <p class="h-sub">The Sales Floor: one Sales Brain plus three AI agents that find buyers, open conversations, and follow up — plus the LinkedIn, Substack and AEO layer that keeps new ones coming. <strong>Every send approved by you. A weekend to build, once it opens on 14 August.</strong></p>
 
       <div class="pricebox">
         <div class="pb-price">
@@ -510,7 +546,8 @@ nav{position:sticky;top:0;z-index:50;background:rgba(255,252,235,.94);-webkit-ba
           <span class="pb-then" data-urgency>then <span data-price="then">$197</span></span>
         </div>
         <p class="pb-deadline" data-urgency>Until Wednesday 29 July, 9am ET</p>
-        <p class="pb-deadline" data-expired hidden>One payment · instant access</p>
+        <p class="pb-deadline" data-expired hidden>One payment · yours to keep</p>
+        <p class="pb-access"><span aria-hidden="true">▸</span> Access opens Friday 14 August</p>
 
         <div class="countdown" id="countdown" data-urgency role="timer" aria-label="Time left at the launch price">
           <div class="cd-cell"><span class="cd-n" data-cd="d">–</span><span class="cd-k">Days</span></div>
@@ -520,7 +557,7 @@ nav{position:sticky;top:0;z-index:50;background:rgba(255,252,235,.94);-webkit-ba
         </div>
 
         <a class="btn pb-cta" href="#buy" data-cta>Build your floor →</a>
-        <p class="pb-micro">Instant access · monthly live Q&amp;A · no code</p>
+        <p class="pb-micro">Lock the launch price now · monthly live Q&amp;A · no code</p>
       </div>
     </div>
 
@@ -660,7 +697,7 @@ nav{position:sticky;top:0;z-index:50;background:rgba(255,252,235,.94);-webkit-ba
         <div class="bd-endn">✓</div>
         <div class="bd-endcard">
           <b>A sales floor that runs on Monday.</b>
-          <p>Built in a weekend, or one build an evening for a week.</p>
+          <p>A weekend's work, or one build an evening for a week. The builds open on Friday 14 August.</p>
         </div>
       </div>
     </div>
@@ -669,7 +706,38 @@ nav{position:sticky;top:0;z-index:50;background:rgba(255,252,235,.94);-webkit-ba
   </div>
 </section>
 
-<!-- 5 · LIVE Q&A -->
+<!-- 5 · THE REACH LAYER -->
+<section class="reach" id="reach">
+  <div class="wrap">
+    <div class="section-head" style="margin-bottom:0">
+      <span class="eyebrow">Also included</span>
+      <h2>The floor works the buyers you already have. <span class="hl">This is how new ones arrive.</span></h2>
+      <p class="reach-lead">Lead Finder mines your LinkedIn, your CRM and your inbox — which is a lot of money, and a finite amount. <b>These three keep the top of it filling</b>, so month four isn't you scraping the same list again.</p>
+    </div>
+
+    <div class="reach-grid">
+      <div class="rcard">
+        <span class="r-tag">Strategy</span>
+        <h3>LinkedIn Strategy</h3>
+        <p>Your profile, your posting rhythm, and the agent that works your network while you build. <b>So outreach lands on someone who already knows your name</b> instead of on a stranger.</p>
+      </div>
+      <div class="rcard">
+        <span class="r-tag">Engine</span>
+        <h3>Substack</h3>
+        <p>The email formula behind my own list, so the pipeline refills itself. <b>An audience you own</b>, on a platform that can't switch off your reach overnight.</p>
+      </div>
+      <div class="rcard">
+        <span class="r-tag">Agent + process</span>
+        <h3>AEO Agent</h3>
+        <p>Answer Engine Optimization. Buyers now ask AI who to hire before they ask a person. <b>This puts your name in the answer</b> — the agent that gets you there, and the process that keeps you there.</p>
+      </div>
+    </div>
+
+    <p class="reach-foot">Pipeline without reach runs dry. Reach without pipeline is just noise. <b>You get both.</b></p>
+  </div>
+</section>
+
+<!-- 6 · LIVE Q&A -->
 <section class="liveqa-sec" id="live">
   <div class="wrap">
     <div class="liveqa">
@@ -693,7 +761,7 @@ nav{position:sticky;top:0;z-index:50;background:rgba(255,252,235,.94);-webkit-ba
         </li>
       </ul>
 
-      <p class="lq-note">The five builds don't wait for the call, and the call doesn't hold up the builds. <b>Build this weekend, bring what broke to the next Q&amp;A.</b></p>
+      <p class="lq-note">Builds open Friday 14 August. The first Q&amp;A is thirteen days later, which is deliberate: <b>build it over a weekend, bring what broke to the call.</b></p>
     </div>
   </div>
 </section>
@@ -778,11 +846,11 @@ agents, and hand it to founders for less than a dinner out.
   <div class="wrap">
     <div class="close-card">
       <span class="eyebrow" data-urgency>Launch price closes Wednesday, 9am ET</span>
-      <span class="eyebrow" data-expired hidden>One payment · instant access</span>
+      <span class="eyebrow" data-expired hidden>One payment · access opens 14 August</span>
 
       <h2><span class="amt" data-price="now">$97</span> <span data-urgency>until Wednesday, 9am ET.</span><span data-expired hidden>for the whole floor.</span></h2>
-      <p class="cc-sub" data-urgency>Then <span data-price="then">$197</span>. The launch price is for the founders who move first; that's the whole story, no theatre.</p>
-      <p class="cc-sub" data-expired hidden>One Sales Brain, three agents, five builds. Instant access, yours to keep.</p>
+      <p class="cc-sub" data-urgency>Then <span data-price="then">$197</span>. The launch price is for the founders who move first; that's the whole story, no theatre. <b style="color:var(--pop);font-weight:600">Everything opens Friday 14 August.</b></p>
+      <p class="cc-sub" data-expired hidden>One Sales Brain, three agents, five builds, and the reach layer. Opens Friday 14 August, yours to keep.</p>
 
       <div class="countdown" data-urgency aria-hidden="true">
         <div class="cd-cell"><span class="cd-n" data-cd="d">–</span><span class="cd-k">Days</span></div>
@@ -808,7 +876,7 @@ agents, and hand it to founders for less than a dinner out.
     <div class="faq-list">
       <details class="faq-item">
         <summary><h3>How long does it take?</h3></summary>
-        <div class="faq-a"><p>A weekend. Or one build per evening for a week. The Sales Brain is 90 minutes and each agent is about 45.</p></div>
+        <div class="faq-a"><p>A weekend. Or one build per evening for a week. The Sales Brain is 90 minutes and each agent is about 45. <strong>The builds open on Friday 14 August</strong> — buying before then locks your price and holds your place.</p></div>
       </details>
       <details class="faq-item">
         <summary><h3>Which AI do I need?</h3></summary>
@@ -824,7 +892,7 @@ agents, and hand it to founders for less than a dinner out.
       </details>
       <details class="faq-item">
         <summary><h3>Is this a cohort? Do I have to start on a certain date?</h3></summary>
-        <div class="faq-a"><p>No. The five builds are self-led and open the moment you pay, so you can do the whole thing this weekend or one build an evening for a week. The only dated thing is the monthly Q&amp;A, and you're welcome at every one from the day you buy.</p></div>
+        <div class="faq-a"><p>No. Everything opens on <strong>Friday 14 August</strong>, and from then it's entirely self-led — do the lot in a weekend or one build an evening, whenever suits you. Nobody waits for a cohort. The only dated things are the open date and the monthly Q&amp;A, and you're welcome at every Q&amp;A from the day you buy.</p></div>
       </details>
       <details class="faq-item">
         <summary><h3>What if I want it built with me instead?</h3></summary>
@@ -832,7 +900,7 @@ agents, and hand it to founders for less than a dinner out.
       </details>
       <details class="faq-item">
         <summary><h3>Refunds?</h3></summary>
-        <div class="faq-a"><p>14 days, action-based. Show me your Sales Brain build and tell me why it didn't deliver. Did the work, no result: money back. Never opened it: no.</p></div>
+        <div class="faq-a"><p>14 days, action-based, <strong>counted from 14 August when access opens</strong> — never from the day you paid, because you can't try something you can't open yet. Show me your Sales Brain build and tell me why it didn't deliver. Did the work, no result: money back. Never opened it: no.</p></div>
       </details>
     </div>
 
