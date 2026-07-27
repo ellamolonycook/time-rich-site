@@ -412,6 +412,16 @@
     .faq-item summary::-webkit-details-marker{display:none}
     .faq-item summary::after{content:'+';position:absolute;right:8px;top:20px;font-family:var(--mono);font-size:22px;color:var(--lime);transition:transform .18s}
     .faq-item[open] summary::after{transform:rotate(45deg)}
+    /* ViKA full-bio dropdown inside the Week 4 copy */
+    .bio-drop{margin-top:20px;border-top:1px solid var(--line);border-bottom:1px solid var(--line)}
+    .bio-drop summary{cursor:pointer;list-style:none;position:relative;padding:14px 34px 14px 0;
+      font-family:var(--mono);font-size:12px;font-weight:600;letter-spacing:.14em;text-transform:uppercase;color:var(--lime)}
+    .bio-drop summary::-webkit-details-marker{display:none}
+    .bio-drop summary::after{content:'+';position:absolute;right:6px;top:10px;font-family:var(--mono);font-size:20px;color:var(--lime);transition:transform .18s}
+    .bio-drop[open] summary::after{transform:rotate(45deg)}
+    .bio-drop .bio-body{padding:0 0 20px}
+    .bio-drop .bio-body p{font-size:15.5px;line-height:1.6}
+    .bio-drop .bio-body p+p{margin-top:.85em}
     .faq-a{padding:0 4px 26px;color:var(--muted);max-width:680px}
     .faq-a a{color:var(--lime);text-decoration:none;border-bottom:1px solid rgba(103,118,46,.4)}
     .faq-a a:hover{border-color:var(--lime)}
@@ -795,6 +805,13 @@
         <p>You can build the cleanest pipeline in the world and still lose the deal in the room, because the buyer felt nothing. The best offer doesn't win, the best-told one does. So Week 4 is run by <strong>ViKA</strong>, who's closed multi-million-dollar deals on the strength of story, keynoted on global stages, and founded BRAVE NEW STORY.</p>
         <p class="accel-quote sm">"When you recognise that narratives are the operating systems running you and your business, both will transform."</p>
         <p>You walk out able to pitch so the room leans in, sell through story instead of pressure, and write copy that sounds like you and still converts.</p>
+        <details class="bio-drop">
+          <summary>Read ViKA's full bio</summary>
+          <div class="bio-body">
+            <p>Narrative architect ViKA Victoria turns leaders into cultural catalysts through the raw power of story. From high-stakes pitches to global keynote stages, from the cave of the mind to the roar of the public arena, she helps leaders command their defining moments and feel authentic, powerful, and peaceful doing it. Inside her advisory, BRAVE NEW STORY, founders train in narrative intelligence to find their unmistakable voice and become forces of nature in the room.</p>
+            <p>A former record-breaking NYC advertising executive turned two-time Moth StorySlam champion, global keynote speaker, and trusted strategist to leaders at Google, TED, BCG, the Tony Blair Institute, and top VC firms, ViKA is betting her career on a single conviction: narrative is the ultimate tool for shaping the future. Ukrainian by heritage, American by education, Lisbon-based by choice, she weaves cross-cultural insight into everything she teaches with splashes of comedy, philosophy, and science to keep you on your toes.</p>
+          </div>
+        </details>
       </div>
       </div>
     </div>
