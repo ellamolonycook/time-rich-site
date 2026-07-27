@@ -102,7 +102,7 @@
     {
      "@type": "Question",
      "name": "What if I get stuck?",
-     "acceptedAnswer": { "@type": "Answer", "text": "Every build ends in a pass/fail test, so you know exactly where it broke. Then bring it to the live Q&A, which runs every month, the first at the end of August. You join whichever one comes next, no matter when you bought." }
+     "acceptedAnswer": { "@type": "Answer", "text": "Every build ends in a pass/fail test, so you know exactly where it broke. Then bring it to the live Q&A, which runs every month, the first on Thursday 27 August. You join whichever one comes next, no matter when you bought." }
     },
     {
      "@type": "Question",
@@ -680,8 +680,8 @@ nav{position:sticky;top:0;z-index:50;background:rgba(255,252,235,.94);-webkit-ba
       <ul class="lq-facts">
         <li>
           <span class="k">First session</span>
-          <!-- TODO: swap for the exact date + time once it's set, e.g. "Thu 28 Aug, 12pm ET" -->
-          <span class="v" data-todo="qa-date">End of August</span>
+          <!-- TODO: append the time + timezone once set, e.g. "Thursday 27 August, 12pm ET" -->
+          <span class="v" data-todo="qa-time">Thursday 27 August</span>
         </li>
         <li>
           <span class="k">Then</span>
@@ -820,7 +820,7 @@ agents, and hand it to founders for less than a dinner out.
       </details>
       <details class="faq-item">
         <summary><h3>What if I get stuck?</h3></summary>
-        <div class="faq-a"><p>Every build ends in a pass/fail test, so you know exactly where it broke rather than guessing. Then bring it to the <a href="#live">live Q&amp;A</a> — I run one every month, the first at the end of August. You join whichever one comes next, no matter when you bought.</p></div>
+        <div class="faq-a"><p>Every build ends in a pass/fail test, so you know exactly where it broke rather than guessing. Then bring it to the <a href="#live">live Q&amp;A</a> — I run one every month, the first on Thursday 27 August. You join whichever one comes next, no matter when you bought.</p></div>
       </details>
       <details class="faq-item">
         <summary><h3>Is this a cohort? Do I have to start on a certain date?</h3></summary>
@@ -1039,9 +1039,9 @@ agents, and hand it to founders for less than a dinner out.
 })();
 </script>
 
-<!-- Delete this block once the first Q&A date is in. -->
+<!-- Delete this block before publishing. -->
 <div class="draftflag" id="draftflag">
-  <b>One placeholder left</b>
-  Checkout is live and wired ($97 → $197 on 29 Jul, automatic). Still a placeholder: the exact first Q&amp;A date — search <code>data-todo="qa-date"</code>, then delete this flag.
+  <b>Not published yet</b>
+  Checkout is live ($97 → $197 on 29 Jul, automatic) and the Q&amp;A date is set. Optional before launch: the Q&amp;A time + join link — search <code>data-todo="qa-time"</code>. Delete this flag when you publish.
 </div>
 </html>
