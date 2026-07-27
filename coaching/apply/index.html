@@ -10,96 +10,139 @@
   <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16.png" />
   <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
   <meta name="robots" content="noindex, nofollow" />
+  <meta name="theme-color" content="#FFFCEB" />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=Archivo:wght@400;600;700;800;900&family=Inter:wght@400;500;600&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@400;500;600&family=Archivo:wght@400;500;600;700&display=swap" rel="stylesheet" />
   <style>
+    /* ============================================================
+       TIME RICH — CREAM / DEEP GREEN / SAGE ("abundant light")
+       Tokens match the live system on timerich.ai.
+       Lime (--pop) is a highlighter / accent on deep green only.
+       ============================================================ */
     :root{
-      --plum:#4A2E6F; --violet:#7C3AED; --violet-2:#9A6DD7;
-      --champagne:#D4FF4F; --champagne-soft:#E4FF85; --champagne-deep:#B9E62E;
-      --plum-black:#1A1420; --lilac:#EBD1FA; --sand:#F4EEFB;
-      --charcoal:#44414D; --white:#FFFFFF;
-      --line:rgba(255,255,255,.12);
-      --line-champ:rgba(212, 255, 79,.5);
-      --text:#F3EEF7; --muted:#C6BCD2; --dim:#8E85A0;
-      --display:'DM Serif Display',Georgia,serif;
-      --struct:'Archivo',-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;
+      color-scheme:light;
+      --cream:#FFFCEB;
+      --sage:#DCDEBF; --sage-lt:#E9EAD5; --sage-dk:#C9CCA6;
+      --green:#424B36; --green-deep:#333A28; --green-mid:#4E5840;
+      --pop:#D4FF4F;                /* true lime — only on deep green */
+      --bg:#FFFCEB;
+      --panel:#DCDEBF; --panel2:#E9EAD5;
+      --line:rgba(66,75,54,.20); --line-2:rgba(66,75,54,.34);
+      --text:#424B36; --muted:#5B6449; --dim:#7E8768;
+      --lime:#67762E;               /* lime family, readable on cream */
+      --lime-dim:#EDF7C6;           /* pale lime wash */
+      --red:#A8492F;
+      --display:'Space Grotesk',system-ui,-apple-system,'Segoe UI',sans-serif;
+      --mono:'Archivo',-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;
       --body:'Inter',-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;
     }
     *{margin:0;padding:0;box-sizing:border-box}
-    body{font-family:var(--body);color:var(--text);background:var(--plum-black);line-height:1.65;-webkit-font-smoothing:antialiased}
-    body::before{content:"";position:fixed;inset:0;background:radial-gradient(120% 80% at 50% -10%,rgba(124,58,237,.25) 0%,transparent 55%);pointer-events:none;z-index:0}
-    .wrap{position:relative;z-index:1;max-width:680px;margin:0 auto;padding:40px 22px 90px}
-    h1,h2,h3{font-family:var(--display);font-weight:400;color:var(--white);line-height:1.08;letter-spacing:-.01em}
-    ::selection{background:var(--champagne);color:var(--plum-black)}
-    a{color:var(--champagne)}
-    a:hover{color:var(--champagne-soft)}
+    html{-webkit-text-size-adjust:100%}
+    body{font-family:var(--body);color:var(--text);background:var(--bg);font-size:17px;line-height:1.65;-webkit-font-smoothing:antialiased}
+    @media (prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
 
-    .topbar{display:flex;align-items:center;justify-content:space-between;margin-bottom:34px}
-    .topbar img{height:30px;display:block}
-    .back{font-family:var(--struct);font-weight:700;font-size:13px;color:var(--muted);text-decoration:none}
-    .back:hover{color:var(--champagne)}
+    /* faint sage grid behind the head, as on the homepage hero */
+    .gridbg{position:fixed;inset:0;z-index:0;pointer-events:none;
+      background-image:linear-gradient(var(--line) 1px,transparent 1px),linear-gradient(90deg,var(--line) 1px,transparent 1px);
+      background-size:52px 52px;opacity:.5;
+      mask-image:radial-gradient(120% 55% at 50% 0%,#000 8%,transparent 68%);
+      -webkit-mask-image:radial-gradient(120% 55% at 50% 0%,#000 8%,transparent 68%)}
 
-    .eyebrow{font-family:var(--struct);font-weight:800;font-size:12px;letter-spacing:.16em;text-transform:uppercase;color:var(--champagne);margin-bottom:16px}
-    h1{font-size:clamp(30px,5.6vw,42px);margin:6px 0 14px}
+    .wrap{position:relative;z-index:1;max-width:680px;margin:0 auto;padding:34px 22px 90px}
+    h1,h2,h3{font-family:var(--display);font-weight:700;color:var(--green-deep);line-height:1.06;letter-spacing:-.03em;text-wrap:balance}
+    ::selection{background:var(--pop);color:var(--green-deep)}
+    a{color:var(--lime)}
+    a:hover{color:var(--green-deep)}
+
+    /* the lime highlight is a highlighter swipe, never a text colour */
+    .hl{color:inherit;background:linear-gradient(180deg,transparent 62%,rgba(212,255,79,.9) 62%);padding:0 .05em}
+
+    /* ---------- topbar ---------- */
+    .topbar{display:flex;align-items:center;justify-content:space-between;gap:16px;margin-bottom:40px}
+    .brand-word{font-family:var(--display);font-weight:700;letter-spacing:-.02em;font-size:19px;color:var(--text);text-decoration:none;line-height:1}
+    .brand-word:hover{color:var(--green-deep)}
+    .brand-word .wm-dot{color:var(--lime)}
+    .back{font-family:var(--mono);font-weight:600;font-size:11.5px;letter-spacing:.14em;text-transform:uppercase;color:var(--dim);text-decoration:none}
+    .back:hover{color:var(--green-deep)}
+
+    /* ---------- hero ---------- */
+    .eyebrow{font-family:var(--mono);font-weight:600;font-size:12px;letter-spacing:.18em;text-transform:uppercase;color:var(--lime);margin-bottom:16px}
+    h1{font-size:clamp(32px,5.8vw,46px);margin:6px 0 16px}
     .lede{font-size:18px;color:var(--muted);margin-bottom:10px;max-width:52ch}
-    .muted{color:var(--dim);font-size:14px;max-width:56ch}
+    .muted{color:var(--dim);font-size:14.5px;max-width:56ch}
 
-    /* pricing tiers */
-    .tiers{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-top:28px}
-    @media(max-width:560px){.tiers{grid-template-columns:1fr}}
-    .tier{background:rgba(255,255,255,.04);border:1px solid var(--line);border-radius:16px;padding:22px}
-    .tier .tname{font-family:var(--struct);font-weight:800;font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--violet-2)}
-    .tier .tprice{font-family:var(--display);font-size:30px;color:var(--champagne);margin:8px 0 10px}
-    .tier p{font-size:13.5px;color:var(--muted);line-height:1.55}
-    .scarcity{margin-top:24px;font-family:var(--display);font-size:21px;line-height:1.35;color:var(--white)}
-    .scarcity b{color:var(--champagne)}
+    /* ---------- the offer ---------- */
+    .tiers{display:grid;gap:14px;margin-top:30px}
+    .tier{background:var(--panel);border:1px solid var(--line);border-radius:6px 18px 18px 18px;padding:26px}
+    .tier .tname{font-family:var(--mono);font-weight:600;font-size:11.5px;letter-spacing:.14em;text-transform:uppercase;color:var(--lime)}
+    .tier p{font-size:15px;color:var(--green-mid);line-height:1.6;margin-top:12px}
+    .scarcity{margin-top:28px;font-family:var(--display);font-weight:600;font-size:22px;line-height:1.35;letter-spacing:-.02em;color:var(--green-deep)}
 
-    form{background:rgba(255,255,255,.04);border:1px solid var(--line);border-radius:20px;padding:30px;margin-top:24px}
-    label{display:block;font-family:var(--struct);font-weight:700;color:var(--white);font-size:14px;margin:22px 0 7px}
+    /* ---------- form ---------- */
+    form{background:var(--panel);border:1px solid var(--line);border-radius:6px 18px 18px 18px;padding:30px;margin-top:26px}
+    label{display:block;font-family:var(--display);font-weight:500;color:var(--green-deep);font-size:15px;margin:22px 0 7px}
     label:first-child{margin-top:0}
-    .req{color:var(--champagne)}
-    .multi{font-family:var(--body);font-weight:500;font-size:12px;color:var(--dim);text-transform:none;letter-spacing:0}
-    input,select,textarea{width:100%;font-family:var(--body);font-size:15px;color:var(--text);padding:13px 14px;border:1px solid rgba(255,255,255,.24);border-radius:12px;background:rgba(255,255,255,.05)}
+    .req{color:var(--red)}
+    .multi{font-family:var(--body);font-weight:400;font-size:12.5px;color:var(--green-mid);text-transform:none;letter-spacing:0}
+    input,select,textarea{width:100%;font-family:var(--body);font-size:15px;color:var(--text);padding:12px 14px;border:1px solid var(--line-2);border-radius:8px;background:var(--cream)}
     input::placeholder,textarea::placeholder{color:var(--dim)}
-    input:focus,select:focus,textarea:focus{outline:none;border-color:var(--champagne);box-shadow:0 0 0 3px rgba(212, 255, 79,.18)}
+    input:focus,select:focus,textarea:focus{outline:none;border-color:var(--green);box-shadow:0 0 0 3px rgba(66,75,54,.13)}
     textarea{min-height:92px;resize:vertical}
-    .hint{font-size:12px;color:var(--dim);margin-top:5px}
+    .hint{font-size:12.5px;color:var(--dim);margin-top:5px}
+
     .checks{display:flex;flex-wrap:wrap;gap:8px;margin-top:2px}
-    .checks label{display:inline-flex;align-items:center;gap:8px;margin:0;padding:9px 13px;border:1px solid var(--line);border-radius:12px;background:rgba(0,0,0,.2);font-family:var(--body);font-weight:500;font-size:14px;color:var(--text);cursor:pointer}
-    .checks label:hover{border-color:var(--champagne)}
-    .checks input{width:auto;margin:0;accent-color:var(--champagne)}
-    .checks input:checked+span{color:var(--champagne);font-weight:600}
-    .btn{display:block;width:100%;margin-top:30px;background:var(--champagne);color:var(--plum-black);font-family:var(--struct);font-weight:800;font-size:16px;padding:16px;border:none;border-radius:30px;cursor:pointer;transition:transform .15s ease,background-color .2s ease}
-    .btn:hover{transform:translateY(-2px);background:var(--champagne-soft)}
-    .next{background:rgba(255,255,255,.04);border:1px solid var(--line);border-radius:16px;padding:20px 22px;margin-top:22px;font-size:14px;color:var(--muted)}
-    .next b{color:var(--champagne);font-family:var(--struct)}
-    .state{display:none;background:rgba(255,255,255,.04);border:1px solid var(--line);border-radius:20px;padding:34px;margin-top:26px;text-align:center}
-    .state h2{font-size:26px;margin-bottom:10px}
-    a:focus-visible,button:focus-visible,input:focus-visible{outline:2px solid var(--champagne);outline-offset:2px}
+    .checks label{display:inline-flex;align-items:center;gap:8px;margin:0;padding:9px 13px;border:1px solid var(--line-2);border-radius:8px;background:var(--cream);font-family:var(--body);font-weight:400;font-size:14px;color:var(--text);cursor:pointer;transition:border-color .14s ease,background-color .14s ease}
+    .checks label:hover{border-color:var(--green)}
+    .checks label:has(input:checked){border-color:rgba(103,118,46,.55);background:var(--lime-dim)}
+    .checks input{width:auto;margin:0;accent-color:var(--lime)}
+    .checks input:checked+span{color:var(--lime);font-weight:600}
+
+    .btn{display:block;width:100%;margin-top:32px;background:var(--green);color:var(--cream);font-family:var(--display);font-weight:700;font-size:16px;letter-spacing:.01em;padding:16px;border:none;border-radius:8px;cursor:pointer;transition:transform .12s ease,box-shadow .12s ease}
+    .btn:hover{transform:translateY(-2px);box-shadow:0 12px 30px -12px rgba(66,75,54,.55)}
+    .btn:disabled{opacity:.6;cursor:wait;transform:none;box-shadow:none}
+
+    .next{background:var(--lime-dim);border:1px solid rgba(103,118,46,.35);border-radius:6px 18px 18px 18px;padding:22px 24px;margin-top:22px;font-size:15px;color:var(--green-mid)}
+    .next b{display:block;margin-bottom:6px;font-family:var(--mono);font-weight:600;font-size:11.5px;letter-spacing:.14em;text-transform:uppercase;color:var(--lime)}
+
+    .state{display:none;background:var(--panel);border:1px solid var(--line);border-radius:6px 18px 18px 18px;padding:36px;margin-top:26px;text-align:center}
+    .state h2{font-size:27px;margin-bottom:12px}
+    .state .muted{margin:0 auto;color:var(--green-mid)}
+    .state .btn{max-width:340px;margin-left:auto;margin-right:auto;text-align:center;text-decoration:none}
+
+    /* the "you're a fit" state is the one deep-green focal block */
+    #approved{background:var(--green);border-color:var(--green)}
+    #approved h2{color:var(--cream)}
+    #approved .eyebrow{color:var(--pop)}
+    #approved .muted{color:rgba(255,252,235,.76)}
+    #approved .btn{background:var(--pop);color:var(--green-deep)}
+    #approved .btn:hover{box-shadow:0 12px 30px -12px rgba(51,58,40,.7)}
+
+    a:focus-visible,button:focus-visible,input:focus-visible,label:focus-visible{outline:2px solid var(--green);outline-offset:3px;border-radius:6px}
   </style>
 </head>
 <body>
+  <div class="gridbg" aria-hidden="true"></div>
   <div class="wrap">
     <div class="topbar">
-      <img src="../../Logo/web/logo-lilac.png" alt="Time Rich" />
+      <a class="brand-word" href="/">Time Rich<span class="wm-dot">.</span></a>
       <a class="back" href="../">← Back to the coaching page</a>
     </div>
 
     <div class="eyebrow">1:1 AI System Coaching · with Ella Molony Cook</div>
-    <h1>Build your AI operating system, one to one with Ella.</h1>
+    <h1>Build your AI operating system, <span class="hl">one to one with Ella.</span></h1>
     <p class="lede">A few weeks, working directly with Ella, to design and ship the AI system that runs your business in your voice.</p>
     <p class="muted">This is an application, not a checkout. It takes about five minutes. Ella reads every one herself and comes back to you personally.</p>
 
     <!-- The offer: always custom-designed for your business, by application. No fixed package. -->
     <div class="tiers">
-      <div class="tier" style="grid-column:1 / -1">
+      <div class="tier">
         <div class="tname">By application · custom-designed for your business</div>
         <p>Time Rich is always custom-designed for your business — one to one with Ella, scoped to you on the call. We wire your content, ops and research into one system you own and run yourself, with the full AI Content Machine program included.</p>
-        <p style="margin-top:10px">We also provide a custom solution for the hardware, so you can run the LLM locally — stop paying for tokens, and keep your data private.</p>
+        <p>We also provide a custom solution for the hardware, so you can run the LLM locally — stop paying for tokens, and keep your data private.</p>
       </div>
     </div>
-    <p class="scarcity"><b>A handful of spots.</b> Ella takes on only the people it is truly right for — alignment matters most.</p>
+    <p class="scarcity"><span class="hl">A handful of spots.</span> Ella takes on only the people it is truly right for — alignment matters most.</p>
 
     <!-- Form POSTs JSON to the shared "time-rich-forms" Cloudflare Worker at its /coaching route,
          which writes a row into the Notion "AI Coaching Intake Form" database. -->
@@ -168,7 +211,7 @@
     </form>
 
     <div class="next">
-      <b>What happens next</b><br />
+      <b>What happens next</b>
       Ella reads every application herself. If it's a fit, she'll come back to you personally with next steps and a time to talk. If the timing isn't right yet, she'll point you to the best place to start.
     </div>
 
@@ -177,13 +220,13 @@
       <div class="eyebrow">You're a fit</div>
       <h2>Let's talk.</h2>
       <p class="muted">Grab a time with Ella and come ready to talk through what you want built.</p>
-      <a href="[ELLA_CALENDAR_LINK]" class="btn" style="text-decoration:none">Book your call →</a>
+      <a href="https://calendar.app.google/AhbkH9qQQLrR98Te9" class="btn" target="_blank" rel="noopener">Book your call →</a>
     </div>
     <div class="state" id="declined">
       <div class="eyebrow">Not right now</div>
       <h2>Start with the machine.</h2>
       <p class="muted">1:1 coaching isn't the right fit yet. The AI Content Machine is exactly where to start, and the door to coaching stays open.</p>
-      <a href="/contentmachine" class="btn" style="text-decoration:none">See the AI Content Machine →</a>
+      <a href="/contentmachine" class="btn">See the AI Content Machine →</a>
     </div>
 
     <div class="state" id="submitted">
