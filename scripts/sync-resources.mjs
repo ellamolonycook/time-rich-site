@@ -114,6 +114,8 @@ function articlePage(r) {
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <!-- Meta Pixel -->
+  <script src="/js/pixel.js"></script>
   <title>${esc(r.title)} — Time Rich</title>
   <meta name="description" content="${esc(r.dek)}" />
   <link rel="canonical" href="${canonical}" />
@@ -216,6 +218,8 @@ function hubPage(items) {
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <!-- Meta Pixel -->
+  <script src="/js/pixel.js"></script>
   <title>Free AI Resources — Time Rich</title>
   <meta name="description" content="Free AI playbooks, prompts, and agent breakdowns from Time Rich — delegate the shit you hate to AI and buy back your time." />
   <link rel="canonical" href="${SITE}/resources.html" />
