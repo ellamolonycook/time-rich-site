@@ -13,57 +13,63 @@
 <meta property="og:title" content="Time Rich — Brand, Voice &amp; Context Bible">
 <meta property="og:description" content="One system. How Time Rich looks, sounds, and thinks — plus the paste-ready context that makes any AI sound like Ella.">
 <meta property="og:type" content="website">
-<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%230B0B10'/%3E%3Ccircle cx='16' cy='21' r='4.5' fill='%23D4FF4F'/%3E%3C/svg%3E">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%232C3422'/%3E%3Ccircle cx='16' cy='21' r='4.5' fill='%23CCEEA0'/%3E%3C/svg%3E">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;700&family=JetBrains+Mono:wght@400;500;600;700&family=Dancing+Script:wght@600;700&display=swap" rel="stylesheet">
 <style>
 :root{
   color-scheme:dark;
-  --void:#0B0B10; --panel:#14141C; --panel-2:#181822; --raise:#1E1E28;
-  --line:rgba(255,255,255,.09); --line-2:rgba(255,255,255,.17);
-  --fg:#F2F2F4; --muted:#A2A2B0; --dim:#6E6E7C;
-  --lime:#D4FF4F; --lime-ink:#D4FF4F; --lime-dim:rgba(212,255,79,.12);
-  --red:#FF5C5C; --red-ink:#FF6B6B; --red-deep:#B0141C; --red-dim:rgba(255,92,92,.13);
-  --moss:#4C6600; --moss-dim:rgba(120,160,20,.18);
+  /* DEEP GREEN - the default ground */
+  --void:#2C3422; --panel:#353E29; --panel-2:#3D4730; --raise:#455038;
+  --line:rgba(255,252,235,.11); --line-2:rgba(255,252,235,.21);
+  --fg:#FFFCEB; --muted:#C3C8AC; --dim:#9DA486;
+  --lime:#CCEEA0; --lime-ink:#CCEEA0; --lime-dim:rgba(204,238,160,.14);
+  --red:#E39377; --red-ink:#E9A489; --red-deep:#A8492F; --red-dim:rgba(227,147,119,.15);
+  --moss:#67762E; --moss-dim:rgba(103,118,46,.30);
+  --sage:#DCDEBF;
   --accent:var(--lime-ink);
-  --nav:rgba(11,11,16,.72);
+  --nav:rgba(44,52,34,.78);
   --sans:'Space Grotesk',system-ui,-apple-system,'Segoe UI',sans-serif;
   --body:system-ui,-apple-system,'Segoe UI',Roboto,Helvetica,sans-serif;
   --mono:'JetBrains Mono',ui-monospace,SFMono-Regular,Menlo,monospace;
-  --shadow:0 24px 60px rgba(0,0,0,.55);
+  --shadow:0 24px 60px rgba(19,24,13,.45);
 }
 @media (prefers-color-scheme:light){:root:not([data-theme]){
   color-scheme:light;
-  --void:#F6F6F2; --panel:#FFFFFF; --panel-2:#EFEFE9; --raise:#FFFFFF;
-  --line:rgba(11,11,16,.11); --line-2:rgba(11,11,16,.20);
-  --fg:#12121A; --muted:#54545F; --dim:#83838C;
-  --lime:#C6F03A; --lime-ink:#4C6600; --lime-dim:rgba(160,200,20,.18);
-  --red:#D01F2B; --red-ink:#C0141C; --red-deep:#B0141C; --red-dim:rgba(208,31,43,.10);
-  --moss:#3E5400; --moss-dim:rgba(120,160,20,.22);
-  --nav:rgba(246,246,242,.8);
-  --shadow:0 20px 50px rgba(11,11,16,.14);
+  /* CREAM - the light ground */
+  --void:#FFFCEB; --panel:#F3F2E0; --panel-2:#E9EAD5; --raise:#FFFFFF;
+  --line:rgba(66,75,54,.18); --line-2:rgba(66,75,54,.32);
+  --fg:#333A28; --muted:#5B6449; --dim:#7E8768;
+  --lime:#CCEEA0; --lime-ink:#67762E; --lime-dim:#EDF7C6;
+  --red:#C4634A; --red-ink:#A8492F; --red-deep:#8C361F; --red-dim:rgba(168,73,47,.12);
+  --moss:#424B36; --moss-dim:rgba(66,75,54,.14);
+  --sage:#DCDEBF;
+  --nav:rgba(255,252,235,.82);
+  --shadow:0 20px 50px rgba(66,75,54,.14);
 }}
 :root[data-theme="light"]{
   color-scheme:light;
-  --void:#F6F6F2; --panel:#FFFFFF; --panel-2:#EFEFE9; --raise:#FFFFFF;
-  --line:rgba(11,11,16,.11); --line-2:rgba(11,11,16,.20);
-  --fg:#12121A; --muted:#54545F; --dim:#83838C;
-  --lime:#C6F03A; --lime-ink:#4C6600; --lime-dim:rgba(160,200,20,.18);
-  --red:#D01F2B; --red-ink:#C0141C; --red-deep:#B0141C; --red-dim:rgba(208,31,43,.10);
-  --moss:#3E5400; --moss-dim:rgba(120,160,20,.22);
-  --nav:rgba(246,246,242,.8);
-  --shadow:0 20px 50px rgba(11,11,16,.14);
+  --void:#FFFCEB; --panel:#F3F2E0; --panel-2:#E9EAD5; --raise:#FFFFFF;
+  --line:rgba(66,75,54,.18); --line-2:rgba(66,75,54,.32);
+  --fg:#333A28; --muted:#5B6449; --dim:#7E8768;
+  --lime:#CCEEA0; --lime-ink:#67762E; --lime-dim:#EDF7C6;
+  --red:#C4634A; --red-ink:#A8492F; --red-deep:#8C361F; --red-dim:rgba(168,73,47,.12);
+  --moss:#424B36; --moss-dim:rgba(66,75,54,.14);
+  --sage:#DCDEBF;
+  --nav:rgba(255,252,235,.82);
+  --shadow:0 20px 50px rgba(66,75,54,.14);
 }
 :root[data-theme="dark"]{
   color-scheme:dark;
-  --void:#0B0B10; --panel:#14141C; --panel-2:#181822; --raise:#1E1E28;
-  --line:rgba(255,255,255,.09); --line-2:rgba(255,255,255,.17);
-  --fg:#F2F2F4; --muted:#A2A2B0; --dim:#6E6E7C;
-  --lime:#D4FF4F; --lime-ink:#D4FF4F; --lime-dim:rgba(212,255,79,.12);
-  --red:#FF5C5C; --red-ink:#FF6B6B; --red-deep:#B0141C; --red-dim:rgba(255,92,92,.13);
-  --moss:#4C6600; --moss-dim:rgba(120,160,20,.18);
-  --nav:rgba(11,11,16,.72); --shadow:0 24px 60px rgba(0,0,0,.55);
+  --void:#2C3422; --panel:#353E29; --panel-2:#3D4730; --raise:#455038;
+  --line:rgba(255,252,235,.11); --line-2:rgba(255,252,235,.21);
+  --fg:#FFFCEB; --muted:#C3C8AC; --dim:#9DA486;
+  --lime:#CCEEA0; --lime-ink:#CCEEA0; --lime-dim:rgba(204,238,160,.14);
+  --red:#E39377; --red-ink:#E9A489; --red-deep:#A8492F; --red-dim:rgba(227,147,119,.15);
+  --moss:#67762E; --moss-dim:rgba(103,118,46,.30);
+  --sage:#DCDEBF;
+  --nav:rgba(44,52,34,.78); --shadow:0 24px 60px rgba(19,24,13,.45);
 }
 
 *{box-sizing:border-box}
@@ -113,6 +119,7 @@ h3{font-family:var(--sans);font-weight:700;letter-spacing:-.01em;font-size:17px;
 .nav-links a{font-family:var(--mono);font-weight:500;font-size:11px;letter-spacing:.04em;text-transform:uppercase;
   color:var(--muted);text-decoration:none;padding:6px 9px;border-radius:7px;white-space:nowrap}
 .nav-links a:hover{color:var(--fg);background:var(--panel-2)}
+.nav-links a.nav-deck{color:var(--lime-ink);border:1px solid var(--line-2)}
 .toggle{font-family:var(--mono);font-weight:600;font-size:11px;letter-spacing:.06em;text-transform:uppercase;
   color:var(--fg);background:var(--panel-2);border:1px solid var(--line-2);border-radius:999px;
   padding:6px 12px;cursor:pointer;white-space:nowrap}
@@ -134,7 +141,9 @@ h3{font-family:var(--sans);font-weight:700;letter-spacing:-.01em;font-size:17px;
 .meta-row{display:flex;flex-wrap:wrap;gap:8px;margin-top:26px}
 .tag{font-family:var(--mono);font-weight:500;font-size:11.5px;letter-spacing:.04em;text-transform:uppercase;
   color:var(--fg);border:1px solid var(--line-2);border-radius:999px;padding:7px 14px;background:var(--panel)}
-.tag.lime{border-color:transparent;background:var(--lime);color:#0B0B10;font-weight:600}
+.tag.lime{border-color:transparent;background:var(--lime);color:#2C3422;font-weight:600}
+.tag.deck-tag{text-decoration:none;border-color:var(--lime-ink);color:var(--lime-ink);transition:background .14s ease}
+.tag.deck-tag:hover{background:var(--lime-dim)}
 
 /* cards / grids */
 .grid3{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-top:24px}
@@ -191,39 +200,16 @@ h3{font-family:var(--sans);font-weight:700;letter-spacing:-.01em;font-size:17px;
 .dont .m{background:var(--red-dim);color:var(--red-ink)}
 .rule b{color:var(--fg);font-weight:600}
 
-/* offer */
-.offer{border:1px solid var(--line-2);border-radius:18px;overflow:hidden;background:var(--panel);margin-top:8px;box-shadow:var(--shadow)}
-.offer-top{padding:26px 30px;background:radial-gradient(120% 160% at 100% 0%,var(--lime-dim),transparent 60%),var(--panel-2);border-bottom:1px solid var(--line)}
-.offer-top .divlabel{color:var(--accent);margin-bottom:12px}
-.offer-top h3{font-family:var(--sans);font-weight:700;letter-spacing:-.02em;font-size:clamp(26px,3.6vw,38px);color:var(--fg);margin:0 0 8px;line-height:1}
-.offer-top .promise{font-size:18px;color:var(--accent);font-weight:600;margin:0;font-family:var(--sans)}
-.offer-body{padding:26px 30px;display:grid;grid-template-columns:1.35fr 1fr;gap:30px}
-.offer-body p{margin:0 0 14px;color:var(--muted);font-size:15px;line-height:1.55}
-.offer-body b{color:var(--fg)}
-.offer-what{list-style:none;padding:0;margin:12px 0 0;display:flex;flex-direction:column;gap:10px}
-.offer-what li{font-size:14.5px;color:var(--muted);padding-left:22px;position:relative;line-height:1.45}
-.offer-what li::before{content:"→";position:absolute;left:0;color:var(--lime-ink);font-weight:700}
-.tiers{display:flex;flex-direction:column;gap:10px}
-.tier{border:1px solid var(--line);border-radius:12px;padding:15px 16px;background:var(--void)}
-.tier.hero-tier{border-color:var(--lime);box-shadow:0 0 0 1px var(--lime) inset}
-.tier .tname{font-family:var(--mono);font-weight:600;text-transform:uppercase;letter-spacing:.06em;font-size:11px;color:var(--dim);display:flex;justify-content:space-between;gap:8px;align-items:baseline}
-.tier .tname .pill{color:var(--lime-ink)}
-.tier .price{font-family:var(--sans);font-weight:700;font-size:24px;color:var(--fg);margin-top:6px;font-variant-numeric:tabular-nums;letter-spacing:-.01em}
-.tier .price s{color:var(--dim);font-weight:500;font-size:15px;text-decoration-color:var(--red);margin-left:8px}
-.tier .tsub{font-size:12.5px;color:var(--muted);margin-top:4px;line-height:1.4}
-.offer-side .row{padding:10px 0;border-top:1px solid var(--line);font-size:13.5px;color:var(--muted);margin-top:12px}
-.offer-side .row b{display:block;font-family:var(--mono);font-weight:600;text-transform:uppercase;letter-spacing:.05em;font-size:10.5px;color:var(--dim);margin-bottom:4px}
-
 /* logo */
 .logo-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-top:10px}
 .logo-card{border:1px solid var(--line);border-radius:16px;overflow:hidden;background:var(--panel)}
 .logo-stage{padding:52px 32px;display:grid;place-items:center;min-height:190px;position:relative}
-.logo-stage.dark{background:#0B0B10}
-.logo-stage.light{background:#F6F6F2}
+.logo-stage.dark{background:#2C3422}
+.logo-stage.light{background:#FFFCEB}
 .wordmark{font-family:var(--sans);font-weight:700;letter-spacing:-.03em;font-size:clamp(34px,5vw,52px);line-height:.9;text-align:center}
 .wordmark .dot{margin-left:2px}
-.logo-stage.dark .wordmark{color:#F2F2F4} .logo-stage.dark .wordmark .dot{color:#D4FF4F}
-.logo-stage.light .wordmark{color:#12121A} .logo-stage.light .wordmark .dot{color:#5A7A00}
+.logo-stage.dark .wordmark{color:#FFFCEB} .logo-stage.dark .wordmark .dot{color:#CCEEA0}
+.logo-stage.light .wordmark{color:#333A28} .logo-stage.light .wordmark .dot{color:#67762E}
 .logo-cap{padding:13px 18px;font-size:12.5px;color:var(--muted);border-top:1px solid var(--line);display:flex;justify-content:space-between;gap:10px;align-items:baseline}
 .logo-cap code{font-family:var(--mono);font-size:11.5px;color:var(--accent)}
 .avatar-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;margin-top:10px}
@@ -231,16 +217,16 @@ h3{font-family:var(--sans);font-weight:700;letter-spacing:-.01em;font-size:17px;
 
 /* colour */
 .swatches{display:grid;grid-template-columns:repeat(3,1fr);gap:13px;margin-top:8px}
-.sw{border:1px solid var(--line);border-radius:13px;overflow:hidden;background:var(--panel);cursor:pointer;text-align:left;font:inherit;color:inherit;padding:0;transition:transform .14s ease,box-shadow .14s ease}
+.sw{display:flex;flex-direction:column;border:1px solid var(--line);border-radius:13px;overflow:hidden;background:var(--panel);cursor:pointer;text-align:left;font:inherit;color:inherit;padding:0;transition:transform .14s ease,box-shadow .14s ease}
 .sw:hover{transform:translateY(-3px);box-shadow:var(--shadow)}
-.sw-chip{height:78px;position:relative}
+.sw-chip{display:block;flex:0 0 auto;height:78px;position:relative}
 .sw-chip::after{content:"copy";position:absolute;right:9px;bottom:8px;font-family:var(--mono);font-weight:600;font-size:9.5px;letter-spacing:.1em;text-transform:uppercase;color:transparent;transition:color .15s}
 .sw:hover .sw-chip::after{color:rgba(255,255,255,.7)}
-.sw.on-light:hover .sw-chip::after{color:rgba(11,11,16,.55)}
-.sw-body{padding:12px 14px 15px}
-.sw-name{font-family:var(--sans);font-weight:700;font-size:14px;letter-spacing:-.01em}
-.sw-hex{font-family:var(--mono);font-size:12px;color:var(--muted);margin-top:3px;font-variant-numeric:tabular-nums}
-.sw-job{font-size:12px;color:var(--dim);margin-top:8px;line-height:1.45}
+.sw.on-light:hover .sw-chip::after{color:rgba(44,52,34,.6)}
+.sw-body{display:block;padding:12px 14px 15px}
+.sw-name{display:block;font-family:var(--sans);font-weight:700;font-size:14px;letter-spacing:-.01em}
+.sw-hex{display:block;font-family:var(--mono);font-size:12px;color:var(--muted);margin-top:3px;font-variant-numeric:tabular-nums}
+.sw-job{display:block;font-size:12px;color:var(--dim);margin-top:8px;line-height:1.45}
 .pair-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:10px;margin-top:12px}
 .pair{display:flex;align-items:center;gap:12px;border:1px solid var(--line);border-radius:12px;background:var(--panel);padding:13px 15px;position:relative}
 .pair .swtiny{flex:0 0 auto;width:34px;height:34px;border-radius:8px}
@@ -250,6 +236,14 @@ h3{font-family:var(--sans);font-weight:700;letter-spacing:-.01em;font-size:17px;
 .pair::after{font-family:var(--mono);font-size:10px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;padding:3px 8px;border-radius:999px;flex:0 0 auto}
 .pair.pass::after{content:"pass";color:var(--lime-ink);background:var(--lime-dim)}
 .pair.fail::after{content:"fail";color:var(--red-ink);background:var(--red-dim)}
+
+/* colour laws */
+.colour-law{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-top:26px}
+.colour-law .law{border:1px solid var(--line);border-radius:14px;background:var(--panel);padding:20px 22px}
+.colour-law .ln{font-family:var(--mono);font-weight:700;font-size:12px;letter-spacing:.12em;color:var(--lime-ink);display:block;margin-bottom:12px}
+.colour-law b{font-family:var(--sans);font-weight:700;font-size:16px;letter-spacing:-.01em;color:var(--fg);display:block;margin-bottom:7px}
+.colour-law p{margin:0;font-size:13.5px;color:var(--muted);line-height:1.55}
+.colour-law code{font-family:var(--mono);font-size:12px;color:var(--accent);background:var(--lime-dim);padding:1px 5px;border-radius:5px}
 
 /* type */
 .type-block{border:1px solid var(--line);border-radius:14px;background:var(--panel);padding:28px 30px;margin-top:12px}
@@ -265,7 +259,7 @@ h3{font-family:var(--sans);font-weight:700;letter-spacing:-.01em;font-size:17px;
 .role .ex{font-size:17px;color:var(--fg);margin:2px 0 6px}
 .role .ex.dsp{font-family:var(--sans);font-weight:700;letter-spacing:-.02em}
 .role .ex.mn{font-family:var(--mono);font-weight:500;text-transform:uppercase;letter-spacing:.1em;font-size:13px;color:var(--lime-ink)}
-.role .ex.pill-ex{display:inline-block;font-family:var(--mono);font-size:12px;letter-spacing:.08em;text-transform:uppercase;background:var(--lime);color:#0B0B10;padding:5px 11px;border-radius:999px;font-weight:600}
+.role .ex.pill-ex{display:inline-block;font-family:var(--mono);font-size:12px;letter-spacing:.08em;text-transform:uppercase;background:var(--lime);color:#2C3422;padding:5px 11px;border-radius:999px;font-weight:600}
 .role span{font-size:12.5px;color:var(--dim);display:block;line-height:1.45}
 
 /* buttons */
@@ -278,24 +272,40 @@ h3{font-family:var(--sans);font-weight:700;letter-spacing:-.01em;font-size:17px;
 .btn:focus-visible{outline:2px solid var(--lime-ink);outline-offset:3px}
 .btn-ghost{padding:12px 4px}
 .btn-stage{border:1px solid var(--line);border-radius:14px;padding:26px;margin-top:14px}
-.btn-stage.on-dark{background:#0B0B10}
-.btn-stage.on-light{background:#F6F6F2}
+.btn-stage.on-dark{background:#2C3422}
+.btn-stage.on-light{background:#FFFCEB}
 .btn-stage .cap{font-family:var(--mono);font-size:10.5px;letter-spacing:.1em;text-transform:uppercase;margin-bottom:16px}
-.btn-stage.on-dark .cap{color:#6E6E7C}
-.btn-stage.on-light .cap{color:#83838C}
-.btn-stage.on-dark .btn-primary{background:#D4FF4F;color:#0B0B10}
-.btn-stage.on-dark .btn-primary:hover{transform:translateY(-2px);box-shadow:0 8px 24px rgba(212,255,79,.14),0 0 0 1px #D4FF4F}
-.btn-stage.on-dark .btn-primary:active{background:#4C6600;color:#F2F2F4}
-.btn-stage.on-dark .btn-secondary{border-color:rgba(255,255,255,.18);color:#F2F2F4}
-.btn-stage.on-dark .btn-secondary:hover{border-color:#D4FF4F;color:#D4FF4F;transform:translateY(-2px)}
-.btn-stage.on-dark .btn-ghost{color:#D4FF4F}
-.btn-stage.on-light .btn-primary{background:#C6F03A;color:#12121A}
-.btn-stage.on-light .btn-primary:hover{transform:translateY(-2px);box-shadow:0 8px 24px rgba(160,200,20,.24)}
-.btn-stage.on-light .btn-primary:active{background:#3E5400;color:#F6F6F2}
-.btn-stage.on-light .btn-secondary{border-color:rgba(11,11,16,.22);color:#12121A}
-.btn-stage.on-light .btn-secondary:hover{border-color:#3E5400;color:#3E5400;transform:translateY(-2px)}
-.btn-stage.on-light .btn-ghost{color:#3E5400}
+.btn-stage.on-dark .cap{color:#9DA486}
+.btn-stage.on-light .cap{color:#7E8768}
+.btn-stage.on-dark .btn-primary{background:#CCEEA0;color:#2C3422}
+.btn-stage.on-dark .btn-primary:hover{transform:translateY(-2px);box-shadow:0 8px 24px rgba(204,238,160,.14),0 0 0 1px #CCEEA0}
+.btn-stage.on-dark .btn-primary:active{background:#67762E;color:#FFFCEB}
+.btn-stage.on-dark .btn-secondary{border-color:rgba(255,255,255,.18);color:#FFFCEB}
+.btn-stage.on-dark .btn-secondary:hover{border-color:#CCEEA0;color:#CCEEA0;transform:translateY(-2px)}
+.btn-stage.on-dark .btn-ghost{color:#CCEEA0}
+.btn-stage.on-light .btn-primary{background:#CCEEA0;color:#333A28}
+.btn-stage.on-light .btn-primary:hover{transform:translateY(-2px);box-shadow:0 8px 24px rgba(103,118,46,.24)}
+.btn-stage.on-light .btn-primary:active{background:#67762E;color:#FFFCEB}
+.btn-stage.on-light .btn-secondary{border-color:rgba(44,52,34,.22);color:#333A28}
+.btn-stage.on-light .btn-secondary:hover{border-color:#67762E;color:#67762E;transform:translateY(-2px)}
+.btn-stage.on-light .btn-ghost{color:#67762E}
 .btn-ghost:hover{text-decoration:underline;text-underline-offset:5px}
+
+/* voice — TOV at a glance */
+.tov{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-top:18px}
+.tov-col{border:1px solid var(--line);border-radius:14px;background:var(--panel);padding:20px 22px}
+.tov-col h3{font-family:var(--mono);font-weight:600;text-transform:uppercase;letter-spacing:.08em;font-size:12px;margin-bottom:14px}
+.tov-col.are h3{color:var(--lime-ink)} .tov-col.arent h3{color:var(--red-ink)}
+.tov .tv{padding:10px 0;border-top:1px solid var(--line)}
+.tov .tv:first-of-type{border-top:none;padding-top:0}
+.tov .tv b{font-family:var(--sans);font-weight:700;font-size:15.5px;letter-spacing:-.01em;color:var(--fg);display:flex;align-items:baseline;gap:8px}
+.tov-col.are .tv b::before{content:"\2713";color:var(--lime-ink);font-family:var(--mono);font-size:12px}
+.tov-col.arent .tv b::before{content:"\00d7";color:var(--red-ink);font-family:var(--mono);font-size:13px;font-weight:700}
+.tov .tv span{display:block;font-size:13.5px;color:var(--muted);line-height:1.5;margin-top:4px;padding-left:20px}
+.tov-rule{margin-top:14px;border:1px solid var(--line-2);border-radius:14px;background:var(--panel-2);padding:20px 24px}
+.tov-rule .tr-lab{font-family:var(--mono);font-weight:700;text-transform:uppercase;letter-spacing:.14em;font-size:10.5px;color:var(--accent);display:block;margin-bottom:9px}
+.tov-rule p{margin:0;font-size:16px;color:var(--fg);line-height:1.6;max-width:78ch}
+.tov-rule b{font-weight:700}
 
 /* voice */
 .voice-lead{font-family:var(--sans);font-size:clamp(21px,2.8vw,28px);color:var(--fg);max-width:24ch;font-weight:700;line-height:1.15;letter-spacing:-.02em;margin:0}
@@ -350,7 +360,7 @@ table.dtable td .k{font-family:var(--mono);font-size:12px;color:var(--fg);white-
 .emoji-card b{font-family:var(--mono);font-weight:600;text-transform:uppercase;letter-spacing:.04em;font-size:11.5px;color:var(--fg);display:block}
 .emoji-card span{font-size:12.5px;color:var(--muted);display:block;margin-top:6px;line-height:1.45}
 .emoji-card .etier{display:inline-block;font-family:var(--mono);font-weight:700;font-size:9px;letter-spacing:.1em;text-transform:uppercase;padding:2px 8px;border-radius:5px;margin-bottom:12px}
-.emoji-card .etier.main{background:var(--lime);color:#0B0B10}
+.emoji-card .etier.main{background:var(--lime);color:#2C3422}
 .emoji-card .etier.supp{background:var(--lime-dim);color:var(--lime-ink)}
 .emoji-card .etier.util{background:var(--panel-2);color:var(--dim);border:1px solid var(--line)}
 .emoji-grid.util3{grid-template-columns:repeat(3,1fr)}
@@ -390,16 +400,16 @@ table.dtable td .k{font-family:var(--mono);font-size:12px;color:var(--fg);white-
 
 /* content example reels */
 .reel-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-top:22px}
-.reel{position:relative;border:1px solid var(--line);border-radius:16px;overflow:hidden;aspect-ratio:4/5;background:#0B0B10}
+.reel{position:relative;border:1px solid var(--line);border-radius:16px;overflow:hidden;aspect-ratio:4/5;background:#2C3422}
 .reel img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
-.reel .scrim{position:absolute;inset:0;background:linear-gradient(180deg,rgba(11,11,16,.55),rgba(11,11,16,.12) 42%,rgba(11,11,16,.5))}
+.reel .scrim{position:absolute;inset:0;background:linear-gradient(180deg,rgba(44,52,34,.55),rgba(44,52,34,.12) 42%,rgba(44,52,34,.5))}
 .reel .ov{position:absolute;left:0;right:0;top:0;padding:26px 26px 0}
-.reel .ov h4{font-family:var(--sans);font-weight:700;letter-spacing:-.02em;line-height:1.03;color:#F2F2F4;margin:0;font-size:clamp(19px,3vw,29px);text-shadow:0 2px 18px rgba(0,0,0,.55)}
-.reel .ov h4 u{color:#D4FF4F;text-decoration:none}
-.reel .ov .sub{font-family:var(--sans);font-weight:500;font-size:clamp(13px,2vw,18px);color:#E8E8EE;margin-top:7px;text-shadow:0 2px 14px rgba(0,0,0,.6)}
-.reel .ov .sub u{color:#D4FF4F;text-decoration:none;font-weight:700}
+.reel .ov h4{font-family:var(--sans);font-weight:700;letter-spacing:-.02em;line-height:1.03;color:#FFFCEB;margin:0;font-size:clamp(19px,3vw,29px);text-shadow:0 2px 18px rgba(0,0,0,.55)}
+.reel .ov h4 u{color:#CCEEA0;text-decoration:none}
+.reel .ov .sub{font-family:var(--sans);font-weight:500;font-size:clamp(13px,2vw,18px);color:#F2F1DE;margin-top:7px;text-shadow:0 2px 14px rgba(0,0,0,.6)}
+.reel .ov .sub u{color:#CCEEA0;text-decoration:none;font-weight:700}
 .reel .sig{position:absolute;right:22px;bottom:18px;font-family:'Dancing Script',cursive;font-weight:700;font-size:30px;color:#fff;text-shadow:0 2px 12px rgba(0,0,0,.6)}
-.reel .sig .hrt{color:#D4FF4F}
+.reel .sig .hrt{color:#CCEEA0}
 .reel .rlab{position:absolute;left:22px;bottom:20px;font-family:var(--mono);font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:rgba(255,255,255,.72)}
 .reel.story{aspect-ratio:9/16}
 .story-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-top:22px}
@@ -425,7 +435,7 @@ table.dtable td .k{font-family:var(--mono);font-size:12px;color:var(--fg);white-
 .cxbtn{font-family:var(--mono);font-weight:600;font-size:11px;letter-spacing:.05em;text-transform:uppercase;
   color:var(--fg);background:var(--void);border:1px solid var(--line-2);border-radius:999px;padding:7px 14px;cursor:pointer;white-space:nowrap;transition:border-color .14s ease,background .14s ease}
 .cxbtn:hover{border-color:var(--lime-ink)}
-.cxbtn.primary{background:var(--lime);color:#0B0B10;border-color:transparent}
+.cxbtn.primary{background:var(--lime);color:#2C3422;border-color:transparent}
 .cxbtn.copied{background:var(--lime-dim);border-color:var(--lime);color:var(--lime-ink)}
 pre.cx-block{margin:0;padding:18px;overflow-x:auto;font-family:var(--mono);font-size:12.5px;line-height:1.65;white-space:pre-wrap;color:var(--fg);background:var(--panel)}
 
@@ -440,14 +450,14 @@ pre.cx-block{margin:0;padding:18px;overflow-x:auto;font-family:var(--mono);font-
 .gfx-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-top:10px}
 .gfx{border:1px solid var(--line);border-radius:14px;overflow:hidden;background:var(--panel)}
 .gfx .canvas{aspect-ratio:4/5;padding:22px;display:flex;flex-direction:column;justify-content:space-between;position:relative}
-.gfx .canvas.dark{background:#0B0B10}
-.gfx .canvas.grid-bg{background-image:linear-gradient(rgba(212,255,79,.08) 1px,transparent 1px),linear-gradient(90deg,rgba(212,255,79,.08) 1px,transparent 1px);background-size:34px 34px}
-.gfx .lab{font-family:var(--mono);font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:#D4FF4F}
-.gfx .big{font-family:var(--sans);font-weight:700;letter-spacing:-.02em;font-size:23px;line-height:1;color:#F2F2F4}
-.gfx .big u{color:#D4FF4F;text-decoration:none}
-.gfx .sign{font-family:var(--mono);font-size:11px;color:#A2A2B0;letter-spacing:.05em}
-.gfx .canvas.lime{background:#D4FF4F}
-.gfx .canvas.lime .lab{color:rgba(11,11,16,.6)} .gfx .canvas.lime .big{color:#0B0B10} .gfx .canvas.lime .sign{color:rgba(11,11,16,.65)}
+.gfx .canvas.dark{background:#2C3422}
+.gfx .canvas.grid-bg{background-image:linear-gradient(rgba(204,238,160,.08) 1px,transparent 1px),linear-gradient(90deg,rgba(204,238,160,.08) 1px,transparent 1px);background-size:34px 34px}
+.gfx .lab{font-family:var(--mono);font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:#CCEEA0}
+.gfx .big{font-family:var(--sans);font-weight:700;letter-spacing:-.02em;font-size:23px;line-height:1;color:#FFFCEB}
+.gfx .big u{color:#CCEEA0;text-decoration:none}
+.gfx .sign{font-family:var(--mono);font-size:11px;color:#C3C8AC;letter-spacing:.05em}
+.gfx .canvas.lime{background:#CCEEA0}
+.gfx .canvas.lime .lab{color:rgba(44,52,34,.6)} .gfx .canvas.lime .big{color:#2C3422} .gfx .canvas.lime .sign{color:rgba(44,52,34,.65)}
 .gfx .cap{padding:12px 15px;border-top:1px solid var(--line);font-size:12px;color:var(--muted)}
 .gfx .cap b{color:var(--fg);font-family:var(--mono);font-size:11px;text-transform:uppercase;letter-spacing:.05em;display:block;margin-bottom:3px}
 
@@ -475,18 +485,18 @@ pre.cx-block{margin:0;padding:18px;overflow-x:auto;font-family:var(--mono);font-
 .check label{display:flex;gap:12px;align-items:flex-start;font-size:14.5px;color:var(--muted);cursor:pointer;padding:6px 0;line-height:1.4}
 .check input{appearance:none;-webkit-appearance:none;flex:0 0 auto;width:20px;height:20px;border:1.5px solid var(--line-2);border-radius:6px;margin-top:1px;cursor:pointer;display:grid;place-items:center;transition:background .15s,border-color .15s}
 .check input:checked{background:var(--lime);border-color:var(--lime)}
-.check input:checked::after{content:"\2713";color:#0B0B10;font-size:13px;font-weight:800}
+.check input:checked::after{content:"\2713";color:#2C3422;font-size:13px;font-weight:800}
 .check label:has(:checked){color:var(--dim);text-decoration:line-through;text-decoration-color:var(--line-2)}
 
 footer{border-top:1px solid var(--line);padding:38px 0 64px;color:var(--dim);font-size:13.5px;line-height:1.6}
 footer b{color:var(--muted)}
-.toast{position:fixed;left:50%;bottom:26px;transform:translateX(-50%) translateY(20px);background:var(--lime);color:#0B0B10;font-family:var(--mono);font-weight:600;font-size:12.5px;letter-spacing:.03em;padding:11px 20px;border-radius:999px;box-shadow:var(--shadow);opacity:0;pointer-events:none;transition:opacity .2s,transform .2s;z-index:40}
+.toast{position:fixed;left:50%;bottom:26px;transform:translateX(-50%) translateY(20px);background:var(--lime);color:#2C3422;font-family:var(--mono);font-weight:600;font-size:12.5px;letter-spacing:.03em;padding:11px 20px;border-radius:999px;box-shadow:var(--shadow);opacity:0;pointer-events:none;transition:opacity .2s,transform .2s;z-index:40}
 .toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
 
 @media (max-width:860px){
   .hero h1{font-size:clamp(52px,17vw,92px)}
   .grid3,.pillars,.forwho,.founder-hero,.photo-row,.comm-hero,.logo-grid,.swatches,.vgrid,.copy-grid,
-  .emoji-rules,.role-list,.posttypes,.offer-body,.rules,.gfx-grid,.check,.path-list,.pair-grid,.vid-grid,.links-grid,.reel-grid,.dl-grid,.story-grid{grid-template-columns:1fr}
+  .emoji-rules,.role-list,.posttypes,.tov,.colour-law,.rules,.gfx-grid,.check,.path-list,.pair-grid,.vid-grid,.links-grid,.reel-grid,.dl-grid,.story-grid{grid-template-columns:1fr}
   .comm-hero .side{grid-template-rows:none;grid-template-columns:1fr 1fr}
   .swatches,.emoji-grid,.emoji-grid.util3,.social-grid,.avatar-grid{grid-template-columns:1fr 1fr}
   .part-d{margin-left:0}
@@ -500,10 +510,10 @@ footer b{color:var(--muted)}
   <div class="nav-in">
     <a class="nav-brand" href="#top">TIME RICH<span class="dot">.</span></a>
     <div class="nav-links">
+      <a href="deck/" class="nav-deck">Deck ↗</a>
       <a href="#essence">Essence</a>
       <a href="#founder">Founder</a>
       <a href="#room">Room</a>
-      <a href="#offer">Offer</a>
       <a href="#logo">Logo</a>
       <a href="#colour">Colour</a>
       <a href="#type">Type</a>
@@ -528,11 +538,12 @@ footer b{color:var(--muted)}
 <header class="hero" id="top">
   <div class="hero-grid" aria-hidden="true"></div>
   <div class="hero-in">
-    <p class="hero-kicker">Brand · Voice · Context Bible <span class="badge">v4.2 · one system</span></p>
+    <p class="hero-kicker">Brand · Voice · Context Bible <span class="badge">v5.0 · deep green + pastel</span></p>
     <h1>TIME<br>RICH<span class="u">.</span><span class="hero-blink">_</span></h1>
-    <p class="hero-sub">The single source of truth for how Time Rich <b>looks</b>, <b>sounds</b>, and <b>thinks</b>. The room for women who build their business <b>on</b> AI, not around it. Dark, sharp, a little cheeky. <b>Delegate the shit you hate to AI</b> — and buy your time back.</p>
+    <p class="hero-sub">The single source of truth for how Time Rich <b>looks</b>, <b>sounds</b>, and <b>thinks</b>. The room for women who build their business <b>on</b> AI, not around it. Deep green, cream, one pastel-green accent. Sharp, warm, a little cheeky. <b>Delegate the shit you hate to AI</b> — and buy your time back.</p>
     <div class="meta-row">
       <span class="tag lime">Visual identity</span>
+      <a class="tag deck-tag" href="deck/">The guidelines deck ↗</a>
       <span class="tag">Voice &amp; verbal</span>
       <span class="tag">Content &amp; video</span>
       <span class="tag">Paste-ready context 💸💰</span>
@@ -629,93 +640,75 @@ footer b{color:var(--muted)}
   </div>
 </section>
 
-<section class="wrap" id="offer">
-  <p class="eyebrow">03 — The flagship offer</p>
-  <h2 class="display">The AI Content Machine</h2>
-  <p class="lead">The proof-of-implementation build. When we say Time Rich is about doing, not watching — this is the receipt: an AI content engine that ends the treadmill. <em>Attention is the new equity.</em> Live at <span class="hl">theagentlabs.ai</span>.</p>
-  <div class="offer">
-    <div class="offer-top">
-      <div class="divlabel">Time Rich OS · 40-day challenge</div>
-      <h3>The AI Content Machine</h3>
-      <p class="promise">One machine. Forty days. Nobody builds alone.</p>
-    </div>
-    <div class="offer-body">
-      <div>
-        <p>You build a <b>Content Brain</b> and the engines that run on it. Feed it one idea; it returns a week of quality content in your voice, shaped for each platform. <b>You stay the approval gate</b> — the machine drafts, you tick what ships.</p>
-        <p>The machine behind <b>Ajay Yadav's 10K → 400K</b> growth in 4 months, taught with <b>Ella Molony Cook</b> building hers live. Part live, part on-demand. Everyone else is still guessing what goes viral — your machine reverse-engineers what's winning now and acts on it.</p>
-        <ul class="offer-what">
-          <li>One idea in → a week of platform-shaped content out</li>
-          <li>Voice-locked: every asset sounds like you, not generic AI</li>
-          <li>Content Brain + drafting engines you build and keep</li>
-          <li>Taught live by Ella (operator) + Ajay Yadav (creator, 10K→400K)</li>
-        </ul>
-      </div>
-      <div class="offer-side">
-        <div class="tiers">
-          <div class="tier"><div class="tname">Essential · The Content OS <span class="pill">tier 01</span></div><div class="price">$197 <s>$297</s></div><div class="tsub">Pre-recorded modules · the core machine. Early-bird until Aug 28.</div></div>
-          <div class="tier hero-tier"><div class="tname">Complete · The Full Machine <span class="pill">tier 02 · early bird</span></div><div class="price">$395 <s>$495</s></div><div class="tsub">Everything in Essential + live calls, long-form engines &amp; the production pipeline.</div></div>
-          <div class="tier"><div class="tname">VIP · 1:1 with Ella <span class="pill">tier 03</span></div><div class="price">$4,950 <span style="font-size:14px;color:var(--dim)">/ $14,950</span></div><div class="tsub">6-week or 12-week 1:1 coaching. Custom build on your context.</div></div>
-        </div>
-        <div class="row"><b>The challenge</b>Doors slam Fri Sept 4. Day 1 is Mon Sept 7. Day 40 closing call Fri Oct 16.</div>
-        <div class="row"><b>Go all in</b>Upsell path → build your full AI Operating System.</div>
-      </div>
-    </div>
-  </div>
-  <p class="note">Voice for the offer: never "transform your content." Say what it does. <b>"One idea in. A week of content out."</b> <b>"It sounds like you, because it runs on your context."</b> <b>"Attention is the new equity."</b> Pricing here is cross-referenced against the live checkout (Essential $197→$297, Full Machine $395→$495 early-bird to Aug 28, VIP $4,950/$14,950) — always re-confirm against <code>theagentlabs.ai</code> before publishing, and treat the struck price as the display anchor, not a second charge.</p>
-</section>
-
 <section class="wrap" id="logo">
-  <p class="eyebrow">04 — Logo</p>
+  <p class="eyebrow">03 — Logo</p>
   <h2 class="display">The wordmark is the brand</h2>
-  <p class="lead">Set in <em>Space Grotesk Bold</em>, tight tracking, "TIME RICH" with a single lime full-stop — the mark that says <span class="hl">this sentence is finished, your time is yours</span>. No separate icon. The wordmark colour is fixed to its ground.</p>
+  <p class="lead">Set in <em>Space Grotesk Bold</em>, tight tracking, "TIME RICH" with a single pastel-green full-stop — the mark that says <span class="hl">this sentence is finished, your time is yours</span>. No separate icon. The wordmark colour is fixed to its ground.</p>
   <div class="logo-grid">
     <div class="logo-card"><div class="logo-stage dark"><span class="wordmark">TIME RICH<span class="dot">.</span></span></div>
-      <div class="logo-cap"><span>Off-white wordmark, lime stop → dark grounds</span><code>#F2F2F4 · #D4FF4F</code></div></div>
+      <div class="logo-cap"><span>Cream wordmark, pastel-green stop → deep-green grounds</span><code>#FFFCEB · #CCEEA0</code></div></div>
     <div class="logo-card"><div class="logo-stage light"><span class="wordmark">TIME RICH<span class="dot">.</span></span></div>
-      <div class="logo-cap"><span>Ink wordmark, deep-lime stop → light grounds</span><code>#12121A · #5A7A00</code></div></div>
+      <div class="logo-cap"><span>Deep-green wordmark, moss stop → cream grounds</span><code>#333A28 · #67762E</code></div></div>
   </div>
   <div class="rules">
-    <div class="rule do"><span class="m">✓</span><span><b>Off-white on dark, ink on light.</b> The lime stop is the only colour that moves.</span></div>
-    <div class="rule dont"><span class="m">✕</span><span><b>No purple in the mark.</b> The lilac/plum wordmark is retired; lime is the signal. Lavender lives in the palette as a soft secondary, never in the wordmark.</span></div>
+    <div class="rule do"><span class="m">✓</span><span><b>Cream on deep green, deep green on cream.</b> The stop is the only colour that moves.</span></div>
+    <div class="rule dont"><span class="m">✕</span><span><b>No purple, no fluro.</b> The plum wordmark is retired and so is acid lime. Pastel green is the signal; sage is a background, never the stop.</span></div>
     <div class="rule do"><span class="m">✓</span><span><b>Clear space</b> of one cap-height all around. Minimum 40px tall.</span></div>
     <div class="rule dont"><span class="m">✕</span><span><b>No stretch, skew, shadow, gradient or outline.</b> Set it in Space Grotesk or not at all.</span></div>
   </div>
-  <p class="note">The lime full-stop is the reusable brand atom: use it after a headline, as a bullet, or as the cursor on a loading state. One per composition — it's a signature, not a texture.</p>
+  <p class="note">The pastel-green full-stop is the reusable brand atom: use it after a headline, as a bullet, or as the cursor on a loading state. One per composition — it's a signature, not a texture.</p>
 
   <h3 style="margin-top:44px">Avatar &amp; favicon</h3>
-  <p class="lead" style="margin-bottom:4px">Where the wordmark won't fit — profile pics, favicons, app tiles — use the square mark: the lone <b style="color:var(--lime-ink)">lime stop</b> on void, or the <b>TR.</b> monogram. Same colour rule, always centred, one cap of clear space.</p>
+  <p class="lead" style="margin-bottom:4px">Where the wordmark won't fit — profile pics, favicons, app tiles — use the square mark: the lone <b style="color:var(--lime-ink)">pastel-green stop</b> on deep green, or the <b>TR.</b> monogram. Same colour rule, always centred, one cap of clear space.</p>
   <div class="avatar-grid">
-    <div class="logo-card"><div class="logo-stage dark"><span class="wordmark" style="font-size:64px;color:var(--lime-ink)">.</span></div><div class="logo-cap"><span>The stop · favicon</span><code>#D4FF4F</code></div></div>
-    <div class="logo-card"><div class="logo-stage dark"><span class="wordmark" style="font-size:40px">TR<span class="dot">.</span></span></div><div class="logo-cap"><span>TR mark · avatar</span><code>on #0B0B10</code></div></div>
-    <div class="logo-card"><div class="logo-stage light"><span class="wordmark" style="font-size:40px">TR<span class="dot">.</span></span></div><div class="logo-cap"><span>TR mark · light</span><code>on #F6F6F2</code></div></div>
-    <div class="logo-card"><div class="logo-stage" style="background:#D4FF4F;min-height:118px;padding:22px;display:grid;place-items:center"><span class="wordmark" style="font-size:40px;color:#0B0B10">TR<span style="color:#0B0B10">.</span></span></div><div class="logo-cap"><span>TR mark · lime tile</span><code>#D4FF4F</code></div></div>
+    <div class="logo-card"><div class="logo-stage dark"><span class="wordmark" style="font-size:64px;color:var(--lime-ink)">.</span></div><div class="logo-cap"><span>The stop · favicon</span><code>#CCEEA0</code></div></div>
+    <div class="logo-card"><div class="logo-stage dark"><span class="wordmark" style="font-size:40px">TR<span class="dot">.</span></span></div><div class="logo-cap"><span>TR mark · avatar</span><code>on #2C3422</code></div></div>
+    <div class="logo-card"><div class="logo-stage light"><span class="wordmark" style="font-size:40px">TR<span class="dot">.</span></span></div><div class="logo-cap"><span>TR mark · light</span><code>on #FFFCEB</code></div></div>
+    <div class="logo-card"><div class="logo-stage" style="background:#CCEEA0;min-height:118px;padding:22px;display:grid;place-items:center"><span class="wordmark" style="font-size:40px;color:#2C3422">TR<span style="color:#2C3422">.</span></span></div><div class="logo-cap"><span>TR mark · pastel tile</span><code>#CCEEA0</code></div></div>
   </div>
 </section>
 
 <section class="wrap" id="colour">
-  <p class="eyebrow">05 — Colour</p>
-  <h2 class="display">Near-black, two greens, a cherry, a lavender</h2>
-  <p class="lead">A dark operating-system palette. Void black as the ground, cool greys for structure, a green family — <span class="hl">acid lime</span> that signals and a <b style="color:var(--fg)">deep moss</b> for depth — <span class="cherry">cherry red</span> for heat, and <b style="color:var(--fg)">light lavender</b> as the one soft secondary. Click any swatch to copy its hex.</p>
+  <p class="eyebrow">04 &mdash; Colour</p>
+  <h2 class="display">Deep green, cream, and one pastel green</h2>
+  <p class="lead">Three colours carry the whole brand. <b style="color:var(--fg)">Deep green</b> is the ground &mdash; the dark, expensive, grown-up base everything sits on. <b style="color:var(--fg)">Cream</b> is the light ground and the text on dark. <span class="hl">Pastel green</span> is the single accent: the stop, the CTA, the one highlighted word. <b style="color:var(--fg)">Sage</b> and <b style="color:var(--fg)">moss</b> fill in between, <span class="cherry">clay</span> handles heat. Click any swatch to copy its hex.</p>
   <div class="swatches" id="swatches"></div>
-  <p class="note">Discipline: <b>lime</b> is for action and emphasis only — CTAs, the wordmark stop, one highlighted phrase. <b>Moss</b> is its darker companion — pressed states, tonal depth, and the text-safe green on light. <b>Cherry</b> is urgency and warnings, never body text. <b>Light lavender <code>#EBD7FF</code></b> is the one sanctioned secondary — a soft fill for tints, quiet backgrounds and supporting accents on dark, never a CTA and never the wordmark. The retired plum/lilac brand purple stays retired; lavender is a pastel accent, not a return to it. No gradient heroes. On light grounds lime darkens to moss <code>#3E5400</code> for legible text while staying bright as a fill — the tokens handle it. The values here are the source of truth.</p>
+
+  <div class="colour-law">
+    <div class="law">
+      <span class="ln">01</span>
+      <b>Fluro lime is retired</b>
+      <p>The acid <code>#D4FF4F</code> is off the brand as of v5.0. Anywhere it still appears &mdash; old slides, old graphics, old exports &mdash; it becomes pastel green <code>#CCEEA0</code>. Same job, softer voice, and it stops fighting the deep green.</p>
+    </div>
+    <div class="law">
+      <span class="ln">02</span>
+      <b>Pastel green is a fill, not text on cream</b>
+      <p>On deep green it is text, the stop, and the accent. On cream it is a fill only &mdash; for a pill, a button, a highlighter swipe. Any green <em>text</em> on cream drops to moss <code>#67762E</code>. The tokens do this automatically.</p>
+    </div>
+    <div class="law">
+      <span class="ln">03</span>
+      <b>One accent per composition</b>
+      <p>One pastel-green moment per slide, screen or graphic. If everything is pastel green, nothing is. Sage carries the quiet structure, cream carries the reading, clay is reserved for urgency &mdash; never body text.</p>
+    </div>
+  </div>
 
   <h3 style="margin-top:44px">Contrast &amp; access</h3>
-  <p class="lead">Dark ground, high-contrast text — and one rule that trips everyone up: bright lime is a <em>fill</em> colour, never text on white. These pairings pass WCAG AA; the last one doesn't.</p>
+  <p class="lead">Deep-green ground, cream text &mdash; and the one rule that trips everyone up: pastel green is a <em>fill</em> colour, never text on cream. These pairings pass WCAG AA; the last two don't.</p>
   <div class="pair-grid">
-    <div class="pair pass"><span class="swtiny" style="background:#0B0B10;border:1px solid var(--line-2)"></span><div class="txt"><b>Off-white on void</b><span>Body &amp; headlines · #F2F2F4 on #0B0B10</span></div></div>
-    <div class="pair pass"><span class="swtiny" style="background:#0B0B10;border:1px solid var(--line-2)"></span><div class="txt"><b>Lime on void</b><span>Emphasis &amp; the stop · #D4FF4F on #0B0B10</span></div></div>
-    <div class="pair pass"><span class="swtiny" style="background:#D4FF4F"></span><div class="txt"><b>Ink on lime</b><span>Primary buttons · #0B0B10 on #D4FF4F</span></div></div>
-    <div class="pair pass"><span class="swtiny" style="background:#F6F6F2;border:1px solid var(--line-2)"></span><div class="txt"><b>Moss on white</b><span>Accent text on light · #3E5400 on #F6F6F2</span></div></div>
-    <div class="pair pass"><span class="swtiny" style="background:#F6F6F2;border:1px solid var(--line-2)"></span><div class="txt"><b>Ink on white</b><span>Body on light · #12121A on #F6F6F2</span></div></div>
-    <div class="pair pass"><span class="swtiny" style="background:#EBD7FF"></span><div class="txt"><b>Ink on lavender</b><span>Secondary tint panels · #12121A on #EBD7FF</span></div></div>
-    <div class="pair fail"><span class="swtiny" style="background:#F6F6F2;border:1px solid var(--line-2)"></span><div class="txt"><b>Lime on white</b><span>Illegible — swap to moss for any text</span></div></div>
-    <div class="pair fail"><span class="swtiny" style="background:#F6F6F2;border:1px solid var(--line-2)"></span><div class="txt"><b>Lavender on white</b><span>Too pale for text — it's a fill, like lime</span></div></div>
+    <div class="pair pass"><span class="swtiny" style="background:#2C3422;border:1px solid var(--line-2)"></span><div class="txt"><b>Cream on deep green</b><span>Body &amp; headlines &middot; #FFFCEB on #2C3422 &middot; 12.5:1</span></div></div>
+    <div class="pair pass"><span class="swtiny" style="background:#2C3422;border:1px solid var(--line-2)"></span><div class="txt"><b>Pastel green on deep green</b><span>Emphasis &amp; the stop &middot; #CCEEA0 on #2C3422 &middot; 10.0:1</span></div></div>
+    <div class="pair pass"><span class="swtiny" style="background:#CCEEA0"></span><div class="txt"><b>Deep green on pastel green</b><span>Primary buttons &middot; #333A28 on #CCEEA0 &middot; 9.2:1</span></div></div>
+    <div class="pair pass"><span class="swtiny" style="background:#FFFCEB;border:1px solid var(--line-2)"></span><div class="txt"><b>Moss on cream</b><span>Accent text on light &middot; #67762E on #FFFCEB &middot; 4.8:1</span></div></div>
+    <div class="pair pass"><span class="swtiny" style="background:#FFFCEB;border:1px solid var(--line-2)"></span><div class="txt"><b>Deep green on cream</b><span>Body on light &middot; #333A28 on #FFFCEB &middot; 11.5:1</span></div></div>
+    <div class="pair pass"><span class="swtiny" style="background:#DCDEBF"></span><div class="txt"><b>Deep green on sage</b><span>Tint panels &amp; cards &middot; #333A28 on #DCDEBF &middot; 8.8:1</span></div></div>
+    <div class="pair fail"><span class="swtiny" style="background:#FFFCEB;border:1px solid var(--line-2)"></span><div class="txt"><b>Pastel green on cream</b><span>1.3:1 &mdash; illegible. Swap to moss for any text</span></div></div>
+    <div class="pair fail"><span class="swtiny" style="background:#DCDEBF"></span><div class="txt"><b>Cream on sage</b><span>1.2:1 &mdash; too close. Sage needs deep-green type</span></div></div>
   </div>
-  <p class="note">Also: keep body copy at 16px+ with room to breathe, size stats as plain digits, and never rely on colour alone — cherry warnings carry an ✕, lime confirmations a ✓. Accessible reads as considered, not clinical.</p>
+  <p class="note">Also: keep body copy at 16px+ with room to breathe, size stats as plain digits, and never rely on colour alone &mdash; clay warnings carry an &#10005;, pastel-green confirmations a &#10003;. Accessible reads as considered, not clinical.</p>
 </section>
 
 <section class="wrap" id="type">
-  <p class="eyebrow">06 — Typography</p>
+  <p class="eyebrow">05 — Typography</p>
   <h2 class="display">Space Grotesk speaks. Mono keeps the receipts.</h2>
   <p class="lead">Two faces do all the work. <em>Space Grotesk</em> for the wordmark and every statement; <em>JetBrains Mono</em> for labels, data, tags and the terminal voice. System sans carries body copy so it stays fast and native. No serif, no Archivo.</p>
   <div class="type-block"><div class="type-meta">Display · Space Grotesk Bold · tight tracking</div><div class="spec-huge">Buy it <span class="u">back.</span></div></div>
@@ -726,41 +719,41 @@ footer b{color:var(--muted)}
   <h3 style="margin-top:44px">The four type roles</h3>
   <p class="lead">One system across the site, carousels and graphics — display, body, mono label, and the signature stop.</p>
   <div class="role-list">
-    <div class="role"><b>Headline · Space Grotesk</b><div class="ex dsp">You're not behind on AI.</div><span>Bold, tight, sentence case. Highlight the key phrase in lime.</span></div>
+    <div class="role"><b>Headline · Space Grotesk</b><div class="ex dsp">You're not behind on AI.</div><span>Bold, tight, sentence case. Highlight the key phrase in pastel green.</span></div>
     <div class="role"><b>Body · system sans</b><div class="ex">No one showed you where it hands you back your time.</div><span>Readable, unfussy, native. Never for headlines.</span></div>
-    <div class="role"><b>Label pill · JetBrains Mono</b><div class="ex pill-ex">Delegate the boring stuff</div><span>Letter-spaced uppercase mono in a lime pill. Stats, tags, steps.</span></div>
-    <div class="role"><b>Signature stop · lime full-stop</b><div class="ex dsp">Time Rich<span style="color:var(--lime-ink)">.</span></div><span>Closes a composition. The mark, not decoration.</span></div>
+    <div class="role"><b>Label pill · JetBrains Mono</b><div class="ex pill-ex">Delegate the boring stuff</div><span>Letter-spaced uppercase mono in a pastel-green pill. Stats, tags, steps.</span></div>
+    <div class="role"><b>Signature stop · pastel-green full-stop</b><div class="ex dsp">Time Rich<span style="color:var(--lime-ink)">.</span></div><span>Closes a composition. The mark, not decoration.</span></div>
   </div>
   <p class="note">Type stack, exactly: <b>Space Grotesk</b> (display), <b>system-ui</b> (body), <b>JetBrains Mono</b> (labels &amp; data). Webfonts load from Google Fonts so the page renders true anywhere; the vault holds the files for offline and print work.</p>
 </section>
 
 <section class="wrap" id="buttons">
-  <p class="eyebrow">07 — Buttons &amp; CTAs</p>
+  <p class="eyebrow">06 — Buttons &amp; CTAs</p>
   <h2 class="display">Three buttons, one job each</h2>
-  <p class="lead">Lime for the one action that matters, an outline for the second option, a bare text link for the rest. Every button says exactly what happens next and points with a <span class="hl">→</span>. Pill shape, mono label, uppercase. Hover to see the motion.</p>
+  <p class="lead">Pastel green for the one action that matters, an outline for the second option, a bare text link for the rest. Every button says exactly what happens next and points with a <span class="hl">→</span>. Pill shape, mono label, uppercase. Hover to see the motion.</p>
   <div class="btn-stage on-dark">
-    <div class="cap">On dark · the default ground</div>
+    <div class="cap">On deep green · the default ground</div>
     <div class="btn-row">
       <a class="btn btn-primary" href="#buttons">Apply to join <span class="ar">→</span></a>
-      <a class="btn btn-secondary" href="#buttons">See the machine <span class="ar">→</span></a>
+      <a class="btn btn-secondary" href="#buttons">Come to a workshop <span class="ar">→</span></a>
       <a class="btn btn-ghost" href="#buttons">Read the playbooks</a>
     </div>
   </div>
   <div class="btn-stage on-light">
-    <div class="cap">On light · lime fill holds, text-green becomes moss</div>
+    <div class="cap">On cream · the pastel fill holds, text-green becomes moss</div>
     <div class="btn-row">
-      <a class="btn btn-primary" href="#buttons">Get the full machine · $395 <span class="ar">→</span></a>
-      <a class="btn btn-secondary" href="#buttons">Start with Essential <span class="ar">→</span></a>
+      <a class="btn btn-primary" href="#buttons">Apply to join <span class="ar">→</span></a>
+      <a class="btn btn-secondary" href="#buttons">Grab the prompt pack <span class="ar">→</span></a>
       <a class="btn btn-ghost" href="#buttons">Read the playbooks</a>
     </div>
   </div>
   <div class="rules">
-    <div class="rule do"><span class="m">✓</span><span><b>One primary per screen.</b> If everything's lime, nothing is. Secondary and ghost carry the rest.</span></div>
-    <div class="rule dont"><span class="m">✕</span><span><b>Never "Learn more" or "Get started."</b> Name the action: "Apply to join," "Get the full machine."</span></div>
+    <div class="rule do"><span class="m">✓</span><span><b>One primary per screen.</b> If everything's pastel green, nothing is. Secondary and ghost carry the rest.</span></div>
+    <div class="rule dont"><span class="m">✕</span><span><b>Never "Learn more" or "Get started."</b> Name the action: "Apply to join," "Grab the prompt pack."</span></div>
     <div class="rule do"><span class="m">✓</span><span><b>Always the → </b>on primary and secondary. It points at what happens next.</span></div>
-    <div class="rule dont"><span class="m">✕</span><span><b>No lime label on white.</b> Fill stays lime, text goes ink; a text-only CTA uses moss.</span></div>
+    <div class="rule dont"><span class="m">✕</span><span><b>No pastel-green label on cream.</b> Fill stays pastel, text goes deep green; a text-only CTA uses moss.</span></div>
   </div>
-  <p class="note">Pressed state darkens lime to <b>moss</b> — the green family doing the work. Match button copy to the live site before shipping; prices shown are the current early-bird on <code>theagentlabs.ai</code>.</p>
+  <p class="note">Pressed state darkens pastel green to <b>moss</b> — the green family doing the work. Match button copy to whatever the live page actually does before shipping.</p>
 </section>
 
 <!-- ===================== PART II — VOICE & VERBAL ===================== -->
@@ -770,9 +763,32 @@ footer b{color:var(--muted)}
 </div></div>
 
 <section class="wrap" id="voice">
-  <p class="eyebrow">08 — Voice &amp; tone</p>
+  <p class="eyebrow">07 — Voice &amp; tone</p>
   <h2 class="display">Sound like a founder, not a brand deck</h2>
   <p class="voice-lead">Direct, warm, <span>slightly impatient with nonsense</span>, and a little cheeky.</p>
+
+  <p class="lead" style="margin-top:22px">If you only read one screen of this bible, read this one. Four traits, four things we never are, and one rule that decides every sentence.</p>
+  <div class="tov">
+    <div class="tov-col are">
+      <h3>We always sound</h3>
+      <div class="tv"><b>Direct</b><span>The point lands in sentence one. No warm-up, no throat-clearing, no build-up to the reveal.</span></div>
+      <div class="tv"><b>Warm</b><span>Founder to founder, not brand to audience. We assume she is competent and short on time.</span></div>
+      <div class="tv"><b>Specific</b><span>Numbers, named tasks, real before-and-after. "21 hours a week," never "more time."</span></div>
+      <div class="tv"><b>A little cheeky</b><span>"Delegate the shit you hate." Dry, confident, never mean and never trying too hard.</span></div>
+    </div>
+    <div class="tov-col arent">
+      <h3>We never sound</h3>
+      <div class="tv"><b>Corporate</b><span>No empower, leverage, unlock, ecosystem, seamless, synergy. Say the actual thing.</span></div>
+      <div class="tv"><b>Hyped</b><span>No game-changing, transformative, 10x, groundbreaking. No exclamation marks, ever.</span></div>
+      <div class="tv"><b>Scarce</b><span>No spots filling fast, no don't miss out. Confidence, not scarcity. The room sells itself.</span></div>
+      <div class="tv"><b>Vague</b><span>No hedging, no passive voice hiding the subject, no "things." Find the noun.</span></div>
+    </div>
+  </div>
+  <div class="tov-rule">
+    <span class="tr-lab">The one test</span>
+    <p>Read it out loud. If it sounds like something <b>Ella would say to one founder over coffee</b>, it ships. If it sounds like a brand deck, a LinkedIn thought-leader, or ChatGPT with the safety on, it does not. <span class="hl">Context beats prompts</span> is the spine of the argument; <span class="hl">specificity is the whole product.</span></p>
+  </div>
+
   <div class="dial">
     <h3>The cheeky dial</h3>
     <p>Confident and warm, tipping into playful. "Steal them all." "It's not that deep." "No homework." "Delegate the shit you hate." Never mean, never cringe, never trying too hard.</p>
@@ -810,7 +826,7 @@ footer b{color:var(--muted)}
 </section>
 
 <section class="wrap" id="surfaces">
-  <p class="eyebrow">08b — Voice, dialed per surface</p>
+  <p class="eyebrow">07b — Voice, dialed per surface</p>
   <h2 class="display">One voice. The register moves, the rules never do</h2>
   <p class="lead">Same voice everywhere. What moves is the dial: how much sass, how much polish, how many emojis. The <a href="#voice">firewall</a> is constant across all of them.</p>
   <div class="dscroll">
@@ -845,7 +861,7 @@ footer b{color:var(--muted)}
 </section>
 
 <section class="wrap" id="copy">
-  <p class="eyebrow">09 — Copy bank</p>
+  <p class="eyebrow">08 — Copy bank</p>
   <h2 class="display">One-liners that actually land</h2>
   <p class="lead">A working bank for the landing page, ads, and social. Starred lines are the current picks. Rewrite freely, but keep the rhythm: short, direct, a little cheeky.</p>
   <div class="copy-grid">
@@ -864,10 +880,10 @@ footer b{color:var(--muted)}
       <li>Build lean. Stay independent. Stay human.</li>
       <li>Rest isn't the reward for productivity. It's the foundation.</li>
     </ul></div>
-    <div class="copy-card"><div class="h"><b>Content Machine</b><span>offer</span></div><ul>
-      <li class="star">One idea in. A week of content out.</li>
-      <li>Attention is the new equity. The wealth transfer is real.</li>
-      <li>One machine. Forty days. Nobody builds alone.</li>
+    <div class="copy-card"><div class="h"><b>The payoff</b><span>what they get</span></div><ul>
+      <li class="star">21+ hours a week, back on your calendar.</li>
+      <li>Context beats prompts. Load it once, it sounds like you forever.</li>
+      <li>You stay the approval gate. The AI drafts, you decide.</li>
     </ul></div>
     <div class="copy-card"><div class="h"><b>The room</b><span>social proof</span></div><ul>
       <li class="star">No gurus. No bros. Just women who ship.</li>
@@ -884,7 +900,7 @@ footer b{color:var(--muted)}
 </section>
 
 <section class="wrap" id="emoji">
-  <p class="eyebrow">10 — Emoji</p>
+  <p class="eyebrow">09 — Emoji</p>
   <h2 class="display">Emoji with a job</h2>
   <p class="lead">Emoji are punctuation, not decoration. The <span class="hl">money marks lead</span> — 💸 flying money and 💰 money bag carry the whole thesis: get smarter with AI, make more money. <span class="hl">🍒 cherry and 🌈 rainbow are the supplement</span> — the signature close that ends a caption. One or two per caption, never in website headlines. The purple heart is retired with the purple.</p>
   <div class="emoji-grid">
@@ -916,7 +932,7 @@ footer b{color:var(--muted)}
 </div></div>
 
 <section class="wrap" id="social">
-  <p class="eyebrow">11 — Social media</p>
+  <p class="eyebrow">10 — Social media</p>
   <h2 class="display">Same voice, built for the feed</h2>
   <p class="lead">Instagram is the front door; LinkedIn and Substack carry the depth. Bold Space Grotesk graphic slides alternate with real founder and community photos. Carousels are playbooks people can steal.</p>
   <div class="social-grid">
@@ -942,26 +958,26 @@ footer b{color:var(--muted)}
     <div class="pt"><b>Playbook carousel</b><span>"Steal this" — a real AI workflow, slide by slide. The workhorse.</span></div>
     <div class="pt"><b>Founder POV</b><span>Ella on camera or a hot take. Direct, warm, a little cheeky.</span></div>
     <div class="pt"><b>Community moment</b><span>Dinners, events, the room. Proof it's real.</span></div>
-    <div class="pt"><b>Build / product news</b><span>Dark lime-accent graphic slides. Space Grotesk + mono label.</span></div>
-    <div class="pt"><b>Signature stamp</b><span>Stories closed with the wordmark + the lime stop and 🍒🌈.</span></div>
+    <div class="pt"><b>Build / product news</b><span>Deep-green pastel-accent graphic slides. Space Grotesk + mono label.</span></div>
+    <div class="pt"><b>Signature stamp</b><span>Stories closed with the wordmark + the pastel-green stop and 🍒🌈.</span></div>
     <div class="pt"><b>Playbook drop</b><span>New Substack post → carousel + link. "Steal them all."</span></div>
   </div>
 
   <h3 style="margin-top:44px">Content in the wild · the three pillars on a story</h3>
-  <p class="lead">Real story covers across the pillars — health, sales, revenue. Founder photo, Space Grotesk hook, one lime keyword, the script <span class="script">Time Rich</span> mark. Same system as the <a href="#video">reel covers</a>.</p>
+  <p class="lead">Real story covers across the pillars — health, sales, revenue. Founder photo, Space Grotesk hook, one pastel-green keyword, the script <span class="script">Time Rich</span> mark. Same system as the <a href="#video">reel covers</a>.</p>
   <div class="story-grid">
     <div class="reel story">
       <img src="img/content/reel-longevity.jpg" alt="Story cover — build your AI longevity coach" loading="lazy">
       <div class="scrim"></div>
-      <div class="ov"><h4>BUILD YOUR AI<br>LONGEVITY COACH<span style="color:#D4FF4F"> ♥</span></h4></div>
+      <div class="ov"><h4>BUILD YOUR AI<br>LONGEVITY COACH<span style="color:#CCEEA0"> ♥</span></h4></div>
       <span class="rlab">Health &amp; longevity</span>
     </div>
     <div class="reel story">
       <img src="img/content/reel-pipeline.jpg" alt="Story cover — turn your dead CRM into a live hot pipeline" loading="lazy">
       <div class="scrim"></div>
       <div class="ov" style="text-align:center">
-        <div class="script" style="color:#fff;font-size:26px;margin-bottom:6px;text-shadow:0 2px 12px rgba(0,0,0,.6)">Time Rich<span style="color:#D4FF4F">♥</span></div>
-        <h4 style="font-size:clamp(16px,2.3vw,22px)">Turn your <u style="color:#D4FF4F">dead</u> CRM into a live<br><span style="font-size:1.5em;display:inline-block;margin-top:5px;color:#D4FF4F">HOT PIPELINE</span></h4>
+        <div class="script" style="color:#fff;font-size:26px;margin-bottom:6px;text-shadow:0 2px 12px rgba(0,0,0,.6)">Time Rich<span style="color:#CCEEA0">♥</span></div>
+        <h4 style="font-size:clamp(16px,2.3vw,22px)">Turn your <u style="color:#CCEEA0">dead</u> CRM into a live<br><span style="font-size:1.5em;display:inline-block;margin-top:5px;color:#CCEEA0">HOT PIPELINE</span></h4>
       </div>
       <span class="rlab">Sales &amp; pipeline</span>
     </div>
@@ -976,7 +992,7 @@ footer b{color:var(--muted)}
 </section>
 
 <section class="wrap" id="video">
-  <p class="eyebrow">12 — Video &amp; reels</p>
+  <p class="eyebrow">11 — Video &amp; reels</p>
   <h2 class="display">The video format, and the creators we steal it from</h2>
   <p class="lead">Reels and short video are how the room gets found. The three creators below are the <em>inspiration set for video content only</em> — the reference for pacing, on-camera energy, and how to teach AI without the hype. <span class="hl">They are a moodboard, not a voice.</span> The voice stays Time Rich: direct, warm, a little cheeky, no exclamation marks, 🍒🌈 to close.</p>
   <div class="vid-grid">
@@ -1014,12 +1030,12 @@ footer b{color:var(--muted)}
     <div class="rule dont"><span class="m">✕</span><span><b>No hype hooks or 🚀🔥.</b> No "this will change your life." Say what it does, specifically.</span></div>
     <div class="rule do"><span class="m">✓</span><span><b>Human-in-the-loop on screen.</b> Sabrina's move — show yourself editing what the AI drafts.</span></div>
     <div class="rule dont"><span class="m">✕</span><span><b>Don't copy their voice or captions.</b> Format is shared; words stay Time Rich, per the firewall.</span></div>
-    <div class="rule do"><span class="m">✓</span><span><b>Text overlays in Space Grotesk</b>, one lime accent, digits as digits. Captions burned in for silent autoplay.</span></div>
+    <div class="rule do"><span class="m">✓</span><span><b>Text overlays in Space Grotesk</b>, one pastel-green accent, digits as digits. Captions burned in for silent autoplay.</span></div>
     <div class="rule dont"><span class="m">✕</span><span><b>No exclamation marks</b> in the overlay or the caption. Confidence, not scarcity.</span></div>
   </div>
 
   <h3 style="margin-top:44px">Content examples · the reel hook style</h3>
-  <p class="lead">Two examples of the format on brand: a founder photo, a Space Grotesk hook with one lime keyword, the script <span style="font-family:'Dancing Script',cursive;font-weight:700">Time Rich</span> signature. This is what "keep the format, keep the brand" looks like on a reel cover.</p>
+  <p class="lead">Two examples of the format on brand: a founder photo, a Space Grotesk hook with one pastel-green keyword, the script <span style="font-family:'Dancing Script',cursive;font-weight:700">Time Rich</span> signature. This is what "keep the format, keep the brand" looks like on a reel cover.</p>
   <div class="reel-grid">
     <div class="reel">
       <img src="img/ella-laptop.jpg" alt="Time Rich reel cover — the revenue hook">
@@ -1042,9 +1058,9 @@ footer b{color:var(--muted)}
 </section>
 
 <section class="wrap" id="graphics">
-  <p class="eyebrow">13 — Graphics</p>
+  <p class="eyebrow">12 — Graphics</p>
   <h2 class="display">The graphic system</h2>
-  <p class="lead">Every graphic is built from the same parts: a near-black canvas, a faint lime grid, a mono label top-left, a Space Grotesk statement, and the signature close. Occasionally one loud lime slide for the punchline. Real photography carries the human moments.</p>
+  <p class="lead">Every graphic is built from the same parts: a deep-green canvas, a faint pastel grid, a mono label top-left, a Space Grotesk statement, and the signature close. Occasionally one loud pastel-green slide for the punchline. Real photography carries the human moments.</p>
   <div class="gfx-grid">
     <div class="gfx">
       <div class="canvas dark grid-bg">
@@ -1052,15 +1068,15 @@ footer b{color:var(--muted)}
         <span class="big">Delegate the shit you <u>hate</u> to AI.</span>
         <span class="sign">timerich.ai · 🍒🌈</span>
       </div>
-      <div class="cap"><b>Statement slide</b>Dark canvas, lime grid, one bold claim.</div>
+      <div class="cap"><b>Statement slide</b>Deep-green canvas, pastel grid, one bold claim.</div>
     </div>
     <div class="gfx">
       <div class="canvas lime">
         <span class="lab">THE PUNCHLINE</span>
         <span class="big">One idea in. A week of content out.</span>
-        <span class="sign">Time Rich OS</span>
+        <span class="sign">timerich.ai</span>
       </div>
-      <div class="cap"><b>Lime slide</b>The loud one. Ink text on lime. Use once per set.</div>
+      <div class="cap"><b>Pastel slide</b>The loud one. Deep-green text on pastel green. Use once per set.</div>
     </div>
     <div class="gfx">
       <div class="canvas dark">
@@ -1068,14 +1084,14 @@ footer b{color:var(--muted)}
         <span class="big"><u>21+</u> hours<br>back a week.</span>
         <span class="sign">women who ship</span>
       </div>
-      <div class="cap"><b>Stat slide</b>Numbers as digits, lime for the figure.</div>
+      <div class="cap"><b>Stat slide</b>Numbers as digits, pastel green for the figure.</div>
     </div>
   </div>
-  <p class="note">Rules: mono label always top-left with the <code>›</code> prompt. One lime accent per slide. Numbers stated as digits. Real photos, not staged stock — no "inspiring" overlays. Every element has a job.</p>
+  <p class="note">Rules: mono label always top-left with the <code>›</code> prompt. One pastel-green accent per slide. Numbers stated as digits. Real photos, not staged stock — no "inspiring" overlays. Every element has a job.</p>
 </section>
 
 <section class="wrap" id="motion">
-  <p class="eyebrow">14 — Motion</p>
+  <p class="eyebrow">13 — Motion</p>
   <h2 class="display">Motion like a terminal, not a carousel</h2>
   <p class="lead">Fast, purposeful, one moment per view. Motion should feel like a system responding — a cursor, a sweep, a reveal — never decoration bouncing for attention. Everything degrades gracefully under <span class="hl">reduced-motion</span>.</p>
   <div class="motion-demo">
@@ -1084,14 +1100,14 @@ footer b{color:var(--muted)}
     <span class="m-meta">140ms · ease-out</span>
   </div>
   <div class="grid3" style="margin-top:16px">
-    <div class="card"><h3>The cursor</h3><p>The blinking lime <b>_</b> is the signature — loading states, the end of a headline, a "we're on it" beat. One per screen.</p></div>
-    <div class="card"><h3>The sweep</h3><p>Links and CTAs get a lime underline or a <b>→</b> that slides on hover. 140ms, ease-out. Confirmation, not spectacle.</p></div>
+    <div class="card"><h3>The cursor</h3><p>The blinking pastel-green <b>_</b> is the signature — loading states, the end of a headline, a "we're on it" beat. One per screen.</p></div>
+    <div class="card"><h3>The sweep</h3><p>Links and CTAs get a pastel-green underline or a <b>→</b> that slides on hover. 140ms, ease-out. Confirmation, not spectacle.</p></div>
     <div class="card"><h3>The reveal</h3><p>Sections fade up ~12px on scroll, once. Fast and quiet. Never stagger a whole grid tile-by-tile.</p></div>
   </div>
   <div class="rules">
     <div class="rule do"><span class="m">✓</span><span><b>120–200ms, ease-out.</b> If you notice the duration, it's too slow.</span></div>
     <div class="rule dont"><span class="m">✕</span><span><b>No bounce, spin, or parallax.</b> That's the hype content we're the opposite of.</span></div>
-    <div class="rule do"><span class="m">✓</span><span><b>One moment per view.</b> Same discipline as one lime accent per slide.</span></div>
+    <div class="rule do"><span class="m">✓</span><span><b>One moment per view.</b> Same discipline as one pastel-green accent per slide.</span></div>
     <div class="rule dont"><span class="m">✕</span><span><b>Honour reduced-motion.</b> Every state still works with animation off.</span></div>
   </div>
 </section>
@@ -1103,7 +1119,7 @@ footer b{color:var(--muted)}
 </div></div>
 
 <section class="wrap" id="context">
-  <p class="eyebrow">15 — Paste-ready context</p>
+  <p class="eyebrow">14 — Paste-ready context</p>
   <h2 class="display">Everything an AI needs to sound like you</h2>
   <p class="lead">This is the operational half of the brand: the blocks you paste into ChatGPT, Claude, or any tool before you ask for a draft. Copy a block, paste it into the field. <span class="hl">Context beats prompts</span> — this is the context. Source of record lives in the vault at <code style="font-family:var(--mono);font-size:12px;color:var(--accent)">Chief of Staff - Eden/EDEN-CONTEXT-PACK.md</code>.</p>
   <div class="cx-actions">
@@ -1168,7 +1184,7 @@ Never "Ella x." Never "Cheers," "Talk soon," or "Best,".</pre>
 </section>
 
 <section class="wrap" id="eden">
-  <p class="eyebrow">16 — Eden &amp; the email system</p>
+  <p class="eyebrow">15 — Eden &amp; the email system</p>
   <h2 class="display">How Eden runs the day</h2>
   <p class="lead">Eden is Ella's Chief of Staff — not a task executor. Eden orchestrates agents, holds the quality line, and filters what reaches her. Content is rated 1 to 10; only <span class="hl">9s and 10s</span> land on her desk. Target: 10 minutes of Ella's day, maximum.</p>
   <div class="dscroll">
@@ -1210,13 +1226,12 @@ Never "Ella x." Never "Cheers," "Talk soon," or "Best,".</pre>
 </section>
 
 <section class="wrap" id="links">
-  <p class="eyebrow">17 — Key links</p>
+  <p class="eyebrow">16 — Key links</p>
   <h2 class="display">So nothing ships with a placeholder</h2>
   <p class="lead">The real URLs, so a draft never leaves a <code>[link]</code> behind. Cross-referenced against the live site.</p>
   <ul class="links-grid">
     <li><b>Time Rich</b><a href="https://timerich.ai" target="_blank" rel="noopener">timerich.ai</a></li>
     <li><b>Revenue Accelerator</b><a href="https://timerich.ai/revenue" target="_blank" rel="noopener">timerich.ai/revenue</a></li>
-    <li><b>Content Machine</b><a href="https://theagentlabs.ai/" target="_blank" rel="noopener">theagentlabs.ai</a></li>
     <li><b>1:1 Coaching</b><a href="https://timerich.ai/coaching" target="_blank" rel="noopener">timerich.ai/coaching</a></li>
     <li><b>Club · apply</b><a href="https://timerich.ai/club" target="_blank" rel="noopener">timerich.ai/club</a></li>
     <li><b>Apply</b><a href="https://timerich.ai/apply" target="_blank" rel="noopener">timerich.ai/apply</a></li>
@@ -1230,7 +1245,7 @@ Never "Ella x." Never "Cheers," "Talk soon," or "Best,".</pre>
 
 <!-- ===================== CLOSE ===================== -->
 <section class="wrap" id="assets">
-  <p class="eyebrow">18 — Assets</p>
+  <p class="eyebrow">17 — Assets</p>
   <h2 class="display">Where the files live</h2>
   <p class="lead">The wordmark is type, not a file — set it live in Space Grotesk anywhere. The full canonical pack (vector exports, founder &amp; community photography, graphic templates, and the source Markdown) lives in the vault.</p>
   <div class="asset-note">
@@ -1260,7 +1275,7 @@ Never "Ella x." Never "Cheers," "Talk soon," or "Best,".</pre>
       </div>
     </div>
     <div class="dl-card">
-      <div class="dl-h"><b>Logos</b><span>wordmark = Space Grotesk + lime stop</span></div>
+      <div class="dl-h"><b>Logos</b><span>wordmark = Space Grotesk + pastel stop</span></div>
       <div class="dl-row">
         <a class="cxbtn primary" href="logo/time-rich-wordmark-dark.svg" download>↓ Wordmark dark SVG</a>
         <a class="cxbtn" href="logo/time-rich-wordmark-dark.png" download>PNG</a>
@@ -1271,35 +1286,34 @@ Never "Ella x." Never "Cheers," "Talk soon," or "Best,".</pre>
       </div>
     </div>
   </div>
-  <p class="note">The wordmark is type, so it can also just be re-set live in Space Grotesk Bold with a lime full-stop. The SVGs have the font embedded, so they render true even where Space Grotesk is not installed. Fonts are Open Font License (redistribution allowed); the photography and wordmark are Time Rich's.</p>
+  <p class="note">The wordmark is type, so it can also just be re-set live in Space Grotesk Bold with a pastel-green full-stop. The SVGs have the font embedded, so they render true even where Space Grotesk is not installed. Fonts are Open Font License (redistribution allowed); the photography and wordmark are Time Rich's.</p>
 
-  <p class="note">The old purple wordmark, signature scripts and TR monogram PNGs are <b>retired</b> — archive them, don't ship them. If a mark isn't Space Grotesk on the new palette, it isn't the brand.</p>
+  <p class="note">The old purple wordmark, signature scripts and TR monogram PNGs are <b>retired</b> — archive them, don't ship them. If a mark isn't Space Grotesk on the deep-green/cream palette, it isn't the brand.</p>
 </section>
 
 <section class="wrap">
-  <p class="eyebrow">19 — Ship checklist</p>
+  <p class="eyebrow">18 — Ship checklist</p>
   <h2 class="display">Before anything goes out</h2>
   <div class="check">
-    <label><input type="checkbox">Wordmark is Space Grotesk with the lime stop — off-white on dark, ink on light</label>
-    <label><input type="checkbox">Lime only for action/emphasis; moss for depth; cherry only for urgency</label>
-    <label><input type="checkbox">No purple in the wordmark — old plum retired; lavender is a secondary tint only</label>
+    <label><input type="checkbox">Wordmark is Space Grotesk with the pastel-green stop — cream on deep green, deep green on cream</label>
+    <label><input type="checkbox">Pastel green only for action/emphasis; moss and sage for depth; clay only for urgency</label>
+    <label><input type="checkbox">No purple and no fluro lime anywhere — both are retired</label>
     <label><input type="checkbox">Headlines in Space Grotesk; labels &amp; data in JetBrains Mono</label>
-    <label><input type="checkbox">One primary (lime) button per screen, with a → on every CTA</label>
-    <label><input type="checkbox">Lime never as text on white — moss for that</label>
+    <label><input type="checkbox">One primary (pastel green) button per screen, with a → on every CTA</label>
+    <label><input type="checkbox">Pastel green never as text on cream — moss for that</label>
     <label><input type="checkbox">Copy passes the voice firewall — no em-dash connectors, no exclamation marks</label>
     <label><input type="checkbox">Register matched to the surface; the rules never moved</label>
     <label><input type="checkbox">Stats stated plainly as digits; contrast passes AA</label>
     <label><input type="checkbox">Photography is real (founder or the room), not stock</label>
     <label><input type="checkbox">Video keeps the format, not the borrowed voice — 🍒🌈 to close</label>
     <label><input type="checkbox">Emoji: 💸💰 lead, 🍒🌈 closes; one or two max, none in headlines</label>
-    <label><input type="checkbox">Offer pricing matches live theagentlabs.ai</label>
     <label><input type="checkbox">Sounds like Ella, not ChatGPT or a brand deck</label>
   </div>
 </section>
 
 <footer class="wrap">
-  <p><b>Time Rich — Brand, Voice &amp; Context Bible v4.2</b> · Owner: Ella Molony Cook · Updated 2026-07-18</p>
-  <p>One system: the visual identity (near-black, lime + moss green, cherry heat, Space Grotesk &amp; JetBrains Mono) merged with the paste-ready context pack and the video reference set. Built from timerich.ai and cross-referenced against the live checkout. Canonical source: <b>Time Rich / 07 Media / Brand /</b> and <b>Chief of Staff - Eden / EDEN-CONTEXT-PACK.md</b>. Voice is canonical in <b>voice-style.md</b> — if anything here disagrees, that file wins.</p>
+  <p><b>Time Rich — Brand, Voice &amp; Context Bible v5.0</b> · Owner: Ella Molony Cook · Updated 2026-08-24</p>
+  <p>One system: the visual identity (deep green ground, cream, one pastel-green accent, sage and moss for depth, clay for heat, Space Grotesk &amp; JetBrains Mono) merged with the paste-ready context pack and the video reference set. <b>v5.0 changes:</b> fluro lime #D4FF4F retired in favour of pastel green #CCEEA0, deep green promoted to the primary ground, the tone of voice pulled to the front of Part II, and the flagship-offer section removed so this bible stays brand-only. Canonical source: <b>Time Rich / 07 Media / Brand /</b> and <b>Chief of Staff - Eden / EDEN-CONTEXT-PACK.md</b>. Voice is canonical in <b>voice-style.md</b> — if anything here disagrees, that file wins.</p>
 </footer>
 </main>
 
@@ -1323,16 +1337,16 @@ Never "Ella x." Never "Cheers," "Talk soon," or "Best,".</pre>
 
   /* colour swatches */
   var COLORS=[
-    {n:'Lime',h:'#D4FF4F',job:'The one action colour — CTAs, the stop, emphasis',light:true},
-    {n:'Moss',h:'#4C6600',job:'Deep green — pressed states, on-light text, tonal depth',light:false},
-    {n:'Cherry',h:'#FF5C5C',job:'Urgency, warnings, the 🍒 — never body text',light:true},
-    {n:'Deep Cherry',h:'#B0141C',job:'Pressed urgency, deep accent',light:false},
-    {n:'Light Lavender',h:'#EBD7FF',job:'Secondary — soft fills, tints & supporting accents on dark',light:true},
-    {n:'Void',h:'#0B0B10',job:'Primary dark ground — the whole system lives here',light:false},
-    {n:'Panel',h:'#14141C',job:'Cards, panels, raised surfaces',light:false},
-    {n:'Text',h:'#F2F2F4',job:'Primary text on dark',light:true},
-    {n:'Muted',h:'#A2A2B0',job:'Secondary text, leads, captions',light:false},
-    {n:'Dim',h:'#6E6E7C',job:'Labels, meta, the quietest layer',light:false}
+    {n:'Pastel Green',h:'#CCEEA0',job:'The one accent — the stop, CTAs, one highlighted word',light:true},
+    {n:'Deep Green',h:'#2C3422',job:'The primary ground — the whole system sits on this',light:false},
+    {n:'Green',h:'#424B36',job:'Mid green — panels, wordmark on cream, structure',light:false},
+    {n:'Moss',h:'#67762E',job:'Text-safe green on cream, pressed states, tonal depth',light:false},
+    {n:'Cream',h:'#FFFCEB',job:'The light ground, and the text colour on deep green',light:true},
+    {n:'Sage',h:'#DCDEBF',job:'Card fills, tint panels, the quiet structural layer',light:true},
+    {n:'Sage Light',h:'#E9EAD5',job:'The softest panel — table headers, raised surfaces',light:true},
+    {n:'Clay',h:'#A8492F',job:'Urgency, warnings, the 🍒 — never body text',light:false},
+    {n:'Muted',h:'#5B6449',job:'Secondary text, leads and captions on cream',light:false},
+    {n:'Dim',h:'#7E8768',job:'Labels, meta, the quietest layer',light:false}
   ];
   var wrap=document.getElementById('swatches');
   COLORS.forEach(function(c){

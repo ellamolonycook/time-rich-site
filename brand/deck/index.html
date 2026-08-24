@@ -1,0 +1,802 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Time Rich — Brand Guidelines Deck</title>
+<meta name="robots" content="noindex,nofollow">
+<meta name="description" content="The Time Rich brand guidelines as a deck: deep green, cream, one pastel green, and the tone of voice in full.">
+<meta property="og:title" content="Time Rich — Brand Guidelines Deck">
+<meta property="og:description" content="Deep green, cream, one pastel green. The look, the type, and the tone of voice — 23 slides.">
+<meta property="og:type" content="website">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%232C3422'/%3E%3Ccircle cx='16' cy='21' r='4.5' fill='%23CCEEA0'/%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;700&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  color-scheme:dark;
+  --deep:#2C3422;        /* deep green — the ground */
+  --deep-2:#242B1B;
+  --panel:#353E29;
+  --panel-2:#3D4730;
+  --green:#424B36;
+  --moss:#67762E;
+  --pastel:#CCEEA0;      /* the one accent */
+  --cream:#FFFCEB;
+  --sage:#DCDEBF;
+  --sage-lt:#E9EAD5;
+  --clay:#A8492F;
+  --clay-lt:#E39377;
+  --muted:#C3C8AC;
+  --dim:#9DA486;
+  --line:rgba(255,252,235,.13);
+  --line-2:rgba(255,252,235,.24);
+  --sans:'Space Grotesk',system-ui,-apple-system,'Segoe UI',sans-serif;
+  --body:system-ui,-apple-system,'Segoe UI',Roboto,Helvetica,sans-serif;
+  --mono:'JetBrains Mono',ui-monospace,SFMono-Regular,Menlo,monospace;
+}
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{margin:0;background:var(--deep-2);color:var(--cream);font-family:var(--body);
+  line-height:1.55;-webkit-font-smoothing:antialiased}
+@media (prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
+
+/* ---------- deck shell ---------- */
+.deck{scroll-snap-type:y mandatory;overflow-y:auto;height:100dvh;scroll-behavior:smooth}
+@media (prefers-reduced-motion:reduce){.deck{scroll-behavior:auto}}
+.slide{scroll-snap-align:start;scroll-snap-stop:always;min-height:100dvh;display:flex;
+  align-items:center;justify-content:center;padding:clamp(22px,3.4vw,54px);position:relative}
+.stage{width:min(1180px,100%);aspect-ratio:16/9;background:var(--deep);border-radius:20px;
+  border:1px solid var(--line);position:relative;overflow:hidden;
+  padding:clamp(26px,3.2vw,52px);display:flex;flex-direction:column;
+  box-shadow:0 30px 80px rgba(12,16,8,.5)}
+/* on short/narrow screens let the slide grow instead of clipping */
+@media (max-width:860px),(max-height:620px){
+  .stage{aspect-ratio:auto;min-height:calc(100dvh - 44px)}
+  .slide{min-height:auto;padding:22px 14px}
+  .deck{scroll-snap-type:none}
+}
+.stage.cream{background:var(--cream);color:#333A28;border-color:rgba(66,75,54,.2)}
+.stage.pastel{background:var(--pastel);color:#2C3422;border-color:transparent}
+.stage.grid::before{content:"";position:absolute;inset:0;pointer-events:none;
+  background-image:linear-gradient(rgba(204,238,160,.07) 1px,transparent 1px),
+                   linear-gradient(90deg,rgba(204,238,160,.07) 1px,transparent 1px);
+  background-size:56px 56px;
+  mask-image:radial-gradient(115% 85% at 50% 0%,#000 25%,transparent 78%);
+  -webkit-mask-image:radial-gradient(115% 85% at 50% 0%,#000 25%,transparent 78%)}
+
+/* ---------- slide furniture ---------- */
+.eyebrow{font-family:var(--mono);font-weight:600;text-transform:uppercase;letter-spacing:.16em;
+  font-size:clamp(9.5px,.85vw,12px);color:var(--pastel);display:flex;align-items:center;gap:9px;
+  position:relative;z-index:2;flex:0 0 auto}
+.eyebrow::before{content:"›";font-weight:700}
+.stage.cream .eyebrow{color:var(--moss)} .stage.pastel .eyebrow{color:rgba(44,52,34,.7)}
+.body{flex:1 1 auto;display:flex;flex-direction:column;justify-content:center;
+  padding:clamp(14px,2vw,26px) 0;position:relative;z-index:2;min-height:0}
+.foot{flex:0 0 auto;display:flex;align-items:flex-end;justify-content:space-between;gap:18px;
+  position:relative;z-index:2}
+.mark{font-family:var(--sans);font-weight:700;letter-spacing:-.02em;
+  font-size:clamp(13px,1.25vw,18px);color:var(--cream);white-space:nowrap}
+.mark .dot{color:var(--pastel)}
+.stage.cream .mark{color:#333A28} .stage.cream .mark .dot{color:var(--moss)}
+.stage.pastel .mark{color:#2C3422} .stage.pastel .mark .dot{color:#2C3422}
+.trail{font-family:var(--mono);font-weight:500;text-transform:uppercase;letter-spacing:.13em;
+  font-size:clamp(8.5px,.78vw,11px);color:var(--dim);text-align:right}
+.stage.cream .trail{color:#7E8768} .stage.pastel .trail{color:rgba(44,52,34,.6)}
+.trail b{color:var(--pastel);font-weight:600}
+.stage.cream .trail b{color:var(--moss)} .stage.pastel .trail b{color:#2C3422}
+
+h1,h2,h3{margin:0;font-family:var(--sans);letter-spacing:-.03em;line-height:.98;font-weight:700;text-wrap:balance}
+h1{font-size:clamp(40px,6.4vw,92px);line-height:.9}
+h2{font-size:clamp(27px,3.9vw,56px)}
+h3{font-size:clamp(15px,1.35vw,19px);letter-spacing:-.01em;line-height:1.15}
+.sub{font-size:clamp(14px,1.4vw,20px);color:var(--muted);max-width:58ch;margin:clamp(12px,1.5vw,22px) 0 0;line-height:1.5}
+.stage.cream .sub{color:#5B6449} .stage.pastel .sub{color:rgba(44,52,34,.78)}
+.sub b{color:var(--cream);font-weight:600}
+.stage.cream .sub b{color:#333A28} .stage.pastel .sub b{color:#2C3422}
+em{font-style:normal;color:var(--pastel);font-weight:600}
+.stage.cream em{color:var(--moss)}
+.hl{background:var(--pastel);color:#2C3422;padding:0 .22em;border-radius:3px;font-weight:700}
+
+/* ---------- reusable slide furniture ---------- */
+.cols{display:grid;gap:clamp(10px,1.1vw,16px);margin-top:clamp(14px,1.8vw,26px)}
+.c2{grid-template-columns:1fr 1fr}
+.c3{grid-template-columns:repeat(3,1fr)}
+.c4{grid-template-columns:repeat(4,1fr)}
+.card{border:1px solid var(--line);border-radius:13px;background:var(--panel);
+  padding:clamp(13px,1.35vw,20px);min-width:0}
+.stage.cream .card{background:var(--sage-lt);border-color:rgba(66,75,54,.18)}
+.stage.pastel .card{background:rgba(255,252,235,.5);border-color:rgba(44,52,34,.18)}
+.card .n{font-family:var(--mono);font-weight:700;font-size:clamp(9px,.8vw,11.5px);
+  letter-spacing:.14em;color:var(--pastel);display:block;margin-bottom:clamp(7px,.8vw,11px)}
+.stage.cream .card .n{color:var(--moss)}
+.card p{margin:6px 0 0;font-size:clamp(11.5px,1.02vw,14.5px);color:var(--muted);line-height:1.5}
+.stage.cream .card p{color:#5B6449}
+.card p b{color:var(--cream)} .stage.cream .card p b{color:#333A28}
+
+ul.ticks{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:clamp(6px,.75vw,11px)}
+ul.ticks li{display:flex;gap:10px;align-items:flex-start;font-size:clamp(11.5px,1.05vw,15px);
+  color:var(--muted);line-height:1.45}
+ul.ticks li::before{content:"\2713";font-family:var(--mono);font-weight:700;color:var(--pastel);flex:0 0 auto;font-size:.9em;margin-top:.15em}
+ul.ticks.no li::before{content:"\00d7";color:var(--clay-lt);font-size:1em}
+ul.ticks li b{color:var(--cream);font-weight:600}
+.stage.cream ul.ticks li{color:#5B6449}
+.stage.cream ul.ticks li b{color:#333A28}
+.stage.cream ul.ticks li::before{color:var(--moss)}
+.stage.cream ul.ticks.no li::before{color:var(--clay)}
+
+.pill{display:inline-flex;align-items:center;gap:8px;font-family:var(--mono);font-weight:600;
+  text-transform:uppercase;letter-spacing:.07em;font-size:clamp(9.5px,.85vw,12px);
+  border:1px solid var(--line-2);border-radius:999px;padding:7px 14px;color:var(--cream)}
+.pill.fill{background:var(--pastel);color:#2C3422;border-color:transparent}
+.pill.ghost{border-color:var(--pastel);color:var(--pastel)}
+.stage.cream .pill{border-color:rgba(66,75,54,.3);color:#333A28}
+.stage.cream .pill.fill{background:var(--pastel);border-color:transparent;color:#2C3422}
+.stage.cream .pill.ghost{border-color:var(--moss);color:var(--moss)}
+.pills{display:flex;flex-wrap:wrap;gap:9px;margin-top:clamp(14px,1.7vw,24px)}
+
+table.t{width:100%;border-collapse:collapse;font-size:clamp(10.5px,.98vw,14px);margin-top:clamp(12px,1.5vw,20px)}
+table.t th{text-align:left;font-family:var(--mono);font-weight:600;text-transform:uppercase;
+  letter-spacing:.09em;font-size:clamp(8.5px,.75vw,10.5px);color:var(--dim);
+  padding:0 12px 9px 0;border-bottom:1px solid var(--line);white-space:nowrap}
+table.t td{padding:clamp(6px,.7vw,10px) 12px clamp(6px,.7vw,10px) 0;border-bottom:1px solid var(--line);
+  vertical-align:top;color:var(--muted);line-height:1.4}
+table.t tr:last-child td{border-bottom:none}
+table.t td b{color:var(--cream);font-weight:600}
+table.t td.bad{color:var(--clay-lt);text-decoration:line-through;text-decoration-color:rgba(227,147,119,.45)}
+.stage.cream table.t th{color:#7E8768;border-color:rgba(66,75,54,.18)}
+.stage.cream table.t td{color:#5B6449;border-color:rgba(66,75,54,.18)}
+.stage.cream table.t td b{color:#333A28}
+.stage.cream table.t td.bad{color:var(--clay);text-decoration-color:rgba(168,73,47,.4)}
+.mn{font-family:var(--mono);font-size:.92em;letter-spacing:.02em}
+
+/* ---------- specific slides ---------- */
+.tri{display:grid;grid-template-columns:1.25fr 1fr 1fr;gap:clamp(10px,1.1vw,16px);
+  margin-top:clamp(14px,1.8vw,24px);flex:1 1 auto;min-height:0}
+.tri .chip{border-radius:14px;padding:clamp(14px,1.5vw,22px);display:flex;flex-direction:column;
+  justify-content:flex-end;min-height:clamp(120px,17vw,230px);border:1px solid transparent}
+.tri .chip .cname{font-family:var(--sans);font-weight:700;font-size:clamp(15px,1.7vw,26px);letter-spacing:-.02em;line-height:1}
+.tri .chip .chex{font-family:var(--mono);font-size:clamp(10px,.92vw,13px);margin-top:5px;opacity:.75}
+.tri .chip .cjob{font-size:clamp(10.5px,.92vw,13px);margin-top:9px;line-height:1.4;opacity:.8;max-width:26ch}
+
+.sw-row{display:grid;grid-template-columns:repeat(6,1fr);gap:clamp(8px,.9vw,13px);margin-top:clamp(12px,1.6vw,22px)}
+.sw{border:1px solid var(--line);border-radius:11px;overflow:hidden;display:flex;flex-direction:column}
+.sw .chip{display:block;height:clamp(42px,5.4vw,76px)}
+.sw .meta{padding:9px 10px 11px;background:var(--panel)}
+.sw .meta b{display:block;font-family:var(--sans);font-weight:700;font-size:clamp(10.5px,.92vw,13px);letter-spacing:-.01em;color:var(--cream)}
+.sw .meta span{display:block;font-family:var(--mono);font-size:clamp(9px,.78vw,11px);color:var(--dim);margin-top:2px}
+
+.pair{display:flex;align-items:center;gap:11px;border:1px solid var(--line);border-radius:11px;
+  background:var(--panel);padding:clamp(9px,.95vw,14px)}
+.pair .sq{flex:0 0 auto;width:clamp(26px,2.6vw,38px);height:clamp(26px,2.6vw,38px);border-radius:8px;border:1px solid var(--line-2)}
+.pair .tx{min-width:0;flex:1}
+.pair .tx b{display:block;font-size:clamp(11px,.98vw,14px);color:var(--cream);font-weight:600;line-height:1.2}
+.pair .tx span{display:block;font-family:var(--mono);font-size:clamp(8.5px,.76vw,10.5px);color:var(--dim);margin-top:3px}
+.pair .vd{flex:0 0 auto;font-family:var(--mono);font-weight:700;font-size:clamp(8px,.72vw,10px);
+  letter-spacing:.09em;text-transform:uppercase;padding:3px 8px;border-radius:999px}
+.pair.ok .vd{background:rgba(204,238,160,.16);color:var(--pastel)}
+.pair.no .vd{background:rgba(227,147,119,.16);color:var(--clay-lt)}
+
+.wm-stage{border-radius:14px;display:grid;place-items:center;min-height:clamp(110px,15vw,200px);border:1px solid var(--line)}
+.wm-stage.on-deep{background:var(--deep-2)}
+.wm-stage.on-cream{background:var(--cream);border-color:rgba(66,75,54,.18)}
+.wm{font-family:var(--sans);font-weight:700;letter-spacing:-.03em;font-size:clamp(22px,3.2vw,46px);line-height:.9}
+.wm-stage.on-deep .wm{color:var(--cream)} .wm-stage.on-deep .wm .dot{color:var(--pastel)}
+.wm-stage.on-cream .wm{color:#333A28} .wm-stage.on-cream .wm .dot{color:var(--moss)}
+.cap{font-family:var(--mono);font-size:clamp(8.5px,.76vw,10.5px);letter-spacing:.09em;
+  text-transform:uppercase;color:var(--dim);margin-top:9px;display:block}
+
+.spec{font-family:var(--sans);font-weight:700;letter-spacing:-.03em;line-height:.92;
+  font-size:clamp(30px,4.6vw,68px);color:var(--cream)}
+.spec .u{color:var(--pastel)}
+.specmono{font-family:var(--mono);font-weight:500;font-size:clamp(14px,1.7vw,25px);letter-spacing:.03em;color:var(--cream)}
+.specmono .c{color:var(--pastel)}
+.specbody{font-family:var(--body);font-size:clamp(12px,1.15vw,17px);color:var(--muted);line-height:1.55;max-width:56ch;margin:0}
+
+.flow{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin-top:clamp(12px,1.6vw,22px)}
+.flow .st{font-family:var(--mono);font-weight:500;font-size:clamp(9.5px,.88vw,12.5px);
+  letter-spacing:.04em;text-transform:uppercase;color:var(--cream);border:1px solid var(--line-2);
+  border-radius:9px;padding:8px 11px}
+.flow .ar{color:var(--pastel);font-weight:700}
+.stage.cream .flow .st{color:#333A28;border-color:rgba(66,75,54,.28)}
+.stage.cream .flow .ar{color:var(--moss)}
+
+.emo{display:grid;grid-template-columns:repeat(4,1fr);gap:clamp(9px,1vw,14px);margin-top:clamp(12px,1.6vw,22px)}
+.emo .e{border:1px solid var(--line);border-radius:13px;background:var(--panel);padding:clamp(12px,1.3vw,18px);text-align:center}
+.emo .e .g{font-size:clamp(24px,2.8vw,40px);line-height:1}
+.emo .e b{display:block;font-family:var(--mono);font-weight:600;text-transform:uppercase;
+  letter-spacing:.05em;font-size:clamp(9.5px,.84vw,12px);color:var(--cream);margin-top:9px}
+.emo .e span{display:block;font-size:clamp(10px,.88vw,12.5px);color:var(--muted);margin-top:5px;line-height:1.4}
+
+.gfx{display:grid;grid-template-columns:repeat(3,1fr);gap:clamp(10px,1.1vw,16px);margin-top:clamp(12px,1.6vw,22px)}
+.gfx .cv{aspect-ratio:4/5;border-radius:13px;padding:clamp(12px,1.3vw,18px);display:flex;
+  flex-direction:column;justify-content:space-between;border:1px solid var(--line)}
+.gfx .cv.dk{background:var(--deep-2);
+  background-image:linear-gradient(rgba(204,238,160,.09) 1px,transparent 1px),linear-gradient(90deg,rgba(204,238,160,.09) 1px,transparent 1px);
+  background-size:30px 30px}
+.gfx .cv.pl{background:var(--pastel);border-color:transparent}
+.gfx .cv .lb{font-family:var(--mono);font-size:clamp(8px,.72vw,10px);letter-spacing:.13em;text-transform:uppercase;color:var(--pastel)}
+.gfx .cv .bg{font-family:var(--sans);font-weight:700;letter-spacing:-.02em;font-size:clamp(13px,1.45vw,21px);line-height:1.02;color:var(--cream)}
+.gfx .cv .bg u{color:var(--pastel);text-decoration:none}
+.gfx .cv .sg{font-family:var(--mono);font-size:clamp(8px,.72vw,10.5px);color:var(--dim);letter-spacing:.05em}
+.gfx .cv.pl .lb{color:rgba(44,52,34,.62)} .gfx .cv.pl .bg{color:#2C3422} .gfx .cv.pl .sg{color:rgba(44,52,34,.65)}
+.gfx .cvcap{font-family:var(--mono);font-size:clamp(8.5px,.74vw,10.5px);letter-spacing:.07em;
+  text-transform:uppercase;color:var(--dim);margin-top:8px;display:block}
+
+.check{display:grid;grid-template-columns:1fr 1fr;gap:clamp(5px,.6vw,9px) clamp(18px,2.4vw,40px);margin-top:clamp(12px,1.6vw,20px)}
+.check .ck{display:flex;gap:10px;align-items:flex-start;font-size:clamp(11px,.98vw,14px);color:var(--muted);line-height:1.4}
+.check .ck::before{content:"";flex:0 0 auto;width:15px;height:15px;border:1.5px solid var(--line-2);border-radius:4px;margin-top:.14em}
+
+.big-quote{font-family:var(--sans);font-weight:700;letter-spacing:-.025em;
+  font-size:clamp(20px,2.6vw,38px);line-height:1.15;color:var(--cream);max-width:24ch}
+.stage.pastel .big-quote{color:#2C3422}
+.byline{font-family:var(--mono);font-weight:600;text-transform:uppercase;letter-spacing:.13em;
+  font-size:clamp(9px,.8vw,11.5px);color:var(--dim);margin-top:clamp(14px,1.8vw,26px)}
+.stage.pastel .byline{color:rgba(44,52,34,.65)}
+
+.links{list-style:none;margin:clamp(12px,1.6vw,22px) 0 0;padding:0;display:grid;
+  grid-template-columns:1fr 1fr;gap:5px clamp(18px,2.4vw,36px)}
+.links li{display:flex;gap:11px;align-items:baseline;font-size:clamp(11px,.98vw,14px);
+  padding:6px 0;border-bottom:1px solid var(--line)}
+.links li b{font-family:var(--mono);font-weight:600;text-transform:uppercase;letter-spacing:.05em;
+  font-size:clamp(8.5px,.76vw,10.5px);color:var(--dim);min-width:104px;flex:0 0 auto}
+.links li a{color:var(--pastel);text-decoration:none;word-break:break-all}
+.links li a:hover{text-decoration:underline;text-underline-offset:3px}
+
+/* ---------- chrome: progress, counter, controls ---------- */
+.progress{position:fixed;top:0;left:0;height:3px;background:var(--pastel);width:0;z-index:60;
+  transition:width .18s ease}
+.hud{position:fixed;right:clamp(12px,1.6vw,24px);bottom:clamp(12px,1.6vw,24px);z-index:60;
+  display:flex;align-items:center;gap:8px}
+.hud button{font-family:var(--mono);font-weight:600;font-size:12px;line-height:1;color:var(--cream);
+  background:rgba(44,52,34,.86);border:1px solid var(--line-2);border-radius:999px;
+  width:34px;height:34px;cursor:pointer;backdrop-filter:blur(10px);transition:border-color .14s,color .14s}
+.hud button:hover{border-color:var(--pastel);color:var(--pastel)}
+.hud .count{font-family:var(--mono);font-weight:600;font-size:11.5px;letter-spacing:.09em;
+  color:var(--cream);background:rgba(44,52,34,.86);border:1px solid var(--line-2);
+  border-radius:999px;padding:9px 13px;backdrop-filter:blur(10px);font-variant-numeric:tabular-nums}
+.hud .count b{color:var(--pastel)}
+.hud a.print{font-family:var(--mono);font-weight:600;font-size:11.5px;letter-spacing:.06em;
+  text-transform:uppercase;color:var(--cream);background:rgba(44,52,34,.86);border:1px solid var(--line-2);
+  border-radius:999px;padding:9px 13px;text-decoration:none;backdrop-filter:blur(10px);cursor:pointer}
+.hud a.print:hover{border-color:var(--pastel);color:var(--pastel)}
+button:focus-visible,a:focus-visible{outline:2px solid var(--pastel);outline-offset:3px}
+@media (max-width:640px){.hud .print{display:none}}
+
+/* ---------- print: one slide per landscape page ---------- */
+@media print{
+  @page{size:A4 landscape;margin:0}
+  html,body{background:#fff}
+  .deck{height:auto;overflow:visible;scroll-snap-type:none}
+  .hud,.progress{display:none!important}
+  .slide{min-height:0;height:auto;padding:0;page-break-after:always;break-after:page;display:block}
+  .slide:last-child{page-break-after:auto;break-after:auto}
+  .stage{width:100%;aspect-ratio:auto;height:100vh;border-radius:0;border:none;box-shadow:none;
+    padding:9mm 12mm;-webkit-print-color-adjust:exact;print-color-adjust:exact}
+  *{-webkit-print-color-adjust:exact;print-color-adjust:exact}
+}
+</style>
+</head>
+<body>
+
+<div class="progress" id="progress"></div>
+
+<div class="deck" id="deck">
+
+<!-- 01 — COVER -->
+<section class="slide"><div class="stage grid">
+  <p class="eyebrow">timerich.ai · brand guidelines · v5.0</p>
+  <div class="body">
+    <h1>TIME<br>RICH<span style="color:var(--pastel)">.</span></h1>
+    <p class="sub">How the brand looks, and how it sounds. <b>Deep green</b> is the ground. <b>Cream</b> is the light. <b>One pastel green</b> is the accent, and it is the only colour that gets to shout.</p>
+    <div class="pills">
+      <span class="pill fill">Visual identity</span>
+      <span class="pill">Tone of voice</span>
+      <span class="pill">Content &amp; graphics</span>
+    </div>
+  </div>
+  <div class="foot"><span class="mark">TIME RICH<span class="dot">.</span></span>
+    <span class="trail">Look → type → voice → ship</span></div>
+</div></section>
+
+<!-- 02 — WHAT CHANGED -->
+<section class="slide"><div class="stage">
+  <p class="eyebrow">01 — What changed in v5.0</p>
+  <div class="body">
+    <h2>Fluro is out.<br>Pastel green is in.</h2>
+    <p class="sub">Same brand, calmer signal. The acid lime fought the deep green and burned the eye on every slide. Pastel green does the same job and lets the dark green be the expensive thing in the room.</p>
+    <div class="cols c3">
+      <div class="card"><span class="n">Retired</span><h3>Fluro lime <span class="mn">#D4FF4F</span></h3><p>Off the brand. Anywhere it survives — old slides, old exports, old graphics — swap it.</p></div>
+      <div class="card"><span class="n">Now</span><h3>Pastel green <span class="mn">#CCEEA0</span></h3><p>The single accent. The stop, the CTA, the one highlighted word. Nothing else.</p></div>
+      <div class="card"><span class="n">Promoted</span><h3>Deep green <span class="mn">#2C3422</span></h3><p>The primary ground. Not near-black any more — the brand is green, top to bottom.</p></div>
+    </div>
+  </div>
+  <div class="foot"><span class="mark">TIME RICH<span class="dot">.</span></span><span class="trail"><b>02</b> / 23</span></div>
+</div></section>
+
+<!-- 03 — ESSENCE -->
+<section class="slide"><div class="stage">
+  <p class="eyebrow">02 — The essence</p>
+  <div class="body">
+    <h2>What's the point of AI if it doesn't buy your life back?</h2>
+    <p class="sub">Time Rich is the education and community that teaches women to <em>delegate the shit they hate to AI</em> — and run their business and their life on it. Application-based, because the quality of the room is the whole point.</p>
+    <div class="cols c3">
+      <div class="card"><span class="n">Mission</span><p>Close the gap. Women adopt AI about <b>25% less</b> than men. We make implementation normal, not intimidating.</p></div>
+      <div class="card"><span class="n">Belief</span><p>AI doesn't save you time unless you set it up right. <b>Context beats prompts.</b> Build lean. Stay independent. Stay human.</p></div>
+      <div class="card"><span class="n">Difference</span><p>No gurus. No bros. No growth-at-all-costs. No 12-week curriculum. Just the room, and women who ship.</p></div>
+    </div>
+  </div>
+  <div class="foot"><span class="mark">TIME RICH<span class="dot">.</span></span><span class="trail"><b>03</b> / 23</span></div>
+</div></section>
+
+<!-- 04 — FOR / NOT FOR -->
+<section class="slide"><div class="stage">
+  <p class="eyebrow">03 — Who it's for</p>
+  <div class="body">
+    <h2>The room is the product</h2>
+    <p class="sub">Everything we make is aimed at one person, and deliberately not at the other. If a draft would land with the right-hand column, it's off-brand.</p>
+    <div class="cols c2">
+      <div class="card">
+        <span class="n">For</span>
+        <ul class="ticks">
+          <li>Women and queer founders, investors and operators</li>
+          <li>People who've already built something with a proven offer</li>
+          <li>Builders who want to implement this week, not study it this year</li>
+          <li>Founders staying independent and lean</li>
+        </ul>
+      </div>
+      <div class="card">
+        <span class="n" style="color:var(--clay-lt)">Not for</span>
+        <ul class="ticks no">
+          <li>People looking for motivation, inspiration or awareness</li>
+          <li>Anyone who wants a cohort, curriculum or graduation</li>
+          <li>Growth-at-all-costs, VC-trap thinking</li>
+          <li>Corporate speak and empowerment language</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+  <div class="foot"><span class="mark">TIME RICH<span class="dot">.</span></span><span class="trail"><b>04</b> / 23</span></div>
+</div></section>
+
+<!-- 05 — PILLARS -->
+<section class="slide"><div class="stage">
+  <p class="eyebrow">04 — The three pillars</p>
+  <div class="body">
+    <h2>Business. Health. People.</h2>
+    <p class="sub">Every piece of content sits under one of three. If it sits under none of them, it isn't ours.</p>
+    <div class="cols c3">
+      <div class="card"><span class="n">01 / Business</span><h3>Business &amp; AI</h3><p>Use AI to multiply time, not replace judgement. Build lean, stay independent, choose sustainability over hype.</p></div>
+      <div class="card"><span class="n">02 / Health</span><h3>Health &amp; Longevity</h3><p>Rest is the foundation of productivity, not its reward. Burnout prevention and the inner work of a better founder.</p></div>
+      <div class="card"><span class="n">03 / People</span><h3>Relationships &amp; Inner Work</h3><p>Community over isolation. Real mentorship, real vulnerability. You're allowed to struggle here.</p></div>
+    </div>
+  </div>
+  <div class="foot"><span class="mark">TIME RICH<span class="dot">.</span></span><span class="trail"><b>05</b> / 23</span></div>
+</div></section>
+
+<!-- 06 — PART DIVIDER: LOOK -->
+<section class="slide"><div class="stage pastel">
+  <p class="eyebrow">Part I</p>
+  <div class="body">
+    <h1 style="font-size:clamp(38px,5.6vw,80px)">How it<br>looks<span style="opacity:.45">.</span></h1>
+    <p class="sub">The mark, the palette, the type, the buttons. Six slides, and one rule that governs all of them: <b>one accent per composition.</b></p>
+  </div>
+  <div class="foot"><span class="mark">TIME RICH<span class="dot">.</span></span><span class="trail"><b>06</b> / 23</span></div>
+</div></section>
+
+<!-- 07 — LOGO -->
+<section class="slide"><div class="stage">
+  <p class="eyebrow">05 — Logo</p>
+  <div class="body">
+    <h2>The wordmark is the brand</h2>
+    <p class="sub">Space Grotesk Bold, tight tracking, "TIME RICH" with a single pastel-green full-stop. No separate icon. The wordmark colour is fixed to its ground — <b>the stop is the only colour that moves.</b></p>
+    <div class="cols c2">
+      <div><div class="wm-stage on-deep"><span class="wm">TIME RICH<span class="dot">.</span></span></div>
+        <span class="cap">Cream wordmark, pastel stop &middot; #FFFCEB + #CCEEA0</span></div>
+      <div><div class="wm-stage on-cream"><span class="wm">TIME RICH<span class="dot">.</span></span></div>
+        <span class="cap">Deep-green wordmark, moss stop &middot; #333A28 + #67762E</span></div>
+    </div>
+  </div>
+  <div class="foot"><span class="mark">TIME RICH<span class="dot">.</span></span><span class="trail"><b>07</b> / 23</span></div>
+</div></section>
+
+<!-- 08 — LOGO RULES -->
+<section class="slide"><div class="stage">
+  <p class="eyebrow">06 — Logo rules</p>
+  <div class="body">
+    <h2>The stop is a signature, not a texture</h2>
+    <p class="sub">One per composition. Use it after a headline, as a bullet, or as the cursor on a loading state — then stop.</p>
+    <div class="cols c2">
+      <div class="card"><span class="n">Do</span>
+        <ul class="ticks">
+          <li><b>Cream on deep green, deep green on cream.</b> Nothing else.</li>
+          <li><b>Clear space</b> of one cap-height all round. Minimum 40px tall.</li>
+          <li><b>Set it live in Space Grotesk Bold</b> — it's type, not a file.</li>
+          <li><b>Square mark</b> for avatars: the lone stop, or <b>TR.</b></li>
+        </ul>
+      </div>
+      <div class="card"><span class="n" style="color:var(--clay-lt)">Don't</span>
+        <ul class="ticks no">
+          <li><b>No purple and no fluro.</b> Plum and acid lime are both retired.</li>
+          <li><b>No stretch, skew, shadow, gradient or outline.</b></li>
+          <li><b>No sage stop.</b> Sage is a background, never the mark.</li>
+          <li><b>Don't re-draw it.</b> If it isn't Space Grotesk, it isn't the brand.</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+  <div class="foot"><span class="mark">TIME RICH<span class="dot">.</span></span><span class="trail"><b>08</b> / 23</span></div>
+</div></section>
+
+<!-- 09 — THE THREE COLOURS -->
+<section class="slide"><div class="stage">
+  <p class="eyebrow">07 — Colour · the three that matter</p>
+  <div class="body" style="justify-content:flex-start">
+    <h2>Deep green, cream, one pastel green</h2>
+    <div class="tri">
+      <div class="chip" style="background:var(--deep-2);border-color:var(--line)">
+        <span class="cname" style="color:var(--cream)">Deep Green</span>
+        <span class="chex" style="color:var(--muted)">#2C3422</span>
+        <span class="cjob" style="color:var(--muted)">The ground. Dark, expensive, grown-up. Everything sits on this.</span>
+      </div>
+      <div class="chip" style="background:var(--cream)">
+        <span class="cname" style="color:#333A28">Cream</span>
+        <span class="chex" style="color:#5B6449">#FFFCEB</span>
+        <span class="cjob" style="color:#5B6449">The light ground, and the text on dark.</span>
+      </div>
+      <div class="chip" style="background:var(--pastel)">
+        <span class="cname" style="color:#2C3422">Pastel Green</span>
+        <span class="chex" style="color:rgba(44,52,34,.75)">#CCEEA0</span>
+        <span class="cjob" style="color:rgba(44,52,34,.78)">The one accent. The stop, the CTA, one word.</span>
+      </div>
+    </div>
+  </div>
+  <div class="foot"><span class="mark">TIME RICH<span class="dot">.</span></span><span class="trail"><b>09</b> / 23</span></div>
+</div></section>
+
+<!-- 10 — FULL PALETTE -->
+<section class="slide"><div class="stage">
+  <p class="eyebrow">08 — Colour · the full set</p>
+  <div class="body">
+    <h2>Twelve values, three jobs</h2>
+    <p class="sub">Greens carry structure, cream and sage carry the reading, clay carries heat. <b>Clay is urgency only — never body text.</b></p>
+    <div class="sw-row">
+      <div class="sw"><span class="chip" style="background:#CCEEA0"></span><span class="meta"><b>Pastel</b><span>#CCEEA0</span></span></div>
+      <div class="sw"><span class="chip" style="background:#2C3422"></span><span class="meta"><b>Deep Green</b><span>#2C3422</span></span></div>
+      <div class="sw"><span class="chip" style="background:#424B36"></span><span class="meta"><b>Green</b><span>#424B36</span></span></div>
+      <div class="sw"><span class="chip" style="background:#67762E"></span><span class="meta"><b>Moss</b><span>#67762E</span></span></div>
+      <div class="sw"><span class="chip" style="background:#FFFCEB"></span><span class="meta"><b>Cream</b><span>#FFFCEB</span></span></div>
+      <div class="sw"><span class="chip" style="background:#DCDEBF"></span><span class="meta"><b>Sage</b><span>#DCDEBF</span></span></div>
+      <div class="sw"><span class="chip" style="background:#E9EAD5"></span><span class="meta"><b>Sage Lt</b><span>#E9EAD5</span></span></div>
+      <div class="sw"><span class="chip" style="background:#A8492F"></span><span class="meta"><b>Clay</b><span>#A8492F</span></span></div>
+      <div class="sw"><span class="chip" style="background:#5B6449"></span><span class="meta"><b>Muted</b><span>#5B6449</span></span></div>
+      <div class="sw"><span class="chip" style="background:#7E8768"></span><span class="meta"><b>Dim</b><span>#7E8768</span></span></div>
+      <div class="sw"><span class="chip" style="background:#C3C8AC"></span><span class="meta"><b>Muted Dk</b><span>#C3C8AC</span></span></div>
+      <div class="sw"><span class="chip" style="background:#E39377"></span><span class="meta"><b>Clay Lt</b><span>#E39377</span></span></div>
+    </div>
+  </div>
+  <div class="foot"><span class="mark">TIME RICH<span class="dot">.</span></span><span class="trail"><b>10</b> / 23</span></div>
+</div></section>
+
+<!-- 11 — COLOUR LAWS + CONTRAST -->
+<section class="slide"><div class="stage">
+  <p class="eyebrow">09 — Colour · the three laws</p>
+  <div class="body">
+    <h2>Pastel green is a fill, not text on cream</h2>
+    <p class="sub">On deep green it can be text, the stop and the accent. On cream it is a fill only — a pill, a button, a highlighter swipe. Any green <em>text</em> on cream drops to moss.</p>
+    <div class="cols c2" style="grid-template-columns:1fr 1fr">
+      <div class="pair ok"><span class="sq" style="background:#2C3422"></span><div class="tx"><b>Cream on deep green</b><span>#FFFCEB on #2C3422 · 12.5:1</span></div><span class="vd">pass</span></div>
+      <div class="pair ok"><span class="sq" style="background:#2C3422"></span><div class="tx"><b>Pastel on deep green</b><span>#CCEEA0 on #2C3422 · 10.0:1</span></div><span class="vd">pass</span></div>
+      <div class="pair ok"><span class="sq" style="background:#CCEEA0"></span><div class="tx"><b>Deep green on pastel</b><span>#333A28 on #CCEEA0 · 9.2:1</span></div><span class="vd">pass</span></div>
+      <div class="pair ok"><span class="sq" style="background:#FFFCEB"></span><div class="tx"><b>Moss on cream</b><span>#67762E on #FFFCEB · 4.8:1</span></div><span class="vd">pass</span></div>
+      <div class="pair no"><span class="sq" style="background:#FFFCEB"></span><div class="tx"><b>Pastel on cream</b><span>1.3:1 · illegible — use moss</span></div><span class="vd">fail</span></div>
+      <div class="pair no"><span class="sq" style="background:#DCDEBF"></span><div class="tx"><b>Cream on sage</b><span>1.2:1 · too close — use deep green</span></div><span class="vd">fail</span></div>
+    </div>
+  </div>
+  <div class="foot"><span class="mark">TIME RICH<span class="dot">.</span></span><span class="trail"><b>11</b> / 23</span></div>
+</div></section>
+
+<!-- 12 — TYPE -->
+<section class="slide"><div class="stage">
+  <p class="eyebrow">10 — Typography</p>
+  <div class="body">
+    <h2 style="margin-bottom:clamp(10px,1.4vw,20px)">Space Grotesk speaks. Mono keeps the receipts.</h2>
+    <div class="cols c3" style="margin-top:0">
+      <div class="card"><span class="n">Display</span><div class="spec" style="font-size:clamp(20px,2.5vw,36px)">Buy it <span class="u">back.</span></div><p>Space Grotesk Bold, tight tracking, sentence case. Headlines and the wordmark.</p></div>
+      <div class="card"><span class="n">Structure</span><div class="specmono" style="font-size:clamp(11px,1.15vw,17px)"><span class="c">&gt;</span> 21+ HOURS / WEEK</div><p>JetBrains Mono, uppercase, letter-spaced. Labels, data, tags, the terminal voice.</p></div>
+      <div class="card"><span class="n">Body</span><p class="specbody" style="font-size:clamp(11px,1.02vw,14px)">Short sentences land harder. Then a longer one carries the argument.</p><p>System sans. Fast, native, readable. Never for headlines.</p></div>
+    </div>
+    <p class="sub" style="font-size:clamp(11.5px,1.02vw,15px)">The stack, exactly: <b>Space Grotesk</b> display &middot; <b>system-ui</b> body &middot; <b>JetBrains Mono</b> labels and data. No serif. Stats as digits: 25%, never "a quarter."</p>
+  </div>
+  <div class="foot"><span class="mark">TIME RICH<span class="dot">.</span></span><span class="trail"><b>12</b> / 23</span></div>
+</div></section>
+
+<!-- 13 — BUTTONS -->
+<section class="slide"><div class="stage">
+  <p class="eyebrow">11 — Buttons &amp; CTAs</p>
+  <div class="body">
+    <h2>Three buttons, one job each</h2>
+    <p class="sub">Pastel green for the one action that matters, an outline for the second option, a bare text link for the rest. Every button names what happens next and points with a →.</p>
+    <div class="pills">
+      <span class="pill fill">Apply to join →</span>
+      <span class="pill ghost">Come to a workshop →</span>
+      <span class="pill" style="border-color:transparent;padding-left:2px">Read the playbooks</span>
+    </div>
+    <div class="cols c2">
+      <div class="card"><span class="n">Do</span><ul class="ticks">
+        <li><b>One primary per screen.</b> If everything's pastel, nothing is.</li>
+        <li><b>Always the →</b> on primary and secondary.</li>
+      </ul></div>
+      <div class="card"><span class="n" style="color:var(--clay-lt)">Don't</span><ul class="ticks no">
+        <li><b>Never "Learn more" or "Get started."</b> Name the action.</li>
+        <li><b>No pastel label on cream.</b> Fill stays pastel, text goes deep green.</li>
+      </ul></div>
+    </div>
+  </div>
+  <div class="foot"><span class="mark">TIME RICH<span class="dot">.</span></span><span class="trail"><b>13</b> / 23</span></div>
+</div></section>
+
+<!-- 14 — PART DIVIDER: SOUNDS -->
+<section class="slide"><div class="stage pastel">
+  <p class="eyebrow">Part II</p>
+  <div class="body">
+    <h1 style="font-size:clamp(38px,5.6vw,80px)">How it<br>sounds<span style="opacity:.45">.</span></h1>
+    <p class="sub">One voice, dialled per surface. The register moves. <b>The rules never do.</b></p>
+  </div>
+  <div class="foot"><span class="mark">TIME RICH<span class="dot">.</span></span><span class="trail"><b>14</b> / 23</span></div>
+</div></section>
+
+<!-- 15 — TOV: WE SOUND -->
+<section class="slide"><div class="stage">
+  <p class="eyebrow">12 — Tone of voice · the four traits</p>
+  <div class="body">
+    <h2>Sound like a founder, not a brand deck</h2>
+    <p class="sub">Direct, warm, <em>slightly impatient with nonsense</em>, and a little cheeky. If you only remember one slide, remember this one.</p>
+    <div class="cols c4">
+      <div class="card"><span class="n">01</span><h3>Direct</h3><p>The point lands in sentence one. No warm-up, no throat-clearing, no build to the reveal.</p></div>
+      <div class="card"><span class="n">02</span><h3>Warm</h3><p>Founder to founder, not brand to audience. We assume she's competent and short on time.</p></div>
+      <div class="card"><span class="n">03</span><h3>Specific</h3><p>Numbers, named tasks, real before-and-after. "21 hours a week," never "more time."</p></div>
+      <div class="card"><span class="n">04</span><h3>A little cheeky</h3><p>"Delegate the shit you hate." Dry and confident. Never mean, never trying too hard.</p></div>
+    </div>
+  </div>
+  <div class="foot"><span class="mark">TIME RICH<span class="dot">.</span></span><span class="trail"><b>15</b> / 23</span></div>
+</div></section>
+
+<!-- 16 — TOV: NEVER -->
+<section class="slide"><div class="stage">
+  <p class="eyebrow">13 — Tone of voice · what we never are</p>
+  <div class="body">
+    <h2>Four ways a draft dies</h2>
+    <div class="cols c4">
+      <div class="card"><span class="n" style="color:var(--clay-lt)">×</span><h3>Corporate</h3><p>No empower, leverage, unlock, ecosystem, seamless, synergy. Say the actual thing.</p></div>
+      <div class="card"><span class="n" style="color:var(--clay-lt)">×</span><h3>Hyped</h3><p>No game-changing, transformative, 10x, groundbreaking. No exclamation marks, ever.</p></div>
+      <div class="card"><span class="n" style="color:var(--clay-lt)">×</span><h3>Scarce</h3><p>No spots filling fast, no don't miss out. Confidence, not scarcity. The room sells itself.</p></div>
+      <div class="card"><span class="n" style="color:var(--clay-lt)">×</span><h3>Vague</h3><p>No hedging, no passive voice hiding the subject, no "things." Find the noun.</p></div>
+    </div>
+    <p class="sub"><b>The one test:</b> read it out loud. If it sounds like something Ella would say to one founder over coffee, it ships. If it sounds like a brand deck, a LinkedIn thought-leader, or ChatGPT with the safety on, it doesn't.</p>
+  </div>
+  <div class="foot"><span class="mark">TIME RICH<span class="dot">.</span></span><span class="trail"><b>16</b> / 23</span></div>
+</div></section>
+
+<!-- 17 — FIREWALL -->
+<section class="slide"><div class="stage">
+  <p class="eyebrow">14 — The voice firewall</p>
+  <div class="body">
+    <h2>Binary. One break and the draft fails.</h2>
+    <div class="cols c2">
+      <div class="card"><span class="n">Non-negotiables</span>
+        <ul class="ticks no">
+          <li>No em-dashes or double dashes as connectors. Rewrite the sentence.</li>
+          <li>No exclamation marks anywhere.</li>
+          <li>No hedging: kind of, sort of, perhaps, might possibly.</li>
+          <li>No fake urgency: limited time, spots filling fast, don't miss out.</li>
+          <li>No promotional inflation: transformative, groundbreaking.</li>
+          <li>No passive voice hiding the subject. Say who did it.</li>
+          <li>No "thing" or "things." Find the actual noun.</li>
+        </ul>
+      </div>
+      <div class="card"><span class="n">Banned → replace</span>
+        <table class="t" style="margin-top:0">
+          <thead><tr><th>Never write</th><th>Write instead</th></tr></thead>
+          <tbody>
+            <tr><td class="bad">game-changing</td><td>say what it changes</td></tr>
+            <tr><td class="bad">empower</td><td>say what they can now do</td></tr>
+            <tr><td class="bad">leverage</td><td>use</td></tr>
+            <tr><td class="bad">unlock</td><td>open, access, be specific</td></tr>
+            <tr><td class="bad">seamless</td><td>smooth, or describe it</td></tr>
+            <tr><td class="bad">ecosystem</td><td>community, network</td></tr>
+            <tr><td class="bad">thing / things</td><td>find the noun</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+    <p class="sub" style="font-size:clamp(11px,.98vw,14px)">Sign off everything except Substack with <b>Warmly, Ella</b>. Never "Ella x," "Cheers," "Talk soon," or "Best,".</p>
+  </div>
+  <div class="foot"><span class="mark">TIME RICH<span class="dot">.</span></span><span class="trail"><b>17</b> / 23</span></div>
+</div></section>
+
+<!-- 18 — KNOWN BAD -->
+<section class="slide"><div class="stage cream">
+  <p class="eyebrow">15 — Known-bad → the fix</p>
+  <div class="body">
+    <h2>The same sentence, on brand</h2>
+    <table class="t">
+      <thead><tr><th style="width:46%">Never ship</th><th>Ship instead</th></tr></thead>
+      <tbody>
+        <tr><td class="bad">Unlock the power of AI to 10x your business</td><td><b>This gets 21 hours a week off your plate. Here's the setup.</b></td></tr>
+        <tr><td class="bad">This game-changing tool will transform how you work</td><td><b>It writes your first-draft emails in your voice. You edit, not draft.</b></td></tr>
+        <tr><td class="bad">Save time and boost productivity</td><td><b>Monday admin used to take 3 hours. Now it takes 20 minutes.</b></td></tr>
+        <tr><td class="bad">Join our thriving ecosystem of empowered women</td><td><b>200+ women founders. Application-based. The room is the point.</b></td></tr>
+        <tr><td class="bad">Don't miss out, spots are filling fast</td><td><b>Applications are open. We read every one.</b></td></tr>
+      </tbody>
+    </table>
+  </div>
+  <div class="foot"><span class="mark">TIME RICH<span class="dot">.</span></span><span class="trail"><b>18</b> / 23</span></div>
+</div></section>
+
+<!-- 19 — SURFACES -->
+<section class="slide"><div class="stage">
+  <p class="eyebrow">16 — Voice, dialled per surface</p>
+  <div class="body">
+    <h2>One voice. The register moves, the rules never do.</h2>
+    <table class="t">
+      <thead><tr><th>Surface</th><th>Register</th><th>Emojis</th><th>Hook</th></tr></thead>
+      <tbody>
+        <tr><td><b class="mn">Landing page</b></td><td>Warm, direct, slightly impatient. Founder-to-founder, stats stated plainly.</td><td><b>0</b></td><td>Stat plus mission</td></tr>
+        <tr><td><b class="mn">Substack</b></td><td>Warm, direct, teaching. One big idea, essay register.</td><td><b>0</b></td><td>Bold claim that reframes. Never a question</td></tr>
+        <tr><td><b class="mn">Email · outreach</b></td><td>Tight, warm, no flourish. No warmup lines.</td><td><b>0</b></td><td>The point, in sentence one</td></tr>
+        <tr><td><b class="mn">Instagram</b></td><td>Confident, sassy, dry. Anti-hustle.</td><td><b>0–1 / slide</b></td><td>Founder data point, then the system</td></tr>
+        <tr><td><b class="mn">WhatsApp</b></td><td>Warm, direct, a little hyped. Short, mobile-first, real stakes.</td><td><b>0–1 total</b></td><td>"Most people watch it happen. I want women running it"</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <div class="foot"><span class="mark">TIME RICH<span class="dot">.</span></span><span class="trail"><b>19</b> / 23</span></div>
+</div></section>
+
+<!-- 20 — COPY BANK -->
+<section class="slide"><div class="stage pastel">
+  <p class="eyebrow">17 — The lines</p>
+  <div class="body">
+    <p class="big-quote">Delegate the shit you hate to AI.<br>Buy your time back.</p>
+    <div class="cols c3" style="margin-top:clamp(16px,2.2vw,30px)">
+      <div class="card"><span class="n" style="color:rgba(44,52,34,.7)">Hero</span><p style="color:rgba(44,52,34,.85)"><b style="color:#2C3422">You're not behind on AI. No one showed you where it hands you back your time.</b></p></div>
+      <div class="card"><span class="n" style="color:rgba(44,52,34,.7)">Positioning</span><p style="color:rgba(44,52,34,.85)"><b style="color:#2C3422">The room for women who build their business on AI. Not around it.</b></p></div>
+      <div class="card"><span class="n" style="color:rgba(44,52,34,.7)">The room</span><p style="color:rgba(44,52,34,.85)"><b style="color:#2C3422">No gurus. No bros. Just women who ship.</b></p></div>
+    </div>
+    <p class="byline">Also reach for: Not AI awareness — actual implementation &middot; Build lean. Stay independent. Stay human.</p>
+  </div>
+  <div class="foot"><span class="mark">TIME RICH<span class="dot">.</span></span><span class="trail"><b>20</b> / 23</span></div>
+</div></section>
+
+<!-- 21 — EMOJI + GRAPHICS -->
+<section class="slide"><div class="stage">
+  <p class="eyebrow">18 — Emoji</p>
+  <div class="body">
+    <h2>Emoji with a job</h2>
+    <p class="sub">Punctuation, not decoration. The money marks lead, the cherry-and-rainbow closes. One or two per caption, <b>never in a landing-page headline.</b></p>
+    <div class="emo">
+      <div class="e"><div class="g">💸</div><b>Main · leads</b><span>The thesis. Revenue, getting paid, aiming AI at money not admin.</span></div>
+      <div class="e"><div class="g">💰</div><b>Main · leads</b><span>Profit kept, the payoff. Time-rich and paid.</span></div>
+      <div class="e"><div class="g">🍒</div><b>Supplement</b><span>The Time Rich cherry. Heat and personality.</span></div>
+      <div class="e"><div class="g">🌈</div><b>Supplement</b><span>The other half of the sign-off: 🍒🌈. It closes, it doesn't garnish.</span></div>
+    </div>
+    <p class="sub" style="font-size:clamp(11px,.98vw,14px)"><b>Avoid entirely:</b> 🚀 🔥 💯 🙏 ✨ — hype and hustle emoji. They read like the bro content we're the opposite of.</p>
+  </div>
+  <div class="foot"><span class="mark">TIME RICH<span class="dot">.</span></span><span class="trail"><b>21</b> / 23</span></div>
+</div></section>
+
+<!-- 22 — GRAPHICS + MOTION -->
+<section class="slide"><div class="stage">
+  <p class="eyebrow">19 — Graphics &amp; motion</p>
+  <div class="body">
+    <h2>Every graphic, same parts</h2>
+    <div class="gfx">
+      <div><div class="cv dk">
+        <span class="lb">› PLAYBOOK / 01</span>
+        <span class="bg">Delegate the shit you <u>hate</u> to AI.</span>
+        <span class="sg">timerich.ai · 🍒🌈</span>
+      </div><span class="cvcap">Statement · deep-green canvas, pastel grid</span></div>
+      <div><div class="cv pl">
+        <span class="lb">THE PUNCHLINE</span>
+        <span class="bg">Context beats prompts.</span>
+        <span class="sg">timerich.ai</span>
+      </div><span class="cvcap">Pastel slide · the loud one, once per set</span></div>
+      <div><div class="cv dk">
+        <span class="lb">› STAT</span>
+        <span class="bg"><u>21+</u> hours<br>back a week.</span>
+        <span class="sg">women who ship</span>
+      </div><span class="cvcap">Stat · digits as digits, pastel for the figure</span></div>
+    </div>
+    <p class="sub" style="font-size:clamp(11px,.98vw,14px)"><b>Motion:</b> 120–200ms, ease-out, one moment per view. A cursor, a sweep, a reveal. No bounce, no spin, no parallax — and every state still works with animation off.</p>
+  </div>
+  <div class="foot"><span class="mark">TIME RICH<span class="dot">.</span></span><span class="trail"><b>22</b> / 23</span></div>
+</div></section>
+
+<!-- 23 — SHIP CHECKLIST + CLOSE -->
+<section class="slide"><div class="stage">
+  <p class="eyebrow">20 — Before anything goes out</p>
+  <div class="body">
+    <h2>The ship checklist</h2>
+    <div class="check">
+      <span class="ck">Wordmark is Space Grotesk with the pastel-green stop</span>
+      <span class="ck">Pastel green only for action and emphasis — one per composition</span>
+      <span class="ck">No fluro lime and no purple anywhere</span>
+      <span class="ck">Pastel green never as text on cream — moss for that</span>
+      <span class="ck">Headlines Space Grotesk, labels and data JetBrains Mono</span>
+      <span class="ck">One primary button per screen, with a → on every CTA</span>
+      <span class="ck">Copy passes the firewall — no em-dashes, no exclamation marks</span>
+      <span class="ck">Register matched to the surface; the rules never moved</span>
+      <span class="ck">Stats as digits; contrast passes AA</span>
+      <span class="ck">Photography is real — founder or the room, never stock</span>
+      <span class="ck">Emoji: 💸💰 lead, 🍒🌈 closes; none in headlines</span>
+      <span class="ck">Sounds like Ella, not ChatGPT or a brand deck</span>
+    </div>
+    <ul class="links">
+      <li><b>Full bible</b><a href="../">timerich.ai/brand</a></li>
+      <li><b>Fonts &amp; logos</b><a href="../#downloads">timerich.ai/brand#downloads</a></li>
+      <li><b>Site</b><a href="https://timerich.ai">timerich.ai</a></li>
+      <li><b>Instagram</b><a href="https://www.instagram.com/timerich.ai">@timerich.ai</a></li>
+    </ul>
+  </div>
+  <div class="foot"><span class="mark">TIME RICH<span class="dot">.</span></span><span class="trail">v5.0 · updated 2026-08-24 · <b>23</b> / 23</span></div>
+</div></section>
+
+</div><!-- /deck -->
+
+<div class="hud">
+  <span class="count"><b id="cur">1</b> / <span id="tot">23</span></span>
+  <button id="prev" aria-label="Previous slide">↑</button>
+  <button id="next" aria-label="Next slide">↓</button>
+  <a class="print" id="printBtn" role="button" tabindex="0">Save PDF</a>
+</div>
+
+<script>
+(function(){
+  var deck=document.getElementById('deck');
+  var slides=[].slice.call(deck.querySelectorAll('.slide'));
+  var cur=document.getElementById('cur'), tot=document.getElementById('tot');
+  var bar=document.getElementById('progress');
+  tot.textContent=slides.length;
+  var i=0;
+
+  function paint(){
+    cur.textContent=i+1;
+    bar.style.width=((i+1)/slides.length*100)+'%';
+  }
+  function go(n){
+    i=Math.max(0,Math.min(slides.length-1,n));
+    slides[i].scrollIntoView({behavior:'smooth',block:'start'});
+    paint();
+  }
+  document.getElementById('next').addEventListener('click',function(){go(i+1)});
+  document.getElementById('prev').addEventListener('click',function(){go(i-1)});
+  var pb=document.getElementById('printBtn');
+  pb.addEventListener('click',function(){window.print()});
+  pb.addEventListener('keydown',function(e){if(e.key==='Enter'||e.key===' '){e.preventDefault();window.print();}});
+
+  document.addEventListener('keydown',function(e){
+    if(e.metaKey||e.ctrlKey||e.altKey) return;
+    if(e.key==='ArrowDown'||e.key==='ArrowRight'||e.key==='PageDown'||e.key===' '){e.preventDefault();go(i+1);}
+    else if(e.key==='ArrowUp'||e.key==='ArrowLeft'||e.key==='PageUp'){e.preventDefault();go(i-1);}
+    else if(e.key==='Home'){e.preventDefault();go(0);}
+    else if(e.key==='End'){e.preventDefault();go(slides.length-1);}
+  });
+
+  // keep the counter honest when the user scrolls or swipes themselves
+  if('IntersectionObserver' in window){
+    var io=new IntersectionObserver(function(entries){
+      entries.forEach(function(en){
+        if(en.isIntersecting && en.intersectionRatio>0.5){
+          var n=slides.indexOf(en.target);
+          if(n>-1 && n!==i){i=n;paint();}
+        }
+      });
+    },{threshold:[0.5]});
+    slides.forEach(function(s){io.observe(s)});
+  }
+  paint();
+})();
+</script>
+</body>
+</html>
