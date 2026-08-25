@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<script src="/js/pixel.js"></script>
+<title>The Super Human Accelerator</title>
+<link rel="icon" href="/favicon.ico" sizes="any" />
+<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+<link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
+<meta name="description" content="Build five agents. Then never onboard from scratch again. Two tracks, founding cohort pricing. Starts Wednesday 23 September 2026." />
+<link rel="canonical" href="https://timerich.ai/superhuman/" />
+<meta name="theme-color" content="#2C3422" />
+<meta property="og:title" content="The Super Human Accelerator" />
+<meta property="og:description" content="Build five agents. Then never onboard from scratch again. Founding cohort starts Wednesday 23 September." />
+<meta property="og:url" content="https://timerich.ai/superhuman/" />
+<meta property="og:type" content="website" />
+<style>
+@font-face{font-family:'Space Grotesk';font-weight:400 700;font-display:swap;src:url('/brand/fonts/SpaceGrotesk-Variable.ttf') format('truetype');}
+@font-face{font-family:'JetBrains Mono';font-weight:400 700;font-display:swap;src:url('/brand/fonts/JetBrainsMono-Variable.ttf') format('truetype');}
+
+:root{
+  color-scheme:dark;
+  --void:#2C3422; --panel:#353E29; --panel-2:#3D4730; --raise:#455038;
+  --line:rgba(255,252,235,.11); --line-2:rgba(255,252,235,.21);
+  --fg:#FFFCEB; --muted:#C3C8AC; --dim:#9DA486;
+  --lime:#CCEEA0; --lime-ink:#CCEEA0; --lime-dim:rgba(204,238,160,.14);
+  --moss:#67762E; --sage:#DCDEBF;
+  --accent:var(--lime-ink);
+  --sans:'Space Grotesk',system-ui,-apple-system,'Segoe UI',sans-serif;
+  --body:system-ui,-apple-system,'Segoe UI',Roboto,Helvetica,sans-serif;
+  --mono:'JetBrains Mono',ui-monospace,SFMono-Regular,Menlo,monospace;
+  --shadow:0 24px 60px rgba(19,24,13,.45);
+}
+@media (prefers-color-scheme:light){:root:not([data-theme]){
+  color-scheme:light;
+  --void:#FFFCEB; --panel:#F3F2E0; --panel-2:#E9EAD5; --raise:#FFFFFF;
+  --line:rgba(66,75,54,.18); --line-2:rgba(66,75,54,.32);
+  --fg:#333A28; --muted:#5B6449; --dim:#7E8768;
+  --lime:#CCEEA0; --lime-ink:#67762E; --lime-dim:#EDF7C6;
+  --moss:#424B36; --sage:#DCDEBF;
+  --shadow:0 20px 50px rgba(66,75,54,.14);
+}}
+:root[data-theme="light"]{
+  color-scheme:light;
+  --void:#FFFCEB; --panel:#F3F2E0; --panel-2:#E9EAD5; --raise:#FFFFFF;
+  --line:rgba(66,75,54,.18); --line-2:rgba(66,75,54,.32);
+  --fg:#333A28; --muted:#5B6449; --dim:#7E8768;
+  --lime:#CCEEA0; --lime-ink:#67762E; --lime-dim:#EDF7C6;
+  --moss:#424B36; --sage:#DCDEBF;
+  --shadow:0 20px 50px rgba(66,75,54,.14);
+}
+
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{margin:0;background:var(--void);color:var(--fg);font-family:var(--body);line-height:1.6;font-size:16px;-webkit-font-smoothing:antialiased}
+a{color:var(--accent);text-underline-offset:3px}
+.wrap{max-width:940px;margin:0 auto;padding:0 26px}
+.display{font-family:var(--sans);font-weight:700;letter-spacing:-.02em;line-height:1.0;text-wrap:balance}
+.eyebrow{font-family:var(--mono);font-weight:600;text-transform:uppercase;letter-spacing:.16em;
+  font-size:11px;color:var(--accent);margin:0 0 16px;display:inline-flex;align-items:center;gap:9px}
+.eyebrow::before{content:"\203A";color:var(--lime-ink);font-weight:700}
+
+.back{font-family:var(--mono);font-size:11.5px;letter-spacing:.08em;text-transform:uppercase;
+  color:var(--dim);text-decoration:none;display:inline-block;padding:26px 0 0}
+.back:hover{color:var(--accent)}
+
+header.hero{padding:14px 0 46px;text-align:center}
+header.hero h1{font-size:clamp(32px,5.4vw,54px);margin:0 0 18px}
+header.hero .sub{max-width:56ch;margin:0 auto;color:var(--muted);font-size:17px}
+.datebar{font-family:var(--mono);font-size:12px;letter-spacing:.09em;text-transform:uppercase;
+  color:var(--dim);margin-top:22px;border-top:1px solid var(--line);padding-top:18px;display:inline-block}
+.datebar b{color:var(--fg);font-weight:600}
+
+.tracks{display:grid;grid-template-columns:1fr 1fr;gap:20px;padding-bottom:10px}
+@media (max-width:760px){.tracks{grid-template-columns:1fr}}
+.track{background:var(--panel);border:1px solid var(--line);border-radius:18px;padding:30px 28px;
+  display:flex;flex-direction:column;box-shadow:var(--shadow)}
+.track.pick{border-color:var(--lime-ink);background:var(--panel-2)}
+.tag{font-family:var(--mono);font-size:10.5px;letter-spacing:.13em;text-transform:uppercase;color:var(--dim);
+  display:flex;justify-content:space-between;align-items:center;gap:10px;margin-bottom:14px}
+.tag .flag{color:#2C3422;background:var(--lime);border-radius:999px;padding:4px 10px;font-weight:700}
+.track h2{font-family:var(--sans);font-weight:700;letter-spacing:-.02em;font-size:25px;margin:0 0 6px;line-height:1.1}
+.track .who{color:var(--muted);font-size:15px;margin:0 0 22px}
+.price{display:flex;align-items:baseline;gap:10px;margin-bottom:4px}
+.price .n{font-family:var(--sans);font-weight:700;font-size:44px;letter-spacing:-.03em;line-height:1}
+.price .per{font-family:var(--mono);font-size:11.5px;letter-spacing:.08em;text-transform:uppercase;color:var(--dim)}
+.next{font-family:var(--mono);font-size:11.5px;color:var(--dim);margin:0 0 20px}
+ul.gets{list-style:none;margin:0 0 26px;padding:0;border-top:1px solid var(--line);padding-top:18px}
+ul.gets li{position:relative;padding:0 0 9px 20px;font-size:15px;color:var(--muted)}
+ul.gets li::before{content:"";position:absolute;left:0;top:9px;width:7px;height:7px;border-radius:50%;background:var(--lime-ink)}
+ul.gets li b{color:var(--fg);font-weight:600}
+.plus{font-family:var(--mono);font-size:10.5px;letter-spacing:.11em;text-transform:uppercase;color:var(--accent);
+  margin:0 0 12px;padding-top:18px;border-top:1px solid var(--line)}
+ul.gets.tight{border-top:0;padding-top:0}
+.cta{margin-top:auto}
+.btn{font-family:var(--mono);font-weight:600;font-size:13px;letter-spacing:.04em;text-transform:uppercase;
+  border-radius:999px;padding:15px 22px;cursor:pointer;text-decoration:none;display:flex;align-items:center;
+  justify-content:center;gap:9px;border:1px solid transparent;width:100%;
+  transition:transform .14s ease,background .14s ease,border-color .14s ease}
+.btn:hover{transform:translateY(-1px)}
+.btn-primary{background:var(--lime);color:#2C3422;border-color:var(--lime)}
+.btn-ghost{background:transparent;color:var(--fg);border-color:var(--line-2)}
+.btn-ghost:hover{border-color:var(--lime-ink);color:var(--accent)}
+.plan{font-family:var(--mono);font-size:11px;letter-spacing:.05em;color:var(--dim);text-align:center;margin:12px 0 0}
+.plan a{color:var(--dim)}
+
+.steer{margin:34px 0 0;padding:24px 26px;border-left:2px solid var(--lime-ink);background:var(--lime-dim);
+  border-radius:0 12px 12px 0;color:var(--fg);font-size:15.5px}
+.steer b{font-weight:700}
+footer{margin-top:56px;border-top:1px solid var(--line);padding:26px 0 40px;
+  font-family:var(--mono);font-size:11.5px;letter-spacing:.05em;color:var(--dim);text-align:center}
+footer a{color:var(--dim);text-decoration:none}
+footer a:hover{color:var(--accent)}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <a class="back" href="/">&larr; Time Rich</a>
+
+  <header class="hero">
+    <span class="eyebrow">Founding cohort</span>
+    <h1 class="display">Build five agents. Then never onboard from scratch again.</h1>
+    <p class="sub">An AI operating system for one department of your business, and the repeatable process that turns everyone you bring in after this into someone who arrives already able to do the job.</p>
+    <div class="datebar">Starts <b>Wednesday 23 September</b> &nbsp;·&nbsp; Two tracks &nbsp;·&nbsp; Founding member pricing</div>
+  </header>
+
+  <div class="tracks">
+
+    <div class="track">
+      <div class="tag"><span>Track one</span><span>6 weeks</span></div>
+      <h2>The Agent Build</h2>
+      <p class="who">For the founder who is not hiring yet.</p>
+      <div class="price"><span class="n">$1,111</span><span class="per">Founding</span></div>
+      <p class="next">Cohort 2 is $1,997.</p>
+      <ul class="gets">
+        <li><b>Five agents</b>, built by you, running in your business</li>
+        <li>Your <b>delegation map</b> - every task sorted into agent, person, or you</li>
+        <li>Your <b>context pack</b> - makes a new person or agent useful in week one</li>
+        <li>The onboarding process, written down, in your words</li>
+        <li>The QA loop: Builder &rarr; QA &rarr; You</li>
+        <li>The AI OS Playbook</li>
+      </ul>
+      <div class="cta">
+        <a class="btn btn-ghost" id="buy-agent" href="/sh-apply/">Apply for the founding cohort</a>
+        <p class="plan">Payment plan: 2 &times; $597</p>
+      </div>
+    </div>
+
+    <div class="track pick">
+      <div class="tag"><span>Track two</span><span class="flag">Most founders</span></div>
+      <h2>The Full System</h2>
+      <p class="who">For the founder who is bringing people in this year.</p>
+      <div class="price"><span class="n">$2,222</span><span class="per">Founding</span></div>
+      <p class="next">Cohort 2 is $3,997.</p>
+      <ul class="gets">
+        <li>Everything in <b>The Agent Build</b></li>
+      </ul>
+      <p class="plus">Plus, over ten weeks</p>
+      <ul class="gets tight">
+        <li>The <b>live recruitment campaign</b> and screening filter, run for real</li>
+        <li>Role briefs written as AI onboarding, not job ads</li>
+        <li>The <b>intern portal</b> - Slack, Notion and Drive wired together</li>
+        <li>Security, compliance and the guardrails conversation</li>
+        <li>Delegation for a team: shared context pack, leaderboard, retention</li>
+      </ul>
+      <div class="cta">
+        <a class="btn btn-primary" id="buy-full" href="/sh-apply/">Apply for the founding cohort</a>
+        <p class="plan">Payment plan: 3 &times; $888</p>
+      </div>
+    </div>
+
+  </div>
+
+  <p class="steer"><b>The honest steer:</b> if you are hiring anyone in the next six months, take the full system. The agents are the easy half. Running the loop with humans in it is the half that changes your year.</p>
+
+  <footer>
+    &copy; 2026 Time Rich &nbsp;·&nbsp; <a href="/privacy">Privacy</a> &nbsp;·&nbsp; <a href="/terms">Terms</a> &nbsp;·&nbsp; <a href="/">Home</a>
+  </footer>
+</div>
+
+<script>
+  window.gtag = window.gtag || function(){};
+  function track(n,p){ try{ if(window.gtag) window.gtag('event',n,p||{}); }catch(e){} }
+
+  /* ------------------------------------------------------------------
+     CHECKOUT LINKS - paste the two Stripe payment links here and the
+     buttons switch from "Apply" to "Buy now" automatically.
+     Leave a value empty to keep that button pointing at the application form.
+     ------------------------------------------------------------------ */
+  var CHECKOUT = {
+    agentBuild: "",   /* TODO: Stripe payment link for $1,111 */
+    fullSystem: ""    /* TODO: Stripe payment link for $2,222 */
+  };
+
+  function wire(id, url, label, ev){
+    var el = document.getElementById(id);
+    if (!el || !url) return;                 /* no link yet -> stays "Apply" */
+    el.href = url;
+    el.textContent = label;
+    el.addEventListener('click', function(){ track(ev); });
+  }
+  wire('buy-agent', CHECKOUT.agentBuild, 'Buy now · $1,111', 'checkout_agent_build');
+  wire('buy-full',  CHECKOUT.fullSystem, 'Buy now · $2,222', 'checkout_full_system');
+  track('superhuman_view');
+</script>
+</body>
+</html>
