@@ -45,6 +45,17 @@ export default {
       return json({ error: "Invalid JSON" }, 400, cors);
     }
 
+    // Route: Super Human Accelerator application -> its own Notion database.
+    // Field keys posted by /sh-apply match that database's property names exactly.
+    if (path.endsWith("/superhuman")) {
+      const res = await createApplication(data, env, cors, env.NOTION_SUPERHUMAN_DATABASE_ID, { Status: "New" });
+      if (res.status < 500) return res;
+      // Safety net: if that DB isn't shared with the integration (yet), capture the
+      // application in the main applications DB instead of losing it.
+      const marked = { ...data, "Full name": "SUPER HUMAN — " + (data["Name"] || data["Full name"] || "Applicant") };
+      return createApplication(marked, env, cors, env.NOTION_DATABASE_ID);
+    }
+
     // Route: AI Revenue Accelerator application -> its own Notion database.
     // Same schema-driven mapping as the club form; stamps Status = New so the
     // "Call today" / pipeline views pick fresh applications up.

@@ -32,3 +32,9 @@ NOTION_ACCELERATOR_DATABASE_ID = "fd7e0a3f-2d74-4104-ab08-0f438260d487"
 # Id is from the database URL. IMPORTANT: connect the SAME Notion integration
 # (NOTION_TOKEN) to this database too (••• -> Connections), or writes will 404.
 NOTION_COACHING_DATABASE_ID = "f4f0b1c4-1b81-463c-8ff3-3e625aaf847a"
+
+# Super Human Accelerator application (POST /superhuman) -> its own Notion database.
+# Id is from the database URL (9b7ca5ebe55782f8894a0126ecc4ddf2).
+# IMPORTANT: connect the SAME Notion integration (NOTION_TOKEN) to this database
+# (••• -> Connections) or writes will 404.
+NOTION_SUPERHUMAN_DATABASE_ID = "9b7ca5eb-e557-82f8-894a-0126ecc4ddf2"
