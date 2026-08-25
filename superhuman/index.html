@@ -103,6 +103,9 @@ ul.gets.tight{border-top:0;padding-top:0}
 .btn-ghost{background:transparent;color:var(--fg);border-color:var(--line-2)}
 .btn-ghost:hover{border-color:var(--lime-ink);color:var(--accent)}
 
+.plannote{font-family:var(--mono);font-size:11px;line-height:1.5;letter-spacing:.03em;color:var(--dim);
+  text-align:center;margin:13px 0 0}
+.plannote a{color:var(--accent);text-decoration:underline;text-underline-offset:2px}
 .steer{margin:34px 0 0;padding:24px 26px;border-left:2px solid var(--lime-ink);background:var(--lime-dim);
   border-radius:0 12px 12px 0;color:var(--fg);font-size:15.5px}
 .steer b{font-weight:700}
@@ -118,7 +121,7 @@ footer a:hover{color:var(--accent)}
 
   <header class="hero">
     <span class="eyebrow">Founding cohort</span>
-    <h1 class="display">Build five agents. Then never onboard from scratch again.</h1>
+    <h1 class="display">Super Human Accelerator</h1>
     <p class="sub">An AI operating system for one department of your business, and the repeatable process that turns everyone you bring in after this into someone who arrives already able to do the job.</p>
     <div class="datebar">Starts <b>Wednesday 23 September</b> &nbsp;·&nbsp; Two tracks &nbsp;·&nbsp; Founding member pricing</div>
   </header>
@@ -141,6 +144,7 @@ footer a:hover{color:var(--accent)}
       </ul>
       <div class="cta">
         <a class="btn btn-ghost" id="buy-agent" href="/sh-apply/">Apply for the founding cohort</a>
+        <p class="plannote">Want a payment plan? <a href="/sh-apply/">Fill out the application</a> and I will set one up.</p>
       </div>
     </div>
 
@@ -163,6 +167,7 @@ footer a:hover{color:var(--accent)}
       </ul>
       <div class="cta">
         <a class="btn btn-primary" id="buy-full" href="/sh-apply/">Apply for the founding cohort</a>
+        <p class="plannote">Want a payment plan? <a href="/sh-apply/">Fill out the application</a> and I will set one up.</p>
       </div>
     </div>
 
@@ -180,9 +185,11 @@ footer a:hover{color:var(--accent)}
   function track(n,p){ try{ if(window.gtag) window.gtag('event',n,p||{}); }catch(e){} }
 
   /* ------------------------------------------------------------------
-     CHECKOUT LINKS - paste the two Stripe payment links here and the
-     buttons switch from "Apply" to "Buy now" automatically.
+     CHECKOUT LINKS - FULL PRICE ONLY. Paste the two Stripe payment links
+     here and the buttons switch from "Apply" to "Buy now" automatically.
      Leave a value empty to keep that button pointing at the application form.
+     Payment plans are deliberately NOT sold here: anyone who wants one is
+     sent to the application instead (see the note under each button).
      ------------------------------------------------------------------ */
   var CHECKOUT = {
     agentBuild: "",   /* TODO: Stripe payment link for $1,111 */
