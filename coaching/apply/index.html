@@ -205,6 +205,9 @@
       <label>What is the cost of you not implementing AI?</label>
       <textarea name="cost_of_inaction"></textarea>
 
+      <label>What budget do you have in mind for this?</label>
+      <input type="text" name="budget" placeholder="A range is fine - it helps Ella scope the right build" />
+
       <label>Why do you want to work with Ella? <span class="req">*</span></label>
       <textarea name="why_ella" required></textarea>
 
@@ -254,7 +257,7 @@
           first_name: val('first_name'), email: val('email'), role: multi('role'),
           team_size: val('team_size'), linkedin: val('linkedin'), ai_stage: multi('ai_stage'),
           time_drain: val('time_drain'), blockers: multi('blockers'), one_thing: val('one_thing'),
-          cost_of_inaction: val('cost_of_inaction'),
+          cost_of_inaction: val('cost_of_inaction'), budget: val('budget'),
           why_ella: val('why_ella'), start_when: val('start_when')
         };
         var btn = form.querySelector('button[type=submit]');
