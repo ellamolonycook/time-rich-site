@@ -57,7 +57,7 @@ workshop.
   fastest way to feel the room is to come to a workshop.
 - WHATSAPP (free to join): https://chat.whatsapp.com/GaghtKWWopvBF6En66Rkdt?mode=gi_t
 - FREE GUIDES / NEWSLETTER ("The Self-Improvement Loop"): https://iiculture.substack.com/
-- INSTAGRAM: https://www.instagram.com/baddiesloveai/
+- INSTAGRAM: https://www.instagram.com/timerichtalk/
 - ELLA'S LINKEDIN: https://www.linkedin.com/in/ellamolonycook/
 
 # ANSWERING AI QUESTIONS
