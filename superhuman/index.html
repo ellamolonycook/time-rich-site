@@ -85,7 +85,10 @@ header.hero .sub{max-width:56ch;margin:0 auto;color:var(--muted);font-size:17px}
 .price{display:flex;align-items:baseline;gap:10px;margin-bottom:4px}
 .price .n{font-family:var(--sans);font-weight:700;font-size:44px;letter-spacing:-.03em;line-height:1}
 .price .per{font-family:var(--mono);font-size:11.5px;letter-spacing:.08em;text-transform:uppercase;color:var(--dim)}
-.next{font-family:var(--mono);font-size:11.5px;color:var(--dim);margin:0 0 20px}
+.next{font-family:var(--mono);font-size:11.5px;letter-spacing:.08em;text-transform:uppercase;
+  color:var(--dim);margin:0 0 20px;display:flex;align-items:baseline;gap:8px}
+.next b{font-family:var(--sans);font-weight:700;font-size:23px;letter-spacing:-.02em;
+  text-transform:none;color:var(--muted)}
 ul.gets{list-style:none;margin:0 0 26px;padding:0;border-top:1px solid var(--line);padding-top:18px}
 ul.gets li{position:relative;padding:0 0 9px 20px;font-size:15px;color:var(--muted)}
 ul.gets li::before{content:"";position:absolute;left:0;top:9px;width:7px;height:7px;border-radius:50%;background:var(--lime-ink)}
@@ -133,7 +136,7 @@ footer a:hover{color:var(--accent)}
       <h2>The Agent Build</h2>
       <p class="who">For the founder who is not hiring yet.</p>
       <div class="price"><span class="n">$1,111</span><span class="per">Founding</span></div>
-      <p class="next">Cohort 2 is $1,997.</p>
+      <p class="next">Full price <b>$1,997</b></p>
       <ul class="gets">
         <li><b>Five agents</b>, built by you, running in your business</li>
         <li>Your <b>delegation map</b> - every task sorted into agent, person, or you</li>
@@ -153,7 +156,7 @@ footer a:hover{color:var(--accent)}
       <h2>The Full System</h2>
       <p class="who">For the founder who is bringing people in this year.</p>
       <div class="price"><span class="n">$2,222</span><span class="per">Founding</span></div>
-      <p class="next">Cohort 2 is $3,997.</p>
+      <p class="next">Full price <b>$3,997</b></p>
       <ul class="gets">
         <li>Everything in <b>The Agent Build</b></li>
       </ul>
