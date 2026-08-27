@@ -208,6 +208,13 @@
       <label>What budget do you have in mind for this?</label>
       <input type="text" name="budget" placeholder="A range is fine - it helps Ella scope the right build" />
 
+      <label>Which offer do you want? <span class="multi">· select as many as apply</span></label>
+      <div class="checks">
+        <label><input type="checkbox" name="offer" value="90-Minute Strategy Deep Dive" /><span>90-Minute Strategy Deep Dive</span></label>
+        <label><input type="checkbox" name="offer" value="5-week AI System Coaching" /><span>5-week AI System Coaching</span></label>
+        <label><input type="checkbox" name="offer" value="12-Week COO AI Coaching" /><span>12-Week COO AI Coaching</span></label>
+      </div>
+
       <label>Why do you want to work with Ella? <span class="req">*</span></label>
       <textarea name="why_ella" required></textarea>
 
@@ -257,7 +264,7 @@
           first_name: val('first_name'), email: val('email'), role: multi('role'),
           team_size: val('team_size'), linkedin: val('linkedin'), ai_stage: multi('ai_stage'),
           time_drain: val('time_drain'), blockers: multi('blockers'), one_thing: val('one_thing'),
-          cost_of_inaction: val('cost_of_inaction'), budget: val('budget'),
+          cost_of_inaction: val('cost_of_inaction'), budget: val('budget'), offer: multi('offer'),
           why_ella: val('why_ella'), start_when: val('start_when')
         };
         var btn = form.querySelector('button[type=submit]');
