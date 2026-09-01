@@ -38,6 +38,11 @@ export default {
       return handleCoaching(request, env, cors);
     }
 
+    // Route: Super Human Accelerator waitlist -> its own Notion database (precise field mapping).
+    if (path.endsWith("/waitlist")) {
+      return handleWaitlist(request, env, cors);
+    }
+
     let data;
     try {
       data = await request.json();
@@ -246,6 +251,52 @@ async function handleCoaching(request, env, cors) {
     Status: { select: { name: "New Inquiry" } },
   };
   if (d.start_when) properties["How urgent is this for you?"] = { date: { start: d.start_when } };
+
+  try {
+    const res = await fetch("https://api.notion.com/v1/pages", {
+      method: "POST",
+      headers: { ...authHeaders(env), "Content-Type": "application/json" },
+      body: JSON.stringify({ parent: { database_id: dbId }, properties }),
+    });
+    if (!res.ok) return json({ ok: false, error: "Notion create failed", detail: await res.text() }, 502, cors);
+    return json({ ok: true }, 200, cors);
+  } catch (err) {
+    return json({ ok: false, error: "Unexpected error", detail: String(err) }, 500, cors);
+  }
+}
+
+// Super Human Accelerator waitlist (/accelerator page). Precise field mapping:
+// the property names below must match that database's schema exactly.
+async function handleWaitlist(request, env, cors) {
+  const dbId = env.NOTION_WAITLIST_DATABASE_ID;
+  if (!env.NOTION_TOKEN || !dbId) {
+    return json({ ok: false, error: "Waitlist not configured" }, 500, cors);
+  }
+
+  let d;
+  try { d = await request.json(); } catch { return json({ ok: false, error: "Invalid JSON" }, 400, cors); }
+  if (d._gotcha) return json({ ok: true }, 200, cors);           // honeypot: silently accept bots
+
+  const firstName = String(d.first_name || "").trim();
+  const email = String(d.email || "").trim();
+  if (!firstName || !email) return json({ ok: false, error: "Missing name or email" }, 400, cors);
+  if (!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(email)) {
+    return json({ ok: false, error: "Invalid email" }, 400, cors);
+  }
+
+  const rich = (s) => (s ? [{ text: { content: clip(String(s), 2000) } }] : []);
+  const social = String(d.social_media || "").trim();
+
+  const properties = {
+    "First name": { title: rich(firstName) },
+    "Email": { email: email },
+    "What does your business do, in one line?": { rich_text: rich(d.business) },
+    "Which department would you fix first?": { rich_text: rich(d.department) },
+  };
+  // Notion rejects "" for a url property, so the column is only sent when filled.
+  if (social) {
+    properties["Social media"] = { url: /^https?:\/\//i.test(social) ? social : `https://${social}` };
+  }
 
   try {
     const res = await fetch("https://api.notion.com/v1/pages", {
