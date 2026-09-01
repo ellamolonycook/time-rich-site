@@ -125,20 +125,13 @@ nav{background:rgba(255,252,235,.93);-webkit-backdrop-filter:blur(10px);backdrop
 .story-copy p strong{color:var(--text)}
 .story-copy .story-close{margin-top:1em;font-family:var(--display);font-weight:700;font-size:clamp(19px,2.2vw,25px);line-height:1.35;color:var(--green-deep)}
 
-/* ---------- THE RISE OF THE UNDERDOGS (full bleed, inverted, slower) ---------- */
-.underdogs{background:var(--green);border-top:none;padding:clamp(84px,11vw,148px) 0;position:relative;overflow:hidden}
-.underdogs::before{content:"";position:absolute;inset:0;pointer-events:none;background:radial-gradient(70% 55% at 50% 0%,rgba(204,238,160,.10) 0%,transparent 62%)}
-.underdogs .wrap{position:relative;z-index:1;max-width:820px;text-align:center}
-.underdogs .eyebrow{color:var(--pop);margin-bottom:22px}
-.underdogs h2{color:var(--cream);font-size:clamp(30px,5vw,56px);letter-spacing:-.03em;margin-bottom:clamp(40px,6vw,64px)}
-.underdogs p{color:rgba(255,252,235,.80);font-size:clamp(17px,1.95vw,21px);line-height:1.95;max-width:60ch;margin:0 auto}
-.underdogs p+p{margin-top:1.5em}
-.underdogs .ud-roll{margin-top:1.15em}
-.underdogs .ud-roll em{font-style:normal;color:var(--cream)}
-.underdogs .ud-told{color:var(--pop)}
-.underdogs .ud-rule{width:56px;height:1px;background:rgba(204,238,160,.5);margin:clamp(40px,6vw,64px) auto}
-.underdogs .ud-close{font-family:var(--display);font-weight:700;font-size:clamp(24px,3.6vw,40px);line-height:1.28;letter-spacing:-.025em;color:var(--cream);max-width:20ch;margin:0 auto}
-.underdogs .ud-coda{margin-top:1.4em;color:var(--pop);font-family:var(--display);font-weight:600;font-size:clamp(17px,2vw,22px);line-height:1.45}
+/* ---------- TESTIMONIALS ---------- */
+.room .cards{display:grid;grid-template-columns:repeat(3,1fr);gap:18px;align-items:start;margin-top:6px}
+.room .card{background:var(--panel);border:1px solid var(--line);border-radius:16px;padding:26px;transition:transform .16s ease,border-color .16s ease,box-shadow .16s ease}
+.room .card:hover{transform:translateY(-3px);border-color:var(--line-2);box-shadow:0 14px 34px -20px rgba(66,75,54,.45)}
+.room .card .outcome{margin:0;font-size:15.5px;line-height:1.6;color:var(--text)}
+.room .card .name{margin-top:18px;font-family:var(--mono);font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--lime)}
+.room .card .role{margin-top:5px;font-family:var(--mono);font-size:11px;letter-spacing:.04em;line-height:1.5;color:var(--dim)}
 
 /* ---------- THE OFFER ---------- */
 .offers h2{font-size:clamp(30px,4.6vw,52px);max-width:20ch}
@@ -264,7 +257,7 @@ ul.t-list li:last-child{padding-bottom:0}
   .hero-grid,.story-grid{grid-template-columns:1fr;gap:36px}
   .hero-photo{max-width:380px;margin:0 auto;max-height:46vh}
   .story-photo{max-width:420px;margin:0 auto}
-  .offers-grid,.fitgrid{grid-template-columns:1fr}
+  .offers-grid,.fitgrid,.room .cards{grid-template-columns:1fr}
   .machine{flex-direction:column;margin-top:34px}
   .m-arrow{width:100%;text-align:center;transform:rotate(90deg);padding:8px 0}
   .m-io{width:100%;font-size:14px;letter-spacing:.06em;padding:14px 18px}
@@ -308,13 +301,12 @@ ul.t-list li:last-child{padding-bottom:0}
   .announce{font-size:13px;letter-spacing:.03em;line-height:1.5}
   .stickybar .sb-txt{display:none}
   .stickybar .btn{width:100%;text-align:center}
-  .underdogs p{line-height:1.8}
 }
 </style>
 
 <!-- STICKY TOP BAR -->
 <div class="topbar">
-  <div class="announce"><span class="dot"></span> Founding cohort &middot; Limited spots <a href="#waitlist">Join the waitlist &rarr;</a></div>
+  <div class="announce"><span class="dot"></span> Founding cohort &middot; Starting October 1st <a href="#waitlist">Join the waitlist &rarr;</a></div>
 </div>
 
 <!-- NAV -->
@@ -338,7 +330,7 @@ ul.t-list li:last-child{padding-bottom:0}
       <div class="hero-cta">
         <a class="btn" href="#waitlist" onclick="track('waitlist_hero')">Join the waitlist</a>
       </div>
-      <p class="hero-micro">Limited spots. Hands-on support with me.</p>
+      <p class="hero-micro">Starting October 1st. Limited spots. Hands-on support with me.</p>
     </div>
     <div>
       <!-- TODO: swap in a bespoke Super Human Accelerator hero portrait once shot -->
@@ -365,34 +357,7 @@ ul.t-list li:last-child{padding-bottom:0}
   </div>
 </section>
 
-<!-- ================== 3. THE RISE OF THE UNDERDOGS ================== -->
-<section class="underdogs">
-  <div class="wrap">
-    <span class="eyebrow">The movement</span>
-    <h2>The rise of the underdogs</h2>
-
-    <p>This programme serves as a movement for the underdogs.</p>
-    <p>For the misunderstood. For the ones paving their own way. For the hungry: the ones who dig deep no matter their circumstances, because they were born with greatness and a burning desire to create change. To innovate. To disrupt a broken system.</p>
-
-    <p class="ud-roll"><em>To the dyslexic girl who dropped out of high school and shaved her head:</em> <span class="ud-told">your story needs to be told.</span></p>
-    <p class="ud-roll"><em>To the man who felt alone and never enough:</em> <span class="ud-told">your story needs to be told.</span></p>
-    <p class="ud-roll"><em>To the woman who felt like an outcast, who did not realise she was living someone else's dream:</em> <span class="ud-told">your story needs to be told.</span></p>
-    <p class="ud-roll"><em>To the so-called nerd who spent most of their life isolating, because it was easier than being bullied:</em> <span class="ud-told">your story needs to be told.</span></p>
-
-    <div class="ud-rule" aria-hidden="true"></div>
-
-    <p>Everyone needs one opportunity. No matter their age. No matter their race. No matter where they started.</p>
-    <p>We all have a story and a superpower to hand to the next generation of changemakers. It is our responsibility to give our wisdom and our curiosity, and to show how AI can make the world a kinder, more loving place.</p>
-    <p>Because all any of us have ever wanted is to be seen for our greatness, loved for our kindness, heard for our stories, and free to live authentically.</p>
-
-    <div class="ud-rule" aria-hidden="true"></div>
-
-    <p class="ud-close">This is the rise of the underdogs.</p>
-    <p class="ud-coda">Give, not to get. That is the true meaning of Time Rich.</p>
-  </div>
-</section>
-
-<!-- ========================== 4. THE OFFER ========================== -->
+<!-- ========================== 3. THE OFFER ========================== -->
 <section class="offers" id="offer">
   <div class="wrap">
     <span class="eyebrow">Two ways into the programme</span>
@@ -445,7 +410,7 @@ ul.t-list li:last-child{padding-bottom:0}
   </div>
 </section>
 
-<!-- ===================== 5. THE LEADERSHIP LAYER ===================== -->
+<!-- ===================== 4. THE LEADERSHIP LAYER ===================== -->
 <section class="leadership">
   <div class="wrap narrow">
     <span class="eyebrow">The part nobody teaches</span>
@@ -504,6 +469,33 @@ ul.t-list li:last-child{padding-bottom:0}
   </div>
 </section>
 
+<!-- ======================== 5. TESTIMONIALS ======================== -->
+<section class="room">
+  <div class="wrap">
+    <div class="section-head">
+      <span class="eyebrow">From the people in the room</span>
+      <h2>Don't take my word for it.</h2>
+    </div>
+    <div class="cards">
+      <div class="card">
+        <p class="outcome">"I came in with low expectations &mdash; I'd been to enough 'AI' events that turned out to be basic prompting demos. I was wrong within the first five minutes. This wasn't theory or hype: it was the AI stack she uses to save 20+ hours a week, broken down in a way I could actually implement. I left with the foundation for my first AI agent and a clear path forward."</p>
+        <div class="name">Martha Mercogliano</div>
+        <div class="role">Forbes M&eacute;xico Top 50 Angel Investor &middot; Healthcare Startup Advisor</div>
+      </div>
+      <div class="card">
+        <p class="outcome">"Ella made working with AI visible, quite literally. She thinks about AI agents the same way she thinks about building a business &mdash; each agent has a role, responsibilities, and a purpose. I walked away with useful knowledge, a better way to think about AI, and, most importantly, the confidence to get started."</p>
+        <div class="name">Indra Klavins</div>
+        <div class="role">Organizational Strategist &middot; Executive Advisor</div>
+      </div>
+      <div class="card">
+        <p class="outcome">"Ella's workshops are actionable from the start &mdash; she teaches, shares her process, and leaves you with the full instructions to create your own AI team members. Time Rich started as a workshop and has turned into a beautiful community of supportive, like-minded women founders."</p>
+        <div class="name">Jenni Ogden</div>
+        <div class="role">Founder, Eye Q Productions</div>
+      </div>
+    </div>
+  </div>
+</section>
+
 <!-- ========================= 6. THE DECISION ========================= -->
 <section class="decision">
   <div class="wrap">
@@ -552,7 +544,7 @@ ul.t-list li:last-child{padding-bottom:0}
   <div class="wrap narrow" style="text-align:center">
     <span class="eyebrow">Join the waitlist</span>
     <h2>Doors aren't open yet.</h2>
-    <p class="lead" style="margin:16px auto 0;max-width:54ch">The waitlist gets first access, founding-member pricing, and a note from me before anyone else hears a thing.</p>
+    <p class="lead" style="margin:16px auto 0;max-width:54ch">Starting October 1st. The waitlist gets first access, founding-member pricing, and a note from me before anyone else hears a thing.</p>
 
     <div class="wl-card">
       <form id="waitlistForm" novalidate style="text-align:left">
@@ -574,6 +566,10 @@ ul.t-list li:last-child{padding-bottom:0}
         <div class="field">
           <label for="wl-department">Which department would you fix first?</label>
           <input type="text" id="wl-department" name="department" />
+        </div>
+        <div class="field">
+          <label for="wl-social">Social media (Instagram or LinkedIn link)</label>
+          <input type="url" id="wl-social" name="social_media" autocomplete="url" />
         </div>
 
         <button type="submit" class="form-submit">Add me to the waitlist</button>
@@ -624,7 +620,7 @@ ul.t-list li:last-child{padding-bottom:0}
   <div class="wrap narrow">
     <span class="eyebrow">Founding cohort &middot; Limited spots</span>
     <h2>Join the waitlist</h2>
-    <p style="margin:16px auto 0;max-width:54ch;color:var(--muted)">First access, founding-member pricing, and a note from me before anyone else hears a thing.</p>
+    <p style="margin:16px auto 0;max-width:54ch;color:var(--muted)">Starting October 1st. First access, founding-member pricing, and a note from me before anyone else hears a thing.</p>
     <div style="margin-top:28px"><a class="btn btn-xl" href="#waitlist" onclick="track('waitlist_closing')">Join the waitlist &rarr;</a></div>
   </div>
 </section>
@@ -634,13 +630,14 @@ ul.t-list li:last-child{padding-bottom:0}
   <div class="wrap">
     <p class="foot-mission">Reshaping how women flourish in the age of AI: focused on growing revenue, rewiring self-doubt, and becoming visible alongside a badass ambitious community. <span class="foot-mission-emoji">&#128184;</span></p>
     <span>&copy; 2026 Time Rich. All rights reserved.</span>
+    <span><a href="https://www.linkedin.com/in/ellamolonycook/" target="_blank" rel="noopener">LinkedIn</a> &middot; <a href="https://www.instagram.com/timerichtalk" target="_blank" rel="noopener">Instagram</a></span>
     <span><a href="/">Home</a> &middot; <a href="/privacy">Privacy</a> &middot; <a href="/terms">Terms</a></span>
   </div>
 </div>
 
 <!-- STICKY WAITLIST BAR -->
 <div class="stickybar" id="stickybar" aria-hidden="true">
-  <span class="sb-txt">Founding cohort &middot; Limited spots</span>
+  <span class="sb-txt">Founding cohort &middot; Starting October 1st</span>
   <a class="btn" href="#waitlist" onclick="track('waitlist_sticky')">Join the waitlist &rarr;</a>
 </div>
 
@@ -679,7 +676,7 @@ function track(name, params){
 
   // reveal on scroll
   if ('IntersectionObserver' in window && !reduce) {
-    var items = document.querySelectorAll('.tier,.machine,.rung,.fitgrid .fit,.wl-card');
+    var items = document.querySelectorAll('.tier,.machine,.rung,.fitgrid .fit,.room .card,.wl-card');
     items.forEach(function(el){ el.classList.add('reveal'); });
     var ro = new IntersectionObserver(function(es){
       es.forEach(function(e){ if (e.isIntersecting) { e.target.classList.add('in'); ro.unobserve(e.target); } });
@@ -713,7 +710,7 @@ function track(name, params){
   // ---- Waitlist form ------------------------------------------------------
   // TODO: WIRE THIS TO THE FORMS WORKER (see worker/). Right now the submit is
   //       client-side ONLY — nothing is sent anywhere and no entry is stored.
-  //       When the endpoint lands: POST the four fields, show #waitlistSuccess
+  //       When the endpoint lands: POST the five fields, show #waitlistSuccess
   //       only after the request resolves, and put any failure in #wlNote.
   var form    = document.getElementById('waitlistForm');
   var success = document.getElementById('waitlistSuccess');
