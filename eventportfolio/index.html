@@ -1,0 +1,385 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="/js/pixel.js"></script>
+<title>Time Rich Event Portfolio &middot; 154 events across private capital, AI and founder education</title>
+<meta name="description" content="The Time Rich event portfolio: 154 events since 2024. 17 rooms across 6 cities, and 3,086 registrants across eight virtual conferences.">
+<meta property="og:title" content="Time Rich Event Portfolio">
+<meta property="og:description" content="154 events since 2024. 17 rooms across 6 cities, 3,086 registrants across eight virtual conferences.">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://timerich.ai/eventportfolio/">
+<meta property="og:image" content="https://timerich.ai/eventportfolio/img/band.jpg">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="canonical" href="https://timerich.ai/eventportfolio/">
+<link rel="icon" href="/favicon.ico" sizes="any">
+<link rel="icon" type="image/svg+xml" href="/favicon.svg">
+<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32.png">
+<link rel="icon" type="image/png" sizes="16x16" href="/favicon-16.png">
+<link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;700&family=JetBrains+Mono:wght@400;500&display=swap">
+<style>
+  :root{
+    --green:#2C3422; --green-panel:#35402A; --green-line:#46523A;
+    --cream:#FFFCEB; --cream-panel:#F6F2DE; --pastel:#CCEEA0;
+    --sage:#DCDEBF; --moss:#67762E;
+    --display:"Space Grotesk",system-ui,sans-serif;
+    --body:system-ui,-apple-system,"Segoe UI",sans-serif;
+    --mono:"JetBrains Mono",ui-monospace,monospace;
+    --pad:clamp(20px,5vw,72px);
+  }
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--green);color:var(--cream);font-family:var(--body);font-size:16px;line-height:1.6;-webkit-font-smoothing:antialiased}
+  .band{padding:clamp(56px,8vw,110px) var(--pad);background:var(--green);color:var(--cream)}
+  .band.light{background:var(--cream);color:var(--green)}
+  .wrap{max-width:1080px;margin:0 auto}
+  .eyebrow{font-family:var(--mono);font-size:12px;letter-spacing:.16em;text-transform:uppercase;color:var(--pastel);margin:0 0 20px;display:block}
+  .light .eyebrow{color:var(--moss)}
+  h1,h2,h3{font-family:var(--display);font-weight:700;letter-spacing:-.02em;text-wrap:balance;margin:0}
+  h1{font-size:clamp(36px,6vw,68px);line-height:1.03}
+  h2{font-size:clamp(27px,4.1vw,44px);line-height:1.09;margin-bottom:16px}
+  h3{font-size:19px;line-height:1.3;letter-spacing:-.01em}
+  p{margin:0 0 16px}
+  .lede{font-size:clamp(17px,2vw,21px);line-height:1.5;max-width:62ch}
+  .note{font-size:15px;color:var(--sage);max-width:70ch}
+  .light .note{color:var(--moss)}
+  a{color:inherit}
+
+  .hero{padding-top:clamp(40px,7vw,80px);padding-bottom:clamp(48px,7vw,88px)}
+  .mark{font-family:var(--display);font-weight:700;font-size:15px;letter-spacing:.08em;margin-bottom:clamp(48px,9vw,100px)}
+  .mark a{text-decoration:none}
+  .mark i{color:var(--pastel);font-style:normal}
+  .hero h1{max-width:16ch}
+  .hero .lede{margin-top:24px;color:var(--sage)}
+
+  .strip{display:grid;gap:1px;margin-top:clamp(44px,7vw,76px);grid-template-columns:repeat(auto-fit,minmax(168px,1fr));background:var(--green-line);border:1px solid var(--green-line)}
+  .strip div{background:var(--green);padding:22px 20px}
+  .light .strip{background:var(--sage);border-color:var(--sage)}
+  .light .strip div{background:var(--cream)}
+  .strip .num{display:block;font-family:var(--display);font-weight:700;font-size:clamp(26px,3.4vw,38px);letter-spacing:-.02em;color:var(--pastel);line-height:1.05}
+  .light .strip .num{color:var(--moss)}
+  .strip span:last-child{font-family:var(--mono);font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--sage);display:block;margin-top:8px}
+  .light .strip span:last-child{color:var(--moss)}
+
+  .figure{margin:0;padding:0 var(--pad) clamp(56px,8vw,96px)}
+  .figure img{display:block;width:100%;height:auto;max-width:1080px;margin:0 auto;border-radius:6px}
+
+  /* in the room */
+  .yr{font-family:var(--mono);font-size:12px;letter-spacing:.16em;color:var(--moss);margin:44px 0 6px;padding-bottom:10px;border-bottom:1px solid var(--sage)}
+  .yr:first-child{margin-top:34px}
+  .ev{display:grid;grid-template-columns:150px 1fr;gap:24px;padding:22px 0;border-bottom:1px solid rgba(103,118,46,.22)}
+  .ev .when{font-family:var(--mono);font-size:13px;letter-spacing:.06em;color:var(--moss);padding-top:3px}
+  .ev .when small{display:block;font-size:12px;opacity:.75;margin-top:5px;letter-spacing:.1em;text-transform:uppercase}
+  .ev h3 a{text-decoration:none;background-image:linear-gradient(currentColor,currentColor);background-size:0 1px;background-repeat:no-repeat;background-position:0 100%;transition:background-size 180ms ease-out}
+  .ev h3 a:hover{background-size:100% 1px}
+  .ev h3 a::after{content:" \2197";font-size:.8em;opacity:.5}
+  .ev p{margin:8px 0 0;font-size:15px;color:var(--moss);max-width:62ch}
+  @media (max-width:640px){.ev{grid-template-columns:1fr;gap:8px}}
+
+  /* virtual */
+  .confs{display:grid;gap:26px;grid-template-columns:repeat(auto-fit,minmax(310px,1fr));margin-top:40px}
+  .conf{background:var(--green-panel);border:1px solid var(--green-line);border-radius:4px;padding:24px 22px}
+  .conf-head{display:flex;justify-content:space-between;align-items:baseline;gap:16px}
+  .conf h3{font-size:17.5px}
+  .conf h3 a{text-decoration:none}
+  .conf h3 a:hover{text-decoration:underline}
+  .conf .reg{font-family:var(--display);font-weight:700;font-size:24px;color:var(--pastel);font-variant-numeric:tabular-nums;letter-spacing:-.02em}
+  .bar{height:6px;background:var(--green-line);border-radius:999px;overflow:hidden;margin:14px 0 12px}
+  .bar i{display:block;height:100%;background:var(--pastel);border-radius:999px}
+  .conf-meta{font-family:var(--mono);font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--pastel);margin:0 0 10px}
+  .conf p:last-child{margin:0;font-size:14.5px;color:var(--sage)}
+  .total{margin-top:30px;font-family:var(--mono);font-size:13px;letter-spacing:.06em;color:var(--sage)}
+  .total b{font-family:var(--display);font-size:22px;color:var(--pastel);letter-spacing:-.02em}
+
+  .grid3{display:grid;gap:20px;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));margin-top:44px}
+  .card{background:var(--cream-panel);border:1px solid var(--sage);padding:26px 24px;border-radius:4px}
+  .card .tag{font-family:var(--mono);font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--moss);display:block;margin-bottom:12px}
+  .card p{margin:10px 0 0;font-size:15px;color:var(--moss)}
+
+  .photos{display:grid;gap:20px;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));margin-top:44px}
+  .photos img{display:block;width:100%;height:100%;aspect-ratio:4/5;object-fit:cover;border-radius:6px}
+
+  .btn{display:inline-flex;align-items:center;gap:10px;background:var(--pastel);color:var(--green);font-family:var(--display);font-weight:700;font-size:16px;padding:14px 26px;border-radius:999px;text-decoration:none;transition:transform 160ms ease-out,background 160ms ease-out}
+  .btn:hover{transform:translateY(-2px);background:#D8F4B4}
+  .btn:focus-visible{outline:2px solid var(--cream);outline-offset:3px}
+  .sign{font-family:var(--display);font-weight:500;font-size:20px;margin-top:40px}
+  .contact{margin-top:28px;padding-top:24px;border-top:1px solid var(--green-line);font-family:var(--mono);font-size:13px;letter-spacing:.04em;color:var(--sage);display:flex;flex-wrap:wrap;gap:8px 22px}
+  .contact a{color:var(--pastel);text-decoration:none}
+  .contact a:hover{text-decoration:underline}
+  @media (prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
+</style>
+</head>
+<body>
+
+<header class="band hero">
+  <div class="wrap">
+    <div class="mark"><a href="/">TIME RICH<i>.</i></a></div>
+    <span class="eyebrow">Event portfolio &middot; 2024 to 2026</span>
+    <h1>154 events in two years.</h1>
+    <p class="lede">Invite-only dinners, equity evenings, walks, pitch competitions and multi-day virtual conferences, produced across private capital, AI and founder education. Every event below links to its live page.</p>
+    <div class="strip">
+      <div><span class="num">154</span><span>Events since 2024</span></div>
+      <div><span class="num">17</span><span>Rooms, in person</span></div>
+      <div><span class="num">6</span><span>Cities, two continents</span></div>
+      <div><span class="num">3,086</span><span>Registrants, top eight</span></div>
+    </div>
+  </div>
+</header>
+
+<figure class="figure"><img src="img/band.jpg" alt="Guests at a Time Rich rooftop evening in New York." width="1600" height="1066" loading="lazy" decoding="async"></figure>
+
+<section class="band light">
+  <div class="wrap">
+    <span class="eyebrow">In the room</span>
+    <h2>Seventeen rooms, six cities.</h2>
+    <p class="note">Seated dinners, equity evenings, receptions and morning walks. Small enough that people actually meet, produced under Time Rich, DFX and Creative Capital.</p>
+    <div class="events">
+      <p class="yr">2026</p>
+      <article class="ev">
+        <div class="when">Aug 2026<small>New York</small></div>
+        <div class="what">
+          <h3><a href="https://lu.ma/timerichpicnic">Time Rich Summer: Picnic in Central Park</a></h3>
+          <p>An afternoon on the grass for women and queer founders, investors and creators. Blankets, shared food and real conversation instead of a networking format.</p>
+        </div>
+      </article>
+      <article class="ev">
+        <div class="when">Jul 2026<small>Boston</small></div>
+        <div class="what">
+          <h3><a href="https://lu.ma/dfxintel-35f4">Boston Tech Advocates</a></h3>
+          <p>An invite-only founder and investor breakfast with Global Tech Advocates, built around a live product launch and an open Q&amp;A.</p>
+        </div>
+      </article>
+      <article class="ev">
+        <div class="when">May 2026<small>New York</small></div>
+        <div class="what">
+          <h3><a href="https://lu.ma/fbpwdz4o">The Future of Food Table</a></h3>
+          <p>A seated tasting dinner for allocators, previewing a Caribbean-Jamaican restaurant concept from a venture studio building talent-backed food brands.</p>
+        </div>
+      </article>
+      <article class="ev">
+        <div class="when">Mar 2026<small>Hong Kong</small></div>
+        <div class="what">
+          <h3><a href="https://lu.ma/qn8idpbq">Art Basel x Creative Capital</a></h3>
+          <p>An evening of drinks for a curated circle of allocators in a private members lounge, timed to Art Basel week.</p>
+        </div>
+      </article>
+      <article class="ev">
+        <div class="when">Mar 2026<small>New York</small></div>
+        <div class="what">
+          <h3><a href="https://lu.ma/407ngsu0">Creative Capital Family Office Dinner</a></h3>
+          <p>A seated dinner for a small group of allocators. Relaxed room, limited spots, invitation only.</p>
+        </div>
+      </article>
+      <p class="yr">2025</p>
+      <article class="ev">
+        <div class="when">Nov 2025<small>New York</small></div>
+        <div class="what">
+          <h3><a href="https://lu.ma/lxnzud5b">Private Markets Poker Night with Jamie Gold</a></h3>
+          <p>A speakeasy venue, a World Series of Poker champion and three tables running at once so guests could play, learn or just talk. Entertainment used as deal-flow activation.</p>
+        </div>
+      </article>
+      <article class="ev">
+        <div class="when">Sep 2025<small>Boston</small></div>
+        <div class="what">
+          <h3><a href="https://lu.ma/cccboston">Commercial Chairman&rsquo;s Club</a></h3>
+          <p>The Boston chapter launch for a national commercial real estate network, introducing the executive team to joint venture partners, family offices and development firms.</p>
+        </div>
+      </article>
+      <article class="ev">
+        <div class="when">Sep 2025<small>Brooklyn</small></div>
+        <div class="what">
+          <h3><a href="https://lu.ma/a88ig6lp">Founders &amp; Funders, Williamsburg Walk</a></h3>
+          <p>The second edition. A Saturday morning walk and coffee for Brooklyn founders and investors, small by design.</p>
+        </div>
+      </article>
+      <article class="ev">
+        <div class="when">Aug 2025<small>Brooklyn</small></div>
+        <div class="what">
+          <h3><a href="https://lu.ma/58aztuya">Founders &amp; Funders, Williamsburg Walk</a></h3>
+          <p>A walk rather than a room. Founders and investors, good coffee and a grounded start to the weekend.</p>
+        </div>
+      </article>
+      <article class="ev">
+        <div class="when">May 2025<small>Boston</small></div>
+        <div class="what">
+          <h3><a href="https://lu.ma/to43yxq6">What Does it Really Take to Raise in 2025?</a></h3>
+          <p>A morning fireside on the shifting fundraising landscape, and what actually gets a round closed.</p>
+        </div>
+      </article>
+      <article class="ev">
+        <div class="when">Feb 2025<small>Boston</small></div>
+        <div class="what">
+          <h3><a href="https://lu.ma/rz7y1c2g">Boston Equity Evening</a></h3>
+          <p>An evening for founders, angels and venture and M&amp;A professionals to meet in an intimate setting.</p>
+        </div>
+      </article>
+      <article class="ev">
+        <div class="when">Feb 2025<small>Austin</small></div>
+        <div class="what">
+          <h3><a href="https://lu.ma/mllhxozh">DFX Austin Investor Happy Hour x Upgrade Labs</a></h3>
+          <p>Hosted at the city&rsquo;s biohacking lab, with longevity tech on the floor for investors, family offices and funds to try.</p>
+        </div>
+      </article>
+      <p class="yr">2024</p>
+      <article class="ev">
+        <div class="when">Dec 2024<small>Boston</small></div>
+        <div class="what">
+          <h3><a href="https://lu.ma/z89ahsh5">Boston Private Capital Holiday Party</a></h3>
+          <p>An end of year gathering for the Boston private capital community over drinks and appetizers.</p>
+        </div>
+      </article>
+      <article class="ev">
+        <div class="when">Oct 2024<small>Dallas</small></div>
+        <div class="what">
+          <h3><a href="https://lu.ma/ff3uf81u">Private Capital Networking Night</a></h3>
+          <p>A high-density evening connecting private equity, venture and finance professionals.</p>
+        </div>
+      </article>
+      <article class="ev">
+        <div class="when">Sep 2024<small>New York</small></div>
+        <div class="what">
+          <h3><a href="https://lu.ma/43e7trcr">ISCP Club Welcome Reception</a></h3>
+          <p>A welcome reception for independent sponsors and capital providers, run alongside the Independent Sponsor Summit.</p>
+        </div>
+      </article>
+      <article class="ev">
+        <div class="when">Aug 2024<small>Salt Lake City</small></div>
+        <div class="what">
+          <h3><a href="https://lu.ma/hbaxe339">DFX Equity Evening</a></h3>
+          <p>A fully catered evening for a private guest list of founders, angels and venture and M&amp;A professionals.</p>
+        </div>
+      </article>
+      <article class="ev">
+        <div class="when">Jul 2024<small>New York</small></div>
+        <div class="what">
+          <h3><a href="https://lu.ma/m4ojdx9h">Private Capital Happy Hour</a></h3>
+          <p>The first of the private capital evenings. Founders, angels and investors, business cards and stories.</p>
+        </div>
+      </article>
+    </div>
+  </div>
+</section>
+
+<section class="band">
+  <div class="wrap">
+    <span class="eyebrow">At scale, online</span>
+    <h2>3,086 registrants across eight sessions.</h2>
+    <p class="note">The virtual programme runs alongside the rooms. These are the eight largest; the bar shows each against the biggest.</p>
+    <div class="confs">
+      <article class="conf">
+        <div class="conf-head">
+          <h3><a href="https://lu.ma/po68ay8k">Founders, Angels &amp; VCs: The New Era of Direct Investing</a></h3>
+          <span class="reg">1,282</span>
+        </div>
+        <div class="bar"><i style="width:100%"></i></div>
+        <p class="conf-meta">Jun 2025 &middot; virtual</p>
+        <p>Two days of panels on fundraising, institutional investors and founder partnerships.</p>
+      </article>
+      <article class="conf">
+        <div class="conf-head">
+          <h3><a href="https://lu.ma/6o70fo1q">Women in AI Pitch Tank</a></h3>
+          <span class="reg">384</span>
+        </div>
+        <div class="bar"><i style="width:30%"></i></div>
+        <p class="conf-meta">May 2025 &middot; virtual</p>
+        <p>A reverse pitch. Three women in venture took the mic and founders heard what they actually back.</p>
+      </article>
+      <article class="conf">
+        <div class="conf-head">
+          <h3><a href="https://lu.ma/qkasgq6i">Intelligent Operating System Built for Private Capital</a></h3>
+          <span class="reg">376</span>
+        </div>
+        <div class="bar"><i style="width:29%"></i></div>
+        <p class="conf-meta">Feb 2026 &middot; virtual</p>
+        <p>A live platform walkthrough for members and newcomers. No pitch, just an orientation.</p>
+      </article>
+      <article class="conf">
+        <div class="conf-head">
+          <h3><a href="https://lu.ma/m4p73k65">From 9 Months to 48 Hours: Build Mode Activated</a></h3>
+          <span class="reg">354</span>
+        </div>
+        <div class="bar"><i style="width:28%"></i></div>
+        <p class="conf-meta">Jan 2026 &middot; virtual</p>
+        <p>On shipping custom products in days rather than quarters, and what 2026 changes.</p>
+      </article>
+      <article class="conf">
+        <div class="conf-head">
+          <h3><a href="https://lu.ma/8cuwdgd3">DFX Strategic Partnership Kickoff</a></h3>
+          <span class="reg">224</span>
+        </div>
+        <div class="bar"><i style="width:17%"></i></div>
+        <p class="conf-meta">Feb 2026 &middot; virtual</p>
+        <p>An onboarding session for incoming sales partners covering the platform, the revenue paths and how partners earn.</p>
+      </article>
+      <article class="conf">
+        <div class="conf-head">
+          <h3><a href="https://lu.ma/zf2wdfdx">UEDFX: The Architecture for Private Markets</a></h3>
+          <span class="reg">182</span>
+        </div>
+        <div class="bar"><i style="width:14%"></i></div>
+        <p class="conf-meta">Jan 2026 &middot; virtual</p>
+        <p>On building a vetted private network where investors and founders are aligned before the conversation starts.</p>
+      </article>
+      <article class="conf">
+        <div class="conf-head">
+          <h3><a href="https://lu.ma/mkgk4xip">AI Tool of the Week</a></h3>
+          <span class="reg">152</span>
+        </div>
+        <div class="bar"><i style="width:12%"></i></div>
+        <p class="conf-meta">Dec 2025 &middot; virtual</p>
+        <p>A recurring session on AI tools and real use cases for building leaner companies.</p>
+      </article>
+      <article class="conf">
+        <div class="conf-head">
+          <h3><a href="https://lu.ma/gbvsstlo">Inner Circle: What You Need to Know for 2026</a></h3>
+          <span class="reg">132</span>
+        </div>
+        <div class="bar"><i style="width:10%"></i></div>
+        <p class="conf-meta">Dec 2025 &middot; virtual</p>
+        <p>A private briefing on the technological, geopolitical and economic shifts reshaping private markets.</p>
+      </article>
+    </div>
+    <p class="total"><b>3,086</b> registrants across these eight, plus 129 further recurring sessions and office hours in the same period.</p>
+  </div>
+</section>
+
+<section class="band light">
+  <div class="wrap">
+    <span class="eyebrow">The formats</span>
+    <h2>Three sizes of room.</h2>
+    <div class="grid3">
+      <div class="card"><span class="tag">20 to 60 guests</span><h3>Dinners and evenings</h3><p>Invite-only, seated, one conversation at a time. Family office dinners, equity evenings, a poker night with a World Series champion. Where the deals actually start.</p></div>
+      <div class="card"><span class="tag">100 to 500 guests</span><h3>Summits and stages</h3><p>Branded set, panels, MC, photography and film. Built for the photos a partner can use for the next twelve months, not just the night itself.</p></div>
+      <div class="card"><span class="tag">150 to 1,300 registrants</span><h3>Virtual conferences</h3><p>Multi-session online events with a real registration engine behind them. The largest pulled 1,282 registrants across two days.</p></div>
+    </div>
+    <div class="photos">
+      <img src="img/room-1.jpg" alt="Guests at a Time Rich dinner." width="800" height="1200" loading="lazy" decoding="async">
+      <img src="img/room-2.jpg" alt="Seated guests at a Time Rich dinner." width="800" height="1200" loading="lazy" decoding="async">
+      <img src="img/room-3.jpg" alt="A session running at a Time Rich event." width="800" height="1200" loading="lazy" decoding="async">
+    </div>
+  </div>
+</section>
+
+<footer class="band">
+  <div class="wrap">
+    <span class="eyebrow">Next step</span>
+    <h2>Want your product in one of these rooms?</h2>
+    <p class="lede" style="color:var(--sage)">Tell me which audience you want and I will price it against the specific dates. The full partnership detail, including the media and education surfaces, is in the media kit.</p>
+    <p>
+      <a class="btn" href="mailto:emc@timerich.ai?subject=Time%20Rich%20events">Email me about an event <span aria-hidden="true">&rarr;</span></a>
+    </p>
+    <p class="sign">Warmly, Ella</p>
+    <div class="contact">
+      <span>Ella Molony Cook, Founder</span>
+      <a href="/media/">Partnership media kit</a>
+      <a href="https://www.instagram.com/timerichtalk">instagram.com/timerichtalk</a>
+      <a href="https://www.linkedin.com/in/ellamolonycook">linkedin.com/in/ellamolonycook</a>
+    </div>
+  </div>
+</footer>
+
+</body>
+</html>
