@@ -85,11 +85,35 @@ a{color:inherit}
 main{flex:1 0 auto;padding:38px 0 96px}
 @media (min-width:700px){ main{padding:64px 0 120px} }
 
-.screen{animation:screenIn .22s ease both}
+/* ---------- QUESTION TRANSITIONS ----------
+   One continuous upward flow going forward, downward coming back: the outgoing
+   question keeps moving in the direction of travel while the incoming one
+   arrives from the opposite edge. The enter starts 45ms into the 190ms exit, so
+   the two overlap for most of the exit and read as a single movement rather
+   than exit-then-enter. End to end: 45 + 200 = 245ms.
+
+   The outgoing question is taken out of flow (.is-leaving) for the duration, so
+   the form's height is always the incoming question's height and nothing below
+   the stage moves. */
+#applyForm{position:relative}
 .screen[hidden]{display:none}
-@keyframes screenIn{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:none}}
+.screen.is-leaving{position:absolute;top:0;left:0;right:0;pointer-events:none}
+
+@keyframes qOutUp   {from{opacity:1;transform:none}              to{opacity:0;transform:translateY(-40px)}}
+@keyframes qInUp    {from{opacity:0;transform:translateY(40px)}  to{opacity:1;transform:none}}
+@keyframes qOutDown {from{opacity:1;transform:none}              to{opacity:0;transform:translateY(40px)}}
+@keyframes qInDown  {from{opacity:0;transform:translateY(-40px)} to{opacity:1;transform:none}}
+
+.screen.leave-up,.screen.leave-down,.screen.enter-up,.screen.enter-down{will-change:transform,opacity}
+.screen.leave-up  {animation:qOutUp   190ms cubic-bezier(.22,1,.36,1) both}
+.screen.leave-down{animation:qOutDown 190ms cubic-bezier(.22,1,.36,1) both}
+.screen.enter-up  {animation:qInUp    200ms cubic-bezier(.22,1,.36,1) 45ms both}
+.screen.enter-down{animation:qInDown  200ms cubic-bezier(.22,1,.36,1) 45ms both}
+
 @media (prefers-reduced-motion:reduce){
-  .screen{animation:none}
+  /* Instant swap: no translate, no fade, nothing overlapping. */
+  .screen.leave-up,.screen.leave-down,.screen.enter-up,.screen.enter-down{animation:none;will-change:auto}
+  .screen.is-leaving{display:none}
   .bar-fill{transition:none}
 }
 
@@ -188,19 +212,23 @@ main{flex:1 0 auto;padding:38px 0 96px}
   <div class="wrap">
     <div class="inapp-hint" id="inappHint" hidden>You're in an in-app browser. If the form won't submit, tap the <strong>&hellip;</strong> menu and choose <strong>Open in Safari / Chrome</strong>.</div>
 
-    <!-- ================= INTRO ================= -->
-    <section class="screen intro" id="s-intro" data-screen="intro">
-      <span class="q-eyebrow">Super Human Accelerator</span>
-      <h1 tabindex="-1" id="introHead">Apply for the Super Human Accelerator</h1>
-      <p class="lead">Nine questions, about three minutes. At the end you'll watch a short video and book a call with Ella.</p>
-      <div class="q-actions">
-        <button type="button" class="btn" id="startBtn">Start my application</button>
-      </div>
-      <p class="micro" id="resumeNote" hidden>You have an application in progress &mdash; starting picks up where you left off.</p>
-    </section>
-
+    <!-- Every screen - the intro included - is a direct child of the form, so they
+         share one positioned stage. During a transition the outgoing question is
+         taken out of flow and laid over the incoming one; that is what lets the
+         two motions overlap without the page height (and the footer) twitching. -->
     <form id="applyForm" novalidate autocomplete="on">
       <input type="text" name="_gotcha" id="f-gotcha" tabindex="-1" autocomplete="off" aria-hidden="true" style="position:absolute;left:-9999px;width:1px;height:1px;opacity:0;" />
+
+      <!-- ================= INTRO ================= -->
+      <section class="screen intro" id="s-intro" data-screen="intro">
+        <span class="q-eyebrow">Super Human Accelerator</span>
+        <h1 tabindex="-1" id="introHead">Apply for the Super Human Accelerator</h1>
+        <p class="lead">Nine questions, about three minutes. At the end you'll watch a short video and book a call with Ella.</p>
+        <div class="q-actions">
+          <button type="button" class="btn" id="startBtn">Start my application</button>
+        </div>
+        <p class="micro" id="resumeNote" hidden>You have an application in progress &mdash; starting picks up where you left off.</p>
+      </section>
 
       <!-- ================= Q1 - FIRST NAME ================= -->
       <section class="screen" id="s-1" data-step="1" data-key="first_name" hidden>
@@ -406,9 +434,8 @@ main{flex:1 0 auto;padding:38px 0 96px}
   var progLbl  = document.getElementById('progressLabel');
 
   // ---- Screen registry -----------------------------------------------------
-  // Order is the flow order. Screen 0 is the intro and is not a question.
-  var screens = [document.getElementById('s-intro')]
-    .concat(Array.prototype.slice.call(form.querySelectorAll('section.screen')));
+  // Document order is flow order. Screen 0 is the intro and is not a question.
+  var screens = Array.prototype.slice.call(form.querySelectorAll('section.screen'));
   var idx = 0;                     // index into screens
   var answers = {};
   var iti = null;                  // intl-tel-input instance, or null if the CDN failed
@@ -474,32 +501,81 @@ main{flex:1 0 auto;padding:38px 0 96px}
   }
 
   // ---- Show a screen -------------------------------------------------------
+  // Timings mirror the CSS above; keep the two in step if either changes.
+  var EXIT_MS = 190, ENTER_MS = 200, OVERLAP_MS = 45;
+  var reduceMotion = (function(){
+    try{ return window.matchMedia('(prefers-reduced-motion: reduce)').matches; }catch(e){ return false; }
+  })();
+
+  var leaving = null, leaveTimer = null, focusTimer = null;
+
+  // Puts the outgoing question back in the hidden pile. Called when its exit
+  // finishes, and immediately if another advance interrupts it — so however fast
+  // someone moves, exactly one question is left in the DOM.
+  function finishLeave(){
+    if (leaveTimer) { clearTimeout(leaveTimer); leaveTimer = null; }
+    if (!leaving) return;
+    leaving.hidden = true;
+    leaving.classList.remove('is-leaving', 'leave-up', 'leave-down', 'enter-up', 'enter-down');
+    leaving.removeAttribute('aria-hidden');
+    leaving = null;
+  }
+
+  function focusScreen(el){
+    // The input where there is one (its label is the heading, so the question is
+    // still announced), otherwise the heading itself.
+    var input = inputOf(el);
+    var head  = el.querySelector('.q-title, h1');
+    var target = (input && !isSelect(el)) ? input : head;
+    if (!target) return;
+    try{ target.focus({ preventScroll:true }); }catch(e){ target.focus(); }
+  }
+
   function show(i, opts){
     opts = opts || {};
     var prev = screenAt(idx);
     idx = Math.max(0, Math.min(i, screens.length - 1));
     var el = screenAt(idx);
 
-    screens.forEach(function(s){ if (s !== el) s.hidden = true; });
+    finishLeave();                                  // settle anything still in flight
+    if (focusTimer) { clearTimeout(focusTimer); focusTimer = null; }
     setError(el, '');
+
+    // Direction of travel: registry order is flow order, so forward is always a
+    // higher index — including across the Q9 -> Q9b -> submit branch.
+    var moving = prev !== el && !prev.hidden && !reduceMotion && !opts.instant;
+    var dir = screens.indexOf(el) >= screens.indexOf(prev) ? 'up' : 'down';
+
+    if (moving) {
+      prev.classList.remove('enter-up', 'enter-down');
+      prev.classList.add('is-leaving', dir === 'up' ? 'leave-up' : 'leave-down');
+      prev.setAttribute('aria-hidden', 'true');     // out of the a11y tree while it flies out
+      leaving = prev;
+      leaveTimer = setTimeout(finishLeave, EXIT_MS + 30);
+      screens.forEach(function(s){ if (s !== el && s !== prev) s.hidden = true; });
+    } else {
+      screens.forEach(function(s){ if (s !== el) s.hidden = true; });
+    }
+
+    el.classList.remove('enter-up', 'enter-down');
     el.hidden = false;
-    // restart the 220ms slide-up + fade
-    el.style.animation = 'none';
-    void el.offsetWidth;
-    el.style.animation = '';
+    if (moving) {
+      void el.offsetWidth;                          // restart the animation
+      el.classList.add(dir === 'up' ? 'enter-up' : 'enter-down');
+    }
 
     if (el.id === 's-submit') paintSummary();
     paintProgress();
-    window.scrollTo({ top: 0, behavior: prev === el ? 'auto' : 'smooth' });
+    window.scrollTo({ top: 0, behavior: (prev === el || reduceMotion) ? 'auto' : 'smooth' });
 
-    // Auto-focus: the input where there is one (its label is the heading, so
-    // the question is still announced), otherwise the heading itself.
-    var input = inputOf(el);
-    var head  = el.querySelector('.q-title, h1');
-    if (input && !isSelect(el)) {
-      try{ input.focus({ preventScroll:true }); }catch(e){ input.focus(); }
-    } else if (head) {
-      try{ head.focus({ preventScroll:true }); }catch(e){ head.focus(); }
+    // Focus lands once the incoming question has arrived, never mid-flight.
+    if (moving) {
+      focusTimer = setTimeout(function(){
+        focusTimer = null;
+        if (screenAt(idx) === el) focusScreen(el);
+      }, OVERLAP_MS + ENTER_MS);
+    } else {
+      focusScreen(el);
     }
 
     if (!opts.noHistory) pushState();
@@ -908,7 +984,7 @@ main{flex:1 0 auto;padding:38px 0 96px}
   }
 
   idx = 0;
-  show(startAt, { noHistory: true });
+  show(startAt, { noHistory: true, instant: true });
   try{ history.replaceState({ shs: idx }, '', location.pathname + location.search + hashFor(idx)); }catch(e){}
 
   track('sh_apply_view');

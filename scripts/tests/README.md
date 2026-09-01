@@ -41,6 +41,20 @@ sub-step, back preserving answers, sessionStorage persisting then clearing on
 submit), the single POST and its exact payload shape, and the thank-you page's
 `VIDEO_ENABLED` / `PODCAST_ENABLED` states.
 
+It also covers the question transitions, which have a rule worth stating: during
+a transition **two** questions are in the DOM — the outgoing one is taken out of
+flow and laid over the incoming one so the motions can overlap. So the suite
+distinguishes `visible()` (the question in flow) from `inDom()` (everything not
+`hidden`), and asserts the end state is always exactly one question, including
+when an advance interrupts a transition already in flight. Direction is asserted
+both ways, `prefers-reduced-motion` is exercised by stubbing `matchMedia` before
+the page script runs, and focus is checked to land *after* the incoming question
+arrives rather than mid-flight.
+
+Note that the in-page Back button goes through `history.back()`, so its effects
+land on a later task — assertions about a Back need a `sleep` first, exactly as
+they would in a real browser.
+
 Two things it deliberately can't cover, because jsdom has no CDN and no layout:
 
 - **intl-tel-input.** The phone question falls back to a strict `+E.164` regex

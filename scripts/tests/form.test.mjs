@@ -13,10 +13,17 @@ function check(name, cond, extra) {
 }
 const sleep = (ms) => new Promise(r => setTimeout(r, ms));
 
-function boot(url = 'https://timerich.ai/sh-apply/') {
+function boot(url = 'https://timerich.ai/sh-apply/', { reducedMotion = false } = {}) {
   const vc = new VirtualConsole();           // swallow jsdom's "not implemented" noise
   const dom = new JSDOM(HTML, {
     url, runScripts: 'dangerously', pretendToBeVisual: true, virtualConsole: vc,
+    beforeParse(w) {
+      if (!reducedMotion) return;
+      w.matchMedia = () => ({
+        matches: true, media: '(prefers-reduced-motion: reduce)',
+        addListener() {}, removeListener() {}, addEventListener() {}, removeEventListener() {},
+      });
+    },
   });
   const w = dom.window;
   w.scrollTo = () => {};
@@ -26,7 +33,10 @@ function boot(url = 'https://timerich.ai/sh-apply/') {
 }
 
 const $ = (d, sel) => d.querySelector(sel);
-const visible = (d) => Array.from(d.querySelectorAll('.screen')).filter(s => !s.hidden).map(s => s.id);
+const visible = (d) => Array.from(d.querySelectorAll('.screen'))
+  .filter(s => !s.hidden && !s.classList.contains('is-leaving')).map(s => s.id);
+const inDom = (d) => Array.from(d.querySelectorAll('.screen')).filter(s => !s.hidden).map(s => s.id);
+const settle = () => sleep(320);             // longer than the 245ms transition
 const label = (d) => $(d, '#progressLabel').textContent;
 const err = (d, id) => $(d, '#' + id).textContent;
 
@@ -59,8 +69,89 @@ console.log('\nOne question at a time');
   check('start shows only Q1', visible(d).join() === 's-1');
   check('progress reads "1 of 9"', label(d) === '1 of 9', label(d));
   check('bar is at 1/9', $(d, '#barFill').style.width.startsWith('11.1'), $(d, '#barFill').style.width);
-  check('every other screen is hidden', d.querySelectorAll('.screen:not([hidden])').length === 1);
+  await settle();
+  check('one question in the DOM once the transition ends', inDom(d).join() === 's-1', inDom(d));
   check('the input is focused', d.activeElement && d.activeElement.id === 'f-first_name', d.activeElement && d.activeElement.id);
+}
+
+console.log('\nTransitions: direction, overlap, and the one-question rule');
+{
+  const { w, d } = boot();
+  click(w, '#startBtn');
+  check('forward: the outgoing screen slides up and out', $(d, '#s-intro').classList.contains('leave-up'));
+  check('forward: the incoming screen slides up into place', $(d, '#s-1').classList.contains('enter-up'));
+  check('the two overlap — both are briefly in the DOM', inDom(d).length === 2, inDom(d));
+  check('the outgoing one is taken out of flow', $(d, '#s-intro').classList.contains('is-leaving'));
+  check('the outgoing one leaves the accessibility tree', $(d, '#s-intro').getAttribute('aria-hidden') === 'true');
+  check('focus has not moved yet (no yank mid-flight)', !(d.activeElement && d.activeElement.id === 'f-first_name'));
+  await settle();
+  check('end state is a single question', inDom(d).join() === 's-1', inDom(d));
+  check('the outgoing one is fully cleaned up',
+    !$(d, '#s-intro').classList.contains('is-leaving') && !$(d, '#s-intro').hasAttribute('aria-hidden'));
+  check('focus lands after the transition', d.activeElement.id === 'f-first_name');
+
+  type(w, '#f-first_name', 'Jordan');
+  enter(w, '#f-first_name');
+  check('Enter-key advance animates too', $(d, '#s-1').classList.contains('leave-up') && $(d, '#s-2').classList.contains('enter-up'));
+  await settle();
+
+  click(w, '#s-2 [data-back]');
+  await sleep(40);                                    // history.back() -> popstate is async
+  check('back: the outgoing screen slides down and out', $(d, '#s-2').classList.contains('leave-down'));
+  check('back: the incoming screen slides down into place', $(d, '#s-1').classList.contains('enter-down'));
+  await settle();
+  check('back ends on a single question', inDom(d).join() === 's-1', inDom(d));
+  check('no stale enter class left on the screen that just left',
+    !$(d, '#s-2').classList.contains('enter-up') && !$(d, '#s-2').classList.contains('enter-down'));
+}
+
+console.log('\nTransitions: interrupting one mid-flight');
+{
+  const { w, d } = boot();
+  click(w, '#startBtn');
+  type(w, '#f-first_name', 'Jordan');
+  click(w, '#s-1 [data-next]');                       // interrupts the intro's exit
+  type(w, '#f-email', 'jordan@example.com');
+  click(w, '#s-2 [data-next]');                       // and Q1's
+  check('a rushed run never leaves more than the pair mid-flight', inDom(d).length <= 2, inDom(d));
+  await settle();
+  check('it still settles to exactly one question', inDom(d).join() === 's-3', inDom(d));
+  check('focus is not left on an abandoned screen', d.activeElement.id === 'f-phone', d.activeElement.id);
+}
+
+console.log('\nTransitions: the Q9 -> Q9b sub-step, both directions');
+{
+  const { w, d } = boot();
+  await fillToDepartment(w);
+  await settle();
+  d.querySelectorAll('#s-6 .opt')[0].click(); await sleep(400);
+  type(w, '#f-outcome', 'A two-week holiday without the business falling over.');
+  click(w, '#s-7 [data-next]'); await settle();
+  d.querySelectorAll('#s-8 .opt')[1].click(); await sleep(400);
+  d.querySelectorAll('#s-9 .opt')[0].click();          // "Yes" -> Q9b
+  await sleep(300);
+  check('Q9 -> Q9b travels forward (up)', $(d, '#s-9').classList.contains('leave-up') && $(d, '#s-9b').classList.contains('enter-up'));
+  await settle();
+  click(w, '#s-9b [data-back]');
+  await sleep(40);
+  check('Q9b -> Q9 travels back (down)', $(d, '#s-9b').classList.contains('leave-down') && $(d, '#s-9').classList.contains('enter-down'));
+  await settle();
+  check('lands on Q9 alone', inDom(d).join() === 's-9', inDom(d));
+}
+
+console.log('\nTransitions: prefers-reduced-motion gets an instant swap');
+{
+  const { w, d } = boot('https://timerich.ai/sh-apply/', { reducedMotion: true });
+  click(w, '#startBtn');
+  check('no overlap — one question in the DOM immediately', inDom(d).join() === 's-1', inDom(d));
+  check('nothing is translated out', !$(d, '#s-intro').classList.contains('is-leaving'));
+  check('no animation classes at all',
+    !$(d, '#s-1').classList.contains('enter-up') && !$(d, '#s-1').classList.contains('enter-down'));
+  check('focus is immediate, not deferred', d.activeElement.id === 'f-first_name', d.activeElement.id);
+  type(w, '#f-first_name', 'Jordan'); click(w, '#s-1 [data-next]');
+  click(w, '#s-2 [data-back]');
+  await sleep(40);
+  check('back is instant too', inDom(d).join() === 's-1' && !$(d, '#s-2').classList.contains('leave-down'));
 }
 
 console.log('\nValidation happens on advance, not on keystroke');
