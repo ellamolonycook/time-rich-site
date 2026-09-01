@@ -1,0 +1,14 @@
+{
+  "name": "time-rich-tests",
+  "private": true,
+  "type": "module",
+  "description": "Tests for the /sh-apply application form and the Cloudflare worker's Notion mapping.",
+  "scripts": {
+    "test": "node worker.test.mjs && node form.test.mjs",
+    "test:worker": "node worker.test.mjs",
+    "test:form": "node form.test.mjs"
+  },
+  "devDependencies": {
+    "jsdom": "^29.1.1"
+  }
+}
