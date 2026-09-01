@@ -711,10 +711,7 @@ function track(name, params){
   }
 
   // ---- Waitlist form ------------------------------------------------------
-  // TODO: WIRE THIS TO THE FORMS WORKER (see worker/). Right now the submit is
-  //       client-side ONLY — nothing is sent anywhere and no entry is stored.
-  //       When the endpoint lands: POST the four fields, show #waitlistSuccess
-  //       only after the request resolves, and put any failure in #wlNote.
+  var FORM_ENDPOINT = "https://time-rich-forms.timerich.workers.dev/waitlist";
   var form    = document.getElementById('waitlistForm');
   var success = document.getElementById('waitlistSuccess');
   var note    = document.getElementById('wlNote');
@@ -735,11 +732,35 @@ function track(name, params){
       }
       if (form.querySelector('[name="_gotcha"]').value) { return; }   // bot
 
-      // TODO: replace this optimistic confirmation with the worker response.
-      track('waitlist_submit');
-      form.hidden = true;
-      success.hidden = false;
-      success.focus();
+      var val = function(sel){ var el = form.querySelector(sel); return el ? el.value.trim() : ''; };
+      var data = {
+        first_name:   val('#wl-name'),
+        email:        val('#wl-email'),
+        business:     val('#wl-business'),
+        department:   val('#wl-department'),
+        social_media: val('#wl-social'),
+        _gotcha:      form.querySelector('[name="_gotcha"]').value
+      };
+
+      var btn = form.querySelector('.form-submit');
+      var btnLabel = btn ? btn.textContent : '';
+      if (btn) { btn.disabled = true; btn.textContent = 'Sending...'; }
+
+      fetch(FORM_ENDPOINT, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
+        body: JSON.stringify(data)
+      }).then(function(res){
+        if (!res.ok) throw new Error('bad response');
+        track('waitlist_submit');
+        form.hidden = true;
+        success.hidden = false;
+        success.focus();
+      }).catch(function(){
+        track('waitlist_error');
+        note.textContent = 'Something went wrong — please try again';
+        if (btn) { btn.disabled = false; btn.textContent = btnLabel; }
+      });
     });
   }
 

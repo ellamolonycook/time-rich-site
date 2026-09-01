@@ -38,3 +38,9 @@ NOTION_COACHING_DATABASE_ID = "f4f0b1c4-1b81-463c-8ff3-3e625aaf847a"
 # IMPORTANT: connect the SAME Notion integration (NOTION_TOKEN) to this database
 # (••• -> Connections) or writes will 404.
 NOTION_SUPERHUMAN_DATABASE_ID = "9b7ca5eb-e557-82f8-894a-0126ecc4ddf2"
+
+# Super Human Accelerator waitlist (POST /waitlist) -> its own Notion database.
+# Id is from the database URL (2db1e956f2bd4b14bad0aa00c0ea3e75).
+# IMPORTANT: connect the SAME Notion integration (NOTION_TOKEN) to this database
+# (••• -> Connections) or writes will 404.
+NOTION_WAITLIST_DATABASE_ID = "2db1e956-f2bd-4b14-bad0-aa00c0ea3e75"
