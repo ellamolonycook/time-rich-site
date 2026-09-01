@@ -51,8 +51,17 @@ export default {
     }
 
     // Route: Super Human Accelerator application -> its own Notion database.
-    // Field keys posted by /sh-apply match that database's property names exactly.
     if (path.endsWith("/superhuman")) {
+      // The rebuilt /sh-apply form (nine questions, one at a time) posts a
+      // snake_case payload and is mapped property-by-property below, the same
+      // way /waitlist is: the select columns have fixed option sets and free
+      // text must never be allowed to invent new options.
+      if (data.form_version === "sh-apply-v2") {
+        return handleSuperhumanApplication(data, env, cors);
+      }
+      // Anything else is the previous form's payload (keys already equal to the
+      // Notion property names) — left on the schema-driven mapper so an older
+      // cached page still lands somewhere while the new one rolls out.
       const res = await createApplication(data, env, cors, env.NOTION_SUPERHUMAN_DATABASE_ID, { Status: "New" });
       if (res.status < 500) return res;
       // Safety net: if that DB isn't shared with the integration (yet), capture the
@@ -297,6 +306,93 @@ async function handleWaitlist(request, env, cors) {
   if (social) {
     properties["Social media"] = { url: /^https?:\/\//i.test(social) ? social : `https://${social}` };
   }
+
+  try {
+    const res = await fetch("https://api.notion.com/v1/pages", {
+      method: "POST",
+      headers: { ...authHeaders(env), "Content-Type": "application/json" },
+      body: JSON.stringify({ parent: { database_id: dbId }, properties }),
+    });
+    if (!res.ok) return json({ ok: false, error: "Notion create failed", detail: await res.text() }, 502, cors);
+    return json({ ok: true }, 200, cors);
+  } catch (err) {
+    return json({ ok: false, error: "Unexpected error", detail: String(err) }, 500, cors);
+  }
+}
+
+// Super Human Accelerator application (/sh-apply, form_version "sh-apply-v2").
+// Precise field mapping — the property names and select option names below must
+// match the live "Super Human Accelerator Applications" schema exactly.
+// Deliberately does NOT write: Call time and Video watched (set later by the
+// booking webhook / player events), or any of the old form's columns.
+const SH_DEPARTMENTS = [
+  "Sales",
+  "Marketing & content",
+  "Delivery / client success",
+  "Operations & admin",
+  "Finance",
+  "Hiring & team",
+  "Not sure yet",
+];
+const SH_TRACKS = ["Six weeks", "Ten weeks", "Not sure"];
+const SH_COACHING = ["Yes", "No", "Tell me more"];
+
+async function handleSuperhumanApplication(d, env, cors) {
+  const dbId = env.NOTION_SUPERHUMAN_DATABASE_ID;
+  if (!env.NOTION_TOKEN || !dbId) {
+    return json({ ok: false, error: "Super Human application not configured" }, 500, cors);
+  }
+  if (d._gotcha) return json({ ok: true }, 200, cors);            // honeypot: silently accept bots
+
+  const firstName = String(d.first_name || "").trim();
+  const email = String(d.email || "").trim();
+  if (!firstName || !email) return json({ ok: false, error: "Missing name or email" }, 400, cors);
+  if (!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(email)) {
+    return json({ ok: false, error: "Invalid email" }, 400, cors);
+  }
+
+  const rich = (s) => {
+    const v = String(s == null ? "" : s).trim();
+    return v ? [{ text: { content: clip(v, 2000) } }] : [];
+  };
+  // Only ever write an option the database already has; an unexpected value is
+  // dropped rather than silently creating a new select option.
+  const pick = (value, allowed) => {
+    const v = String(value == null ? "" : value).trim();
+    return allowed.includes(v) ? { select: { name: v } } : null;
+  };
+  const e164 = (s) => {
+    const v = String(s || "").replace(/[\s()\-.]/g, "");
+    return /^\+[1-9]\d{7,14}$/.test(v) ? v : null;
+  };
+  const link = (s) => {
+    const v = String(s || "").trim();
+    if (!v) return null;
+    return /^https?:\/\//i.test(v) ? v : `https://${v.replace(/^\/+/, "")}`;
+  };
+
+  const properties = {
+    "Name": { title: rich(firstName) },
+    "Email": { email: email },
+    "Business": { rich_text: rich(d.business) },
+    "Outcome": { rich_text: rich(d.outcome) },
+    "Coaching focus": { rich_text: rich(d.coaching_focus) },
+    "Source": { rich_text: rich(d.source) },
+    "Status": { select: { name: "New" } },
+  };
+  // Notion rejects "" for phone_number / url, so those columns are only sent
+  // when there is a real value to send.
+  const phone = e164(d.phone);
+  if (phone) properties["Phone"] = { phone_number: phone };
+  const linkedin = link(d.linkedin);
+  if (linkedin) properties["LinkedIn"] = { url: linkedin };
+
+  const department = pick(d.department, SH_DEPARTMENTS);
+  if (department) properties["Department"] = department;
+  const track = pick(d.track, SH_TRACKS);
+  if (track) properties["Track preference"] = track;
+  const coaching = pick(d.coaching, SH_COACHING);
+  if (coaching) properties["1:1 coaching"] = coaching;
 
   try {
     const res = await fetch("https://api.notion.com/v1/pages", {
