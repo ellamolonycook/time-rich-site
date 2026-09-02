@@ -612,7 +612,7 @@
       <ol class="ladder">
         <li class="rung"><span class="rn">01</span><div><h3>Steal the free prompts</h3><p>Three revenue prompts + the BRAIN formula. Feel how we think about money.</p></div><a class="btn ghost" href="#prompts">Get the prompts →</a></li>
         <li class="rung"><span class="rn">02</span><div><h3>Come to a workshop</h3><p>Free, live, bi-weekly. Build your first agent in the room.</p></div><a class="btn ghost" href="#events">See workshops →</a></li>
-        <li class="rung featured"><span class="rn">03</span><div><h3>Join the Waitlist for the Accelerator</h3><p>Eight weeks, twelve seats. Build the working AI revenue engine for your business.</p></div><a class="btn" href="/revenue/" onclick="track('accelerator_page')">See the Accelerator &rarr;</a></li>
+        <li class="rung featured"><span class="rn">03</span><div><h3>Join the Waitlist for the Accelerator</h3><ul class="rung-tracks"><li><b>Track 1 &middot; 6 weeks</b> Build your AI operating system</li><li><b>Track 2 &middot; 10 weeks</b> Hire the humans to match</li></ul></div><a class="btn" href="https://timerich.ai/accelerator/#waitlist" onclick="track('sha_waitlist_home')">Join the waitlist &rarr;</a></li>
         <li class="rung"><span class="rn">04</span><div><h3>Go 1:1</h3><p>Custom-built with me, on your context. By application.</p></div><a class="btn ghost" href="/coaching/apply/">1:1 Coaching →</a></li>
       </ol>
     </div>
@@ -924,6 +924,11 @@ nav{background:rgba(0,0,0,.9) !important}
 .rung h3{font-family:var(--display);font-weight:600;font-size:18px;margin:0}
 .rung p{margin:4px 0 0;color:var(--muted);font-size:14.5px}
 .rung .btn{white-space:nowrap}
+/* The two Super Human tracks inside rung 03. Deliberately one line each: this
+   rung sits in a row of single-line rungs and should not tower over them. */
+.rung-tracks{list-style:none;margin:5px 0 0;padding:0;display:grid;gap:2px}
+.rung-tracks li{color:var(--muted);font-size:14.5px;line-height:1.45}
+.rung-tracks b{font-family:var(--mono);font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--lime);font-weight:700;margin-right:8px;white-space:nowrap}
 @media(max-width:720px){.rung{grid-template-columns:auto 1fr;gap:14px 16px}.rung .btn{grid-column:1/-1;justify-self:start}}
 /* minstats */
 .minstats{display:flex;gap:14px;flex-wrap:wrap;margin-top:22px}
