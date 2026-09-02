@@ -507,7 +507,22 @@ main{flex:1 0 auto;padding:38px 0 96px}
   function inputOf(el){ return el.querySelector('input:not([type=hidden]), textarea'); }
 
   // ---- Persistence ---------------------------------------------------------
+  // Every key this form owns, so clearing is one list rather than one call per
+  // key that someone can forget to add to.
+  var FORM_KEYS = [STORE_KEY];
+
+  // A captured UTM alone is not progress - it is written on every visit. Without
+  // this, an empty visit would recreate the store it had just cleared, and the
+  // next reload would restore from it.
+  function hasProgress(){
+    for (var k in answers) {
+      if (k === 'source') continue;
+      if (Object.prototype.hasOwnProperty.call(answers, k)) return true;
+    }
+    return false;
+  }
   function save(){
+    if (!hasProgress()) { clearStore(); return; }
     try{
       sessionStorage.setItem(STORE_KEY, JSON.stringify({
         answers: answers, idx: idx, linkedinSwapped: linkedinSwapped, source: answers.source || ''
@@ -522,7 +537,22 @@ main{flex:1 0 auto;padding:38px 0 96px}
       return (d && typeof d === 'object') ? d : null;
     }catch(e){ return null; }
   }
-  function clearStore(){ try{ sessionStorage.removeItem(STORE_KEY); }catch(e){} }
+  function clearStore(){
+    try{ FORM_KEYS.forEach(function(k){ sessionStorage.removeItem(k); }); }catch(e){}
+  }
+  // Everything, in one go: answers, the screen they were on, the swapped-field
+  // mode, and the stored copy of all three. Anything less and a revisit can be
+  // restored to a screen the answers no longer support.
+  function resetFormState(){
+    answers = {};
+    linkedinSwapped = false;
+    idx = 0;
+    clearStore();
+  }
+  // Drops #qN from the address bar without adding a history entry.
+  function stripHash(){
+    try{ history.replaceState({ shs: 0 }, '', location.pathname + location.search); }catch(e){}
+  }
 
   // ---- Source (UTM capture from the landing URL) ---------------------------
   function captureSource(){
@@ -840,6 +870,26 @@ main{flex:1 0 auto;padding:38px 0 96px}
   }
 
   // ---- Flow ----------------------------------------------------------------
+  // The furthest screen the current answers actually justify. A URL hash or a
+  // stored index pointing past this is stale - from a submitted application, a
+  // shared link, or the browser walking back through the history entries this
+  // form pushed - and gets clamped to here instead of being trusted.
+  function firstIncompleteIndex(){
+    for (var i = 1; i < screens.length; i++) {
+      var el = screens[i];
+      if (el.id === 's-submit') return i;                 // everything answered
+      if (el.id === 's-9b' && !(answers.coaching === 'Yes' || answers.coaching === 'Tell me more')) continue;
+      var key = keyOf(el);
+      // An optional question counts as answered once they have passed through
+      // it, which is when commit() writes the key - even as an empty string.
+      var done = OPTIONAL_KEYS.indexOf(key) > -1
+        ? Object.prototype.hasOwnProperty.call(answers, key)
+        : !!answers[key];
+      if (!done) return i;
+    }
+    return screens.length - 1;
+  }
+
   function nextIndexFrom(i){
     var el = screenAt(i);
     // Q9b only exists for "Yes" / "Tell me more".
@@ -1030,6 +1080,9 @@ main{flex:1 0 auto;padding:38px 0 96px}
     });
     var box = document.getElementById('summary');
     box.innerHTML = '';
+    // With no answers there is nothing to frame - an empty bordered panel just
+    // reads as a broken box.
+    box.hidden = !dl.children.length;
     box.appendChild(dl);
   }
 
@@ -1087,8 +1140,14 @@ main{flex:1 0 auto;padding:38px 0 96px}
       if (!res.ok) throw new Error('bad response');
       track('sh_apply_submit', { page: 'sh-apply' });
       try{ sessionStorage.setItem(THANKS_KEY, payload.first_name); }catch(e){}
-      clearStore();                       // answers gone on successful submit
-      window.location.href = THANKS_URL;  // own URL, usable as a conversion goal
+      // Wipe the lot - answers, the current screen, the swapped-field mode and
+      // the stored copy - then drop #qsubmit from the URL, so nothing is left
+      // for a revisit to restore from.
+      resetFormState();
+      stripHash();
+      // replace, not assign: the form's last history entry goes away, so Back
+      // from the thank-you page cannot land inside a submitted application.
+      window.location.replace(THANKS_URL);   // own URL, usable as a conversion goal
     }).catch(function(){
       track('sh_apply_error');
       submitting = false;
@@ -1117,21 +1176,33 @@ main{flex:1 0 auto;padding:38px 0 96px}
       if (key && answers[key]) writeScreen(el, answers[key]);
     });
   }
-  if (!answers.source) { answers.source = captureSource(); save(); }
+  // Captured on every visit, but deliberately not saved on its own - see
+  // hasProgress(). It rides along with the first real answer.
+  if (!answers.source) { answers.source = captureSource(); }
 
   var hint = document.getElementById('inappHint');
   if (hint && isInAppBrowser()) { hint.hidden = false; track('apply_inapp_browser'); }
 
-  // Where to land: the question named in the URL hash, else the one they were
-  // on before a refresh, else the intro.
+  // Where to land. Two rules, in this order:
+  //   1. No answers in this session means the intro, whatever the URL says. A
+  //      submitted application, a shared link and a fresh visit all land here.
+  //   2. With answers, take the question the URL or the store asks for, but
+  //      never further than the first one still unanswered.
   var fromHash = location.hash ? document.getElementById(location.hash.replace(/^#q/, 's-')) : null;
   var startAt = 0;
-  if (fromHash && screens.indexOf(fromHash) > 0) startAt = screens.indexOf(fromHash);
-  else if (saved && saved.idx > 0) startAt = Math.min(saved.idx, screens.length - 1);
+  if (hasProgress()) {
+    var requested = 0;
+    if (fromHash && screens.indexOf(fromHash) > 0) requested = screens.indexOf(fromHash);
+    else if (saved && saved.idx > 0) requested = Math.min(saved.idx, screens.length - 1);
+    startAt = Math.min(requested, firstIncompleteIndex());
+  }
+  if (startAt === 0) stripHash();          // a stale #qN never survives a landing
+  // If they land on the intro with answers behind them, Start picks up at the
+  // first question still unanswered rather than at the top.
+  resumeTo = hasProgress() ? firstIncompleteIndex() : 0;
 
   // Only worth saying on the intro; anywhere else they can see their own answers.
-  if (saved && saved.idx > 0) resumeTo = Math.min(saved.idx, screens.length - 1);
-  if (startAt === 0 && saved && Object.keys(answers).filter(function(k){ return k !== 'source' && answers[k]; }).length) {
+  if (startAt === 0 && hasProgress()) {
     document.getElementById('resumeNote').hidden = false;
   }
 
