@@ -94,6 +94,16 @@
   .total{margin-top:30px;font-family:var(--mono);font-size:13px;letter-spacing:.06em;color:var(--sage)}
   .total b{font-family:var(--display);font-size:22px;color:var(--pastel);letter-spacing:-.02em}
 
+  /* ---------- MOVING PHOTO STRIP ---------- */
+  .photo-band{padding:14px 0;overflow:hidden;border-top:1px solid var(--line)}
+  .photo-track{display:flex;gap:16px;width:max-content;animation:photoScroll 50s linear infinite}
+  .photo-track.rev{animation-direction:reverse}
+  .photo-band:hover .photo-track{animation-play-state:paused}
+  .photo-track img{height:320px;width:260px;object-fit:cover;border-radius:12px;display:block;flex:0 0 auto;border:1px solid var(--line)}
+  @keyframes photoScroll{from{transform:translateX(0)}to{transform:translateX(-50%)}}
+  @media (prefers-reduced-motion:reduce){.photo-track{animation:none}}
+  .photo-band.ring .photo-track img{box-shadow:0 0 0 2px rgba(103,118,46,.5)}
+
   .grid3{display:grid;gap:20px;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));margin-top:44px}
   .card{background:var(--cream-panel);border:1px solid var(--sage);padding:26px 24px;border-radius:4px}
   .card .tag{font-family:var(--mono);font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--moss);display:block;margin-bottom:12px}
@@ -262,7 +272,28 @@
     </div>
   </div>
 </section>
-
+<!-- MOVING PHOTO STRIP (top) -->
+<div class="photo-band" style="padding-top:28px;">
+  <div class="photo-track">
+    <img width="520" height="640" loading="lazy" decoding="async" src="../revenue/img/rev-03.jpg" alt="Women founders laughing in the audience at NY Tech Week" />
+    <img width="573" height="860" loading="lazy" decoding="async" src="../revenue/img/rev-04.jpg" alt="The table at the Time Rich investor dinner" />
+    <img width="520" height="640" loading="lazy" decoding="async" src="../revenue/img/rev-05.jpg" alt="A founder with the mic at NY Tech Week" />
+    <img width="520" height="640" loading="lazy" decoding="async" src="../revenue/img/rev-06.jpg" alt="Speakers on stage at the Time Rich NY Tech Week session" />
+    <img width="573" height="860" loading="lazy" decoding="async" src="../revenue/img/rev-07.jpg" alt="Members together at a Time Rich dinner" />
+    <img width="520" height="640" loading="lazy" decoding="async" src="../revenue/img/rev-08.jpg" alt="A founder speaking on the NY Tech Week panel" />
+    <img width="573" height="860" loading="lazy" decoding="async" src="../revenue/img/rev-09.jpg" alt="Dinner service at the Time Rich investor dinner" />
+    <img width="520" height="640" loading="lazy" decoding="async" src="../revenue/img/rev-10.jpg" alt="Two founders celebrating at NY Tech Week" />
+    <!-- duplicate set for seamless loop -->
+    <img width="520" height="640" loading="lazy" decoding="async" src="../revenue/img/rev-03.jpg" alt="" aria-hidden="true" />
+    <img width="573" height="860" loading="lazy" decoding="async" src="../revenue/img/rev-04.jpg" alt="" aria-hidden="true" />
+    <img width="520" height="640" loading="lazy" decoding="async" src="../revenue/img/rev-05.jpg" alt="" aria-hidden="true" />
+    <img width="520" height="640" loading="lazy" decoding="async" src="../revenue/img/rev-06.jpg" alt="" aria-hidden="true" />
+    <img width="573" height="860" loading="lazy" decoding="async" src="../revenue/img/rev-07.jpg" alt="" aria-hidden="true" />
+    <img width="520" height="640" loading="lazy" decoding="async" src="../revenue/img/rev-08.jpg" alt="" aria-hidden="true" />
+    <img width="573" height="860" loading="lazy" decoding="async" src="../revenue/img/rev-09.jpg" alt="" aria-hidden="true" />
+    <img width="520" height="640" loading="lazy" decoding="async" src="../revenue/img/rev-10.jpg" alt="" aria-hidden="true" />
+  </div>
+</div>
 <section class="band">
   <div class="wrap">
     <span class="eyebrow">At scale, online</span>
