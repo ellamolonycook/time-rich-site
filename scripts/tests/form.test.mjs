@@ -13,11 +13,18 @@ function check(name, cond, extra) {
 }
 const sleep = (ms) => new Promise(r => setTimeout(r, ms));
 
-function boot(url = 'https://timerich.ai/sh-apply/', { reducedMotion = false } = {}) {
+// A stored in-progress session, shaped exactly as the page writes it.
+const storedState = (answers, idx) =>
+  JSON.stringify({ answers, idx, linkedinSwapped: false, source: '' });
+
+function boot(url = 'https://timerich.ai/sh-apply/', { reducedMotion = false, session = null } = {}) {
   const vc = new VirtualConsole();           // swallow jsdom's "not implemented" noise
   const dom = new JSDOM(HTML, {
     url, runScripts: 'dangerously', pretendToBeVisual: true, virtualConsole: vc,
     beforeParse(w) {
+      if (session) {
+        for (const [k, v] of Object.entries(session)) w.sessionStorage.setItem(k, v);
+      }
       if (!reducedMotion) return;
       w.matchMedia = () => ({
         matches: true, media: '(prefers-reduced-motion: reduce)',
@@ -63,6 +70,17 @@ async function fillToDepartment(w) {
   type(w, '#f-business', 'A 4-person marketing agency for B2B SaaS.'); click(w, '#s-5 [data-next]');
 }
 
+// Fill the whole form and land on the submit screen, ready to send.
+async function runToSubmit({ w, d }) {
+  await fillToDepartment(w);
+  await settle();
+  d.querySelectorAll('#s-6 .opt')[3].click(); await selectAdvance();      // Operations & admin
+  type(w, '#f-outcome', 'A two-week holiday without the business falling over.');
+  click(w, '#s-7 [data-next]'); await settle();
+  d.querySelectorAll('#s-8 .opt')[1].click(); await selectAdvance();      // Ten weeks
+  d.querySelectorAll('#s-9 .opt')[1].click(); await selectAdvance();      // No -> submit
+}
+
 console.log('\nOne question at a time');
 {
   const { w, d } = boot();
@@ -92,7 +110,9 @@ console.log('\nThe page lands with motion, not a hard cut');
 
   // Resuming mid-form is a landing too: the question arrives, the intro does
   // not perform an exit it never appeared for.
-  const r = boot('https://timerich.ai/sh-apply/#q3');
+  const r = boot('https://timerich.ai/sh-apply/#q3', {
+    session: { shApplyV2: storedState({ first_name: 'Jordan', email: 'jordan@example.com' }, 3) },
+  });
   check('a resumed question arrives the same way', $(r.d, '#s-3').classList.contains('q-in-below'));
   check('the intro does not fly out behind it', !$(r.d, '#s-intro').classList.contains('is-leaving'));
   await settle();
@@ -116,6 +136,127 @@ console.log('\nThe parts of a question arrive one after another');
     q1.length >= 3 && q1.every((p, n) => p.style.getPropertyValue('--i') === String(n)));
   check('the whole block does not also translate — only its parts do',
     !$(d, '#s-1').classList.contains('q-below') && !$(d, '#s-1').classList.contains('q-above'));
+}
+
+console.log('\nRestoring is never trusted past the answers that justify it');
+{
+  // A completed submission must leave nothing behind. The bug was two-fold: the
+  // #qsubmit hash survived in history, and the boot re-created the store it had
+  // just cleared, so a revisit restored to the submit screen with no answers.
+  const url = 'https://timerich.ai/sh-apply/';
+  const first = boot(url);
+  await runToSubmit(first);
+  $(first.d, '#submitBtn').click();
+  await sleep(150);
+  check('the submission went out', first.posts.length === 1);
+  check('every form key is cleared, not just the answers',
+    first.w.sessionStorage.getItem('shApplyV2') === null, first.w.sessionStorage.getItem('shApplyV2'));
+  check('the first name is still handed to the thank-you page',
+    first.w.sessionStorage.getItem('shApplyThanks') === 'Jordan');
+  check('the #qsubmit hash is dropped from the URL', !first.w.location.hash, first.w.location.hash);
+
+  // Revisit in the same session, with the hash the old build left behind.
+  const back = boot(url + '#qsubmit');
+  await settle();
+  check('post-submit revisit lands on the intro, not the submit screen',
+    visible(back.d).join() === 's-intro', visible(back.d));
+  check('the submit screen is not on show at all', $(back.d, '#s-submit').hidden);
+  check('and its summary was never rendered', back.d.querySelectorAll('#summary dd').length === 0);
+  check('the stale hash is stripped from the address bar', !back.w.location.hash, back.w.location.hash);
+  check('and it did not recreate the store it had just cleared',
+    back.w.sessionStorage.getItem('shApplyV2') === null);
+
+  // Deep links with nothing in the session go to the intro too.
+  for (const h of ['#qsubmit', '#q7', '#q9b', '#q2']) {
+    const cold = boot(url + h);
+    await settle();
+    check('deep link ' + h + ' with an empty session -> intro', visible(cold.d).join() === 's-intro', visible(cold.d));
+  }
+}
+
+console.log('\nA partial session restores to the first unanswered question');
+{
+  const url = 'https://timerich.ai/sh-apply/';
+  const w1 = boot(url);
+  click(w1.w, '#startBtn');
+  type(w1.w, '#f-first_name', 'Jordan'); click(w1.w, '#s-1 [data-next]');
+  type(w1.w, '#f-email', 'jordan@example.com'); click(w1.w, '#s-2 [data-next]');
+  await settle();
+  const stored = w1.w.sessionStorage.getItem('shApplyV2');
+  check('two answers are stored', JSON.parse(stored).answers.email === 'jordan@example.com');
+  check('the store records the screen they were on', JSON.parse(stored).idx === 3, JSON.parse(stored).idx);
+
+  // A refresh onto the question they were on.
+  const same = boot(url + '#q3', { session: { shApplyV2: stored } });
+  await settle();
+  check('a refresh returns them to Q3', visible(same.d).join() === 's-3', visible(same.d));
+  check('their answers came back', $(same.d, '#f-email').value === 'jordan@example.com');
+
+  // A hash pointing past what they have answered is clamped back to it.
+  const far = boot(url + '#qsubmit', { session: { shApplyV2: stored } });
+  await settle();
+  check('a hash past the first unanswered question is clamped to it',
+    visible(far.d).join() === 's-3', visible(far.d));
+  check('so the submit screen is unreachable without the answers',
+    visible(far.d).join() !== 's-submit');
+  check('the clamped hash is corrected in the address bar', far.w.location.hash === '#q3', far.w.location.hash);
+
+  // Same clamp when the stored index itself is stale.
+  const stale = boot(url, { session: { shApplyV2: storedState({ first_name: 'Jordan', email: 'j@e.com' }, 9) } });
+  await settle();
+  check('a stale stored index is clamped too', visible(stale.d).join() === 's-3', visible(stale.d));
+
+  // An optional question counts as answered once they have passed through it.
+  const skipped = boot(url, { session: { shApplyV2: storedState(
+    { first_name: 'Jordan', email: 'j@e.com', phone: '+15125550114', linkedin: '' }, 5) } });
+  await settle();
+  check('a skipped optional question does not pull them backwards',
+    visible(skipped.d).join() === 's-5', visible(skipped.d));
+}
+
+console.log('\nThe honeypot is never visible, on any screen');
+{
+  const { w, d } = boot();
+  const hp = d.getElementById('f-gotcha');
+  const style = hp.getAttribute('style') || '';
+  check('it exists', !!hp);
+  check('it is parked off-screen', /left:\s*-9999px/.test(style));
+  check('it has no size', /width:\s*1px/.test(style) && /height:\s*1px/.test(style));
+  check('it is fully transparent', /opacity:\s*0/.test(style));
+  check('it is out of the tab order', hp.getAttribute('tabindex') === '-1');
+  check('it is hidden from screen readers', hp.getAttribute('aria-hidden') === 'true');
+  check('it is not inside any question screen, so no screen can reveal it',
+    !hp.closest('.screen') && hp.parentElement.id === 'applyForm');
+  check('nothing has typed into it', hp.value === '');
+
+  // Walk every screen and confirm it never becomes visible.
+  const seen = [];
+  click(w, '#startBtn'); await settle();
+  for (const step of [
+    () => { type(w, '#f-first_name', 'Jordan'); click(w, '#s-1 [data-next]'); },
+    () => { type(w, '#f-email', 'jordan@example.com'); click(w, '#s-2 [data-next]'); },
+    () => { type(w, '#f-phone', '+15125550114'); click(w, '#s-3 [data-next]'); },
+    () => { click(w, '#s-4 [data-next]'); },
+    () => { type(w, '#f-business', 'An agency.'); click(w, '#s-5 [data-next]'); },
+  ]) {
+    seen.push(hp.getAttribute('style'));
+    step();
+    await settle();
+  }
+  check('its style never changed across the screens', new Set(seen).size === 1, seen);
+  check('it is still off-screen at the end', /left:\s*-9999px/.test(hp.getAttribute('style')));
+}
+
+console.log('\nThe summary shows real answers when there are some');
+{
+  const { w, d } = boot();
+  await runToSubmit({ w, d });
+  const box = d.getElementById('summary');
+  check('the summary is shown', !box.hidden);
+  check('it is not an empty box', box.querySelectorAll('dd').length >= 4, box.querySelectorAll('dd').length);
+  check('it shows what they actually answered',
+    /Jordan/.test(box.textContent) && /jordan@example\.com/.test(box.textContent)
+    && /Operations & admin/.test(box.textContent), box.textContent);
 }
 
 console.log('\nTransitions: only transform and opacity are ever animated');
