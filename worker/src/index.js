@@ -384,8 +384,13 @@ async function handleSuperhumanApplication(d, env, cors) {
   // when there is a real value to send.
   const phone = e164(d.phone);
   if (phone) properties["Phone"] = { phone_number: phone };
+  // Q4 is optional and has two modes: a LinkedIn profile, or - for anyone who
+  // said they don't use LinkedIn - a website or Instagram link. The form sends
+  // whichever one it collected, so each lands in its own column.
   const linkedin = link(d.linkedin);
   if (linkedin) properties["LinkedIn"] = { url: linkedin };
+  const website = link(d.website);
+  if (website) properties["Website"] = { url: website };
 
   const department = pick(d.department, SH_DEPARTMENTS);
   if (department) properties["Department"] = department;

@@ -75,6 +75,15 @@ h1{font-size:clamp(30px,6vw,46px);letter-spacing:-.03em;font-weight:700}
 .slot .slot-note{font-family:var(--mono);font-size:12.5px;letter-spacing:.12em;text-transform:uppercase;color:var(--dim)}
 .slot .slot-sub{margin-top:10px;font-size:15.5px;color:var(--muted)}
 
+/* A real embed, once one of the flags is on. 16:9 for Vimeo and YouTube;
+   Spotify's player has its own fixed height and sets .embed--fixed. */
+.embed{margin-top:22px;border-radius:14px;overflow:hidden;background:var(--panel2);
+  border:1px solid var(--line);aspect-ratio:16/9}
+.embed--fixed{aspect-ratio:auto}
+.embed iframe{display:block;width:100%;height:100%;border:0}
+.embed--fixed iframe{height:352px}
+.fallback-link{display:inline-block;margin-top:12px;font-size:14.5px;color:var(--muted)}
+
 .quiet{margin-top:22px;font-size:15.5px;color:var(--dim)}
 .btn{display:inline-flex;align-items:center;justify-content:center;min-height:52px;margin-top:26px;
   font-family:var(--display);font-weight:700;font-size:16px;text-decoration:none;
@@ -106,17 +115,19 @@ h1{font-size:clamp(30px,6vw,46px);letter-spacing:-.03em;font-weight:700}
       <p class="lead" id="confirmSub">Your application is with Ella. Next step is booking your call.</p>
     </section>
 
-    <!-- ===== Block 1.5 — pre-call video (VIDEO_ENABLED) ===== -->
+    <!-- ===== Block 1.5 — pre-call video (VIDEO_ENABLED), Vimeo =====
+         Layout is Option A, confirmed: the booking below is always visible and
+         is never gated on watching this. There is deliberately no unlock state
+         anywhere in this page. -->
     <section class="block" id="videoBlock" hidden>
       <h2>Before you book</h2>
       <p>A few things worth knowing before your call with Ella. It&rsquo;s two minutes.</p>
-      <div class="slot" id="videoSlot">
-        <div class="slot-note">Video</div>
-        <p class="slot-sub">Player goes here.</p>
-      </div>
+      <div class="embed" id="videoEmbed"></div>
+      <a class="fallback-link" id="videoFallback" target="_blank" rel="noopener" hidden>Watch it on Vimeo &#8599;</a>
     </section>
 
-    <!-- ===== Block 2 — the booking (the actual conversion) ===== -->
+    <!-- ===== Block 2 — the booking (the actual conversion) =====
+         Always visible, never gated. -->
     <section class="block" id="bookingBlock">
       <h2>Book your call</h2>
       <p>Pick a time that works. It&rsquo;s 30 minutes, and you&rsquo;ll leave it knowing whether this is right for you either way.</p>
@@ -134,11 +145,8 @@ h1{font-size:clamp(30px,6vw,46px);letter-spacing:-.03em;font-weight:700}
       <div id="podcastOn" hidden>
         <h2>The Super Human podcast</h2>
         <p>Conversations with founders building the thing you&rsquo;re about to build.</p>
-        <div class="slot" id="podcastSlot">
-          <div class="slot-note">Podcast</div>
-          <p class="slot-sub">Embed goes here.</p>
-        </div>
-        <a class="btn ghost" id="podcastSubscribe" href="#">Subscribe</a>
+        <div class="embed" id="podcastEmbed"></div>
+        <a class="btn ghost" id="podcastSubscribe" href="#" target="_blank" rel="noopener" hidden>Subscribe</a>
       </div>
     </section>
 
@@ -156,38 +164,119 @@ h1{font-size:clamp(30px,6vw,46px);letter-spacing:-.03em;font-weight:700}
 (function(){
   'use strict';
 
-  // ---- Phase flags ---------------------------------------------------------
-  // Both blocks are built; switching them on is a config change here, not a
-  // markup change. Video needs the recording + a Vimeo/Wistia embed; podcast
-  // needs the first episode + the platform decision.
+  // ---- Phase flags + config ------------------------------------------------
+  // Both blocks are fully built. Switching either on is a config change here,
+  // never a markup change.
+  //
+  // VIDEO — to go live: set VIMEO_VIDEO_ID, flip VIDEO_ENABLED. That is all.
+  // Layout is Option A (confirmed): the booking sits directly below and is
+  // always visible. Nothing on this page is ever gated on watching.
   var VIDEO_ENABLED   = false;
-  var PODCAST_ENABLED = false;
+  var VIMEO_VIDEO_ID  = '';        // the numeric id from the Vimeo URL, e.g. '76979871'
+
+  // PODCAST — to go live: set the platform, the id, and the subscribe link,
+  // then flip PODCAST_ENABLED.
+  var PODCAST_ENABLED   = false;
+  var PODCAST_PLATFORM  = 'spotify';   // 'spotify' | 'youtube'
+  var PODCAST_EMBED_ID  = '';          // Spotify: the show/episode id. YouTube: the video id.
+  var PODCAST_SPOTIFY_KIND = 'episode';// 'episode' | 'show' — Spotify only, ignored for YouTube
+  var PODCAST_SUBSCRIBE_URL = '';      // optional; the button hides itself without one
 
   window.gtag = window.gtag || function(){};
   function track(name, params){ try{ if(window.gtag) window.gtag('event', name, params||{}); }catch(e){} }
+
+  // ---- Video: Vimeo --------------------------------------------------------
+  function iframe(src, title, allow){
+    var f = document.createElement('iframe');
+    f.src = src;
+    f.title = title;
+    f.loading = 'lazy';
+    f.setAttribute('allow', allow);
+    f.setAttribute('allowfullscreen', '');
+    f.setAttribute('referrerpolicy', 'strict-origin-when-cross-origin');
+    return f;
+  }
+
+  function mountVideo(){
+    if (!VIDEO_ENABLED || !VIMEO_VIDEO_ID) return false;
+    var id = encodeURIComponent(VIMEO_VIDEO_ID);
+    // Muted autoplay (browsers block it with sound), the player's own controls
+    // as the visible unmute, and Vimeo's poster frame if autoplay is refused
+    // outright — mobile Safari, data saver. dnt=1 keeps Vimeo from tracking.
+    var src = 'https://player.vimeo.com/video/' + id +
+      '?autoplay=1&muted=1&playsinline=1&title=0&byline=0&portrait=0&dnt=1';
+    var frame = iframe(src, 'Before you book — a message from Ella',
+      'autoplay; fullscreen; picture-in-picture');
+    document.getElementById('videoEmbed').appendChild(frame);
+
+    var fallback = document.getElementById('videoFallback');
+    fallback.href = 'https://vimeo.com/' + id;
+    fallback.hidden = false;
+
+    // The Player API is loaded for watch tracking. Nothing is reported anywhere
+    // yet — wiring started/finished through to the Notion record is its own
+    // piece of work, and this is the hook it will attach to.
+    var api = document.createElement('script');
+    api.src = 'https://player.vimeo.com/api/player.js';
+    api.async = true;
+    api.onload = function(){
+      if (!window.Vimeo || !window.Vimeo.Player) return;
+      try{
+        var player = new window.Vimeo.Player(frame);
+        player.on('play',  function(){ track('sh_video_started'); });
+        player.on('ended', function(){ track('sh_video_finished'); });
+      }catch(e){}
+    };
+    document.head.appendChild(api);
+    return true;
+  }
+
+  // ---- Podcast: Spotify or YouTube ----------------------------------------
+  function mountPodcast(){
+    if (!PODCAST_ENABLED || !PODCAST_EMBED_ID) return false;
+    var box = document.getElementById('podcastEmbed');
+    var id = encodeURIComponent(PODCAST_EMBED_ID);
+    var frame;
+
+    if (PODCAST_PLATFORM === 'youtube') {
+      // nocookie host: no tracking cookie until they actually press play.
+      frame = iframe('https://www.youtube-nocookie.com/embed/' + id,
+        'The Super Human podcast',
+        'accelerometer; clipboard-write; encrypted-media; picture-in-picture');
+    } else {
+      var kind = PODCAST_SPOTIFY_KIND === 'show' ? 'show' : 'episode';
+      frame = iframe('https://open.spotify.com/embed/' + kind + '/' + id,
+        'The Super Human podcast',
+        'clipboard-write; encrypted-media; fullscreen; picture-in-picture');
+      box.classList.add('embed--fixed');   // Spotify's player sets its own height
+    }
+    box.appendChild(frame);
+
+    var sub = document.getElementById('podcastSubscribe');
+    if (PODCAST_SUBSCRIBE_URL) { sub.href = PODCAST_SUBSCRIBE_URL; sub.hidden = false; }
+    return true;
+  }
+
+  // ---- Flags -> rendered state --------------------------------------------
+  var videoOn = mountVideo();
+  var podcastOn = mountPodcast();
+  document.getElementById('videoBlock').hidden = !videoOn;
+  document.getElementById('podcastOff').hidden = podcastOn;
+  document.getElementById('podcastOn').hidden  = !podcastOn;
 
   // ---- "You're in, {First name}." -----------------------------------------
   // The form stashes the first name on submit; a cold visit just drops the name.
   var first = '';
   try{ first = (sessionStorage.getItem('shApplyThanks') || '').trim(); }catch(e){}
-  if (first) {
-    document.getElementById('confirmHead').textContent = 'You’re in, ' + first + '.';
-    document.getElementById('confirmSub').textContent =
-      VIDEO_ENABLED ? 'Watch this before you book — it’s two minutes, and it’ll make the call better.'
-                    : 'Your application is with Ella. Next step is booking your call.';
-  } else if (VIDEO_ENABLED) {
+  if (first) document.getElementById('confirmHead').textContent = 'You’re in, ' + first + '.';
+  if (videoOn) {
     document.getElementById('confirmSub').textContent =
       'Watch this before you book — it’s two minutes, and it’ll make the call better.';
   }
 
-  // ---- Flags -> rendered state --------------------------------------------
-  document.getElementById('videoBlock').hidden = !VIDEO_ENABLED;
-  document.getElementById('podcastOff').hidden = PODCAST_ENABLED;
-  document.getElementById('podcastOn').hidden  = !PODCAST_ENABLED;
-
   // No focus() on the heading here: this is an ordinary page load, so the reader
   // already starts at the top, and taking focus only drew a ring round it.
-  track('sh_apply_thanks_view', { video: VIDEO_ENABLED, podcast: PODCAST_ENABLED });
+  track('sh_apply_thanks_view', { video: videoOn, podcast: podcastOn });
 })();
 </script>
 </body>

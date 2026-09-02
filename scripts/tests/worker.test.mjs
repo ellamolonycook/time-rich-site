@@ -41,6 +41,7 @@ const FULL = {
   email: 'jordan@example.com',
   phone: '+15125550114',
   linkedin: 'https://www.linkedin.com/in/jordanreyes',
+  website: '',
   business: 'A 4-person marketing agency for B2B SaaS.',
   department: 'Operations & admin',
   outcome: 'Take a two-week vacation without the business falling over.',
@@ -104,6 +105,22 @@ console.log('\n/superhuman — junk and edge values');
 
   await post('/superhuman', { ...FULL, linkedin: 'linkedin.com/in/jordan' });
   check('a scheme-less link is normalised to https', pageBody().properties.LinkedIn.url === 'https://linkedin.com/in/jordan');
+
+  // Q4 is optional and has two modes. The form sends whichever half it filled.
+  await post('/superhuman', { ...FULL, linkedin: '', website: 'jordanreyes.com' });
+  const swapped = pageBody().properties;
+  check('the "I don\'t use LinkedIn" value lands in Website', swapped.Website.url === 'https://jordanreyes.com');
+  check('and LinkedIn is left alone entirely', !('LinkedIn' in swapped));
+
+  await post('/superhuman', { ...FULL, website: '' });
+  const normal = pageBody().properties;
+  check('a LinkedIn answer does not touch Website', !('Website' in normal) && normal.LinkedIn.url.includes('linkedin.com'));
+
+  await post('/superhuman', { ...FULL, linkedin: '', website: '' });
+  const neither = pageBody().properties;
+  check('Q4 skipped entirely omits both columns',
+    !('LinkedIn' in neither) && !('Website' in neither), Object.keys(neither));
+  check('and the application is still accepted', Object.keys(neither).length === 11, Object.keys(neither).length);
 
   await post('/superhuman', { ...FULL, linkedin: '', phone: '', coaching_focus: '', source: '' });
   const p = pageBody().properties;

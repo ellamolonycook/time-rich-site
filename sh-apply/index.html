@@ -336,7 +336,7 @@ main{flex:1 0 auto;padding:38px 0 96px}
       <section class="screen" id="s-4" data-step="4" data-key="linkedin" hidden>
         <span class="q-eyebrow">Question 4</span>
         <h2 class="q-title" id="h-4" tabindex="-1"><label for="f-linkedin" id="lbl-linkedin">Your LinkedIn profile</label></h2>
-        <p class="q-help" id="help-4">Paste the link &mdash; it's how Ella prepares for your call.</p>
+        <p class="q-help" id="help-4">Optional &mdash; but it's how Ella prepares for your call.</p>
         <div class="q-field">
           <input type="url" id="f-linkedin" name="linkedin" inputmode="url" autocapitalize="off" autocorrect="off" spellcheck="false" enterkeyhint="next" placeholder="linkedin.com/in/yourname" aria-describedby="help-4 e-4" />
           <span class="q-error" id="e-4" aria-live="polite"></span>
@@ -483,6 +483,7 @@ main{flex:1 0 auto;padding:38px 0 96px}
   var THANKS_URL    = '/sh-apply/thanks/';
   var SELECT_DELAY  = 250;                // ms - lets the selection register visually
   var MIN_OUTCOME   = 15;
+  var OPTIONAL_KEYS = ['linkedin', 'coaching_focus'];   // may be left blank
 
   var form     = document.getElementById('applyForm');
   var progress = document.getElementById('progress');
@@ -806,7 +807,7 @@ main{flex:1 0 auto;padding:38px 0 96px}
       return '';
     }
     if (key === 'linkedin') {
-      if (!raw) return linkedinSwapped ? 'Please add a website or Instagram link.' : 'Please paste your LinkedIn link.';
+      if (!raw) return '';                      // optional - an empty answer advances
       var url = normaliseUrl(raw);
       var host;
       try{ host = new URL(url).hostname.toLowerCase(); }catch(e){ return 'That doesn’t look like a link — check it over?'; }
@@ -969,12 +970,12 @@ main{flex:1 0 auto;padding:38px 0 96px}
   function applyLinkedinMode(){
     if (linkedinSwapped) {
       liLabel.textContent = 'Website or Instagram';
-      liHelp.textContent = 'Anywhere Ella can get a feel for what you do.';
+      liHelp.textContent = 'Optional — anywhere Ella can get a feel for what you do.';
       liInput.placeholder = 'yourbusiness.com';
       liSwap.textContent = 'Actually, I do use LinkedIn';
     } else {
       liLabel.textContent = 'Your LinkedIn profile';
-      liHelp.textContent = 'Paste the link — it’s how Ella prepares for your call.';
+      liHelp.textContent = 'Optional — but it’s how Ella prepares for your call.';
       liInput.placeholder = 'linkedin.com/in/yourname';
       liSwap.textContent = 'I don’t use LinkedIn';
     }
@@ -1045,7 +1046,7 @@ main{flex:1 0 auto;padding:38px 0 96px}
       if (el.id === 's-9b' && !(answers.coaching === 'Yes' || answers.coaching === 'Tell me more')) continue;
       var key = keyOf(el);
       var stored = answers[key] || '';
-      if (!stored && key !== 'coaching_focus') { firstBad = i; break; }
+      if (!stored && OPTIONAL_KEYS.indexOf(key) === -1) { firstBad = i; break; }
     }
     if (firstBad > -1) {
       document.getElementById('e-submit').textContent = 'One question still needs an answer — taking you back to it.';
@@ -1058,7 +1059,10 @@ main{flex:1 0 auto;padding:38px 0 96px}
       first_name:     answers.first_name || '',
       email:          answers.email || '',
       phone:          answers.phone || '',
-      linkedin:       answers.linkedin || '',
+      // Q4 is one field with two meanings. Whichever one they used is the one
+      // that gets sent, so the worker never has to guess which column to write.
+      linkedin:       linkedinSwapped ? '' : (answers.linkedin || ''),
+      website:        linkedinSwapped ? (answers.linkedin || '') : '',
       business:       answers.business || '',
       department:     answers.department || '',
       outcome:        answers.outcome || '',

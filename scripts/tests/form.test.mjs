@@ -432,17 +432,73 @@ console.log('\nBrowser Back moves one question, it does not exit the form');
   check('history back returns to Q1', visible(d).join() === 's-1', visible(d));
 }
 
-console.log('\nThe LinkedIn escape hatch');
+console.log('\nQ4 is optional, in both of its modes');
 {
   const { w, d } = boot();
   click(w, '#startBtn');
   type(w, '#f-first_name', 'Jordan'); click(w, '#s-1 [data-next]');
   type(w, '#f-email', 'jordan@example.com'); click(w, '#s-2 [data-next]');
   type(w, '#f-phone', '+15125550114'); click(w, '#s-3 [data-next]');
+  // Empty advances — Ella made it optional.
+  click(w, '#s-4 [data-next]');
+  check('an empty LinkedIn no longer blocks the advance', visible(d).join() === 's-5', visible(d));
+  check('and it raises no error', err(d, 'e-4') === '');
+  click(w, '#s-5 [data-back]'); await sleep(40);
+
+  // But something typed is still checked, so no junk reaches Notion.
+  type(w, '#f-linkedin', 'twitter.com/jordan'); click(w, '#s-4 [data-next]');
+  check('a filled-in non-LinkedIn link is still rejected', visible(d).join() === 's-4');
+
   click(w, '#linkedinSwap');
   check('the label swaps to Website or Instagram', /Website or Instagram/.test($(d, '#lbl-linkedin').textContent));
+  check('the swapped field says it is optional too', /Optional/i.test($(d, '#help-4').textContent));
   type(w, '#f-linkedin', 'jordanreyes.com'); click(w, '#s-4 [data-next]');
-  check('a non-LinkedIn link is now accepted', visible(d).join() === 's-5');
+  check('a non-LinkedIn link is accepted once swapped', visible(d).join() === 's-5');
+}
+
+console.log('\nQ4: whichever half they filled is the half that is sent');
+{
+  // Swapped: the value travels as `website`, never as `linkedin`.
+  const { w, d, posts } = boot();
+  click(w, '#startBtn');
+  type(w, '#f-first_name', 'Jordan'); click(w, '#s-1 [data-next]');
+  type(w, '#f-email', 'jordan@example.com'); click(w, '#s-2 [data-next]');
+  type(w, '#f-phone', '+15125550114'); click(w, '#s-3 [data-next]');
+  click(w, '#linkedinSwap');
+  type(w, '#f-linkedin', 'jordanreyes.com'); click(w, '#s-4 [data-next]');
+  type(w, '#f-business', 'A 4-person marketing agency.'); click(w, '#s-5 [data-next]');
+  await settle();
+  d.querySelectorAll('#s-6 .opt')[0].click(); await selectAdvance();
+  type(w, '#f-outcome', 'A two-week holiday without the business falling over.');
+  click(w, '#s-7 [data-next]'); await settle();
+  d.querySelectorAll('#s-8 .opt')[0].click(); await selectAdvance();
+  d.querySelectorAll('#s-9 .opt')[1].click(); await selectAdvance();   // "No" -> submit
+  $(d, '#submitBtn').click();
+  await sleep(120);
+  check('the fallback value is sent as website', posts[0] && posts[0].body.website === 'https://jordanreyes.com',
+    posts[0] && posts[0].body.website);
+  check('and linkedin is left empty', posts[0] && posts[0].body.linkedin === '');
+}
+
+console.log('\nQ4: skipping it entirely still submits');
+{
+  const { w, d, posts } = boot();
+  click(w, '#startBtn');
+  type(w, '#f-first_name', 'Jordan'); click(w, '#s-1 [data-next]');
+  type(w, '#f-email', 'jordan@example.com'); click(w, '#s-2 [data-next]');
+  type(w, '#f-phone', '+15125550114'); click(w, '#s-3 [data-next]');
+  click(w, '#s-4 [data-next]');                                        // skipped outright
+  type(w, '#f-business', 'A 4-person marketing agency.'); click(w, '#s-5 [data-next]');
+  await settle();
+  d.querySelectorAll('#s-6 .opt')[0].click(); await selectAdvance();
+  type(w, '#f-outcome', 'A two-week holiday without the business falling over.');
+  click(w, '#s-7 [data-next]'); await settle();
+  d.querySelectorAll('#s-8 .opt')[0].click(); await selectAdvance();
+  d.querySelectorAll('#s-9 .opt')[1].click(); await selectAdvance();
+  $(d, '#submitBtn').click();
+  await sleep(120);
+  check('the submit is not bounced back to Q4', posts.length === 1, $(d, '#e-submit').textContent);
+  check('both halves go over empty', posts[0] && posts[0].body.linkedin === '' && posts[0].body.website === '');
 }
 
 console.log('\nOne POST at the end, with the exact payload shape');
@@ -469,13 +525,14 @@ console.log('\nOne POST at the end, with the exact payload shape');
   const b = posts[0].body;
   check('posts to /superhuman', String(posts[0].url).endsWith('/superhuman'));
   check('payload keys are exactly the agreed set',
-    Object.keys(b).sort().join() === ['_gotcha','business','coaching','coaching_focus','department','email','first_name','form_version','linkedin','outcome','phone','source','track'].sort().join(),
+    Object.keys(b).sort().join() === ['_gotcha','business','coaching','coaching_focus','department','email','first_name','form_version','linkedin','outcome','phone','source','track','website'].sort().join(),
     Object.keys(b));
   check('form_version marks the new form', b.form_version === 'sh-apply-v2');
   check('first_name', b.first_name === 'Jordan');
   check('email', b.email === 'jordan@example.com');
   check('phone kept as E.164', b.phone === '+15125550114');
   check('linkedin normalised to a full URL', b.linkedin === 'https://linkedin.com/in/jordanreyes', b.linkedin);
+  check('website is empty when they used LinkedIn', b.website === '', b.website);
   check('department is the short select value', b.department === 'Operations & admin');
   check('track is the short select value', b.track === 'Ten weeks');
   check('coaching is the short select value', b.coaching === 'Yes');
@@ -534,6 +591,42 @@ console.log('\nThe thank-you page');
     !td.querySelector('#podcastOff').hidden && /coming soon/i.test(td.querySelector('#podcastOff').textContent));
   check('podcast sits below the booking',
     thanksHtml.indexOf('id="bookingBlock"') < thanksHtml.indexOf('id="podcastBlock"'));
+
+  // Option A, confirmed: the booking is never gated on the video.
+  check('the video block sits above the booking',
+    thanksHtml.indexOf('id="videoBlock"') < thanksHtml.indexOf('id="bookingBlock"'));
+  // Option A means the booking is pure markup: no script ever touches it, so
+  // there is nothing that could disable, blur or unlock it.
+  check('no script ever touches the booking block',
+    !/getElementById\('bookingBlock'\)/.test(thanksHtml));
+  check('the booking is visible whatever the video does',
+    !td.querySelector('#bookingBlock').hidden
+    && !td.querySelector('#bookingBlock').classList.contains('locked'));
+
+  // Video: Vimeo, one id and one flag away from live.
+  check('the video is built for Vimeo', /player\.vimeo\.com\/video\//.test(thanksHtml));
+  check('there is a VIMEO_VIDEO_ID constant to fill in', /var VIMEO_VIDEO_ID\s*=\s*''/.test(thanksHtml));
+  check('it autoplays muted, since browsers block autoplay with sound',
+    /autoplay=1&muted=1/.test(thanksHtml));
+  check('the Vimeo Player API is wired for watch tracking',
+    /player\.vimeo\.com\/api\/player\.js/.test(thanksHtml) && /new window\.Vimeo\.Player/.test(thanksHtml));
+  check('a flag with no id renders nothing rather than a broken player',
+    /if \(!VIDEO_ENABLED \|\| !VIMEO_VIDEO_ID\) return false/.test(thanksHtml));
+  check('no YouTube embed for the pre-call video', !/youtube[^"]*embed[^"]*"[^>]*id="videoEmbed"/.test(thanksHtml));
+
+  // Podcast: either platform, chosen by a constant.
+  check('the podcast platform is a constant', /var PODCAST_PLATFORM\s*=\s*'(spotify|youtube)'/.test(thanksHtml));
+  check('there is a PODCAST_EMBED_ID constant to fill in', /var PODCAST_EMBED_ID\s*=\s*''/.test(thanksHtml));
+  check('it can render Spotify', /open\.spotify\.com\/embed\//.test(thanksHtml));
+  check('it can render YouTube', /youtube-nocookie\.com\/embed\//.test(thanksHtml));
+  check('the two are switched between, not both rendered',
+    /PODCAST_PLATFORM === 'youtube'/.test(thanksHtml));
+
+  // With both flags off, neither third party is contacted at all.
+  check('nothing is embedded while the flags are off', td.querySelectorAll('iframe').length === 0);
+  check('no third-party script is loaded either',
+    Array.from(td.querySelectorAll('script[src]'))
+      .every(sc => !/vimeo|spotify|youtube/i.test(sc.src)));
 
   const cold = new JSDOM(thanksHtml, { url: 'https://timerich.ai/sh-apply/thanks/', runScripts: 'dangerously', virtualConsole: vc });
   check('a cold visit still reads sensibly', cold.window.document.querySelector('#confirmHead').textContent === 'You’re in.');
