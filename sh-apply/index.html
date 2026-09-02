@@ -84,6 +84,11 @@ body{background:var(--bg);color:var(--text);font-family:var(--body);font-size:17
 h1,h2{font-family:var(--display);font-weight:600;line-height:1.1;letter-spacing:-.022em;color:var(--green-deep);text-wrap:balance;overflow-wrap:break-word}
 a{color:inherit}
 :focus-visible{outline:2px solid var(--green);outline-offset:3px;border-radius:6px}
+/* The question headings are focus targets for screen readers only: they take
+   focus as a question arrives so it gets announced, and they are not reachable
+   by Tab. A ring drawn round a heading says nothing the user can act on, so it
+   is suppressed here - every control they can actually reach still shows one. */
+.q-title[tabindex="-1"]:focus,#introHead:focus{outline:none}
 .wrap{width:100%;max-width:660px;margin:0 auto;padding:0 20px}
 .sr-only{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap;border:0}
 
@@ -658,7 +663,10 @@ main{flex:1 0 auto;padding:38px 0 96px}
         finishTransition();
         if (landed && screenAt(idx) === landed) focusScreen(landed);
       }, SETTLE_MS + 80);
-    } else {
+    } else if (!opts.instant) {
+      // Nothing takes focus on the first render: the browser already lands the
+      // reader at the top of a freshly loaded page, and moving focus to the
+      // heading only put a ring round it for no reason.
       focusScreen(el);
     }
 

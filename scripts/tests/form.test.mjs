@@ -76,6 +76,35 @@ console.log('\nOne question at a time');
   check('the input is focused', d.activeElement && d.activeElement.id === 'f-first_name', d.activeElement && d.activeElement.id);
 }
 
+console.log('\nNothing takes focus on arrival (no ring round the intro heading)');
+{
+  const { w, d } = boot();
+  check('the intro heading does not take focus on load',
+    d.activeElement !== $(d, '#introHead'), d.activeElement && d.activeElement.id);
+  check('focus is left on the document body', d.activeElement === d.body || d.activeElement === null,
+    d.activeElement && (d.activeElement.id || d.activeElement.tagName));
+  await settle();
+  check('and still has not moved a moment later', d.activeElement !== $(d, '#introHead'));
+
+  // Resuming mid-form is also a page load, not a navigation.
+  const url = 'https://timerich.ai/sh-apply/#q3';
+  const resumed = boot(url);
+  await settle();
+  check('resuming into a question does not ring its heading either',
+    resumed.d.activeElement !== $(resumed.d, '#h-3'), resumed.d.activeElement && resumed.d.activeElement.id);
+
+  // But an actual advance still moves focus, which is the point of it.
+  click(w, '#startBtn');
+  await settle();
+  check('advancing still moves focus to the field', d.activeElement.id === 'f-first_name');
+
+  const css = HTML.slice(HTML.indexOf('<style>'), HTML.indexOf('</style>'));
+  check('the heading focus ring is suppressed in CSS',
+    /\.q-title\[tabindex="-1"\]:focus[^{]*\{outline:none\}/.test(css.replace(/\s*\n\s*/g, '')));
+  const thanksHtml = fs.readFileSync(site('sh-apply/thanks/index.html'), 'utf8');
+  check('the thank-you page does not grab focus on load', !/confirmHead'\)\.focus\(\)/.test(thanksHtml));
+}
+
 console.log('\nTransitions: only transform and opacity are ever animated');
 {
   // A static read of the stylesheet — the cheapest possible guard against
