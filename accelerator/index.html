@@ -326,6 +326,7 @@ ul.checklist li:last-child{padding-bottom:0}
 /* ---------- RESPONSIVE ---------- */
 @media (max-width:880px){
   .wrap{padding:0 20px}
+  .photo-track img{height:220px;width:175px}
   section{padding:56px 0}
   .hero{padding:40px 0 44px}
   .hero-grid,.story-grid{grid-template-columns:1fr;gap:36px}
@@ -674,12 +675,10 @@ ul.checklist li:last-child{padding-bottom:0}
       <span class="eyebrow">From the people in the room</span>
       <h2>Don't take my word for it.</h2>
     </div>
-    <!-- No photo here, matching /revenue/'s equivalent section: it runs eyebrow
-         -> heading -> cards and leaves the event imagery to the moving photo
-         band further down, which this page also has. The rooftop shot that used
-         to sit here (rev-02.jpg) was a 4:5 portrait fighting a three-column
-         grid, and its .gap-photo class is only ever styled on /revenue/, so on
-         this page it rendered at its full 852x1066 intrinsic size. -->
+    <!-- No photo between the heading and the cards, matching /revenue/: it runs
+         eyebrow -> heading -> cards, and the event imagery is the moving photo
+         band immediately below this section. Same place, same markup, same
+         eight photos (rev-03 to rev-10 - revenue's band does not use rev-02). -->
     <div class="cards">
       <div class="card">
         <p class="outcome">"I came in with low expectations &mdash; I'd been to enough 'AI' events that turned out to be basic prompting demos. I was wrong within the first five minutes. This wasn't theory or hype: it was the AI stack she uses to save 20+ hours a week, broken down in a way I could actually implement. I left with the foundation for my first AI agent and a clear path forward."</p>
@@ -700,6 +699,28 @@ ul.checklist li:last-child{padding-bottom:0}
   </div>
 </section>
 
+<!-- MOVING PHOTO STRIP (top) -->
+<div class="photo-band" style="padding-top:28px;">
+  <div class="photo-track">
+    <img width="520" height="640" loading="lazy" decoding="async" src="../revenue/img/rev-03.jpg" alt="Women founders laughing in the audience at NY Tech Week" />
+    <img width="573" height="860" loading="lazy" decoding="async" src="../revenue/img/rev-04.jpg" alt="The table at the Time Rich investor dinner" />
+    <img width="520" height="640" loading="lazy" decoding="async" src="../revenue/img/rev-05.jpg" alt="A founder with the mic at NY Tech Week" />
+    <img width="520" height="640" loading="lazy" decoding="async" src="../revenue/img/rev-06.jpg" alt="Speakers on stage at the Time Rich NY Tech Week session" />
+    <img width="573" height="860" loading="lazy" decoding="async" src="../revenue/img/rev-07.jpg" alt="Members together at a Time Rich dinner" />
+    <img width="520" height="640" loading="lazy" decoding="async" src="../revenue/img/rev-08.jpg" alt="A founder speaking on the NY Tech Week panel" />
+    <img width="573" height="860" loading="lazy" decoding="async" src="../revenue/img/rev-09.jpg" alt="Dinner service at the Time Rich investor dinner" />
+    <img width="520" height="640" loading="lazy" decoding="async" src="../revenue/img/rev-10.jpg" alt="Two founders celebrating at NY Tech Week" />
+    <!-- duplicate set for seamless loop -->
+    <img width="520" height="640" loading="lazy" decoding="async" src="../revenue/img/rev-03.jpg" alt="" aria-hidden="true" />
+    <img width="573" height="860" loading="lazy" decoding="async" src="../revenue/img/rev-04.jpg" alt="" aria-hidden="true" />
+    <img width="520" height="640" loading="lazy" decoding="async" src="../revenue/img/rev-05.jpg" alt="" aria-hidden="true" />
+    <img width="520" height="640" loading="lazy" decoding="async" src="../revenue/img/rev-06.jpg" alt="" aria-hidden="true" />
+    <img width="573" height="860" loading="lazy" decoding="async" src="../revenue/img/rev-07.jpg" alt="" aria-hidden="true" />
+    <img width="520" height="640" loading="lazy" decoding="async" src="../revenue/img/rev-08.jpg" alt="" aria-hidden="true" />
+    <img width="573" height="860" loading="lazy" decoding="async" src="../revenue/img/rev-09.jpg" alt="" aria-hidden="true" />
+    <img width="520" height="640" loading="lazy" decoding="async" src="../revenue/img/rev-10.jpg" alt="" aria-hidden="true" />
+  </div>
+</div>
 <!-- ========================= 7. THE DECISION ========================= -->
 <section class="decision">
   <div class="wrap">
@@ -746,28 +767,6 @@ ul.checklist li:last-child{padding-bottom:0}
     </div>
   </div>
 </section>
-<!-- MOVING PHOTO STRIP (top) -->
-<div class="photo-band" style="padding-top:28px;">
-  <div class="photo-track">
-    <img width="520" height="640" loading="lazy" decoding="async" src="../revenue/img/rev-03.jpg" alt="Women founders laughing in the audience at NY Tech Week" />
-    <img width="573" height="860" loading="lazy" decoding="async" src="../revenue/img/rev-04.jpg" alt="The table at the Time Rich investor dinner" />
-    <img width="520" height="640" loading="lazy" decoding="async" src="../revenue/img/rev-05.jpg" alt="A founder with the mic at NY Tech Week" />
-    <img width="520" height="640" loading="lazy" decoding="async" src="../revenue/img/rev-06.jpg" alt="Speakers on stage at the Time Rich NY Tech Week session" />
-    <img width="573" height="860" loading="lazy" decoding="async" src="../revenue/img/rev-07.jpg" alt="Members together at a Time Rich dinner" />
-    <img width="520" height="640" loading="lazy" decoding="async" src="../revenue/img/rev-08.jpg" alt="A founder speaking on the NY Tech Week panel" />
-    <img width="573" height="860" loading="lazy" decoding="async" src="../revenue/img/rev-09.jpg" alt="Dinner service at the Time Rich investor dinner" />
-    <img width="520" height="640" loading="lazy" decoding="async" src="../revenue/img/rev-10.jpg" alt="Two founders celebrating at NY Tech Week" />
-    <!-- duplicate set for seamless loop -->
-    <img width="520" height="640" loading="lazy" decoding="async" src="../revenue/img/rev-03.jpg" alt="" aria-hidden="true" />
-    <img width="573" height="860" loading="lazy" decoding="async" src="../revenue/img/rev-04.jpg" alt="" aria-hidden="true" />
-    <img width="520" height="640" loading="lazy" decoding="async" src="../revenue/img/rev-05.jpg" alt="" aria-hidden="true" />
-    <img width="520" height="640" loading="lazy" decoding="async" src="../revenue/img/rev-06.jpg" alt="" aria-hidden="true" />
-    <img width="573" height="860" loading="lazy" decoding="async" src="../revenue/img/rev-07.jpg" alt="" aria-hidden="true" />
-    <img width="520" height="640" loading="lazy" decoding="async" src="../revenue/img/rev-08.jpg" alt="" aria-hidden="true" />
-    <img width="573" height="860" loading="lazy" decoding="async" src="../revenue/img/rev-09.jpg" alt="" aria-hidden="true" />
-    <img width="520" height="640" loading="lazy" decoding="async" src="../revenue/img/rev-10.jpg" alt="" aria-hidden="true" />
-  </div>
-</div>
 <!-- ======================= 9. JOIN THE WAITLIST ======================= -->
 <section class="waitlist" id="waitlist">
   <div class="wrap narrow" style="text-align:center">
