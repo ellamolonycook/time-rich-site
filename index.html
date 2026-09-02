@@ -612,7 +612,7 @@
       <ol class="ladder">
         <li class="rung"><span class="rn">01</span><div><h3>Steal the free prompts</h3><p>Three revenue prompts + the BRAIN formula. Feel how we think about money.</p></div><a class="btn ghost" href="#prompts">Get the prompts →</a></li>
         <li class="rung"><span class="rn">02</span><div><h3>Come to a workshop</h3><p>Free, live, bi-weekly. Build your first agent in the room.</p></div><a class="btn ghost" href="#events">See workshops →</a></li>
-        <li class="rung featured"><span class="rn">03</span><div><h3>Join the Waitlist for the Accelerator</h3><p>Eight weeks, twelve seats. Build the working AI revenue engine for your business.</p></div><a class="btn" href="/revenue/" onclick="track('accelerator_page')">See the Accelerator &rarr;</a></li>
+        <li class="rung featured"><span class="rn">03</span><div><h3>Join the Waitlist for the Accelerator</h3><ul class="rung-tracks"><li><b>Track 1 &middot; 6 weeks</b> Build your AI operating system</li><li><b>Track 2 &middot; 10 weeks</b> Hire the humans to match</li></ul></div><a class="btn" href="https://timerich.ai/accelerator/#waitlist" onclick="track('sha_waitlist_home')">Join the waitlist &rarr;</a></li>
         <li class="rung"><span class="rn">04</span><div><h3>Go 1:1</h3><p>Custom-built with me, on your context. By application.</p></div><a class="btn ghost" href="/coaching/apply/">1:1 Coaching →</a></li>
       </ol>
     </div>
@@ -699,13 +699,19 @@
         <h2>The reviews are in. The work works.</h2>
       </div>
     </div>
-    <div class="wall-strip" id="wallStrip">
-      <div class="card wall-card"><div class="outcome">"So much amazing information. This is so valuable."</div><div class="name">Jenni Ogden</div><div class="role">Founder &amp; CEO, Eye Q</div></div>
-      <div class="card wall-card"><div class="outcome">"Great information. Looking forward to joining the community."</div><div class="name">Kudzani Koketso</div><div class="role">Founder, Identity Cove</div></div>
-      <div class="card wall-card"><div class="outcome">"So glad to connect with others who want to lead with AI."</div><div class="name">Allison Higgins</div><div class="role">Founder, Higgins Creative Co</div></div>
-      <div class="card wall-card"><div class="outcome">"Thank you for everything. This was insanely useful."</div><div class="name">Indra Klavins</div><div class="role">Founder, People · Process · Things</div></div>
+    <div class="wall-strip">
+      <div class="wall-track">
+        <div class="card wall-card"><div class="outcome">"So much amazing information. This is so valuable."</div><div class="name">Jenni Ogden</div><div class="role">Founder &amp; CEO, Eye Q</div></div>
+        <div class="card wall-card"><div class="outcome">"Great information. Looking forward to joining the community."</div><div class="name">Kudzani Koketso</div><div class="role">Founder, Identity Cove</div></div>
+        <div class="card wall-card"><div class="outcome">"So glad to connect with others who want to lead with AI."</div><div class="name">Allison Higgins</div><div class="role">Founder, Higgins Creative Co</div></div>
+        <div class="card wall-card"><div class="outcome">"Thank you for everything. This was insanely useful."</div><div class="name">Indra Klavins</div><div class="role">Founder, People · Process · Things</div></div>
+        <!-- the same four again, so the loop has no seam -->
+        <div class="card wall-card" aria-hidden="true"><div class="outcome">"So much amazing information. This is so valuable."</div><div class="name">Jenni Ogden</div><div class="role">Founder &amp; CEO, Eye Q</div></div>
+        <div class="card wall-card" aria-hidden="true"><div class="outcome">"Great information. Looking forward to joining the community."</div><div class="name">Kudzani Koketso</div><div class="role">Founder, Identity Cove</div></div>
+        <div class="card wall-card" aria-hidden="true"><div class="outcome">"So glad to connect with others who want to lead with AI."</div><div class="name">Allison Higgins</div><div class="role">Founder, Higgins Creative Co</div></div>
+        <div class="card wall-card" aria-hidden="true"><div class="outcome">"Thank you for everything. This was insanely useful."</div><div class="name">Indra Klavins</div><div class="role">Founder, People · Process · Things</div></div>
+      </div>
     </div>
-    <p class="wall-hint">Drag or scroll to see more</p>
   </section>
 
   <!-- IN CONVERSATION (podcast wide) -->
@@ -924,6 +930,11 @@ nav{background:rgba(0,0,0,.9) !important}
 .rung h3{font-family:var(--display);font-weight:600;font-size:18px;margin:0}
 .rung p{margin:4px 0 0;color:var(--muted);font-size:14.5px}
 .rung .btn{white-space:nowrap}
+/* The two Super Human tracks inside rung 03. Deliberately one line each: this
+   rung sits in a row of single-line rungs and should not tower over them. */
+.rung-tracks{list-style:none;margin:5px 0 0;padding:0;display:grid;gap:2px}
+.rung-tracks li{color:var(--muted);font-size:14.5px;line-height:1.45}
+.rung-tracks b{font-family:var(--mono);font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--lime);font-weight:700;margin-right:8px;white-space:nowrap}
 @media(max-width:720px){.rung{grid-template-columns:auto 1fr;gap:14px 16px}.rung .btn{grid-column:1/-1;justify-self:start}}
 /* minstats */
 .minstats{display:flex;gap:14px;flex-wrap:wrap;margin-top:22px}
@@ -984,13 +995,35 @@ body{background:#000 !important}
 .gap-photo{width:100%;height:auto;border-radius:18px;border:1px solid var(--line-2);box-shadow:0 24px 60px rgba(0,0,0,.45);object-fit:contain;display:block}
 .wall{padding-top:clamp(40px,6vw,72px);padding-bottom:clamp(48px,7vw,88px)}
 .wall .section-head{margin-bottom:6px}
-.wall-strip{display:flex;gap:16px;overflow-x:auto;scroll-snap-type:x mandatory;padding:16px 24px 14px;scrollbar-width:thin;scrollbar-color:var(--line-2) transparent;cursor:grab;-webkit-overflow-scrolling:touch}
-.wall-strip.drag{cursor:grabbing;scroll-snap-type:none}
-.wall-strip::-webkit-scrollbar{height:8px}
-.wall-strip::-webkit-scrollbar-thumb{background:var(--line-2);border-radius:99px}
-.wall-strip::-webkit-scrollbar-track{background:transparent}
-.wall-card{scroll-snap-align:start;flex:0 0 clamp(258px,78vw,330px);user-select:none}
-.wall-hint{font-family:var(--mono);font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--dim);padding:0 24px;margin-top:2px}
+/* The reviews scroll themselves, the same way the photo band does elsewhere on
+   the site: full-bleed, no scrollbar, no instruction to read. The track holds
+   the four cards twice and travels exactly half its width, so the loop is
+   seamless. It pauses on hover so a quote can actually be read. */
+.wall-strip{overflow:hidden;padding:16px 0 14px}
+.wall-track{display:flex;gap:16px;width:max-content;align-items:stretch;
+  animation:wallScroll 55s linear infinite}
+.wall-strip:hover .wall-track{animation-play-state:paused}
+@keyframes wallScroll{from{transform:translateX(0)}to{transform:translateX(-50%)}}
+
+/* These cards had no chrome at all. The card look lives on ".cards .card", a
+   descendant selector, and these sit in the wall instead - so they rendered as
+   bare text on the page ground while every other card on the site got a panel.
+   Same treatment, restated for this container. */
+.wall-card{flex:0 0 clamp(258px,78vw,330px);
+  display:flex;flex-direction:column;
+  background:var(--panel);border:1px solid var(--line);border-radius:6px 18px 18px 18px;
+  padding:26px;transition:border-color .16s ease,box-shadow .16s ease}
+.wall-card:hover{border-color:rgba(103,118,46,.4);box-shadow:0 10px 30px -12px rgba(103,118,46,.12)}
+/* Quotes differ in length, so the attribution is pushed to the foot of the card
+   and every name lines up across the row instead of floating mid-card. */
+.wall-card .name{margin-top:auto;padding-top:18px}
+
+@media (prefers-reduced-motion:reduce){
+  /* No travel. The strip becomes scrollable by hand instead, so the cards that
+     do not fit are still reachable. */
+  .wall-track{animation:none}
+  .wall-strip{overflow-x:auto}
+}
 .scrollprog{position:fixed;top:0;left:0;height:3px;width:0;background:var(--lime);z-index:200;box-shadow:0 0 12px rgba(103,118,46,.6);transition:width .08s linear}
 .nav-links a:not(.btn){position:relative}
 .nav-links a:not(.btn)::after{content:"";position:absolute;left:0;right:0;bottom:-3px;height:1.5px;background:var(--lime);transform:scaleX(0);transform-origin:left;transition:transform .2s ease}
@@ -1242,7 +1275,6 @@ footer .brand-word{color:var(--cream)}
 /* testimonial cards + the workshop wall */
 .card.q-feature .outcome u{text-decoration-color:var(--pop);text-underline-offset:3px}
 .q-punch{color:var(--lime)}
-.wall-hint{color:var(--dim)}
 
 /* founder bio + pull quotes */
 .sit{color:var(--green-deep)}
@@ -1337,7 +1369,6 @@ footer .brand-word{color:var(--cream)}
   .card .name,.card .role{font-size:13px;letter-spacing:.05em}
   .protip .label,.wa-sub,.t-fine{font-size:13px;letter-spacing:.08em}
   .podcast-figure figcaption{font-size:13px}
-  .wall-hint{font-size:13px;letter-spacing:.06em}
   .ov-tag{font-size:13px;letter-spacing:.09em}
   .foot-col h4{font-size:13px;letter-spacing:.1em}
   .bio-social a.pill,.bio-social .pill{font-size:14px}
@@ -1989,13 +2020,6 @@ footer .brand-word{color:var(--cream)}
 (function(){
   var sp=document.getElementById('scrollprog');
   if(sp){var upd=function(){var st=document.documentElement.scrollTop||document.body.scrollTop;var hh=document.documentElement.scrollHeight-document.documentElement.clientHeight;sp.style.width=(hh>0?(st/hh*100):0)+'%';};window.addEventListener('scroll',upd,{passive:true});window.addEventListener('resize',upd);upd();}
-  var strip=document.getElementById('wallStrip');
-  if(strip){var down=false,sx=0,sl=0;
-    strip.addEventListener('mousedown',function(e){down=true;strip.classList.add('drag');sx=e.pageX;sl=strip.scrollLeft;});
-    window.addEventListener('mouseup',function(){down=false;strip.classList.remove('drag');});
-    strip.addEventListener('mouseleave',function(){down=false;strip.classList.remove('drag');});
-    strip.addEventListener('mousemove',function(e){if(!down)return;e.preventDefault();strip.scrollLeft=sl-(e.pageX-sx);});
-  }
 })();
 </script>
 
