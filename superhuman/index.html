@@ -64,7 +64,7 @@
 }
 
 *{box-sizing:border-box}
-html{-webkit-text-size-adjust:100%}
+html{-webkit-text-size-adjust:100%;scroll-padding-top:70px}
 body{margin:0;background:var(--void);color:var(--fg);font-family:var(--body);line-height:1.6;font-size:16px;-webkit-font-smoothing:antialiased}
 a{color:var(--accent);text-underline-offset:3px}
 .wrap{max-width:940px;margin:0 auto;padding:0 26px}
@@ -74,12 +74,32 @@ a{color:var(--accent);text-underline-offset:3px}
 .eyebrow::before{content:"\203A";color:var(--lime-ink);font-weight:700}
 
 .back{font-family:var(--mono);font-size:11.5px;letter-spacing:.08em;text-transform:uppercase;
-  color:var(--dim);text-decoration:none;display:inline-block;padding:26px 0 0}
+  color:var(--dim);text-decoration:none;display:inline-block}
 .back:hover{color:var(--accent)}
 
-header.hero{padding:14px 0 46px;text-align:center}
-header.hero h1{font-size:clamp(32px,5.4vw,54px);margin:0 0 18px}
-header.hero .sub{max-width:56ch;margin:0 auto;color:var(--muted);font-size:17px}
+/* ---- STICKY HEADER ----------------------------------------------------
+   Three columns: the way back on the left, the page title in the middle, the
+   cohort tag on the right. The outer columns are both 1fr, so the title sits
+   centred on the bar rather than centred on whatever space is left over.
+   Translucent sage over a blur, so the page reads as passing underneath. */
+.topbar{position:sticky;top:0;z-index:50;background:rgba(220,222,191,.92);
+  -webkit-backdrop-filter:blur(10px);backdrop-filter:blur(10px);
+  border-bottom:1px solid var(--line)}
+.topbar-inner{display:grid;grid-template-columns:1fr auto 1fr;align-items:center;
+  gap:18px;min-height:58px}
+.topbar .back{justify-self:start}
+.topbar h1{justify-self:center;margin:0;font-size:clamp(14px,2.2vw,20px);
+  white-space:nowrap;line-height:1}
+.topbar .eyebrow{justify-self:end;margin:0}
+@media (max-width:720px){
+  /* The cohort tag goes first: the title and the way back both have to survive
+     on a phone. The empty third column keeps the title centred. */
+  .topbar .eyebrow{display:none}
+  .topbar-inner{gap:12px;min-height:52px}
+}
+
+.hero{padding:34px 0 46px;text-align:center}
+.hero .sub{max-width:56ch;margin:0 auto;color:var(--muted);font-size:17px}
 .datebar{font-family:var(--mono);font-size:12px;letter-spacing:.09em;text-transform:uppercase;
   color:var(--dim);margin-top:22px;border-top:1px solid var(--line);padding-top:18px;display:inline-block}
 .datebar b{color:var(--fg);font-weight:600}
@@ -144,15 +164,19 @@ footer a:hover{color:var(--accent)}
 </style>
 </head>
 <body>
-<div class="wrap">
-  <a class="back" href="/">&larr; Time Rich</a>
-
-  <header class="hero">
-    <span class="eyebrow">Founding cohort</span>
+<header class="topbar">
+  <div class="wrap topbar-inner">
+    <a class="back" href="/">&larr; Time Rich</a>
     <h1 class="display">Super Human Accelerator</h1>
+    <span class="eyebrow">Founding cohort</span>
+  </div>
+</header>
+
+<div class="wrap">
+  <div class="hero">
     <p class="sub">An AI operating system for one department of your business, and the repeatable process that turns everyone you bring in after this into someone who arrives already able to do the job.</p>
     <div class="datebar">Starts <b>Thursday 1 October</b> &nbsp;·&nbsp; Two tracks &nbsp;·&nbsp; Founding member pricing</div>
-  </header>
+  </div>
 
   <div class="tracks">
 
