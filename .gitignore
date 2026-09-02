@@ -17,3 +17,9 @@ __pycache__/
 PRD-LANDING-PAGE-AND-BRAND.md
 voice.md
 time-rich-context.md
+
+# Wrangler local cache/state — machine-specific, never belongs in the repo.
+worker/.wrangler/
+
+# Node dependencies for scripts/tests — installed locally, never published.
+node_modules/
