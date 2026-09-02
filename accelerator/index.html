@@ -152,6 +152,10 @@ nav{background:rgba(255,252,235,.93);-webkit-backdrop-filter:blur(10px);backdrop
 .t-tag{font-family:var(--mono);font-size:11px;letter-spacing:.16em;text-transform:uppercase;color:var(--lime);display:block;margin-bottom:14px}
 .tier h3{font-size:clamp(21px,2.5vw,28px)}
 .tier .t-body{color:var(--muted);font-size:16px;margin-top:12px}
+/* A straight-talking aside under a tier's list. Same left-rule treatment as
+   .why-app, sized down to sit inside a card. */
+.tier .t-note{margin-top:22px;padding:16px 18px;border-left:2px solid var(--lime);background:var(--cream);
+  border-radius:0 10px 10px 0;color:var(--muted);font-size:14.5px;line-height:1.6}
 ul.t-list{list-style:none;margin:22px 0 0;padding:20px 0 0;border-top:1px solid var(--line)}
 ul.t-list li{position:relative;padding:0 0 11px 22px;font-size:15.5px;color:var(--muted);line-height:1.55}
 ul.t-list li::before{content:"";position:absolute;left:0;top:10px;width:7px;height:7px;border-radius:50%;background:var(--lime)}
@@ -398,7 +402,7 @@ ul.checklist li:last-child{padding-bottom:0}
       <span class="eyebrow">Time Rich &middot; Super Human Accelerator &middot; 6 or 10 weeks &middot; Founding cohort</span>
       <h1>What if your workflow could keep working <span class="hl">without you</span>?<span class="h-rest">Track 1 is six weeks: build your AI operating system. Track 2 is ten weeks: do that, then recruit and onboard AI-trained employees into it. Either way you're building a system that takes you from burned-out business owner to superhuman badass with more free time.</span></h1>
       <br>
-      <p><strong>Most AI training teaches you to automate admin. This one is measured on revenue.</strong></p>
+      <p><strong>Most AI training teaches you to automate admin. This one is measured on revenue.</strong> Admin is the easy part &mdash; we do it in week one and move on. The question this programme answers is the one nobody asks: how much did your revenue grow because you implemented AI?</p>
       <div class="hero-cta">
         <a class="btn" href="#waitlist" onclick="track('waitlist_hero')">Join the waitlist</a>
       </div>
@@ -459,17 +463,27 @@ ul.checklist li:last-child{padding-bottom:0}
           <li>Five AI employees doing useful, real work</li>
           <li>A QA process that catches things before they reach you</li>
           <li>A system you fully own</li>
+          <li>One shared memory your AI models all read from, so you never start from scratch again</li>
+          <li>Your org chart, drawn &mdash; who does what, human and agent, on one page you can actually see</li>
+          <li>Notion templates for the whole thing, so you're not buying software to fix a process problem</li>
         </ul>
+        <p class="t-note">Straight answer on the five: they won't be perfect in six weeks. Nobody's are, and anyone promising that is selling you something. What you'll have is the bone structure &mdash; five agents doing real work, and the method to keep training them. That's the part that compounds.</p>
       </div>
       <div class="tier">
         <span class="t-tag">Track 2 &middot; 10 weeks</span>
         <h3>Hire the humans to match</h3>
         <p class="t-body">Everything in Track 1 + the people.</p>
+        <p class="t-body">You don't need to hire anyone new to start this. If you already have one intern, that's the person we make superhuman.</p>
         <ul class="t-list">
           <li>A role brief for the humans working next to your AI employees</li>
           <li>Outreach, screening, selection &mdash; done properly, not on vibes</li>
           <li>Onboarding that doesn't eat your first month</li>
           <li>A pipeline you run again, not a one-time scramble</li>
+          <li>Four extra weeks to build the muscle: how to be an AI-powered leader, not just an AI user</li>
+          <li>How to train the people you already have, so one person can hold what used to be four roles</li>
+          <li>Your team trains the AI, and the AI trains the next person you hire</li>
+          <li>Screen-recorded SOPs, so your agents learn by watching the work actually get done</li>
+          <li>The terminology to teach them &mdash; the same words that get them hired at four times the rate later</li>
         </ul>
       </div>
     </div>
@@ -491,6 +505,16 @@ ul.checklist li:last-child{padding-bottom:0}
       <div class="m-io">MORE<br>FREE TIME</div>
     </div>
     <p class="m-cap">Track 1 builds the system. Track 2 puts people inside it.</p>
+  </div>
+</section>
+
+<!-- ===================== 3a. NOT A COURSE YOU WATCH ===================== -->
+<section class="livebuild">
+  <div class="wrap narrow">
+    <span class="eyebrow">Not a course you watch</span>
+    <h2>You bring the problem. We build the flow live.</h2>
+    <p class="lead" style="margin-top:18px">Every week there's live coaching, and it works one way: you bring your biggest bottleneck and we map it on the call. What the flow should look like, which part the AI takes, which part stays human, and exactly what you hand to your assistant or your intern to go and set up.</p>
+    <p class="accel-quote">You leave with a system, not notes.</p>
   </div>
 </section>
 
@@ -631,6 +655,18 @@ ul.checklist li:last-child{padding-bottom:0}
   </div>
 </section>
 
+<!-- ============ 5a. IF YOU DON'T LEARN IT, SOMEONE ELSE WILL ============ -->
+<section class="ownit">
+  <div class="wrap narrow">
+    <span class="eyebrow">The part people don't say out loud</span>
+    <h2>If you don't learn it, someone in your business will</h2>
+    <div style="margin-top:22px">
+      <p>Here's what happens when a business owner sits this one out. Your intern learns the system. Your intern gets good at the system. Your intern leaves, gets hired somewhere on the back of it, and the whole thing walks out with them &mdash; because it was never yours.</p>
+      <p>That's the real argument for owning it. Not the tools. The control. You hold the playbook, you hold the context, and the next person you bring in inherits it on day one instead of rebuilding it.</p>
+    </div>
+  </div>
+</section>
+
 <!-- ======================== 6. TESTIMONIALS ======================== -->
 <section class="room">
   <div class="wrap">
@@ -638,9 +674,12 @@ ul.checklist li:last-child{padding-bottom:0}
       <span class="eyebrow">From the people in the room</span>
       <h2>Don't take my word for it.</h2>
     </div>
-    <div>
-      <img width="852" height="1066" loading="lazy" decoding="async" class="gap-photo" src="../revenue/img/rev-02.jpg" alt="Time Rich members at a rooftop event in New York" />
-    </div>
+    <!-- No photo here, matching /revenue/'s equivalent section: it runs eyebrow
+         -> heading -> cards and leaves the event imagery to the moving photo
+         band further down, which this page also has. The rooftop shot that used
+         to sit here (rev-02.jpg) was a 4:5 portrait fighting a three-column
+         grid, and its .gap-photo class is only ever styled on /revenue/, so on
+         this page it rendered at its full 852x1066 intrinsic size. -->
     <div class="cards">
       <div class="card">
         <p class="outcome">"I came in with low expectations &mdash; I'd been to enough 'AI' events that turned out to be basic prompting demos. I was wrong within the first five minutes. This wasn't theory or hype: it was the AI stack she uses to save 20+ hours a week, broken down in a way I could actually implement. I left with the foundation for my first AI agent and a clear path forward."</p>
@@ -677,6 +716,8 @@ ul.checklist li:last-child{padding-bottom:0}
           <li>You've got real, repeatable work you're ready to hand off</li>
           <li>You want people and AI working side by side, not one replacing the other</li>
           <li>You want to own the system, not depend on someone else to run it</li>
+          <li>You already have one or two people helping you and you know you're underusing them</li>
+          <li>You're doing this alongside a full-time job, so it only works if the system does</li>
         </ul>
       </div>
       <div class="fit not">
@@ -684,6 +725,8 @@ ul.checklist li:last-child{padding-bottom:0}
         <ul>
           <li>You want it done for you, not with you</li>
           <li>You want more tools, not a different way of working</li>
+          <li>You'd rather keep paying an agency $4k a month for something you should own</li>
+          <li>You want it to be easy. If you want to, you will &mdash; that's the mindset this room runs on</li>
         </ul>
       </div>
     </div>
@@ -792,6 +835,22 @@ ul.checklist li:last-child{padding-bottom:0}
       <details class="faq-item">
         <summary><h3>Is half this programme really about managing people?</h3></summary>
         <div class="faq-a"><p>Yes. Clear context, set expectations, a real feedback process that works whether you're briefing an agent or a person. It's what stops everything landing back on your desk.</p></div>
+      </details>
+      <details class="faq-item">
+        <summary><h3>Which AI do I have to use?</h3></summary>
+        <div class="faq-a"><p>Whichever one you'll actually open. I'm not building this around one tech stack &mdash; ChatGPT, Claude, Perplexity, or something that lives in your text messages. Each model has a different superpower and we'll match it to what your business does. What you won't do is start over every time you switch.</p></div>
+      </details>
+      <details class="faq-item">
+        <summary><h3>I've been using ChatGPT for two years. Do I lose all of that?</h3></summary>
+        <div class="faq-a"><p>No, and this is the bit most people get wrong. All of that memory is an asset. We move it into a shared system your other models can read too, so the quality doesn't drop the moment you use a different tool.</p></div>
+      </details>
+      <details class="faq-item">
+        <summary><h3>Do I need to hire people to do Track 2?</h3></summary>
+        <div class="faq-a"><p>No. If you already have one intern or one assistant, that's who we make superhuman. Track 2 is as much about the people you have as the ones you haven't met yet.</p></div>
+      </details>
+      <details class="faq-item">
+        <summary><h3>I have a full-time job. Can I still do this?</h3></summary>
+        <div class="faq-a"><p>Yes &mdash; some of the best people in this cohort are building alongside something else. That's the whole point of a system: it has to hold when your week doesn't.</p></div>
       </details>
       <details class="faq-item">
         <summary><h3>What does it cost?</h3></summary>
