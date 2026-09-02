@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+<title>Page not found | Time Rich</title>
+<link rel="icon" href="/favicon.ico" sizes="any" />
+<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32.png" />
+<link rel="icon" type="image/png" sizes="16x16" href="/favicon-16.png" />
+<link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
+<meta name="description" content="That page isn't here. Here's where to go instead." />
+<!-- An error page should never be indexed, and never be the thing Google shows
+     for a real query. -->
+<meta name="robots" content="noindex, nofollow" />
+<meta name="theme-color" content="#DCDEBF" />
+
+<!-- The brand faces, already shared by the /sh-apply pages. Every face is
+     font-display:swap, so the copy paints immediately in the fallback stack and
+     this never delays an error page. -->
+<link rel="stylesheet" href="/sh-apply/fonts.css" />
+<style>
+/* =========================================================================
+   404 - same visual system as the rest of timerich.ai: sage ground, cream
+   card, deep green ink, lime accent.
+
+   Cream card on a sage ground rather than the other way round, because the
+   brand lime (#67762E) only clears WCAG AA on cream - 4.84:1 there against
+   3.62:1 on sage. Every text pairing here is checked; see the commit.
+   ========================================================================= */
+:root{
+  --cream:#FFFCEB;
+  --sage:#DCDEBF;
+  --sage-lt:#E9EAD5;
+  --green:#424B36;
+  --green-deep:#333A28;
+  --pop:#CCEEA0;
+
+  --bg:#DCDEBF;
+  --card:#FFFCEB;
+  --panel:#E9EAD5;
+  --line:rgba(66,75,54,.20);
+  --line-2:rgba(66,75,54,.34);
+  --text:#424B36;
+  --muted:#5B6449;
+  --lime:#67762E;        /* on cream: 4.84:1 */
+  --lime-deep:#5C6929;   /* on the panel rows, where #67762E only reaches 4.09:1 */
+
+  --display:'Space Grotesk',system-ui,-apple-system,'Segoe UI',sans-serif;
+  --mono:'Archivo',-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;
+  --body:'Inter',-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;
+}
+*{margin:0;padding:0;box-sizing:border-box}
+html{-webkit-text-size-adjust:100%;text-size-adjust:100%}
+html,body{max-width:100%;overflow-x:clip}
+body{background:var(--bg);color:var(--text);font-family:var(--body);font-size:17px;line-height:1.6;
+  -webkit-font-smoothing:antialiased;min-height:100vh;display:flex;flex-direction:column}
+::selection{background:var(--pop);color:var(--green-deep)}
+h1{font-family:var(--display);font-weight:700;line-height:1.06;letter-spacing:-.03em;
+  color:var(--green-deep);text-wrap:balance}
+a{color:inherit}
+:focus-visible{outline:2px solid var(--green);outline-offset:3px;border-radius:8px}
+
+/* The faint grid from the accelerator hero, so the ground is not a flat wash.
+   Pure gradients, masked to fade out - no image request on an error page. */
+.stage{flex:1 0 auto;display:flex;align-items:center;justify-content:center;
+  padding:56px 20px;position:relative}
+.gridbg{position:absolute;inset:0;z-index:0;pointer-events:none;
+  background-image:linear-gradient(var(--line) 1px,transparent 1px),
+                   linear-gradient(90deg,var(--line) 1px,transparent 1px);
+  background-size:52px 52px;opacity:.5;
+  -webkit-mask-image:radial-gradient(120% 80% at 50% 0%,#000 20%,transparent 75%);
+  mask-image:radial-gradient(120% 80% at 50% 0%,#000 20%,transparent 75%)}
+
+.card{position:relative;z-index:1;width:100%;max-width:620px;background:var(--card);
+  border:1px solid var(--line);border-radius:6px 22px 22px 22px;
+  padding:clamp(28px,5vw,48px);box-shadow:0 26px 60px -34px rgba(66,75,54,.5)}
+
+.eyebrow{font-family:var(--mono);font-size:12px;letter-spacing:.18em;text-transform:uppercase;
+  color:var(--lime);display:inline-flex;align-items:center;gap:9px;margin-bottom:16px}
+.eyebrow::before{content:"";width:7px;height:7px;border-radius:50%;background:var(--pop);
+  box-shadow:0 0 0 3px rgba(204,238,160,.35)}
+h1{font-size:clamp(28px,5.2vw,42px)}
+.lead{margin-top:14px;color:var(--muted);font-size:17px;max-width:46ch}
+
+/* The address they actually asked for. Hidden until the script fills it in, so
+   it never shows as an empty box. */
+.path{margin-top:18px;font-family:var(--mono);font-size:13px;letter-spacing:.02em;
+  color:var(--muted);background:var(--panel);border:1px solid var(--line);
+  border-radius:8px;padding:11px 14px;overflow-wrap:anywhere}
+.path[hidden]{display:none}
+.path b{color:var(--green-deep);font-weight:600}
+
+.links{margin-top:28px;display:grid;gap:10px;border-top:1px solid var(--line);padding-top:24px}
+.link{display:grid;grid-template-columns:1fr auto;align-items:center;gap:16px;
+  background:var(--panel);border:1px solid var(--line);border-radius:12px;
+  padding:15px 18px;text-decoration:none;min-height:44px;
+  transition:border-color .16s ease,transform .16s ease,box-shadow .16s ease}
+.link:hover{border-color:var(--line-2);transform:translateY(-2px);
+  box-shadow:0 12px 28px -18px rgba(66,75,54,.5)}
+.link .t{font-family:var(--display);font-weight:600;font-size:16px;color:var(--green-deep)}
+.link .d{display:block;margin-top:2px;font-size:14px;color:var(--muted);font-family:var(--body);font-weight:400;letter-spacing:0}
+.link .go{font-family:var(--mono);font-size:15px;color:var(--lime-deep)}
+
+.btn{display:inline-flex;align-items:center;justify-content:center;min-height:52px;margin-top:26px;
+  font-family:var(--display);font-weight:700;font-size:16px;text-decoration:none;
+  padding:14px 30px;border-radius:10px;background:var(--green);color:var(--cream);border:none;
+  transition:transform .12s ease,box-shadow .12s ease}
+.btn:hover{transform:translateY(-2px);box-shadow:0 12px 30px -12px rgba(66,75,54,.55)}
+
+.foot{flex:0 0 auto;text-align:center;padding:0 20px 30px;font-size:13.5px;color:var(--muted)}
+.foot a{text-decoration:none;border-bottom:1px solid var(--line-2)}
+.foot a:hover{color:var(--green-deep)}
+
+@media (prefers-reduced-motion:reduce){
+  .link,.btn{transition:none}
+  .link:hover,.btn:hover{transform:none}
+}
+</style>
+</head>
+<body>
+
+<main class="stage">
+  <div class="gridbg" aria-hidden="true"></div>
+
+  <section class="card">
+    <span class="eyebrow">Error 404</span>
+    <h1>This page has gone Time Rich.</h1>
+    <p class="lead">It clocked off, moved, or was never here in the first place. Nothing lives at this address:</p>
+
+    <p class="path" id="badPath" hidden></p>
+
+    <div class="links">
+      <a class="link" href="/revenue/">
+        <span class="t">The AI Revenue Accelerator<span class="d">Seven weeks, twelve seats, one working revenue engine.</span></span>
+        <span class="go" aria-hidden="true">&rarr;</span>
+      </a>
+      <a class="link" href="/superhuman/">
+        <span class="t">The Super Human Accelerator<span class="d">Build your AI operating system, then hire the humans to match.</span></span>
+        <span class="go" aria-hidden="true">&rarr;</span>
+      </a>
+      <a class="link" href="/#prompts">
+        <span class="t">Free revenue prompts<span class="d">Three prompts and the BRAIN formula, no charge.</span></span>
+        <span class="go" aria-hidden="true">&rarr;</span>
+      </a>
+      <a class="link" href="/coaching/apply/">
+        <span class="t">1:1 coaching<span class="d">Built with you, on your context. By application.</span></span>
+        <span class="go" aria-hidden="true">&rarr;</span>
+      </a>
+    </div>
+
+    <a class="btn" href="/">Back to timerich.ai</a>
+  </section>
+</main>
+
+<footer class="foot">
+  Think this should exist? <a href="https://www.instagram.com/timerichtalk" target="_blank" rel="noopener">Tell me on Instagram</a>.
+</footer>
+
+<script>
+  /* Show the address that missed, so it is obvious this is a wrong link rather
+     than a broken site. Filled in by script, so it is never an empty box. */
+  (function(){
+    var el = document.getElementById('badPath');
+    if (!el) return;
+    try {
+      var p = (location.pathname || '/') + (location.search || '');
+      el.innerHTML = 'timerich.ai<b></b>';
+      el.querySelector('b').textContent = p;
+      el.hidden = false;
+    } catch (e) {}
+
+    /* The site's analytics shim, so a 404 is countable like any other page. */
+    try {
+      if (window.gtag) window.gtag('event', 'page_not_found', { path: location.pathname });
+    } catch (e) {}
+  })();
+</script>
+</body>
+</html>
