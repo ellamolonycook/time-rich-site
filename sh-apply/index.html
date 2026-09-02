@@ -30,6 +30,23 @@
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/intl-tel-input@18.2.1/build/css/intlTelInput.css" />
 <style>
 /* =========================================================================
+   QUESTION TRANSITION - TUNING CONSTANTS
+   The whole feel of the form lives in these five values. Tune here; the script
+   reads the same custom properties at boot, so its cleanup and focus timings
+   can never drift out of step with the CSS.
+
+   Smaller travel over a shorter duration reads smoother than the reverse -
+   24px/160ms beats 40px/190ms noticeably on a mid-range phone.
+   ========================================================================= */
+:root{
+  --q-travel: 24px;    /* how far a question slides */
+  --q-exit:  160ms;    /* outgoing question */
+  --q-enter: 180ms;    /* incoming question */
+  --q-offset: 40ms;    /* how long into the exit the enter starts (the overlap) */
+  --q-ease: cubic-bezier(.22,1,.36,1);
+}
+
+/* =========================================================================
    Super Human Accelerator application - same visual system as /accelerator/
    (cream ground, deep green ink, lime pop; Space Grotesk display, Inter body)
    ========================================================================= */
@@ -57,7 +74,10 @@
   --body:'Inter',-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;
 }
 *{margin:0;padding:0;box-sizing:border-box}
-html{-webkit-text-size-adjust:100%;text-size-adjust:100%}
+/* The stage's height changes as questions of different heights swap in. Reserving
+   the scrollbar gutter means that never toggles a scrollbar on and off, which
+   would change the viewport width and reflow + repaint the whole page mid-slide. */
+html{-webkit-text-size-adjust:100%;text-size-adjust:100%;scrollbar-gutter:stable}
 html,body{max-width:100%;overflow-x:clip}
 body{background:var(--bg);color:var(--text);font-family:var(--body);font-size:17px;line-height:1.6;-webkit-font-smoothing:antialiased;min-height:100vh;display:flex;flex-direction:column}
 ::selection{background:var(--pop);color:var(--green-deep)}
@@ -75,7 +95,10 @@ a{color:inherit}
 .progress{display:flex;align-items:center;gap:12px;min-width:0}
 .progress[hidden]{display:none}
 .bar{width:104px;height:5px;border-radius:99px;background:var(--panel);overflow:hidden}
-.bar-fill{height:100%;width:0;border-radius:99px;background:var(--green);transition:width .22s ease}
+/* scaleX, not width: this bar advances at the same moment a question is sliding,
+   and a width transition would force layout on every frame of it. */
+.bar-fill{height:100%;width:100%;border-radius:99px;background:var(--green);
+  transform:scaleX(0);transform-origin:left center;transition:transform .22s ease}
 .progress-label{font-family:var(--mono);font-size:12px;letter-spacing:.14em;text-transform:uppercase;color:var(--dim);white-space:nowrap}
 
 /* ---------- STAGE ----------
@@ -88,31 +111,44 @@ main{flex:1 0 auto;padding:38px 0 96px}
 /* ---------- QUESTION TRANSITIONS ----------
    One continuous upward flow going forward, downward coming back: the outgoing
    question keeps moving in the direction of travel while the incoming one
-   arrives from the opposite edge. The enter starts 45ms into the 190ms exit, so
-   the two overlap for most of the exit and read as a single movement rather
-   than exit-then-enter. End to end: 45 + 200 = 245ms.
+   arrives from the opposite edge, starting --q-offset into the exit so the two
+   overlap and read as a single movement rather than exit-then-enter.
 
-   The outgoing question is taken out of flow (.is-leaving) for the duration, so
-   the form's height is always the incoming question's height and nothing below
-   the stage moves. */
+   Compositor rules, strictly:
+   - transform and opacity only. Nothing here touches width, height, top or
+     margin, so no frame of this animation can trigger layout.
+   - will-change is applied a frame BEFORE the flip (.q-will) and removed the
+     moment it settles, so a question that is just sitting there is not holding
+     a promoted layer for the life of the page.
+   - the outgoing question is taken out of flow, so the stage's height is always
+     the incoming question's height and nothing below it moves. */
 #applyForm{position:relative}
 .screen[hidden]{display:none}
 .screen.is-leaving{position:absolute;top:0;left:0;right:0;pointer-events:none}
 
-@keyframes qOutUp   {from{opacity:1;transform:none}              to{opacity:0;transform:translateY(-40px)}}
-@keyframes qInUp    {from{opacity:0;transform:translateY(40px)}  to{opacity:1;transform:none}}
-@keyframes qOutDown {from{opacity:1;transform:none}              to{opacity:0;transform:translateY(40px)}}
-@keyframes qInDown  {from{opacity:0;transform:translateY(-40px)} to{opacity:1;transform:none}}
+/* Promoted to its own layer only while it actually moves. */
+.screen.q-will{will-change:transform,opacity}
 
-.screen.leave-up,.screen.leave-down,.screen.enter-up,.screen.enter-down{will-change:transform,opacity}
-.screen.leave-up  {animation:qOutUp   190ms cubic-bezier(.22,1,.36,1) both}
-.screen.leave-down{animation:qOutDown 190ms cubic-bezier(.22,1,.36,1) both}
-.screen.enter-up  {animation:qInUp    200ms cubic-bezier(.22,1,.36,1) 45ms both}
-.screen.enter-down{animation:qInDown  200ms cubic-bezier(.22,1,.36,1) 45ms both}
+/* The two timing profiles. */
+.screen.q-exit {transition:transform var(--q-exit) var(--q-ease),opacity var(--q-exit) var(--q-ease)}
+.screen.q-enter{transition:transform var(--q-enter) var(--q-ease) var(--q-offset),opacity var(--q-enter) var(--q-ease) var(--q-offset)}
+
+/* Displaced states: the start state for an arriving question, the end state for
+   a departing one. Which of the two each gets is what makes the motion follow
+   the direction of travel. */
+.screen.q-below{transform:translateY(var(--q-travel));opacity:0}
+.screen.q-above{transform:translateY(calc(-1 * var(--q-travel)));opacity:0}
+
+/* Hover effects inside the stage are suspended while a question is in flight -
+   a box-shadow transition firing under the cursor mid-slide is pure repaint on
+   top of the frames we actually care about. */
+#applyForm.q-busy .opt,#applyForm.q-busy .btn{transition:none}
 
 @media (prefers-reduced-motion:reduce){
-  /* Instant swap: no translate, no fade, nothing overlapping. */
-  .screen.leave-up,.screen.leave-down,.screen.enter-up,.screen.enter-down{animation:none;will-change:auto}
+  /* Instant swap: no translate, no fade, no overlap, no layer promotion. */
+  .screen.q-exit,.screen.q-enter{transition:none}
+  .screen.q-will{will-change:auto}
+  .screen.q-below,.screen.q-above{transform:none;opacity:1}
   .screen.is-leaving{display:none}
   .bar-fill{transition:none}
 }
@@ -485,7 +521,7 @@ main{flex:1 0 auto;padding:38px 0 96px}
     if (!step) { progress.hidden = true; return; }
     progress.hidden = false;
     progLbl.textContent = step + ' of 9';
-    barFill.style.width = (step / 9 * 100) + '%';
+    barFill.style.transform = 'scaleX(' + (step / 9) + ')';
     bar.setAttribute('aria-valuenow', String(step));
   }
 
@@ -501,24 +537,55 @@ main{flex:1 0 auto;padding:38px 0 96px}
   }
 
   // ---- Show a screen -------------------------------------------------------
-  // Timings mirror the CSS above; keep the two in step if either changes.
-  var EXIT_MS = 190, ENTER_MS = 200, OVERLAP_MS = 45;
+  // Read the tuning constants straight off the stylesheet, once, at boot: the
+  // CSS is the single source of truth for the feel, and these only drive the
+  // cleanup and focus timings. One getComputedStyle call here, never during a
+  // transition.
+  var TIMING = (function(){
+    var cs = getComputedStyle(document.documentElement);
+    var ms = function(name, fallback){
+      var v = parseFloat(cs.getPropertyValue(name));
+      return isNaN(v) ? fallback : v;
+    };
+    return { exit: ms('--q-exit', 160), enter: ms('--q-enter', 180), offset: ms('--q-offset', 40) };
+  })();
+  var SETTLE_MS = TIMING.offset + TIMING.enter;
+
   var reduceMotion = (function(){
     try{ return window.matchMedia('(prefers-reduced-motion: reduce)').matches; }catch(e){ return false; }
   })();
 
-  var leaving = null, leaveTimer = null, focusTimer = null;
+  var leaving = null, arriving = null, endTimer = null, rafHandle = 0;
 
-  // Puts the outgoing question back in the hidden pile. Called when its exit
-  // finishes, and immediately if another advance interrupts it — so however fast
-  // someone moves, exactly one question is left in the DOM.
-  function finishLeave(){
-    if (leaveTimer) { clearTimeout(leaveTimer); leaveTimer = null; }
-    if (!leaving) return;
-    leaving.hidden = true;
-    leaving.classList.remove('is-leaving', 'leave-up', 'leave-down', 'enter-up', 'enter-down');
-    leaving.removeAttribute('aria-hidden');
-    leaving = null;
+  // Two frames, not one. The first lets the browser render the start state (and
+  // act on will-change); the flip happens in the second. Batched into one frame
+  // the browser coalesces start and end and you get a pop instead of motion.
+  function nextTwoFrames(fn){
+    if (rafHandle) cancelAnimationFrame(rafHandle);
+    rafHandle = requestAnimationFrame(function(){
+      rafHandle = requestAnimationFrame(function(){ rafHandle = 0; fn(); });
+    });
+  }
+
+  // Settles whatever is in flight: the outgoing question goes back to the hidden
+  // pile, both questions drop their transition and will-change classes. Called
+  // on completion, and immediately if another advance interrupts — so however
+  // fast someone moves, exactly one question is left in the DOM and no idle
+  // element is holding a compositor layer.
+  function finishTransition(){
+    if (endTimer) { clearTimeout(endTimer); endTimer = null; }
+    if (rafHandle) { cancelAnimationFrame(rafHandle); rafHandle = 0; }
+    if (arriving) {
+      arriving.classList.remove('q-enter', 'q-will', 'q-below', 'q-above');
+      arriving = null;
+    }
+    if (leaving) {
+      leaving.hidden = true;
+      leaving.classList.remove('is-leaving', 'q-exit', 'q-will', 'q-below', 'q-above');
+      leaving.removeAttribute('aria-hidden');
+      leaving = null;
+    }
+    form.classList.remove('q-busy');
   }
 
   function focusScreen(el){
@@ -537,43 +604,60 @@ main{flex:1 0 auto;padding:38px 0 96px}
     idx = Math.max(0, Math.min(i, screens.length - 1));
     var el = screenAt(idx);
 
-    finishLeave();                                  // settle anything still in flight
-    if (focusTimer) { clearTimeout(focusTimer); focusTimer = null; }
+    // The one layout read in here, taken before any DOM write while layout is
+    // still clean. Scrolling is instant and only when we are actually away from
+    // the top: a smooth scroll animating the whole document alongside the
+    // question is the single worst thing that could share these frames.
+    var scrolled = window.pageYOffset || document.documentElement.scrollTop || 0;
+
+    finishTransition();                             // settle anything still in flight
     setError(el, '');
 
     // Direction of travel: registry order is flow order, so forward is always a
     // higher index — including across the Q9 -> Q9b -> submit branch.
     var moving = prev !== el && !prev.hidden && !reduceMotion && !opts.instant;
-    var dir = screens.indexOf(el) >= screens.indexOf(prev) ? 'up' : 'down';
+    var forward = screens.indexOf(el) >= screens.indexOf(prev);
+    var outEnd  = forward ? 'q-above' : 'q-below';  // where the outgoing one goes
+    var inStart = forward ? 'q-below' : 'q-above';  // where the incoming one comes from
 
+    if (scrolled > 8) window.scrollTo(0, 0);
+
+    // --- Frame 0: start state only. No style is read after this point, so
+    // nothing in here can force a synchronous layout mid-flip.
     if (moving) {
-      prev.classList.remove('enter-up', 'enter-down');
-      prev.classList.add('is-leaving', dir === 'up' ? 'leave-up' : 'leave-down');
-      prev.setAttribute('aria-hidden', 'true');     // out of the a11y tree while it flies out
-      leaving = prev;
-      leaveTimer = setTimeout(finishLeave, EXIT_MS + 30);
+      form.classList.add('q-busy');
       screens.forEach(function(s){ if (s !== el && s !== prev) s.hidden = true; });
+      prev.classList.add('is-leaving', 'q-will');
+      prev.setAttribute('aria-hidden', 'true');     // out of the a11y tree while it flies out
+      el.classList.add(inStart, 'q-will');
+      el.hidden = false;
+      leaving = prev;
+      arriving = el;
     } else {
       screens.forEach(function(s){ if (s !== el) s.hidden = true; });
-    }
-
-    el.classList.remove('enter-up', 'enter-down');
-    el.hidden = false;
-    if (moving) {
-      void el.offsetWidth;                          // restart the animation
-      el.classList.add(dir === 'up' ? 'enter-up' : 'enter-down');
+      el.hidden = false;
     }
 
     if (el.id === 's-submit') paintSummary();
     paintProgress();
-    window.scrollTo({ top: 0, behavior: (prev === el || reduceMotion) ? 'auto' : 'smooth' });
 
-    // Focus lands once the incoming question has arrived, never mid-flight.
     if (moving) {
-      focusTimer = setTimeout(function(){
-        focusTimer = null;
-        if (screenAt(idx) === el) focusScreen(el);
-      }, OVERLAP_MS + ENTER_MS);
+      // --- Frames 1-2: transitions on, then flip to the end state.
+      nextTwoFrames(function(){
+        if (arriving !== el) return;                // interrupted before we got here
+        prev.classList.add('q-exit');
+        prev.classList.add(outEnd);
+        el.classList.add('q-enter');
+        el.classList.remove(inStart);
+      });
+      // Cleanup and focus together, once the incoming question has arrived. The
+      // slack covers the two frames spent getting to the flip.
+      endTimer = setTimeout(function(){
+        endTimer = null;
+        var landed = arriving;
+        finishTransition();
+        if (landed && screenAt(idx) === landed) focusScreen(landed);
+      }, SETTLE_MS + 80);
     } else {
       focusScreen(el);
     }

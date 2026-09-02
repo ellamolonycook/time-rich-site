@@ -36,7 +36,8 @@ const $ = (d, sel) => d.querySelector(sel);
 const visible = (d) => Array.from(d.querySelectorAll('.screen'))
   .filter(s => !s.hidden && !s.classList.contains('is-leaving')).map(s => s.id);
 const inDom = (d) => Array.from(d.querySelectorAll('.screen')).filter(s => !s.hidden).map(s => s.id);
-const settle = () => sleep(320);             // longer than the 245ms transition
+const settle = () => sleep(420);             // longer than the transition + its two setup frames
+const flipped = () => sleep(90);             // past the double-rAF, into the flip
 const label = (d) => $(d, '#progressLabel').textContent;
 const err = (d, id) => $(d, '#' + id).textContent;
 
@@ -68,41 +69,84 @@ console.log('\nOne question at a time');
   click(w, '#startBtn');
   check('start shows only Q1', visible(d).join() === 's-1');
   check('progress reads "1 of 9"', label(d) === '1 of 9', label(d));
-  check('bar is at 1/9', $(d, '#barFill').style.width.startsWith('11.1'), $(d, '#barFill').style.width);
+  check('bar is at 1/9, via scaleX not width', $(d, '#barFill').style.transform === 'scaleX(0.1111111111111111)'
+    && !$(d, '#barFill').style.width, $(d, '#barFill').style.transform);
   await settle();
   check('one question in the DOM once the transition ends', inDom(d).join() === 's-1', inDom(d));
   check('the input is focused', d.activeElement && d.activeElement.id === 'f-first_name', d.activeElement && d.activeElement.id);
+}
+
+console.log('\nTransitions: only transform and opacity are ever animated');
+{
+  // A static read of the stylesheet — the cheapest possible guard against
+  // someone reintroducing a layout-animating property later.
+  const css = HTML.slice(HTML.indexOf('<style>'), HTML.indexOf('</style>'));
+  const animated = [...css.matchAll(/transition:([^;}]+)/g)].map(m => m[1]);
+  const layoutProps = /\b(width|height|top|left|right|bottom|margin|padding|inset)\b/;
+  check('no transition anywhere animates a layout property',
+    animated.every(v => !layoutProps.test(v)), animated.filter(v => layoutProps.test(v)));
+  check('the progress bar advances on transform, not width',
+    /\.bar-fill\{[^}]*transition:transform/.test(css.replace(/\s*\n\s*/g, '')));
+  check('the screen transitions name only transform and opacity',
+    [...css.matchAll(/\.screen\.q-(?:exit|enter)\s*\{transition:([^}]+)\}/g)]
+      .every(m => /^[^}]*$/.test(m[1]) && !layoutProps.test(m[1])));
+  check('the displaced states use transform, not offsets',
+    /\.screen\.q-below\{transform:translateY/.test(css) && /\.screen\.q-above\{transform:translateY/.test(css));
+  check('the scrollbar gutter is reserved so a height change cannot reflow the page',
+    /scrollbar-gutter:\s*stable/.test(css));
 }
 
 console.log('\nTransitions: direction, overlap, and the one-question rule');
 {
   const { w, d } = boot();
   click(w, '#startBtn');
-  check('forward: the outgoing screen slides up and out', $(d, '#s-intro').classList.contains('leave-up'));
-  check('forward: the incoming screen slides up into place', $(d, '#s-1').classList.contains('enter-up'));
+  // Frame 0: start state applied, but not yet flipped.
+  check('the outgoing one is taken out of flow immediately', $(d, '#s-intro').classList.contains('is-leaving'));
+  check('will-change is set before the flip, not during it',
+    $(d, '#s-intro').classList.contains('q-will') && $(d, '#s-1').classList.contains('q-will'));
+  check('the incoming one starts displaced below', $(d, '#s-1').classList.contains('q-below'));
+  check('nothing has begun transitioning yet', !$(d, '#s-intro').classList.contains('q-exit'));
+  check('the stage is marked busy so hover effects stand down', $(d, '#applyForm').classList.contains('q-busy'));
   check('the two overlap — both are briefly in the DOM', inDom(d).length === 2, inDom(d));
-  check('the outgoing one is taken out of flow', $(d, '#s-intro').classList.contains('is-leaving'));
   check('the outgoing one leaves the accessibility tree', $(d, '#s-intro').getAttribute('aria-hidden') === 'true');
   check('focus has not moved yet (no yank mid-flight)', !(d.activeElement && d.activeElement.id === 'f-first_name'));
+
+  await flipped();
+  check('forward: the outgoing one is transitioning up and out',
+    $(d, '#s-intro').classList.contains('q-exit') && $(d, '#s-intro').classList.contains('q-above'));
+  check('forward: the incoming one is transitioning up into place',
+    $(d, '#s-1').classList.contains('q-enter') && !$(d, '#s-1').classList.contains('q-below'));
+
   await settle();
   check('end state is a single question', inDom(d).join() === 's-1', inDom(d));
   check('the outgoing one is fully cleaned up',
     !$(d, '#s-intro').classList.contains('is-leaving') && !$(d, '#s-intro').hasAttribute('aria-hidden'));
+  check('will-change is released — no idle question holds a layer',
+    !$(d, '#s-1').classList.contains('q-will') && !$(d, '#s-intro').classList.contains('q-will'));
+  check('no transition classes left behind',
+    !$(d, '#s-1').classList.contains('q-enter') && !$(d, '#s-intro').classList.contains('q-exit'));
+  check('the stage is no longer busy', !$(d, '#applyForm').classList.contains('q-busy'));
   check('focus lands after the transition', d.activeElement.id === 'f-first_name');
 
   type(w, '#f-first_name', 'Jordan');
   enter(w, '#f-first_name');
-  check('Enter-key advance animates too', $(d, '#s-1').classList.contains('leave-up') && $(d, '#s-2').classList.contains('enter-up'));
+  await flipped();
+  check('Enter-key advance animates too',
+    $(d, '#s-1').classList.contains('q-above') && $(d, '#s-2').classList.contains('q-enter'));
   await settle();
 
   click(w, '#s-2 [data-back]');
   await sleep(40);                                    // history.back() -> popstate is async
-  check('back: the outgoing screen slides down and out', $(d, '#s-2').classList.contains('leave-down'));
-  check('back: the incoming screen slides down into place', $(d, '#s-1').classList.contains('enter-down'));
+  check('back: the incoming one starts displaced above', $(d, '#s-1').classList.contains('q-above'));
+  await flipped();
+  check('back: the outgoing one is transitioning down and out',
+    $(d, '#s-2').classList.contains('q-exit') && $(d, '#s-2').classList.contains('q-below'));
+  check('back: the incoming one is transitioning down into place',
+    $(d, '#s-1').classList.contains('q-enter') && !$(d, '#s-1').classList.contains('q-above'));
   await settle();
   check('back ends on a single question', inDom(d).join() === 's-1', inDom(d));
-  check('no stale enter class left on the screen that just left',
-    !$(d, '#s-2').classList.contains('enter-up') && !$(d, '#s-2').classList.contains('enter-down'));
+  check('no stale displacement left on the screen that just left',
+    !$(d, '#s-2').classList.contains('q-below') && !$(d, '#s-2').classList.contains('q-above'));
 }
 
 console.log('\nTransitions: interrupting one mid-flight');
@@ -116,6 +160,8 @@ console.log('\nTransitions: interrupting one mid-flight');
   check('a rushed run never leaves more than the pair mid-flight', inDom(d).length <= 2, inDom(d));
   await settle();
   check('it still settles to exactly one question', inDom(d).join() === 's-3', inDom(d));
+  check('no abandoned screen is left holding a layer',
+    Array.from(d.querySelectorAll('.screen')).every(s => !s.classList.contains('q-will')));
   check('focus is not left on an abandoned screen', d.activeElement.id === 'f-phone', d.activeElement.id);
 }
 
@@ -129,14 +175,59 @@ console.log('\nTransitions: the Q9 -> Q9b sub-step, both directions');
   click(w, '#s-7 [data-next]'); await settle();
   d.querySelectorAll('#s-8 .opt')[1].click(); await sleep(400);
   d.querySelectorAll('#s-9 .opt')[0].click();          // "Yes" -> Q9b
-  await sleep(300);
-  check('Q9 -> Q9b travels forward (up)', $(d, '#s-9').classList.contains('leave-up') && $(d, '#s-9b').classList.contains('enter-up'));
+  await sleep(280);                                    // the select pause,
+  await flipped();                                     // then the double-rAF flip
+  check('Q9 -> Q9b travels forward (up)',
+    $(d, '#s-9').classList.contains('q-above') && $(d, '#s-9b').classList.contains('q-enter'));
   await settle();
   click(w, '#s-9b [data-back]');
   await sleep(40);
-  check('Q9b -> Q9 travels back (down)', $(d, '#s-9b').classList.contains('leave-down') && $(d, '#s-9').classList.contains('enter-down'));
+  check('Q9b -> Q9 starts the incoming one above', $(d, '#s-9').classList.contains('q-above'));
+  await flipped();
+  check('Q9b -> Q9 travels back (down)', $(d, '#s-9b').classList.contains('q-below'));
   await settle();
   check('lands on Q9 alone', inDom(d).join() === 's-9', inDom(d));
+}
+
+console.log('\nTransitions: the two heaviest screens');
+{
+  // Q6 renders seven option buttons, Q3 carries the intl-tel-input markup —
+  // the biggest subtrees on the form, and so the most expensive to promote and
+  // rasterise. The mechanics have to hold on both, in and out.
+  const { w, d } = boot();
+  click(w, '#startBtn');
+  type(w, '#f-first_name', 'Jordan'); click(w, '#s-1 [data-next]');
+  type(w, '#f-email', 'jordan@example.com'); click(w, '#s-2 [data-next]');
+  await flipped();
+  check('into the phone screen: it is the one promoted', $(d, '#s-3').classList.contains('q-will'));
+  await settle();
+  check('phone screen settles alone and releases its layer',
+    inDom(d).join() === 's-3' && !$(d, '#s-3').classList.contains('q-will'));
+
+  type(w, '#f-phone', '+15125550114'); click(w, '#s-3 [data-next]');
+  await flipped();
+  check('out of the phone screen: it transitions rather than snapping', $(d, '#s-3').classList.contains('q-exit'));
+  await settle();
+
+  type(w, '#f-linkedin', 'linkedin.com/in/jordanreyes'); click(w, '#s-4 [data-next]');
+  await settle();
+  type(w, '#f-business', 'A 4-person marketing agency.'); click(w, '#s-5 [data-next]');
+  await flipped();
+  check('into the seven-option screen: promoted and displaced as one block',
+    $(d, '#s-6').classList.contains('q-will') && $(d, '#s-6').classList.contains('q-enter'));
+  check('the seven buttons are not individually animated — only the screen moves',
+    Array.from(d.querySelectorAll('#s-6 .opt')).every(b =>
+      !b.classList.contains('q-enter') && !b.classList.contains('q-will')));
+  await settle();
+  check('seven-option screen settles alone and releases its layer',
+    inDom(d).join() === 's-6' && !$(d, '#s-6').classList.contains('q-will'));
+
+  d.querySelectorAll('#s-6 .opt')[2].click();
+  await sleep(300);                                   // the ~250ms select pause
+  await settle();                                     // then the transition itself
+  check('out of the seven-option screen, on auto-advance', inDom(d).join() === 's-7', inDom(d));
+  check('and it left nothing behind',
+    !$(d, '#s-6').classList.contains('q-will') && !$(d, '#s-6').classList.contains('is-leaving'));
 }
 
 console.log('\nTransitions: prefers-reduced-motion gets an instant swap');
@@ -145,13 +236,16 @@ console.log('\nTransitions: prefers-reduced-motion gets an instant swap');
   click(w, '#startBtn');
   check('no overlap — one question in the DOM immediately', inDom(d).join() === 's-1', inDom(d));
   check('nothing is translated out', !$(d, '#s-intro').classList.contains('is-leaving'));
-  check('no animation classes at all',
-    !$(d, '#s-1').classList.contains('enter-up') && !$(d, '#s-1').classList.contains('enter-down'));
+  check('no transition or displacement classes at all',
+    !$(d, '#s-1').classList.contains('q-enter') && !$(d, '#s-1').classList.contains('q-below')
+    && !$(d, '#s-1').classList.contains('q-above'));
+  check('nothing is promoted to a layer', !$(d, '#s-1').classList.contains('q-will'));
+  check('the stage is never marked busy', !$(d, '#applyForm').classList.contains('q-busy'));
   check('focus is immediate, not deferred', d.activeElement.id === 'f-first_name', d.activeElement.id);
   type(w, '#f-first_name', 'Jordan'); click(w, '#s-1 [data-next]');
   click(w, '#s-2 [data-back]');
   await sleep(40);
-  check('back is instant too', inDom(d).join() === 's-1' && !$(d, '#s-2').classList.contains('leave-down'));
+  check('back is instant too', inDom(d).join() === 's-1' && !$(d, '#s-2').classList.contains('q-exit'));
 }
 
 console.log('\nValidation happens on advance, not on keystroke');
