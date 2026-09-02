@@ -164,6 +164,58 @@ ul.t-list li:last-child{padding-bottom:0}
 @keyframes brainPulse{0%,100%{box-shadow:0 0 0 0 rgba(204,238,160,0)}50%{box-shadow:0 0 26px 0 rgba(204,238,160,.28)}}
 @keyframes agentPing{0%,86%,100%{background:rgba(255,252,235,.07);box-shadow:none}43%{background:rgba(204,238,160,.14);box-shadow:0 0 18px -5px rgba(204,238,160,.45)}}
 
+/* ---------- BIO STATS + SOCIALS (imported from /revenue/) ----------
+   Same treatment as the revenue page's founder section, resolved to this
+   page's cream palette. */
+.bio-chips{list-style:none;display:flex;flex-wrap:wrap;gap:8px;margin:26px 0 0;padding:0}
+.bio-chips li{font-family:var(--mono);font-size:11.5px;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);background:var(--panel);border:1px solid var(--line);padding:8px 14px;border-radius:999px}
+.bio-social{display:flex;flex-wrap:wrap;gap:14px;align-items:center;margin-top:26px}
+.bio-social a{font-family:var(--mono);font-size:13px;color:var(--lime);text-decoration:none;border-bottom:1px solid rgba(103,118,46,.4);min-height:44px;display:inline-flex;align-items:center}
+.bio-social a:hover{border-color:var(--lime)}
+.bio-social a.pill{border:1px solid rgba(103,118,46,.4);border-radius:999px;padding:10px 18px;background:var(--lime-dim)}
+.bio-social a.pill:hover{background:rgba(103,118,46,.2)}
+
+/* ---------- SCHEDULE TIMELINE (imported from /revenue/) ---------- */
+.wk-sub{color:var(--muted);margin:14px 0 0;max-width:60ch;font-size:16px}
+.plabel{font-family:var(--mono);font-size:11px;letter-spacing:.16em;text-transform:uppercase;color:var(--dim);margin:32px 0 12px}
+.pre{display:grid;grid-template-columns:36px 1fr;gap:18px;align-items:center;padding:9px 0;opacity:.7;transition:opacity .18s ease;text-decoration:none;color:inherit}
+.pre:hover{opacity:1}
+.pre-n{width:36px;height:36px;border-radius:10px;border:1px dashed var(--line-2);color:var(--dim);font-family:var(--mono);font-weight:700;font-size:14px;display:flex;align-items:center;justify-content:center}
+.pre b{display:block;font-size:16px;letter-spacing:-.01em;color:var(--green-deep)}
+.pre span{display:block;color:var(--muted);font-size:14.5px;margin-top:3px}
+.tl2{position:relative;margin-top:26px}
+.tl2::before{content:"";position:absolute;left:17px;top:8px;bottom:78px;width:2px;border-radius:2px;background:linear-gradient(180deg,var(--sage-dk),rgba(66,75,54,.10))}
+.tl2-fill{position:absolute;left:17px;top:8px;width:2px;height:0;border-radius:2px;background:var(--pop);box-shadow:0 0 10px rgba(204,238,160,.75);z-index:0}
+.phase-label{padding-left:54px;font-family:var(--mono);font-size:11.5px;letter-spacing:.16em;text-transform:uppercase;color:var(--lime);margin:30px 0 12px}
+.phase-label .ct{color:var(--dim);margin-left:8px}
+.wk2{display:grid;grid-template-columns:36px 1fr;gap:18px;align-items:start;margin-bottom:10px}
+.wk2-n{width:36px;height:36px;border-radius:10px;background:var(--cream);border:1px solid var(--line);color:var(--lime);font-family:var(--mono);font-weight:800;font-size:15px;display:flex;align-items:center;justify-content:center;position:relative;z-index:1;transition:background .16s ease,color .16s ease,transform .16s ease,border-color .16s ease}
+.wk2-card{background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:16px 18px;transition:transform .18s ease,border-color .18s ease,box-shadow .18s ease}
+.wk2-hd{display:flex;align-items:center;gap:9px;flex-wrap:wrap}
+.wk2-card h3{font-size:16.5px;margin:0;letter-spacing:-.01em;line-height:1.25}
+.wk2-card p{margin:5px 0 0;color:var(--muted);font-size:14.5px;line-height:1.5}
+.wk-tag{font-family:var(--mono);font-size:9.5px;letter-spacing:.12em;text-transform:uppercase;font-weight:700;padding:3px 8px;border-radius:99px;background:var(--lime-dim);color:var(--lime);border:1px solid rgba(103,118,46,.35)}
+.wk2.star .wk2-n{background:var(--pop);color:var(--green-deep);border-color:var(--pop)}
+.wk2.star .wk2-card{border-color:rgba(103,118,46,.3)}
+.wk2:hover .wk2-n{background:var(--pop);color:var(--green-deep);border-color:var(--pop);transform:scale(1.06)}
+.wk2:hover .wk2-card{transform:translateY(-2px);border-color:rgba(66,75,54,.42);box-shadow:0 14px 34px -20px rgba(66,75,54,.45)}
+.endpoint{display:grid;grid-template-columns:36px 1fr;gap:18px;align-items:start;position:relative;margin-top:2px}
+.end-n{width:36px;height:36px;border-radius:50%;background:var(--pop);color:var(--green-deep);font-weight:800;font-size:17px;display:flex;align-items:center;justify-content:center;position:relative;z-index:1}
+.end-card{background:var(--lime-dim);border:1px solid rgba(103,118,46,.35);border-radius:14px;padding:17px 20px}
+.end-card b{font-size:17px;letter-spacing:-.01em}
+.end-card p{margin:5px 0 0;color:var(--muted);font-size:14.5px}
+.wk-note{margin-top:26px;padding-left:54px;font-family:var(--mono);font-size:12.5px;color:var(--dim);letter-spacing:.02em;max-width:640px;line-height:1.6}
+@media(max-width:520px){
+  .tl2::before{left:14px;bottom:84px}
+  .tl2-fill{left:14px}
+  .wk2,.pre,.endpoint{grid-template-columns:30px 1fr;gap:13px}
+  .wk2-n,.pre-n,.end-n{width:30px;height:30px;font-size:13px}
+  .phase-label,.wk-note{padding-left:43px}
+  .wk2-card h3{font-size:15.5px}
+  .bio-chips li{font-size:13px;letter-spacing:.05em}
+  .bio-social a{font-size:14px}
+}
+
 /* ---------- LEADERSHIP LAYER ---------- */
 .accel-quote{font-family:var(--display);font-weight:600;font-size:clamp(21px,3vw,33px);line-height:1.3;letter-spacing:-.02em;color:var(--green-deep);margin:30px 0 8px;padding-left:22px;border-left:3px solid var(--lime)}
 .ladder{list-style:none;padding:0;margin:30px 0 0;display:grid;gap:14px}
@@ -351,7 +403,19 @@ ul.t-list li:last-child{padding-bottom:0}
         <p>Some of you have already built AI agents, because honestly hiring felt like the harder problem. Some of you haven't touched either, and the thought of "technical" plus "managing people" makes you a bit nauseous.</p>
         <p><strong>I'm proof this works.</strong> I 4x'd revenue at my last company with one system and 150 interns running through it. This summer I onboarded 18 interns in five days without missing a beat. Now I'm handing you the playbook to get Time Rich.</p>
         <p>People assume AI means you need fewer employees. It's the opposite: it makes you better at hiring them.</p>
-        <p class="story-close">That's this programme.</p>
+        <!-- Stats + socials imported from /revenue/'s founder section. -->
+        <ul class="bio-chips">
+          <li>4 companies built</li>
+          <li>1 exit</li>
+          <li>Anthropic investor</li>
+          <li>250+ events in 2 years</li>
+          <li>Thousands taught to build with AI</li>
+          <li>Last room was 98% men</li>
+        </ul>
+        <div class="bio-social">
+          <a class="pill" href="https://www.linkedin.com/in/ellamolonycook/" target="_blank" rel="noopener">&#127826; Slide into my DMs with a question</a>
+          <a href="https://www.instagram.com/timerichtalk" target="_blank" rel="noopener">@timerichtalk</a>
+        </div>
       </div>
     </div>
   </div>
@@ -367,8 +431,8 @@ ul.t-list li:last-child{padding-bottom:0}
     <div class="offers-grid">
       <div class="tier">
         <span class="t-tag">Track 1 &middot; 6 weeks</span>
-        <h3>Build your AI employee</h3>
-        <p class="t-body">For founders who want the AI layer first, no fluff. You walk away with:</p>
+        <h3>Build your AI operating system</h3>
+        <p class="t-body">For leaders that want to increase efficiency and become time rich. You walk away with:</p>
         <ul class="t-list">
           <li>The workflow mapped, everything your AI needs in one place</li>
           <li>A delegation system that actually works</li>
@@ -407,6 +471,81 @@ ul.t-list li:last-child{padding-bottom:0}
       <div class="m-io">MORE<br>FREE TIME</div>
     </div>
     <p class="m-cap">Track 1 builds the system. Track 2 puts people inside it.</p>
+  </div>
+</section>
+
+<!-- ========================== 3b. THE SCHEDULE ==========================
+     Adapted from /revenue/'s week-by-week build. Dates below are imported
+     as-is from that page's calendar and have NOT been reconciled against this
+     page's own "Starting October 1st" - see the note flagged to Gideon.
+     Revenue's "21 Oct - Sell Through Story, with ViKA" item and its
+     "Phase 2 - Reach & visibility" header are deliberately excluded. -->
+<section class="weeks" id="schedule">
+  <div class="wrap">
+    <div class="section-head">
+      <span class="eyebrow">The build, phase by phase</span>
+      <h2>What we build, and <span class="hl">when</span>.</h2>
+      <p class="wk-sub">Every session ships one working piece and has a test you either pass or fail. Stuck gets solved in a hot seat on the next call, live.</p>
+    </div>
+
+    <div class="plabel">Before Day One</div>
+    <a class="pre" href="/sh-apply/" onclick="track('schedule_apply')">
+      <div class="pre-n">&rarr;</div>
+      <div>
+        <b>Apply for your seat</b>
+        <span>You're in the moment your application is accepted. I email you the same day with what to bring.</span>
+      </div>
+    </a>
+
+    <div class="tl2">
+      <div class="tl2-fill" aria-hidden="true"></div>
+
+      <div class="phase-label">Phase 1 &middot; Foundation <span class="ct">weeks 1-2</span></div>
+
+      <div class="wk2">
+        <div class="wk2-n">1</div>
+        <div class="wk2-card">
+          <div class="wk2-hd"><h3>14 Oct &middot; Super Connectors, LinkedIn Agent &amp; Partnership Engine</h3></div>
+          <p>Surface who's ready to buy and reach them in your voice, then turn other people's audiences into your pipeline with an affiliate model that pays when you do.</p>
+        </div>
+      </div>
+
+      <div class="wk2">
+        <div class="wk2-n">2</div>
+        <div class="wk2-card">
+          <div class="wk2-hd"><h3>28 Oct &middot; Visibility Agent, Funnel &amp; Community-Led Sales</h3></div>
+          <p>Get yourself booked on podcasts, then one clear path from stranger to sold and a community that brings its own people.</p>
+        </div>
+      </div>
+
+      <!-- TODO: one guest-speaker slot goes here - name TBC from Ella.
+           Follow the pattern of revenue's guest weeks:
+           <div class="wk2 star">
+             <div class="wk2-n">3</div>
+             <div class="wk2-card">
+               <div class="wk2-hd"><h3>DATE &middot; SESSION TITLE, with NAME</h3><span class="wk-tag">Guest teacher</span></div>
+               <p>ONE LINE ON WHAT THEY TEACH.</p>
+             </div>
+           </div> -->
+
+      <div class="wk2 star">
+        <div class="wk2-n">3</div>
+        <div class="wk2-card">
+          <div class="wk2-hd"><h3>AI Operating System &mdash; putting it all together</h3><span class="wk-tag">The payoff</span></div>
+          <p>Every piece wired into one system you own and run, aimed at the department you came here to fix.</p>
+        </div>
+      </div>
+
+      <div class="endpoint">
+        <div class="end-n">&#10003;</div>
+        <div class="end-card">
+          <b>You leave running your AI operating system.</b>
+          <p>A department that runs without you starting from zero every Monday.</p>
+        </div>
+      </div>
+    </div>
+
+    <p class="wk-note">Every cohort is different. These sessions are built around the people in the room, and some tools get swapped for what that cohort actually needs.</p>
   </div>
 </section>
 
@@ -542,7 +681,7 @@ ul.t-list li:last-child{padding-bottom:0}
 <!-- ======================= 8. JOIN THE WAITLIST ======================= -->
 <section class="waitlist" id="waitlist">
   <div class="wrap narrow" style="text-align:center">
-    <span class="eyebrow">Join the waitlist</span>
+    <span class="eyebrow">Join the waitlist for the accelerator</span>
     <h2>Doors aren't open yet.</h2>
     <p class="lead" style="margin:16px auto 0;max-width:54ch">Starting October 1st. The waitlist gets first access, founding-member pricing, and a note from me before anyone else hears a thing.</p>
 
@@ -630,7 +769,7 @@ ul.t-list li:last-child{padding-bottom:0}
   <div class="wrap">
     <p class="foot-mission">Reshaping how women flourish in the age of AI: focused on growing revenue, rewiring self-doubt, and becoming visible alongside a badass ambitious community. <span class="foot-mission-emoji">&#128184;</span></p>
     <span>&copy; 2026 Time Rich. All rights reserved.</span>
-    <span><a href="https://www.linkedin.com/in/ellamolonycook/" target="_blank" rel="noopener">LinkedIn</a> &middot; <a href="https://www.instagram.com/timerichtalk" target="_blank" rel="noopener">Instagram</a></span>
+    <span><a href="https://www.instagram.com/timerichtalk" target="_blank" rel="noopener">Instagram</a> &middot; <a href="https://www.linkedin.com/in/ellamolonycook/" target="_blank" rel="noopener">LinkedIn</a> &middot; <a href="#TODO-CONFIRM-URL" target="_blank" rel="noopener">TikTok</a> &middot; <a href="#TODO-CONFIRM-URL" target="_blank" rel="noopener">Substack</a></span>
     <span><a href="/">Home</a> &middot; <a href="/privacy">Privacy</a> &middot; <a href="/terms">Terms</a></span>
   </div>
 </div>
@@ -682,6 +821,28 @@ function track(name, params){
       es.forEach(function(e){ if (e.isIntersecting) { e.target.classList.add('in'); ro.unobserve(e.target); } });
     }, {threshold:.12, rootMargin:'0px 0px -6% 0px'});
     items.forEach(function(el){ ro.observe(el); });
+  }
+
+  // Schedule spine fills as you scroll through it (imported from /revenue/).
+  var tls = document.querySelectorAll('.tl2');
+  if (!reduce && tls.length) {
+    var upd = function(){
+      var trig = window.innerHeight * 0.62;
+      tls.forEach(function(tl){
+        var fill = tl.querySelector('.tl2-fill'); if (!fill) return;
+        var track = tl.offsetHeight - 86; if (track < 8) { track = tl.offsetHeight; }
+        var top = tl.getBoundingClientRect().top + 8;
+        var prog = (trig - top) / track;
+        prog = prog < 0 ? 0 : (prog > 1 ? 1 : prog);
+        fill.style.height = (prog * track) + 'px';
+      });
+    };
+    var tick = false;
+    window.addEventListener('scroll', function(){
+      if (!tick) { requestAnimationFrame(function(){ upd(); tick = false; }); tick = true; }
+    }, {passive:true});
+    window.addEventListener('resize', upd, {passive:true});
+    upd();
   }
 
   // sticky bar: show once past the hero, hide near the footer, and stay out of
