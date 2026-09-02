@@ -35,15 +35,17 @@
    reads the same custom properties at boot, so its cleanup and focus timings
    can never drift out of step with the CSS.
 
-   Smaller travel over a shorter duration reads smoother than the reverse -
-   24px/160ms beats 40px/190ms noticeably on a mid-range phone.
+   The arrival is deliberately longer than the exit and is staggered across the
+   question's parts: that unhurried, assembling feel is the whole point. Drop
+   --q-stagger to 0 and it collapses back into a plain slide.
    ========================================================================= */
 :root{
-  --q-travel: 24px;    /* how far a question slides */
-  --q-exit:  160ms;    /* outgoing question */
-  --q-enter: 180ms;    /* incoming question */
-  --q-offset: 40ms;    /* how long into the exit the enter starts (the overlap) */
-  --q-ease: cubic-bezier(.22,1,.36,1);
+  --q-travel:  28px;   /* how far a question travels */
+  --q-exit:   240ms;   /* the outgoing question, leaving as one block */
+  --q-enter:  380ms;   /* each part of the incoming question */
+  --q-offset:  60ms;   /* how long into the exit the arrival starts (the overlap) */
+  --q-stagger: 45ms;   /* the gap between each arriving part - the Typeform tell */
+  --q-ease: cubic-bezier(.16,1,.3,1);   /* long, soft tail */
 }
 
 /* =========================================================================
@@ -134,15 +136,28 @@ main{flex:1 0 auto;padding:38px 0 96px}
 /* Promoted to its own layer only while it actually moves. */
 .screen.q-will{will-change:transform,opacity}
 
-/* The two timing profiles. */
+/* --- The outgoing question leaves as one block. --------------------------- */
 .screen.q-exit {transition:transform var(--q-exit) var(--q-ease),opacity var(--q-exit) var(--q-ease)}
-.screen.q-enter{transition:transform var(--q-enter) var(--q-ease) var(--q-offset),opacity var(--q-enter) var(--q-ease) var(--q-offset)}
-
-/* Displaced states: the start state for an arriving question, the end state for
-   a departing one. Which of the two each gets is what makes the motion follow
-   the direction of travel. */
 .screen.q-below{transform:translateY(var(--q-travel));opacity:0}
 .screen.q-above{transform:translateY(calc(-1 * var(--q-travel)));opacity:0}
+
+/* --- The incoming question arrives a part at a time. ----------------------
+   Eyebrow, then heading, then helper text, then the field, then the buttons -
+   each one --q-stagger behind the last. This is the thing that reads as
+   Typeform rather than as a slide: the question assembles itself in front of
+   you instead of sliding in pre-built. The block itself does not move, only
+   its parts, so the two motions never compound.
+
+   --i is the child's position, stamped on once at boot. */
+.screen.q-in-below > *,
+.screen.q-in-above > *,
+.screen.q-in-run > *{will-change:transform,opacity}
+.screen.q-in-below > *{opacity:0;transform:translateY(var(--q-travel))}
+.screen.q-in-above > *{opacity:0;transform:translateY(calc(-1 * var(--q-travel)))}
+.screen.q-in-run > *{
+  transition:opacity var(--q-enter) var(--q-ease),transform var(--q-enter) var(--q-ease);
+  transition-delay:calc(var(--q-offset) + var(--i,0) * var(--q-stagger));
+}
 
 /* Hover effects inside the stage are suspended while a question is in flight -
    a box-shadow transition firing under the cursor mid-slide is pure repaint on
@@ -150,10 +165,11 @@ main{flex:1 0 auto;padding:38px 0 96px}
 #applyForm.q-busy .opt,#applyForm.q-busy .btn{transition:none}
 
 @media (prefers-reduced-motion:reduce){
-  /* Instant swap: no translate, no fade, no overlap, no layer promotion. */
-  .screen.q-exit,.screen.q-enter{transition:none}
-  .screen.q-will{will-change:auto}
-  .screen.q-below,.screen.q-above{transform:none;opacity:1}
+  /* Instant swap: no translate, no fade, no stagger, no layer promotion. */
+  .screen.q-exit,.screen.q-in-run > *{transition:none}
+  .screen.q-will,.screen.q-in-below > *,.screen.q-in-above > *,.screen.q-in-run > *{will-change:auto}
+  .screen.q-below,.screen.q-above,
+  .screen.q-in-below > *,.screen.q-in-above > *{transform:none;opacity:1}
   .screen.is-leaving{display:none}
   .bar-fill{transition:none}
 }
@@ -552,15 +568,41 @@ main{flex:1 0 auto;padding:38px 0 96px}
       var v = parseFloat(cs.getPropertyValue(name));
       return isNaN(v) ? fallback : v;
     };
-    return { exit: ms('--q-exit', 160), enter: ms('--q-enter', 180), offset: ms('--q-offset', 40) };
+    return {
+      exit:    ms('--q-exit',    240),
+      enter:   ms('--q-enter',   380),
+      offset:  ms('--q-offset',   60),
+      stagger: ms('--q-stagger',  45)
+    };
   })();
-  var SETTLE_MS = TIMING.offset + TIMING.enter;
+
+  // Stamp each screen's direct children with their position, once, at boot: the
+  // stylesheet turns that into each part's transition-delay. Doing it here means
+  // no per-transition DOM writes and no hard-coded :nth-child list.
+  screens.forEach(function(s){
+    Array.prototype.forEach.call(s.children, function(child, n){
+      child.style.setProperty('--i', String(n));
+    });
+  });
+
+  // When the last part of a given screen has finished arriving.
+  function arrivalMs(el){
+    return TIMING.offset + Math.max(0, el.children.length - 1) * TIMING.stagger + TIMING.enter;
+  }
+  // When a particular part has finished arriving — used so the field takes focus
+  // as it lands, rather than waiting for the buttons below it.
+  function partArrivalMs(el, node){
+    var host = node;
+    while (host && host.parentNode !== el) host = host.parentNode;
+    var n = host ? Array.prototype.indexOf.call(el.children, host) : 0;
+    return TIMING.offset + Math.max(0, n) * TIMING.stagger + TIMING.enter;
+  }
 
   var reduceMotion = (function(){
     try{ return window.matchMedia('(prefers-reduced-motion: reduce)').matches; }catch(e){ return false; }
   })();
 
-  var leaving = null, arriving = null, endTimer = null, rafHandle = 0;
+  var leaving = null, arriving = null, endTimer = null, focusTimer = null, rafHandle = 0;
 
   // Two frames, not one. The first lets the browser render the start state (and
   // act on will-change); the flip happens in the second. Batched into one frame
@@ -579,9 +621,10 @@ main{flex:1 0 auto;padding:38px 0 96px}
   // element is holding a compositor layer.
   function finishTransition(){
     if (endTimer) { clearTimeout(endTimer); endTimer = null; }
+    if (focusTimer) { clearTimeout(focusTimer); focusTimer = null; }
     if (rafHandle) { cancelAnimationFrame(rafHandle); rafHandle = 0; }
     if (arriving) {
-      arriving.classList.remove('q-enter', 'q-will', 'q-below', 'q-above');
+      arriving.classList.remove('q-in-run', 'q-in-below', 'q-in-above', 'q-will');
       arriving = null;
     }
     if (leaving) {
@@ -593,12 +636,14 @@ main{flex:1 0 auto;padding:38px 0 96px}
     form.classList.remove('q-busy');
   }
 
-  function focusScreen(el){
-    // The input where there is one (its label is the heading, so the question is
-    // still announced), otherwise the heading itself.
+  // The input where there is one (its label is the heading, so the question is
+  // still announced), otherwise the heading itself.
+  function focusTargetOf(el){
     var input = inputOf(el);
-    var head  = el.querySelector('.q-title, h1');
-    var target = (input && !isSelect(el)) ? input : head;
+    return (input && !isSelect(el)) ? input : el.querySelector('.q-title, h1');
+  }
+  function focusScreen(el){
+    var target = focusTargetOf(el);
     if (!target) return;
     try{ target.focus({ preventScroll:true }); }catch(e){ target.focus(); }
   }
@@ -620,53 +665,64 @@ main{flex:1 0 auto;padding:38px 0 96px}
 
     // Direction of travel: registry order is flow order, so forward is always a
     // higher index — including across the Q9 -> Q9b -> submit branch.
-    var moving = prev !== el && !prev.hidden && !reduceMotion && !opts.instant;
+    // On the very first render there is nothing to send away, but the arriving
+    // question still assembles itself, so the page lands with motion.
+    var swapping = prev !== el && !prev.hidden && !reduceMotion && !opts.entrance;
+    var entering = !reduceMotion && (swapping || opts.entrance);
     var forward = screens.indexOf(el) >= screens.indexOf(prev);
-    var outEnd  = forward ? 'q-above' : 'q-below';  // where the outgoing one goes
-    var inStart = forward ? 'q-below' : 'q-above';  // where the incoming one comes from
+    var outEnd  = forward ? 'q-above' : 'q-below';       // where the outgoing one goes
+    var inStart = forward ? 'q-in-below' : 'q-in-above'; // where the arriving parts come from
 
     if (scrolled > 8) window.scrollTo(0, 0);
 
     // --- Frame 0: start state only. No style is read after this point, so
     // nothing in here can force a synchronous layout mid-flip.
-    if (moving) {
-      form.classList.add('q-busy');
-      screens.forEach(function(s){ if (s !== el && s !== prev) s.hidden = true; });
+    screens.forEach(function(s){ if (s !== el && !(swapping && s === prev)) s.hidden = true; });
+    if (swapping) {
       prev.classList.add('is-leaving', 'q-will');
       prev.setAttribute('aria-hidden', 'true');     // out of the a11y tree while it flies out
-      el.classList.add(inStart, 'q-will');
-      el.hidden = false;
       leaving = prev;
-      arriving = el;
-    } else {
-      screens.forEach(function(s){ if (s !== el) s.hidden = true; });
-      el.hidden = false;
     }
+    if (entering) {
+      form.classList.add('q-busy');
+      el.classList.add(inStart);
+      arriving = el;
+    }
+    el.hidden = false;
 
     if (el.id === 's-submit') paintSummary();
     paintProgress();
 
-    if (moving) {
+    if (entering) {
       // --- Frames 1-2: transitions on, then flip to the end state.
       nextTwoFrames(function(){
         if (arriving !== el) return;                // interrupted before we got here
-        prev.classList.add('q-exit');
-        prev.classList.add(outEnd);
-        el.classList.add('q-enter');
+        if (leaving === prev && swapping) {
+          prev.classList.add('q-exit');
+          prev.classList.add(outEnd);
+        }
+        el.classList.add('q-in-run');
         el.classList.remove(inStart);
       });
-      // Cleanup and focus together, once the incoming question has arrived. The
-      // slack covers the two frames spent getting to the flip.
+
+      // Focus follows the field down: it lands as that part arrives, not after
+      // the buttons below it have finished. Skipped on the first render — the
+      // browser already lands the reader at the top of a freshly loaded page,
+      // and moving focus to a heading only put a ring round it for no reason.
+      if (!opts.entrance) {
+        focusTimer = setTimeout(function(){
+          focusTimer = null;
+          if (screenAt(idx) === el) focusScreen(el);
+        }, partArrivalMs(el, focusTargetOf(el)) + 40);
+      }
+
+      // Cleanup once the last part has landed. The slack covers the two frames
+      // spent getting to the flip.
       endTimer = setTimeout(function(){
         endTimer = null;
-        var landed = arriving;
         finishTransition();
-        if (landed && screenAt(idx) === landed) focusScreen(landed);
-      }, SETTLE_MS + 80);
-    } else if (!opts.instant) {
-      // Nothing takes focus on the first render: the browser already lands the
-      // reader at the top of a freshly loaded page, and moving focus to the
-      // heading only put a ring round it for no reason.
+      }, arrivalMs(el) + 80);
+    } else if (!opts.entrance) {
       focusScreen(el);
     }
 
@@ -1076,7 +1132,7 @@ main{flex:1 0 auto;padding:38px 0 96px}
   }
 
   idx = 0;
-  show(startAt, { noHistory: true, instant: true });
+  show(startAt, { noHistory: true, entrance: true });
   try{ history.replaceState({ shs: idx }, '', location.pathname + location.search + hashFor(idx)); }catch(e){}
 
   track('sh_apply_view');
