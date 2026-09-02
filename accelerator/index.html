@@ -133,6 +133,16 @@ nav{background:rgba(255,252,235,.93);-webkit-backdrop-filter:blur(10px);backdrop
 .room .card .name{margin-top:18px;font-family:var(--mono);font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--lime)}
 .room .card .role{margin-top:5px;font-family:var(--mono);font-size:11px;letter-spacing:.04em;line-height:1.5;color:var(--dim)}
 
+/* ---------- MOVING PHOTO STRIP ---------- */
+.photo-band{padding:14px 0;overflow:hidden;border-top:1px solid var(--line)}
+.photo-track{display:flex;gap:16px;width:max-content;animation:photoScroll 50s linear infinite}
+.photo-track.rev{animation-direction:reverse}
+.photo-band:hover .photo-track{animation-play-state:paused}
+.photo-track img{height:320px;width:260px;object-fit:cover;border-radius:12px;display:block;flex:0 0 auto;border:1px solid var(--line)}
+@keyframes photoScroll{from{transform:translateX(0)}to{transform:translateX(-50%)}}
+@media (prefers-reduced-motion:reduce){.photo-track{animation:none}}
+.photo-band.ring .photo-track img{box-shadow:0 0 0 2px rgba(103,118,46,.5)}
+
 /* ---------- THE OFFER ---------- */
 .offers h2{font-size:clamp(30px,4.6vw,52px);max-width:20ch}
 .offers-lead{font-size:18px;color:var(--muted);max-width:640px;margin-top:16px}
@@ -301,6 +311,14 @@ ul.t-list li:last-child{padding-bottom:0}
 .reveal.in{opacity:1;transform:none}
 @media(prefers-reduced-motion:reduce){.reveal{opacity:1 !important;transform:none !important}*{animation-duration:.001ms !important;animation-iteration-count:1 !important}}
 
+/*----------- CHECKLIST ---------*/
+/* Same shape as ul.t-list, with a tick rather than a dot: these read as
+   claims you can check off, not as a feature list. */
+ul.checklist{list-style:none;margin:26px 0 0;padding:20px 0 0;border-top:1px solid var(--line)}
+ul.checklist li{position:relative;padding:0 0 13px 30px;font-size:15.5px;color:var(--muted);line-height:1.55}
+ul.checklist li::before{content:"¹3";position:absolute;left:0;top:0;font-family:var(--mono);font-weight:700;font-size:13px;line-height:1.75;color:var(--lime)}
+ul.checklist li:last-child{padding-bottom:0}
+
 /* ---------- RESPONSIVE ---------- */
 @media (max-width:880px){
   .wrap{padding:0 20px}
@@ -379,6 +397,8 @@ ul.t-list li:last-child{padding-bottom:0}
     <div>
       <span class="eyebrow">Time Rich &middot; Super Human Accelerator &middot; 6 or 10 weeks &middot; Founding cohort</span>
       <h1>What if your workflow could keep working <span class="hl">without you</span>?<span class="h-rest">Track 1 is six weeks: build your AI operating system. Track 2 is ten weeks: do that, then recruit and onboard AI-trained employees into it. Either way you're building a system that takes you from burned-out business owner to superhuman badass with more free time.</span></h1>
+      <br>
+      <p><strong>Most AI training teaches you to automate admin. This one is measured on revenue.</strong></p>
       <div class="hero-cta">
         <a class="btn" href="#waitlist" onclick="track('waitlist_hero')">Join the waitlist</a>
       </div>
@@ -475,11 +495,14 @@ ul.t-list li:last-child{padding-bottom:0}
 </section>
 
 <!-- ========================== 3b. THE SCHEDULE ==========================
-     Adapted from /revenue/'s week-by-week build. Dates below are imported
-     as-is from that page's calendar and have NOT been reconciled against this
-     page's own "Starting October 1st" - see the note flagged to Gideon.
-     Revenue's "21 Oct - Sell Through Story, with ViKA" item and its
-     "Phase 2 - Reach & visibility" header are deliberately excluded. -->
+     Mirrors /revenue/'s week-by-week build exactly - same phases, numbering,
+     guest-teacher tags and endpoint - with one item excluded: revenue's
+     "21 Oct - Sell Through Story, with ViKA". Its slot closes up, so the
+     numbering runs 1-6 here against revenue's 1-7.
+
+     Dates are imported as-is from revenue's calendar (7 Oct - 18 Nov) and have
+     NOT been reconciled against this page's own "Starting October 1st" - still
+     flagged, still not resolved here. -->
 <section class="weeks" id="schedule">
   <div class="wrap">
     <div class="section-head">
@@ -501,55 +524,55 @@ ul.t-list li:last-child{padding-bottom:0}
       <div class="tl2-fill" aria-hidden="true"></div>
 
       <div class="phase-label">Phase 1 &middot; Foundation <span class="ct">weeks 1-2</span></div>
+      <div class="wk2"><div class="wk2-n">1</div><div class="wk2-card"><div class="wk2-hd"><h3>7 Oct &middot; Your Context &amp; Chief Revenue Agent</h3></div><p>We load your business into the engine and build the agent that runs revenue like a CRO, aimed at your real buyer.</p></div></div>
+      <div class="wk2"><div class="wk2-n">2</div><div class="wk2-card"><div class="wk2-hd"><h3>14 Oct &middot; Super Connectors, LinkedIn Agent &amp; Partnership Engine</h3></div><p>Surface who's ready to buy and reach them in your voice, then turn other people's audiences into your pipeline with an affiliate model that pays when you do.</p></div></div>
 
-      <div class="wk2">
-        <div class="wk2-n">1</div>
-        <div class="wk2-card">
-          <div class="wk2-hd"><h3>14 Oct &middot; Super Connectors, LinkedIn Agent &amp; Partnership Engine</h3></div>
-          <p>Surface who's ready to buy and reach them in your voice, then turn other people's audiences into your pipeline with an affiliate model that pays when you do.</p>
-        </div>
-      </div>
+      <div class="phase-label">Phase 2 &middot; Reach &amp; visibility <span class="ct">weeks 3-4</span></div>
+      <!-- TODO: Ella's additional guest-speaker slot goes here - name TBC.
+           This is where revenue's excluded ViKA week sat, so adding one here
+           keeps both pages in step. Renumber the items below it if you do.
+           <div class="wk2 star"><div class="wk2-n">N</div><div class="wk2-card"><div class="wk2-hd"><h3>DATE &middot; SESSION TITLE, with NAME</h3><span class="wk-tag">Guest teacher</span></div><p>ONE LINE ON WHAT THEY TEACH.</p></div></div> -->
+      <div class="wk2"><div class="wk2-n">3</div><div class="wk2-card"><div class="wk2-hd"><h3>28 Oct &middot; Visibility Agent, Funnel &amp; Community-Led Sales</h3></div><p>Get yourself booked on podcasts, then one clear path from stranger to sold and a community that brings its own people.</p></div></div>
 
-      <div class="wk2">
-        <div class="wk2-n">2</div>
-        <div class="wk2-card">
-          <div class="wk2-hd"><h3>28 Oct &middot; Visibility Agent, Funnel &amp; Community-Led Sales</h3></div>
-          <p>Get yourself booked on podcasts, then one clear path from stranger to sold and a community that brings its own people.</p>
-        </div>
-      </div>
+      <div class="phase-label">Phase 3 &middot; System &amp; close <span class="ct">weeks 5-7</span></div>
+      <div class="wk2 star"><div class="wk2-n">4</div><div class="wk2-card"><div class="wk2-hd"><h3>4 Nov &middot; AI Growth &amp; Content Agents, with AJ Yadav</h3><span class="wk-tag">Guest teacher</span></div><p>10K to 400K followers in 4 months. You get the agents that did it.</p></div></div>
+      <div class="wk2"><div class="wk2-n">5</div><div class="wk2-card"><div class="wk2-hd"><h3>11 Nov &middot; Luma &amp; Substack Formula</h3></div><p>Events and email, so the pipeline refills itself.</p></div></div>
+      <div class="wk2 star"><div class="wk2-n">6</div><div class="wk2-card"><div class="wk2-hd"><h3>18 Nov &middot; Chief Revenue Officer &amp; Closer Prep</h3><span class="wk-tag">The payoff</span></div><p>You leave running it, briefed for the calls that close.</p></div></div>
 
-      <!-- TODO: one guest-speaker slot goes here - name TBC from Ella.
-           Follow the pattern of revenue's guest weeks:
-           <div class="wk2 star">
-             <div class="wk2-n">3</div>
-             <div class="wk2-card">
-               <div class="wk2-hd"><h3>DATE &middot; SESSION TITLE, with NAME</h3><span class="wk-tag">Guest teacher</span></div>
-               <p>ONE LINE ON WHAT THEY TEACH.</p>
-             </div>
-           </div> -->
-
-      <div class="wk2 star">
-        <div class="wk2-n">3</div>
-        <div class="wk2-card">
-          <div class="wk2-hd"><h3>AI Operating System &mdash; putting it all together</h3><span class="wk-tag">The payoff</span></div>
-          <p>Every piece wired into one system you own and run, aimed at the department you came here to fix.</p>
-        </div>
-      </div>
-
-      <div class="endpoint">
-        <div class="end-n">&#10003;</div>
-        <div class="end-card">
-          <b>You leave running your AI operating system.</b>
-          <p>A department that runs without you starting from zero every Monday.</p>
-        </div>
-      </div>
+      <div class="endpoint"><div class="end-n">&#10003;</div><div class="end-card"><b>You leave running your AI operating system.</b><p>A department that runs without you starting from zero every Monday.</p></div></div>
     </div>
 
     <p class="wk-note">Every cohort is different. These sessions are built around the people in the room, and some tools get swapped for what that cohort actually needs.</p>
   </div>
 </section>
 
-<!-- ===================== 4. THE LEADERSHIP LAYER ===================== -->
+<!-- ================== 4. YOU DON'T HAVE TO PICK THE RIGHT AI ================== -->
+<section class="section" id="section--stack">
+  <div class="wrap narrow">
+    <p class="eyebrow">NO TECH STACK REQUIRED</p>
+    <h2>You don’t have to pick the “right” AI</h2>
+
+    <p>I’m not building this around one tech stack. ChatGPT, Claude, Perplexity, or an assistant
+  that lives inside your text messages — every model has its own superpower, and the right one
+  depends on what your business actually does. Writing all day is a different tool than research all
+  day. If AI still intimidates you, we start you on the one that feels like texting a friend.
+  I genuinely don’t mind what you use. You just have to use it.</p>
+
+    <p>What matters is that you stop starting over. Most people lose everything they’ve taught
+  their AI the moment they open a different tab — two years of context, personality, the way it
+  writes in your voice, gone, because it lived inside one chat window. We fix that. You’ll build
+  one shared memory that all of your models read from, so your context follows you instead of dying
+    in an app.</p>
+
+    <ul class="checklist">
+      <li>Model-agnostic — you leave knowing which tool to use for what, not locked into somebody’s subscription</li>
+      <li>One shared memory across your AI, so nothing gets re-explained ever again</li>
+      <li>Built in Notion and a folder system you already understand — I know a woman doing $15m a year on Notion. Simple wins</li>
+    </ul>
+  </div>
+</section>
+
+<!-- ===================== 5. THE LEADERSHIP LAYER ===================== -->
 <section class="leadership">
   <div class="wrap narrow">
     <span class="eyebrow">The part nobody teaches</span>
@@ -608,12 +631,15 @@ ul.t-list li:last-child{padding-bottom:0}
   </div>
 </section>
 
-<!-- ======================== 5. TESTIMONIALS ======================== -->
+<!-- ======================== 6. TESTIMONIALS ======================== -->
 <section class="room">
   <div class="wrap">
     <div class="section-head">
       <span class="eyebrow">From the people in the room</span>
       <h2>Don't take my word for it.</h2>
+    </div>
+    <div>
+      <img width="852" height="1066" loading="lazy" decoding="async" class="gap-photo" src="../revenue/img/rev-02.jpg" alt="Time Rich members at a rooftop event in New York" />
     </div>
     <div class="cards">
       <div class="card">
@@ -635,7 +661,7 @@ ul.t-list li:last-child{padding-bottom:0}
   </div>
 </section>
 
-<!-- ========================= 6. THE DECISION ========================= -->
+<!-- ========================= 7. THE DECISION ========================= -->
 <section class="decision">
   <div class="wrap">
     <div class="section-head">
@@ -664,7 +690,7 @@ ul.t-list li:last-child{padding-bottom:0}
   </div>
 </section>
 
-<!-- ============ 7. ONE TIME ONLY: INTIMATE FIRST COHORT ============ -->
+<!-- ============ 8. ONE TIME ONLY: INTIMATE FIRST COHORT ============ -->
 <section class="cohort">
   <div class="wrap narrow">
     <span class="eyebrow">One time only</span>
@@ -677,8 +703,29 @@ ul.t-list li:last-child{padding-bottom:0}
     </div>
   </div>
 </section>
-
-<!-- ======================= 8. JOIN THE WAITLIST ======================= -->
+<!-- MOVING PHOTO STRIP (top) -->
+<div class="photo-band" style="padding-top:28px;">
+  <div class="photo-track">
+    <img width="520" height="640" loading="lazy" decoding="async" src="../revenue/img/rev-03.jpg" alt="Women founders laughing in the audience at NY Tech Week" />
+    <img width="573" height="860" loading="lazy" decoding="async" src="../revenue/img/rev-04.jpg" alt="The table at the Time Rich investor dinner" />
+    <img width="520" height="640" loading="lazy" decoding="async" src="../revenue/img/rev-05.jpg" alt="A founder with the mic at NY Tech Week" />
+    <img width="520" height="640" loading="lazy" decoding="async" src="../revenue/img/rev-06.jpg" alt="Speakers on stage at the Time Rich NY Tech Week session" />
+    <img width="573" height="860" loading="lazy" decoding="async" src="../revenue/img/rev-07.jpg" alt="Members together at a Time Rich dinner" />
+    <img width="520" height="640" loading="lazy" decoding="async" src="../revenue/img/rev-08.jpg" alt="A founder speaking on the NY Tech Week panel" />
+    <img width="573" height="860" loading="lazy" decoding="async" src="../revenue/img/rev-09.jpg" alt="Dinner service at the Time Rich investor dinner" />
+    <img width="520" height="640" loading="lazy" decoding="async" src="../revenue/img/rev-10.jpg" alt="Two founders celebrating at NY Tech Week" />
+    <!-- duplicate set for seamless loop -->
+    <img width="520" height="640" loading="lazy" decoding="async" src="../revenue/img/rev-03.jpg" alt="" aria-hidden="true" />
+    <img width="573" height="860" loading="lazy" decoding="async" src="../revenue/img/rev-04.jpg" alt="" aria-hidden="true" />
+    <img width="520" height="640" loading="lazy" decoding="async" src="../revenue/img/rev-05.jpg" alt="" aria-hidden="true" />
+    <img width="520" height="640" loading="lazy" decoding="async" src="../revenue/img/rev-06.jpg" alt="" aria-hidden="true" />
+    <img width="573" height="860" loading="lazy" decoding="async" src="../revenue/img/rev-07.jpg" alt="" aria-hidden="true" />
+    <img width="520" height="640" loading="lazy" decoding="async" src="../revenue/img/rev-08.jpg" alt="" aria-hidden="true" />
+    <img width="573" height="860" loading="lazy" decoding="async" src="../revenue/img/rev-09.jpg" alt="" aria-hidden="true" />
+    <img width="520" height="640" loading="lazy" decoding="async" src="../revenue/img/rev-10.jpg" alt="" aria-hidden="true" />
+  </div>
+</div>
+<!-- ======================= 9. JOIN THE WAITLIST ======================= -->
 <section class="waitlist" id="waitlist">
   <div class="wrap narrow" style="text-align:center">
     <span class="eyebrow">Join the waitlist for the accelerator</span>
@@ -711,7 +758,7 @@ ul.t-list li:last-child{padding-bottom:0}
           <input type="url" id="wl-social" name="social_media" autocomplete="url" />
         </div>
 
-        <button type="submit" class="form-submit">Add me to the waitlist</button>
+        <button type="submit" class="form-submit">get me in!</button>
         <p class="form-note" id="wlNote" role="status"></p>
       </form>
 
@@ -726,7 +773,7 @@ ul.t-list li:last-child{padding-bottom:0}
   </div>
 </section>
 
-<!-- ============================== 9. FAQ ============================== -->
+<!-- ============================== 10. FAQ ============================== -->
 <section class="faq" id="faq">
   <div class="wrap">
     <div class="section-head">
@@ -754,13 +801,13 @@ ul.t-list li:last-child{padding-bottom:0}
   </div>
 </section>
 
-<!-- ========================= 10. CLOSING CTA ========================= -->
+<!-- ========================= 11. CLOSING CTA ========================= -->
 <section class="closing">
   <div class="wrap narrow">
     <span class="eyebrow">Founding cohort &middot; Limited spots</span>
     <h2>Join the waitlist</h2>
     <p style="margin:16px auto 0;max-width:54ch;color:var(--muted)">Starting October 1st. First access, founding-member pricing, and a note from me before anyone else hears a thing.</p>
-    <div style="margin-top:28px"><a class="btn btn-xl" href="#waitlist" onclick="track('waitlist_closing')">Join the waitlist &rarr;</a></div>
+    <div style="margin-top:28px"><a class="btn btn-xl" href="#waitlist" onclick="track('waitlist_closing')">join the waitlist &rarr;</a></div>
   </div>
 </section>
 
@@ -777,7 +824,7 @@ ul.t-list li:last-child{padding-bottom:0}
 <!-- STICKY WAITLIST BAR -->
 <div class="stickybar" id="stickybar" aria-hidden="true">
   <span class="sb-txt">Founding cohort &middot; Starting October 1st</span>
-  <a class="btn" href="#waitlist" onclick="track('waitlist_sticky')">Join the waitlist &rarr;</a>
+  <a class="btn" href="#waitlist" onclick="track('waitlist_sticky')">join the waitlist &rarr;</a>
 </div>
 
 <script>
