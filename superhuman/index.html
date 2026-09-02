@@ -10,7 +10,7 @@
 <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
 <meta name="description" content="An AI operating system for one department of your business. Two tracks, founding member pricing. Starts Thursday 1 October 2026." />
 <link rel="canonical" href="https://timerich.ai/superhuman/" />
-<meta name="theme-color" content="#2C3422" />
+<meta name="theme-color" content="#DCDEBF" />
 <meta property="og:title" content="The Super Human Accelerator" />
 <meta property="og:description" content="An AI operating system for one department of your business. Founding cohort starts Thursday 1 October." />
 <meta property="og:url" content="https://timerich.ai/superhuman/" />
@@ -19,34 +19,46 @@
 @font-face{font-family:'Space Grotesk';font-weight:400 700;font-display:swap;src:url('/brand/fonts/SpaceGrotesk-Variable.ttf') format('truetype');}
 @font-face{font-family:'JetBrains Mono';font-weight:400 700;font-display:swap;src:url('/brand/fonts/JetBrainsMono-Variable.ttf') format('truetype');}
 
+/* One palette for everyone. The page used to follow the visitor's OS theme, so
+   most people met it as dark olive. The ground is now the accelerator's card
+   tone, and the pricing cards keep the old dark-theme fills - dark cards on a
+   light ground. All three blocks carry the same values so nobody gets a
+   different page; they are kept rather than collapsed so the theming hooks
+   survive if this is ever revisited.
+
+   The tokens below are the ON-PAGE set, for everything sitting on the sage.
+   Inside .track the text tokens flip back to the dark theme's light values -
+   see the scoped block on .track. Every pairing is checked to WCAG AA (4.5:1);
+   --dim had to come up to meet --muted, because nothing lighter clears AA on
+   sage. */
 :root{
-  color-scheme:dark;
-  --void:#2C3422; --panel:#353E29; --panel-2:#3D4730; --raise:#455038;
-  --line:rgba(255,252,235,.11); --line-2:rgba(255,252,235,.21);
-  --fg:#FFFCEB; --muted:#C3C8AC; --dim:#9DA486;
-  --lime:#CCEEA0; --lime-ink:#CCEEA0; --lime-dim:rgba(204,238,160,.14);
-  --moss:#67762E; --sage:#DCDEBF;
+  color-scheme:light;
+  --void:#DCDEBF; --panel:#353E29; --panel-2:#3D4730; --raise:#FFFFFF;
+  --line:rgba(66,75,54,.18); --line-2:rgba(66,75,54,.32);
+  --fg:#333A28; --muted:#5B6449; --dim:#5B6449;
+  --lime:#CCEEA0; --lime-ink:#556226; --lime-dim:#EDF7C6;
+  --moss:#424B36; --sage:#DCDEBF;
+  --shadow:0 20px 50px rgba(66,75,54,.14);
   --accent:var(--lime-ink);
   --sans:'Space Grotesk',system-ui,-apple-system,'Segoe UI',sans-serif;
   --body:system-ui,-apple-system,'Segoe UI',Roboto,Helvetica,sans-serif;
   --mono:'JetBrains Mono',ui-monospace,SFMono-Regular,Menlo,monospace;
-  --shadow:0 24px 60px rgba(19,24,13,.45);
 }
 @media (prefers-color-scheme:light){:root:not([data-theme]){
   color-scheme:light;
-  --void:#FFFCEB; --panel:#F3F2E0; --panel-2:#E9EAD5; --raise:#FFFFFF;
+  --void:#DCDEBF; --panel:#353E29; --panel-2:#3D4730; --raise:#FFFFFF;
   --line:rgba(66,75,54,.18); --line-2:rgba(66,75,54,.32);
-  --fg:#333A28; --muted:#5B6449; --dim:#7E8768;
-  --lime:#CCEEA0; --lime-ink:#67762E; --lime-dim:#EDF7C6;
+  --fg:#333A28; --muted:#5B6449; --dim:#5B6449;
+  --lime:#CCEEA0; --lime-ink:#556226; --lime-dim:#EDF7C6;
   --moss:#424B36; --sage:#DCDEBF;
   --shadow:0 20px 50px rgba(66,75,54,.14);
 }}
 :root[data-theme="light"]{
   color-scheme:light;
-  --void:#FFFCEB; --panel:#F3F2E0; --panel-2:#E9EAD5; --raise:#FFFFFF;
+  --void:#DCDEBF; --panel:#353E29; --panel-2:#3D4730; --raise:#FFFFFF;
   --line:rgba(66,75,54,.18); --line-2:rgba(66,75,54,.32);
-  --fg:#333A28; --muted:#5B6449; --dim:#7E8768;
-  --lime:#CCEEA0; --lime-ink:#67762E; --lime-dim:#EDF7C6;
+  --fg:#333A28; --muted:#5B6449; --dim:#5B6449;
+  --lime:#CCEEA0; --lime-ink:#556226; --lime-dim:#EDF7C6;
   --moss:#424B36; --sage:#DCDEBF;
   --shadow:0 20px 50px rgba(66,75,54,.14);
 }
@@ -74,7 +86,20 @@ header.hero .sub{max-width:56ch;margin:0 auto;color:var(--muted);font-size:17px}
 
 .tracks{display:grid;grid-template-columns:1fr 1fr;gap:20px;padding-bottom:10px}
 @media (max-width:760px){.tracks{grid-template-columns:1fr}}
-.track{background:var(--panel);border:1px solid var(--line);border-radius:18px;padding:30px 28px;
+/* The cards keep the original dark-theme fills, so every text token inside them
+   flips back to that theme's light values. Custom properties inherit, so this
+   one block re-skins everything nested in a card - headings, body, tag row,
+   prices, bullets, dividers, buttons, small print - without touching a single
+   component rule. --accent is redeclared explicitly: it was computed on :root
+   as var(--lime-ink) and would otherwise keep the on-page moss.
+   Checked on the darker of the two fills (#3D4730, the picked card):
+     #FFFCEB  9.51:1   #C3C8AC 5.68:1   #B0B798 4.70:1   #CCEEA0 7.61:1 */
+.track{
+  --fg:#FFFCEB; --muted:#C3C8AC; --dim:#B0B798;
+  --line:rgba(255,252,235,.11); --line-2:rgba(255,252,235,.21);
+  --lime-ink:#CCEEA0; --accent:#CCEEA0;
+  color:var(--fg);
+  background:var(--panel);border:1px solid var(--line);border-radius:18px;padding:30px 28px;
   display:flex;flex-direction:column;box-shadow:var(--shadow)}
 .track.pick{border-color:var(--lime-ink);background:var(--panel-2)}
 .tag{font-family:var(--mono);font-size:10.5px;letter-spacing:.13em;text-transform:uppercase;color:var(--dim);
