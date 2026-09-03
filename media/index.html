@@ -161,12 +161,13 @@
   /* stat strip */
   .strip{
     display:grid;gap:1px;margin-top:clamp(44px,7vw,76px);
-    grid-template-columns:repeat(auto-fit,minmax(168px,1fr));
+    grid-template-columns:repeat(4,minmax(0,1fr));
     background:var(--green-line);border:1px solid var(--green-line);
   }
   .strip div{background:var(--green);padding:22px 20px}
-  /* three stats stack rather than leaving an orphan cell on narrow screens */
-  @media (max-width:560px){.strip{grid-template-columns:1fr}}
+  /* four stats go 4 -> 2x2 -> stacked, so no step ever leaves an orphan cell */
+  @media (max-width:900px){.strip{grid-template-columns:repeat(2,minmax(0,1fr))}}
+  @media (max-width:520px){.strip{grid-template-columns:1fr}}
   .light .strip{background:var(--sage);border-color:var(--sage)}
   .light .strip div{background:var(--cream)}
   .num{
@@ -282,10 +283,58 @@
     .teaching .grid{grid-template-columns:repeat(2,minmax(0,1fr))}
   }
   @media (max-width:560px){.teaching .grid{grid-template-columns:1fr}}
-  /* the channel strip follows this dark band, so mark the seam */
-  .teaching + .band.slim{border-top:1px solid var(--green-line)}
 
-  /* pull quote, full width and horizontal */
+  /* testimonials: a slider people drive themselves. These run long, so they
+     snap-scroll on swipe, drag or the arrows rather than auto-advancing,
+     which would pull the text away mid-sentence. */
+  .slider{margin-top:44px}
+  .slides{
+    display:flex;gap:20px;overflow-x:auto;scroll-snap-type:x mandatory;
+    scroll-behavior:smooth;padding:2px 2px 14px;
+    scrollbar-width:thin;scrollbar-color:var(--sage) transparent;
+  }
+  .slides::-webkit-scrollbar{height:6px}
+  .slides::-webkit-scrollbar-thumb{background:var(--sage);border-radius:99px}
+  .slides::-webkit-scrollbar-track{background:transparent}
+  .slides:focus-visible{outline:2px solid var(--moss);outline-offset:4px;border-radius:6px}
+  .slide{
+    scroll-snap-align:start;flex:0 0 clamp(270px,80vw,400px);
+    display:flex;flex-direction:column;padding:28px 26px;
+  }
+  .slide blockquote{margin:0 0 22px;font-family:var(--body);font-size:14.5px;line-height:1.62}
+  .slide blockquote p{margin:0 0 12px}
+  .slide blockquote p:last-child{margin-bottom:0}
+  .slide cite{
+    font-style:normal;margin-top:auto;padding-top:18px;
+    border-top:1px solid var(--sage);display:block;
+    font-family:var(--display);font-weight:700;font-size:15px;color:var(--green);
+  }
+  .slide cite span{
+    display:block;margin-top:6px;font-family:var(--mono);font-weight:400;
+    font-size:10.5px;letter-spacing:.11em;text-transform:uppercase;color:var(--moss);
+  }
+  .slider-nav{display:flex;gap:10px;margin-top:20px}
+  .slider-nav button{
+    width:44px;height:44px;border-radius:999px;cursor:pointer;
+    background:transparent;border:1px solid var(--sage);color:var(--moss);
+    font-size:17px;line-height:1;display:inline-flex;align-items:center;justify-content:center;
+    transition:background 160ms ease-out,border-color 160ms ease-out;
+  }
+  .slider-nav button:hover{background:rgba(103,118,46,.09);border-color:var(--moss)}
+  .slider-nav button:focus-visible{outline:2px solid var(--moss);outline-offset:3px}
+
+  /* pull quote: photo on the left, the quote carrying the rest of the row */
+  .quote-row{
+    display:grid;gap:clamp(26px,4vw,56px);align-items:center;
+    grid-template-columns:minmax(0,1fr) minmax(0,2fr);
+  }
+  .quote-photo{margin:0;aspect-ratio:4/5;border-radius:12px;overflow:hidden}
+  .quote-photo img{display:block;width:100%;height:100%;object-fit:cover;object-position:50% 30%}
+  @media (max-width:820px){
+    .quote-row{grid-template-columns:1fr;gap:30px}
+    .quote-photo{max-width:380px;aspect-ratio:4/5}
+  }
+
   .pull{
     margin:0;display:grid;gap:clamp(20px,3.5vw,52px);align-items:end;
     grid-template-columns:minmax(0,2.5fr) minmax(190px,1fr);
@@ -377,8 +426,8 @@
   .frame img{display:block;width:100%;height:auto;border-radius:4px}
 
   /* a frame holding a real photo: no dashed placeholder chrome */
-  .frame.photo{border:0;padding:0;min-height:0;background:none;overflow:hidden;border-radius:6px}
-  .frame.photo img{width:100%;height:100%;object-fit:cover;border-radius:6px}
+  .frame.photo{border:0;padding:0;min-height:0;background:none;overflow:hidden;border-radius:12px}
+  .frame.photo img{width:100%;height:100%;object-fit:cover;border-radius:12px}
   .g3 .frame.photo{aspect-ratio:4/5}
 
   .quote{background:var(--green-panel);border:1px solid var(--green-line);border-radius:4px;padding:28px 26px}
@@ -457,6 +506,7 @@
       <div><span class="num">63,000+</span><span>Newsletter subscribers</span></div>
       <div><span class="num">250+</span><span>Private Capital Events in two years</span></div>
       <div><span class="num">25,000+</span><span>Founders and investors reached</span></div>
+      <div><span class="num">92.8K</span><span>Views on Instagram</span></div>
     </div>
   </div>
 </header>
@@ -508,10 +558,15 @@
 
 <section class="band">
   <div class="wrap">
-    <figure class="pull">
-      <blockquote>&ldquo;We host experiences and media series that convert. Not because we chase reach &mdash; because we understand curation, consistency, and the connection that actually converts for our partners.&rdquo;</blockquote>
-      <figcaption>&mdash; Ella Molony Cook, Founder</figcaption>
-    </figure>
+    <div class="quote-row">
+      <figure class="quote-photo">
+        <img src="img/rev-41.jpg" alt="Two guests together at a Time Rich investor dinner." width="700" height="875" loading="lazy" decoding="async">
+      </figure>
+      <figure class="pull">
+        <blockquote>&ldquo;We host experiences and media series that convert. Not because we chase reach &mdash; because we understand curation, consistency, and the connection that actually converts for our partners.&rdquo;</blockquote>
+        <figcaption>&mdash; Ella Molony Cook, Founder</figcaption>
+      </figure>
+    </div>
   </div>
 </section>
 
@@ -559,6 +614,46 @@
       <div class="card"><span class="tag">Circle</span><h3>AI Revenue Growth: Female Founder Circle</h3><p>A closed circle working on revenue, with AI as the lever.</p></div>
       <div class="card"><span class="tag">Pitch</span><h3>Pitch + Pain, women business owners only</h3><p>Live pitching and live diagnosis of what is blocking the sale.</p></div>
       <div class="card"><span class="tag">Bootcamp</span><h3>Immersive AI Bootcamp</h3><p>The long-form format, co-hosted, for founders going all in.</p></div>
+    </div>
+  </div>
+</section>
+
+<section class="band light">
+  <div class="wrap">
+    <span class="eyebrow">Testimonials</span>
+    <h2>What the room says afterwards.</h2>
+    <div class="slider">
+      <div class="slides" id="tslides" tabindex="0" role="region" aria-label="Testimonials, scrollable">
+        <article class="card slide">
+          <blockquote>
+            <p>The biggest benefit of attending this workshop was that Ella made working with AI visible, quite literally. We were able to witness what working with AI looks like in real life.</p>
+            <p>A lot of people talk about AI agents, AI employees, and automated workflows, but it&rsquo;s rare to see what that really means in action. In just the first few minutes, I learned something I hadn&rsquo;t seen explained before: the real differences between free, paid, and Pro plans for tools like Claude and ChatGPT. The difference is not just about having better models or more memory.</p>
+            <p>What helped me even more was seeing what an AI-first workflow really looks like. Ella showed us her own tech setup and explained that she thinks about AI agents the same way she thinks about building a business. Each agent has a role, responsibilities, and a purpose. That way of thinking made sense to me right away.</p>
+            <p>If you&rsquo;re interested in AI but feel lost in the jargon or unsure where to begin, this workshop is one of the clearest starting points I&rsquo;ve found. I walked away with useful knowledge, a better way to think about AI, and, most importantly, the confidence to get started.</p>
+          </blockquote>
+          <cite>Indra Klavins<span>Keynote Speaker &amp; Executive Advisor</span></cite>
+        </article>
+        <article class="card slide">
+          <blockquote>
+            <p>Time Rich Club started as a workshop to learn how to work with ai agents and has turned into a beautiful community of supportive, like minded women founders. Ella&rsquo;s workshops are actionable from the start, she teaches, shares her process and leaves you with the full instructions to create your own ai team members. Later I was invited to join as a member and invited to participate in the founders circle and community of women doing what we do best, empowering each other, lifting each other up, learning, giving and receiving. Excited to work with Ella on the next chapter of Time Rich Club working towards an LA Chapter. Stay tuned.</p>
+          </blockquote>
+          <cite>Jenni Ogden<span>Founder, Eye Q Productions</span></cite>
+        </article>
+        <article class="card slide">
+          <blockquote>
+            <p>I&rsquo;ve been following Ella&rsquo;s work for a while, so when she announced a session on building AI agents, I signed up &mdash; but honestly, I came in with low expectations. I had been to enough &ldquo;AI&rdquo; events that turned out to be basic prompting demos, and I braced for more of the same.</p>
+            <p>I was wrong within the first five minutes.</p>
+            <p>Ella pulled me in immediately with content that was genuinely valuable and, more importantly, <em>actionable</em>. This wasn&rsquo;t theory or hype: it was the AI stack she uses to save 20+ hours a week, broken down in a way that I could actually implement. No more tools collecting digital dust. Real systems that stick.</p>
+            <p>What stood out most was how relevant the examples were to my business and my actual work. She clearly built this for leaders and founders who are serious about reclaiming their time; not beginners looking for a quick win.</p>
+            <p>I left with the foundation for my first AI agent and a clear path forward. I&rsquo;m very satisfied and eager to learn more with Ella.</p>
+          </blockquote>
+          <cite>Martha Mercogliano, PMP<span>Forbes M&eacute;xico Top 50 Angel Investor</span></cite>
+        </article>
+      </div>
+      <div class="slider-nav">
+        <button type="button" id="tprev" aria-label="Previous testimonial" aria-controls="tslides"><span aria-hidden="true">&larr;</span></button>
+        <button type="button" id="tnext" aria-label="Next testimonial" aria-controls="tslides"><span aria-hidden="true">&rarr;</span></button>
+      </div>
     </div>
   </div>
 </section>
@@ -696,6 +791,23 @@
     </div>
   </div>
 </footer>
+
+<script>
+// Testimonial arrows. The slider works without this - swipe, drag or the
+// keyboard already scroll it - so the buttons only get wired up if JS runs.
+(function () {
+  var strip = document.getElementById('tslides');
+  if (!strip) return;
+  function nudge(dir) {
+    var card = strip.querySelector('.slide');
+    if (!card) return;
+    var gap = parseFloat(getComputedStyle(strip).columnGap) || 0;
+    strip.scrollBy({ left: dir * (card.getBoundingClientRect().width + gap), behavior: 'smooth' });
+  }
+  document.getElementById('tprev').addEventListener('click', function () { nudge(-1); });
+  document.getElementById('tnext').addEventListener('click', function () { nudge(1); });
+})();
+</script>
 
 </body>
 </html>
