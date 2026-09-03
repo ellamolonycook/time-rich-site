@@ -193,9 +193,30 @@
   .bio{grid-template-columns:minmax(0,1.5fr) minmax(0,1fr);align-items:stretch}
   .bio .frame.photo{position:relative;min-height:420px}
   .bio .frame.photo img{position:absolute;inset:0;width:100%;height:100%;object-position:50% 16%}
+
+  /* name badge sitting on the portrait: frosted pill, hairline edge, role
+     picked out in the pastel so it reads as an accent not a second name */
+  .namebadge{
+    position:absolute;left:13px;right:13px;bottom:13px;
+    display:flex;align-items:center;justify-content:space-between;gap:12px;
+    margin:0;padding:11px 18px;border-radius:999px;
+    background:linear-gradient(180deg,rgba(44,52,34,.58),rgba(44,52,34,.72));
+    border:1px solid rgba(255,252,235,.2);
+    -webkit-backdrop-filter:blur(12px) saturate(150%);
+    backdrop-filter:blur(12px) saturate(150%);
+    box-shadow:0 10px 28px rgba(0,0,0,.3),inset 0 1px 0 rgba(255,252,235,.1);
+    font-family:var(--mono);font-size:11px;letter-spacing:.14em;
+    text-transform:uppercase;line-height:1;
+  }
+  .namebadge .nb-name{color:var(--cream);min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+  .namebadge .nb-role{color:var(--pastel);white-space:nowrap}
+  @media (max-width:1080px){
+    .namebadge{left:11px;right:11px;bottom:11px;padding:10px 15px;font-size:10px;letter-spacing:.11em;gap:10px}
+  }
   @media (max-width:860px){
     .bio{grid-template-columns:1fr}
-    .bio .frame.photo{position:static;min-height:0;aspect-ratio:4/5;max-width:420px}
+    /* stays relative so the name badge keeps anchoring to the photo */
+    .bio .frame.photo{position:relative;min-height:0;aspect-ratio:4/5;max-width:420px}
     .bio .frame.photo img{position:static}
   }
 
@@ -258,6 +279,7 @@
   .pkg.feature .btn:hover{background:#3C4730;border-color:#3C4730}
 
   .frame{
+    margin:0; /* a .frame may be a <figure>, which carries default side margins */
     border:1px dashed var(--pastel);border-radius:6px;min-height:260px;
     display:flex;flex-direction:column;justify-content:center;padding:26px;
     background:rgba(204,238,160,.05);
@@ -333,9 +355,13 @@
         <p class="note">I took that into private capital next, building a global network connecting investors, family offices and the deals worth their time. Now I&rsquo;m building Time Rich &mdash; a media and experiential company for the founders, operators and investors building what&rsquo;s next.</p>
         <p class="note">My superpower hasn&rsquo;t changed. It&rsquo;s curation: the right people, in the right room, at the right cadence, until it becomes a relationship instead of a night out. That&rsquo;s what converts for our partners &mdash; not reach, not a logo on a step-and-repeat. Curation, consistency, connection.</p>
       </div>
-      <div class="frame photo">
+      <figure class="frame photo">
         <img src="img/rev-32.jpg" alt="Ella Molony Cook, founder of Time Rich." width="900" height="1200" loading="lazy" decoding="async">
-      </div>
+        <figcaption class="namebadge">
+          <span class="nb-name">Ella Molony Cook</span>
+          <span class="nb-role">Founder</span>
+        </figcaption>
+      </figure>
     </div>
   </div>
 </section>
