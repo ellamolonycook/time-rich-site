@@ -300,33 +300,51 @@
   /* one full set is half the track plus half a gap: 2n tiles carry 2n-1 gaps,
      so a plain -50% lands half a gap short and the loop hitches each cycle */
   @keyframes tmScroll{from{transform:translateX(0)}to{transform:translateX(calc(-50% - 10px))}}
-  @media (max-width:620px){
-    .tm-track{gap:14px;animation-name:tmScrollSm}
-    .tm-track img{height:260px}
+  .tm-track a{display:block;flex:0 0 auto;line-height:0;border-radius:12px}
+  .tm-track a:focus-visible{outline:2px solid var(--moss);outline-offset:4px}
+  .tm-hint{
+    font-family:var(--mono);font-size:11px;letter-spacing:.12em;text-transform:uppercase;
+    color:var(--moss);margin:14px 0 0;display:none;
   }
-  @keyframes tmScrollSm{from{transform:translateX(0)}to{transform:translateX(calc(-50% - 7px))}}
+  /* Phones: a 1600px-wide screenshot of paragraph text cannot be read at
+     390px, and cropping it to fit just clipped both edges. So below 760px the
+     marquee stops, each shot is shown whole at full width on a swipe
+     scroller, and tapping opens it full size to actually read. */
+  @media (max-width:760px){
+    .tm-band{padding-top:clamp(22px,4vw,34px);margin-top:clamp(22px,4vw,34px)}
+    .tm-track{
+      animation:none;width:auto;gap:12px;
+      overflow-x:auto;scroll-snap-type:x mandatory;padding-bottom:12px;
+      scrollbar-width:thin;scrollbar-color:var(--sage) transparent;
+    }
+    .tm-track::-webkit-scrollbar{height:5px}
+    .tm-track::-webkit-scrollbar-thumb{background:var(--sage);border-radius:99px}
+    .tm-track a{flex:0 0 100%;scroll-snap-align:center}
+    .tm-track img{height:auto;width:100%}
+    .tm-hint{display:block}
+  }
   @media (prefers-reduced-motion:reduce){
     .tm-track{animation:none;width:auto;overflow-x:auto;scroll-snap-type:x mandatory;padding-bottom:10px}
-    .tm-track img{scroll-snap-align:start}
+    .tm-track a{scroll-snap-align:start}
+    .tm-hint{display:block}
   }
 
-  /* quote and photo share row 1 so the quote centres on the photo itself,
-     with the credit in row 2 underneath. Centring on the whole right-hand
-     column would sit it ~27px low, because the credit counts toward it. */
+  /* quote and credit stack in column 1, photo spans both rows in column 2 so
+     it can run larger. Quote sits at the foot of row 1 and the credit at the
+     head of row 2, which lands the pair centred against the photo. */
   .pull{
     margin:0;display:grid;
-    grid-template-columns:minmax(0,2.4fr) minmax(210px,1fr);
-    /* declared explicitly: left implicit, the credit merged into row 1 and the
-       quote centred against photo-plus-credit, sitting 27px low */
+    grid-template-columns:minmax(0,1.75fr) minmax(0,1fr);
     grid-template-rows:auto auto;
     column-gap:clamp(20px,3.5vw,52px);
   }
-  .pull blockquote{grid-column:1;grid-row:1;align-self:center}
-  .quote-photo{grid-column:2;grid-row:1;margin:0;aspect-ratio:4/5;border-radius:12px;overflow:hidden;display:block}
+  .pull blockquote{grid-column:1;grid-row:1;align-self:end}
+  .pull figcaption{grid-column:1;grid-row:2;align-self:start}
+  .quote-photo{grid-column:2;grid-row:1 / span 2;margin:0;aspect-ratio:4/5;border-radius:12px;overflow:hidden;display:block}
   .quote-photo img{display:block;width:100%;height:100%;object-fit:cover;object-position:50% 30%}
   .pull blockquote{
     margin:0;font-family:var(--display);font-weight:500;
-    font-size:clamp(21px,3.1vw,34px);line-height:1.24;letter-spacing:-.02em;
+    font-size:clamp(18px,2.35vw,27px);line-height:1.3;letter-spacing:-.015em;
     text-wrap:balance;color:var(--cream);
   }
   .light .pull blockquote{color:var(--green)}
@@ -334,16 +352,16 @@
      first line down and re-opening the gap above the quote. */
   .pull blockquote .qmark{font-size:1.5em;line-height:0;vertical-align:-.1em}
   .pull figcaption{
-    grid-column:2;grid-row:2;margin-top:20px;
+    margin-top:22px;max-width:34ch;
     font-family:var(--mono);font-size:12px;letter-spacing:.13em;text-transform:uppercase;
     color:var(--pastel);border-top:1px solid var(--green-line);padding-top:14px;
   }
   .light .pull figcaption{color:var(--moss);border-top-color:var(--sage)}
-  @media (max-width:760px){
+  @media (max-width:820px){
     .pull{grid-template-columns:1fr}
-    .pull blockquote,.quote-photo,.pull figcaption{grid-column:1;grid-row:auto}
-    .quote-photo{max-width:280px;margin-top:26px}
-    .pull figcaption{margin-top:18px}
+    .pull blockquote,.quote-photo,.pull figcaption{grid-column:1;grid-row:auto;align-self:auto}
+    .quote-photo{max-width:340px;margin-top:28px;aspect-ratio:4/5}
+    .pull figcaption{margin-top:18px;max-width:none}
   }
 
   /* channels and industries */
@@ -554,10 +572,10 @@
   <div class="wrap">
     <figure class="pull">
       <blockquote><span class="qmark">&ldquo;</span>We host experiences and media series that convert. Not because we chase reach &mdash; because we understand curation, consistency, and the connection that actually converts for our partners.&rdquo;</blockquote>
+      <figcaption>&mdash; Ella Molony Cook, Founder</figcaption>
       <span class="quote-photo">
         <img src="img/rev-41.jpg" alt="Two guests together at a Time Rich investor dinner." width="700" height="875" loading="lazy" decoding="async">
       </span>
-      <figcaption>&mdash; Ella Molony Cook, Founder</figcaption>
     </figure>
   </div>
 </section>
@@ -617,14 +635,27 @@
     <p class="note">Written by the people who were in the room. Screenshots, straight from LinkedIn.</p>
     <div class="tm-band">
       <div class="tm-track">
-        <img src="img/testimonial-1.png" alt="LinkedIn recommendation from Indra Klavins, Keynote Speaker and Executive Advisor." width="1600" height="800" loading="lazy" decoding="async">
-        <img src="img/testimonial-2.png" alt="LinkedIn recommendation from Martha Mercogliano, Forbes Mexico Top 50 Angel Investor." width="1600" height="800" loading="lazy" decoding="async">
-        <img src="img/testimonial-3.png" alt="LinkedIn recommendation from Jenni Ogden, Founder of Eye Q Productions." width="1600" height="800" loading="lazy" decoding="async">
+        <a href="img/testimonial-1.png" title="Open the full recommendation">
+          <img src="img/testimonial-1.png" alt="LinkedIn recommendation from Indra Klavins, Keynote Speaker and Executive Advisor." width="1600" height="800" loading="lazy" decoding="async">
+        </a>
+        <a href="img/testimonial-2.png" title="Open the full recommendation">
+          <img src="img/testimonial-2.png" alt="LinkedIn recommendation from Martha Mercogliano, Forbes Mexico Top 50 Angel Investor." width="1600" height="800" loading="lazy" decoding="async">
+        </a>
+        <a href="img/testimonial-3.png" title="Open the full recommendation">
+          <img src="img/testimonial-3.png" alt="LinkedIn recommendation from Jenni Ogden, Founder of Eye Q Productions." width="1600" height="800" loading="lazy" decoding="async">
+        </a>
         <!-- duplicate set for the seamless loop -->
-        <img src="img/testimonial-1.png" alt="" aria-hidden="true" width="1600" height="800" loading="lazy" decoding="async">
-        <img src="img/testimonial-2.png" alt="" aria-hidden="true" width="1600" height="800" loading="lazy" decoding="async">
-        <img src="img/testimonial-3.png" alt="" aria-hidden="true" width="1600" height="800" loading="lazy" decoding="async">
+        <a href="img/testimonial-1.png" tabindex="-1" aria-hidden="true">
+          <img src="img/testimonial-1.png" alt="" aria-hidden="true" width="1600" height="800" loading="lazy" decoding="async">
+        </a>
+        <a href="img/testimonial-2.png" tabindex="-1" aria-hidden="true">
+          <img src="img/testimonial-2.png" alt="" aria-hidden="true" width="1600" height="800" loading="lazy" decoding="async">
+        </a>
+        <a href="img/testimonial-3.png" tabindex="-1" aria-hidden="true">
+          <img src="img/testimonial-3.png" alt="" aria-hidden="true" width="1600" height="800" loading="lazy" decoding="async">
+        </a>
       </div>
+      <p class="tm-hint">Swipe &middot; tap a card to read it in full</p>
     </div>
   </div>
 </section>
