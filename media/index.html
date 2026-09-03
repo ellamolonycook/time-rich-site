@@ -178,6 +178,33 @@
   }
   .light .num + span{color:var(--moss)}
 
+  /* moving photo strip, same pattern as /revenue, retuned to this palette.
+     The track holds the set twice and travels -50%, so the loop is seamless. */
+  .photo-band{
+    padding:clamp(30px,4vw,44px) 0;overflow:hidden;background:var(--green);
+    border-top:1px solid var(--green-line);border-bottom:1px solid var(--green-line);
+  }
+  .photo-track{display:flex;gap:16px;width:max-content;animation:photoScroll 60s linear infinite}
+  .photo-band:hover .photo-track,.photo-band:focus-within .photo-track{animation-play-state:paused}
+  .photo-track img{
+    height:320px;width:260px;object-fit:cover;border-radius:6px;
+    display:block;flex:0 0 auto;border:1px solid var(--green-line);
+  }
+  /* travel one full set, which is half the track PLUS half a gap: the track
+     has 15 gaps across 16 tiles, so a plain -50% lands half a gap short and
+     the loop visibly hitches once per cycle */
+  @keyframes photoScroll{from{transform:translateX(0)}to{transform:translateX(calc(-50% - 8px))}}
+  @media (max-width:620px){
+    .photo-track{gap:12px;animation-name:photoScrollSm}
+    .photo-track img{height:220px;width:175px}
+  }
+  @keyframes photoScrollSm{from{transform:translateX(0)}to{transform:translateX(calc(-50% - 6px))}}
+  /* no drift for anyone who asked for less motion: swipe it by hand instead */
+  @media (prefers-reduced-motion:reduce){
+    .photo-track{animation:none;width:auto;overflow-x:auto;scroll-snap-type:x mandatory;padding-bottom:8px}
+    .photo-track img{scroll-snap-align:start}
+  }
+
   /* full-width band photo */
   .figure{margin:0;padding:0 var(--pad) clamp(56px,8vw,96px);background:var(--green)}
   .figure img{display:block;width:100%;height:auto;max-width:1080px;margin:0 auto;border-radius:6px}
@@ -400,6 +427,30 @@
     </figure>
   </div>
 </section>
+
+<!-- MOVING PHOTO STRIP: the rooms behind the quote above. Set is listed
+     twice so the -50% travel loops seamlessly; the second set is aria-hidden. -->
+<div class="photo-band">
+  <div class="photo-track">
+    <img width="520" height="640" loading="lazy" decoding="async" src="img/rev-06.jpg" alt="Speakers on stage at a Time Rich session during NY Tech Week.">
+    <img width="950" height="1425" loading="lazy" decoding="async" src="img/rev-34.jpg" alt="Guests seated around the table at a Time Rich investor dinner.">
+    <img width="860" height="573" loading="lazy" decoding="async" src="img/rev-11.jpg" alt="Ella speaking on a panel at NY Tech Week.">
+    <img width="950" height="1425" loading="lazy" decoding="async" src="img/rev-36.jpg" alt="Two guests talking over drinks at the bar before a Time Rich dinner.">
+    <img width="560" height="690" loading="lazy" decoding="async" src="img/rev-38.jpg" alt="Two speakers on stage at a Time Rich session.">
+    <img width="573" height="860" loading="lazy" decoding="async" src="img/rev-04.jpg" alt="The table at a Time Rich investor dinner.">
+    <img width="852" height="1066" loading="lazy" decoding="async" src="img/rev-02.jpg" alt="Members at a Time Rich rooftop event in New York.">
+    <img width="560" height="690" loading="lazy" decoding="async" src="img/rev-39.jpg" alt="Three guests together at a Time Rich dinner.">
+    <!-- duplicate set for the seamless loop -->
+    <img width="520" height="640" loading="lazy" decoding="async" src="img/rev-06.jpg" alt="" aria-hidden="true">
+    <img width="950" height="1425" loading="lazy" decoding="async" src="img/rev-34.jpg" alt="" aria-hidden="true">
+    <img width="860" height="573" loading="lazy" decoding="async" src="img/rev-11.jpg" alt="" aria-hidden="true">
+    <img width="950" height="1425" loading="lazy" decoding="async" src="img/rev-36.jpg" alt="" aria-hidden="true">
+    <img width="560" height="690" loading="lazy" decoding="async" src="img/rev-38.jpg" alt="" aria-hidden="true">
+    <img width="573" height="860" loading="lazy" decoding="async" src="img/rev-04.jpg" alt="" aria-hidden="true">
+    <img width="852" height="1066" loading="lazy" decoding="async" src="img/rev-02.jpg" alt="" aria-hidden="true">
+    <img width="560" height="690" loading="lazy" decoding="async" src="img/rev-39.jpg" alt="" aria-hidden="true">
+  </div>
+</div>
 
 <section class="band light">
   <div class="wrap">
