@@ -10,13 +10,13 @@
 <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16.png">
 <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
 <link rel="canonical" href="https://timerich.ai/media/">
-<title>Time Rich Partnerships · Media and education platform for entrepreneurs and investors</title>
-<meta name="description" content="Time Rich partnership media kit: a media and education platform for entrepreneurs and investors. Newsletter, podcast, workshops and events across private capital and founder audiences.">
+<title>Time Rich Partnerships &middot; A media and experiential company</title>
+<meta name="description" content="Time Rich is a media and experiential company for the people building what is next. Media, education and events across private capital, AI and founder audiences.">
 <meta property="og:title" content="Time Rich Partnerships">
-<meta property="og:description" content="A media and education platform for entrepreneurs and investors.">
+<meta property="og:description" content="A media and experiential company for the people building what is next.">
 <meta property="og:type" content="website">
 <meta property="og:url" content="https://timerich.ai/media/">
-<meta property="og:image" content="https://timerich.ai/media/img/rev-11.jpg">
+<meta property="og:image" content="https://timerich.ai/media/img/rev-33.jpg">
 <meta name="twitter:card" content="summary_large_image">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -46,6 +46,7 @@
 
   .band{padding:clamp(56px,8vw,110px) var(--pad);background:var(--green);color:var(--cream)}
   .band.light{background:var(--cream);color:var(--green)}
+  .band.slim{padding-top:clamp(34px,4.5vw,54px);padding-bottom:clamp(34px,4.5vw,54px)}
   .wrap{max-width:1080px;margin:0 auto}
 
   .eyebrow{
@@ -63,22 +64,56 @@
   .note{font-size:15px;color:var(--sage);max-width:70ch}
   .light .note{color:var(--moss)}
 
+  /* nav */
+  .nav{
+    background:var(--green);border-bottom:1px solid var(--green-line);
+    padding:16px var(--pad);
+  }
+  .nav-in{
+    max-width:1080px;margin:0 auto;display:flex;align-items:center;
+    justify-content:space-between;gap:20px 28px;flex-wrap:wrap;
+  }
+  .nav-links{display:flex;align-items:center;gap:8px 26px;flex-wrap:wrap}
+  .nav-links a:not(.btn){
+    font-family:var(--display);font-weight:500;font-size:15px;
+    color:var(--cream);text-decoration:none;padding:4px 0;
+    border-bottom:1px solid transparent;
+  }
+  .nav-links a:not(.btn):hover{color:var(--pastel);border-bottom-color:var(--pastel)}
+  .nav-links a[aria-current="page"]{color:var(--pastel);border-bottom-color:var(--pastel)}
+  .nav-links a:focus-visible{outline:2px solid var(--pastel);outline-offset:3px}
+  @media (max-width:560px){
+    .nav-in{flex-direction:column;align-items:flex-start;gap:14px}
+    .nav-links{width:100%;justify-content:flex-start;gap:10px 20px}
+  }
+
   /* hero */
   .hero{padding-top:clamp(40px,7vw,80px);padding-bottom:clamp(48px,7vw,88px)}
-  .mark{font-family:var(--display);font-weight:700;font-size:15px;letter-spacing:.08em;margin-bottom:clamp(48px,9vw,100px)}
+  .mark{
+    font-family:var(--display);font-weight:700;font-size:20px;letter-spacing:.08em;
+    color:var(--cream);text-decoration:none;line-height:1;white-space:nowrap;
+  }
   .mark i{color:var(--pastel);font-style:normal}
-  .hero h1{max-width:17ch}
+  .mark:focus-visible{outline:2px solid var(--pastel);outline-offset:4px}
+  .hero h1{font-size:clamp(32px,5vw,56px);max-width:19ch}
   .hero .lede{margin-top:24px;color:var(--sage)}
 
   .btn{
     display:inline-flex;align-items:center;gap:10px;
     background:var(--pastel);color:var(--green);
     font-family:var(--display);font-weight:700;font-size:16px;
-    padding:14px 26px;border-radius:999px;text-decoration:none;
-    transition:transform 160ms ease-out,background 160ms ease-out;
+    padding:14px 26px;border-radius:999px;text-decoration:none;border:1px solid var(--pastel);
+    transition:transform 160ms ease-out,background 160ms ease-out,color 160ms ease-out;
   }
-  .btn:hover{transform:translateY(-2px);background:#D8F4B4}
+  .btn:hover{transform:translateY(-2px);background:#D8F4B4;border-color:#D8F4B4}
   .btn:focus-visible{outline:2px solid var(--cream);outline-offset:3px}
+  .btn.sm{font-size:14px;padding:10px 20px}
+  .btn.ghost{background:transparent;color:var(--pastel);border-color:var(--green-line)}
+  .btn.ghost:hover{background:rgba(204,238,160,.1);border-color:var(--pastel);color:var(--pastel)}
+  .light .btn.ghost{color:var(--moss);border-color:var(--sage)}
+  .light .btn.ghost:hover{background:rgba(103,118,46,.08);border-color:var(--moss)}
+  .light .btn:focus-visible{outline-color:var(--green)}
+  .cta-row{display:flex;flex-wrap:wrap;gap:12px 14px;margin:32px 0 0}
 
   /* stat strip */
   .strip{
@@ -87,6 +122,8 @@
     background:var(--green-line);border:1px solid var(--green-line);
   }
   .strip div{background:var(--green);padding:22px 20px}
+  /* three stats stack rather than leaving an orphan cell on narrow screens */
+  @media (max-width:560px){.strip{grid-template-columns:1fr}}
   .light .strip{background:var(--sage);border-color:var(--sage)}
   .light .strip div{background:var(--cream)}
   .num{
@@ -101,9 +138,16 @@
   }
   .light .num + span{color:var(--moss)}
 
+  /* full-width band photo */
+  .figure{margin:0;padding:0 var(--pad) clamp(56px,8vw,96px);background:var(--green)}
+  .figure img{display:block;width:100%;height:auto;max-width:1080px;margin:0 auto;border-radius:6px}
+
   .grid{display:grid;gap:20px;margin-top:44px}
   .g2{grid-template-columns:repeat(auto-fit,minmax(300px,1fr))}
   .g3{grid-template-columns:repeat(auto-fit,minmax(240px,1fr))}
+  /* the proof gallery holds a fixed 3 across so six photos sit as two full rows */
+  .gallery{grid-template-columns:repeat(3,minmax(0,1fr))}
+  @media (max-width:640px){.gallery{grid-template-columns:repeat(2,minmax(0,1fr));gap:14px}}
 
   .card{background:var(--green-panel);border:1px solid var(--green-line);padding:26px 24px;border-radius:4px}
   .light .card{background:var(--cream-panel);border-color:var(--sage)}
@@ -115,118 +159,62 @@
   .light .card p{color:var(--green)}
 
   .split{display:grid;gap:clamp(28px,5vw,60px);grid-template-columns:repeat(auto-fit,minmax(300px,1fr));align-items:start}
+  /* the text column reads flush with the top of the photo beside it */
+  .split .col{display:flex;flex-direction:column}
+  .split .col > *:first-child{margin-top:0}
+  .split .col > .lede:first-child{margin-top:-8px}
+  .split .col > *:last-child{margin-bottom:0}
 
-  .bars{margin-top:8px}
-  .bar-row{margin-bottom:22px}
-  .bar-head{display:flex;justify-content:space-between;align-items:baseline;gap:16px;margin-bottom:8px}
-  .bar-head b{font-family:var(--display);font-size:16px;font-weight:500}
-  .bar-head span{font-family:var(--mono);font-size:14px;color:var(--pastel);font-variant-numeric:tabular-nums}
-  .light .bar-head span{color:var(--moss)}
-  .bar{height:8px;background:var(--green-line);border-radius:999px;overflow:hidden}
-  .light .bar{background:var(--sage)}
-  .bar i{display:block;height:100%;background:var(--pastel);border-radius:999px}
-  .light .bar i{background:var(--moss)}
-
-  ul.clean{list-style:none;padding:0;margin:0}
-  ul.clean li{padding:18px 0;border-top:1px solid var(--green-line);font-size:16px}
-  .light ul.clean li{border-color:var(--sage)}
-  ul.clean li:last-child{border-bottom:1px solid var(--green-line)}
-  .light ul.clean li:last-child{border-color:var(--sage)}
-  ul.clean b{font-family:var(--display);font-weight:700;display:block;margin-bottom:4px}
-
-  /* portfolio */
-  .port{margin-top:40px;border-top:1px solid var(--green-line)}
-  .light .port{border-color:var(--sage)}
-  .ev{
-    display:grid;grid-template-columns:112px 1fr 128px;gap:22px;
-    padding:20px 0;border-bottom:1px solid var(--green-line);align-items:baseline;
+  /* pull quote, full width and horizontal */
+  .pull{
+    margin:0;display:grid;gap:clamp(20px,3.5vw,52px);align-items:end;
+    grid-template-columns:minmax(0,2.5fr) minmax(190px,1fr);
   }
-  .light .ev{border-color:var(--sage)}
-  .ev .when{font-family:var(--mono);font-size:11.5px;letter-spacing:.1em;text-transform:uppercase;color:var(--pastel);padding-top:5px}
-  .light .ev .when{color:var(--moss)}
-  .ev h3{font-size:17.5px;margin-bottom:6px}
-  .ev h3 a{color:inherit;text-decoration:none;border-bottom:1px solid rgba(204,238,160,.45);padding-bottom:1px}
-  .light .ev h3 a{border-bottom-color:rgba(103,118,46,.45)}
-  .ev h3 a:hover{color:var(--pastel);border-bottom-color:var(--pastel)}
-  .light .ev h3 a:hover{color:var(--moss);border-bottom-color:var(--moss)}
-  .ev h3 a:focus-visible{outline:2px solid var(--pastel);outline-offset:3px}
-  .ev p{font-size:15px;color:var(--sage);margin:0;max-width:62ch}
-  .light .ev p{color:var(--green)}
-  .ev .count{
-    font-family:var(--mono);font-size:13px;color:var(--pastel);text-align:right;
-    font-variant-numeric:tabular-nums;padding-top:4px;
+  .pull blockquote{
+    margin:0;font-family:var(--display);font-weight:500;
+    font-size:clamp(21px,3.1vw,34px);line-height:1.24;letter-spacing:-.02em;
+    text-wrap:balance;color:var(--cream);
   }
-  .light .ev .count{color:var(--moss)}
-  .ev .count small{display:block;font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:var(--sage);margin-top:3px}
-  .light .ev .count small{color:var(--moss);opacity:.75}
-  @media (max-width:720px){
-    .ev{grid-template-columns:1fr;gap:8px}
-    .ev .count{text-align:left;padding-top:2px}
-    .ev .count small{display:inline;margin-left:6px}
+  .light .pull blockquote{color:var(--green)}
+  .pull figcaption{
+    font-family:var(--mono);font-size:12px;letter-spacing:.13em;text-transform:uppercase;
+    color:var(--pastel);border-top:1px solid var(--green-line);padding-top:14px;
+  }
+  .light .pull figcaption{color:var(--moss);border-top-color:var(--sage)}
+  @media (max-width:760px){.pull{grid-template-columns:1fr;align-items:start}}
+
+  /* channels and industries */
+  .rowlabel{
+    font-family:var(--mono);font-size:11.5px;letter-spacing:.14em;text-transform:uppercase;
+    color:var(--sage);margin:0 0 16px;
+  }
+  .light .rowlabel{color:var(--moss)}
+  .channels{display:flex;flex-wrap:wrap;align-items:center;gap:14px clamp(22px,5vw,54px)}
+  .channels a{
+    font-family:var(--display);font-weight:700;font-size:clamp(19px,2.6vw,28px);
+    letter-spacing:-.01em;color:var(--cream);text-decoration:none;
+    border-bottom:1px solid transparent;padding-bottom:2px;transition:color 160ms ease-out;
+  }
+  .channels a:hover{color:var(--pastel);border-bottom-color:var(--pastel)}
+  .channels a:focus-visible{outline:2px solid var(--pastel);outline-offset:4px}
+  .rule{border:0;border-top:1px solid var(--green-line);margin:clamp(30px,4vw,44px) 0}
+  .chips{display:flex;flex-wrap:wrap;gap:10px}
+  .chips span{
+    font-family:var(--mono);font-size:12px;letter-spacing:.08em;
+    border:1px solid var(--green-line);color:var(--sage);
+    padding:7px 15px;border-radius:999px;white-space:nowrap;
   }
 
-  /* receipts */
-  .shots{display:grid;gap:20px;grid-template-columns:1.35fr 1fr;margin-top:40px;align-items:start}
-  @media (max-width:820px){.shots{grid-template-columns:1fr}}
-  .shot{background:var(--green-panel);border:1px solid var(--green-line);border-radius:6px;padding:14px;display:flex;flex-direction:column;gap:12px}
-  .light .shot{background:var(--cream-panel);border-color:var(--sage)}
-  .shot img{display:block;width:100%;height:auto;border-radius:3px}
-  .shot .cap{font-family:var(--mono);font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--pastel);margin:0}
-  .light .shot .cap{color:var(--moss)}
-  .shot.data{padding:22px 20px;gap:16px}
-
-  /* recent-posts table (scoped: overrides the wide comparison-table rules) */
-  .posts{width:100%;min-width:0;border-collapse:collapse}
-  .posts th{font-family:var(--mono);font-size:10.5px;letter-spacing:.12em;text-transform:uppercase;
-    color:var(--moss);font-weight:400;text-align:right;padding:0 0 10px;border-bottom:1px solid var(--sage);white-space:nowrap}
-  .posts th:first-child{text-align:left}
-  .posts td{padding:13px 0;border-bottom:1px solid rgba(103,118,46,.18);text-align:right;white-space:nowrap;
-    font-family:var(--mono);font-size:13.5px;color:var(--green);font-variant-numeric:tabular-nums;vertical-align:top}
-  .posts td:first-child{text-align:left;white-space:normal;padding-right:18px;font-family:var(--body)}
-  .posts th+th,.posts td+td{padding-left:20px}
-  .posts tr:last-child td{border-bottom:0;padding-bottom:0}
-  .posts b{display:block;font-family:var(--display);font-weight:500;font-size:14.5px;line-height:1.3;color:var(--green)}
-  .posts small{display:block;font-family:var(--mono);font-size:11px;letter-spacing:.06em;color:var(--moss);margin-top:5px}
-
-  /* small KPI pair inside a data panel */
-  .kpi{list-style:none;margin:0;padding:0;display:grid;grid-template-columns:repeat(2,1fr);gap:16px}
-  .kpi b{display:block;font-family:var(--display);font-weight:700;font-size:26px;letter-spacing:-.02em;color:var(--green);line-height:1.05}
-  .kpi span{display:block;font-family:var(--mono);font-size:10.5px;letter-spacing:.11em;text-transform:uppercase;color:var(--moss);margin-top:6px}
-
-  /* table */
-  .scroll{overflow-x:auto;margin-top:40px;-webkit-overflow-scrolling:touch}
-  table{border-collapse:collapse;width:100%;min-width:640px;font-size:15px}
-  th,td{text-align:left;padding:15px 16px;border-bottom:1px solid var(--green-line);vertical-align:top}
-  .light th,.light td{border-color:var(--sage)}
-  thead th{font-family:var(--mono);font-size:11px;letter-spacing:.13em;text-transform:uppercase;color:var(--pastel);white-space:nowrap}
-  .light thead th{color:var(--moss)}
-  tbody th{font-weight:500;font-family:var(--body);width:42%}
-  td{text-align:center;color:var(--sage);white-space:nowrap}
-  .light td{color:var(--green)}
-  .yes{color:var(--pastel);font-weight:700}
-  .light .yes{color:var(--moss)}
-  .no{opacity:.4}
-
-  /* packages */
-  .pkg{display:flex;flex-direction:column;gap:14px;padding:30px 26px}
-  .pkg .price{font-family:var(--display);font-weight:700;font-size:34px;letter-spacing:-.03em;color:var(--pastel);font-variant-numeric:tabular-nums}
-  .light .pkg .price{color:var(--moss)}
-  .pkg ul{list-style:none;padding:0;margin:0;display:flex;flex-direction:column;gap:9px}
-  .pkg li{font-size:15px;padding-left:20px;position:relative;color:var(--sage)}
-  .light .pkg li{color:var(--green)}
-  .pkg li::before{content:"\2192";position:absolute;left:0;color:var(--pastel);font-size:13px}
-  .light .pkg li::before{color:var(--moss)}
+  /* packages: a true 2x2 so all four cards read as one block */
+  .pkgs{grid-template-columns:repeat(2,minmax(0,1fr))}
+  @media (max-width:780px){.pkgs{grid-template-columns:1fr}}
+  .pkg{display:flex;flex-direction:column;gap:14px;padding:30px 26px;height:100%}
+  .pkg p{font-size:15.5px;margin:0}
+  .pkg .btn{margin-top:auto;align-self:flex-start}
   .pkg.feature{background:var(--pastel);border-color:var(--pastel);color:var(--green)}
-  .pkg.feature .tag,.pkg.feature .price,.pkg.feature li,.pkg.feature p{color:var(--green)}
-  .pkg.feature li::before{color:var(--green)}
-
-  /* steps */
-  .steps{counter-reset:s;margin-top:44px}
-  .step{display:grid;grid-template-columns:auto 1fr;gap:20px;padding:22px 0;border-top:1px solid var(--sage);align-items:start}
-  .step:last-child{border-bottom:1px solid var(--sage)}
-  .step::before{counter-increment:s;content:counter(s,decimal-leading-zero);font-family:var(--mono);font-size:12px;letter-spacing:.1em;color:var(--moss);padding-top:4px}
-  .step h3{margin-bottom:4px}
-  .step p{margin:0;font-size:15.5px}
+  .pkg.feature .tag,.pkg.feature p{color:var(--green)}
+  .pkg.feature .btn{background:var(--green);border-color:var(--green);color:var(--pastel)}
+  .pkg.feature .btn:hover{background:#3C4730;border-color:#3C4730}
 
   .frame{
     border:1px dashed var(--pastel);border-radius:6px;min-height:260px;
@@ -234,10 +222,6 @@
     background:rgba(204,238,160,.05);
   }
   .light .frame{border-color:var(--moss);background:rgba(103,118,46,.05)}
-  .frame .tag{font-family:var(--mono);font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--pastel);margin-bottom:8px}
-  .light .frame .tag{color:var(--moss)}
-  .frame p{margin:0;font-size:14.5px;color:var(--sage)}
-  .light .frame p{color:var(--moss)}
   .frame img{display:block;width:100%;height:auto;border-radius:4px}
 
   /* a frame holding a real photo: no dashed placeholder chrome */
@@ -251,29 +235,13 @@
   .quote cite{font-style:normal;font-family:var(--mono);font-size:11.5px;letter-spacing:.12em;text-transform:uppercase;color:var(--pastel)}
   .light .quote cite{color:var(--moss)}
 
-  .slot{
-    border:1px dashed var(--pastel);border-radius:4px;min-height:170px;
-    display:flex;flex-direction:column;justify-content:center;padding:24px;background:rgba(204,238,160,.05);
-  }
-  .light .slot{border-color:var(--moss);background:rgba(103,118,46,.05)}
-  .slot .tag{font-family:var(--mono);font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--pastel);margin-bottom:8px}
-  .light .slot .tag{color:var(--moss)}
-  .slot p{margin:0;font-size:14.5px;color:var(--sage)}
-  .light .slot p{color:var(--moss)}
-
-  .flag{
-    font-family:var(--mono);font-size:10.5px;letter-spacing:.1em;text-transform:uppercase;
-    border:1px solid var(--pastel);color:var(--pastel);padding:2px 7px;border-radius:999px;
-    white-space:nowrap;display:inline-block;vertical-align:middle;position:relative;top:-1px;
-  }
-  .light .flag{border-color:var(--moss);color:var(--moss)}
-
-  .sign{font-family:var(--display);font-weight:500;font-size:20px;margin-top:40px}
   .contact{
-    margin-top:28px;padding-top:24px;border-top:1px solid var(--green-line);
+    margin-top:36px;padding-top:24px;border-top:1px solid var(--green-line);
     font-family:var(--mono);font-size:13px;letter-spacing:.04em;color:var(--sage);
-    display:flex;flex-wrap:wrap;gap:8px 22px;
+    display:flex;flex-wrap:wrap;gap:8px 22px;align-items:center;
   }
+  .contact b{font-family:var(--display);font-weight:700;font-size:15px;letter-spacing:.08em;color:var(--cream)}
+  .contact b i{color:var(--pastel);font-style:normal}
   .contact a{color:var(--pastel);text-decoration:none}
   .contact a:hover{text-decoration:underline}
   .contact a:focus-visible{outline:2px solid var(--pastel);outline-offset:3px}
@@ -283,456 +251,153 @@
 
 </head>
 <body>
+
+<nav class="nav">
+  <div class="nav-in">
+    <a class="mark" href="/">TIME RICH<i>.</i></a>
+    <div class="nav-links">
+      <a href="/media/" aria-current="page">Media</a>
+      <a href="https://timerich.ai/eventportfolio/">Event Portfolio</a>
+      <a class="btn sm" href="mailto:emc@timerich.ai?subject=Time%20Rich%20partnership">Partner with us <span aria-hidden="true">&rarr;</span></a>
+    </div>
+  </div>
+</nav>
+
 <header class="band hero">
   <div class="wrap">
-    <div class="mark">TIME RICH<i>.</i></div>
-    <span class="eyebrow">Partnerships &middot; 2026</span>
-    <h1>A media and education platform for entrepreneurs and investors.</h1>
-    <p class="lede">A 60,000 subscriber newsletter, a podcast, and 250 events in two years across private capital, AI and founder education. Partners do not get a logo on a banner. They get their product in the hands of people who build and people who write cheques.</p>
+    <span class="eyebrow">Media &amp; Experiential &middot; 2026</span>
+    <h1>A media and experiential company for the people building what&rsquo;s next.</h1>
+    <p class="lede">A decade of building rooms that convert. First it was retreats in Australia &mdash; exited in 2021. Then a global private capital network. Now, Time Rich: connecting the next generation of change-makers and innovators, one curated room at a time.</p>
+    <div class="cta-row">
+      <a class="btn" href="mailto:emc@timerich.ai?subject=Time%20Rich%20partnership">Partner with us <span aria-hidden="true">&rarr;</span></a>
+      <a class="btn ghost" href="https://timerich.ai/eventportfolio/">See the event portfolio <span aria-hidden="true">&rarr;</span></a>
+    </div>
     <div class="strip">
-      <div><span class="num">60,000+</span><span>Newsletter subscribers</span></div>
-      <div><span class="num">30,000+</span><span>Views per newsletter</span></div>
-      <div><span class="num">250+</span><span>Events in two years</span></div>
+      <div><span class="num">63,000+</span><span>Newsletter subscribers</span></div>
+      <div><span class="num">250+</span><span>Private Capital Events in two years</span></div>
       <div><span class="num">25,000+</span><span>Founders and investors reached</span></div>
     </div>
   </div>
 </header>
 
+<figure class="figure"><img src="img/rev-33.jpg" alt="A four-person panel on stage at a Time Rich session during NY Tech Week, with the audience seated in front." width="1800" height="1201" decoding="async"></figure>
+
 <section class="band light">
   <div class="wrap">
     <span class="eyebrow">Who runs it</span>
-    <h2>Ella Molony Cook. Four companies, one exit, and an investor in Anthropic.</h2>
+    <h2>Ten years curating rooms. Now I curate the future.</h2>
     <div class="split">
-      <div>
-        <p class="lede">I grew up in Australia, dropped out of high school, and started my first company without the word entrepreneur in my vocabulary. I bootstrapped it to an exit at 24. Then I moved to the US and raised multiple seven figures on grow or die.</p>
-        <p class="note">Time Rich is what came next. I write the newsletter every week and journal the build of a $20M business in public, numbers included. I teach the AI workshops myself rather than hiring a curriculum. And I produce the events, from a poker night for private markets investors in downtown Manhattan to a two-day virtual conference for 1,282 founders and VCs.</p>
-        <p class="note">The through line is access. Most people in my audience are one introduction, one tool or one framework away from the next stage of their business. Time Rich is the shortest path to all three, and a partner sits inside that path rather than beside it.</p>
+      <div class="col">
+        <p class="lede">I&rsquo;ve been an entrepreneur for a decade. My first company was retreats, back home in Australia &mdash; I bootstrapped it and exited in 2021. What I learned running it became the throughline for everything since: what people actually pay for isn&rsquo;t the itinerary, it&rsquo;s the room. Who&rsquo;s in it, how it&rsquo;s paced, whether it holds together after everyone goes home.</p>
+        <p class="note">I took that into private capital next, building a global network connecting investors, family offices and the deals worth their time. Now I&rsquo;m building Time Rich &mdash; a media and experiential company for the founders, operators and investors building what&rsquo;s next.</p>
+        <p class="note">My superpower hasn&rsquo;t changed. It&rsquo;s curation: the right people, in the right room, at the right cadence, until it becomes a relationship instead of a night out. That&rsquo;s what converts for our partners &mdash; not reach, not a logo on a step-and-repeat. Curation, consistency, connection.</p>
       </div>
       <div class="frame photo">
         <img src="img/rev-32.jpg" alt="Ella Molony Cook, founder of Time Rich." width="900" height="1200" loading="lazy" decoding="async">
       </div>
     </div>
-    <div class="strip" style="margin-top:clamp(40px,6vw,64px)">
-      <div><span class="num">4</span><span>Companies built</span></div>
-      <div><span class="num">1</span><span>Exit, at 24</span></div>
-      <div><span class="num">Anthropic</span><span>Investor</span></div>
-      <div><span class="num">250+</span><span>Events in two years</span></div>
-      <div><span class="num">1,000s</span><span>Taught to build with AI</span></div>
-    </div>
   </div>
 </section>
 
 <section class="band">
+  <div class="wrap">
+    <figure class="pull">
+      <blockquote>&ldquo;We host experiences and media series that convert. Not because we chase reach &mdash; because we understand curation, consistency, and the connection that actually converts for our partners.&rdquo;</blockquote>
+      <figcaption>&mdash; Ella Molony Cook, Founder</figcaption>
+    </figure>
+  </div>
+</section>
+
+<section class="band light">
   <div class="wrap">
     <span class="eyebrow">What we install</span>
-    <h2>Not tools. An operating system.</h2>
-    <div class="split">
-      <div>
-        <p class="lede">"I'm not here to hand you tools. I'm coaching you to rewire how you work, so you get the room to build revenue instead of servicing it."</p>
-        <p class="note">Both systems get worked on: the one on the screen, and the one running the person. That is the difference between a workshop people enjoy and a system people still use in March.</p>
-        <p class="note">It matters for a partner because a product that gets installed into someone's operating system does not get evaluated once and forgotten. It gets opened on Monday, and the week after that.</p>
-      </div>
-      <div class="grid g2" style="margin-top:0">
-        <div class="card">
-          <span class="tag">For founders</span>
-          <h3>1:1 AI system coaching</h3>
-          <p>The AI operating system that runs the business, built to the individual context. Application based.</p>
-        </div>
-        <div class="card">
-          <span class="tag">For operators</span>
-          <h3>The AI Revenue Accelerator</h3>
-          <p>Twelve seats, eight weeks, building the revenue engine rather than collecting tools.</p>
-        </div>
-        <div class="card">
-          <span class="tag">For private capital</span>
-          <h3>An intelligent operating system for private markets</h3>
-          <p>The DFX operating infrastructure, presented to 376 fund managers, allocators and institutional stakeholders in February 2026.</p>
-        </div>
-        <div class="card">
-          <span class="tag">For everyone</span>
-          <h3>Free build sessions</h3>
-          <p>Live, every other week, open to the whole list. The entry point into all of the above.</p>
-        </div>
-      </div>
-    </div>
-  </div>
-</section>
-
-<section class="band light">
-  <div class="wrap">
-    <span class="eyebrow">On stage</span>
-    <h2>Where Ella speaks.</h2>
-    <div class="split">
-      <ul class="clean">
-        <li><b>LEDEX Forum 2026, Portugal</b>Speaking in Olhao this October on The AI Content Machine: consistent content from what you already know. A 25 minute keynote plus Q&amp;A.</li>
-        <li><b>NY Tech Week</b>Panels and sessions hosted under Time Rich in New York, with founders and investors on stage.</li>
-        <li><b>Virtual keynotes</b>The two-day direct investing conference for 1,282 registrants, and the private markets architecture sessions for fund managers.</li>
-        <li><b>Workshops and masterclasses</b>Taught live and in person, on a rolling calendar, in front of rooms of up to 100. <!-- OPEN ITEM: add press and other speaking credits here. --></li>
-      </ul>
-      <div class="frame photo">
-        <img src="img/rev-11.jpg" alt="Ella speaking on a panel at NY Tech Week in New York." width="860" height="573" loading="lazy" decoding="async">
-      </div>
-    </div>
-  </div>
-</section>
-
-<section class="band">
-  <div class="wrap">
-    <span class="eyebrow">The audience</span>
-    <h2>Two rooms that rarely sit together.</h2>
-    <p class="note">Most platforms reach founders or investors. Time Rich programmes both, which is why a poker night for private markets investors and a hands-on agent build workshop run under the same roof. Partners can buy one room or the overlap.</p>
-    <div class="grid g2">
-      <div class="card">
-        <span class="tag">Room one</span>
-        <h3>Private capital</h3>
-        <p>Independent sponsors, family offices, fund managers, LPs, allocators and deal professionals. Reached through the equity evenings, the private capital networking nights and the private markets sessions run under DFX.</p>
-      </div>
-      <div class="card">
-        <span class="tag">Room two</span>
-        <h3>Founders and operators</h3>
-        <p>Founders, operators, creators, consultants and executives running real businesses. Reached through the newsletter, the AI workshops, the pitch events and the in-person build days.</p>
-      </div>
-    </div>
-    <div class="split" style="margin-top:52px">
-      <div>
-        <h3 style="margin-bottom:18px">Technical split at a build event</h3>
-        <div class="bars">
-          <div class="bar-row">
-            <div class="bar-head"><b>Non-technical founders and operators</b><span>60%</span></div>
-            <div class="bar"><i style="width:60%"></i></div>
-          </div>
-          <div class="bar-row">
-            <div class="bar-head"><b>Technical builders</b><span>40%</span></div>
-            <div class="bar"><i style="width:40%"></i></div>
-          </div>
-        </div>
-        <p class="note">Teams are mixed deliberately, so nobody is stuck and nothing stalls. Most attendees have never written code, which is exactly why a product that removes that barrier lands in this room.</p>
-      </div>
-      <div class="grid g2" style="margin-top:0">
-        <div class="card">
-          <span class="tag">Profile</span>
-          <p>Largely late twenties to forties, high earning, city based, and highly likely to talk about what they liked.</p>
-        </div>
-        <div class="card">
-          <span class="tag">Capacity</span>
-          <p>Up to 100 at a workshop, 100 to 150 at a hackathon, 20 to 40 at a dinner, and 150 to 1,280 online.</p>
-        </div>
-        <div class="card">
-          <span class="tag">Intent</span>
-          <p>People come to build something they will use on Monday, or to meet the person who funds it.</p>
-        </div>
-        <div class="card">
-          <span class="tag">Vetting</span>
-          <p>The club is free to join but application based, so the room stays high calibre.</p>
-        </div>
-      </div>
-    </div>
-  </div>
-</section>
-
-<section class="band light">
-  <div class="wrap">
-    <span class="eyebrow">The reach</span>
-    <h2>Numbers, not vibes.</h2>
-    <div class="strip">
-      <div><span class="num">60,000+</span><span>Newsletter subscribers</span></div>
-      <div><span class="num">32-41%</span><span>Newsletter open rate</span></div>
-      <div><span class="num">85,803</span><span>Instagram views, 30 days</span></div>
-      <div><span class="num">80.7%</span><span>Instagram reach beyond followers</span></div>
-    </div>
-    <div class="shots">
-      <div class="shot data">
-        <p class="cap">Newsletter, recent posts &middot; August 2026</p>
-        <table class="posts">
-          <thead>
-            <tr><th scope="col">Post</th><th scope="col">Views</th><th scope="col">Opened</th></tr>
-          </thead>
-          <tbody>
-            <tr>
-              <td><b>AI Builder Workshop Roadshow</b><small>24 August 2026</small></td>
-              <td>34.8k</td><td>41%</td>
-            </tr>
-            <tr>
-              <td><b>Welcome to my unfiltered journal as I build a $20M business in the next 7 months</b><small>21 August 2026</small></td>
-              <td>27.5k</td><td>32%</td>
-            </tr>
-            <tr>
-              <td><b>The AI Economy Just Doubled Salaries. Guess Who Got Left Off The List.</b><small>19 August 2026</small></td>
-              <td>32.3k</td><td>38%</td>
-            </tr>
-          </tbody>
-        </table>
-      </div>
-      <div class="shot data">
-        <p class="cap">Instagram, last 30 days</p>
-        <div class="bars">
-          <div class="bar-row" style="margin-bottom:14px">
-            <div class="bar-head"><b>Views from non-followers</b><span>80.7%</span></div>
-            <div class="bar"><i style="width:80.7%"></i></div>
-          </div>
-          <div class="bar-row" style="margin-bottom:4px">
-            <div class="bar-head"><b>Views from followers</b><span>19.3%</span></div>
-            <div class="bar"><i style="width:19.3%"></i></div>
-          </div>
-        </div>
-        <ul class="kpi">
-          <li><b>+174</b><span>Net followers</span></li>
-          <li><b>1,876</b><span>Interactions</span></li>
-        </ul>
-      </div>
-    </div>
-    <p class="note" style="margin-top:26px">Every newsletter post clears 27,000 views. Four in five Instagram views come from people who do not follow the account yet, which is the number that matters for a partner buying reach rather than applause.</p>
-  </div>
-</section>
-
-<section class="band">
-  <div class="wrap">
-    <span class="eyebrow">Track record &middot; in person</span>
-    <h2>Private capital and founder events.</h2>
-    <p class="note">Produced under DFX and Time Rich. Every link below goes to the live event page.</p>
-    <div class="port">
-      <div class="ev">
-        <div class="when">Nov 2025</div>
-        <div>
-          <h3><a href="https://lu.ma/lxnzud5b">Private Markets Poker Night with Jamie Gold</a></h3>
-          <p>An experiential evening at a downtown Manhattan venue bringing private markets investors and Series A+ founders together with a World Series of Poker champion. Entertainment-led programming used for real deal-flow activation.</p>
-        </div>
-        <div class="count">New York<small>Manhattan</small></div>
-      </div>
-      <div class="ev">
-        <div class="when">May 2025</div>
-        <div>
-          <h3><a href="https://lu.ma/to43yxq6">What Does it Really Take to Raise in 2025?</a></h3>
-          <p>A high-attendance fireside Q&amp;A on navigating the 2025 fundraising landscape, delivering candid expert-level insight to founders and reinforcing the brand as a trusted authority on early-stage capital strategy.</p>
-        </div>
-        <div class="count">Boston<small>Fireside</small></div>
-      </div>
-      <div class="ev">
-        <div class="when">Feb 2025</div>
-        <div>
-          <h3><a href="https://lu.ma/rz7y1c2g">Boston Equity Evening</a></h3>
-          <p>An intimate equity-focused evening convening private capital professionals, fund managers and early-stage investors, extending the community into a key financial hub outside New York.</p>
-        </div>
-        <div class="count">Boston<small>Equity evening</small></div>
-      </div>
-      <div class="ev">
-        <div class="when">Feb 2025</div>
-        <div>
-          <h3><a href="https://lu.ma/mllhxozh">Investor Happy Hour with Upgrade Labs</a></h3>
-          <p>A cross-brand happy hour activating the venture and private capital community during a high-traffic period for the Texas startup ecosystem, with co-branded visibility for a strategic partner.</p>
-        </div>
-        <div class="count">Austin<small>Co-branded</small></div>
-      </div>
-      <div class="ev">
-        <div class="when">Oct 2024</div>
-        <div>
-          <h3><a href="https://lu.ma/ff3uf81u">Private Capital Networking Night</a></h3>
-          <p>A high-density networking forum connecting investors, operators and deal professionals, designed to accelerate relationship formation and pipeline development in a concentrated professional audience.</p>
-        </div>
-        <div class="count">Dallas<small>Networking</small></div>
-      </div>
-      <div class="ev">
-        <div class="when">Sep 2024</div>
-        <div>
-          <h3><a href="https://lu.ma/43e7trcr">ISCP Club Welcome Reception</a></h3>
-          <p>Co-hosted with the iGlobal Forum Independent Sponsors Conference, positioning the brand as a convener of independent sponsors, family offices and institutional capital allocators. Partner co-marketing in practice.</p>
-        </div>
-        <div class="count">New York<small>Co-hosted</small></div>
-      </div>
-      <div class="ev">
-        <div class="when">Aug 2024</div>
-        <div>
-          <h3><a href="https://lu.ma/hbaxe339">Equity Evening</a></h3>
-          <p>A high-touch investor evening creating a curated environment for equity conversations and deal introductions inside the Western US private capital ecosystem. Proof that niche, high-value audiences activate in regional markets.</p>
-        </div>
-        <div class="count">Salt Lake City<small>Regional</small></div>
-      </div>
-    </div>
-  </div>
-</section>
-
-<section class="band light">
-  <div class="wrap">
-    <span class="eyebrow">Track record &middot; online</span>
-    <h2>Virtual conferences, pitch events and briefings.</h2>
-    <p class="note">Eight sessions, 3,086 registrants, all inside eighteen months. Registrant numbers are the live figures from each event page.</p>
-    <div class="port">
-      <div class="ev">
-        <div class="when">Feb 2026</div>
-        <div>
-          <h3><a href="https://lu.ma/qkasgq6i">An Intelligent Operating System Built for Private Capital</a></h3>
-          <p>Presenting DFX's operating infrastructure to private capital professionals, fund managers and institutional stakeholders.</p>
-        </div>
-        <div class="count">376<small>Registrants</small></div>
-      </div>
-      <div class="ev">
-        <div class="when">Feb 2026</div>
-        <div>
-          <h3><a href="https://lu.ma/8cuwdgd3">Strategic Partnership Kickoff Call</a></h3>
-          <p>A large-scale kickoff aligning a broad network of partnership-minded professionals and institutional contacts with the DFX growth roadmap.</p>
-        </div>
-        <div class="count">224<small>Registrants</small></div>
-      </div>
-      <div class="ev">
-        <div class="when">Jan 2026</div>
-        <div>
-          <h3><a href="https://lu.ma/zf2wdfdx">The Architecture for Private Markets</a></h3>
-          <p>A deep dive into the structural design and opportunity landscape of private markets, for sophisticated investors, operators and emerging fund managers.</p>
-        </div>
-        <div class="count">182<small>Registrants</small></div>
-      </div>
-      <div class="ev">
-        <div class="when">Jan 2026</div>
-        <div>
-          <h3><a href="https://lu.ma/m4p73k65">From 9 Months to 48 Hours: Build Mode Activated</a></h3>
-          <p>A virtual conference giving founders working frameworks for rapid product development and go-to-market with AI coding tools. One of the highest-attended sessions in the series.</p>
-        </div>
-        <div class="count">354<small>Registrants</small></div>
-      </div>
-      <div class="ev">
-        <div class="when">Dec 2025</div>
-        <div>
-          <h3><a href="https://lu.ma/mkgk4xip">AI Tool of the Week</a></h3>
-          <p>A recurring session spotlighting emerging tools for founders and operators. The natural slot for a product demo in front of a repeat audience.</p>
-        </div>
-        <div class="count">152<small>Registrants</small></div>
-      </div>
-      <div class="ev">
-        <div class="when">2025</div>
-        <div>
-          <h3><a href="https://lu.ma/gbvsstlo">Inner Circle: What You Need to Know for 2026</a></h3>
-          <p>What the year ahead looks like with AI, and our predictions for 2026. Built to hold trust as a resource for investors and operators navigating private capital.</p>
-        </div>
-        <div class="count">132<small>Registrants</small></div>
-      </div>
-      <div class="ev">
-        <div class="when">Jun 2025</div>
-        <div>
-          <h3><a href="https://luma.com/po68ay8k">Founders, Angels &amp; VCs: The New Era of Direct Investing</a></h3>
-          <p>A two-day virtual conference on capital formation in today's market, spanning fundraising strategy, institutional investor access and storytelling for investor relationships. The largest session to date.</p>
-        </div>
-        <div class="count">1,282<small>Registrants</small></div>
-      </div>
-      <div class="ev">
-        <div class="when">May 2025</div>
-        <div>
-          <h3><a href="https://lu.ma/6o70fo1q">Women in AI Pitch Tank</a></h3>
-          <p>A virtual pitch competition for women-led AI companies, giving female founders investor feedback, capital connections and visibility.</p>
-        </div>
-        <div class="count">384<small>Registrants</small></div>
-      </div>
-    </div>
-  </div>
-</section>
-
-<section class="band">
-  <div class="wrap">
-    <span class="eyebrow">Track record &middot; education</span>
-    <h2>The teaching calendar.</h2>
-    <p class="note">Run live, taught by Ella, and repeated on a rolling calendar. This is where a product gets used rather than mentioned.</p>
-    <div class="grid g3">
-      <div class="card"><span class="tag">Masterclass</span><h3>Revenue Agent Building Masterclass</h3><p>Building the agent that does the revenue work, start to finish.</p></div>
-      <div class="card"><span class="tag">Workshop</span><h3>Building AI Agents with Ella</h3><p>The self-improving agent build, live, from a blank screen.</p></div>
-      <div class="card"><span class="tag">Workshop</span><h3>AI Agent Basics, bring a bestie</h3><p>The entry point. Delegate the work you hate to an agent.</p></div>
-      <div class="card"><span class="tag">Circle</span><h3>AI Revenue Growth: Female Founder Circle</h3><p>A closed circle working on revenue, with AI as the lever.</p></div>
-      <div class="card"><span class="tag">Pitch</span><h3>Pitch + Pain, women business owners only</h3><p>Live pitching and live diagnosis of what is blocking the sale.</p></div>
-      <div class="card"><span class="tag">Bootcamp</span><h3>Immersive AI Bootcamp</h3><p>The long-form format, co-hosted, for founders going all in.</p></div>
-    </div>
-  </div>
-</section>
-
-<section class="band light">
-  <div class="wrap">
-    <span class="eyebrow">What a partner gets</span>
-    <h2>Six things, and all of them are measurable.</h2>
+    <h2>Three surfaces. One curated audience.</h2>
     <div class="grid g3">
       <div class="card">
-        <span class="tag">Exclusivity</span>
-        <h3>Your category, alone</h3>
-        <p>You are the only brand in your category at the event. No competing product is present, named or demoed.</p>
+        <span class="tag">01 &mdash; Media</span>
+        <h3>Newsletter, podcast, social</h3>
+        <p>60,000+ subscribers who read for the build, not the highlight reel. Your product, featured in context.</p>
       </div>
       <div class="card">
-        <span class="tag">Usage</span>
-        <h3>Hands on keyboards</h3>
-        <p>Up to 150 people using your product live, guided, with your team on the floor to unblock them.</p>
+        <span class="tag">02 &mdash; Education</span>
+        <h3>Workshops, masterclasses, bootcamp</h3>
+        <p>Live rooms where founders build on your platform, not just hear about it.</p>
       </div>
       <div class="card">
-        <span class="tag">Content</span>
-        <h3>Footage you own</h3>
-        <p>Full photography and video from the day, yours to use, including cutting your own edit.</p>
-      </div>
-      <div class="card">
-        <span class="tag">Distribution</span>
-        <h3>The full platform</h3>
-        <p>Named across the event page and all promotion, then the newsletter, the podcast, Instagram and LinkedIn.</p>
-      </div>
-      <div class="card">
-        <span class="tag">Data</span>
-        <h3>Opt-in leads</h3>
-        <p>Contact details for everyone who opts in, plus what they were building, their role and their technical level.</p>
-      </div>
-      <div class="card">
-        <span class="tag">Reporting</span>
-        <h3>A report, not a vibe</h3>
-        <p>A one page recap within seven days: attendance, products shipped, sign-ups, content and reach.</p>
+        <span class="tag">03 &mdash; Events</span>
+        <h3>Private capital, IRL and virtual</h3>
+        <p>Dinners, workshops, stages and conferences, curated one audience at a time.</p>
       </div>
     </div>
   </div>
 </section>
 
-<section class="band">
+<section class="band slim">
+  <div class="wrap">
+    <p class="rowlabel">Where we publish</p>
+    <div class="channels">
+      <a href="https://www.linkedin.com/in/ellamolonycook">LinkedIn</a>
+      <a href="https://substack.com/@timerichtalk">Substack</a>
+      <a href="https://www.instagram.com/timerichtalk">Instagram</a>
+    </div>
+    <hr class="rule">
+    <p class="rowlabel">Rooms built across</p>
+    <div class="chips">
+      <span>Real Estate</span>
+      <span>AI</span>
+      <span>Venture Capital</span>
+      <span>Biotech</span>
+      <span>Deep Tech</span>
+      <span>Fintech</span>
+      <span>Wellness &amp; Longevity</span>
+    </div>
+  </div>
+</section>
+
+<section class="band light">
   <div class="wrap">
     <span class="eyebrow">Ways to partner</span>
     <h2>Four packages, and they combine.</h2>
-    <p class="note">The platform has three surfaces: the events, the media and the teaching. A partner can take one of them or bundle the lot into a run that carries the same message across all three.</p>
-    <div class="grid g2">
+    <div class="grid pkgs">
       <div class="card pkg">
         <span class="tag">Package 01</span>
-        <h3>Event partner</h3>
-        <p style="font-size:15px;margin:0">One room, in person or online.</p>
-        <ul>
-          <li>Named partner on the page and all promotion</li>
-          <li>Category exclusivity for the day</li>
-          <li>Your product used live, hands on keyboards</li>
-          <li>Stage moment and your team on the floor</li>
-          <li>Opt-in attendee data and the full content library</li>
-        </ul>
+        <h3>Event Partner</h3>
+        <p>Named on the page and promotion, live product usage, a stage moment, opt-in attendee data, full content library.</p>
+        <a class="btn ghost sm" href="mailto:emc@timerich.ai?subject=Time%20Rich%20partnership%3A%20Event%20Partner">Ask about this package <span aria-hidden="true">&rarr;</span></a>
       </div>
       <div class="card pkg">
         <span class="tag">Package 02</span>
-        <h3>Media series</h3>
-        <p style="font-size:15px;margin:0">Newsletter and podcast, over a run.</p>
-        <ul>
-          <li>Dedicated newsletter placement to 60,000+ subscribers</li>
-          <li>A podcast episode or a recurring segment</li>
-          <li>Instagram and LinkedIn across the run</li>
-          <li>Your product written about in use, not advertised at</li>
-          <li>Open, click and view reporting per placement</li>
-        </ul>
+        <h3>Media Series</h3>
+        <p>In front of 60,000 readers. Newsletter placement, a podcast episode or recurring segment, Instagram and LinkedIn coverage, real reporting.</p>
+        <a class="btn ghost sm" href="mailto:emc@timerich.ai?subject=Time%20Rich%20partnership%3A%20Media%20Series">Ask about this package <span aria-hidden="true">&rarr;</span></a>
       </div>
       <div class="card pkg">
         <span class="tag">Package 03</span>
-        <h3>Education series</h3>
-        <p style="font-size:15px;margin:0">Workshops built around your product.</p>
-        <ul>
-          <li>A run of live workshops, masterclasses or a bootcamp</li>
-          <li>Curriculum built and taught on your product</li>
-          <li>Your team mentoring on the floor or in the chat</li>
-          <li>Recordings and teaching assets you keep</li>
-          <li>Everyone who attends, opted in and segmented</li>
-        </ul>
+        <h3>Education Series</h3>
+        <p>Curriculum built on your product. A run of workshops or a bootcamp, your team mentoring, recordings you keep, opted in attendee data.</p>
+        <a class="btn ghost sm" href="mailto:emc@timerich.ai?subject=Time%20Rich%20partnership%3A%20Education%20Series">Ask about this package <span aria-hidden="true">&rarr;</span></a>
       </div>
       <div class="card pkg feature">
         <span class="tag">Package 04</span>
-        <h3>Full platform</h3>
-        <p style="font-size:15px;margin:0">All three surfaces, one campaign.</p>
-        <ul>
-          <li>Everything in the three packages above</li>
-          <li>Category exclusivity across the whole run</li>
-          <li>The events feed the media and the media fills the events</li>
-          <li>Both audiences, private capital and founders</li>
-          <li>One report across the campaign, not three</li>
-        </ul>
+        <h3>Full Platform</h3>
+        <p>Every surface, one campaign. Category exclusivity across the run. Events feed media, media fills events. Both audiences, one report.</p>
+        <a class="btn sm" href="mailto:emc@timerich.ai?subject=Time%20Rich%20partnership%3A%20Full%20Platform">Ask about this package <span aria-hidden="true">&rarr;</span></a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="band">
+  <div class="wrap">
+    <span class="eyebrow">Event portfolio</span>
+    <h2>See the rooms for yourself.</h2>
+    <div class="split">
+      <div class="col">
+        <p class="lede" style="color:var(--sage)">Click into the event portfolio and click into any room we&rsquo;ve hosted &mdash; the format, the city, the audience, the sponsor. Nothing hypothetical.</p>
+        <p style="margin:14px 0 0"><a class="btn" href="https://timerich.ai/eventportfolio/">View the event portfolio <span aria-hidden="true">&rarr;</span></a></p>
+      </div>
+      <div class="frame photo">
+        <img src="img/rev-37.jpg" alt="Two speakers seated on stage at a Time Rich session during NY Tech Week." width="1200" height="800" loading="lazy" decoding="async">
       </div>
     </div>
   </div>
@@ -740,55 +405,23 @@
 
 <section class="band light">
   <div class="wrap">
-    <span class="eyebrow">What is included</span>
-    <h2>Side by side.</h2>
-    <div class="scroll">
-      <table>
-        <thead>
-          <tr>
-            <th scope="col">Included</th>
-            <th scope="col">Event</th>
-            <th scope="col">Media</th>
-            <th scope="col">Education</th>
-            <th scope="col">Full platform</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr><th scope="row">Named partner on the event page and all promotion</th><td class="yes">Yes</td><td class="no">No</td><td class="yes">Yes</td><td class="yes">Yes</td></tr>
-          <tr><th scope="row">Category exclusivity</th><td>For the day</td><td>For the run</td><td>For the run</td><td class="yes">Whole campaign</td></tr>
-          <tr><th scope="row">Your product used live in the room</th><td class="yes">Yes</td><td class="no">No</td><td class="yes">Yes</td><td class="yes">Yes</td></tr>
-          <tr><th scope="row">A moment on stage from your team</th><td class="yes">Yes</td><td class="no">No</td><td class="yes">Yes</td><td class="yes">Yes</td></tr>
-          <tr><th scope="row">Your team mentoring during the build</th><td class="yes">Yes</td><td class="no">No</td><td>Optional</td><td class="yes">Yes</td></tr>
-          <tr><th scope="row">Dedicated newsletter placement</th><td>Mention</td><td class="yes">Yes</td><td>Mention</td><td class="yes">Yes</td></tr>
-          <tr><th scope="row">Podcast episode or recurring segment</th><td class="no">No</td><td class="yes">Yes</td><td class="no">No</td><td class="yes">Yes</td></tr>
-          <tr><th scope="row">Curriculum built and taught on your product</th><td class="no">No</td><td class="no">No</td><td class="yes">Yes</td><td class="yes">Yes</td></tr>
-          <tr><th scope="row">Offer or sign-up moment to the room</th><td class="yes">Yes</td><td class="yes">Yes</td><td class="yes">Yes</td><td class="yes">Yes</td></tr>
-          <tr><th scope="row">Opt-in attendee data</th><td class="yes">Yes</td><td class="no">No</td><td class="yes">Yes</td><td class="yes">Yes</td></tr>
-          <tr><th scope="row">Photography, video and recordings to keep</th><td class="yes">Yes</td><td>Assets only</td><td class="yes">Yes</td><td class="yes">Yes</td></tr>
-          <tr><th scope="row">Recap report</th><td>Per event</td><td>Per placement</td><td>Per series</td><td class="yes">One campaign report</td></tr>
-        </tbody>
-      </table>
-    </div>
-    <p class="note" style="margin-top:26px">Rates depend on the room size, the length of the run and how many surfaces you take. Tell me which combination you want and I will price it against the specific dates.</p>
-  </div>
-</section>
-
-<section class="band">
-  <div class="wrap">
     <span class="eyebrow">Proof</span>
     <h2>The room, as it actually looks.</h2>
-    <div class="grid g3">
+    <div class="grid g3 gallery">
       <div class="frame photo"><img src="img/rev-02.jpg" alt="Members at a Time Rich rooftop event in New York." width="856" height="1070" loading="lazy" decoding="async"></div>
       <div class="frame photo"><img src="img/rev-04.jpg" alt="The table at a Time Rich investor dinner." width="573" height="860" loading="lazy" decoding="async"></div>
       <div class="frame photo"><img src="img/rev-06.jpg" alt="Speakers on stage at NY Tech Week." width="520" height="638" loading="lazy" decoding="async"></div>
+      <div class="frame photo"><img src="img/rev-34.jpg" alt="Guests seated around the table at a Time Rich investor dinner." width="950" height="1425" loading="lazy" decoding="async"></div>
+      <div class="frame photo"><img src="img/rev-35.jpg" alt="Guests in conversation over dinner at a Time Rich investor dinner." width="950" height="1425" loading="lazy" decoding="async"></div>
+      <div class="frame photo"><img src="img/rev-36.jpg" alt="Two guests talking over drinks at the bar before a Time Rich dinner." width="950" height="1425" loading="lazy" decoding="async"></div>
     </div>
     <div class="grid g2">
       <div class="quote">
-        <blockquote>"I came in with low expectations. I was wrong within five minutes."</blockquote>
+        <blockquote>&ldquo;I came in with low expectations. I was wrong within five minutes.&rdquo;</blockquote>
         <cite>Martha M. &middot; Forbes M&eacute;xico Top 50 Angel Investor</cite>
       </div>
       <div class="quote">
-        <blockquote>"Ella thinks about AI agents the way she thinks about building a business."</blockquote>
+        <blockquote>&ldquo;Ella thinks about AI agents the way she thinks about building a business.&rdquo;</blockquote>
         <cite>Indra K. &middot; Founder and Executive Advisor</cite>
       </div>
     </div>
@@ -796,32 +429,18 @@
   </div>
 </section>
 
-<section class="band light">
-  <div class="wrap">
-    <span class="eyebrow">How it works</span>
-    <h2>From yes to recap in about five weeks.</h2>
-    <div class="steps">
-      <div class="step"><div><h3>Pick the room and the tier</h3><p>A call or an email. We confirm which audience you want, the date, the room size and what your category exclusivity covers.</p></div></div>
-      <div class="step"><div><h3>You go on the page</h3><p>Your name and logo go live within a day, promotion opens across the newsletter and both social channels, and registration starts filling.</p></div></div>
-      <div class="step"><div><h3>We build the run of show around you</h3><p>Stage moment, floor team, judging seat and the offer to the room, all agreed a fortnight out. You send assets and a contact for the day.</p></div></div>
-      <div class="step"><div><h3>The event runs</h3><p>We handle venue, production, staffing, food and photography. Your team turns up and talks to people.</p></div></div>
-      <div class="step"><div><h3>Recap within seven days</h3><p>Attendance, products shipped, sign-ups, opt-in data, the full content library and the reach numbers, in one page.</p></div></div>
-    </div>
-  </div>
-</section>
-
 <footer class="band">
   <div class="wrap">
     <span class="eyebrow">Next step</span>
-    <h2>Tell me which room you want to be in.</h2>
-    <p class="lede" style="color:var(--sage)">If it is a yes in principle, we can put you on the next event page this week and open promotion, then work the detail out properly over the following fortnight. Happy to walk through any of it on a call.</p>
-    <p><a class="btn" href="mailto:emc@timerich.ai?subject=Time%20Rich%20partnership">Email me about a partnership <span aria-hidden="true">&rarr;</span></a></p>
-    <p class="sign">Warmly, Ella</p>
+    <h2>Let&rsquo;s build your room.</h2>
+    <p class="lede" style="color:var(--sage)">Tell me the audience you want in the room and I&rsquo;ll price it against the format that fits.</p>
+    <!-- TODO: this CTA becomes the 30-minute discovery call booking link once Ella supplies it. Until then it stays a mailto. -->
+    <p style="margin-top:32px"><a class="btn" href="mailto:emc@timerich.ai?subject=Time%20Rich%20partnership">Partner with us <span aria-hidden="true">&rarr;</span></a></p>
     <div class="contact">
-      <span>Ella Molony Cook, Founder</span>
+      <b>TIME RICH<i>.</i></b>
       <a href="https://timerich.ai?utm_source=mediakit">timerich.ai</a>
-      <a href="https://www.instagram.com/timerichtalk">instagram.com/timerichtalk</a>
-      <a href="https://www.linkedin.com/in/ellamolonycook">linkedin.com/in/ellamolonycook</a>
+      <a href="mailto:emc@timerich.ai">emc@timerich.ai</a>
+      <a href="https://www.instagram.com/timerichtalk">@timerichtalk</a>
     </div>
   </div>
 </footer>
