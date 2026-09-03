@@ -165,6 +165,17 @@
   .split .col > .lede:first-child{margin-top:-8px}
   .split .col > *:last-child{margin-bottom:0}
 
+  /* bio: the portrait takes a narrower column and matches the height of the
+     text beside it, instead of running well past the bottom of the column */
+  .bio{grid-template-columns:minmax(0,1.5fr) minmax(0,1fr);align-items:stretch}
+  .bio .frame.photo{position:relative;min-height:420px}
+  .bio .frame.photo img{position:absolute;inset:0;width:100%;height:100%;object-position:50% 16%}
+  @media (max-width:860px){
+    .bio{grid-template-columns:1fr}
+    .bio .frame.photo{position:static;min-height:0;aspect-ratio:4/5;max-width:420px}
+    .bio .frame.photo img{position:static}
+  }
+
   /* pull quote, full width and horizontal */
   .pull{
     margin:0;display:grid;gap:clamp(20px,3.5vw,52px);align-items:end;
@@ -286,7 +297,7 @@
   <div class="wrap">
     <span class="eyebrow">Who runs it</span>
     <h2>Ten years curating rooms. Now I curate the future.</h2>
-    <div class="split">
+    <div class="split bio">
       <div class="col">
         <p class="lede">I&rsquo;ve been an entrepreneur for a decade. My first company was retreats, back home in Australia &mdash; I bootstrapped it and exited in 2021. What I learned running it became the throughline for everything since: what people actually pay for isn&rsquo;t the itinerary, it&rsquo;s the room. Who&rsquo;s in it, how it&rsquo;s paced, whether it holds together after everyone goes home.</p>
         <p class="note">I took that into private capital next, building a global network connecting investors, family offices and the deals worth their time. Now I&rsquo;m building Time Rich &mdash; a media and experiential company for the founders, operators and investors building what&rsquo;s next.</p>
