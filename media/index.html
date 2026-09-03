@@ -364,6 +364,16 @@
     .pull figcaption{margin-top:18px;max-width:none}
   }
 
+  /* interview series: centred intro over a full-width still, matching the
+     treatment this section already has on the home page */
+  .interview-head{text-align:center;max-width:760px;margin:0 auto clamp(26px,3.5vw,40px)}
+  .interview-head h2{margin-bottom:12px}
+  .interview-head p{margin:0;font-size:clamp(15px,1.7vw,17px);color:var(--sage);text-wrap:balance}
+  .interview-figure{margin:0}
+  .interview-figure img{display:block;width:100%;height:auto;border-radius:12px}
+  /* the channel strip directly above is dark too, so mark the seam */
+  .band.slim + .interview{border-top:1px solid var(--green-line)}
+
   /* channels and industries */
   .rowlabel{
     font-family:var(--mono);font-size:11.5px;letter-spacing:.14em;text-transform:uppercase;
@@ -688,6 +698,18 @@
       <span>Fintech</span>
       <span>Wellness &amp; Longevity</span>
     </div>
+  </div>
+</section>
+
+<section class="band interview">
+  <div class="wrap">
+    <div class="interview-head">
+      <h2>Time Rich Interview Series</h2>
+      <p>Serial founder turned AI creator. Top 0.05% of AI agent builders in the world.</p>
+    </div>
+    <figure class="interview-figure">
+      <img src="img/rev-42.jpg" alt="Ella Molony Cook in conversation with The Vibe Founder in the Time Rich studio." width="1119" height="600" loading="lazy" decoding="async">
+    </figure>
   </div>
 </section>
 
