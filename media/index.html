@@ -64,8 +64,10 @@
   .note{font-size:15px;color:var(--sage);max-width:70ch}
   .light .note{color:var(--moss)}
 
-  /* nav */
+  /* nav: sticks to the top of the viewport through the whole page. Solid
+     background and a z-index above the positioned photo frames below it. */
   .nav{
+    position:sticky;top:0;z-index:20;
     background:var(--green);border-bottom:1px solid var(--green-line);
     padding:16px var(--pad);
   }
@@ -82,9 +84,25 @@
   .nav-links a:not(.btn):hover{color:var(--pastel);border-bottom-color:var(--pastel)}
   .nav-links a[aria-current="page"]{color:var(--pastel);border-bottom-color:var(--pastel)}
   .nav-links a:focus-visible{outline:2px solid var(--pastel);outline-offset:3px}
-  @media (max-width:560px){
-    .nav-in{flex-direction:column;align-items:flex-start;gap:14px}
-    .nav-links{width:100%;justify-content:flex-start;gap:10px 20px}
+  /* a sticky bar has to stay cheap on a phone: compact to one unwrapped row
+     rather than stacking into three, which cost 18% of the viewport */
+  @media (max-width:620px){
+    .nav{padding:10px var(--pad)}
+    .nav-in{flex-wrap:nowrap;gap:9px}
+    .nav .mark{font-size:15px}
+    .nav-links{flex-wrap:nowrap;gap:9px}
+    .nav-links a{white-space:nowrap}
+    .nav-links a:not(.btn){font-size:12.5px;padding:2px 0}
+    .nav-links .btn.sm{font-size:12px;padding:7px 12px;gap:0}
+    .nav-links .btn.sm span{display:none}
+    /* "Media" points at the page you are already on, so the narrow bar keeps
+       the destination link and the CTA. Still exposed to assistive tech. */
+    .nav-links a[aria-current="page"]{position:absolute;width:1px;height:1px;overflow:hidden;clip-path:inset(50%);white-space:nowrap}
+  }
+  /* below roughly an iPhone SE only the wordmark and the CTA still fit;
+     the portfolio stays reachable from its own section further down */
+  @media (max-width:345px){
+    .nav-links a:not(.btn){position:absolute;width:1px;height:1px;overflow:hidden;clip-path:inset(50%)}
   }
 
   /* hero */
