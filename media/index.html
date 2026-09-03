@@ -101,6 +101,15 @@
 
   /* hero */
   .hero{padding-top:clamp(40px,7vw,80px);padding-bottom:clamp(48px,7vw,88px)}
+  /* faint grid behind the hero only: the band ends with the stats strip, so
+     the pattern stops there and the rest of the page stays flat */
+  .hero{
+    background-image:
+      linear-gradient(to right,rgba(255,252,235,.085) 1px,transparent 1px),
+      linear-gradient(to bottom,rgba(255,252,235,.085) 1px,transparent 1px);
+    background-size:136px 136px;
+  }
+  @media (max-width:620px){.hero{background-size:88px 88px}}
   .mark{
     font-family:var(--display);font-weight:700;font-size:20px;letter-spacing:.08em;
     color:var(--cream);text-decoration:none;line-height:1;white-space:nowrap;
