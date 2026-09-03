@@ -154,6 +154,9 @@
   .light .btn.ghost:hover{background:rgba(103,118,46,.08);border-color:var(--moss)}
   .light .btn:focus-visible{outline-color:var(--green)}
   .cta-row{display:flex;flex-wrap:wrap;gap:12px 14px;margin:32px 0 0}
+  /* the hero buttons were reading as tucked under the paragraph; drop them so
+     they sit as their own step rather than the tail of the copy */
+  .hero .cta-row{margin-top:clamp(40px,4.2vw,60px)}
 
   /* stat strip */
   .strip{
