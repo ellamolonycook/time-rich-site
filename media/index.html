@@ -387,13 +387,35 @@
   .quote cite{font-style:normal;font-family:var(--mono);font-size:11.5px;letter-spacing:.12em;text-transform:uppercase;color:var(--pastel)}
   .light .quote cite{color:var(--moss)}
 
+  /* closing banner: a defined panel with the copy set against the action,
+     rather than everything running down the left edge of the band */
+  .endcap{
+    background:var(--green-panel);border:1px solid var(--green-line);border-radius:8px;
+    padding:clamp(30px,4.4vw,54px);
+    display:grid;grid-template-columns:minmax(0,1fr) auto;
+    gap:clamp(24px,4vw,48px);align-items:end;
+    background-image:
+      linear-gradient(to right,rgba(255,252,235,.05) 1px,transparent 1px),
+      linear-gradient(to bottom,rgba(255,252,235,.05) 1px,transparent 1px);
+    background-size:80px 80px;
+  }
+  .endcap .eyebrow{margin-bottom:16px}
+  .endcap h2{margin-bottom:14px}
+  .endcap .lede{margin:0;color:var(--sage);max-width:46ch}
+  .endcap-act{display:flex;flex-direction:column;gap:12px;align-items:flex-start}
+  @media (max-width:820px){
+    .endcap{grid-template-columns:1fr;align-items:start;gap:28px;background-size:54px 54px}
+  }
+
   .contact{
-    margin-top:36px;padding-top:24px;border-top:1px solid var(--green-line);
+    margin-top:32px;padding-top:24px;border-top:1px solid var(--green-line);
+    justify-content:space-between;
     font-family:var(--mono);font-size:13px;letter-spacing:.04em;color:var(--sage);
     display:flex;flex-wrap:wrap;gap:8px 22px;align-items:center;
   }
   .contact b{font-family:var(--display);font-weight:700;font-size:15px;letter-spacing:.08em;color:var(--cream)}
   .contact b i{color:var(--pastel);font-style:normal}
+  .contact-links{display:flex;flex-wrap:wrap;gap:8px 22px}
   .contact a{color:var(--pastel);text-decoration:none}
   .contact a:hover{text-decoration:underline}
   .contact a:focus-visible{outline:2px solid var(--pastel);outline-offset:3px}
@@ -653,16 +675,24 @@
 
 <footer class="band">
   <div class="wrap">
-    <span class="eyebrow">Next step</span>
-    <h2>Let&rsquo;s build your room.</h2>
-    <p class="lede" style="color:var(--sage)">Tell me the audience you want in the room and I&rsquo;ll price it against the format that fits.</p>
-    <!-- TODO: this CTA becomes the 30-minute discovery call booking link once Ella supplies it. Until then it stays a mailto. -->
-    <p style="margin-top:32px"><a class="btn" href="mailto:emc@timerich.ai?subject=Time%20Rich%20partnership">Partner with us <span aria-hidden="true">&rarr;</span></a></p>
+    <div class="endcap">
+      <div>
+        <span class="eyebrow">Next step</span>
+        <h2>Let&rsquo;s build your room.</h2>
+        <p class="lede">Tell me the audience you want in the room and I&rsquo;ll price it against the format that fits.</p>
+      </div>
+      <!-- TODO: this CTA becomes the 30-minute discovery call booking link once Ella supplies it. Until then it stays a mailto. -->
+      <div class="endcap-act">
+        <a class="btn" href="mailto:emc@timerich.ai?subject=Time%20Rich%20partnership">Partner with us <span aria-hidden="true">&rarr;</span></a>
+      </div>
+    </div>
     <div class="contact">
       <b>TIME RICH<i>.</i></b>
-      <a href="https://timerich.ai?utm_source=mediakit">timerich.ai</a>
-      <a href="mailto:emc@timerich.ai">emc@timerich.ai</a>
-      <a href="https://www.instagram.com/timerichtalk">@timerichtalk</a>
+      <div class="contact-links">
+        <a href="https://timerich.ai?utm_source=mediakit">timerich.ai</a>
+        <a href="mailto:emc@timerich.ai">emc@timerich.ai</a>
+        <a href="https://www.instagram.com/timerichtalk">@timerichtalk</a>
+      </div>
     </div>
   </div>
 </footer>
