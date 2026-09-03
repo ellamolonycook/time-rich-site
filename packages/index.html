@@ -184,19 +184,41 @@
     .pkg.wide .pkg-cols{grid-template-columns:1fr}
   }
 
-  /* comparison table */
-  .scroll{overflow-x:auto;margin-top:40px}
-  table{border-collapse:collapse;width:100%;min-width:640px;font-size:15px}
-  th,td{text-align:left;padding:15px 16px;border-bottom:1px solid var(--green-line);vertical-align:top}
-  .light th,.light td{border-color:var(--sage)}
-  thead th{font-family:var(--mono);font-size:11px;letter-spacing:.13em;text-transform:uppercase;color:var(--pastel);white-space:nowrap}
-  .light thead th{color:var(--moss)}
-  tbody th{font-weight:500;font-family:var(--body);width:42%}
-  td{text-align:center;color:var(--sage);white-space:nowrap}
-  .light td{color:var(--green)}
-  .yes{color:var(--pastel);font-weight:700}
-  .light .yes{color:var(--moss)}
-  .no{opacity:.4}
+  /* comparison table: ticks and dashes rather than Yes/No, zebra rows and a
+     highlighted Full platform column, all inside one rounded panel */
+  .vh{position:absolute;width:1px;height:1px;overflow:hidden;clip-path:inset(50%);white-space:nowrap}
+  .tablewrap{margin-top:40px;border:1px solid var(--sage);border-radius:10px;overflow:hidden;background:var(--cream)}
+  .scroll{overflow-x:auto}
+  table{border-collapse:collapse;width:100%;min-width:700px;font-size:15px}
+  thead th{
+    font-family:var(--mono);font-size:10.5px;letter-spacing:.14em;text-transform:uppercase;
+    color:var(--moss);font-weight:400;text-align:center;white-space:nowrap;
+    padding:17px 16px;background:var(--cream-panel);
+  }
+  thead th:first-child{text-align:left}
+  tbody th{
+    font-family:var(--body);font-weight:500;font-size:14.5px;color:var(--green);
+    text-align:left;padding:15px 16px;width:38%;
+  }
+  tbody td{
+    text-align:center;padding:15px 16px;white-space:nowrap;
+    font-family:var(--mono);font-size:12.5px;color:var(--moss);
+    /* anchors the .vh labels: absolute with no positioned ancestor, they
+       escape the scroller and stretch the document sideways on mobile */
+    position:relative;
+  }
+  tbody tr + tr th,tbody tr + tr td{border-top:1px solid rgba(103,118,46,.16)}
+  tbody tr:nth-child(odd) th,tbody tr:nth-child(odd) td{background:rgba(103,118,46,.045)}
+  /* size the glyphs only: .yes also carries text values like "Whole campaign",
+     which should stay at the same size as every other value in the row */
+  .yes{color:var(--moss)}
+  .no{color:var(--moss)}
+  .yes [aria-hidden="true"]{font-size:16px}
+  .no [aria-hidden="true"]{font-size:15px;opacity:.34}
+  /* the column the whole table is arguing for */
+  thead th:last-child{background:rgba(204,238,160,.6);color:var(--green)}
+  tbody td:last-child{background:rgba(204,238,160,.26)}
+  tbody tr:nth-child(odd) td:last-child{background:rgba(204,238,160,.34)}
 
   /* steps */
   .steps{counter-reset:s;margin-top:44px}
@@ -210,13 +232,37 @@
   .step p{margin:0;font-size:15.5px;color:var(--sage)}
   .light .step p{color:var(--green)}
 
+  /* closing banner, matching /media/: a defined panel with the copy set
+     against the actions rather than everything running down the left edge */
+  .endcap{
+    background:var(--green-panel);border:1px solid var(--green-line);border-radius:8px;
+    padding:clamp(30px,4.4vw,54px);
+    display:grid;grid-template-columns:minmax(0,1fr) auto;
+    gap:clamp(24px,4vw,48px);align-items:end;
+    background-image:
+      linear-gradient(to right,rgba(255,252,235,.05) 1px,transparent 1px),
+      linear-gradient(to bottom,rgba(255,252,235,.05) 1px,transparent 1px);
+    background-size:80px 80px;
+  }
+  .endcap .eyebrow{margin-bottom:16px}
+  .endcap h2{margin-bottom:14px}
+  .endcap .lede{margin:0;color:var(--sage);max-width:46ch}
+  .endcap-act{display:flex;flex-direction:column;gap:12px;align-items:flex-start}
+  @media (max-width:820px){
+    .endcap{grid-template-columns:1fr;align-items:start;gap:28px;background-size:54px 54px}
+  }
+  /* the run of show above the footer is dark too, so mark the seam */
+  section.band:not(.light) + footer.band{border-top:1px solid var(--green-line)}
+
   .contact{
-    margin-top:36px;padding-top:24px;border-top:1px solid var(--green-line);
+    margin-top:32px;padding-top:24px;border-top:1px solid var(--green-line);
+    justify-content:space-between;
     font-family:var(--mono);font-size:13px;letter-spacing:.04em;color:var(--sage);
     display:flex;flex-wrap:wrap;gap:8px 22px;align-items:center;
   }
   .contact b{font-family:var(--display);font-weight:700;font-size:15px;letter-spacing:.08em;color:var(--cream)}
   .contact b i{color:var(--pastel);font-style:normal}
+  .contact-links{display:flex;flex-wrap:wrap;gap:8px 22px}
   .contact a{color:var(--pastel);text-decoration:none}
   .contact a:hover{text-decoration:underline}
   .contact a:focus-visible{outline:2px solid var(--pastel);outline-offset:3px}
@@ -361,8 +407,9 @@
   <div class="wrap">
     <span class="eyebrow">What is included</span>
     <h2>Side by side.</h2>
-    <div class="scroll">
-      <table>
+    <div class="tablewrap">
+      <div class="scroll">
+        <table>
         <thead>
           <tr>
             <th scope="col">Included</th>
@@ -373,20 +420,21 @@
           </tr>
         </thead>
         <tbody>
-          <tr><th scope="row">Named partner on the event page and all promotion</th><td class="yes">Yes</td><td class="no">No</td><td class="yes">Yes</td><td class="yes">Yes</td></tr>
+          <tr><th scope="row">Named partner on the event page and all promotion</th><td class="yes"><span aria-hidden="true">&#10003;</span><span class="vh">Yes</span></td><td class="no"><span aria-hidden="true">&mdash;</span><span class="vh">No</span></td><td class="yes"><span aria-hidden="true">&#10003;</span><span class="vh">Yes</span></td><td class="yes"><span aria-hidden="true">&#10003;</span><span class="vh">Yes</span></td></tr>
           <tr><th scope="row">Category exclusivity</th><td>For the day</td><td>For the run</td><td>For the run</td><td class="yes">Whole campaign</td></tr>
-          <tr><th scope="row">Your product used live in the room</th><td class="yes">Yes</td><td class="no">No</td><td class="yes">Yes</td><td class="yes">Yes</td></tr>
-          <tr><th scope="row">A moment on stage from your team</th><td class="yes">Yes</td><td class="no">No</td><td class="yes">Yes</td><td class="yes">Yes</td></tr>
-          <tr><th scope="row">Your team mentoring during the build</th><td class="yes">Yes</td><td class="no">No</td><td>Optional</td><td class="yes">Yes</td></tr>
-          <tr><th scope="row">Dedicated newsletter placement</th><td>Mention</td><td class="yes">Yes</td><td>Mention</td><td class="yes">Yes</td></tr>
-          <tr><th scope="row">Podcast episode or recurring segment</th><td class="no">No</td><td class="yes">Yes</td><td class="no">No</td><td class="yes">Yes</td></tr>
-          <tr><th scope="row">Curriculum built and taught on your product</th><td class="no">No</td><td class="no">No</td><td class="yes">Yes</td><td class="yes">Yes</td></tr>
-          <tr><th scope="row">Offer or sign-up moment to the room</th><td class="yes">Yes</td><td class="yes">Yes</td><td class="yes">Yes</td><td class="yes">Yes</td></tr>
-          <tr><th scope="row">Opt-in attendee data</th><td class="yes">Yes</td><td class="no">No</td><td class="yes">Yes</td><td class="yes">Yes</td></tr>
-          <tr><th scope="row">Photography, video and recordings to keep</th><td class="yes">Yes</td><td>Assets only</td><td class="yes">Yes</td><td class="yes">Yes</td></tr>
+          <tr><th scope="row">Your product used live in the room</th><td class="yes"><span aria-hidden="true">&#10003;</span><span class="vh">Yes</span></td><td class="no"><span aria-hidden="true">&mdash;</span><span class="vh">No</span></td><td class="yes"><span aria-hidden="true">&#10003;</span><span class="vh">Yes</span></td><td class="yes"><span aria-hidden="true">&#10003;</span><span class="vh">Yes</span></td></tr>
+          <tr><th scope="row">A moment on stage from your team</th><td class="yes"><span aria-hidden="true">&#10003;</span><span class="vh">Yes</span></td><td class="no"><span aria-hidden="true">&mdash;</span><span class="vh">No</span></td><td class="yes"><span aria-hidden="true">&#10003;</span><span class="vh">Yes</span></td><td class="yes"><span aria-hidden="true">&#10003;</span><span class="vh">Yes</span></td></tr>
+          <tr><th scope="row">Your team mentoring during the build</th><td class="yes"><span aria-hidden="true">&#10003;</span><span class="vh">Yes</span></td><td class="no"><span aria-hidden="true">&mdash;</span><span class="vh">No</span></td><td>Optional</td><td class="yes"><span aria-hidden="true">&#10003;</span><span class="vh">Yes</span></td></tr>
+          <tr><th scope="row">Dedicated newsletter placement</th><td>Mention</td><td class="yes"><span aria-hidden="true">&#10003;</span><span class="vh">Yes</span></td><td>Mention</td><td class="yes"><span aria-hidden="true">&#10003;</span><span class="vh">Yes</span></td></tr>
+          <tr><th scope="row">Podcast episode or recurring segment</th><td class="no"><span aria-hidden="true">&mdash;</span><span class="vh">No</span></td><td class="yes"><span aria-hidden="true">&#10003;</span><span class="vh">Yes</span></td><td class="no"><span aria-hidden="true">&mdash;</span><span class="vh">No</span></td><td class="yes"><span aria-hidden="true">&#10003;</span><span class="vh">Yes</span></td></tr>
+          <tr><th scope="row">Curriculum built and taught on your product</th><td class="no"><span aria-hidden="true">&mdash;</span><span class="vh">No</span></td><td class="no"><span aria-hidden="true">&mdash;</span><span class="vh">No</span></td><td class="yes"><span aria-hidden="true">&#10003;</span><span class="vh">Yes</span></td><td class="yes"><span aria-hidden="true">&#10003;</span><span class="vh">Yes</span></td></tr>
+          <tr><th scope="row">Offer or sign-up moment to the room</th><td class="yes"><span aria-hidden="true">&#10003;</span><span class="vh">Yes</span></td><td class="yes"><span aria-hidden="true">&#10003;</span><span class="vh">Yes</span></td><td class="yes"><span aria-hidden="true">&#10003;</span><span class="vh">Yes</span></td><td class="yes"><span aria-hidden="true">&#10003;</span><span class="vh">Yes</span></td></tr>
+          <tr><th scope="row">Opt-in attendee data</th><td class="yes"><span aria-hidden="true">&#10003;</span><span class="vh">Yes</span></td><td class="no"><span aria-hidden="true">&mdash;</span><span class="vh">No</span></td><td class="yes"><span aria-hidden="true">&#10003;</span><span class="vh">Yes</span></td><td class="yes"><span aria-hidden="true">&#10003;</span><span class="vh">Yes</span></td></tr>
+          <tr><th scope="row">Photography, video and recordings to keep</th><td class="yes"><span aria-hidden="true">&#10003;</span><span class="vh">Yes</span></td><td>Assets only</td><td class="yes"><span aria-hidden="true">&#10003;</span><span class="vh">Yes</span></td><td class="yes"><span aria-hidden="true">&#10003;</span><span class="vh">Yes</span></td></tr>
           <tr><th scope="row">Recap report</th><td>Per event</td><td>Per placement</td><td>Per series</td><td class="yes">One campaign report</td></tr>
         </tbody>
-      </table>
+        </table>
+      </div>
     </div>
     <p class="note" style="margin-top:26px">Rates depend on the room size, the length of the run and how many surfaces you take. Tell me which combination you want and I will price it against the specific dates.</p>
   </div>
@@ -406,26 +454,27 @@
   </div>
 </section>
 
-<footer class="band light">
-  <div class="wrap">
-    <span class="eyebrow">Next step</span>
-    <h2>Let&rsquo;s build your room.</h2>
-    <p class="lede">Tell me the audience you want in the room and I&rsquo;ll price it against the format that fits.</p>
-    <!-- TODO: this CTA becomes the 30-minute discovery call booking link once Ella supplies it. Until then it stays a mailto. -->
-    <div class="cta-row">
-      <a class="btn" href="mailto:emc@timerich.ai?subject=Time%20Rich%20partnership">Partner with us <span aria-hidden="true">&rarr;</span></a>
-      <a class="btn ghost" href="https://timerich.ai/eventportfolio/">See the event portfolio <span aria-hidden="true">&rarr;</span></a>
-    </div>
-  </div>
-</footer>
-
 <footer class="band">
   <div class="wrap">
-    <div class="contact" style="margin-top:0;padding-top:0;border-top:0">
+    <div class="endcap">
+      <div>
+        <span class="eyebrow">Next step</span>
+        <h2>Let&rsquo;s build your room.</h2>
+        <p class="lede">Tell me the audience you want in the room and I&rsquo;ll price it against the format that fits.</p>
+      </div>
+      <!-- TODO: this CTA becomes the 30-minute discovery call booking link once Ella supplies it. Until then it stays a mailto. -->
+      <div class="endcap-act">
+        <a class="btn" href="mailto:emc@timerich.ai?subject=Time%20Rich%20partnership">Partner with us <span aria-hidden="true">&rarr;</span></a>
+        <a class="btn ghost" href="https://timerich.ai/eventportfolio/">See the event portfolio <span aria-hidden="true">&rarr;</span></a>
+      </div>
+    </div>
+    <div class="contact">
       <b>TIME RICH<i>.</i></b>
-      <a href="https://timerich.ai?utm_source=mediakit">timerich.ai</a>
-      <a href="mailto:emc@timerich.ai">emc@timerich.ai</a>
-      <a href="https://www.instagram.com/timerichtalk">@timerichtalk</a>
+      <div class="contact-links">
+        <a href="https://timerich.ai?utm_source=mediakit">timerich.ai</a>
+        <a href="mailto:emc@timerich.ai">emc@timerich.ai</a>
+        <a href="https://www.instagram.com/timerichtalk">@timerichtalk</a>
+      </div>
     </div>
   </div>
 </footer>
