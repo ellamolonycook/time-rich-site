@@ -265,6 +265,26 @@
     .bio .frame.photo img{position:static}
   }
 
+  /* teaching calendar: intro and photo share a row, cards run full width
+     beneath. rev-11 is landscape, so the photo column is the wider of the
+     two and the crop keeps Ella high in frame. */
+  .teach{grid-template-columns:minmax(0,1fr) minmax(0,1.12fr);align-items:stretch}
+  .teach .col{justify-content:flex-start}
+  /* .frame.photo sets min-height:0 later in the sheet, so match its weight */
+  .teach .frame.photo{position:relative;min-height:300px}
+  .teach .frame.photo img{position:absolute;inset:0;width:100%;height:100%;object-position:50% 26%}
+  /* six cards sit as a clean 3x2 rather than the 4+2 auto-fit gives */
+  .teaching .grid{margin-top:clamp(34px,4vw,48px);grid-template-columns:repeat(3,minmax(0,1fr))}
+  @media (max-width:860px){
+    .teach{grid-template-columns:1fr}
+    .teach .frame.photo{min-height:0;aspect-ratio:3/2}
+    .teach .frame.photo img{position:static}
+    .teaching .grid{grid-template-columns:repeat(2,minmax(0,1fr))}
+  }
+  @media (max-width:560px){.teaching .grid{grid-template-columns:1fr}}
+  /* the channel strip follows this dark band, so mark the seam */
+  .teaching + .band.slim{border-top:1px solid var(--green-line)}
+
   /* pull quote, full width and horizontal */
   .pull{
     margin:0;display:grid;gap:clamp(20px,3.5vw,52px);align-items:end;
@@ -401,7 +421,7 @@
   <div class="photo-track">
     <img width="520" height="640" loading="lazy" decoding="async" src="img/rev-06.jpg" alt="Speakers on stage at a Time Rich session during NY Tech Week.">
     <img width="950" height="1425" loading="lazy" decoding="async" src="img/rev-34.jpg" alt="Guests seated around the table at a Time Rich investor dinner.">
-    <img width="860" height="573" loading="lazy" decoding="async" src="img/rev-11.jpg" alt="Ella speaking on a panel at NY Tech Week.">
+    <img width="560" height="690" loading="lazy" decoding="async" src="img/rev-40.jpg" alt="A speaker addressing the room at a Time Rich dinner.">
     <img width="950" height="1425" loading="lazy" decoding="async" src="img/rev-36.jpg" alt="Two guests talking over drinks at the bar before a Time Rich dinner.">
     <img width="560" height="690" loading="lazy" decoding="async" src="img/rev-38.jpg" alt="Two speakers on stage at a Time Rich session.">
     <img width="573" height="860" loading="lazy" decoding="async" src="img/rev-04.jpg" alt="The table at a Time Rich investor dinner.">
@@ -410,7 +430,7 @@
     <!-- duplicate set for the seamless loop -->
     <img width="520" height="640" loading="lazy" decoding="async" src="img/rev-06.jpg" alt="" aria-hidden="true">
     <img width="950" height="1425" loading="lazy" decoding="async" src="img/rev-34.jpg" alt="" aria-hidden="true">
-    <img width="860" height="573" loading="lazy" decoding="async" src="img/rev-11.jpg" alt="" aria-hidden="true">
+    <img width="560" height="690" loading="lazy" decoding="async" src="img/rev-40.jpg" alt="" aria-hidden="true">
     <img width="950" height="1425" loading="lazy" decoding="async" src="img/rev-36.jpg" alt="" aria-hidden="true">
     <img width="560" height="690" loading="lazy" decoding="async" src="img/rev-38.jpg" alt="" aria-hidden="true">
     <img width="573" height="860" loading="lazy" decoding="async" src="img/rev-04.jpg" alt="" aria-hidden="true">
@@ -470,6 +490,29 @@
         <h3>Private capital, IRL and virtual</h3>
         <p>Dinners, workshops, stages and conferences, curated one audience at a time.</p>
       </div>
+    </div>
+  </div>
+</section>
+
+<section class="band teaching">
+  <div class="wrap">
+    <span class="eyebrow">Track record &middot; education</span>
+    <h2>The teaching calendar.</h2>
+    <div class="split teach">
+      <div class="col">
+        <p class="lede" style="color:var(--sage)">Run live, taught by Ella, and repeated on a rolling calendar. This is where a product gets used rather than mentioned.</p>
+      </div>
+      <figure class="frame photo teach-photo">
+        <img src="img/rev-11.jpg" alt="Ella teaching from the stage at NY Tech Week, microphone in hand." width="860" height="573" loading="lazy" decoding="async">
+      </figure>
+    </div>
+    <div class="grid g3">
+      <div class="card"><span class="tag">Masterclass</span><h3>Revenue Agent Building Masterclass</h3><p>Building the agent that does the revenue work, start to finish.</p></div>
+      <div class="card"><span class="tag">Workshop</span><h3>Building AI Agents with Ella</h3><p>The self-improving agent build, live, from a blank screen.</p></div>
+      <div class="card"><span class="tag">Workshop</span><h3>AI Agent Basics, bring a bestie</h3><p>The entry point. Delegate the work you hate to an agent.</p></div>
+      <div class="card"><span class="tag">Circle</span><h3>AI Revenue Growth: Female Founder Circle</h3><p>A closed circle working on revenue, with AI as the lever.</p></div>
+      <div class="card"><span class="tag">Pitch</span><h3>Pitch + Pain, women business owners only</h3><p>Live pitching and live diagnosis of what is blocking the sale.</p></div>
+      <div class="card"><span class="tag">Bootcamp</span><h3>Immersive AI Bootcamp</h3><p>The long-form format, co-hosted, for founders going all in.</p></div>
     </div>
   </div>
 </section>
