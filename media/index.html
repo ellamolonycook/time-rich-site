@@ -16,7 +16,7 @@
 <meta property="og:description" content="A media and experiential company for the people building what is next.">
 <meta property="og:type" content="website">
 <meta property="og:url" content="https://timerich.ai/media/">
-<meta property="og:image" content="https://timerich.ai/media/img/rev-33.jpg">
+<meta property="og:image" content="https://timerich.ai/media/img/rev-35.jpg">
 <meta name="twitter:card" content="summary_large_image">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -208,10 +208,6 @@
     .photo-track img{scroll-snap-align:start}
   }
 
-  /* full-width band photo */
-  .figure{margin:0;padding:0 var(--pad) clamp(56px,8vw,96px);background:var(--green)}
-  .figure img{display:block;width:100%;height:auto;max-width:1080px;margin:0 auto;border-radius:6px}
-
   .grid{display:grid;gap:20px;margin-top:44px}
   .g2{grid-template-columns:repeat(auto-fit,minmax(300px,1fr))}
   .g3{grid-template-columns:repeat(auto-fit,minmax(240px,1fr))}
@@ -399,7 +395,29 @@
   </div>
 </header>
 
-<figure class="figure"><img src="img/rev-33.jpg" alt="A four-person panel on stage at a Time Rich session during NY Tech Week, with the audience seated in front." width="1800" height="1201" decoding="async"></figure>
+<!-- MOVING PHOTO STRIP: sits directly under the hero stats. Set is listed
+     twice so the -50% travel loops seamlessly; the second set is aria-hidden. -->
+<div class="photo-band">
+  <div class="photo-track">
+    <img width="520" height="640" loading="lazy" decoding="async" src="img/rev-06.jpg" alt="Speakers on stage at a Time Rich session during NY Tech Week.">
+    <img width="950" height="1425" loading="lazy" decoding="async" src="img/rev-34.jpg" alt="Guests seated around the table at a Time Rich investor dinner.">
+    <img width="860" height="573" loading="lazy" decoding="async" src="img/rev-11.jpg" alt="Ella speaking on a panel at NY Tech Week.">
+    <img width="950" height="1425" loading="lazy" decoding="async" src="img/rev-36.jpg" alt="Two guests talking over drinks at the bar before a Time Rich dinner.">
+    <img width="560" height="690" loading="lazy" decoding="async" src="img/rev-38.jpg" alt="Two speakers on stage at a Time Rich session.">
+    <img width="573" height="860" loading="lazy" decoding="async" src="img/rev-04.jpg" alt="The table at a Time Rich investor dinner.">
+    <img width="852" height="1066" loading="lazy" decoding="async" src="img/rev-02.jpg" alt="Members at a Time Rich rooftop event in New York.">
+    <img width="560" height="690" loading="lazy" decoding="async" src="img/rev-39.jpg" alt="Three guests together at a Time Rich dinner.">
+    <!-- duplicate set for the seamless loop -->
+    <img width="520" height="640" loading="lazy" decoding="async" src="img/rev-06.jpg" alt="" aria-hidden="true">
+    <img width="950" height="1425" loading="lazy" decoding="async" src="img/rev-34.jpg" alt="" aria-hidden="true">
+    <img width="860" height="573" loading="lazy" decoding="async" src="img/rev-11.jpg" alt="" aria-hidden="true">
+    <img width="950" height="1425" loading="lazy" decoding="async" src="img/rev-36.jpg" alt="" aria-hidden="true">
+    <img width="560" height="690" loading="lazy" decoding="async" src="img/rev-38.jpg" alt="" aria-hidden="true">
+    <img width="573" height="860" loading="lazy" decoding="async" src="img/rev-04.jpg" alt="" aria-hidden="true">
+    <img width="852" height="1066" loading="lazy" decoding="async" src="img/rev-02.jpg" alt="" aria-hidden="true">
+    <img width="560" height="690" loading="lazy" decoding="async" src="img/rev-39.jpg" alt="" aria-hidden="true">
+  </div>
+</div>
 
 <section class="band light">
   <div class="wrap">
@@ -431,29 +449,6 @@
   </div>
 </section>
 
-<!-- MOVING PHOTO STRIP: the rooms behind the quote above. Set is listed
-     twice so the -50% travel loops seamlessly; the second set is aria-hidden. -->
-<div class="photo-band">
-  <div class="photo-track">
-    <img width="520" height="640" loading="lazy" decoding="async" src="img/rev-06.jpg" alt="Speakers on stage at a Time Rich session during NY Tech Week.">
-    <img width="950" height="1425" loading="lazy" decoding="async" src="img/rev-34.jpg" alt="Guests seated around the table at a Time Rich investor dinner.">
-    <img width="860" height="573" loading="lazy" decoding="async" src="img/rev-11.jpg" alt="Ella speaking on a panel at NY Tech Week.">
-    <img width="950" height="1425" loading="lazy" decoding="async" src="img/rev-36.jpg" alt="Two guests talking over drinks at the bar before a Time Rich dinner.">
-    <img width="560" height="690" loading="lazy" decoding="async" src="img/rev-38.jpg" alt="Two speakers on stage at a Time Rich session.">
-    <img width="573" height="860" loading="lazy" decoding="async" src="img/rev-04.jpg" alt="The table at a Time Rich investor dinner.">
-    <img width="852" height="1066" loading="lazy" decoding="async" src="img/rev-02.jpg" alt="Members at a Time Rich rooftop event in New York.">
-    <img width="560" height="690" loading="lazy" decoding="async" src="img/rev-39.jpg" alt="Three guests together at a Time Rich dinner.">
-    <!-- duplicate set for the seamless loop -->
-    <img width="520" height="640" loading="lazy" decoding="async" src="img/rev-06.jpg" alt="" aria-hidden="true">
-    <img width="950" height="1425" loading="lazy" decoding="async" src="img/rev-34.jpg" alt="" aria-hidden="true">
-    <img width="860" height="573" loading="lazy" decoding="async" src="img/rev-11.jpg" alt="" aria-hidden="true">
-    <img width="950" height="1425" loading="lazy" decoding="async" src="img/rev-36.jpg" alt="" aria-hidden="true">
-    <img width="560" height="690" loading="lazy" decoding="async" src="img/rev-38.jpg" alt="" aria-hidden="true">
-    <img width="573" height="860" loading="lazy" decoding="async" src="img/rev-04.jpg" alt="" aria-hidden="true">
-    <img width="852" height="1066" loading="lazy" decoding="async" src="img/rev-02.jpg" alt="" aria-hidden="true">
-    <img width="560" height="690" loading="lazy" decoding="async" src="img/rev-39.jpg" alt="" aria-hidden="true">
-  </div>
-</div>
 
 <section class="band light">
   <div class="wrap">
