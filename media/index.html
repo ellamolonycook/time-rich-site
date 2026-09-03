@@ -119,6 +119,25 @@
   .hero h1{font-size:clamp(32px,5vw,56px);max-width:19ch}
   .hero .lede{margin-top:24px;color:var(--sage)}
 
+  /* hero: copy left, photo right, the photo stretched to the exact height of
+     the copy so the two columns start and end on the same lines */
+  .hero-grid{
+    display:grid;gap:clamp(28px,4vw,54px);
+    grid-template-columns:minmax(0,1.42fr) minmax(0,1fr);
+    align-items:stretch;
+  }
+  .hero-copy{display:flex;flex-direction:column;justify-content:center}
+  .hero-copy > *:first-child{margin-top:0}
+  .hero-copy > *:last-child{margin-bottom:0}
+  .hero-copy h1{max-width:none}
+  .hero-photo{position:relative;min-height:400px}
+  .hero-photo img{position:absolute;inset:0;width:100%;height:100%;object-position:50% 42%}
+  @media (max-width:860px){
+    .hero-grid{grid-template-columns:1fr;gap:clamp(26px,5vw,36px)}
+    .hero-photo{min-height:0;aspect-ratio:4/5;max-width:460px}
+    .hero-photo img{position:static}
+  }
+
   .btn{
     display:inline-flex;align-items:center;gap:10px;
     background:var(--pastel);color:var(--green);
@@ -328,12 +347,19 @@
 
 <header class="band hero">
   <div class="wrap">
-    <span class="eyebrow">Media &amp; Experiential &middot; 2026</span>
-    <h1>A media and experiential company for the people building what&rsquo;s next.</h1>
-    <p class="lede">A decade of building rooms that convert. First it was retreats in Australia &mdash; exited in 2021. Then a global private capital network. Now, Time Rich: connecting the next generation of change-makers and innovators, one curated room at a time.</p>
-    <div class="cta-row">
-      <a class="btn" href="mailto:emc@timerich.ai?subject=Time%20Rich%20partnership">Partner with us <span aria-hidden="true">&rarr;</span></a>
-      <a class="btn ghost" href="https://timerich.ai/eventportfolio/">See the event portfolio <span aria-hidden="true">&rarr;</span></a>
+    <div class="hero-grid">
+      <div class="hero-copy">
+        <span class="eyebrow">Media &amp; Experiential &middot; 2026</span>
+        <h1>A media and experiential company for the people building what&rsquo;s next.</h1>
+        <p class="lede">A decade of building rooms that convert. First it was retreats in Australia &mdash; exited in 2021. Then a global private capital network. Now, Time Rich: connecting the next generation of change-makers and innovators, one curated room at a time.</p>
+        <div class="cta-row">
+          <a class="btn" href="mailto:emc@timerich.ai?subject=Time%20Rich%20partnership">Partner with us <span aria-hidden="true">&rarr;</span></a>
+          <a class="btn ghost" href="https://timerich.ai/eventportfolio/">See the event portfolio <span aria-hidden="true">&rarr;</span></a>
+        </div>
+      </div>
+      <figure class="frame photo hero-photo">
+        <img src="img/rev-35.jpg" alt="Guests in conversation over dinner at a Time Rich investor dinner." width="950" height="1425" decoding="async">
+      </figure>
     </div>
     <div class="strip">
       <div><span class="num">63,000+</span><span>Newsletter subscribers</span></div>
