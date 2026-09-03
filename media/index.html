@@ -284,72 +284,67 @@
   }
   @media (max-width:560px){.teaching .grid{grid-template-columns:1fr}}
 
-  /* testimonials: a slider people drive themselves. These run long, so they
-     snap-scroll on swipe, drag or the arrows rather than auto-advancing,
-     which would pull the text away mid-sentence. */
-  .slider{margin-top:44px}
-  .slides{
-    display:flex;gap:20px;overflow-x:auto;scroll-snap-type:x mandatory;
-    scroll-behavior:smooth;padding:2px 2px 14px;
-    scrollbar-width:thin;scrollbar-color:var(--sage) transparent;
+  /* testimonials: the LinkedIn screenshots on the same marquee as the photo
+     strip. Fixed height, natural width, so the shots keep their proportions
+     and the row still lines up top and bottom. */
+  .tm-band{
+    padding:clamp(30px,4vw,44px) 0 0;overflow:hidden;
+    margin-top:clamp(30px,4vw,44px);
   }
-  .slides::-webkit-scrollbar{height:6px}
-  .slides::-webkit-scrollbar-thumb{background:var(--sage);border-radius:99px}
-  .slides::-webkit-scrollbar-track{background:transparent}
-  .slides:focus-visible{outline:2px solid var(--moss);outline-offset:4px;border-radius:6px}
-  .slide{
-    scroll-snap-align:start;flex:0 0 clamp(270px,80vw,400px);
-    display:flex;flex-direction:column;padding:28px 26px;
+  .tm-track{display:flex;gap:20px;width:max-content;animation:tmScroll 75s linear infinite}
+  .tm-band:hover .tm-track,.tm-band:focus-within .tm-track{animation-play-state:paused}
+  .tm-track img{
+    height:380px;width:auto;display:block;flex:0 0 auto;
+    border-radius:12px;border:1px solid var(--sage);background:#fff;
   }
-  .slide blockquote{margin:0 0 22px;font-family:var(--body);font-size:14.5px;line-height:1.62}
-  .slide blockquote p{margin:0 0 12px}
-  .slide blockquote p:last-child{margin-bottom:0}
-  .slide cite{
-    font-style:normal;margin-top:auto;padding-top:18px;
-    border-top:1px solid var(--sage);display:block;
-    font-family:var(--display);font-weight:700;font-size:15px;color:var(--green);
+  /* one full set is half the track plus half a gap: 2n tiles carry 2n-1 gaps,
+     so a plain -50% lands half a gap short and the loop hitches each cycle */
+  @keyframes tmScroll{from{transform:translateX(0)}to{transform:translateX(calc(-50% - 10px))}}
+  @media (max-width:620px){
+    .tm-track{gap:14px;animation-name:tmScrollSm}
+    .tm-track img{height:260px}
   }
-  .slide cite span{
-    display:block;margin-top:6px;font-family:var(--mono);font-weight:400;
-    font-size:10.5px;letter-spacing:.11em;text-transform:uppercase;color:var(--moss);
+  @keyframes tmScrollSm{from{transform:translateX(0)}to{transform:translateX(calc(-50% - 7px))}}
+  @media (prefers-reduced-motion:reduce){
+    .tm-track{animation:none;width:auto;overflow-x:auto;scroll-snap-type:x mandatory;padding-bottom:10px}
+    .tm-track img{scroll-snap-align:start}
   }
-  .slider-nav{display:flex;gap:10px;margin-top:20px}
-  .slider-nav button{
-    width:44px;height:44px;border-radius:999px;cursor:pointer;
-    background:transparent;border:1px solid var(--sage);color:var(--moss);
-    font-size:17px;line-height:1;display:inline-flex;align-items:center;justify-content:center;
-    transition:background 160ms ease-out,border-color 160ms ease-out;
-  }
-  .slider-nav button:hover{background:rgba(103,118,46,.09);border-color:var(--moss)}
-  .slider-nav button:focus-visible{outline:2px solid var(--moss);outline-offset:3px}
 
-  /* pull quote: the photo sits in the attribution column, directly above
-     the credit, with the quote carrying the rest of the row */
-  /* top-aligned: the photo column is the taller of the two, so bottoming them
-     out dropped the quote halfway down the row and left dead space above it */
+  /* quote and photo share row 1 so the quote centres on the photo itself,
+     with the credit in row 2 underneath. Centring on the whole right-hand
+     column would sit it ~27px low, because the credit counts toward it. */
   .pull{
-    margin:0;display:grid;gap:clamp(20px,3.5vw,52px);align-items:start;
+    margin:0;display:grid;
     grid-template-columns:minmax(0,2.4fr) minmax(210px,1fr);
+    /* declared explicitly: left implicit, the credit merged into row 1 and the
+       quote centred against photo-plus-credit, sitting 27px low */
+    grid-template-rows:auto auto;
+    column-gap:clamp(20px,3.5vw,52px);
   }
-  /* trims the first line's half-leading so the cap height meets the photo edge */
-  .pull blockquote{margin-top:-7px}
-  .quote-photo{margin:0 0 20px;aspect-ratio:4/5;border-radius:12px;overflow:hidden;display:block}
+  .pull blockquote{grid-column:1;grid-row:1;align-self:center}
+  .quote-photo{grid-column:2;grid-row:1;margin:0;aspect-ratio:4/5;border-radius:12px;overflow:hidden;display:block}
   .quote-photo img{display:block;width:100%;height:100%;object-fit:cover;object-position:50% 30%}
-  @media (max-width:760px){
-    .quote-photo{max-width:280px;margin-bottom:18px}
-  }
   .pull blockquote{
     margin:0;font-family:var(--display);font-weight:500;
     font-size:clamp(21px,3.1vw,34px);line-height:1.24;letter-spacing:-.02em;
     text-wrap:balance;color:var(--cream);
   }
   .light .pull blockquote{color:var(--green)}
+  /* the opening mark set larger. line-height:0 keeps it from pushing the
+     first line down and re-opening the gap above the quote. */
+  .pull blockquote .qmark{font-size:1.5em;line-height:0;vertical-align:-.1em}
   .pull figcaption{
+    grid-column:2;grid-row:2;margin-top:20px;
     font-family:var(--mono);font-size:12px;letter-spacing:.13em;text-transform:uppercase;
     color:var(--pastel);border-top:1px solid var(--green-line);padding-top:14px;
   }
   .light .pull figcaption{color:var(--moss);border-top-color:var(--sage)}
-  @media (max-width:760px){.pull{grid-template-columns:1fr;align-items:start}}
+  @media (max-width:760px){
+    .pull{grid-template-columns:1fr}
+    .pull blockquote,.quote-photo,.pull figcaption{grid-column:1;grid-row:auto}
+    .quote-photo{max-width:280px;margin-top:26px}
+    .pull figcaption{margin-top:18px}
+  }
 
   /* channels and industries */
   .rowlabel{
@@ -558,13 +553,11 @@
 <section class="band">
   <div class="wrap">
     <figure class="pull">
-      <blockquote>&ldquo;We host experiences and media series that convert. Not because we chase reach &mdash; because we understand curation, consistency, and the connection that actually converts for our partners.&rdquo;</blockquote>
-      <div class="pull-by">
-        <span class="quote-photo">
-          <img src="img/rev-41.jpg" alt="Two guests together at a Time Rich investor dinner." width="700" height="875" loading="lazy" decoding="async">
-        </span>
-        <figcaption>&mdash; Ella Molony Cook, Founder</figcaption>
-      </div>
+      <blockquote><span class="qmark">&ldquo;</span>We host experiences and media series that convert. Not because we chase reach &mdash; because we understand curation, consistency, and the connection that actually converts for our partners.&rdquo;</blockquote>
+      <span class="quote-photo">
+        <img src="img/rev-41.jpg" alt="Two guests together at a Time Rich investor dinner." width="700" height="875" loading="lazy" decoding="async">
+      </span>
+      <figcaption>&mdash; Ella Molony Cook, Founder</figcaption>
     </figure>
   </div>
 </section>
@@ -621,37 +614,16 @@
   <div class="wrap">
     <span class="eyebrow">Testimonials</span>
     <h2>What the room says afterwards.</h2>
-    <div class="slider">
-      <div class="slides" id="tslides" tabindex="0" role="region" aria-label="Testimonials, scrollable">
-        <article class="card slide">
-          <blockquote>
-            <p>The biggest benefit of attending this workshop was that Ella made working with AI visible, quite literally. We were able to witness what working with AI looks like in real life.</p>
-            <p>A lot of people talk about AI agents, AI employees, and automated workflows, but it&rsquo;s rare to see what that really means in action. In just the first few minutes, I learned something I hadn&rsquo;t seen explained before: the real differences between free, paid, and Pro plans for tools like Claude and ChatGPT. The difference is not just about having better models or more memory.</p>
-            <p>What helped me even more was seeing what an AI-first workflow really looks like. Ella showed us her own tech setup and explained that she thinks about AI agents the same way she thinks about building a business. Each agent has a role, responsibilities, and a purpose. That way of thinking made sense to me right away.</p>
-            <p>If you&rsquo;re interested in AI but feel lost in the jargon or unsure where to begin, this workshop is one of the clearest starting points I&rsquo;ve found. I walked away with useful knowledge, a better way to think about AI, and, most importantly, the confidence to get started.</p>
-          </blockquote>
-          <cite>Indra Klavins<span>Keynote Speaker &amp; Executive Advisor</span></cite>
-        </article>
-        <article class="card slide">
-          <blockquote>
-            <p>Time Rich Club started as a workshop to learn how to work with ai agents and has turned into a beautiful community of supportive, like minded women founders. Ella&rsquo;s workshops are actionable from the start, she teaches, shares her process and leaves you with the full instructions to create your own ai team members. Later I was invited to join as a member and invited to participate in the founders circle and community of women doing what we do best, empowering each other, lifting each other up, learning, giving and receiving. Excited to work with Ella on the next chapter of Time Rich Club working towards an LA Chapter. Stay tuned.</p>
-          </blockquote>
-          <cite>Jenni Ogden<span>Founder, Eye Q Productions</span></cite>
-        </article>
-        <article class="card slide">
-          <blockquote>
-            <p>I&rsquo;ve been following Ella&rsquo;s work for a while, so when she announced a session on building AI agents, I signed up &mdash; but honestly, I came in with low expectations. I had been to enough &ldquo;AI&rdquo; events that turned out to be basic prompting demos, and I braced for more of the same.</p>
-            <p>I was wrong within the first five minutes.</p>
-            <p>Ella pulled me in immediately with content that was genuinely valuable and, more importantly, <em>actionable</em>. This wasn&rsquo;t theory or hype: it was the AI stack she uses to save 20+ hours a week, broken down in a way that I could actually implement. No more tools collecting digital dust. Real systems that stick.</p>
-            <p>What stood out most was how relevant the examples were to my business and my actual work. She clearly built this for leaders and founders who are serious about reclaiming their time; not beginners looking for a quick win.</p>
-            <p>I left with the foundation for my first AI agent and a clear path forward. I&rsquo;m very satisfied and eager to learn more with Ella.</p>
-          </blockquote>
-          <cite>Martha Mercogliano, PMP<span>Forbes M&eacute;xico Top 50 Angel Investor</span></cite>
-        </article>
-      </div>
-      <div class="slider-nav">
-        <button type="button" id="tprev" aria-label="Previous testimonial" aria-controls="tslides"><span aria-hidden="true">&larr;</span></button>
-        <button type="button" id="tnext" aria-label="Next testimonial" aria-controls="tslides"><span aria-hidden="true">&rarr;</span></button>
+    <p class="note">Written by the people who were in the room. Screenshots, straight from LinkedIn.</p>
+    <div class="tm-band">
+      <div class="tm-track">
+        <img src="img/testimonial-1.jpg" alt="LinkedIn recommendation from Indra Klavins, Keynote Speaker and Executive Advisor." width="1200" height="800" loading="lazy" decoding="async">
+        <img src="img/testimonial-2.jpg" alt="LinkedIn recommendation from Jenni Ogden, Founder of Eye Q Productions." width="1200" height="800" loading="lazy" decoding="async">
+        <img src="img/testimonial-3.jpg" alt="LinkedIn recommendation from Martha Mercogliano, Forbes Mexico Top 50 Angel Investor." width="1200" height="800" loading="lazy" decoding="async">
+        <!-- duplicate set for the seamless loop -->
+        <img src="img/testimonial-1.jpg" alt="" aria-hidden="true" width="1200" height="800" loading="lazy" decoding="async">
+        <img src="img/testimonial-2.jpg" alt="" aria-hidden="true" width="1200" height="800" loading="lazy" decoding="async">
+        <img src="img/testimonial-3.jpg" alt="" aria-hidden="true" width="1200" height="800" loading="lazy" decoding="async">
       </div>
     </div>
   </div>
@@ -790,23 +762,6 @@
     </div>
   </div>
 </footer>
-
-<script>
-// Testimonial arrows. The slider works without this - swipe, drag or the
-// keyboard already scroll it - so the buttons only get wired up if JS runs.
-(function () {
-  var strip = document.getElementById('tslides');
-  if (!strip) return;
-  function nudge(dir) {
-    var card = strip.querySelector('.slide');
-    if (!card) return;
-    var gap = parseFloat(getComputedStyle(strip).columnGap) || 0;
-    strip.scrollBy({ left: dir * (card.getBoundingClientRect().width + gap), behavior: 'smooth' });
-  }
-  document.getElementById('tprev').addEventListener('click', function () { nudge(-1); });
-  document.getElementById('tnext').addEventListener('click', function () { nudge(1); });
-})();
-</script>
 
 </body>
 </html>
