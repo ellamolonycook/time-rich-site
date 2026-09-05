@@ -220,6 +220,8 @@ main{flex:1 0 auto;padding:38px 0 96px}
   transition:transform .12s ease,box-shadow .12s ease}
 .btn:hover{transform:translateY(-2px);box-shadow:0 12px 30px -12px rgba(66,75,54,.55)}
 .btn:disabled{opacity:.6;cursor:wait;transform:none;box-shadow:none}
+/* .btn sets display, which outranks the UA [hidden] rule - so say it here. */
+.btn[hidden]{display:none}
 .btn.ghost{background:transparent;color:var(--muted);border:1px solid var(--line-2);font-weight:500}
 .btn.ghost:hover{border-color:var(--green);color:var(--green-deep);box-shadow:none}
 .btn-back{min-height:44px;padding:10px 18px;font-size:15px}
@@ -235,24 +237,63 @@ main{flex:1 0 auto;padding:38px 0 96px}
 .intro .wall-lead{margin-top:30px;margin-bottom:2px}
 
 /* ---------- LOGO WALL ----------
+   Three rows on a slow loop: row 1 travels right, row 2 left, row 3 right.
+   Thirty-six logos stacked as a grid was eighteen rows of scrolling on a phone
+   and left an orphan on the last row; three moving rows are a fixed height at
+   every width and read as one band.
+
    Black and white, and achromatic twice over: the files are greyscaled on disk
    and the filter is a guarantee, so nothing can reintroduce colour later. No
    hover restore - /sh-apply/ establishes no such pattern, and a wall that lights
    up under the cursor pulls attention off the Start button.
 
    Sizing: --logo-h is the common height and --k is each logo's own multiplier,
-   set from its measured ink area. object-fit keeps a wide wordmark undistorted
-   when the column is narrower than its natural width. */
-:root{--logo-h:23px}
-@media (min-width:520px){ :root{--logo-h:25px} }
-@media (min-width:760px){ :root{--logo-h:27px} }
-.wall{display:grid;grid-template-columns:repeat(auto-fill,minmax(108px,1fr));
-  gap:20px 14px;align-items:center;justify-items:center;
-  margin:18px 0 4px;padding:0;list-style:none}
-.wall li{display:flex;align-items:center;justify-content:center;width:100%;min-height:30px}
-.wall img{--k:1;height:calc(var(--logo-h) * var(--k));width:auto;max-width:100%;
-  object-fit:contain;display:block;filter:grayscale(1);opacity:.85}
-@media (min-width:520px){ .wall{gap:22px 18px} }
+   from its measured ink area with a hand correction at the extremes, where the
+   formula drifts. */
+:root{--logo-h:23px;--wall-gap:26px}
+@media (min-width:520px){ :root{--logo-h:25px;--wall-gap:30px} }
+@media (min-width:760px){ :root{--logo-h:27px;--wall-gap:34px} }
+
+.wall{margin:18px 0 4px;display:flex;flex-direction:column;gap:13px}
+/* The row is the window. The fade at each end means a logo leaves and arrives
+   rather than being chopped off against a hard edge. */
+.wall-row{overflow:hidden;
+  -webkit-mask-image:linear-gradient(to right,transparent,#000 7%,#000 93%,transparent);
+  mask-image:linear-gradient(to right,transparent,#000 7%,#000 93%,transparent)}
+.wall-track{display:flex;align-items:center;gap:var(--wall-gap);width:max-content;
+  margin:0;padding:0;list-style:none;
+  animation:wall-run var(--dur,64s) linear infinite;
+  will-change:transform}
+/* One keyframe, played backwards for the rows that travel right. */
+.wall-track--right{animation-direction:reverse}
+.wall-row:nth-child(1) .wall-track{--dur:64s}
+.wall-row:nth-child(2) .wall-track{--dur:76s}
+.wall-row:nth-child(3) .wall-track{--dur:68s}
+/* Roughly 25px a second - slow enough to read a name as it goes past. */
+.wall-row:hover .wall-track,
+.wall-row:focus-within .wall-track{animation-play-state:paused}
+/* One full set is half the track plus half a gap: 2n tiles carry 2n-1 gaps, so
+   a plain -50% lands half a gap short and the loop hitches once per cycle. */
+@keyframes wall-run{
+  from{transform:translate3d(0,0,0)}
+  to{transform:translate3d(calc(-50% - var(--wall-gap) / 2),0,0)}
+}
+.wall-track li{flex:0 0 auto;display:flex;align-items:center;justify-content:center}
+/* max-width:none - inside a moving row a wordmark keeps its natural width and
+   the row clips it; constraining it here would shrink the wide ones instead. */
+.wall-track img{--k:1;height:calc(var(--logo-h) * var(--k));width:auto;max-width:none;
+  display:block;filter:grayscale(1);opacity:.85}
+
+@media (prefers-reduced-motion:reduce){
+  /* Nothing moves: the three tracks drop their second copy and wrap into a
+     plain static grid, so all thirty-six are readable without motion. */
+  .wall{gap:0}
+  .wall-row{overflow:visible;-webkit-mask-image:none;mask-image:none}
+  .wall-track{animation:none;width:auto;flex-wrap:wrap;justify-content:center;
+    gap:18px 16px;margin-bottom:18px;will-change:auto}
+  .wall-track li[data-clone]{display:none}
+  .wall-track img{max-width:100%;object-fit:contain}
+}
 
 /* ---------- SUBMIT SCREEN ---------- */
 .summary{margin-top:22px;border:1px solid var(--line);border-radius:12px;background:var(--panel2);padding:18px 20px}
@@ -314,44 +355,98 @@ main{flex:1 0 auto;padding:38px 0 96px}
              per-logo size multiplier: they are matched by ink area rather than by
              bounding box, so a thin outline mark and a heavy wordmark carry the
              same visual weight. -->
-        <ul class="wall">
-            <li><img src="/qualifyform/img/logo-stanify.png" alt="Stanify" style="--k:0.811" loading="lazy" decoding="async" /></li>
-            <li><img src="/qualifyform/img/logo-rho.svg" alt="Rho" style="--k:1.324" loading="lazy" decoding="async" /></li>
-            <li><img src="/qualifyform/img/logo-brex.svg" alt="Brex" style="--k:0.896" loading="lazy" decoding="async" /></li>
-            <li><img src="/qualifyform/img/logo-rillet.svg" alt="Rillet" style="--k:0.975" loading="lazy" decoding="async" /></li>
-            <li><img src="/qualifyform/img/logo-a-rising-tide.png" alt="A Rising Tide" style="--k:0.901" loading="lazy" decoding="async" /></li>
-            <li><img src="/qualifyform/img/logo-superpower.svg" alt="SUPERPOWER" style="--k:0.72" loading="lazy" decoding="async" /></li>
-            <li><img src="/qualifyform/img/logo-deel.svg" alt="Deel" style="--k:1.027" loading="lazy" decoding="async" /></li>
-            <li><img src="/qualifyform/img/logo-numeral.svg" alt="Numeral" style="--k:0.793" loading="lazy" decoding="async" /></li>
-            <li><img src="/qualifyform/img/logo-atrios.svg" alt="Atrios" style="--k:1.5" loading="lazy" decoding="async" /></li>
-            <li><img src="/qualifyform/img/logo-comp-ai.svg" alt="Comp AI" style="--k:1.222" loading="lazy" decoding="async" /></li>
-            <li><img src="/qualifyform/img/logo-charlemagne-labs.png" alt="Charlemagne Labs" style="--k:1.033" loading="lazy" decoding="async" /></li>
-            <li><img src="/qualifyform/img/logo-chord.svg" alt="Chord" style="--k:1.144" loading="lazy" decoding="async" /></li>
-            <li><img src="/qualifyform/img/logo-corridor.svg" alt="Corridor" style="--k:1.072" loading="lazy" decoding="async" /></li>
-            <li><img src="/qualifyform/img/logo-doss.svg" alt="DOSS" style="--k:1.027" loading="lazy" decoding="async" /></li>
-            <li><img src="/qualifyform/img/logo-hire-overseas.svg" alt="Hire Overseas" style="--k:1.09" loading="lazy" decoding="async" /></li>
-            <li><img src="/qualifyform/img/logo-finaloop.svg" alt="Finaloop" style="--k:1.217" loading="lazy" decoding="async" /></li>
-            <li><img src="/qualifyform/img/logo-flagshiprtl.svg" alt="FlagshipRTL" style="--k:1.065" loading="lazy" decoding="async" /></li>
-            <li><img src="/qualifyform/img/logo-globaltize.svg" alt="Globaltize" style="--k:0.778" loading="lazy" decoding="async" /></li>
+        <div class="wall">
+          <!-- row 1 of three, travelling right -->
+          <div class="wall-row">
+            <ul class="wall-track wall-track--right">
+            <li><img src="/qualifyform/img/logo-stanify.png" alt="Stanify" style="--k:0.824" loading="lazy" decoding="async" /></li>
+            <li><img src="/qualifyform/img/logo-rho.svg" alt="Rho" style="--k:1.077" loading="lazy" decoding="async" /></li>
+            <li><img src="/qualifyform/img/logo-brex.svg" alt="Brex" style="--k:0.911" loading="lazy" decoding="async" /></li>
+            <li><img src="/qualifyform/img/logo-rillet.svg" alt="Rillet" style="--k:0.813" loading="lazy" decoding="async" /></li>
+            <li><img src="/qualifyform/img/logo-a-rising-tide.png" alt="A Rising Tide" style="--k:0.84" loading="lazy" decoding="async" /></li>
+            <li><img src="/qualifyform/img/logo-superpower.svg" alt="SUPERPOWER" style="--k:0.68" loading="lazy" decoding="async" /></li>
+            <li><img src="/qualifyform/img/logo-deel.svg" alt="Deel" style="--k:1.044" loading="lazy" decoding="async" /></li>
+            <li><img src="/qualifyform/img/logo-numeral.svg" alt="Numeral" style="--k:0.806" loading="lazy" decoding="async" /></li>
+            <li><img src="/qualifyform/img/logo-atrios.svg" alt="Atrios" style="--k:1.229" loading="lazy" decoding="async" /></li>
+            <li><img src="/qualifyform/img/logo-comp-ai.svg" alt="Comp AI" style="--k:1.242" loading="lazy" decoding="async" /></li>
+            <li><img src="/qualifyform/img/logo-charlemagne-labs.png" alt="Charlemagne Labs" style="--k:1.186" loading="lazy" decoding="async" /></li>
+            <li><img src="/qualifyform/img/logo-chord.svg" alt="Chord" style="--k:1.163" loading="lazy" decoding="async" /></li>
+              <!-- second copy: what the first set scrolls into -->
+            <li aria-hidden="true" data-clone><img src="/qualifyform/img/logo-stanify.png" alt="" style="--k:0.824" loading="lazy" decoding="async" /></li>
+            <li aria-hidden="true" data-clone><img src="/qualifyform/img/logo-rho.svg" alt="" style="--k:1.077" loading="lazy" decoding="async" /></li>
+            <li aria-hidden="true" data-clone><img src="/qualifyform/img/logo-brex.svg" alt="" style="--k:0.911" loading="lazy" decoding="async" /></li>
+            <li aria-hidden="true" data-clone><img src="/qualifyform/img/logo-rillet.svg" alt="" style="--k:0.813" loading="lazy" decoding="async" /></li>
+            <li aria-hidden="true" data-clone><img src="/qualifyform/img/logo-a-rising-tide.png" alt="" style="--k:0.84" loading="lazy" decoding="async" /></li>
+            <li aria-hidden="true" data-clone><img src="/qualifyform/img/logo-superpower.svg" alt="" style="--k:0.68" loading="lazy" decoding="async" /></li>
+            <li aria-hidden="true" data-clone><img src="/qualifyform/img/logo-deel.svg" alt="" style="--k:1.044" loading="lazy" decoding="async" /></li>
+            <li aria-hidden="true" data-clone><img src="/qualifyform/img/logo-numeral.svg" alt="" style="--k:0.806" loading="lazy" decoding="async" /></li>
+            <li aria-hidden="true" data-clone><img src="/qualifyform/img/logo-atrios.svg" alt="" style="--k:1.229" loading="lazy" decoding="async" /></li>
+            <li aria-hidden="true" data-clone><img src="/qualifyform/img/logo-comp-ai.svg" alt="" style="--k:1.242" loading="lazy" decoding="async" /></li>
+            <li aria-hidden="true" data-clone><img src="/qualifyform/img/logo-charlemagne-labs.png" alt="" style="--k:1.186" loading="lazy" decoding="async" /></li>
+            <li aria-hidden="true" data-clone><img src="/qualifyform/img/logo-chord.svg" alt="" style="--k:1.163" loading="lazy" decoding="async" /></li>
+            </ul>
+          </div>
+          <!-- row 2 of three, travelling left -->
+          <div class="wall-row">
+            <ul class="wall-track wall-track--left">
+            <li><img src="/qualifyform/img/logo-corridor.svg" alt="Corridor" style="--k:1.09" loading="lazy" decoding="async" /></li>
+            <li><img src="/qualifyform/img/logo-doss.svg" alt="DOSS" style="--k:1.044" loading="lazy" decoding="async" /></li>
+            <li><img src="/qualifyform/img/logo-hire-overseas.svg" alt="Hire Overseas" style="--k:1.2" loading="lazy" decoding="async" /></li>
+            <li><img src="/qualifyform/img/logo-finaloop.svg" alt="Finaloop" style="--k:1.237" loading="lazy" decoding="async" /></li>
+            <li><img src="/qualifyform/img/logo-flagshiprtl.svg" alt="FlagshipRTL" style="--k:1.212" loading="lazy" decoding="async" /></li>
+            <li><img src="/qualifyform/img/logo-globaltize.svg" alt="Globaltize" style="--k:0.791" loading="lazy" decoding="async" /></li>
             <li><img src="/qualifyform/img/logo-implentio.svg" alt="Implentio" style="--k:0.72" loading="lazy" decoding="async" /></li>
-            <li><img src="/qualifyform/img/logo-highbeam.png" alt="Highbeam" style="--k:0.971" loading="lazy" decoding="async" /></li>
-            <li><img src="/qualifyform/img/logo-north-cloud.svg" alt="North.Cloud" style="--k:0.929" loading="lazy" decoding="async" /></li>
-            <li><img src="/qualifyform/img/logo-onward.svg" alt="Onward" style="--k:0.745" loading="lazy" decoding="async" /></li>
-            <li><img src="/qualifyform/img/logo-oceans-talent.png" alt="Oceans Talent" style="--k:0.937" loading="lazy" decoding="async" /></li>
-            <li><img src="/qualifyform/img/logo-passport.png" alt="Passport" style="--k:1.342" loading="lazy" decoding="async" /></li>
-            <li><img src="/qualifyform/img/logo-pinpoint.svg" alt="Pinpoint" style="--k:0.88" loading="lazy" decoding="async" /></li>
-            <li><img src="/qualifyform/img/logo-pylon.png" alt="Pylon" style="--k:1.08" loading="lazy" decoding="async" /></li>
-            <li><img src="/qualifyform/img/logo-relay.svg" alt="Relay" style="--k:1.5" loading="lazy" decoding="async" /></li>
-            <li><img src="/qualifyform/img/logo-oyster-hr.svg" alt="Oyster HR" style="--k:1.026" loading="lazy" decoding="async" /></li>
-            <li><img src="/qualifyform/img/logo-scalis.png" alt="SCALIS" style="--k:0.773" loading="lazy" decoding="async" /></li>
-            <li><img src="/qualifyform/img/logo-secure-cloud-innovations.png" alt="Secure Cloud Innovations" style="--k:1.424" loading="lazy" decoding="async" /></li>
-            <li><img src="/qualifyform/img/logo-slash.svg" alt="Slash" style="--k:1.064" loading="lazy" decoding="async" /></li>
-            <li><img src="/qualifyform/img/logo-starch.svg" alt="Starch" style="--k:1.5" loading="lazy" decoding="async" /></li>
-            <li><img src="/qualifyform/img/logo-thera.svg" alt="Thera" style="--k:0.874" loading="lazy" decoding="async" /></li>
-            <li><img src="/qualifyform/img/logo-supper.svg" alt="Supper" style="--k:0.831" loading="lazy" decoding="async" /></li>
-            <li><img src="/qualifyform/img/logo-testparty.png" alt="TestParty" style="--k:1" loading="lazy" decoding="async" /></li>
-            <li><img src="/qualifyform/img/logo-withcoverage.svg" alt="WithCoverage" style="--k:0.873" loading="lazy" decoding="async" /></li>
-        </ul>
+            <li><img src="/qualifyform/img/logo-highbeam.png" alt="Highbeam" style="--k:0.987" loading="lazy" decoding="async" /></li>
+            <li><img src="/qualifyform/img/logo-north-cloud.svg" alt="North.Cloud" style="--k:0.944" loading="lazy" decoding="async" /></li>
+            <li><img src="/qualifyform/img/logo-onward.svg" alt="Onward" style="--k:0.757" loading="lazy" decoding="async" /></li>
+            <li><img src="/qualifyform/img/logo-oceans-talent.png" alt="Oceans Talent" style="--k:1.162" loading="lazy" decoding="async" /></li>
+            <li><img src="/qualifyform/img/logo-passport.png" alt="Passport" style="--k:1.176" loading="lazy" decoding="async" /></li>
+              <!-- second copy: what the first set scrolls into -->
+            <li aria-hidden="true" data-clone><img src="/qualifyform/img/logo-corridor.svg" alt="" style="--k:1.09" loading="lazy" decoding="async" /></li>
+            <li aria-hidden="true" data-clone><img src="/qualifyform/img/logo-doss.svg" alt="" style="--k:1.044" loading="lazy" decoding="async" /></li>
+            <li aria-hidden="true" data-clone><img src="/qualifyform/img/logo-hire-overseas.svg" alt="" style="--k:1.2" loading="lazy" decoding="async" /></li>
+            <li aria-hidden="true" data-clone><img src="/qualifyform/img/logo-finaloop.svg" alt="" style="--k:1.237" loading="lazy" decoding="async" /></li>
+            <li aria-hidden="true" data-clone><img src="/qualifyform/img/logo-flagshiprtl.svg" alt="" style="--k:1.212" loading="lazy" decoding="async" /></li>
+            <li aria-hidden="true" data-clone><img src="/qualifyform/img/logo-globaltize.svg" alt="" style="--k:0.791" loading="lazy" decoding="async" /></li>
+            <li aria-hidden="true" data-clone><img src="/qualifyform/img/logo-implentio.svg" alt="" style="--k:0.72" loading="lazy" decoding="async" /></li>
+            <li aria-hidden="true" data-clone><img src="/qualifyform/img/logo-highbeam.png" alt="" style="--k:0.987" loading="lazy" decoding="async" /></li>
+            <li aria-hidden="true" data-clone><img src="/qualifyform/img/logo-north-cloud.svg" alt="" style="--k:0.944" loading="lazy" decoding="async" /></li>
+            <li aria-hidden="true" data-clone><img src="/qualifyform/img/logo-onward.svg" alt="" style="--k:0.757" loading="lazy" decoding="async" /></li>
+            <li aria-hidden="true" data-clone><img src="/qualifyform/img/logo-oceans-talent.png" alt="" style="--k:1.162" loading="lazy" decoding="async" /></li>
+            <li aria-hidden="true" data-clone><img src="/qualifyform/img/logo-passport.png" alt="" style="--k:1.176" loading="lazy" decoding="async" /></li>
+            </ul>
+          </div>
+          <!-- row 3 of three, travelling right -->
+          <div class="wall-row">
+            <ul class="wall-track wall-track--right">
+            <li><img src="/qualifyform/img/logo-pinpoint.svg" alt="Pinpoint" style="--k:1.002" loading="lazy" decoding="async" /></li>
+            <li><img src="/qualifyform/img/logo-pylon.png" alt="Pylon" style="--k:1.098" loading="lazy" decoding="async" /></li>
+            <li><img src="/qualifyform/img/logo-relay.svg" alt="Relay" style="--k:1.572" loading="lazy" decoding="async" /></li>
+            <li><img src="/qualifyform/img/logo-oyster-hr.svg" alt="Oyster HR" style="--k:1.043" loading="lazy" decoding="async" /></li>
+            <li><img src="/qualifyform/img/logo-scalis.png" alt="SCALIS" style="--k:0.786" loading="lazy" decoding="async" /></li>
+            <li><img src="/qualifyform/img/logo-secure-cloud-innovations.png" alt="Secure Cloud Innovations" style="--k:1.447" loading="lazy" decoding="async" /></li>
+            <li><img src="/qualifyform/img/logo-slash.svg" alt="Slash" style="--k:1.082" loading="lazy" decoding="async" /></li>
+            <li><img src="/qualifyform/img/logo-starch.png" alt="Starch" style="--k:1.238" loading="lazy" decoding="async" /></li>
+            <li><img src="/qualifyform/img/logo-thera.svg" alt="Thera" style="--k:0.888" loading="lazy" decoding="async" /></li>
+            <li><img src="/qualifyform/img/logo-supper.svg" alt="Supper" style="--k:0.845" loading="lazy" decoding="async" /></li>
+            <li><img src="/qualifyform/img/logo-testparty.png" alt="TestParty" style="--k:1.017" loading="lazy" decoding="async" /></li>
+            <li><img src="/qualifyform/img/logo-withcoverage.svg" alt="WithCoverage" style="--k:0.888" loading="lazy" decoding="async" /></li>
+              <!-- second copy: what the first set scrolls into -->
+            <li aria-hidden="true" data-clone><img src="/qualifyform/img/logo-pinpoint.svg" alt="" style="--k:1.002" loading="lazy" decoding="async" /></li>
+            <li aria-hidden="true" data-clone><img src="/qualifyform/img/logo-pylon.png" alt="" style="--k:1.098" loading="lazy" decoding="async" /></li>
+            <li aria-hidden="true" data-clone><img src="/qualifyform/img/logo-relay.svg" alt="" style="--k:1.572" loading="lazy" decoding="async" /></li>
+            <li aria-hidden="true" data-clone><img src="/qualifyform/img/logo-oyster-hr.svg" alt="" style="--k:1.043" loading="lazy" decoding="async" /></li>
+            <li aria-hidden="true" data-clone><img src="/qualifyform/img/logo-scalis.png" alt="" style="--k:0.786" loading="lazy" decoding="async" /></li>
+            <li aria-hidden="true" data-clone><img src="/qualifyform/img/logo-secure-cloud-innovations.png" alt="" style="--k:1.447" loading="lazy" decoding="async" /></li>
+            <li aria-hidden="true" data-clone><img src="/qualifyform/img/logo-slash.svg" alt="" style="--k:1.082" loading="lazy" decoding="async" /></li>
+            <li aria-hidden="true" data-clone><img src="/qualifyform/img/logo-starch.png" alt="" style="--k:1.238" loading="lazy" decoding="async" /></li>
+            <li aria-hidden="true" data-clone><img src="/qualifyform/img/logo-thera.svg" alt="" style="--k:0.888" loading="lazy" decoding="async" /></li>
+            <li aria-hidden="true" data-clone><img src="/qualifyform/img/logo-supper.svg" alt="" style="--k:0.845" loading="lazy" decoding="async" /></li>
+            <li aria-hidden="true" data-clone><img src="/qualifyform/img/logo-testparty.png" alt="" style="--k:1.017" loading="lazy" decoding="async" /></li>
+            <li aria-hidden="true" data-clone><img src="/qualifyform/img/logo-withcoverage.svg" alt="" style="--k:0.888" loading="lazy" decoding="async" /></li>
+            </ul>
+          </div>
+        </div>
         <div class="q-actions">
           <button type="button" class="btn" id="startBtn">Start</button>
         </div>
@@ -418,6 +513,7 @@ main{flex:1 0 auto;padding:38px 0 96px}
         </div>
         <span class="q-error" id="e-4" aria-live="polite"></span>
         <div class="q-actions">
+          <button type="button" class="btn" data-next hidden>Continue</button>
           <button type="button" class="btn ghost btn-back" data-back>Back</button>
         </div>
       </section>
@@ -439,6 +535,7 @@ main{flex:1 0 auto;padding:38px 0 96px}
         </div>
         <span class="q-error" id="e-5" aria-live="polite"></span>
         <div class="q-actions">
+          <button type="button" class="btn" data-next hidden>Continue</button>
           <button type="button" class="btn ghost btn-back" data-back>Back</button>
         </div>
       </section>
@@ -506,6 +603,7 @@ main{flex:1 0 auto;padding:38px 0 96px}
         </div>
         <span class="q-error" id="e-7" aria-live="polite"></span>
         <div class="q-actions">
+          <button type="button" class="btn" data-next hidden>Continue</button>
           <button type="button" class="btn ghost btn-back" data-back>Back</button>
         </div>
       </section>
@@ -524,6 +622,7 @@ main{flex:1 0 auto;padding:38px 0 96px}
         </div>
         <span class="q-error" id="e-8" aria-live="polite"></span>
         <div class="q-actions">
+          <button type="button" class="btn" data-next hidden>Continue</button>
           <button type="button" class="btn ghost btn-back" data-back>Back</button>
         </div>
       </section>
@@ -542,6 +641,7 @@ main{flex:1 0 auto;padding:38px 0 96px}
         </div>
         <span class="q-error" id="e-9" aria-live="polite"></span>
         <div class="q-actions">
+          <button type="button" class="btn" data-next hidden>Continue</button>
           <button type="button" class="btn ghost btn-back" data-back>Back</button>
         </div>
       </section>
@@ -556,6 +656,7 @@ main{flex:1 0 auto;padding:38px 0 96px}
         </div>
         <span class="q-error" id="e-10" aria-live="polite"></span>
         <div class="q-actions">
+          <button type="button" class="btn" data-next hidden>Continue</button>
           <button type="button" class="btn ghost btn-back" data-back>Back</button>
         </div>
       </section>
@@ -867,6 +968,7 @@ main{flex:1 0 auto;padding:38px 0 96px}
     el.hidden = false;
 
     if (el.id === 's-submit') paintSummary();
+    paintContinue(el);
     paintProgress();
 
     if (entering) {
@@ -970,6 +1072,21 @@ main{flex:1 0 auto;padding:38px 0 96px}
     optsOf(el).forEach(function(b){ b.classList.toggle('is-capped', atCap); });
     pickCount.textContent = chosen + ' of ' + cap + ' chosen';
     pickCount.classList.toggle('at-cap', atCap);
+  }
+
+  // ---- Continue on an already-answered single choice -----------------------
+  // Tapping an option advances, so coming back to a step you have answered used
+  // to leave no way forward except re-tapping the option already selected,
+  // which reads as broken. Once a step has an answer it gets a Continue.
+  function paintContinue(el){
+    if (!isSelect(el)) return;                  // text and multi steps always have one
+    var btn = el.querySelector('.q-actions [data-next]');
+    if (!btn) return;
+    var answered = isAnswered(answers[keyOf(el)]);
+    // Q12 is optional, so its button is always there - it just changes what it
+    // says once there is an answer to continue past rather than skip.
+    if (keyOf(el) === 'referrals') { btn.textContent = answered ? 'Continue' : 'Skip'; return; }
+    btn.hidden = !answered;
   }
 
   // ---- Validation (on advance only) ---------------------------------------
@@ -1109,10 +1226,19 @@ main{flex:1 0 auto;padding:38px 0 96px}
       return;                                   // multi questions advance on Continue
     }
 
+    // Whether this is their first answer here decides what happens next, so it
+    // has to be read before commit() writes one.
+    var hadAnswer = isAnswered(answers[keyOf(el)]);
     optsOf(el).forEach(function(b){ b.setAttribute('aria-pressed', b === opt ? 'true' : 'false'); });
     setError(el, '');
     commit(el);
-    setTimeout(function(){ if (screenAt(idx) === el) show(idx + 1); }, SELECT_DELAY);
+    paintContinue(el);
+    // A first pick advances on its own, as before. Changing an answer already
+    // given does not: they came back here deliberately, so let them look at it
+    // and move on with Continue.
+    if (!hadAnswer) {
+      setTimeout(function(){ if (screenAt(idx) === el) show(idx + 1); }, SELECT_DELAY);
+    }
   }
 
   // Enter advances on the text fields.
