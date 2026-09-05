@@ -44,3 +44,9 @@ NOTION_SUPERHUMAN_DATABASE_ID = "9b7ca5eb-e557-82f8-894a-0126ecc4ddf2"
 # IMPORTANT: connect the SAME Notion integration (NOTION_TOKEN) to this database
 # (••• -> Connections) or writes will 404.
 NOTION_WAITLIST_DATABASE_ID = "2db1e956-f2bd-4b14-bad0-aa00c0ea3e75"
+
+# Qualify form (POST /qualify) -> its own Notion database.
+# Id is from the database URL (bdd8e0c354da404a8ceba7139e18c65e).
+# IMPORTANT: connect the SAME Notion integration (NOTION_TOKEN) to this database
+# (••• -> Connections) or writes will 404.
+NOTION_QUALIFY_DATABASE_ID = "bdd8e0c3-54da-404a-8ceb-a7139e18c65e"

@@ -1,0 +1,1190 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+<!-- Meta Pixel -->
+<script src="/js/pixel.js"></script>
+<noscript><img height="1" width="1" style="display:none" alt=""
+  src="https://www.facebook.com/tr?id=1790181495468842&amp;ev=PageView&amp;noscript=1" /></noscript>
+<title>Tell us about your company</title>
+<link rel="icon" href="/favicon.ico" sizes="any" />
+<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32.png" />
+<link rel="icon" type="image/png" sizes="16x16" href="/favicon-16.png" />
+<link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
+<meta name="description" content="Eleven quick questions about you and your company. About two minutes." />
+<link rel="canonical" href="https://timerich.ai/qualifyform/" />
+<meta name="robots" content="noindex, nofollow" />
+<meta name="theme-color" content="#FFFCEB" />
+<meta property="og:title" content="Tell us about your company" />
+<meta property="og:description" content="Eleven quick questions. About two minutes." />
+<meta property="og:url" content="https://timerich.ai/qualifyform/" />
+<meta property="og:type" content="website" />
+<meta property="og:image" content="https://timerich.ai/og-image.jpg" />
+
+<!-- The brand faces, already served (and cached) for /sh-apply/. -->
+<link rel="stylesheet" href="/sh-apply/fonts.css" />
+<style>
+/* =========================================================================
+   Motion tuning - identical to /sh-apply/, so the two forms feel like one
+   product. Everything about the feel of a question change lives here.
+   ========================================================================= */
+:root{
+  --q-travel:  28px;   /* how far a question travels */
+  --q-exit:   240ms;   /* the outgoing question, leaving as one block */
+  --q-enter:  380ms;   /* each part of the incoming question */
+  --q-offset:  60ms;   /* how long into the exit the arrival starts (the overlap) */
+  --q-stagger: 45ms;   /* the gap between each arriving part */
+  --q-ease: cubic-bezier(.16,1,.3,1);
+}
+
+/* =========================================================================
+   Qualify form - same visual system as /sh-apply/ and /accelerator/
+   (cream ground, deep green ink, lime pop; Space Grotesk display, Inter body)
+   ========================================================================= */
+:root{
+  --cream:#FFFCEB;
+  --sage:#DCDEBF;
+  --sage-lt:#E9EAD5;
+  --green:#424B36;
+  --green-deep:#333A28;
+  --pop:#CCEEA0;                /* true lime - only on deep green */
+
+  --bg:#FFFCEB;
+  --panel:#DCDEBF;
+  --panel2:#E9EAD5;
+  --line:rgba(66,75,54,.20);
+  --line-2:rgba(66,75,54,.34);
+  --text:#424B36;
+  --muted:#5B6449;
+  --dim:#7E8768;
+  --lime:#67762E;
+  --red:#A8492F;
+
+  --display:'Space Grotesk',system-ui,-apple-system,'Segoe UI',sans-serif;
+  --mono:'Archivo',-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;
+  --body:'Inter',-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;
+}
+*{margin:0;padding:0;box-sizing:border-box}
+/* Reserving the scrollbar gutter keeps a question of a different height from
+   toggling a scrollbar on and off, which would change the viewport width and
+   reflow the whole page mid-slide. */
+html{-webkit-text-size-adjust:100%;text-size-adjust:100%;scrollbar-gutter:stable}
+html,body{max-width:100%;overflow-x:clip}
+body{background:var(--bg);color:var(--text);font-family:var(--body);font-size:17px;line-height:1.6;-webkit-font-smoothing:antialiased;min-height:100vh;display:flex;flex-direction:column}
+::selection{background:var(--pop);color:var(--green-deep)}
+h1,h2{font-family:var(--display);font-weight:600;line-height:1.1;letter-spacing:-.022em;color:var(--green-deep);text-wrap:balance;overflow-wrap:break-word}
+a{color:inherit}
+:focus-visible{outline:2px solid var(--green);outline-offset:3px;border-radius:6px}
+/* The question headings are focus targets for screen readers only: they take
+   focus as a question arrives so it gets announced, and they are not reachable
+   by Tab. A ring round a heading says nothing the user can act on. */
+.q-title[tabindex="-1"]:focus,#introHead:focus,#doneHead:focus{outline:none}
+.wrap{width:100%;max-width:660px;margin:0 auto;padding:0 20px}
+.sr-only{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap;border:0}
+
+/* ---------- HEADER + PROGRESS ---------- */
+.topbar{border-bottom:1px solid var(--line);background:rgba(255,252,235,.94);-webkit-backdrop-filter:blur(10px);backdrop-filter:blur(10px);position:sticky;top:0;z-index:20}
+.topbar-inner{display:flex;align-items:center;justify-content:space-between;gap:16px;height:58px}
+.brand-word{font-family:var(--display);font-weight:700;letter-spacing:-.02em;font-size:18px;color:var(--text);text-decoration:none;line-height:1}
+.brand-word .wm-dot{color:var(--lime)}
+.progress{display:flex;align-items:center;gap:12px;min-width:0}
+.progress[hidden]{display:none}
+.bar{width:104px;height:5px;border-radius:99px;background:var(--panel);overflow:hidden}
+/* scaleX, not width: this bar advances at the same moment a question is
+   sliding, and a width transition would force layout on every frame of it. */
+.bar-fill{height:100%;width:100%;border-radius:99px;background:var(--green);
+  transform:scaleX(0);transform-origin:left center;transition:transform .22s ease}
+.progress-label{font-family:var(--mono);font-size:12px;letter-spacing:.14em;text-transform:uppercase;color:var(--dim);white-space:nowrap}
+/* At 320px the bar and the label together crowd the wordmark out. */
+@media (max-width:400px){ .bar{width:64px} .progress{gap:9px} }
+
+/* ---------- STAGE ----------
+   Questions sit in the top two-thirds so a phone keyboard never covers them. */
+main{flex:1 0 auto;padding:38px 0 96px}
+@media (min-width:700px){ main{padding:64px 0 120px} }
+
+/* ---------- QUESTION TRANSITIONS ----------
+   Same system as /sh-apply/: the outgoing question keeps moving in the
+   direction of travel while the incoming one arrives from the opposite edge,
+   a part at a time, starting --q-offset into the exit so the two overlap and
+   read as one movement.
+
+   Compositor rules, strictly:
+   - transform and opacity only, so no frame can trigger layout.
+   - will-change applied a frame before the flip and dropped the moment it
+     settles, so an idle question never holds a promoted layer.
+   - the outgoing question is taken out of flow, so the stage's height is
+     always the incoming question's and nothing below it moves. */
+#qualifyForm{position:relative}
+.screen[hidden]{display:none}
+.screen.is-leaving{position:absolute;top:0;left:0;right:0;pointer-events:none}
+.screen.q-will{will-change:transform,opacity}
+.screen.q-exit {transition:transform var(--q-exit) var(--q-ease),opacity var(--q-exit) var(--q-ease)}
+.screen.q-below{transform:translateY(var(--q-travel));opacity:0}
+.screen.q-above{transform:translateY(calc(-1 * var(--q-travel)));opacity:0}
+.screen.q-in-below > *,
+.screen.q-in-above > *,
+.screen.q-in-run > *{will-change:transform,opacity}
+.screen.q-in-below > *{opacity:0;transform:translateY(var(--q-travel))}
+.screen.q-in-above > *{opacity:0;transform:translateY(calc(-1 * var(--q-travel)))}
+.screen.q-in-run > *{
+  transition:opacity var(--q-enter) var(--q-ease),transform var(--q-enter) var(--q-ease);
+  transition-delay:calc(var(--q-offset) + var(--i,0) * var(--q-stagger));
+}
+/* Hover effects inside the stage are suspended while a question is in flight. */
+#qualifyForm.q-busy .opt,#qualifyForm.q-busy .btn{transition:none}
+
+@media (prefers-reduced-motion:reduce){
+  /* Instant swap: no translate, no fade, no stagger, no layer promotion. */
+  .screen.q-exit,.screen.q-in-run > *{transition:none}
+  .screen.q-will,.screen.q-in-below > *,.screen.q-in-above > *,.screen.q-in-run > *{will-change:auto}
+  .screen.q-below,.screen.q-above,
+  .screen.q-in-below > *,.screen.q-in-above > *{transform:none;opacity:1}
+  .screen.is-leaving{display:none}
+  .bar-fill{transition:none}
+}
+
+.q-eyebrow{font-family:var(--mono);font-size:12px;letter-spacing:.18em;text-transform:uppercase;color:var(--lime);margin-bottom:14px;display:block}
+.q-title{font-size:clamp(26px,4.6vw,38px);margin-bottom:10px}
+.q-help{font-size:15.5px;color:var(--muted);margin-bottom:22px}
+.q-title + .q-field, .q-title + .q-opts{margin-top:22px}
+
+/* ---------- FIELDS ---------- */
+.q-field input[type=text],
+.q-field input[type=email],
+.q-field input[type=url]{
+  width:100%;background:var(--cream);border:1px solid var(--line-2);border-radius:10px;
+  padding:15px 16px;font-size:17px;line-height:1.5;color:var(--text);font-family:var(--body);
+  min-height:52px;
+}
+.q-field input::placeholder{color:var(--dim)}
+.q-field input:focus{outline:none;border-color:var(--green);box-shadow:0 0 0 3px rgba(66,75,54,.12)}
+.q-field input[aria-invalid="true"]{border-color:var(--red)}
+
+/* Errors: announced politely, never shown on keystroke - only on advance. */
+.q-error{display:block;margin-top:10px;min-height:1px;font-size:14.5px;color:var(--red)}
+
+/* ---------- SELECT BUTTONS ---------- */
+.q-opts{display:flex;flex-direction:column;gap:10px}
+.opt{display:flex;align-items:center;gap:12px;width:100%;min-height:56px;text-align:left;
+  background:var(--cream);border:1px solid var(--line-2);border-radius:10px;padding:14px 16px;
+  font-family:var(--body);font-size:16.5px;line-height:1.35;color:var(--text);cursor:pointer;
+  transition:border-color .12s ease,background .12s ease,transform .12s ease,opacity .12s ease}
+.opt:hover{border-color:var(--green);background:var(--panel2)}
+.opt[aria-pressed="true"]{border-color:var(--green);background:var(--green);color:var(--cream)}
+.opt[aria-pressed="true"] .opt-key{background:var(--pop);color:var(--green-deep);border-color:transparent}
+.opt .opt-key{flex:0 0 auto;display:inline-flex;align-items:center;justify-content:center;width:26px;height:26px;
+  border:1px solid var(--line-2);border-radius:6px;font-family:var(--mono);font-size:12px;color:var(--dim)}
+.opt .opt-sub{display:block;color:inherit;opacity:.75;font-size:14.5px;margin-top:2px}
+
+/* ---------- MULTI-SELECT ----------
+   A tick box rather than a number key, so a question you can answer more than
+   once never looks like one you can only answer once. */
+.opt-box{flex:0 0 auto;position:relative;width:21px;height:21px;border:1.5px solid var(--line-2);
+  border-radius:6px;background:var(--cream)}
+.opt[aria-pressed="true"] .opt-box{background:var(--pop);border-color:transparent}
+.opt[aria-pressed="true"] .opt-box::after{content:"";position:absolute;left:7px;top:3px;width:5px;height:10px;
+  border:solid var(--green-deep);border-width:0 2.5px 2.5px 0;transform:rotate(45deg)}
+/* At the cap the options they have not chosen recede; the three they did keep
+   their full weight. They stay clickable, so the click can explain itself. */
+.opt.is-capped:not([aria-pressed="true"]){opacity:.42}
+.opt.is-capped:not([aria-pressed="true"]):hover{border-color:var(--line-2);background:var(--cream)}
+.pickcount{font-family:var(--mono);font-size:12px;letter-spacing:.12em;text-transform:uppercase;
+  color:var(--dim);margin-bottom:16px}
+.pickcount.at-cap{color:var(--lime)}
+/* A thirty-three option question is two columns wherever there is room. */
+.q-opts--grid{gap:8px}
+@media (min-width:620px){
+  .q-opts--grid{display:grid;grid-template-columns:1fr 1fr;align-items:start}
+}
+.q-opts--grid .opt{min-height:48px;padding:11px 14px;font-size:15.5px}
+
+/* ---------- ACTIONS ---------- */
+.q-actions{display:flex;align-items:center;gap:14px;margin-top:26px;flex-wrap:wrap}
+/* On the two long list questions Continue follows you down the list instead of
+   sitting thirty options below the fold. The bar itself is solid - options
+   reading through from behind the buttons is just mud - and the fade sits
+   above it, where its only job is to say there is more list below. */
+.screen[data-multi] .q-actions{position:sticky;bottom:0;z-index:5;margin-top:18px;padding:12px 0 16px;
+  background:var(--bg)}
+.screen[data-multi] .q-actions::before{content:"";position:absolute;left:0;right:0;bottom:100%;height:26px;
+  background:linear-gradient(to top,var(--bg),rgba(255,252,235,0));pointer-events:none}
+.btn{display:inline-flex;align-items:center;justify-content:center;min-height:52px;
+  font-family:var(--display);font-weight:700;font-size:16px;letter-spacing:.01em;text-decoration:none;
+  padding:14px 30px;border-radius:10px;background:var(--green);color:var(--cream);border:none;cursor:pointer;
+  transition:transform .12s ease,box-shadow .12s ease}
+.btn:hover{transform:translateY(-2px);box-shadow:0 12px 30px -12px rgba(66,75,54,.55)}
+.btn:disabled{opacity:.6;cursor:wait;transform:none;box-shadow:none}
+.btn.ghost{background:transparent;color:var(--muted);border:1px solid var(--line-2);font-weight:500}
+.btn.ghost:hover{border-color:var(--green);color:var(--green-deep);box-shadow:none}
+.btn-back{min-height:44px;padding:10px 18px;font-size:15px}
+.hint{font-family:var(--mono);font-size:11.5px;letter-spacing:.08em;text-transform:uppercase;color:var(--dim)}
+@media (max-width:560px){ .hint{display:none} }
+
+/* ---------- INTRO + THANK YOU ---------- */
+.intro h1,.done h1{font-size:clamp(30px,6.2vw,46px);letter-spacing:-.03em;font-weight:700}
+.intro .lead,.done .lead{font-size:18px;color:var(--muted);margin-top:16px;max-width:34em}
+.intro .micro{margin-top:26px;font-family:var(--mono);font-size:12.5px;letter-spacing:.02em;color:var(--dim)}
+
+/* ---------- SUBMIT SCREEN ---------- */
+.summary{margin-top:22px;border:1px solid var(--line);border-radius:12px;background:var(--panel2);padding:18px 20px}
+.summary dl{display:grid;grid-template-columns:auto 1fr;gap:9px 18px;font-size:15px;margin:0}
+.summary dt{font-family:var(--mono);font-size:11.5px;letter-spacing:.12em;text-transform:uppercase;color:var(--dim);padding-top:3px}
+.summary dd{color:var(--text);overflow-wrap:anywhere}
+/* Two columns of "Professional Services / Consulting" do not fit on a 320px
+   phone, so the labels sit above their values there. */
+@media (max-width:430px){
+  .summary{padding:16px}
+  .summary dl{grid-template-columns:1fr;gap:0}
+  .summary dt{padding-top:0}
+  .summary dd{margin-bottom:11px}
+  .summary dd:last-child{margin-bottom:0}
+}
+
+/* ---------- FOOTER ---------- */
+.foot{flex:0 0 auto;border-top:1px solid var(--line);padding:22px 0;font-size:13.5px;color:var(--dim)}
+.foot a{text-decoration:none}
+.foot a:hover{color:var(--green-deep)}
+.inapp-hint{margin-bottom:20px;border:1px solid var(--line-2);border-radius:10px;background:var(--panel2);padding:12px 14px;font-size:14.5px;color:var(--muted)}
+.inapp-hint[hidden]{display:none}
+</style>
+</head>
+<body>
+
+<header class="topbar">
+  <div class="wrap topbar-inner">
+    <a class="brand-word" href="https://timerich.ai/">Time Rich<span class="wm-dot">.</span></a>
+    <div class="progress" id="progress" hidden>
+      <div class="bar" role="progressbar" id="bar" aria-valuemin="1" aria-valuemax="11" aria-valuenow="1" aria-label="Progress">
+        <div class="bar-fill" id="barFill"></div>
+      </div>
+      <span class="progress-label" id="progressLabel">1 of 11</span>
+    </div>
+  </div>
+</header>
+
+<main>
+  <div class="wrap">
+    <div class="inapp-hint" id="inappHint" hidden>You&rsquo;re in an in-app browser. If the form won&rsquo;t submit, tap the <strong>&hellip;</strong> menu and choose <strong>Open in Safari / Chrome</strong>.</div>
+
+    <!-- Every screen - the intro and the thank-you included - is a direct child
+         of the form, so they share one positioned stage. During a transition
+         the outgoing question is taken out of flow and laid over the incoming
+         one; that is what lets the two motions overlap without the page height
+         (and the footer) twitching. -->
+    <form id="qualifyForm" novalidate autocomplete="on">
+      <input type="text" name="_gotcha" id="f-gotcha" tabindex="-1" autocomplete="off" aria-hidden="true" style="position:absolute;left:-9999px;width:1px;height:1px;opacity:0;" />
+
+      <!-- ================= INTRO ================= -->
+      <section class="screen intro" id="s-intro" data-screen="intro">
+        <span class="q-eyebrow">Time Rich</span>
+        <h1 tabindex="-1" id="introHead">Tell us about your company</h1>
+        <p class="lead">Eleven questions, about two minutes. Most of them are one tap.</p>
+        <div class="q-actions">
+          <button type="button" class="btn" id="startBtn">Start</button>
+        </div>
+        <p class="micro" id="resumeNote" hidden>You have answers in progress &mdash; starting picks up where you left off.</p>
+      </section>
+
+      <!-- ================= Q1 - NAME ================= -->
+      <section class="screen" id="s-1" data-step="1" data-key="name" hidden>
+        <span class="q-eyebrow">Question 1</span>
+        <h2 class="q-title" id="h-1" tabindex="-1"><label for="f-name">Your name</label></h2>
+        <div class="q-field">
+          <input type="text" id="f-name" name="name" autocomplete="name" inputmode="text" autocapitalize="words" enterkeyhint="next" aria-describedby="e-1" />
+          <span class="q-error" id="e-1" aria-live="polite"></span>
+        </div>
+        <div class="q-actions">
+          <button type="button" class="btn" data-next>Continue</button>
+          <span class="hint">Press Enter</span>
+        </div>
+      </section>
+
+      <!-- ================= Q2 - EMAIL ================= -->
+      <section class="screen" id="s-2" data-step="2" data-key="email" hidden>
+        <span class="q-eyebrow">Question 2</span>
+        <h2 class="q-title" id="h-2" tabindex="-1"><label for="f-email">Email</label></h2>
+        <div class="q-field">
+          <input type="email" id="f-email" name="email" autocomplete="email" inputmode="email" autocapitalize="off" autocorrect="off" spellcheck="false" enterkeyhint="next" aria-describedby="e-2" />
+          <span class="q-error" id="e-2" aria-live="polite"></span>
+        </div>
+        <div class="q-actions">
+          <button type="button" class="btn" data-next>Continue</button>
+          <button type="button" class="btn ghost btn-back" data-back>Back</button>
+          <span class="hint">Press Enter</span>
+        </div>
+      </section>
+
+      <!-- ================= Q3 - LINKEDIN ================= -->
+      <section class="screen" id="s-3" data-step="3" data-key="linkedin" hidden>
+        <span class="q-eyebrow">Question 3</span>
+        <h2 class="q-title" id="h-3" tabindex="-1"><label for="f-linkedin">Your LinkedIn profile</label></h2>
+        <p class="q-help" id="help-3">Optional &mdash; leave it blank if you&rsquo;d rather not.</p>
+        <div class="q-field">
+          <input type="url" id="f-linkedin" name="linkedin" inputmode="url" autocapitalize="off" autocorrect="off" spellcheck="false" enterkeyhint="next" placeholder="linkedin.com/in/yourname" aria-describedby="help-3 e-3" />
+          <span class="q-error" id="e-3" aria-live="polite"></span>
+        </div>
+        <div class="q-actions">
+          <button type="button" class="btn" data-next>Continue</button>
+          <button type="button" class="btn ghost btn-back" data-back>Back</button>
+          <span class="hint">Press Enter</span>
+        </div>
+      </section>
+
+      <!-- ================= Q4 - TIME RICH MEMBER ================= -->
+      <section class="screen" id="s-4" data-step="4" data-key="member" data-select hidden>
+        <span class="q-eyebrow">Question 4</span>
+        <h2 class="q-title" id="h-4" tabindex="-1">Are you a Time Rich member?</h2>
+        <div class="q-opts" role="group" aria-labelledby="h-4" aria-describedby="e-4">
+          <button type="button" class="opt" data-value="Yes"><span class="opt-key">1</span><span>Yes</span></button>
+          <button type="button" class="opt" data-value="No"><span class="opt-key">2</span><span>No</span></button>
+          <button type="button" class="opt" data-value="Not sure"><span class="opt-key">3</span><span>Not sure</span></button>
+        </div>
+        <span class="q-error" id="e-4" aria-live="polite"></span>
+        <div class="q-actions">
+          <button type="button" class="btn ghost btn-back" data-back>Back</button>
+        </div>
+      </section>
+
+      <!-- ================= Q5 - ROLE ================= -->
+      <section class="screen" id="s-5" data-step="5" data-key="role" data-select hidden>
+        <span class="q-eyebrow">Question 5</span>
+        <h2 class="q-title" id="h-5" tabindex="-1">Your role</h2>
+        <div class="q-opts" role="group" aria-labelledby="h-5" aria-describedby="e-5">
+          <button type="button" class="opt" data-value="Founder / Co-founder"><span class="opt-key">1</span><span>Founder / Co-founder</span></button>
+          <button type="button" class="opt" data-value="CEO"><span class="opt-key">2</span><span>CEO</span></button>
+          <button type="button" class="opt" data-value="COO / President"><span class="opt-key">3</span><span>COO / President</span></button>
+          <button type="button" class="opt" data-value="CFO / Finance lead"><span class="opt-key">4</span><span>CFO / Finance lead</span></button>
+          <button type="button" class="opt" data-value="CMO / Marketing lead"><span class="opt-key">5</span><span>CMO / Marketing lead</span></button>
+          <button type="button" class="opt" data-value="CRO / Sales lead"><span class="opt-key">6</span><span>CRO / Sales lead</span></button>
+          <button type="button" class="opt" data-value="CTO / Engineering lead"><span class="opt-key">7</span><span>CTO / Engineering lead</span></button>
+          <button type="button" class="opt" data-value="Head of People / HR"><span class="opt-key">8</span><span>Head of People / HR</span></button>
+          <button type="button" class="opt" data-value="Other"><span class="opt-key">9</span><span>Other</span></button>
+        </div>
+        <span class="q-error" id="e-5" aria-live="polite"></span>
+        <div class="q-actions">
+          <button type="button" class="btn ghost btn-back" data-back>Back</button>
+        </div>
+      </section>
+
+      <!-- ================= Q6 - INDUSTRY (multi, capped at three) ================= -->
+      <section class="screen" id="s-6" data-step="6" data-key="industry" data-multi hidden>
+        <span class="q-eyebrow">Question 6</span>
+        <h2 class="q-title" id="h-6" tabindex="-1">Your industry</h2>
+        <p class="q-help" id="help-6">Choose up to three &mdash; whichever describe the business best.</p>
+        <p class="pickcount" id="pc-6" aria-live="polite">0 of 3 chosen</p>
+        <div class="q-opts q-opts--grid" role="group" aria-labelledby="h-6" aria-describedby="help-6 e-6">
+          <button type="button" class="opt" data-value="E-commerce / Retail"><span class="opt-box" aria-hidden="true"></span><span>E-commerce / Retail</span></button>
+          <button type="button" class="opt" data-value="SaaS / Software"><span class="opt-box" aria-hidden="true"></span><span>SaaS / Software</span></button>
+          <button type="button" class="opt" data-value="Fintech"><span class="opt-box" aria-hidden="true"></span><span>Fintech</span></button>
+          <button type="button" class="opt" data-value="Healthcare / HealthTech"><span class="opt-box" aria-hidden="true"></span><span>Healthcare / HealthTech</span></button>
+          <button type="button" class="opt" data-value="HR / People Ops / Recruiting"><span class="opt-box" aria-hidden="true"></span><span>HR / People Ops / Recruiting</span></button>
+          <button type="button" class="opt" data-value="Legal / LegalTech"><span class="opt-box" aria-hidden="true"></span><span>Legal / LegalTech</span></button>
+          <button type="button" class="opt" data-value="Marketing / Advertising"><span class="opt-box" aria-hidden="true"></span><span>Marketing / Advertising</span></button>
+          <button type="button" class="opt" data-value="Sales / RevOps"><span class="opt-box" aria-hidden="true"></span><span>Sales / RevOps</span></button>
+          <button type="button" class="opt" data-value="Real Estate / PropTech"><span class="opt-box" aria-hidden="true"></span><span>Real Estate / PropTech</span></button>
+          <button type="button" class="opt" data-value="Manufacturing"><span class="opt-box" aria-hidden="true"></span><span>Manufacturing</span></button>
+          <button type="button" class="opt" data-value="Logistics / Supply Chain"><span class="opt-box" aria-hidden="true"></span><span>Logistics / Supply Chain</span></button>
+          <button type="button" class="opt" data-value="Education / EdTech"><span class="opt-box" aria-hidden="true"></span><span>Education / EdTech</span></button>
+          <button type="button" class="opt" data-value="Media / Entertainment"><span class="opt-box" aria-hidden="true"></span><span>Media / Entertainment</span></button>
+          <button type="button" class="opt" data-value="Gaming"><span class="opt-box" aria-hidden="true"></span><span>Gaming</span></button>
+          <button type="button" class="opt" data-value="Hospitality / Travel"><span class="opt-box" aria-hidden="true"></span><span>Hospitality / Travel</span></button>
+          <button type="button" class="opt" data-value="Food and Beverage / CPG"><span class="opt-box" aria-hidden="true"></span><span>Food and Beverage / CPG</span></button>
+          <button type="button" class="opt" data-value="Insurance / InsurTech"><span class="opt-box" aria-hidden="true"></span><span>Insurance / InsurTech</span></button>
+          <button type="button" class="opt" data-value="Construction"><span class="opt-box" aria-hidden="true"></span><span>Construction</span></button>
+          <button type="button" class="opt" data-value="Energy / CleanTech"><span class="opt-box" aria-hidden="true"></span><span>Energy / CleanTech</span></button>
+          <button type="button" class="opt" data-value="Agriculture / AgTech"><span class="opt-box" aria-hidden="true"></span><span>Agriculture / AgTech</span></button>
+          <button type="button" class="opt" data-value="Automotive / Mobility"><span class="opt-box" aria-hidden="true"></span><span>Automotive / Mobility</span></button>
+          <button type="button" class="opt" data-value="Telecom"><span class="opt-box" aria-hidden="true"></span><span>Telecom</span></button>
+          <button type="button" class="opt" data-value="Nonprofit / Government"><span class="opt-box" aria-hidden="true"></span><span>Nonprofit / Government</span></button>
+          <button type="button" class="opt" data-value="Professional Services / Consulting"><span class="opt-box" aria-hidden="true"></span><span>Professional Services / Consulting</span></button>
+          <button type="button" class="opt" data-value="Cybersecurity"><span class="opt-box" aria-hidden="true"></span><span>Cybersecurity</span></button>
+          <button type="button" class="opt" data-value="AI / ML / Data"><span class="opt-box" aria-hidden="true"></span><span>AI / ML / Data</span></button>
+          <button type="button" class="opt" data-value="Developer Tools / Infra"><span class="opt-box" aria-hidden="true"></span><span>Developer Tools / Infra</span></button>
+          <button type="button" class="opt" data-value="Biotech / Life Sciences"><span class="opt-box" aria-hidden="true"></span><span>Biotech / Life Sciences</span></button>
+          <button type="button" class="opt" data-value="Crypto / Web3"><span class="opt-box" aria-hidden="true"></span><span>Crypto / Web3</span></button>
+          <button type="button" class="opt" data-value="Fitness / Wellness"><span class="opt-box" aria-hidden="true"></span><span>Fitness / Wellness</span></button>
+          <button type="button" class="opt" data-value="Beauty / Personal Care"><span class="opt-box" aria-hidden="true"></span><span>Beauty / Personal Care</span></button>
+          <button type="button" class="opt" data-value="Fashion / Apparel"><span class="opt-box" aria-hidden="true"></span><span>Fashion / Apparel</span></button>
+          <button type="button" class="opt" data-value="Other"><span class="opt-box" aria-hidden="true"></span><span>Other</span></button>
+        </div>
+        <span class="q-error" id="e-6" aria-live="polite"></span>
+        <div class="q-actions">
+          <button type="button" class="btn" data-next>Continue</button>
+          <button type="button" class="btn ghost btn-back" data-back>Back</button>
+        </div>
+      </section>
+
+      <!-- ================= Q7 - TEAM SIZE ================= -->
+      <section class="screen" id="s-7" data-step="7" data-key="team_size" data-select hidden>
+        <span class="q-eyebrow">Question 7</span>
+        <h2 class="q-title" id="h-7" tabindex="-1">Team size</h2>
+        <p class="q-help" id="help-7">Everyone on the payroll, you included.</p>
+        <div class="q-opts" role="group" aria-labelledby="h-7" aria-describedby="help-7 e-7">
+          <button type="button" class="opt" data-value="1-4"><span class="opt-key">1</span><span>1&ndash;4</span></button>
+          <button type="button" class="opt" data-value="5-19"><span class="opt-key">2</span><span>5&ndash;19</span></button>
+          <button type="button" class="opt" data-value="20-49"><span class="opt-key">3</span><span>20&ndash;49</span></button>
+          <button type="button" class="opt" data-value="50-199"><span class="opt-key">4</span><span>50&ndash;199</span></button>
+          <button type="button" class="opt" data-value="200-499"><span class="opt-key">5</span><span>200&ndash;499</span></button>
+          <button type="button" class="opt" data-value="500+"><span class="opt-key">6</span><span>500+</span></button>
+        </div>
+        <span class="q-error" id="e-7" aria-live="polite"></span>
+        <div class="q-actions">
+          <button type="button" class="btn ghost btn-back" data-back>Back</button>
+        </div>
+      </section>
+
+      <!-- ================= Q8 - ANNUAL REVENUE ================= -->
+      <section class="screen" id="s-8" data-step="8" data-key="revenue" data-select hidden>
+        <span class="q-eyebrow">Question 8</span>
+        <h2 class="q-title" id="h-8" tabindex="-1">Annual revenue</h2>
+        <div class="q-opts" role="group" aria-labelledby="h-8" aria-describedby="e-8">
+          <button type="button" class="opt" data-value="Pre-revenue"><span class="opt-key">1</span><span>Pre-revenue</span></button>
+          <button type="button" class="opt" data-value="Under 1M"><span class="opt-key">2</span><span>Under 1M</span></button>
+          <button type="button" class="opt" data-value="1M - 5M"><span class="opt-key">3</span><span>1M &ndash; 5M</span></button>
+          <button type="button" class="opt" data-value="5M - 20M"><span class="opt-key">4</span><span>5M &ndash; 20M</span></button>
+          <button type="button" class="opt" data-value="20M - 100M"><span class="opt-key">5</span><span>20M &ndash; 100M</span></button>
+          <button type="button" class="opt" data-value="100M+"><span class="opt-key">6</span><span>100M+</span></button>
+        </div>
+        <span class="q-error" id="e-8" aria-live="polite"></span>
+        <div class="q-actions">
+          <button type="button" class="btn ghost btn-back" data-back>Back</button>
+        </div>
+      </section>
+
+      <!-- ================= Q9 - FUNDING RAISED ================= -->
+      <section class="screen" id="s-9" data-step="9" data-key="funding" data-select hidden>
+        <span class="q-eyebrow">Question 9</span>
+        <h2 class="q-title" id="h-9" tabindex="-1">Funding raised</h2>
+        <div class="q-opts" role="group" aria-labelledby="h-9" aria-describedby="e-9">
+          <button type="button" class="opt" data-value="Bootstrapped"><span class="opt-key">1</span><span>Bootstrapped</span></button>
+          <button type="button" class="opt" data-value="Pre-seed / Seed"><span class="opt-key">2</span><span>Pre-seed / Seed</span></button>
+          <button type="button" class="opt" data-value="Series A"><span class="opt-key">3</span><span>Series A</span></button>
+          <button type="button" class="opt" data-value="Series B"><span class="opt-key">4</span><span>Series B</span></button>
+          <button type="button" class="opt" data-value="Series C+"><span class="opt-key">5</span><span>Series C+</span></button>
+          <button type="button" class="opt" data-value="Public"><span class="opt-key">6</span><span>Public</span></button>
+        </div>
+        <span class="q-error" id="e-9" aria-live="polite"></span>
+        <div class="q-actions">
+          <button type="button" class="btn ghost btn-back" data-back>Back</button>
+        </div>
+      </section>
+
+      <!-- ================= Q10 - US-BASED ================= -->
+      <section class="screen" id="s-10" data-step="10" data-key="us_based" data-select hidden>
+        <span class="q-eyebrow">Question 10</span>
+        <h2 class="q-title" id="h-10" tabindex="-1">Is your company US-based?</h2>
+        <div class="q-opts" role="group" aria-labelledby="h-10" aria-describedby="e-10">
+          <button type="button" class="opt" data-value="Yes"><span class="opt-key">1</span><span>Yes</span></button>
+          <button type="button" class="opt" data-value="No"><span class="opt-key">2</span><span>No</span></button>
+        </div>
+        <span class="q-error" id="e-10" aria-live="polite"></span>
+        <div class="q-actions">
+          <button type="button" class="btn ghost btn-back" data-back>Back</button>
+        </div>
+      </section>
+
+      <!-- ================= Q11 - WHICH OF THESE APPLY (multi, no cap) ================= -->
+      <section class="screen" id="s-11" data-step="11" data-key="applies" data-multi hidden>
+        <span class="q-eyebrow">Question 11</span>
+        <h2 class="q-title" id="h-11" tabindex="-1">Which of these apply?</h2>
+        <p class="q-help" id="help-11">Pick every one that&rsquo;s true &mdash; or none, if none of them are.</p>
+        <div class="q-opts" role="group" aria-labelledby="h-11" aria-describedby="help-11 e-11">
+          <button type="button" class="opt" data-value="We hire or pay people outside our country"><span class="opt-box" aria-hidden="true"></span><span>We hire or pay people outside our country</span></button>
+          <button type="button" class="opt" data-value="We ship physical products internationally"><span class="opt-box" aria-hidden="true"></span><span>We ship physical products internationally</span></button>
+          <button type="button" class="opt" data-value="We sell across multiple US states or countries"><span class="opt-box" aria-hidden="true"></span><span>We sell across multiple US states or countries</span></button>
+          <button type="button" class="opt" data-value="We offer employee health benefits"><span class="opt-box" aria-hidden="true"></span><span>We offer employee health benefits</span></button>
+          <button type="button" class="opt" data-value="We have our own website or app codebase"><span class="opt-box" aria-hidden="true"></span><span>We have our own website or app codebase</span></button>
+          <button type="button" class="opt" data-value="We have raised venture funding"><span class="opt-box" aria-hidden="true"></span><span>We have raised venture funding</span></button>
+        </div>
+        <span class="q-error" id="e-11" aria-live="polite"></span>
+        <div class="q-actions">
+          <button type="button" class="btn" data-next>Continue</button>
+          <button type="button" class="btn ghost btn-back" data-back>Back</button>
+        </div>
+      </section>
+
+      <!-- ================= SUBMIT ================= -->
+      <section class="screen" id="s-submit" data-step="11" data-screen="submit" hidden>
+        <span class="q-eyebrow">Last step</span>
+        <h2 class="q-title" id="h-submit" tabindex="-1">That&rsquo;s everything.</h2>
+        <p class="q-help">Have a quick look, then send it over.</p>
+        <div class="summary" id="summary"></div>
+        <div class="q-actions">
+          <button type="submit" class="btn" id="submitBtn">Send it</button>
+          <button type="button" class="btn ghost btn-back" data-back>Back</button>
+        </div>
+        <span class="q-error" id="e-submit" aria-live="polite" role="status"></span>
+      </section>
+
+      <!-- ================= THANK YOU ================= -->
+      <section class="screen done" id="s-done" data-screen="done" hidden>
+        <span class="q-eyebrow">All done</span>
+        <h1 tabindex="-1" id="doneHead">Got it &mdash; thank you.</h1>
+        <p class="lead">Your answers are in. If there&rsquo;s a next step for you, we&rsquo;ll be in touch by email.</p>
+        <div class="q-actions">
+          <a class="btn ghost" href="https://timerich.ai/">Back to Time Rich</a>
+        </div>
+      </section>
+    </form>
+  </div>
+</main>
+
+<footer class="foot">
+  <div class="wrap">
+    &copy; 2026 Time Rich &middot; <a href="/privacy">Privacy</a> &middot; <a href="/terms">Terms</a>
+  </div>
+</footer>
+
+<script>
+(function(){
+  'use strict';
+
+  window.gtag = window.gtag || function(){};
+  function track(name, params){ try{ if(window.gtag) window.gtag('event', name, params||{}); }catch(e){} }
+
+  var FORM_ENDPOINT = 'https://time-rich-forms.timerich.workers.dev/qualify';
+  var STORE_KEY     = 'qualifyV1';       // in-progress answers (cleared on submit)
+  var SELECT_DELAY  = 250;               // ms - lets a single-choice pick register visually
+  var TOTAL_STEPS   = 11;
+  var MAX_INDUSTRY  = 3;                 // Q6's cap - the whole reason this page exists
+  var OPTIONAL_KEYS = ['linkedin', 'applies'];   // may be left blank / empty
+
+  var form     = document.getElementById('qualifyForm');
+  var progress = document.getElementById('progress');
+  var bar      = document.getElementById('bar');
+  var barFill  = document.getElementById('barFill');
+  var progLbl  = document.getElementById('progressLabel');
+
+  // ---- Screen registry -----------------------------------------------------
+  // Document order is flow order. Screen 0 is the intro and the last is the
+  // thank-you; neither is a question.
+  var screens = Array.prototype.slice.call(form.querySelectorAll('section.screen'));
+  var SUBMIT_IDX = screens.indexOf(document.getElementById('s-submit'));
+  var DONE_IDX   = screens.indexOf(document.getElementById('s-done'));
+  var idx = 0;                     // index into screens
+  var answers = {};
+  var submitting = false;
+  var resumeTo = 0;                // question to jump back to when resuming
+
+  function screenAt(i){ return screens[Math.max(0, Math.min(i, screens.length - 1))]; }
+  function keyOf(el){ return el.getAttribute('data-key') || ''; }
+  function isSelect(el){ return el.hasAttribute('data-select'); }
+  function isMulti(el){ return el.hasAttribute('data-multi'); }
+  function inputOf(el){ return el.querySelector('input:not([type=hidden])'); }
+  function optsOf(el){ return Array.prototype.slice.call(el.querySelectorAll('.opt')); }
+  // An empty array is truthy, so "did they answer this?" cannot be a bare !!.
+  function isAnswered(v){ return Array.isArray(v) ? v.length > 0 : !!v; }
+
+  // ---- Persistence ---------------------------------------------------------
+  // Every key this form owns, so clearing is one list rather than one call per
+  // key that someone can forget to add to.
+  var FORM_KEYS = [STORE_KEY];
+
+  function hasProgress(){
+    for (var k in answers) {
+      if (Object.prototype.hasOwnProperty.call(answers, k)) return true;
+    }
+    return false;
+  }
+  function save(){
+    if (!hasProgress()) { clearStore(); return; }
+    try{
+      sessionStorage.setItem(STORE_KEY, JSON.stringify({ answers: answers, idx: idx }));
+    }catch(e){}
+  }
+  function load(){
+    try{
+      var raw = sessionStorage.getItem(STORE_KEY);
+      if (!raw) return null;
+      var d = JSON.parse(raw);
+      return (d && typeof d === 'object') ? d : null;
+    }catch(e){ return null; }
+  }
+  function clearStore(){
+    try{ FORM_KEYS.forEach(function(k){ sessionStorage.removeItem(k); }); }catch(e){}
+  }
+  // Everything, in one go: answers, the screen they were on, and the stored
+  // copy of both. Anything less and a revisit can be restored to a screen the
+  // answers no longer support.
+  function resetFormState(){
+    answers = {};
+    idx = 0;
+    clearStore();
+  }
+  // Drops #qN from the address bar without adding a history entry.
+  function stripHash(){
+    try{ history.replaceState({ qs: 0 }, '', location.pathname + location.search); }catch(e){}
+  }
+
+  // ---- Progress ------------------------------------------------------------
+  function paintProgress(){
+    var el = screenAt(idx);
+    var step = parseInt(el.getAttribute('data-step') || '0', 10);
+    if (!step) { progress.hidden = true; return; }
+    progress.hidden = false;
+    progLbl.textContent = step + ' of ' + TOTAL_STEPS;
+    barFill.style.transform = 'scaleX(' + (step / TOTAL_STEPS) + ')';
+    bar.setAttribute('aria-valuenow', String(step));
+  }
+
+  // ---- Errors --------------------------------------------------------------
+  function setError(el, msg){
+    var slot = el.querySelector('.q-error');
+    if (slot) slot.textContent = msg || '';
+    var input = inputOf(el);
+    if (input) {
+      if (msg) input.setAttribute('aria-invalid', 'true');
+      else input.removeAttribute('aria-invalid');
+    }
+  }
+
+  // ---- Show a screen -------------------------------------------------------
+  // Read the tuning constants straight off the stylesheet, once, at boot: the
+  // CSS is the single source of truth for the feel, and these only drive the
+  // cleanup and focus timings. One getComputedStyle call here, never during a
+  // transition.
+  var TIMING = (function(){
+    var cs = getComputedStyle(document.documentElement);
+    var ms = function(name, fallback){
+      var v = parseFloat(cs.getPropertyValue(name));
+      return isNaN(v) ? fallback : v;
+    };
+    return {
+      exit:    ms('--q-exit',    240),
+      enter:   ms('--q-enter',   380),
+      offset:  ms('--q-offset',   60),
+      stagger: ms('--q-stagger',  45)
+    };
+  })();
+
+  // Stamp each screen's direct children with their position, once, at boot: the
+  // stylesheet turns that into each part's transition-delay. Doing it here
+  // means no per-transition DOM writes and no hard-coded :nth-child list.
+  screens.forEach(function(s){
+    Array.prototype.forEach.call(s.children, function(child, n){
+      child.style.setProperty('--i', String(n));
+    });
+  });
+
+  // When the last part of a given screen has finished arriving.
+  function arrivalMs(el){
+    return TIMING.offset + Math.max(0, el.children.length - 1) * TIMING.stagger + TIMING.enter;
+  }
+  // When a particular part has finished arriving - used so the field takes
+  // focus as it lands, rather than waiting for the buttons below it.
+  function partArrivalMs(el, node){
+    var host = node;
+    while (host && host.parentNode !== el) host = host.parentNode;
+    var n = host ? Array.prototype.indexOf.call(el.children, host) : 0;
+    return TIMING.offset + Math.max(0, n) * TIMING.stagger + TIMING.enter;
+  }
+
+  var reduceMotion = (function(){
+    try{ return window.matchMedia('(prefers-reduced-motion: reduce)').matches; }catch(e){ return false; }
+  })();
+
+  var leaving = null, arriving = null, endTimer = null, focusTimer = null, rafHandle = 0;
+
+  // Two frames, not one. The first lets the browser render the start state (and
+  // act on will-change); the flip happens in the second. Batched into one frame
+  // the browser coalesces start and end and you get a pop instead of motion.
+  function nextTwoFrames(fn){
+    if (rafHandle) cancelAnimationFrame(rafHandle);
+    rafHandle = requestAnimationFrame(function(){
+      rafHandle = requestAnimationFrame(function(){ rafHandle = 0; fn(); });
+    });
+  }
+
+  // Settles whatever is in flight: the outgoing question goes back to the
+  // hidden pile, both questions drop their transition and will-change classes.
+  // Called on completion, and immediately if another advance interrupts - so
+  // however fast someone moves, exactly one question is left in the DOM and no
+  // idle element is holding a compositor layer.
+  function finishTransition(){
+    if (endTimer) { clearTimeout(endTimer); endTimer = null; }
+    if (focusTimer) { clearTimeout(focusTimer); focusTimer = null; }
+    if (rafHandle) { cancelAnimationFrame(rafHandle); rafHandle = 0; }
+    if (arriving) {
+      arriving.classList.remove('q-in-run', 'q-in-below', 'q-in-above', 'q-will');
+      arriving = null;
+    }
+    if (leaving) {
+      leaving.hidden = true;
+      leaving.classList.remove('is-leaving', 'q-exit', 'q-will', 'q-below', 'q-above');
+      leaving.removeAttribute('aria-hidden');
+      leaving = null;
+    }
+    form.classList.remove('q-busy');
+  }
+
+  // The input where there is one (its label is the heading, so the question is
+  // still announced), otherwise the heading itself.
+  function focusTargetOf(el){
+    var input = inputOf(el);
+    return input ? input : el.querySelector('.q-title, h1');
+  }
+  function focusScreen(el){
+    var target = focusTargetOf(el);
+    if (!target) return;
+    try{ target.focus({ preventScroll:true }); }catch(e){ target.focus(); }
+  }
+
+  function show(i, opts){
+    opts = opts || {};
+    var prev = screenAt(idx);
+    idx = Math.max(0, Math.min(i, screens.length - 1));
+    var el = screenAt(idx);
+
+    // The one layout read in here, taken before any DOM write while layout is
+    // still clean. Scrolling is instant and only when we are actually away from
+    // the top: a smooth scroll animating the whole document alongside the
+    // question is the single worst thing that could share these frames.
+    var scrolled = window.pageYOffset || document.documentElement.scrollTop || 0;
+
+    finishTransition();                             // settle anything still in flight
+    setError(el, '');
+
+    // Direction of travel: registry order is flow order, so forward is always a
+    // higher index. On the very first render there is nothing to send away, but
+    // the arriving question still assembles itself, so the page lands with
+    // motion.
+    var swapping = prev !== el && !prev.hidden && !reduceMotion && !opts.entrance;
+    var entering = !reduceMotion && (swapping || opts.entrance);
+    var forward = screens.indexOf(el) >= screens.indexOf(prev);
+    var outEnd  = forward ? 'q-above' : 'q-below';       // where the outgoing one goes
+    var inStart = forward ? 'q-in-below' : 'q-in-above'; // where the arriving parts come from
+
+    if (scrolled > 8) window.scrollTo(0, 0);
+
+    // --- Frame 0: start state only. No style is read after this point, so
+    // nothing in here can force a synchronous layout mid-flip.
+    screens.forEach(function(s){ if (s !== el && !(swapping && s === prev)) s.hidden = true; });
+    if (swapping) {
+      prev.classList.add('is-leaving', 'q-will');
+      prev.setAttribute('aria-hidden', 'true');     // out of the a11y tree while it flies out
+      leaving = prev;
+    }
+    if (entering) {
+      form.classList.add('q-busy');
+      el.classList.add(inStart);
+      arriving = el;
+    }
+    el.hidden = false;
+
+    if (el.id === 's-submit') paintSummary();
+    paintProgress();
+
+    if (entering) {
+      // --- Frames 1-2: transitions on, then flip to the end state.
+      nextTwoFrames(function(){
+        if (arriving !== el) return;                // interrupted before we got here
+        if (leaving === prev && swapping) {
+          prev.classList.add('q-exit');
+          prev.classList.add(outEnd);
+        }
+        el.classList.add('q-in-run');
+        el.classList.remove(inStart);
+      });
+
+      // Focus follows the field down: it lands as that part arrives, not after
+      // the buttons below it have finished. Skipped on the first render - the
+      // browser already lands the reader at the top of a freshly loaded page.
+      if (!opts.entrance) {
+        focusTimer = setTimeout(function(){
+          focusTimer = null;
+          if (screenAt(idx) === el) focusScreen(el);
+        }, partArrivalMs(el, focusTargetOf(el)) + 40);
+      }
+
+      // Cleanup once the last part has landed. The slack covers the two frames
+      // spent getting to the flip.
+      endTimer = setTimeout(function(){
+        endTimer = null;
+        finishTransition();
+      }, arrivalMs(el) + 80);
+    } else if (!opts.entrance) {
+      focusScreen(el);
+    }
+
+    if (!opts.noHistory) pushState();
+    save();
+  }
+
+  // ---- History: one entry per question ------------------------------------
+  function hashFor(i){
+    var el = screenAt(i);
+    if (el.id === 's-intro') return '';
+    return '#' + el.id.replace(/^s-/, 'q');
+  }
+  var pushed = 0;                  // history entries this page has added
+  function pushState(){
+    var url = location.pathname + location.search + hashFor(idx);
+    try{ history.pushState({ qs: idx }, '', url); pushed++; }catch(e){}
+  }
+  window.addEventListener('popstate', function(e){
+    pushed = Math.max(0, pushed - 1);
+    var target = (e.state && typeof e.state.qs === 'number') ? e.state.qs : 0;
+    show(target, { noHistory: true });
+  });
+
+  // ---- Value get/set per screen -------------------------------------------
+  function readScreen(el){
+    if (isMulti(el)) {
+      return optsOf(el).filter(function(b){ return b.getAttribute('aria-pressed') === 'true'; })
+                       .map(function(b){ return b.getAttribute('data-value'); });
+    }
+    if (isSelect(el)) {
+      var on = el.querySelector('.opt[aria-pressed="true"]');
+      return on ? on.getAttribute('data-value') : '';
+    }
+    var input = inputOf(el);
+    return input ? input.value.trim() : '';
+  }
+  function writeScreen(el, value){
+    if (isMulti(el)) {
+      var chosen = Array.isArray(value) ? value : [];
+      optsOf(el).forEach(function(b){
+        b.setAttribute('aria-pressed', chosen.indexOf(b.getAttribute('data-value')) > -1 ? 'true' : 'false');
+      });
+      paintCap(el);
+      return;
+    }
+    if (isSelect(el)) {
+      optsOf(el).forEach(function(b){
+        b.setAttribute('aria-pressed', b.getAttribute('data-value') === value ? 'true' : 'false');
+      });
+      return;
+    }
+    var input = inputOf(el);
+    if (!input) return;
+    input.value = value || '';
+  }
+
+  // ---- Q6's cap ------------------------------------------------------------
+  // The count, the muting and the at-the-cap state are all derived from what is
+  // actually pressed, so toggling, going back and restoring a saved session all
+  // agree with each other.
+  var industryScreen = document.getElementById('s-6');
+  var pickCount = document.getElementById('pc-6');
+  function capOf(el){ return el === industryScreen ? MAX_INDUSTRY : 0; }
+  function paintCap(el){
+    var cap = capOf(el);
+    if (!cap) return;
+    var chosen = readScreen(el).length;
+    var atCap = chosen >= cap;
+    optsOf(el).forEach(function(b){ b.classList.toggle('is-capped', atCap); });
+    pickCount.textContent = chosen + ' of ' + cap + ' chosen';
+    pickCount.classList.toggle('at-cap', atCap);
+  }
+
+  // ---- Validation (on advance only) ---------------------------------------
+  function normaliseUrl(v){
+    v = String(v || '').trim();
+    if (!v) return '';
+    if (!/^https?:\/\//i.test(v)) v = 'https://' + v.replace(/^\/+/, '');
+    return v;
+  }
+  function validate(el){
+    var key = keyOf(el);
+    var raw = (isSelect(el) || isMulti(el)) ? readScreen(el) : (inputOf(el) ? inputOf(el).value.trim() : '');
+
+    if (key === 'name') {
+      if (!raw) return 'Please add your name.';
+      return '';
+    }
+    if (key === 'email') {
+      if (!raw) return 'Please add your email.';
+      if (!/^[^@\s]+@[^@\s]+\.[^@\s]{2,}$/.test(raw)) return 'That email doesn’t look right — check it over?';
+      return '';
+    }
+    if (key === 'linkedin') {
+      if (!raw) return '';                      // optional - an empty answer advances
+      var url = normaliseUrl(raw);
+      var parsed;
+      try{ parsed = new URL(url); }catch(e){ return 'That doesn’t look like a link — check it over?'; }
+      var host = parsed.hostname.toLowerCase();
+      if (!/\./.test(host)) return 'That doesn’t look like a link — check it over?';
+      if (!/(^|\.)linkedin\.com$/.test(host)) {
+        return 'That’s not a LinkedIn link. Paste your profile, or leave it blank.';
+      }
+      if (!/\/(in|company|pub)\//i.test(parsed.pathname)) {
+        return 'Paste the link to your profile (linkedin.com/in/…).';
+      }
+      return '';
+    }
+    if (key === 'industry') {
+      if (!raw.length) return 'Pick at least one — up to three.';
+      if (raw.length > MAX_INDUSTRY) return 'Three is the most you can pick.';
+      return '';
+    }
+    if (key === 'applies') return '';           // optional - none of them may be true
+    if (isSelect(el)) return raw ? '' : 'Pick one.';
+    return '';
+  }
+
+  // ---- Flow ----------------------------------------------------------------
+  // The furthest screen the current answers actually justify. A URL hash or a
+  // stored index pointing past this is stale - from a sent form, a shared link,
+  // or the browser walking back through the history entries this page pushed -
+  // and gets clamped to here instead of being trusted.
+  function firstIncompleteIndex(){
+    for (var i = 1; i < SUBMIT_IDX; i++) {
+      var key = keyOf(screens[i]);
+      // An optional question counts as answered once they have passed through
+      // it, which is when commit() writes the key - even as an empty value.
+      var done = OPTIONAL_KEYS.indexOf(key) > -1
+        ? Object.prototype.hasOwnProperty.call(answers, key)
+        : isAnswered(answers[key]);
+      if (!done) return i;
+    }
+    return SUBMIT_IDX;                                  // everything answered
+  }
+
+  function advance(){
+    var el = screenAt(idx);
+    var msg = validate(el);
+    if (msg) {
+      setError(el, msg);
+      var target = inputOf(el) || el.querySelector('.opt') || el.querySelector('.q-title');
+      if (target) target.focus();
+      return;
+    }
+    setError(el, '');
+    commit(el);
+    show(idx + 1);
+  }
+  function commit(el){
+    var key = keyOf(el);
+    if (!key) return;
+    var v = readScreen(el);
+    if (key === 'linkedin') v = normaliseUrl(v);
+    answers[key] = v;
+    save();
+  }
+  function goBack(){
+    var el = screenAt(idx);
+    if (!isSelect(el) && !isMulti(el)) commitQuietly(el);   // keep what they typed, valid or not
+    // Drive the in-page Back button through history so the browser's own Back
+    // stays in step with it (one entry per question, no growing stack).
+    if (pushed > 0) { history.back(); return; }
+    show(idx - 1, { noHistory: true });
+    try{ history.replaceState({ qs: idx }, '', location.pathname + location.search + hashFor(idx)); }catch(e){}
+  }
+  function commitQuietly(el){
+    var key = keyOf(el);
+    if (!key) return;
+    var input = inputOf(el);
+    if (!input) return;
+    answers[key] = input.value.trim();
+    save();
+  }
+
+  // ---- Wiring --------------------------------------------------------------
+  document.getElementById('startBtn').addEventListener('click', function(){
+    track('qualify_start');
+    show(idx === 0 ? (resumeTo || 1) : idx);
+  });
+
+  form.addEventListener('click', function(e){
+    var next = e.target.closest('[data-next]');
+    if (next) { e.preventDefault(); advance(); return; }
+    var back = e.target.closest('[data-back]');
+    if (back) { e.preventDefault(); goBack(); return; }
+    var opt = e.target.closest('.opt');
+    if (opt) { e.preventDefault(); chooseOption(opt); }
+  });
+
+  function chooseOption(opt){
+    var el = opt.closest('.screen');
+
+    if (isMulti(el)) {
+      var on = opt.getAttribute('aria-pressed') === 'true';
+      var cap = capOf(el);
+      // The cap is enforced here, on the way in. Turning one off is always
+      // allowed, so the way out of a full set is never blocked.
+      if (!on && cap && readScreen(el).length >= cap) {
+        setError(el, 'Three is the most you can pick — turn one off to swap it.');
+        return;
+      }
+      opt.setAttribute('aria-pressed', on ? 'false' : 'true');
+      setError(el, '');
+      paintCap(el);
+      commit(el);
+      return;                                   // multi questions advance on Continue
+    }
+
+    optsOf(el).forEach(function(b){ b.setAttribute('aria-pressed', b === opt ? 'true' : 'false'); });
+    setError(el, '');
+    commit(el);
+    setTimeout(function(){ if (screenAt(idx) === el) show(idx + 1); }, SELECT_DELAY);
+  }
+
+  // Enter advances on the text fields.
+  form.addEventListener('keydown', function(e){
+    if (e.key !== 'Enter') return;
+    var t = e.target;
+    if (t.tagName === 'INPUT' && t.type !== 'hidden') { e.preventDefault(); advance(); }
+  });
+
+  // Number keys pick an option (keyboard operation), on any question short
+  // enough for one digit to be unambiguous. On a multi question they toggle
+  // rather than choose, so the 33-option industry list is deliberately left out.
+  document.addEventListener('keydown', function(e){
+    var el = screenAt(idx);
+    if (!(isSelect(el) || isMulti(el)) || e.metaKey || e.ctrlKey || e.altKey) return;
+    var tag = (document.activeElement && document.activeElement.tagName) || '';
+    if (tag === 'INPUT') return;
+    var opts = optsOf(el);
+    if (opts.length > 9) return;
+    var n = parseInt(e.key, 10);
+    if (n >= 1 && n <= opts.length) { e.preventDefault(); chooseOption(opts[n - 1]); }
+  });
+
+  // ---- Submit screen summary ----------------------------------------------
+  var SUMMARY_ROWS = [
+    ['Name', 'name'], ['Email', 'email'], ['LinkedIn', 'linkedin'],
+    ['Time Rich member', 'member'], ['Role', 'role'], ['Industry', 'industry'],
+    ['Team size', 'team_size'], ['Revenue', 'revenue'], ['Funding', 'funding'],
+    ['US-based', 'us_based'], ['Also true', 'applies']
+  ];
+  function paintSummary(){
+    var dl = document.createElement('dl');
+    SUMMARY_ROWS.forEach(function(row){
+      var v = answers[row[1]];
+      if (!isAnswered(v)) return;
+      var dt = document.createElement('dt'); dt.textContent = row[0];
+      var dd = document.createElement('dd'); dd.textContent = Array.isArray(v) ? v.join(', ') : v;
+      dl.appendChild(dt); dl.appendChild(dd);
+    });
+    var box = document.getElementById('summary');
+    box.innerHTML = '';
+    // With no answers there is nothing to frame - an empty bordered panel just
+    // reads as a broken box.
+    box.hidden = !dl.children.length;
+    box.appendChild(dl);
+  }
+
+  // ---- Submit --------------------------------------------------------------
+  form.addEventListener('submit', function(e){
+    e.preventDefault();
+    if (submitting) return;
+
+    // Re-validate every required question before the one POST.
+    var firstBad = -1;
+    for (var i = 1; i < SUBMIT_IDX; i++) {
+      var key = keyOf(screens[i]);
+      if (OPTIONAL_KEYS.indexOf(key) > -1) continue;
+      if (!isAnswered(answers[key])) { firstBad = i; break; }
+    }
+    if (firstBad > -1) {
+      document.getElementById('e-submit').textContent = 'One question still needs an answer — taking you back to it.';
+      setTimeout(function(){ show(firstBad); }, 600);
+      return;
+    }
+
+    var payload = {
+      form_version: 'qualify-v1',
+      name:      answers.name || '',
+      email:     answers.email || '',
+      linkedin:  answers.linkedin || '',
+      member:    answers.member || '',
+      role:      answers.role || '',
+      industry:  answers.industry || [],
+      team_size: answers.team_size || '',
+      revenue:   answers.revenue || '',
+      funding:   answers.funding || '',
+      us_based:  answers.us_based || '',
+      applies:   answers.applies || [],
+      _gotcha:   document.getElementById('f-gotcha').value
+    };
+
+    var btn = document.getElementById('submitBtn');
+    submitting = true;
+    btn.disabled = true;
+    btn.textContent = 'Sending…';
+    document.getElementById('e-submit').textContent = '';
+
+    fetch(FORM_ENDPOINT, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
+      body: JSON.stringify(payload)
+    }).then(function(res){
+      if (!res.ok) throw new Error('bad response');
+      track('qualify_submit', { page: 'qualifyform' });
+      // Wipe the lot - answers, the current screen and the stored copy of both -
+      // then show the thank-you and drop #qN from the URL, so nothing is left
+      // for a revisit to restore from.
+      var doneAt = DONE_IDX;
+      resetFormState();
+      idx = SUBMIT_IDX;                       // so the thank-you still arrives forward
+      show(doneAt, { noHistory: true });
+      stripHash();
+      // Back now leaves the page rather than walking into a form already sent.
+      pushed = 0;
+      submitting = false;
+      btn.disabled = false;
+      btn.textContent = 'Send it';
+    }).catch(function(){
+      track('qualify_error');
+      submitting = false;
+      btn.disabled = false;
+      btn.textContent = 'Send it';
+      document.getElementById('e-submit').textContent =
+        'That didn’t send. Check your connection and try again — nothing you chose is lost.';
+    });
+  });
+
+  // ---- Boot ----------------------------------------------------------------
+  function isInAppBrowser(){
+    var ua = navigator.userAgent || '';
+    return /Instagram|FBAN|FBAV|FB_IAB|Messenger|Line\/|TikTok|Musical_ly|Snapchat|Pinterest|Twitter|LinkedInApp/i.test(ua);
+  }
+
+  var saved = load();
+  if (saved) {
+    answers = saved.answers || {};
+    screens.forEach(function(el){
+      var key = keyOf(el);
+      if (key && Object.prototype.hasOwnProperty.call(answers, key)) writeScreen(el, answers[key]);
+    });
+  }
+  paintCap(industryScreen);
+
+  var hint = document.getElementById('inappHint');
+  if (hint && isInAppBrowser()) { hint.hidden = false; track('qualify_inapp_browser'); }
+
+  // Where to land. Two rules, in this order:
+  //   1. No answers in this session means the intro, whatever the URL says. A
+  //      sent form, a shared link and a fresh visit all land here.
+  //   2. With answers, take the question the URL or the store asks for, but
+  //      never further than the first one still unanswered.
+  var fromHash = location.hash ? document.getElementById(location.hash.replace(/^#q/, 's-')) : null;
+  var startAt = 0;
+  if (hasProgress()) {
+    var requested = 0;
+    if (fromHash && screens.indexOf(fromHash) > 0) requested = screens.indexOf(fromHash);
+    else if (saved && saved.idx > 0) requested = Math.min(saved.idx, screens.length - 1);
+    startAt = Math.min(requested, firstIncompleteIndex());
+  }
+  if (startAt === 0) stripHash();          // a stale #qN never survives a landing
+  // If they land on the intro with answers behind them, Start picks up at the
+  // first question still unanswered rather than at the top.
+  resumeTo = hasProgress() ? firstIncompleteIndex() : 0;
+
+  // Only worth saying on the intro; anywhere else they can see their own answers.
+  if (startAt === 0 && hasProgress()) {
+    document.getElementById('resumeNote').hidden = false;
+  }
+
+  idx = 0;
+  show(startAt, { noHistory: true, entrance: true });
+  try{ history.replaceState({ qs: idx }, '', location.pathname + location.search + hashFor(idx)); }catch(e){}
+
+  track('qualify_view');
+})();
+</script>
+</body>
+</html>

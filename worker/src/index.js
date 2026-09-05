@@ -70,6 +70,14 @@ export default {
       return createApplication(marked, env, cors, env.NOTION_DATABASE_ID);
     }
 
+    // Route: qualify form (/qualifyform) -> its own Notion database.
+    // Eleven questions, mapped property-by-property below the same way
+    // /superhuman is: this database's select and multi-select columns have
+    // fixed option sets, and nothing the browser sends may invent a new one.
+    if (path.endsWith("/qualify")) {
+      return handleQualify(data, env, cors);
+    }
+
     // Route: AI Revenue Accelerator application -> its own Notion database.
     // Same schema-driven mapping as the club form; stamps Status = New so the
     // "Call today" / pipeline views pick fresh applications up.
@@ -398,6 +406,153 @@ async function handleSuperhumanApplication(d, env, cors) {
   if (track) properties["Track preference"] = track;
   const coaching = pick(d.coaching, SH_COACHING);
   if (coaching) properties["1:1 coaching"] = coaching;
+
+  try {
+    const res = await fetch("https://api.notion.com/v1/pages", {
+      method: "POST",
+      headers: { ...authHeaders(env), "Content-Type": "application/json" },
+      body: JSON.stringify({ parent: { database_id: dbId }, properties }),
+    });
+    if (!res.ok) return json({ ok: false, error: "Notion create failed", detail: await res.text() }, 502, cors);
+    return json({ ok: true }, 200, cors);
+  } catch (err) {
+    return json({ ok: false, error: "Unexpected error", detail: String(err) }, 500, cors);
+  }
+}
+
+// Qualify form (/qualifyform). Precise field mapping - the property names and
+// option names below must match the live qualify database's schema exactly.
+// Everything the form can send is either a title, an email, a url, or one of the
+// fixed option sets here; there is no free text on this form at all.
+const Q_MEMBER = ["Yes", "No", "Not sure"];
+const Q_US_BASED = ["Yes", "No"];
+const Q_ROLES = [
+  "Founder / Co-founder",
+  "CEO",
+  "COO / President",
+  "CFO / Finance lead",
+  "CMO / Marketing lead",
+  "CRO / Sales lead",
+  "CTO / Engineering lead",
+  "Head of People / HR",
+  "Other",
+];
+const Q_TEAM_SIZES = ["1-4", "5-19", "20-49", "50-199", "200-499", "500+"];
+const Q_REVENUE = ["Pre-revenue", "Under 1M", "1M - 5M", "5M - 20M", "20M - 100M", "100M+"];
+const Q_FUNDING = ["Bootstrapped", "Pre-seed / Seed", "Series A", "Series B", "Series C+", "Public"];
+const Q_INDUSTRIES = [
+  "E-commerce / Retail",
+  "SaaS / Software",
+  "Fintech",
+  "Healthcare / HealthTech",
+  "HR / People Ops / Recruiting",
+  "Legal / LegalTech",
+  "Marketing / Advertising",
+  "Sales / RevOps",
+  "Real Estate / PropTech",
+  "Manufacturing",
+  "Logistics / Supply Chain",
+  "Education / EdTech",
+  "Media / Entertainment",
+  "Gaming",
+  "Hospitality / Travel",
+  "Food and Beverage / CPG",
+  "Insurance / InsurTech",
+  "Construction",
+  "Energy / CleanTech",
+  "Agriculture / AgTech",
+  "Automotive / Mobility",
+  "Telecom",
+  "Nonprofit / Government",
+  "Professional Services / Consulting",
+  "Cybersecurity",
+  "AI / ML / Data",
+  "Developer Tools / Infra",
+  "Biotech / Life Sciences",
+  "Crypto / Web3",
+  "Fitness / Wellness",
+  "Beauty / Personal Care",
+  "Fashion / Apparel",
+  "Other",
+];
+const Q_APPLIES = [
+  "We hire or pay people outside our country",
+  "We ship physical products internationally",
+  "We sell across multiple US states or countries",
+  "We offer employee health benefits",
+  "We have our own website or app codebase",
+  "We have raised venture funding",
+];
+
+async function handleQualify(d, env, cors) {
+  const dbId = env.NOTION_QUALIFY_DATABASE_ID;
+  if (!env.NOTION_TOKEN || !dbId) {
+    return json({ ok: false, error: "Qualify form not configured" }, 500, cors);
+  }
+  if (d._gotcha) return json({ ok: true }, 200, cors);            // honeypot: silently accept bots
+
+  const name = String(d.name || "").trim();
+  const email = String(d.email || "").trim();
+  if (!name || !email) return json({ ok: false, error: "Missing name or email" }, 400, cors);
+  if (!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(email)) {
+    return json({ ok: false, error: "Invalid email" }, 400, cors);
+  }
+
+  const rich = (s) => {
+    const v = String(s == null ? "" : s).trim();
+    return v ? [{ text: { content: clip(v, 2000) } }] : [];
+  };
+  // Only ever write an option the database already has; an unexpected value is
+  // dropped rather than silently creating a new select option.
+  const pick = (value, allowed) => {
+    const v = String(value == null ? "" : value).trim();
+    return allowed.includes(v) ? { select: { name: v } } : null;
+  };
+  // The multi-select twin of pick(). Takes the array the form sends - and
+  // degrades to a comma-separated string if anything ever posts one - keeps
+  // only options the database already has, drops duplicates, and returns null
+  // when nothing survives so the column is omitted rather than sent blank.
+  const picks = (value, allowed) => {
+    const list = Array.isArray(value) ? value : String(value == null ? "" : value).split(",");
+    const names = [];
+    for (const item of list) {
+      const v = String(item == null ? "" : item).trim();
+      if (allowed.includes(v) && names.indexOf(v) === -1) names.push(v);
+    }
+    return names.length ? { multi_select: names.map((name) => ({ name })) } : null;
+  };
+  const link = (s) => {
+    const v = String(s || "").trim();
+    if (!v) return null;
+    return /^https?:\/\//i.test(v) ? v : `https://${v.replace(/^\/+/, "")}`;
+  };
+
+  const properties = {
+    "Name": { title: rich(name) },
+    "Email": { email: email },
+  };
+  // Notion rejects "" for a url property, so that column is only sent when
+  // there is a real value to send.
+  const linkedin = link(d.linkedin);
+  if (linkedin) properties["LinkedIn"] = { url: linkedin };
+
+  const member = pick(d.member, Q_MEMBER);
+  if (member) properties["Time Rich member"] = member;
+  const role = pick(d.role, Q_ROLES);
+  if (role) properties["Your role"] = role;
+  const teamSize = pick(d.team_size, Q_TEAM_SIZES);
+  if (teamSize) properties["Team size"] = teamSize;
+  const revenue = pick(d.revenue, Q_REVENUE);
+  if (revenue) properties["Annual revenue"] = revenue;
+  const funding = pick(d.funding, Q_FUNDING);
+  if (funding) properties["Funding raised"] = funding;
+  const usBased = pick(d.us_based, Q_US_BASED);
+  if (usBased) properties["US-based company"] = usBased;
+
+  const industry = picks(d.industry, Q_INDUSTRIES);
+  if (industry) properties["Your industry"] = industry;
+  const applies = picks(d.applies, Q_APPLIES);
+  if (applies) properties["Which of these apply"] = applies;
 
   try {
     const res = await fetch("https://api.notion.com/v1/pages", {
