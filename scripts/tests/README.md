@@ -26,9 +26,30 @@ phone must be E.164 or it isn't written; scheme-less links are normalised; empty
 at 2000 chars; `Status` is stamped `New`; and `Call time`, `Video watched` and
 the old form's columns are never written.
 
+It also covers `POST /cal-webhook`, the Cal.com booking webhook. The suite signs
+each body the way Cal does — HMAC-SHA256 over the *raw* bytes, hex, in
+`x-cal-signature-256` — so it exercises the real verification path: the wrong
+secret, a missing or malformed header, and a body tampered with after signing
+are all `401` with nothing written; an uppercase hex signature still verifies.
+Past that it asserts the Notion `PATCH` and the Slack post for each trigger:
+`BOOKING_CREATED` sets `Status` → `Call booked` and `Call time`, and posts the
+full breakdown pulled off the matched Notion row in both New York and Lisbon
+time; a booking from an email with no application posts Slack only, marked
+`⚠️ no application found for this email`; `BOOKING_RESCHEDULED` moves `Call time`
+and leaves `Status` alone; `BOOKING_CANCELLED` puts `Status` back to `New` and
+clears the slot; anything else is a bare `200`.
+
+The rule that suite exists to pin: **the handler always answers `200` once the
+signature checks out.** Cal retries every non-2xx, and a retry would mean a
+duplicate Slack post — so Notion being down still gets the Slack post out, Slack
+being down still leaves the Notion update in place, and neither shows up as an
+error to Cal. The work runs in `ctx.waitUntil()`, so the tests pass a `ctx` and
+await what it collects, exactly as the Workers runtime does after the response
+has already gone back.
+
 It also pins the behaviour of the routes this change did *not* touch —
-`/waitlist`, `/coaching`, `/accelerator`, the legacy `/superhuman` payload, and
-CORS — so a future edit to the worker can't quietly break them.
+`/waitlist`, `/coaching`, `/qualify`, `/accelerator`, the legacy `/superhuman`
+payload, and CORS — so a future edit to the worker can't quietly break them.
 
 ## `form.test.mjs`
 

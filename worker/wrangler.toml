@@ -8,6 +8,9 @@
 #   npx wrangler secret put NOTION_TOKEN          # your Notion integration token
 #   npx wrangler secret put NOTION_DATABASE_ID    # the applications database id
 #   npx wrangler secret put ANTHROPIC_API_KEY     # powers the corner chatbot (the brain)
+#   npx wrangler secret put CAL_WEBHOOK_SECRET    # the secret you set on the Cal.com webhook
+#   npx wrangler secret put SLACK_BOT_TOKEN       # xoxb-... with chat:write, for booking alerts
+#   npx wrangler secret put SLACK_CHANNEL_ID      # e.g. C0123ABCD — invite the bot to it first
 #
 # After deploy, wrangler prints a URL like:
 #   https://time-rich-forms.<your-subdomain>.workers.dev
@@ -44,6 +47,14 @@ NOTION_SUPERHUMAN_DATABASE_ID = "9b7ca5eb-e557-82f8-894a-0126ecc4ddf2"
 # IMPORTANT: connect the SAME Notion integration (NOTION_TOKEN) to this database
 # (••• -> Connections) or writes will 404.
 NOTION_WAITLIST_DATABASE_ID = "2db1e956-f2bd-4b14-bad0-aa00c0ea3e75"
+
+# Cal.com booking webhook (POST /cal-webhook) -> updates the Super Human
+# application row above (Status / Call time) and posts the breakdown to Slack.
+# In Cal: Settings -> Webhooks -> new webhook pointed at <worker URL>/cal-webhook,
+# subscribed to BOOKING_CREATED, BOOKING_RESCHEDULED and BOOKING_CANCELLED, with
+# a secret that matches CAL_WEBHOOK_SECRET. Cal signs the raw body with it
+# (HMAC-SHA256, hex) in the x-cal-signature-256 header; unsigned deliveries are
+# rejected 401. No new database id is needed — it reuses the one above.
 
 # Qualify form (POST /qualify) -> its own Notion database.
 # Id is from the database URL (bdd8e0c354da404a8ceba7139e18c65e).
