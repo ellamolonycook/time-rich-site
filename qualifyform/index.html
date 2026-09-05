@@ -7,18 +7,18 @@
 <script src="/js/pixel.js"></script>
 <noscript><img height="1" width="1" style="display:none" alt=""
   src="https://www.facebook.com/tr?id=1790181495468842&amp;ev=PageView&amp;noscript=1" /></noscript>
-<title>Tell us about your company</title>
+<title>Paid vendor calls</title>
 <link rel="icon" href="/favicon.ico" sizes="any" />
 <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
 <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32.png" />
 <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16.png" />
 <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
-<meta name="description" content="Eleven quick questions about you and your company. About two minutes." />
+<meta name="description" content="A few quick questions to check which company you are a fit for a paid vendor call." />
 <link rel="canonical" href="https://timerich.ai/qualifyform/" />
 <meta name="robots" content="noindex, nofollow" />
 <meta name="theme-color" content="#FFFCEB" />
-<meta property="og:title" content="Tell us about your company" />
-<meta property="og:description" content="Eleven quick questions. About two minutes." />
+<meta property="og:title" content="Paid vendor calls" />
+<meta property="og:description" content="Paid vendor calls, $100-$450 for 30 minutes. A few quick questions." />
 <meta property="og:url" content="https://timerich.ai/qualifyform/" />
 <meta property="og:type" content="website" />
 <meta property="og:image" content="https://timerich.ai/og-image.jpg" />
@@ -148,6 +148,9 @@ main{flex:1 0 auto;padding:38px 0 96px}
 
 .q-eyebrow{font-family:var(--mono);font-size:12px;letter-spacing:.18em;text-transform:uppercase;color:var(--lime);margin-bottom:14px;display:block}
 .q-title{font-size:clamp(26px,4.6vw,38px);margin-bottom:10px}
+/* Two of the questions are full sentences rather than a short prompt. They step
+   down a size so a three-line heading does not swallow the options below it. */
+.q-title--statement{font-size:clamp(21px,3.3vw,28px);line-height:1.2;letter-spacing:-.015em;max-width:22em}
 .q-help{font-size:15.5px;color:var(--muted);margin-bottom:22px}
 .q-title + .q-field, .q-title + .q-opts{margin-top:22px}
 
@@ -227,6 +230,29 @@ main{flex:1 0 auto;padding:38px 0 96px}
 .intro h1,.done h1{font-size:clamp(30px,6.2vw,46px);letter-spacing:-.03em;font-weight:700}
 .intro .lead,.done .lead{font-size:18px;color:var(--muted);margin-top:16px;max-width:34em}
 .intro .micro{margin-top:26px;font-family:var(--mono);font-size:12.5px;letter-spacing:.02em;color:var(--dim)}
+/* The line that introduces the wall sits closer to it than to the paragraph
+   above, so the two read as one unit. */
+.intro .wall-lead{margin-top:30px;margin-bottom:2px}
+
+/* ---------- LOGO WALL ----------
+   Black and white, and achromatic twice over: the files are greyscaled on disk
+   and the filter is a guarantee, so nothing can reintroduce colour later. No
+   hover restore - /sh-apply/ establishes no such pattern, and a wall that lights
+   up under the cursor pulls attention off the Start button.
+
+   Sizing: --logo-h is the common height and --k is each logo's own multiplier,
+   set from its measured ink area. object-fit keeps a wide wordmark undistorted
+   when the column is narrower than its natural width. */
+:root{--logo-h:23px}
+@media (min-width:520px){ :root{--logo-h:25px} }
+@media (min-width:760px){ :root{--logo-h:27px} }
+.wall{display:grid;grid-template-columns:repeat(auto-fill,minmax(108px,1fr));
+  gap:20px 14px;align-items:center;justify-items:center;
+  margin:18px 0 4px;padding:0;list-style:none}
+.wall li{display:flex;align-items:center;justify-content:center;width:100%;min-height:30px}
+.wall img{--k:1;height:calc(var(--logo-h) * var(--k));width:auto;max-width:100%;
+  object-fit:contain;display:block;filter:grayscale(1);opacity:.85}
+@media (min-width:520px){ .wall{gap:22px 18px} }
 
 /* ---------- SUBMIT SCREEN ---------- */
 .summary{margin-top:22px;border:1px solid var(--line);border-radius:12px;background:var(--panel2);padding:18px 20px}
@@ -257,10 +283,10 @@ main{flex:1 0 auto;padding:38px 0 96px}
   <div class="wrap topbar-inner">
     <a class="brand-word" href="https://timerich.ai/">Time Rich<span class="wm-dot">.</span></a>
     <div class="progress" id="progress" hidden>
-      <div class="bar" role="progressbar" id="bar" aria-valuemin="1" aria-valuemax="11" aria-valuenow="1" aria-label="Progress">
+      <div class="bar" role="progressbar" id="bar" aria-valuemin="1" aria-valuemax="12" aria-valuenow="1" aria-label="Progress">
         <div class="bar-fill" id="barFill"></div>
       </div>
-      <span class="progress-label" id="progressLabel">1 of 11</span>
+      <span class="progress-label" id="progressLabel">1 of 12</span>
     </div>
   </div>
 </header>
@@ -280,8 +306,52 @@ main{flex:1 0 auto;padding:38px 0 96px}
       <!-- ================= INTRO ================= -->
       <section class="screen intro" id="s-intro" data-screen="intro">
         <span class="q-eyebrow">Time Rich</span>
-        <h1 tabindex="-1" id="introHead">Tell us about your company</h1>
-        <p class="lead">Eleven questions, about two minutes. Most of them are one tap.</p>
+        <h1 tabindex="-1" id="introHead">We&rsquo;re checking which company you&rsquo;re a fit for a paid vendor call.</h1>
+        <p class="lead">Each 30-minute call pays $100&ndash;$450. To get paid, just fill out the feedback form afterwards and connect your Stripe account.</p>
+        <p class="lead wall-lead">Here&rsquo;s who&rsquo;s currently taking conversations.</p>
+        <!-- Every logo is served from /qualifyform/img/ - greyscaled and committed
+             into the repo, so the wall makes no request off this domain. --k is a
+             per-logo size multiplier: they are matched by ink area rather than by
+             bounding box, so a thin outline mark and a heavy wordmark carry the
+             same visual weight. -->
+        <ul class="wall">
+            <li><img src="/qualifyform/img/logo-stanify.png" alt="Stanify" style="--k:0.811" loading="lazy" decoding="async" /></li>
+            <li><img src="/qualifyform/img/logo-rho.svg" alt="Rho" style="--k:1.324" loading="lazy" decoding="async" /></li>
+            <li><img src="/qualifyform/img/logo-brex.svg" alt="Brex" style="--k:0.896" loading="lazy" decoding="async" /></li>
+            <li><img src="/qualifyform/img/logo-rillet.svg" alt="Rillet" style="--k:0.975" loading="lazy" decoding="async" /></li>
+            <li><img src="/qualifyform/img/logo-a-rising-tide.png" alt="A Rising Tide" style="--k:0.901" loading="lazy" decoding="async" /></li>
+            <li><img src="/qualifyform/img/logo-superpower.svg" alt="SUPERPOWER" style="--k:0.72" loading="lazy" decoding="async" /></li>
+            <li><img src="/qualifyform/img/logo-deel.svg" alt="Deel" style="--k:1.027" loading="lazy" decoding="async" /></li>
+            <li><img src="/qualifyform/img/logo-numeral.svg" alt="Numeral" style="--k:0.793" loading="lazy" decoding="async" /></li>
+            <li><img src="/qualifyform/img/logo-atrios.svg" alt="Atrios" style="--k:1.5" loading="lazy" decoding="async" /></li>
+            <li><img src="/qualifyform/img/logo-comp-ai.svg" alt="Comp AI" style="--k:1.222" loading="lazy" decoding="async" /></li>
+            <li><img src="/qualifyform/img/logo-charlemagne-labs.png" alt="Charlemagne Labs" style="--k:1.033" loading="lazy" decoding="async" /></li>
+            <li><img src="/qualifyform/img/logo-chord.svg" alt="Chord" style="--k:1.144" loading="lazy" decoding="async" /></li>
+            <li><img src="/qualifyform/img/logo-corridor.svg" alt="Corridor" style="--k:1.072" loading="lazy" decoding="async" /></li>
+            <li><img src="/qualifyform/img/logo-doss.svg" alt="DOSS" style="--k:1.027" loading="lazy" decoding="async" /></li>
+            <li><img src="/qualifyform/img/logo-hire-overseas.svg" alt="Hire Overseas" style="--k:1.09" loading="lazy" decoding="async" /></li>
+            <li><img src="/qualifyform/img/logo-finaloop.svg" alt="Finaloop" style="--k:1.217" loading="lazy" decoding="async" /></li>
+            <li><img src="/qualifyform/img/logo-flagshiprtl.svg" alt="FlagshipRTL" style="--k:1.065" loading="lazy" decoding="async" /></li>
+            <li><img src="/qualifyform/img/logo-globaltize.svg" alt="Globaltize" style="--k:0.778" loading="lazy" decoding="async" /></li>
+            <li><img src="/qualifyform/img/logo-implentio.svg" alt="Implentio" style="--k:0.72" loading="lazy" decoding="async" /></li>
+            <li><img src="/qualifyform/img/logo-highbeam.png" alt="Highbeam" style="--k:0.971" loading="lazy" decoding="async" /></li>
+            <li><img src="/qualifyform/img/logo-north-cloud.svg" alt="North.Cloud" style="--k:0.929" loading="lazy" decoding="async" /></li>
+            <li><img src="/qualifyform/img/logo-onward.svg" alt="Onward" style="--k:0.745" loading="lazy" decoding="async" /></li>
+            <li><img src="/qualifyform/img/logo-oceans-talent.png" alt="Oceans Talent" style="--k:0.937" loading="lazy" decoding="async" /></li>
+            <li><img src="/qualifyform/img/logo-passport.png" alt="Passport" style="--k:1.342" loading="lazy" decoding="async" /></li>
+            <li><img src="/qualifyform/img/logo-pinpoint.svg" alt="Pinpoint" style="--k:0.88" loading="lazy" decoding="async" /></li>
+            <li><img src="/qualifyform/img/logo-pylon.png" alt="Pylon" style="--k:1.08" loading="lazy" decoding="async" /></li>
+            <li><img src="/qualifyform/img/logo-relay.svg" alt="Relay" style="--k:1.5" loading="lazy" decoding="async" /></li>
+            <li><img src="/qualifyform/img/logo-oyster-hr.svg" alt="Oyster HR" style="--k:1.026" loading="lazy" decoding="async" /></li>
+            <li><img src="/qualifyform/img/logo-scalis.png" alt="SCALIS" style="--k:0.773" loading="lazy" decoding="async" /></li>
+            <li><img src="/qualifyform/img/logo-secure-cloud-innovations.png" alt="Secure Cloud Innovations" style="--k:1.424" loading="lazy" decoding="async" /></li>
+            <li><img src="/qualifyform/img/logo-slash.svg" alt="Slash" style="--k:1.064" loading="lazy" decoding="async" /></li>
+            <li><img src="/qualifyform/img/logo-starch.svg" alt="Starch" style="--k:1.5" loading="lazy" decoding="async" /></li>
+            <li><img src="/qualifyform/img/logo-thera.svg" alt="Thera" style="--k:0.874" loading="lazy" decoding="async" /></li>
+            <li><img src="/qualifyform/img/logo-supper.svg" alt="Supper" style="--k:0.831" loading="lazy" decoding="async" /></li>
+            <li><img src="/qualifyform/img/logo-testparty.png" alt="TestParty" style="--k:1" loading="lazy" decoding="async" /></li>
+            <li><img src="/qualifyform/img/logo-withcoverage.svg" alt="WithCoverage" style="--k:0.873" loading="lazy" decoding="async" /></li>
+        </ul>
         <div class="q-actions">
           <button type="button" class="btn" id="startBtn">Start</button>
         </div>
@@ -333,14 +403,18 @@ main{flex:1 0 auto;padding:38px 0 96px}
         </div>
       </section>
 
-      <!-- ================= Q4 - TIME RICH MEMBER ================= -->
+      <!-- ================= Q4 - TIME RICH CLUB =================
+           The data-value strings are the exact Notion option names and must not
+           be prettified: "I'm" carries a straight apostrophe there, so the value
+           keeps one while the visible label uses the typographic apostrophe the
+           rest of the site uses. Curling the value would get it dropped. -->
       <section class="screen" id="s-4" data-step="4" data-key="member" data-select hidden>
         <span class="q-eyebrow">Question 4</span>
-        <h2 class="q-title" id="h-4" tabindex="-1">Are you a Time Rich member?</h2>
+        <h2 class="q-title q-title--statement" id="h-4" tabindex="-1">Time Rich Club is our community of ambitious humans &mdash; free to join, every member is vetted.</h2>
         <div class="q-opts" role="group" aria-labelledby="h-4" aria-describedby="e-4">
-          <button type="button" class="opt" data-value="Yes"><span class="opt-key">1</span><span>Yes</span></button>
-          <button type="button" class="opt" data-value="No"><span class="opt-key">2</span><span>No</span></button>
-          <button type="button" class="opt" data-value="Not sure"><span class="opt-key">3</span><span>Not sure</span></button>
+          <button type="button" class="opt" data-value="I'm already part of it"><span class="opt-key">1</span><span>I&rsquo;m already part of it</span></button>
+          <button type="button" class="opt" data-value="Not interested"><span class="opt-key">2</span><span>Not interested</span></button>
+          <button type="button" class="opt" data-value="Tell me more"><span class="opt-key">3</span><span>Tell me more</span></button>
         </div>
         <span class="q-error" id="e-4" aria-live="polite"></span>
         <div class="q-actions">
@@ -506,8 +580,26 @@ main{flex:1 0 auto;padding:38px 0 96px}
         </div>
       </section>
 
+      <!-- ================= Q12 - NETWORK REFERRALS =================
+           Optional: picking an option advances like any other single choice,
+           and Skip advances with nothing recorded. -->
+      <section class="screen" id="s-12" data-step="12" data-key="referrals" data-select hidden>
+        <span class="q-eyebrow">Question 12</span>
+        <h2 class="q-title q-title--statement" id="h-12" tabindex="-1">Do you have venture-backed founders in your network &mdash; want to make commission on introducing people in your network?</h2>
+        <div class="q-opts" role="group" aria-labelledby="h-12" aria-describedby="e-12">
+          <button type="button" class="opt" data-value="Yes"><span class="opt-key">1</span><span>Yes</span></button>
+          <button type="button" class="opt" data-value="No"><span class="opt-key">2</span><span>No</span></button>
+          <button type="button" class="opt" data-value="Tell me more"><span class="opt-key">3</span><span>Tell me more</span></button>
+        </div>
+        <span class="q-error" id="e-12" aria-live="polite"></span>
+        <div class="q-actions">
+          <button type="button" class="btn ghost" data-next>Skip</button>
+          <button type="button" class="btn ghost btn-back" data-back>Back</button>
+        </div>
+      </section>
+
       <!-- ================= SUBMIT ================= -->
-      <section class="screen" id="s-submit" data-step="11" data-screen="submit" hidden>
+      <section class="screen" id="s-submit" data-step="12" data-screen="submit" hidden>
         <span class="q-eyebrow">Last step</span>
         <h2 class="q-title" id="h-submit" tabindex="-1">That&rsquo;s everything.</h2>
         <p class="q-help">Have a quick look, then send it over.</p>
@@ -548,9 +640,9 @@ main{flex:1 0 auto;padding:38px 0 96px}
   var FORM_ENDPOINT = 'https://time-rich-forms.timerich.workers.dev/qualify';
   var STORE_KEY     = 'qualifyV1';       // in-progress answers (cleared on submit)
   var SELECT_DELAY  = 250;               // ms - lets a single-choice pick register visually
-  var TOTAL_STEPS   = 11;
+  var TOTAL_STEPS   = 12;
   var MAX_INDUSTRY  = 3;                 // Q6's cap - the whole reason this page exists
-  var OPTIONAL_KEYS = ['linkedin', 'applies'];   // may be left blank / empty
+  var OPTIONAL_KEYS = ['linkedin', 'applies', 'referrals'];   // may be left blank / empty
 
   var form     = document.getElementById('qualifyForm');
   var progress = document.getElementById('progress');
@@ -921,6 +1013,7 @@ main{flex:1 0 auto;padding:38px 0 96px}
       return '';
     }
     if (key === 'applies') return '';           // optional - none of them may be true
+    if (key === 'referrals') return '';         // optional - Skip advances with nothing set
     if (isSelect(el)) return raw ? '' : 'Pick one.';
     return '';
   }
@@ -1048,7 +1141,7 @@ main{flex:1 0 auto;padding:38px 0 96px}
     ['Name', 'name'], ['Email', 'email'], ['LinkedIn', 'linkedin'],
     ['Time Rich member', 'member'], ['Role', 'role'], ['Industry', 'industry'],
     ['Team size', 'team_size'], ['Revenue', 'revenue'], ['Funding', 'funding'],
-    ['US-based', 'us_based'], ['Also true', 'applies']
+    ['US-based', 'us_based'], ['Also true', 'applies'], ['Network referrals', 'referrals']
   ];
   function paintSummary(){
     var dl = document.createElement('dl');
@@ -1098,6 +1191,7 @@ main{flex:1 0 auto;padding:38px 0 96px}
       funding:   answers.funding || '',
       us_based:  answers.us_based || '',
       applies:   answers.applies || [],
+      referrals: answers.referrals || '',
       _gotcha:   document.getElementById('f-gotcha').value
     };
 

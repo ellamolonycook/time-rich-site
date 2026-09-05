@@ -424,7 +424,10 @@ async function handleSuperhumanApplication(d, env, cors) {
 // option names below must match the live qualify database's schema exactly.
 // Everything the form can send is either a title, an email, a url, or one of the
 // fixed option sets here; there is no free text on this form at all.
-const Q_MEMBER = ["Yes", "No", "Not sure"];
+// Straight apostrophe in "I'm" - that is the character the Notion option uses,
+// and a curly one here would be silently dropped instead of written.
+const Q_MEMBER = ["I'm already part of it", "Not interested", "Tell me more"];
+const Q_REFERRALS = ["Yes", "No", "Tell me more"];
 const Q_US_BASED = ["Yes", "No"];
 const Q_ROLES = [
   "Founder / Co-founder",
@@ -548,6 +551,8 @@ async function handleQualify(d, env, cors) {
   if (funding) properties["Funding raised"] = funding;
   const usBased = pick(d.us_based, Q_US_BASED);
   if (usBased) properties["US-based company"] = usBased;
+  const referrals = pick(d.referrals, Q_REFERRALS);
+  if (referrals) properties["Network referrals"] = referrals;
 
   const industry = picks(d.industry, Q_INDUSTRIES);
   if (industry) properties["Your industry"] = industry;
