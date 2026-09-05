@@ -17,7 +17,7 @@ const MAX_TURNS = 16;          // how many prior messages we keep in context
 const MAX_OUTPUT_TOKENS = 600; // keeps replies short + cheap
 
 export default {
-  async fetch(request, env) {
+  async fetch(request, env, ctx) {
     const cors = corsHeaders(request, env);
 
     if (request.method === "OPTIONS") {
@@ -41,6 +41,12 @@ export default {
     // Route: Super Human Accelerator waitlist -> its own Notion database (precise field mapping).
     if (path.endsWith("/waitlist")) {
       return handleWaitlist(request, env, cors);
+    }
+
+    // Route: Cal.com booking webhook -> Notion (update the application) + Slack.
+    // Must run before request.json() below: the HMAC is over the RAW request body.
+    if (path.endsWith("/cal-webhook")) {
+      return handleCalWebhook(request, env, cors, ctx);
     }
 
     let data;
@@ -570,6 +576,345 @@ async function handleQualify(d, env, cors) {
   } catch (err) {
     return json({ ok: false, error: "Unexpected error", detail: String(err) }, 500, cors);
   }
+}
+
+// ---------------------------------------------------------------------------
+// Cal.com booking webhook (POST /cal-webhook).
+//
+// Cal signs every delivery with HMAC-SHA256 over the RAW request body, keyed on
+// the webhook's shared secret, and sends it hex-encoded in x-cal-signature-256.
+// So this route reads request.text() (never request.json()) and verifies before
+// it trusts a single field.
+//
+// Cal retries any non-2xx, and a retry would mean a duplicate Slack post - so
+// once the signature checks out this ALWAYS answers 200, and the Notion/Slack
+// work runs in ctx.waitUntil() so Cal never waits on our two upstreams.
+// ---------------------------------------------------------------------------
+
+// Booking triggers we act on. Anything else (FORM_SUBMITTED, MEETING_ENDED,
+// BOOKING_REQUESTED, ...) is acknowledged and ignored.
+const CAL_HANDLED = ["BOOKING_CREATED", "BOOKING_RESCHEDULED", "BOOKING_CANCELLED"];
+
+async function handleCalWebhook(request, env, cors, ctx) {
+  if (!env.CAL_WEBHOOK_SECRET) {
+    return json({ ok: false, error: "Cal webhook not configured" }, 500, cors);
+  }
+
+  const raw = await request.text();
+  const ok = await verifyCalSignature(raw, request.headers.get("x-cal-signature-256"), env.CAL_WEBHOOK_SECRET);
+  if (!ok) return json({ ok: false, error: "Invalid signature" }, 401, cors);
+
+  let body;
+  try {
+    body = JSON.parse(raw);
+  } catch {
+    // Signed but unparseable: 200 anyway, or Cal retries it forever.
+    console.log("cal-webhook: signed body was not JSON");
+    return json({ ok: true, ignored: "invalid json" }, 200, cors);
+  }
+
+  const trigger = String((body && body.triggerEvent) || "");
+  if (!CAL_HANDLED.includes(trigger)) {
+    return json({ ok: true, ignored: trigger || "unknown" }, 200, cors);
+  }
+
+  // processCalBooking never throws - it swallows Notion/Slack failures itself.
+  const work = processCalBooking(trigger, (body && body.payload) || {}, env);
+  if (ctx && typeof ctx.waitUntil === "function") ctx.waitUntil(work);
+  else await work;
+
+  return json({ ok: true }, 200, cors);
+}
+
+// Constant-time HMAC check. The header is 64 lowercase hex chars; anything that
+// isn't that shape cannot be a valid signature, so it is rejected on shape alone
+// (a format check leaks nothing about the secret).
+async function verifyCalSignature(raw, header, secret) {
+  const sig = String(header || "").trim().toLowerCase();
+  if (!/^[0-9a-f]{64}$/.test(sig)) return false;
+  let expected;
+  try {
+    expected = await calHmacHex(raw, secret);
+  } catch (err) {
+    console.log("cal-webhook: HMAC failed", String(err));
+    return false;
+  }
+  let diff = 0;
+  for (let i = 0; i < expected.length; i++) diff |= expected.charCodeAt(i) ^ sig.charCodeAt(i);
+  return diff === 0;
+}
+
+async function calHmacHex(raw, secret) {
+  const enc = new TextEncoder();
+  const key = await crypto.subtle.importKey(
+    "raw", enc.encode(secret), { name: "HMAC", hash: "SHA-256" }, false, ["sign"]
+  );
+  const mac = await crypto.subtle.sign("HMAC", key, enc.encode(raw));
+  return [...new Uint8Array(mac)].map((b) => b.toString(16).padStart(2, "0")).join("");
+}
+
+// The actual work: match the applicant in Notion, update them, tell Slack.
+// Each half is isolated - Notion being down still gets the Slack post out, and
+// a Slack failure still leaves the Notion update in place.
+async function processCalBooking(trigger, p, env) {
+  try {
+    const attendee = (Array.isArray(p.attendees) && p.attendees[0]) || {};
+    const responses = p.responses || {};
+    const email = String(attendee.email || calResponse(responses.email) || "").trim();
+    const name = String(attendee.name || calResponse(responses.name) || "").trim() || "Unknown";
+    const timeZone = String(attendee.timeZone || "").trim();
+    const start = String(p.startTime || "");
+    const end = String(p.endTime || "");
+    // Cal sends the old slot alongside the new startTime/endTime on a reschedule.
+    const oldStart = String(p.rescheduleStartTime || "");
+    const videoUrl = calVideoUrl(p);
+    const reason = String(p.cancellationReason || "").trim();
+
+    let page = null;
+    let notionUp = true;
+    try {
+      page = email ? await findCalApplicant(env, email) : null;
+    } catch (err) {
+      notionUp = false;
+      console.log("cal-webhook: Notion lookup failed", String(err));
+    }
+
+    if (page) {
+      const properties = {};
+      if (trigger === "BOOKING_CREATED") {
+        properties["Status"] = { select: { name: "Call booked" } };
+        if (start) properties["Call time"] = { date: { start } };
+      } else if (trigger === "BOOKING_RESCHEDULED") {
+        if (start) properties["Call time"] = { date: { start } };
+      } else if (trigger === "BOOKING_CANCELLED") {
+        properties["Status"] = { select: { name: "New" } };
+        // Clear the slot too, or a cancelled application keeps showing up in the
+        // "call today" views with a time nobody is going to turn up for.
+        properties["Call time"] = { date: null };
+      }
+      if (Object.keys(properties).length) {
+        try {
+          await updateCalApplicant(env, page.id, properties);
+        } catch (err) {
+          notionUp = false;
+          console.log("cal-webhook: Notion update failed", String(err));
+        }
+      }
+    }
+
+    const message = buildCalSlackMessage(trigger, {
+      name, email, timeZone, start, end, oldStart, videoUrl, reason, page, notionUp,
+    });
+    try {
+      await postCalSlack(env, message.blocks, message.text);
+    } catch (err) {
+      console.log("cal-webhook: Slack post failed", String(err));
+    }
+  } catch (err) {
+    // Nothing in here may reject: it runs inside waitUntil().
+    console.log("cal-webhook: unexpected error", String(err));
+  }
+}
+
+// Find the applicant by Email. Notion's email filter is an exact match, so a
+// lowercase retry covers a form entry that was typed with capitals.
+async function findCalApplicant(env, email) {
+  const dbId = env.NOTION_SUPERHUMAN_DATABASE_ID;
+  if (!env.NOTION_TOKEN || !dbId) return null;
+
+  const tries = [email];
+  if (email.toLowerCase() !== email) tries.push(email.toLowerCase());
+  for (const value of tries) {
+    const res = await fetch(`https://api.notion.com/v1/databases/${dbId}/query`, {
+      method: "POST",
+      headers: { ...authHeaders(env), "Content-Type": "application/json" },
+      body: JSON.stringify({ filter: { property: "Email", email: { equals: value } }, page_size: 1 }),
+    });
+    if (!res.ok) throw new Error("Notion query " + res.status + ": " + (await res.text()));
+    const data = await res.json();
+    const hit = (data.results || [])[0];
+    if (hit) return hit;
+  }
+  return null;
+}
+
+async function updateCalApplicant(env, pageId, properties) {
+  const res = await fetch(`https://api.notion.com/v1/pages/${pageId}`, {
+    method: "PATCH",
+    headers: { ...authHeaders(env), "Content-Type": "application/json" },
+    body: JSON.stringify({ properties }),
+  });
+  if (!res.ok) throw new Error("Notion update " + res.status + ": " + (await res.text()));
+  return true;
+}
+
+// Slack answers 200 with { ok: false, error } on a rejected post, so the body
+// matters as much as the status.
+async function postCalSlack(env, blocks, text) {
+  if (!env.SLACK_BOT_TOKEN || !env.SLACK_CHANNEL_ID) {
+    console.log("cal-webhook: Slack not configured, skipping post");
+    return false;
+  }
+  const res = await fetch("https://slack.com/api/chat.postMessage", {
+    method: "POST",
+    headers: {
+      Authorization: `Bearer ${env.SLACK_BOT_TOKEN}`,
+      "Content-Type": "application/json; charset=utf-8",
+    },
+    body: JSON.stringify({ channel: env.SLACK_CHANNEL_ID, text, blocks, unfurl_links: false }),
+  });
+  let data = {};
+  try { data = await res.json(); } catch { /* non-JSON body: fall through to the status */ }
+  if (!res.ok || data.ok === false) {
+    throw new Error("Slack " + res.status + ": " + (data.error || "unknown"));
+  }
+  return true;
+}
+
+// One section block of mrkdwn - compact, and it reads the same in a channel, a
+// thread and a mobile notification.
+function buildCalSlackMessage(trigger, d) {
+  const lines = [];
+  let headline;
+
+  if (trigger === "BOOKING_CREATED") {
+    headline = `📞 *Call booked* — ${calEsc(d.name)}`;
+    lines.push(headline);
+    lines.push(`*Email:* ${calEsc(d.email) || "—"}`);
+    lines.push(`*When:*\n${calBothZones(d.start, d.end)}`);
+    if (d.timeZone) lines.push(`*Their timezone:* ${calEsc(d.timeZone)}`);
+    if (d.videoUrl) lines.push(`*Video:* ${calEsc(d.videoUrl)}`);
+  } else if (trigger === "BOOKING_RESCHEDULED") {
+    headline = `🔄 *Call rescheduled* — ${calEsc(d.name)}`;
+    lines.push(headline);
+    lines.push(`*Email:* ${calEsc(d.email) || "—"}`);
+    if (d.oldStart) {
+      lines.push(`*Was:*\n${calBothZones(d.oldStart)}`);
+      lines.push(`*Now:*\n${calBothZones(d.start, d.end)}`);
+    } else {
+      lines.push(`*New time:*\n${calBothZones(d.start, d.end)}`);
+    }
+  } else {
+    headline = `❌ *Call cancelled* — ${calEsc(d.name)}`;
+    lines.push(headline);
+    lines.push(`*Email:* ${calEsc(d.email) || "—"}`);
+    if (d.start) lines.push(`*Was:*\n${calBothZones(d.start)}`);
+    if (d.reason) lines.push(`*Reason:* ${calEsc(d.reason)}`);
+    lines.push("_Status set back to New — they can rebook._");
+  }
+
+  // The full breakdown only rides along with a new booking; a reschedule or a
+  // cancellation is a one-line nudge about a person the channel already knows.
+  if (trigger === "BOOKING_CREATED" && d.page) {
+    const props = d.page.properties || {};
+    const extras = [
+      ["Business", calProp(props["Business"])],
+      ["Department", calProp(props["Department"])],
+      ["Outcome", calProp(props["Outcome"])],
+      ["Track", calProp(props["Track preference"])],
+      ["1:1 coaching", calProp(props["1:1 coaching"])],
+      ["Phone", calProp(props["Phone"])],
+      ["LinkedIn", calProp(props["LinkedIn"]) || calProp(props["Website"])],
+    ].filter((pair) => pair[1]);
+    if (extras.length) {
+      lines.push("");
+      for (const [label, value] of extras) lines.push(`*${label}:* ${calEsc(clip(value, 500))}`);
+    }
+    if (d.page.url) lines.push(`<${d.page.url}|Open the application in Notion>`);
+  }
+
+  if (!d.page) {
+    lines.push(d.notionUp
+      ? "⚠️ no application found for this email"
+      : "⚠️ no application found for this email (Notion lookup failed)");
+  }
+
+  return {
+    text: headline.replace(/\*/g, ""),
+    blocks: [{ type: "section", text: { type: "mrkdwn", text: clip(lines.join("\n"), 2900) } }],
+  };
+}
+
+// The same slot in both timezones, so nobody has to do the arithmetic. The end
+// time is appended as a bare clock time (same day, same zone) when we have it.
+//
+// Each zone is formatted in its OWN locale on purpose: en-US renders New York
+// as "EDT" but Lisbon as "GMT+1", and en-GB does the reverse ("WEST", "GMT-4").
+// Formatting each side the way that side writes it is what makes the two lines
+// unambiguous, which is the whole reason for printing both.
+const CAL_ZONES = [
+  { label: "New York", timeZone: "America/New_York", locale: "en-US" },
+  { label: "Lisbon", timeZone: "Europe/Lisbon", locale: "en-GB" },
+];
+
+function calBothZones(iso, endIso) {
+  if (!iso) return "—";
+  return CAL_ZONES.map((z) => {
+    const until = endIso ? ` → ${calZone(endIso, z, true)}` : "";
+    return `• ${z.label} — ${calZone(iso, z)}${until}`;
+  }).join("\n");
+}
+function calZone(iso, zone, clockOnly) {
+  const d = new Date(iso);
+  if (isNaN(d.getTime())) return String(iso);
+  const opts = clockOnly
+    ? { hour: "numeric", minute: "2-digit", hour12: true, timeZone: zone.timeZone }
+    : {
+        weekday: "short", day: "numeric", month: "short",
+        hour: "numeric", minute: "2-digit", hour12: true,
+        timeZone: zone.timeZone, timeZoneName: "short",
+      };
+  try {
+    return new Intl.DateTimeFormat(zone.locale, opts).format(d);
+  } catch {
+    return d.toISOString();
+  }
+}
+
+// Cal's booking-form answers: usually { label, value }, but "value" can itself
+// be a { firstName, lastName } object on a split name field.
+function calResponse(field) {
+  if (!field) return "";
+  const v = field && typeof field === "object" && "value" in field ? field.value : field;
+  if (v == null) return "";
+  if (typeof v === "string") return v;
+  if (typeof v === "object") return [v.firstName, v.lastName].filter(Boolean).join(" ").trim();
+  return String(v);
+}
+
+// Cal reports the meeting link in three different places depending on the
+// location the event type uses.
+function calVideoUrl(p) {
+  const meta = (p.metadata && p.metadata.videoCallUrl) || "";
+  const data = (p.videoCallData && p.videoCallData.url) || "";
+  const loc = typeof p.location === "string" && /^https?:\/\//i.test(p.location) ? p.location : "";
+  return String(meta || data || loc || "");
+}
+
+// Read any Notion property type down to a plain string for the Slack summary.
+function calProp(prop) {
+  if (!prop) return "";
+  const plain = (arr) => (arr || []).map((t) => t.plain_text || (t.text && t.text.content) || "").join("").trim();
+  switch (prop.type) {
+    case "title": return plain(prop.title);
+    case "rich_text": return plain(prop.rich_text);
+    case "select": return (prop.select && prop.select.name) || "";
+    case "multi_select": return (prop.multi_select || []).map((o) => o.name).join(", ");
+    case "status": return (prop.status && prop.status.name) || "";
+    case "email": return prop.email || "";
+    case "phone_number": return prop.phone_number || "";
+    case "url": return prop.url || "";
+    case "date": return (prop.date && prop.date.start) || "";
+    case "number": return prop.number == null ? "" : String(prop.number);
+    case "checkbox": return prop.checkbox ? "Yes" : "No";
+    default: return "";
+  }
+}
+
+// Slack mrkdwn reserves these three, and everything interpolated above is data
+// that came in over the webhook.
+function calEsc(s) {
+  return String(s == null ? "" : s).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
 }
 
 function corsHeaders(request, env) {
