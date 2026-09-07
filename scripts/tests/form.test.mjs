@@ -726,7 +726,23 @@ console.log('\nThe thank-you page');
   check('personalised heading', td.querySelector('#confirmHead').textContent === 'You’re in, Jordan.', td.querySelector('#confirmHead').textContent);
   check('VIDEO_ENABLED=false hides the video block', td.querySelector('#videoBlock').hidden);
   check('booking block is visible', !td.querySelector('#bookingBlock').hidden);
-  check('booking placeholder says the link is coming', /Booking link coming/.test(td.querySelector('#bookingSlot').textContent));
+  // The booking is the Luma event embed, mounted as static markup so it does not
+  // depend on the page script — plus an always-visible link out, because a
+  // third-party iframe that gets blocked would otherwise lose the conversion.
+  {
+    const frame = td.querySelector('#bookingSlot iframe');
+    check('the booking slot holds a Luma embed', !!frame && /luma\.com\/embed\/event\//.test(frame.src), frame && frame.src);
+    check('the embed points at the Super Human Accelerator event',
+      !!frame && frame.src.includes('evt-TNExdHx3twIAI01'), frame && frame.src);
+    check('the embed is titled for screen readers', !!frame && /luma/i.test(frame.title), frame && frame.title);
+    const out = [...td.querySelectorAll('#bookingBlock a')]
+      .find((a) => a.href.startsWith('https://luma.com/h29jwrpp'));
+    check('a plain link to the event sits alongside the embed', !!out);
+    check('that link opens in a new tab, safely',
+      !!out && out.target === '_blank' && /\bnoopener\b/.test(out.rel), out && out.rel);
+    check('and it is never hidden', !!out && !out.hidden);
+    check('the old "link coming" placeholder is gone', !/Booking link coming/.test(thanksHtml));
+  }
   check('no Cal.com embed on the page', !/cal\.com/i.test(thanksHtml));
   check('PODCAST_ENABLED=false shows the coming-soon line',
     !td.querySelector('#podcastOff').hidden && /coming soon/i.test(td.querySelector('#podcastOff').textContent));
@@ -763,8 +779,15 @@ console.log('\nThe thank-you page');
   check('the two are switched between, not both rendered',
     /PODCAST_PLATFORM === 'youtube'/.test(thanksHtml));
 
-  // With both flags off, neither third party is contacted at all.
-  check('nothing is embedded while the flags are off', td.querySelectorAll('iframe').length === 0);
+  // With both flags off, neither third party is contacted at all. The booking
+  // embed is the exception by design — it is always mounted — so this checks the
+  // two flag-driven slots rather than counting every iframe on the page.
+  check('nothing is embedded while the flags are off',
+    td.querySelector('#videoEmbed').children.length === 0
+    && td.querySelector('#podcastEmbed').children.length === 0);
+  check('and no flagged-off player is contacted',
+    Array.from(td.querySelectorAll('iframe'))
+      .every(f => !/vimeo|spotify|youtube/i.test(f.src)));
   check('no third-party script is loaded either',
     Array.from(td.querySelectorAll('script[src]'))
       .every(sc => !/vimeo|spotify|youtube/i.test(sc.src)));

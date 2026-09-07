@@ -82,6 +82,11 @@ h1{font-size:clamp(30px,6vw,46px);letter-spacing:-.03em;font-weight:700}
 .embed--fixed{aspect-ratio:auto}
 .embed iframe{display:block;width:100%;height:100%;border:0}
 .embed--fixed iframe{height:352px}
+/* Luma's event card sets its own height. It needs more room on a narrow screen,
+   where the title, date and ticket row all wrap. */
+.embed--luma{aspect-ratio:auto}
+.embed--luma iframe{height:540px}
+@media (min-width:700px){ .embed--luma iframe{height:450px} }
 .fallback-link{display:inline-block;margin-top:12px;font-size:14.5px;color:var(--muted)}
 
 .quiet{margin-top:22px;font-size:15.5px;color:var(--dim)}
@@ -127,14 +132,29 @@ h1{font-size:clamp(30px,6vw,46px);letter-spacing:-.03em;font-weight:700}
     </section>
 
     <!-- ===== Block 2 — the booking (the actual conversion) =====
-         Always visible, never gated. -->
+         Always visible, never gated.
+
+         Unlike the video and podcast blocks, this embed is static markup rather
+         than one of the flag-driven iframes the page script mounts: it is the
+         conversion, so it must not depend on the script running at all.
+
+         The iframe is addressed by Luma's event API id; the human-readable URL
+         for the same event is https://luma.com/h29jwrpp. Both resolve, but the
+         api id survives a slug rename. -->
     <section class="block" id="bookingBlock">
       <h2>Book your call</h2>
       <p>Pick a time that works. It&rsquo;s 30 minutes, and you&rsquo;ll leave it knowing whether this is right for you either way.</p>
-      <div class="slot" id="bookingSlot">
-        <div class="slot-note">Booking</div>
-        <p class="slot-sub">Booking link coming — Ella&rsquo;s calendar is being connected. Keep an eye on your inbox; we&rsquo;ll send you the link to pick a time.</p>
+      <div class="embed embed--luma" id="bookingSlot">
+        <iframe
+          src="https://luma.com/embed/event/evt-TNExdHx3twIAI01/simple"
+          title="Register for the Super Human Accelerator session on Luma"
+          allowfullscreen
+          aria-hidden="false"
+          tabindex="0"></iframe>
       </div>
+      <!-- Always visible, not hidden-until-failure like the video's fallback:
+           a blocked third-party iframe here is a silently lost conversion. -->
+      <a class="fallback-link" href="https://luma.com/h29jwrpp" target="_blank" rel="noopener">Register on Luma &#8599;</a>
     </section>
 
     <!-- ===== Block 3 — podcast (PODCAST_ENABLED), always below the booking ===== -->
