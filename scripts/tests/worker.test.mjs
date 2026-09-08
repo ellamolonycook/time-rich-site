@@ -46,9 +46,8 @@ const FULL = {
   linkedin: 'https://www.linkedin.com/in/jordanreyes',
   website: '',
   business: 'A 4-person marketing agency for B2B SaaS.',
-  department: 'Operations & admin',
+  department: ['Operations & admin'],
   outcome: 'Take a two-week vacation without the business falling over.',
-  track: 'Ten weeks',
   coaching: 'Yes',
   coaching_focus: 'Delegating without micromanaging.',
   source: 'utm_source=instagram | utm_campaign=sh-launch',
@@ -67,9 +66,11 @@ console.log('\n/superhuman — new form payload (precise mapping)');
   check('Phone is phone_number, E.164', p.Phone.phone_number === '+15125550114');
   check('LinkedIn is url', p.LinkedIn.url === 'https://www.linkedin.com/in/jordanreyes');
   check('Business is rich_text', p.Business.rich_text[0].text.content.startsWith('A 4-person'));
-  check('Department is select with the exact option', p.Department.select.name === 'Operations & admin');
+  check('Department is multi_select with the exact option',
+    p.Department.multi_select.map((o) => o.name).join() === 'Operations & admin', p.Department);
   check('Outcome is rich_text', p.Outcome.rich_text[0].text.content.startsWith('Take a two-week'));
-  check('Track preference is select', p['Track preference'].select.name === 'Ten weeks');
+  check('Track preference is never written — the question is gone from the form',
+    !('Track preference' in p), Object.keys(p));
   check('1:1 coaching is select', p['1:1 coaching'].select.name === 'Yes');
   check('Coaching focus is rich_text', p['Coaching focus'].rich_text[0].text.content.startsWith('Delegating'));
   check('Source is rich_text with the UTMs', p.Source.rich_text[0].text.content.includes('utm_source=instagram'));
@@ -79,20 +80,50 @@ console.log('\n/superhuman — new form payload (precise mapping)');
   check('never writes old-form columns', !('AI stage' in p) && !('Pain points' in p) && !('Website' in p));
   check('no page body dump (precise mapping only)', b.children === undefined);
   check('reads no database schema (one API call)', calls.filter(c => c.url.includes('/v1/databases/')).length === 0);
-  check('exactly the 12 expected properties', Object.keys(p).length === 12, Object.keys(p));
+  check('exactly the 11 expected properties', Object.keys(p).length === 11, Object.keys(p));
 }
 
 console.log('\n/superhuman — every Department option maps 1:1');
-for (const opt of ['Sales', 'Marketing & content', 'Delivery / client success', 'Operations & admin', 'Finance', 'Hiring & team', 'Not sure yet']) {
-  await post('/superhuman', { ...FULL, department: opt });
-  check('"' + opt + '"', pageBody().properties.Department.select.name === opt);
+const SH_DEPTS = ['Sales', 'Marketing & content', 'Delivery / client success', 'Operations & admin', 'Finance', 'Hiring & team', 'Not sure yet'];
+for (const opt of SH_DEPTS) {
+  await post('/superhuman', { ...FULL, department: [opt] });
+  check('"' + opt + '"', pageBody().properties.Department.multi_select.map((o) => o.name).join() === opt);
 }
 
-console.log('\n/superhuman — every Track / coaching option maps 1:1');
-for (const opt of ['Six weeks', 'Ten weeks', 'Not sure']) {
-  await post('/superhuman', { ...FULL, track: opt });
-  check('track "' + opt + '"', pageBody().properties['Track preference'].select.name === opt);
+console.log('\n/superhuman — Department carries several answers');
+{
+  await post('/superhuman', { ...FULL, department: ['Sales', 'Finance', 'Hiring & team'] });
+  check('all three land in one multi_select',
+    pageBody().properties.Department.multi_select.map((o) => o.name).join() === 'Sales,Finance,Hiring & team',
+    pageBody().properties.Department);
+
+  await post('/superhuman', { ...FULL, department: SH_DEPTS });
+  check('every option at once is fine', pageBody().properties.Department.multi_select.length === 7);
+
+  await post('/superhuman', { ...FULL, department: ['Sales', 'Not a department', 'Finance'] });
+  check('an unknown value is dropped and the known ones still go',
+    pageBody().properties.Department.multi_select.map((o) => o.name).join() === 'Sales,Finance',
+    pageBody().properties.Department);
+
+  await post('/superhuman', { ...FULL, department: ['Sales', 'Sales'] });
+  check('duplicates are collapsed — Notion rejects a repeated option name',
+    pageBody().properties.Department.multi_select.length === 1, pageBody().properties.Department);
+
+  await post('/superhuman', { ...FULL, department: [] });
+  check('an empty selection omits the property rather than clearing it',
+    !('Department' in pageBody().properties), Object.keys(pageBody().properties));
+
+  await post('/superhuman', { ...FULL, department: undefined });
+  check('a missing department is omitted too', !('Department' in pageBody().properties));
+
+  // A session stored before the question took several answers holds a string.
+  await post('/superhuman', { ...FULL, department: 'Finance' });
+  check('a bare string is still accepted, as a one-item multi_select',
+    pageBody().properties.Department.multi_select.map((o) => o.name).join() === 'Finance',
+    pageBody().properties.Department);
 }
+
+console.log('\n/superhuman — every coaching option maps 1:1');
 for (const opt of ['Yes', 'No', 'Tell me more']) {
   await post('/superhuman', { ...FULL, coaching: opt });
   check('coaching "' + opt + '"', pageBody().properties['1:1 coaching'].select.name === opt);
@@ -100,8 +131,12 @@ for (const opt of ['Yes', 'No', 'Tell me more']) {
 
 console.log('\n/superhuman — junk and edge values');
 {
-  await post('/superhuman', { ...FULL, department: "Not sure yet — that's what I want help figuring out" });
+  await post('/superhuman', { ...FULL, department: ["Not sure yet — that's what I want help figuring out"] });
   check('a long/unknown select label is dropped, not invented', !('Department' in pageBody().properties));
+
+  await post('/superhuman', { ...FULL, track: 'Ten weeks' });
+  check('a stale page still sending a track is ignored, not written through',
+    !('Track preference' in pageBody().properties), Object.keys(pageBody().properties));
 
   await post('/superhuman', { ...FULL, phone: '0871234567' });
   check('a non-E.164 phone is dropped rather than written', !('Phone' in pageBody().properties));
@@ -123,7 +158,7 @@ console.log('\n/superhuman — junk and edge values');
   const neither = pageBody().properties;
   check('Q4 skipped entirely omits both columns',
     !('LinkedIn' in neither) && !('Website' in neither), Object.keys(neither));
-  check('and the application is still accepted', Object.keys(neither).length === 11, Object.keys(neither).length);
+  check('and the application is still accepted', Object.keys(neither).length === 10, Object.keys(neither).length);
 
   await post('/superhuman', { ...FULL, linkedin: '', phone: '', coaching_focus: '', source: '' });
   const p = pageBody().properties;
@@ -189,7 +224,7 @@ const NOTION_PAGE = {
     Name: { type: 'title', title: [{ plain_text: 'Jordan' }] },
     Email: { type: 'email', email: 'jordan@example.com' },
     Business: { type: 'rich_text', rich_text: [{ plain_text: 'A 4-person marketing agency for B2B SaaS.' }] },
-    Department: { type: 'select', select: { name: 'Operations & admin' } },
+    Department: { type: 'multi_select', multi_select: [{ name: 'Operations & admin' }, { name: 'Finance' }] },
     Outcome: { type: 'rich_text', rich_text: [{ plain_text: 'Take a two-week vacation.' }] },
     'Track preference': { type: 'select', select: { name: 'Ten weeks' } },
     '1:1 coaching': { type: 'select', select: { name: 'Yes' } },
@@ -355,9 +390,10 @@ console.log('\n/cal-webhook — BOOKING_CREATED with a matching application');
   check('shows their own timezone', t.includes('America/Chicago'));
   check('shows the video call url', t.includes('https://meet.cal.com/video/bk_abc123'));
   check('pulls Business from Notion', t.includes('A 4-person marketing agency'));
-  check('pulls Department', t.includes('Operations & amp; admin') || t.includes('Operations &amp; admin'), t);
+  check('pulls Department, comma-joined across the multi_select',
+    t.includes('Operations &amp; admin, Finance') || t.includes('Operations & amp; admin, Finance'), t);
   check('pulls Outcome', t.includes('Take a two-week vacation.'));
-  check('pulls Track preference', t.includes('*Track:* Ten weeks'));
+  check('no Track line in the breakdown', !t.includes('*Track:*'), t);
   check('pulls 1:1 coaching', t.includes('*1:1 coaching:* Yes'));
   check('pulls Phone', t.includes('+15125550114'));
   check('pulls LinkedIn', t.includes('linkedin.com/in/jordanreyes'));
