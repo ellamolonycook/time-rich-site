@@ -725,8 +725,20 @@ console.log('\nThe thank-you page');
   const td = dom.window.document;
   check('personalised heading', td.querySelector('#confirmHead').textContent === 'You’re in, Jordan.', td.querySelector('#confirmHead').textContent);
   check('VIDEO_ENABLED=false hides the video block', td.querySelector('#videoBlock').hidden);
-  check('booking block is visible', !td.querySelector('#bookingBlock').hidden);
-  // The booking is the Luma event embed, mounted as static markup so it does not
+  check('sign-up block is visible', !td.querySelector('#bookingBlock').hidden);
+  // One fixed group session, not a pick-a-time call: the heading and the copy
+  // above the embed both have to say so, and the date has to be on the page
+  // rather than only inside the third-party iframe.
+  {
+    const block = td.querySelector('#bookingBlock');
+    check('the heading is "Save your spot"',
+      block.querySelector('h2').textContent.trim() === 'Save your spot', block.querySelector('h2').textContent);
+    check('the copy names the session date, time and length',
+      /Tue, 22 Sep at 12pm ET/.test(block.textContent) && /one hour on Zoom/.test(block.textContent));
+    check('no pick-a-time / 30-minute call phrasing survives anywhere on the page',
+      !/book your call|Book your call|pick a time|Pick a time|30 minutes|either way/i.test(thanksHtml));
+  }
+  // The sign-up is the Luma event embed, mounted as static markup so it does not
   // depend on the page script — plus an always-visible link out, because a
   // third-party iframe that gets blocked would otherwise lose the conversion.
   {
@@ -744,19 +756,20 @@ console.log('\nThe thank-you page');
     check('the old "link coming" placeholder is gone', !/Booking link coming/.test(thanksHtml));
   }
   check('no Cal.com embed on the page', !/cal\.com/i.test(thanksHtml));
-  check('PODCAST_ENABLED=false shows the coming-soon line',
-    !td.querySelector('#podcastOff').hidden && /coming soon/i.test(td.querySelector('#podcastOff').textContent));
-  check('podcast sits below the booking',
+  check('PODCAST_ENABLED=false hides the podcast block entirely',
+    td.querySelector('#podcastBlock').hidden);
+  check('the coming-soon line is gone from the page', !/coming soon/i.test(thanksHtml));
+  check('podcast sits below the sign-up',
     thanksHtml.indexOf('id="bookingBlock"') < thanksHtml.indexOf('id="podcastBlock"'));
 
-  // Option A, confirmed: the booking is never gated on the video.
-  check('the video block sits above the booking',
+  // Option A, confirmed: the sign-up is never gated on the video.
+  check('the video block sits above the sign-up',
     thanksHtml.indexOf('id="videoBlock"') < thanksHtml.indexOf('id="bookingBlock"'));
-  // Option A means the booking is pure markup: no script ever touches it, so
+  // Option A means the sign-up is pure markup: no script ever touches it, so
   // there is nothing that could disable, blur or unlock it.
-  check('no script ever touches the booking block',
+  check('no script ever touches the sign-up block',
     !/getElementById\('bookingBlock'\)/.test(thanksHtml));
-  check('the booking is visible whatever the video does',
+  check('the sign-up is visible whatever the video does',
     !td.querySelector('#bookingBlock').hidden
     && !td.querySelector('#bookingBlock').classList.contains('locked'));
 
@@ -779,7 +792,7 @@ console.log('\nThe thank-you page');
   check('the two are switched between, not both rendered',
     /PODCAST_PLATFORM === 'youtube'/.test(thanksHtml));
 
-  // With both flags off, neither third party is contacted at all. The booking
+  // With both flags off, neither third party is contacted at all. The Luma
   // embed is the exception by design — it is always mounted — so this checks the
   // two flag-driven slots rather than counting every iframe on the page.
   check('nothing is embedded while the flags are off',
