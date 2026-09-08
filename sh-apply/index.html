@@ -13,12 +13,12 @@
 <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32.png" />
 <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16.png" />
 <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
-<meta name="description" content="Apply for the Super Human Accelerator. Nine questions, about three minutes. At the end you'll book a call with Ella." />
+<meta name="description" content="Apply for the Super Human Accelerator. Eight questions, about three minutes. At the end you'll save your spot on the onboarding session." />
 <link rel="canonical" href="https://timerich.ai/sh-apply/" />
 <meta name="robots" content="index, follow, max-image-preview:large" />
 <meta name="theme-color" content="#FFFCEB" />
 <meta property="og:title" content="Apply for the Super Human Accelerator" />
-<meta property="og:description" content="Nine questions, about three minutes. At the end you'll book a call with Ella." />
+<meta property="og:description" content="Eight questions, about three minutes. At the end you'll save your spot on the onboarding session." />
 <meta property="og:url" content="https://timerich.ai/sh-apply/" />
 <meta property="og:type" content="website" />
 <meta property="og:image" content="https://timerich.ai/og-image.jpg" />
@@ -257,10 +257,10 @@ main{flex:1 0 auto;padding:38px 0 96px}
   <div class="wrap topbar-inner">
     <a class="brand-word" href="https://timerich.ai/">Time Rich<span class="wm-dot">.</span></a>
     <div class="progress" id="progress" hidden>
-      <div class="bar" role="progressbar" id="bar" aria-valuemin="1" aria-valuemax="9" aria-valuenow="1" aria-label="Application progress">
+      <div class="bar" role="progressbar" id="bar" aria-valuemin="1" aria-valuemax="8" aria-valuenow="1" aria-label="Application progress">
         <div class="bar-fill" id="barFill"></div>
       </div>
-      <span class="progress-label" id="progressLabel">1 of 9</span>
+      <span class="progress-label" id="progressLabel">1 of 8</span>
     </div>
   </div>
 </header>
@@ -280,7 +280,7 @@ main{flex:1 0 auto;padding:38px 0 96px}
       <section class="screen intro" id="s-intro" data-screen="intro">
         <span class="q-eyebrow">Super Human Accelerator</span>
         <h1 tabindex="-1" id="introHead">Apply for the Super Human Accelerator</h1>
-        <p class="lead">Nine questions, about three minutes. At the end you'll watch a short video and book a call with Ella.</p>
+        <p class="lead">Eight questions, about three minutes. At the end you'll save your spot on the onboarding session.</p>
         <div class="q-actions">
           <button type="button" class="btn" id="startBtn">Start my application</button>
         </div>
@@ -402,15 +402,14 @@ main{flex:1 0 auto;padding:38px 0 96px}
         </div>
       </section>
 
-      <!-- ================= Q8 - TRACK ================= -->
-      <section class="screen" id="s-8" data-step="8" data-key="track" data-select hidden>
+      <!-- ================= Q8 - 1:1 COACHING ================= -->
+      <section class="screen" id="s-8" data-step="8" data-key="coaching" data-select hidden>
         <span class="q-eyebrow">Question 8</span>
-        <h2 class="q-title" id="h-8" tabindex="-1">Six weeks or ten weeks?</h2>
-        <p class="q-help" id="help-8">Just an indication &mdash; you'll decide properly on the call.</p>
+        <h2 class="q-title" id="h-8" tabindex="-1">Do you want to add 1:1 coaching with Ella?</h2>
         <div class="q-opts" role="group" aria-labelledby="h-8" aria-describedby="e-8">
-          <button type="button" class="opt" data-value="Six weeks"><span class="opt-key">1</span><span>Six weeks <span class="opt-sub">Build the system</span></span></button>
-          <button type="button" class="opt" data-value="Ten weeks"><span class="opt-key">2</span><span>Ten weeks <span class="opt-sub">Build it, then train your team to run it</span></span></button>
-          <button type="button" class="opt" data-value="Not sure"><span class="opt-key">3</span><span>Not sure yet <span class="opt-sub">I'd like to talk it through</span></span></button>
+          <button type="button" class="opt" data-value="Yes"><span class="opt-key">1</span><span>Yes</span></button>
+          <button type="button" class="opt" data-value="No"><span class="opt-key">2</span><span>No</span></button>
+          <button type="button" class="opt" data-value="Tell me more"><span class="opt-key">3</span><span>Tell me more on the call</span></button>
         </div>
         <span class="q-error" id="e-8" aria-live="polite"></span>
         <div class="q-actions">
@@ -418,29 +417,14 @@ main{flex:1 0 auto;padding:38px 0 96px}
         </div>
       </section>
 
-      <!-- ================= Q9 - 1:1 COACHING ================= -->
-      <section class="screen" id="s-9" data-step="9" data-key="coaching" data-select hidden>
-        <span class="q-eyebrow">Question 9</span>
-        <h2 class="q-title" id="h-9" tabindex="-1">Do you want to add 1:1 coaching with Ella?</h2>
-        <div class="q-opts" role="group" aria-labelledby="h-9" aria-describedby="e-9">
-          <button type="button" class="opt" data-value="Yes"><span class="opt-key">1</span><span>Yes</span></button>
-          <button type="button" class="opt" data-value="No"><span class="opt-key">2</span><span>No</span></button>
-          <button type="button" class="opt" data-value="Tell me more"><span class="opt-key">3</span><span>Tell me more on the call</span></button>
-        </div>
-        <span class="q-error" id="e-9" aria-live="polite"></span>
-        <div class="q-actions">
-          <button type="button" class="btn ghost btn-back" data-back>Back</button>
-        </div>
-      </section>
-
-      <!-- ================= Q9b - COACHING FOCUS (sub-step of 9) ================= -->
-      <section class="screen" id="s-9b" data-step="9" data-key="coaching_focus" data-substep hidden>
-        <span class="q-eyebrow">Question 9, continued</span>
-        <h2 class="q-title" id="h-9b" tabindex="-1"><label for="f-coaching_focus">What would you want to work through with her?</label></h2>
-        <p class="q-help" id="help-9b">Optional &mdash; a line is plenty.</p>
+      <!-- ================= Q8b - COACHING FOCUS (sub-step of 8) ================= -->
+      <section class="screen" id="s-8b" data-step="8" data-key="coaching_focus" data-substep hidden>
+        <span class="q-eyebrow">Question 8, continued</span>
+        <h2 class="q-title" id="h-8b" tabindex="-1"><label for="f-coaching_focus">What would you want to work through with her?</label></h2>
+        <p class="q-help" id="help-8b">Optional &mdash; a line is plenty.</p>
         <div class="q-field">
-          <textarea id="f-coaching_focus" name="coaching_focus" rows="3" enterkeyhint="enter" aria-describedby="help-9b e-9b"></textarea>
-          <span class="q-error" id="e-9b" aria-live="polite"></span>
+          <textarea id="f-coaching_focus" name="coaching_focus" rows="3" enterkeyhint="enter" aria-describedby="help-8b e-8b"></textarea>
+          <span class="q-error" id="e-8b" aria-live="polite"></span>
         </div>
         <div class="q-actions">
           <button type="button" class="btn" data-next>Continue</button>
@@ -450,10 +434,10 @@ main{flex:1 0 auto;padding:38px 0 96px}
       </section>
 
       <!-- ================= SUBMIT ================= -->
-      <section class="screen" id="s-submit" data-step="9" data-screen="submit" hidden>
+      <section class="screen" id="s-submit" data-step="8" data-screen="submit" hidden>
         <span class="q-eyebrow">Last step</span>
         <h2 class="q-title" id="h-submit" tabindex="-1">That's everything.</h2>
-        <p class="q-help">Send it over and you'll go straight to booking your call with Ella.</p>
+        <p class="q-help">Send it over and you'll go straight to saving your spot on the onboarding session.</p>
         <div class="summary" id="summary"></div>
         <div class="q-actions">
           <button type="submit" class="btn" id="submitBtn">Submit my application</button>
@@ -582,8 +566,8 @@ main{flex:1 0 auto;padding:38px 0 96px}
     var step = parseInt(el.getAttribute('data-step') || '0', 10);
     if (!step) { progress.hidden = true; return; }
     progress.hidden = false;
-    progLbl.textContent = step + ' of 9';
-    barFill.style.transform = 'scaleX(' + (step / 9) + ')';
+    progLbl.textContent = step + ' of 8';
+    barFill.style.transform = 'scaleX(' + (step / 8) + ')';
     bar.setAttribute('aria-valuenow', String(step));
   }
 
@@ -705,7 +689,7 @@ main{flex:1 0 auto;padding:38px 0 96px}
     setError(el, '');
 
     // Direction of travel: registry order is flow order, so forward is always a
-    // higher index — including across the Q9 -> Q9b -> submit branch.
+    // higher index — including across the Q8 -> Q8b -> submit branch.
     // On the very first render there is nothing to send away, but the arriving
     // question still assembles itself, so the page lands with motion.
     var swapping = prev !== el && !prev.hidden && !reduceMotion && !opts.entrance;
@@ -880,7 +864,6 @@ main{flex:1 0 auto;padding:38px 0 96px}
       if (raw.length < MIN_OUTCOME) return 'A little more detail — at least a sentence.';
       return '';
     }
-    if (key === 'track') return raw ? '' : 'Pick one — nothing is locked in.';
     if (key === 'coaching') return raw ? '' : 'Pick one.';
     if (key === 'coaching_focus') return '';   // optional
     return '';
@@ -895,7 +878,7 @@ main{flex:1 0 auto;padding:38px 0 96px}
     for (var i = 1; i < screens.length; i++) {
       var el = screens[i];
       if (el.id === 's-submit') return i;                 // everything answered
-      if (el.id === 's-9b' && !(answers.coaching === 'Yes' || answers.coaching === 'Tell me more')) continue;
+      if (el.id === 's-8b' && !(answers.coaching === 'Yes' || answers.coaching === 'Tell me more')) continue;
       var key = keyOf(el);
       // An optional question counts as answered once they have passed through
       // it, which is when commit() writes the key - even as an empty string.
@@ -909,10 +892,10 @@ main{flex:1 0 auto;padding:38px 0 96px}
 
   function nextIndexFrom(i){
     var el = screenAt(i);
-    // Q9b only exists for "Yes" / "Tell me more".
-    if (el.id === 's-9') {
+    // Q8b only exists for "Yes" / "Tell me more".
+    if (el.id === 's-8') {
       var c = answers.coaching;
-      return (c === 'Yes' || c === 'Tell me more') ? screens.indexOf(document.getElementById('s-9b'))
+      return (c === 'Yes' || c === 'Tell me more') ? screens.indexOf(document.getElementById('s-8b'))
                                                    : screens.indexOf(document.getElementById('s-submit'));
     }
     return i + 1;
@@ -921,8 +904,8 @@ main{flex:1 0 auto;padding:38px 0 96px}
     var el = screenAt(i);
     if (el.id === 's-submit') {
       var c = answers.coaching;
-      return (c === 'Yes' || c === 'Tell me more') ? screens.indexOf(document.getElementById('s-9b'))
-                                                   : screens.indexOf(document.getElementById('s-9'));
+      return (c === 'Yes' || c === 'Tell me more') ? screens.indexOf(document.getElementById('s-8b'))
+                                                   : screens.indexOf(document.getElementById('s-8'));
     }
     return i - 1;
   }
@@ -1092,7 +1075,7 @@ main{flex:1 0 auto;padding:38px 0 96px}
   // ---- Submit screen summary ----------------------------------------------
   var SUMMARY_ROWS = [
     ['Name', 'first_name'], ['Email', 'email'], ['Phone', 'phone'],
-    ['Department', 'department'], ['Track', 'track'], ['1:1 coaching', 'coaching']
+    ['Department', 'department'], ['1:1 coaching', 'coaching']
   ];
   function paintSummary(){
     var dl = document.createElement('dl');
@@ -1121,7 +1104,7 @@ main{flex:1 0 auto;padding:38px 0 96px}
     for (var i = 1; i < screens.length; i++) {
       var el = screens[i];
       if (el.id === 's-submit') continue;
-      if (el.id === 's-9b' && !(answers.coaching === 'Yes' || answers.coaching === 'Tell me more')) continue;
+      if (el.id === 's-8b' && !(answers.coaching === 'Yes' || answers.coaching === 'Tell me more')) continue;
       var key = keyOf(el);
       if (!isAnswered(answers[key]) && OPTIONAL_KEYS.indexOf(key) === -1) { firstBad = i; break; }
     }
@@ -1143,7 +1126,6 @@ main{flex:1 0 auto;padding:38px 0 96px}
       business:       answers.business || '',
       department:     asList(answers.department),
       outcome:        answers.outcome || '',
-      track:          answers.track || '',
       coaching:       answers.coaching || '',
       coaching_focus: answers.coaching_focus || '',
       source:         answers.source || '',

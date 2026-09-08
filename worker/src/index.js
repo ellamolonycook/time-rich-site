@@ -58,7 +58,7 @@ export default {
 
     // Route: Super Human Accelerator application -> its own Notion database.
     if (path.endsWith("/superhuman")) {
-      // The rebuilt /sh-apply form (nine questions, one at a time) posts a
+      // The rebuilt /sh-apply form (eight questions, one at a time) posts a
       // snake_case payload and is mapped property-by-property below, the same
       // way /waitlist is: the select columns have fixed option sets and free
       // text must never be allowed to invent new options.
@@ -338,7 +338,9 @@ async function handleWaitlist(request, env, cors) {
 // Precise field mapping — the property names and select option names below must
 // match the live "Super Human Accelerator Applications" schema exactly.
 // Deliberately does NOT write: Call time and Video watched (set later by the
-// booking webhook / player events), or any of the old form's columns.
+// booking webhook / player events), Track preference (the six-or-ten-weeks
+// question is gone from the form; the column is left in place, unwritten), or
+// any of the old form's columns.
 const SH_DEPARTMENTS = [
   "Sales",
   "Marketing & content",
@@ -348,7 +350,6 @@ const SH_DEPARTMENTS = [
   "Hiring & team",
   "Not sure yet",
 ];
-const SH_TRACKS = ["Six weeks", "Ten weeks", "Not sure"];
 const SH_COACHING = ["Yes", "No", "Tell me more"];
 
 async function handleSuperhumanApplication(d, env, cors) {
@@ -418,8 +419,6 @@ async function handleSuperhumanApplication(d, env, cors) {
   if (departments.length) {
     properties["Department"] = { multi_select: departments.map((name) => ({ name })) };
   }
-  const track = pick(d.track, SH_TRACKS);
-  if (track) properties["Track preference"] = track;
   const coaching = pick(d.coaching, SH_COACHING);
   if (coaching) properties["1:1 coaching"] = coaching;
 
@@ -821,7 +820,6 @@ function buildCalSlackMessage(trigger, d) {
       ["Business", calProp(props["Business"])],
       ["Department", calProp(props["Department"])],
       ["Outcome", calProp(props["Outcome"])],
-      ["Track", calProp(props["Track preference"])],
       ["1:1 coaching", calProp(props["1:1 coaching"])],
       ["Phone", calProp(props["Phone"])],
       ["LinkedIn", calProp(props["LinkedIn"]) || calProp(props["Website"])],

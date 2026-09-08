@@ -84,8 +84,7 @@ async function runToSubmit({ w, d }) {
   pickDepartments(w, d, 3); await settle();                              // Operations & admin
   type(w, '#f-outcome', 'A two-week holiday without the business falling over.');
   click(w, '#s-7 [data-next]'); await settle();
-  d.querySelectorAll('#s-8 .opt')[1].click(); await selectAdvance();      // Ten weeks
-  d.querySelectorAll('#s-9 .opt')[1].click(); await selectAdvance();      // No -> submit
+  d.querySelectorAll('#s-8 .opt')[1].click(); await selectAdvance();      // No -> submit
 }
 
 console.log('\nOne question at a time');
@@ -94,8 +93,8 @@ console.log('\nOne question at a time');
   check('lands on the intro, no progress bar', visible(d).join() === 's-intro' && $(d, '#progress').hidden);
   click(w, '#startBtn');
   check('start shows only Q1', visible(d).join() === 's-1');
-  check('progress reads "1 of 9"', label(d) === '1 of 9', label(d));
-  check('bar is at 1/9, via scaleX not width', $(d, '#barFill').style.transform === 'scaleX(0.1111111111111111)'
+  check('progress reads "1 of 8"', label(d) === '1 of 8', label(d));
+  check('bar is at 1/8, via scaleX not width', $(d, '#barFill').style.transform === 'scaleX(0.125)'
     && !$(d, '#barFill').style.width, $(d, '#barFill').style.transform);
   await settle();
   check('one question in the DOM once the transition ends', inDom(d).join() === 's-1', inDom(d));
@@ -361,7 +360,7 @@ console.log('\nTransitions: interrupting one mid-flight');
   check('focus is not left on an abandoned screen', d.activeElement.id === 'f-phone', d.activeElement.id);
 }
 
-console.log('\nTransitions: the Q9 -> Q9b sub-step, both directions');
+console.log('\nTransitions: the Q8 -> Q8b sub-step, both directions');
 {
   const { w, d } = boot();
   await fillToDepartment(w);
@@ -369,20 +368,19 @@ console.log('\nTransitions: the Q9 -> Q9b sub-step, both directions');
   pickDepartments(w, d, 0); await settle();
   type(w, '#f-outcome', 'A two-week holiday without the business falling over.');
   click(w, '#s-7 [data-next]'); await settle();
-  d.querySelectorAll('#s-8 .opt')[1].click(); await selectAdvance();
-  d.querySelectorAll('#s-9 .opt')[0].click();          // "Yes" -> Q9b
+  d.querySelectorAll('#s-8 .opt')[0].click();          // "Yes" -> Q8b
   await sleep(280);                                    // the select pause,
   await flipped();                                     // then the double-rAF flip
-  check('Q9 -> Q9b travels forward (up)',
-    $(d, '#s-9').classList.contains('q-above') && $(d, '#s-9b').classList.contains('q-in-run'));
+  check('Q8 -> Q8b travels forward (up)',
+    $(d, '#s-8').classList.contains('q-above') && $(d, '#s-8b').classList.contains('q-in-run'));
   await settle();
-  click(w, '#s-9b [data-back]');
+  click(w, '#s-8b [data-back]');
   await sleep(40);
-  check('Q9b -> Q9 starts the incoming parts above', $(d, '#s-9').classList.contains('q-in-above'));
+  check('Q8b -> Q8 starts the incoming parts above', $(d, '#s-8').classList.contains('q-in-above'));
   await flipped();
-  check('Q9b -> Q9 travels back (down)', $(d, '#s-9b').classList.contains('q-below'));
+  check('Q8b -> Q8 travels back (down)', $(d, '#s-8b').classList.contains('q-below'));
   await settle();
-  check('lands on Q9 alone', inDom(d).join() === 's-9', inDom(d));
+  check('lands on Q8 alone', inDom(d).join() === 's-8', inDom(d));
 }
 
 console.log('\nTransitions: the two heaviest screens');
@@ -460,7 +458,7 @@ console.log('\nValidation happens on advance, not on keystroke');
   check('still on Q1', visible(d).join() === 's-1');
 
   type(w, '#f-first_name', 'Jordan'); click(w, '#s-1 [data-next]');
-  check('a valid answer advances to Q2', visible(d).join() === 's-2' && label(d) === '2 of 9');
+  check('a valid answer advances to Q2', visible(d).join() === 's-2' && label(d) === '2 of 8');
 
   type(w, '#f-email', 'nope'); click(w, '#s-2 [data-next]');
   check('a malformed email is rejected', visible(d).join() === 's-2' && err(d, 'e-2').length > 0);
@@ -482,7 +480,7 @@ console.log('\nValidation happens on advance, not on keystroke');
   type(w, '#f-business', 'Marketing agency.');
   check('the counter updates live', $(d, '#c-5').textContent === '17 / 140', $(d, '#c-5').textContent);
   click(w, '#s-5 [data-next]');
-  check('reached Q6', visible(d).join() === 's-6' && label(d) === '6 of 9');
+  check('reached Q6', visible(d).join() === 's-6' && label(d) === '6 of 8');
 }
 
 console.log('\nQ6 takes several departments at once');
@@ -533,12 +531,11 @@ console.log('\nQ6 takes several departments at once');
   click(w, '#s-6 [data-next]'); await settle();
   check('Continue advances once something is picked', visible(d).join() === 's-7', visible(d));
 
-  check('Q8 button labels are long, values are short',
-    Array.from(d.querySelectorAll('#s-8 .opt')).map(b => b.getAttribute('data-value')).join() === 'Six weeks,Ten weeks,Not sure');
-  check('Q8 shows "Build the system" style sublabels', /Build the system/.test($(d, '#s-8').textContent));
-  check('Q9 values are Yes/No/Tell me more',
-    Array.from(d.querySelectorAll('#s-9 .opt')).map(b => b.getAttribute('data-value')).join() === 'Yes,No,Tell me more');
-  check('Q9 third button reads "Tell me more on the call"', /Tell me more on the call/.test(d.querySelectorAll('#s-9 .opt')[2].textContent));
+  check('Q8 values are Yes/No/Tell me more',
+    Array.from(d.querySelectorAll('#s-8 .opt')).map(b => b.getAttribute('data-value')).join() === 'Yes,No,Tell me more');
+  check('Q8 third button reads "Tell me more on the call"', /Tell me more on the call/.test(d.querySelectorAll('#s-8 .opt')[2].textContent));
+  check('the six-or-ten-weeks question is gone entirely',
+    !/Six weeks|Ten weeks|data-key="track"/.test(HTML));
 }
 
 console.log('\nTextareas: Enter is a newline, Cmd/Ctrl+Enter advances');
@@ -557,26 +554,25 @@ console.log('\nTextareas: Enter is a newline, Cmd/Ctrl+Enter advances');
   check('Cmd+Enter advances', visible(d).join() === 's-8');
 }
 
-console.log('\nQ9b only exists for Yes / Tell me more');
+console.log('\nQ8b only exists for Yes / Tell me more');
 {
   const { w, d } = boot();
   await fillToDepartment(w);
   pickDepartments(w, d, 0); await settle();
   type(w, '#f-outcome', 'A two-week holiday without the business falling over.');
   click(w, '#s-7 [data-next]');
-  d.querySelectorAll('#s-8 .opt')[1].click(); await selectAdvance();
-  check('on Q9', visible(d).join() === 's-9');
-  d.querySelectorAll('#s-9 .opt')[1].click(); await selectAdvance();   // "No"
-  check('"No" skips Q9b straight to submit', visible(d).join() === 's-submit', visible(d));
-  check('progress still reads "9 of 9" on the submit screen', label(d) === '9 of 9');
+  check('on Q8', visible(d).join() === 's-8');
+  d.querySelectorAll('#s-8 .opt')[1].click(); await selectAdvance();   // "No"
+  check('"No" skips Q8b straight to submit', visible(d).join() === 's-submit', visible(d));
+  check('progress still reads "8 of 8" on the submit screen', label(d) === '8 of 8');
 
   click(w, '#s-submit [data-back]'); await sleep(60);
-  check('Back from submit returns to Q9 on the "No" path', visible(d).join() === 's-9', visible(d));
-  d.querySelectorAll('#s-9 .opt')[0].click(); await selectAdvance();   // "Yes"
-  check('"Yes" opens Q9b', visible(d).join() === 's-9b');
-  check('Q9b is a sub-step: progress stays "9 of 9"', label(d) === '9 of 9', label(d));
-  click(w, '#s-9b [data-next]');
-  check('Q9b is optional — empty advances', visible(d).join() === 's-submit');
+  check('Back from submit returns to Q8 on the "No" path', visible(d).join() === 's-8', visible(d));
+  d.querySelectorAll('#s-8 .opt')[0].click(); await selectAdvance();   // "Yes"
+  check('"Yes" opens Q8b', visible(d).join() === 's-8b');
+  check('Q8b is a sub-step: progress stays "8 of 8"', label(d) === '8 of 8', label(d));
+  click(w, '#s-8b [data-next]');
+  check('Q8b is optional — empty advances', visible(d).join() === 's-submit');
 }
 
 console.log('\nBack keeps answers; sessionStorage survives a refresh');
@@ -654,8 +650,7 @@ console.log('\nQ4: whichever half they filled is the half that is sent');
   pickDepartments(w, d, 0); await settle();
   type(w, '#f-outcome', 'A two-week holiday without the business falling over.');
   click(w, '#s-7 [data-next]'); await settle();
-  d.querySelectorAll('#s-8 .opt')[0].click(); await selectAdvance();
-  d.querySelectorAll('#s-9 .opt')[1].click(); await selectAdvance();   // "No" -> submit
+  d.querySelectorAll('#s-8 .opt')[1].click(); await selectAdvance();   // "No" -> submit
   $(d, '#submitBtn').click();
   await sleep(120);
   check('the fallback value is sent as website', posts[0] && posts[0].body.website === 'https://jordanreyes.com',
@@ -676,8 +671,7 @@ console.log('\nQ4: skipping it entirely still submits');
   pickDepartments(w, d, 0); await settle();
   type(w, '#f-outcome', 'A two-week holiday without the business falling over.');
   click(w, '#s-7 [data-next]'); await settle();
-  d.querySelectorAll('#s-8 .opt')[0].click(); await selectAdvance();
-  d.querySelectorAll('#s-9 .opt')[1].click(); await selectAdvance();
+  d.querySelectorAll('#s-8 .opt')[1].click(); await selectAdvance();
   $(d, '#submitBtn').click();
   await sleep(120);
   check('the submit is not bounced back to Q4', posts.length === 1, $(d, '#e-submit').textContent);
@@ -692,10 +686,9 @@ console.log('\nOne POST at the end, with the exact payload shape');
   pickDepartments(w, d, 3); await settle();                            // Operations & admin
   type(w, '#f-outcome', 'A two-week holiday without the business falling over.');
   click(w, '#s-7 [data-next]');
-  d.querySelectorAll('#s-8 .opt')[1].click(); await selectAdvance();        // Ten weeks
-  d.querySelectorAll('#s-9 .opt')[0].click(); await selectAdvance();        // Yes
+  d.querySelectorAll('#s-8 .opt')[0].click(); await selectAdvance();        // Yes
   type(w, '#f-coaching_focus', 'Delegating without micromanaging.');
-  click(w, '#s-9b [data-next]');
+  click(w, '#s-8b [data-next]');
   check('on the submit screen', visible(d).join() === 's-submit');
   check('the submit button says "Submit my application"', $(d, '#submitBtn').textContent === 'Submit my application');
   check('the summary shows what they answered', /Operations & admin/.test($(d, '#summary').textContent));
@@ -708,8 +701,9 @@ console.log('\nOne POST at the end, with the exact payload shape');
   const b = posts[0].body;
   check('posts to /superhuman', String(posts[0].url).endsWith('/superhuman'));
   check('payload keys are exactly the agreed set',
-    Object.keys(b).sort().join() === ['_gotcha','business','coaching','coaching_focus','department','email','first_name','form_version','linkedin','outcome','phone','source','track','website'].sort().join(),
+    Object.keys(b).sort().join() === ['_gotcha','business','coaching','coaching_focus','department','email','first_name','form_version','linkedin','outcome','phone','source','website'].sort().join(),
     Object.keys(b));
+  check('no track is sent at all', !('track' in b), Object.keys(b));
   check('form_version marks the new form', b.form_version === 'sh-apply-v2');
   check('first_name', b.first_name === 'Jordan');
   check('email', b.email === 'jordan@example.com');
@@ -718,7 +712,6 @@ console.log('\nOne POST at the end, with the exact payload shape');
   check('website is empty when they used LinkedIn', b.website === '', b.website);
   check('department is an array of short select values',
     Array.isArray(b.department) && b.department.join() === 'Operations & admin', b.department);
-  check('track is the short select value', b.track === 'Ten weeks');
   check('coaching is the short select value', b.coaching === 'Yes');
   check('coaching_focus captured', b.coaching_focus === 'Delegating without micromanaging.');
   check('source carries the landing UTMs', /utm_source=instagram/.test(b.source) && /utm_campaign=sh-launch/.test(b.source), b.source);
@@ -737,12 +730,29 @@ console.log('\nA typed phone number is stored as clean E.164');
   check('spaces are stripped before the number is stored', stored.answers.phone === '+353871234567', stored.answers.phone);
 }
 
+console.log('\nEight questions, said the same way everywhere');
+{
+  check('the intro says eight questions', /Eight questions, about three minutes/.test(HTML));
+  check('no "Nine questions" survives', !/Nine questions/i.test(HTML));
+  check('the apply page never promises a call to book',
+    !/book a call|booking your call|book your call/i.test(HTML));
+  const accel = fs.readFileSync(site('accelerator/index.html'), 'utf8');
+  check('the accelerator applications block says eight too',
+    /Eight questions, about three minutes/.test(accel) && !/Nine questions/i.test(accel));
+  check('and it no longer promises a call with Ella',
+    !/book a call with Ella/i.test(accel));
+}
+
 console.log('\nMarkup / accessibility basics');
 {
   const { d } = boot();
   const qs = Array.from(d.querySelectorAll('form .screen[data-step]'));
-  check('nine numbered steps plus Q9b and submit', qs.length === 11, qs.length);
-  check('data-step never exceeds 9', qs.every(s => +s.getAttribute('data-step') <= 9));
+  check('eight numbered steps plus Q8b and submit', qs.length === 10, qs.length);
+  check('data-step never exceeds 8', qs.every(s => +s.getAttribute('data-step') <= 8));
+  check('the eight steps are 1..8 with no gap',
+    [...new Set(qs.map(s => +s.getAttribute('data-step')))].sort((a, b) => a - b).join() === '1,2,3,4,5,6,7,8',
+    qs.map(s => s.getAttribute('data-step')));
+  check('the progress bar tops out at 8', $(d, '#bar').getAttribute('aria-valuemax') === '8');
   check('every text question has a real <label>', ['f-first_name','f-email','f-phone','f-linkedin','f-business','f-outcome','f-coaching_focus']
     .every(id => d.querySelector('label[for="' + id + '"]')));
   check('every question screen has an aria-live error slot',
@@ -753,7 +763,7 @@ console.log('\nMarkup / accessibility basics');
     && $(d, '#f-phone').getAttribute('inputmode') === 'tel'
     && $(d, '#f-linkedin').getAttribute('inputmode') === 'url');
   check('business one-liner capped at 140', $(d, '#f-business').getAttribute('maxlength') === '140');
-  check('outcome textarea is 4 rows, Q9b is 3', $(d, '#f-outcome').rows === 4 && $(d, '#f-coaching_focus').rows === 3);
+  check('outcome textarea is 4 rows, Q8b is 3', $(d, '#f-outcome').rows === 4 && $(d, '#f-coaching_focus').rows === 3);
   check('honeypot present', !!$(d, '#f-gotcha'));
   check('progress bar exposes a role', $(d, '#bar').getAttribute('role') === 'progressbar');
 }
