@@ -46,7 +46,7 @@ const FULL = {
   linkedin: 'https://www.linkedin.com/in/jordanreyes',
   website: '',
   business: 'A 4-person marketing agency for B2B SaaS.',
-  department: 'Operations & admin',
+  department: ['Operations & admin'],
   outcome: 'Take a two-week vacation without the business falling over.',
   track: 'Ten weeks',
   coaching: 'Yes',
@@ -67,7 +67,8 @@ console.log('\n/superhuman — new form payload (precise mapping)');
   check('Phone is phone_number, E.164', p.Phone.phone_number === '+15125550114');
   check('LinkedIn is url', p.LinkedIn.url === 'https://www.linkedin.com/in/jordanreyes');
   check('Business is rich_text', p.Business.rich_text[0].text.content.startsWith('A 4-person'));
-  check('Department is select with the exact option', p.Department.select.name === 'Operations & admin');
+  check('Department is multi_select with the exact option',
+    p.Department.multi_select.map((o) => o.name).join() === 'Operations & admin', p.Department);
   check('Outcome is rich_text', p.Outcome.rich_text[0].text.content.startsWith('Take a two-week'));
   check('Track preference is select', p['Track preference'].select.name === 'Ten weeks');
   check('1:1 coaching is select', p['1:1 coaching'].select.name === 'Yes');
@@ -83,9 +84,43 @@ console.log('\n/superhuman — new form payload (precise mapping)');
 }
 
 console.log('\n/superhuman — every Department option maps 1:1');
-for (const opt of ['Sales', 'Marketing & content', 'Delivery / client success', 'Operations & admin', 'Finance', 'Hiring & team', 'Not sure yet']) {
-  await post('/superhuman', { ...FULL, department: opt });
-  check('"' + opt + '"', pageBody().properties.Department.select.name === opt);
+const SH_DEPTS = ['Sales', 'Marketing & content', 'Delivery / client success', 'Operations & admin', 'Finance', 'Hiring & team', 'Not sure yet'];
+for (const opt of SH_DEPTS) {
+  await post('/superhuman', { ...FULL, department: [opt] });
+  check('"' + opt + '"', pageBody().properties.Department.multi_select.map((o) => o.name).join() === opt);
+}
+
+console.log('\n/superhuman — Department carries several answers');
+{
+  await post('/superhuman', { ...FULL, department: ['Sales', 'Finance', 'Hiring & team'] });
+  check('all three land in one multi_select',
+    pageBody().properties.Department.multi_select.map((o) => o.name).join() === 'Sales,Finance,Hiring & team',
+    pageBody().properties.Department);
+
+  await post('/superhuman', { ...FULL, department: SH_DEPTS });
+  check('every option at once is fine', pageBody().properties.Department.multi_select.length === 7);
+
+  await post('/superhuman', { ...FULL, department: ['Sales', 'Not a department', 'Finance'] });
+  check('an unknown value is dropped and the known ones still go',
+    pageBody().properties.Department.multi_select.map((o) => o.name).join() === 'Sales,Finance',
+    pageBody().properties.Department);
+
+  await post('/superhuman', { ...FULL, department: ['Sales', 'Sales'] });
+  check('duplicates are collapsed — Notion rejects a repeated option name',
+    pageBody().properties.Department.multi_select.length === 1, pageBody().properties.Department);
+
+  await post('/superhuman', { ...FULL, department: [] });
+  check('an empty selection omits the property rather than clearing it',
+    !('Department' in pageBody().properties), Object.keys(pageBody().properties));
+
+  await post('/superhuman', { ...FULL, department: undefined });
+  check('a missing department is omitted too', !('Department' in pageBody().properties));
+
+  // A session stored before the question took several answers holds a string.
+  await post('/superhuman', { ...FULL, department: 'Finance' });
+  check('a bare string is still accepted, as a one-item multi_select',
+    pageBody().properties.Department.multi_select.map((o) => o.name).join() === 'Finance',
+    pageBody().properties.Department);
 }
 
 console.log('\n/superhuman — every Track / coaching option maps 1:1');
@@ -100,7 +135,7 @@ for (const opt of ['Yes', 'No', 'Tell me more']) {
 
 console.log('\n/superhuman — junk and edge values');
 {
-  await post('/superhuman', { ...FULL, department: "Not sure yet — that's what I want help figuring out" });
+  await post('/superhuman', { ...FULL, department: ["Not sure yet — that's what I want help figuring out"] });
   check('a long/unknown select label is dropped, not invented', !('Department' in pageBody().properties));
 
   await post('/superhuman', { ...FULL, phone: '0871234567' });
@@ -189,7 +224,7 @@ const NOTION_PAGE = {
     Name: { type: 'title', title: [{ plain_text: 'Jordan' }] },
     Email: { type: 'email', email: 'jordan@example.com' },
     Business: { type: 'rich_text', rich_text: [{ plain_text: 'A 4-person marketing agency for B2B SaaS.' }] },
-    Department: { type: 'select', select: { name: 'Operations & admin' } },
+    Department: { type: 'multi_select', multi_select: [{ name: 'Operations & admin' }, { name: 'Finance' }] },
     Outcome: { type: 'rich_text', rich_text: [{ plain_text: 'Take a two-week vacation.' }] },
     'Track preference': { type: 'select', select: { name: 'Ten weeks' } },
     '1:1 coaching': { type: 'select', select: { name: 'Yes' } },
@@ -355,7 +390,8 @@ console.log('\n/cal-webhook — BOOKING_CREATED with a matching application');
   check('shows their own timezone', t.includes('America/Chicago'));
   check('shows the video call url', t.includes('https://meet.cal.com/video/bk_abc123'));
   check('pulls Business from Notion', t.includes('A 4-person marketing agency'));
-  check('pulls Department', t.includes('Operations & amp; admin') || t.includes('Operations &amp; admin'), t);
+  check('pulls Department, comma-joined across the multi_select',
+    t.includes('Operations &amp; admin, Finance') || t.includes('Operations & amp; admin, Finance'), t);
   check('pulls Outcome', t.includes('Take a two-week vacation.'));
   check('pulls Track preference', t.includes('*Track:* Ten weeks'));
   check('pulls 1:1 coaching', t.includes('*1:1 coaching:* Yes'));

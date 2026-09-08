@@ -366,10 +366,11 @@ main{flex:1 0 auto;padding:38px 0 96px}
       </section>
 
       <!-- ================= Q6 - DEPARTMENT ================= -->
-      <section class="screen" id="s-6" data-step="6" data-key="department" data-select hidden>
+      <section class="screen" id="s-6" data-step="6" data-key="department" data-select data-multi hidden>
         <span class="q-eyebrow">Question 6</span>
         <h2 class="q-title" id="h-6" tabindex="-1">Which department are you focused on?</h2>
-        <div class="q-opts" role="group" aria-labelledby="h-6" aria-describedby="e-6">
+        <p class="q-help" id="help-6">Pick as many as apply.</p>
+        <div class="q-opts" role="group" aria-labelledby="h-6" aria-describedby="help-6 e-6">
           <button type="button" class="opt" data-value="Sales"><span class="opt-key">1</span><span>Sales</span></button>
           <button type="button" class="opt" data-value="Marketing &amp; content"><span class="opt-key">2</span><span>Marketing &amp; content</span></button>
           <button type="button" class="opt" data-value="Delivery / client success"><span class="opt-key">3</span><span>Delivery / client success</span></button>
@@ -380,6 +381,7 @@ main{flex:1 0 auto;padding:38px 0 96px}
         </div>
         <span class="q-error" id="e-6" aria-live="polite"></span>
         <div class="q-actions">
+          <button type="button" class="btn" data-next>Continue</button>
           <button type="button" class="btn ghost btn-back" data-back>Back</button>
         </div>
       </section>
@@ -504,6 +506,14 @@ main{flex:1 0 auto;padding:38px 0 96px}
   function screenAt(i){ return screens[Math.max(0, Math.min(i, screens.length - 1))]; }
   function keyOf(el){ return el.getAttribute('data-key') || ''; }
   function isSelect(el){ return el.hasAttribute('data-select'); }
+  // A select screen that takes several answers: tapping toggles, nothing
+  // auto-advances, and its answer is an array rather than a string.
+  function isMulti(el){ return el.hasAttribute('data-multi'); }
+  // An answer is either a string or (a multi screen) an array. Both are
+  // unanswered when empty — and note that [] is truthy, so a bare !! would
+  // count an empty multi-select as answered and wave it through.
+  function isAnswered(v){ return Array.isArray(v) ? v.length > 0 : !!v; }
+  function asList(v){ return Array.isArray(v) ? v : (v ? [v] : []); }
   function inputOf(el){ return el.querySelector('input:not([type=hidden]), textarea'); }
 
   // ---- Persistence ---------------------------------------------------------
@@ -781,8 +791,10 @@ main{flex:1 0 auto;padding:38px 0 96px}
   // ---- Value get/set per screen -------------------------------------------
   function readScreen(el){
     if (isSelect(el)) {
-      var on = el.querySelector('.opt[aria-pressed="true"]');
-      return on ? on.getAttribute('data-value') : '';
+      var on = Array.prototype.slice.call(el.querySelectorAll('.opt[aria-pressed="true"]'))
+        .map(function(b){ return b.getAttribute('data-value'); });
+      if (isMulti(el)) return on;
+      return on.length ? on[0] : '';
     }
     if (el.getAttribute('data-key') === 'phone' && iti) {
       return iti.getNumber() || '';   // E.164
@@ -792,8 +804,13 @@ main{flex:1 0 auto;padding:38px 0 96px}
   }
   function writeScreen(el, value){
     if (isSelect(el)) {
+      // asList() so a single stored string still restores — a session saved
+      // before this question took several answers holds one.
+      var want = isMulti(el) ? asList(value) : null;
       Array.prototype.forEach.call(el.querySelectorAll('.opt'), function(b){
-        b.setAttribute('aria-pressed', b.getAttribute('data-value') === value ? 'true' : 'false');
+        var v = b.getAttribute('data-value');
+        var on = want ? want.indexOf(v) > -1 : v === value;
+        b.setAttribute('aria-pressed', on ? 'true' : 'false');
       });
       return;
     }
@@ -857,7 +874,7 @@ main{flex:1 0 auto;padding:38px 0 96px}
       if (raw.length > 140) return 'Keep it to 140 characters — the constraint is the point.';
       return '';
     }
-    if (key === 'department') return raw ? '' : 'Pick the one you’d start with.';
+    if (key === 'department') return raw.length ? '' : 'Pick at least one — you can choose more than one.';
     if (key === 'outcome') {
       if (!raw) return 'Tell Ella what you actually want out of this.';
       if (raw.length < MIN_OUTCOME) return 'A little more detail — at least a sentence.';
@@ -884,7 +901,7 @@ main{flex:1 0 auto;padding:38px 0 96px}
       // it, which is when commit() writes the key - even as an empty string.
       var done = OPTIONAL_KEYS.indexOf(key) > -1
         ? Object.prototype.hasOwnProperty.call(answers, key)
-        : !!answers[key];
+        : isAnswered(answers[key]);
       if (!done) return i;
     }
     return screens.length - 1;
@@ -971,6 +988,14 @@ main{flex:1 0 auto;padding:38px 0 96px}
     if (opt) {
       e.preventDefault();
       var el = opt.closest('.screen');
+      if (isMulti(el)) {
+        // Toggle this one and leave the rest alone. No auto-advance either:
+        // sliding away on the first tap would make a second one impossible.
+        opt.setAttribute('aria-pressed', opt.getAttribute('aria-pressed') === 'true' ? 'false' : 'true');
+        setError(el, '');
+        commit(el);
+        return;
+      }
       Array.prototype.forEach.call(el.querySelectorAll('.opt'), function(b){
         b.setAttribute('aria-pressed', b === opt ? 'true' : 'false');
       });
@@ -1073,9 +1098,9 @@ main{flex:1 0 auto;padding:38px 0 96px}
     var dl = document.createElement('dl');
     SUMMARY_ROWS.forEach(function(row){
       var v = answers[row[1]];
-      if (!v) return;
+      if (!isAnswered(v)) return;
       var dt = document.createElement('dt'); dt.textContent = row[0];
-      var dd = document.createElement('dd'); dd.textContent = v;
+      var dd = document.createElement('dd'); dd.textContent = asList(v).join(', ');
       dl.appendChild(dt); dl.appendChild(dd);
     });
     var box = document.getElementById('summary');
@@ -1098,8 +1123,7 @@ main{flex:1 0 auto;padding:38px 0 96px}
       if (el.id === 's-submit') continue;
       if (el.id === 's-9b' && !(answers.coaching === 'Yes' || answers.coaching === 'Tell me more')) continue;
       var key = keyOf(el);
-      var stored = answers[key] || '';
-      if (!stored && OPTIONAL_KEYS.indexOf(key) === -1) { firstBad = i; break; }
+      if (!isAnswered(answers[key]) && OPTIONAL_KEYS.indexOf(key) === -1) { firstBad = i; break; }
     }
     if (firstBad > -1) {
       document.getElementById('e-submit').textContent = 'One question still needs an answer — taking you back to it.';
@@ -1117,7 +1141,7 @@ main{flex:1 0 auto;padding:38px 0 96px}
       linkedin:       linkedinSwapped ? '' : (answers.linkedin || ''),
       website:        linkedinSwapped ? (answers.linkedin || '') : '',
       business:       answers.business || '',
-      department:     answers.department || '',
+      department:     asList(answers.department),
       outcome:        answers.outcome || '',
       track:          answers.track || '',
       coaching:       answers.coaching || '',
@@ -1173,7 +1197,7 @@ main{flex:1 0 auto;padding:38px 0 96px}
     applyLinkedinMode();
     screens.forEach(function(el){
       var key = keyOf(el);
-      if (key && answers[key]) writeScreen(el, answers[key]);
+      if (key && isAnswered(answers[key])) writeScreen(el, answers[key]);
     });
   }
   // Captured on every visit, but deliberately not saved on its own - see

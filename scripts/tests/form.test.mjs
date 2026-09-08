@@ -70,11 +70,18 @@ async function fillToDepartment(w) {
   type(w, '#f-business', 'A 4-person marketing agency for B2B SaaS.'); click(w, '#s-5 [data-next]');
 }
 
+// Q6 takes several answers, so it toggles rather than auto-advancing: tap each
+// option, then Continue.
+function pickDepartments(w, d, ...ns) {
+  for (const n of ns) d.querySelectorAll('#s-6 .opt')[n].click();
+  click(w, '#s-6 [data-next]');
+}
+
 // Fill the whole form and land on the submit screen, ready to send.
 async function runToSubmit({ w, d }) {
   await fillToDepartment(w);
   await settle();
-  d.querySelectorAll('#s-6 .opt')[3].click(); await selectAdvance();      // Operations & admin
+  pickDepartments(w, d, 3); await settle();                              // Operations & admin
   type(w, '#f-outcome', 'A two-week holiday without the business falling over.');
   click(w, '#s-7 [data-next]'); await settle();
   d.querySelectorAll('#s-8 .opt')[1].click(); await selectAdvance();      // Ten weeks
@@ -359,7 +366,7 @@ console.log('\nTransitions: the Q9 -> Q9b sub-step, both directions');
   const { w, d } = boot();
   await fillToDepartment(w);
   await settle();
-  d.querySelectorAll('#s-6 .opt')[0].click(); await selectAdvance();
+  pickDepartments(w, d, 0); await settle();
   type(w, '#f-outcome', 'A two-week holiday without the business falling over.');
   click(w, '#s-7 [data-next]'); await settle();
   d.querySelectorAll('#s-8 .opt')[1].click(); await selectAdvance();
@@ -414,8 +421,9 @@ console.log('\nTransitions: the two heaviest screens');
     inDom(d).join() === 's-6' && !$(d, '#s-6').classList.contains('q-in-run'));
 
   d.querySelectorAll('#s-6 .opt')[2].click();
-  await selectAdvance();
-  check('out of the seven-option screen, on auto-advance', inDom(d).join() === 's-7', inDom(d));
+  click(w, '#s-6 [data-next]');
+  await settle();
+  check('out of the seven-option screen, on Continue', inDom(d).join() === 's-7', inDom(d));
   check('and it left nothing behind',
     !$(d, '#s-6').classList.contains('q-will') && !$(d, '#s-6').classList.contains('is-leaving'));
 }
@@ -477,19 +485,53 @@ console.log('\nValidation happens on advance, not on keystroke');
   check('reached Q6', visible(d).join() === 's-6' && label(d) === '6 of 9');
 }
 
-console.log('\nSelect questions auto-advance and submit the short value');
+console.log('\nQ6 takes several departments at once');
 {
   const { w, d } = boot();
   await fillToDepartment(w);
-  const seventh = d.querySelectorAll('#s-6 .opt')[6];
-  check('Q6 has 7 options', d.querySelectorAll('#s-6 .opt').length === 7);
+  await settle();
+  const opts = d.querySelectorAll('#s-6 .opt');
+  const seventh = opts[6];
+  check('Q6 has 7 options', opts.length === 7);
   check('the 7th shows the full label', /Not sure yet/.test(seventh.textContent) && /figuring out/.test(seventh.textContent));
   check('the 7th submits the short value', seventh.getAttribute('data-value') === 'Not sure yet');
-  seventh.click();
-  check('selection is visible immediately', seventh.getAttribute('aria-pressed') === 'true');
-  check('it does not advance instantly', visible(d).join() === 's-6');
+  check('the question says several are allowed', /Pick as many as apply/i.test($(d, '#s-6').textContent));
+  check('it has a Continue button, since nothing auto-advances', !!$(d, '#s-6 [data-next]'));
+
+  opts[0].click();
+  check('selection is visible immediately', opts[0].getAttribute('aria-pressed') === 'true');
   await sleep(400);
-  check('it auto-advances after ~250ms', visible(d).join() === 's-7', visible(d));
+  check('it does NOT auto-advance - a second pick has to stay possible', visible(d).join() === 's-6', visible(d));
+
+  opts[2].click();
+  check('a second option selects alongside the first',
+    opts[0].getAttribute('aria-pressed') === 'true' && opts[2].getAttribute('aria-pressed') === 'true');
+  opts[0].click();
+  check('tapping a selected one toggles it back off', opts[0].getAttribute('aria-pressed') === 'false');
+  check('and the other stays selected', opts[2].getAttribute('aria-pressed') === 'true');
+  opts[0].click();
+
+  const stored = () => JSON.parse(w.sessionStorage.getItem('shApplyV2')).answers.department;
+  check('the answer is stored as an array, in option order',
+    Array.isArray(stored()) && stored().join() === 'Sales,Delivery / client success', stored());
+
+  // Number keys toggle the same way a tap does.
+  d.dispatchEvent(new w.KeyboardEvent('keydown', { key: '5', bubbles: true }));
+  check('a number key adds to the selection rather than replacing it',
+    stored().join() === 'Sales,Delivery / client success,Finance', stored());
+  d.dispatchEvent(new w.KeyboardEvent('keydown', { key: '5', bubbles: true }));
+  check('and the same number key toggles it back off',
+    stored().join() === 'Sales,Delivery / client success', stored());
+
+  // Nothing selected at all is the one state that must not advance.
+  opts[0].click(); opts[2].click();
+  click(w, '#s-6 [data-next]');
+  check('an empty selection is rejected', visible(d).join() === 's-6' && err(d, 'e-6').length > 0, err(d, 'e-6'));
+  check('the error says several are allowed', /more than one/i.test(err(d, 'e-6')), err(d, 'e-6'));
+
+  opts[0].click(); opts[2].click();
+  click(w, '#s-6 [data-next]'); await settle();
+  check('Continue advances once something is picked', visible(d).join() === 's-7', visible(d));
 
   check('Q8 button labels are long, values are short',
     Array.from(d.querySelectorAll('#s-8 .opt')).map(b => b.getAttribute('data-value')).join() === 'Six weeks,Ten weeks,Not sure');
@@ -503,7 +545,7 @@ console.log('\nTextareas: Enter is a newline, Cmd/Ctrl+Enter advances');
 {
   const { w, d } = boot();
   await fillToDepartment(w);
-  click(w, '#s-6 .opt'); await selectAdvance();
+  pickDepartments(w, d, 0); await settle();
   check('on Q7', visible(d).join() === 's-7');
   type(w, '#f-outcome', 'Short');
   click(w, '#s-7 [data-next]');
@@ -519,7 +561,7 @@ console.log('\nQ9b only exists for Yes / Tell me more');
 {
   const { w, d } = boot();
   await fillToDepartment(w);
-  click(w, '#s-6 .opt'); await selectAdvance();
+  pickDepartments(w, d, 0); await settle();
   type(w, '#f-outcome', 'A two-week holiday without the business falling over.');
   click(w, '#s-7 [data-next]');
   d.querySelectorAll('#s-8 .opt')[1].click(); await selectAdvance();
@@ -609,7 +651,7 @@ console.log('\nQ4: whichever half they filled is the half that is sent');
   type(w, '#f-linkedin', 'jordanreyes.com'); click(w, '#s-4 [data-next]');
   type(w, '#f-business', 'A 4-person marketing agency.'); click(w, '#s-5 [data-next]');
   await settle();
-  d.querySelectorAll('#s-6 .opt')[0].click(); await selectAdvance();
+  pickDepartments(w, d, 0); await settle();
   type(w, '#f-outcome', 'A two-week holiday without the business falling over.');
   click(w, '#s-7 [data-next]'); await settle();
   d.querySelectorAll('#s-8 .opt')[0].click(); await selectAdvance();
@@ -631,7 +673,7 @@ console.log('\nQ4: skipping it entirely still submits');
   click(w, '#s-4 [data-next]');                                        // skipped outright
   type(w, '#f-business', 'A 4-person marketing agency.'); click(w, '#s-5 [data-next]');
   await settle();
-  d.querySelectorAll('#s-6 .opt')[0].click(); await selectAdvance();
+  pickDepartments(w, d, 0); await settle();
   type(w, '#f-outcome', 'A two-week holiday without the business falling over.');
   click(w, '#s-7 [data-next]'); await settle();
   d.querySelectorAll('#s-8 .opt')[0].click(); await selectAdvance();
@@ -647,7 +689,7 @@ console.log('\nOne POST at the end, with the exact payload shape');
   const { w, d, posts } = boot('https://timerich.ai/sh-apply/?utm_source=instagram&utm_campaign=sh-launch');
   await fillToDepartment(w);
   check('no request is made per question', posts.length === 0);
-  d.querySelectorAll('#s-6 .opt')[3].click(); await sleep(400);        // Operations & admin
+  pickDepartments(w, d, 3); await settle();                            // Operations & admin
   type(w, '#f-outcome', 'A two-week holiday without the business falling over.');
   click(w, '#s-7 [data-next]');
   d.querySelectorAll('#s-8 .opt')[1].click(); await selectAdvance();        // Ten weeks
@@ -674,7 +716,8 @@ console.log('\nOne POST at the end, with the exact payload shape');
   check('phone kept as E.164', b.phone === '+15125550114');
   check('linkedin normalised to a full URL', b.linkedin === 'https://linkedin.com/in/jordanreyes', b.linkedin);
   check('website is empty when they used LinkedIn', b.website === '', b.website);
-  check('department is the short select value', b.department === 'Operations & admin');
+  check('department is an array of short select values',
+    Array.isArray(b.department) && b.department.join() === 'Operations & admin', b.department);
   check('track is the short select value', b.track === 'Ten weeks');
   check('coaching is the short select value', b.coaching === 'Yes');
   check('coaching_focus captured', b.coaching_focus === 'Delegating without micromanaging.');

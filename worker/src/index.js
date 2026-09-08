@@ -406,8 +406,18 @@ async function handleSuperhumanApplication(d, env, cors) {
   const website = link(d.website);
   if (website) properties["Website"] = { url: website };
 
-  const department = pick(d.department, SH_DEPARTMENTS);
-  if (department) properties["Department"] = department;
+  // Department takes several answers, so it is a Notion multi_select. Values are
+  // filtered against the known list for the same reason pick() does it — an
+  // unexpected one is dropped rather than silently creating a new option — and
+  // deduped, because Notion rejects a multi_select carrying the same name twice.
+  const departments = [...new Set(
+    (Array.isArray(d.department) ? d.department : [d.department])
+      .map((v) => String(v == null ? "" : v).trim())
+      .filter((v) => SH_DEPARTMENTS.includes(v))
+  )];
+  if (departments.length) {
+    properties["Department"] = { multi_select: departments.map((name) => ({ name })) };
+  }
   const track = pick(d.track, SH_TRACKS);
   if (track) properties["Track preference"] = track;
   const coaching = pick(d.coaching, SH_COACHING);
