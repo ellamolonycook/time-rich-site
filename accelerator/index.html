@@ -82,6 +82,11 @@ section{padding:72px 0;border-top:1px solid var(--line)}
 .hl{color:inherit;background:linear-gradient(180deg,transparent 62%,rgba(204,238,160,.9) 62%);padding:0 .05em}
 .section-head{margin-bottom:36px}
 .section-head h2{font-size:clamp(28px,4vw,44px)}
+/* A lead-in phrase sitting between the eyebrow and the headline. Deliberately
+   not styled like .eyebrow - display face, sentence case, no tracking - so the
+   two lines read as a sequence rather than as two competing labels. */
+.kicker{font-family:var(--display);font-weight:500;font-size:clamp(17px,2vw,21px);
+  line-height:1.35;color:var(--muted);margin:0 0 6px}
 
 .btn{display:inline-block;font-family:var(--display);font-weight:700;font-size:16px;letter-spacing:.01em;text-decoration:none;padding:15px 30px;border-radius:8px;background:var(--green);color:var(--cream);transition:transform .12s ease,box-shadow .12s ease;border:none;cursor:pointer}
 .btn:hover{transform:translateY(-2px);box-shadow:0 12px 30px -12px rgba(66,75,54,.55)}
@@ -160,6 +165,35 @@ ul.t-list{list-style:none;margin:22px 0 0;padding:20px 0 0;border-top:1px solid 
 ul.t-list li{position:relative;padding:0 0 11px 22px;font-size:15.5px;color:var(--muted);line-height:1.55}
 ul.t-list li::before{content:"";position:absolute;left:0;top:10px;width:7px;height:7px;border-radius:50%;background:var(--lime)}
 ul.t-list li:last-child{padding-bottom:0}
+
+/* A captioned diagram sitting on the page ground. Same border, radius and
+   line colour as .story-photo img, so it reads as one family. The image is
+   fluid; the caption picks up the .m-cap voice under the process diagram. */
+.os-figure{margin:38px auto 0;max-width:820px}
+.os-figure img{width:100%;height:auto;display:block;border-radius:16px;
+  border:1px solid var(--line);background:var(--panel2)}
+.os-figure figcaption{margin-top:12px;font-family:var(--mono);font-size:12.5px;
+  letter-spacing:.02em;color:var(--dim);text-align:center;line-height:1.6}
+
+/* The lead-in line above the diagram. Same left-rule aside as .t-note, sized
+   up to carry a section-level statement rather than a card footnote. */
+.os-lead{margin:38px auto 0;max-width:70ch;padding:20px 24px;
+  border-left:2px solid var(--lime);background:var(--cream);
+  border-radius:0 12px 12px 0;color:var(--text);
+  font-family:var(--display);font-weight:500;font-size:clamp(17px,1.9vw,21px);line-height:1.5}
+
+/* ---------- GUEST SPEAKER ---------- */
+.speaker{display:flex;gap:28px;align-items:flex-start;background:var(--panel);
+  border:1px solid var(--line);border-radius:16px;padding:30px}
+.speaker img{flex:0 0 auto;width:200px;height:200px;border-radius:50%;display:block;
+  object-fit:cover;object-position:top center;border:1px solid var(--line);background:var(--panel2)}
+.speaker-body{min-width:0}
+.speaker-body h3{font-size:clamp(20px,2.3vw,26px);margin-bottom:4px}
+.speaker-body p{color:var(--muted);font-size:15.5px;line-height:1.65;margin-top:12px}
+@media (max-width:620px){
+  .speaker{flex-direction:column;gap:20px;padding:24px}
+  .speaker img{width:150px;height:150px}
+}
 
 /* process diagram — same language as the /revenue/ engine diagram */
 .machine{display:flex;gap:12px;align-items:stretch;flex-wrap:wrap;margin:44px 0 0}
@@ -405,10 +439,10 @@ ul.checklist li:last-child{padding-bottom:0}
       <img width="600" height="750" loading="lazy" decoding="async" src="../revenue/img/rev-11.jpg" alt="Ella Molony Cook speaking on a panel" />
     </div>
     <div class="story-copy">
-      <span class="eyebrow">Here's how that gets built</span>
+      <span class="eyebrow">Who you're learning from</span>
       <div class="narrow-col">
-        <p>Some of you have already built AI agents, because honestly hiring felt like the harder problem. Some of you haven't touched either, and the thought of "technical" plus "managing people" makes you a bit nauseous.</p>
-        <p><strong>I'm proof this works.</strong> I 4x'd revenue at my last company with one system and 200 interns running through it. This summer I onboarded 18 interns in five days without missing a beat. Now I'm handing you the playbook to get Time Rich.</p>
+        <p>Hi, I'm Ella &mdash; Aussie 4x founder, investor and AI systems nerd. I've been leading founder training at an AI lab since before AI was sexy.</p>
+        <p><strong>I'm proof this works.</strong> I 4x'd revenue at my last company with one system and 200 interns running through it &mdash; and that was before the agent boom. This summer I onboarded 18 interns with 5 AI agents in five days without missing a beat. Now I'm handing you the playbook to get Time Rich.</p>
         <p>People assume AI means you need fewer employees. It's the opposite: it makes you better at hiring them.</p>
         <!-- Stats + socials imported from /revenue/'s founder section. -->
         <ul class="bio-chips">
@@ -467,8 +501,18 @@ ul.checklist li:last-child{padding-bottom:0}
           <li>Screen-recorded SOPs, so your agents learn by watching the work actually get done</li>
         </ul>
         <p class="t-note">Straight answer on the five: they won't be perfect in six weeks. Nobody's are, and anyone promising that is selling you something. What you'll have is the bone structure &mdash; five agents doing real work, and the method to keep training them. That's the part that compounds.</p>
+        <p class="t-body">Think of an AI employee the way you'd think of a hire: it takes time to customise to your business, and it's powerful when you give it that time. What matters is the quality of the output. You'll leave with the framework to build any AI employee, train it, and either hand it off to a human or keep managing it yourself.</p>
       </div>
     </div>
+
+    <p class="os-lead">Build the system and it doesn't matter whether it's agents or humans &mdash; both work in the same OS hub. We're teaching you how to be an AI-driven leader.</p>
+
+    <figure class="os-figure">
+      <img width="1606" height="732" loading="lazy" decoding="async"
+           src="img/accelerator-voice-note-workflow-diagram.png"
+           alt="How the OS hub works: a voice note becomes reviewed, approved work." />
+      <figcaption>A voice note goes in. Your agents draft. You approve.</figcaption>
+    </figure>
 
     <!-- TODO: bespoke illustrated version of this four-step diagram goes here -->
     <div class="machine" aria-label="How the programme builds your system">
@@ -513,6 +557,7 @@ ul.checklist li:last-child{padding-bottom:0}
   <div class="wrap">
     <div class="section-head">
       <span class="eyebrow">The build, phase by phase</span>
+      <p class="kicker">Here's how that gets built</p>
       <h2>What we build, and <span class="hl">when</span>.</h2>
       <p class="wk-sub">Every session ships one working piece and has a test you either pass or fail. Stuck gets solved in a hot seat on the next call, live.</p>
     </div>
@@ -553,11 +598,29 @@ ul.checklist li:last-child{padding-bottom:0}
   </div>
 </section>
 
+<!-- ======================== 3b. GUEST SPEAKER ======================== -->
+<section class="section">
+  <div class="wrap narrow">
+    <span class="eyebrow">Guest speaker</span>
+    <div class="speaker">
+      <img width="600" height="600" loading="lazy" decoding="async"
+           src="img/terry-rice.jpg" alt="Terry Rice" />
+      <div class="speaker-body">
+        <h3>Terry Rice</h3>
+        <p>Terry Rice is an AI trainer who runs enterprise trainings for Google, L&rsquo;Or&eacute;al, Verizon, and Amazon. Former Meta and Adobe.</p>
+        <p>He's partnered with Verizon, Entrepreneur, and Oracle on branded content, and interviewed Shaq, Gary Vee, and Daymond John as a journalist.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
 <!-- ================== 4. YOU DON'T HAVE TO PICK THE RIGHT AI ================== -->
 <section class="section" id="section--stack">
   <div class="wrap narrow">
     <p class="eyebrow">NO TECH STACK REQUIRED</p>
     <h2>You don’t have to pick the “right” AI</h2>
+
+    <p>Some of you have already built AI agents, but the hard part becomes training and managing them. Some of you haven’t touched either, and the thought of “technical” plus “managing people” makes you a bit nauseous. This accelerator is going to make both feel a lot easier once you build your AI operating system.</p>
 
     <p>I’m not building this around one tech stack. ChatGPT, Claude, Perplexity, or an assistant
   that lives inside your text messages — every model has its own superpower, and the right one
