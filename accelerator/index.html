@@ -150,7 +150,6 @@ nav{background:rgba(255,252,235,.93);-webkit-backdrop-filter:blur(10px);backdrop
 
 /* ---------- THE OFFER ---------- */
 .offers h2{font-size:clamp(30px,4.6vw,52px);max-width:20ch}
-.offers-lead{font-size:18px;color:var(--muted);max-width:640px;margin-top:16px}
 .offers-grid{display:grid;grid-template-columns:1fr 1fr;gap:20px;margin-top:44px;align-items:stretch}
 .tier{display:flex;flex-direction:column;background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:34px;transition:transform .16s ease,border-color .16s ease,box-shadow .16s ease}
 .tier:hover{transform:translateY(-3px);border-color:rgba(66,75,54,.42);box-shadow:0 14px 34px -20px rgba(66,75,54,.45)}
@@ -181,6 +180,16 @@ ul.t-list li:last-child{padding-bottom:0}
   border-left:2px solid var(--lime);background:var(--cream);
   border-radius:0 12px 12px 0;color:var(--text);
   font-family:var(--display);font-weight:500;font-size:clamp(17px,1.9vw,21px);line-height:1.5}
+
+/* ---------- FOUNDER VIDEO ----------
+   The same frame as .os-figure - page border, radius, mono caption - wrapped
+   round a <video> rather than an <img>, and flush to the top of its section
+   because it is the only thing in it. */
+.video-figure{margin:0 auto;max-width:720px}
+.video-figure video{width:100%;height:auto;display:block;border-radius:16px;
+  border:1px solid var(--line);background:var(--panel2);aspect-ratio:16/9;object-fit:cover;object-position:center 20%}
+.video-figure figcaption{margin-top:12px;font-family:var(--mono);font-size:12.5px;
+  letter-spacing:.02em;color:var(--dim);text-align:center;line-height:1.6}
 
 /* ---------- GUEST SPEAKER ---------- */
 .speaker{display:flex;gap:28px;align-items:flex-start;background:var(--panel);
@@ -331,14 +340,6 @@ ul.t-list li:last-child{padding-bottom:0}
 .reveal.in{opacity:1;transform:none}
 @media(prefers-reduced-motion:reduce){.reveal{opacity:1 !important;transform:none !important}*{animation-duration:.001ms !important;animation-iteration-count:1 !important}}
 
-/*----------- CHECKLIST ---------*/
-/* Same shape as ul.t-list, with a tick rather than a dot: these read as
-   claims you can check off, not as a feature list. */
-ul.checklist{list-style:none;margin:26px 0 0;padding:20px 0 0;border-top:1px solid var(--line)}
-ul.checklist li{position:relative;padding:0 0 13px 30px;font-size:15.5px;color:var(--muted);line-height:1.55}
-ul.checklist li::before{content:"¹3";position:absolute;left:0;top:0;font-family:var(--mono);font-weight:700;font-size:13px;line-height:1.75;color:var(--lime)}
-ul.checklist li:last-child{padding-bottom:0}
-
 /* ---------- RESPONSIVE ---------- */
 @media (max-width:880px){
   .wrap{padding:0 20px}
@@ -416,10 +417,9 @@ ul.checklist li:last-child{padding-bottom:0}
   <div class="hero-gridbg" aria-hidden="true"></div>
   <div class="wrap hero-grid">
     <div>
-      <span class="eyebrow">Time Rich &middot; Superhuman Accelerator &middot; 6 weeks &middot; Founding cohort</span>
-      <h1>What if your workflow could keep working <span class="hl">without you</span>?<span class="h-rest">Six weeks to build the AI operating system that runs your business &mdash; your context hub, five AI hires, and the leadership habits that keep them useful. You go from burned-out business owner to superhuman badass with more free time.</span></h1>
-      <br>
-      <p><strong>Most AI training teaches you to automate admin. This one is measured on revenue.</strong> Admin is the easy part &mdash; we do it in week one and move on. The question this programme answers is the one nobody asks: how much did your revenue grow because you implemented AI?</p>
+      <span class="eyebrow">Founding cohort &middot; Limited spots</span>
+      <h1>Most AI training teaches you to do the basics: automate admin. This one is measured on revenue and <span class="hl">becoming Time Rich</span>.<span class="h-rest">Six weeks to build the AI operating system that runs your business &mdash; your context hub, make 2-5 AI hires, and the leadership habits to scale.</span></h1>
+      <p class="hero-micro">Admin automation is week one. Then we go after revenue.</p>
       <div class="hero-cta">
         <a class="btn" href="https://timerich.ai/sh-apply/" onclick="track('apply_hero')">Apply now</a>
       </div>
@@ -432,7 +432,23 @@ ul.checklist li:last-child{padding-bottom:0}
   </div>
 </header>
 
-<!-- ==================== 2. HERE'S HOW THAT GETS BUILT ==================== -->
+<!-- ========================= 2. FOUNDER VIDEO ========================= -->
+<section class="section" id="founder-video">
+  <div class="wrap narrow">
+    <figure class="video-figure">
+      <!-- TODO: the 90-second founder cut is still in the edit. When it lands,
+           add <source src="..." type="video/mp4"> inside the <video> and swap
+           the poster for a still from the cut itself. Until then this renders
+           as the poster frame with controls, which is the intended stub. -->
+      <video controls preload="metadata" playsinline
+             poster="../revenue/img/rev-01.jpg"
+             aria-label="Ella Molony Cook on what the Superhuman Accelerator actually is"></video>
+      <figcaption>90 seconds &mdash; what this actually is, from me.</figcaption>
+    </figure>
+  </div>
+</section>
+
+<!-- ==================== 3. HERE'S HOW THAT GETS BUILT ==================== -->
 <section class="story">
   <div class="wrap story-grid">
     <div class="story-photo">
@@ -462,18 +478,18 @@ ul.checklist li:last-child{padding-bottom:0}
   </div>
 </section>
 
-<!-- ========================== 3. THE OFFER ========================== -->
+<!-- ========================== 4. WHAT YOU LEAVE WITH ========================== -->
 <section class="offers" id="offer">
   <div class="wrap">
-    <span class="eyebrow">What you leave with</span>
-    <h2>Seven working parts, not one department</h2>
-    <p class="offers-lead">Two foundation pieces your whole business runs on, then five AI hires doing real work on top of them. Three of the seven are company-wide by definition &mdash; this isn't one department running a bit faster.</p>
+    <span class="eyebrow">The deliverables</span>
+    <h2>What you leave with</h2>
 
     <div class="offers-grid">
       <div class="tier">
-        <span class="t-tag">The foundation &middot; yours to keep</span>
+        <span class="t-tag">Foundation</span>
         <h3>Your Context Hub + AI Operating System</h3>
-        <p class="t-body">The part every course skips, and the reason everything you've tried so far came out generic. Generic in, generic out &mdash; so we fix the "in" first. You walk away with:</p>
+        <p class="t-body">Most people lose everything they've taught their AI the moment they open a different tab &mdash; two years of context, personality, the way it writes in your voice, gone, because it lived inside one chat window. We fix that. One shared memory across your AI, so nothing gets re-explained ever again.</p>
+        <p class="t-body">This is the part every course skips, and the reason everything you've tried so far came out generic.</p>
         <ul class="t-list">
           <li><b>Your Context Hub</b> &mdash; your business, voice, offers and customers written down once, in one place every AI model reads from</li>
           <li>The SOPs and workflows that turn one-off prompts into a system</li>
@@ -486,22 +502,21 @@ ul.checklist li:last-child{padding-bottom:0}
         </ul>
       </div>
       <div class="tier">
-        <span class="t-tag">Five AI hires &middot; one a week</span>
-        <h3>Your five AI employees</h3>
+        <span class="t-tag">Five AI hires</span>
+        <h3>Your Five AI Employees</h3>
         <p class="t-body">Built by you, on your business, one live session at a time.</p>
         <p class="t-body">You don't need to hire anyone new to start this. If you already have one assistant or one intern, that's the person we make superhuman.</p>
         <ul class="t-list">
-          <li><b>Chief of Staff</b> &mdash; triages your inbox, preps your calendar, hands you a Monday briefing before your coffee</li>
-          <li><b>Chief Revenue Officer</b> &mdash; runs revenue like a CRO, aimed at your real buyer</li>
-          <li><b>Outbound Hunter</b> &mdash; finds your ideal clients and opens the conversation in your voice</li>
-          <li><b>Follow-up Agent</b> &mdash; the follow-up nobody sends, so nothing falls through after a call, a DM or an event</li>
-          <li><b>Content Strategist</b> &mdash; what to say, to whom, and the hook that makes them stay</li>
-          <li>A role brief for the humans working next to them, written as onboarding, not as a job ad</li>
-          <li>How to train the people you already have, so one person can hold what used to be four roles</li>
-          <li>Screen-recorded SOPs, so your agents learn by watching the work actually get done</li>
+          <li><b>Chief of Staff</b> &mdash; inbox triaged, calendar prepped, Monday briefing on your desk before you open the laptop</li>
+          <li><b>Chief Revenue Officer</b> &mdash; reads your pipeline every Monday, flags who's gone cold, and tells you which three conversations are worth your week</li>
+          <li><b>Outbound Hunter</b> &mdash; finds the people already ready to buy, and opens the conversation in your voice</li>
+          <li><b>Follow-up Agent</b> &mdash; nobody falls through after a call, a DM or an event. Ever again</li>
+          <li><b>Content Strategist</b> &mdash; messaging strategy and hooks, adapted per platform, distributed without you writing every word</li>
+          <li>Role briefs for your human colleagues</li>
+          <li>How to train the team you already have</li>
+          <li>Screen-recorded SOPs</li>
         </ul>
-        <p class="t-note">Straight answer on the five: they won't be perfect in six weeks. Nobody's are, and anyone promising that is selling you something. What you'll have is the bone structure &mdash; five agents doing real work, and the method to keep training them. That's the part that compounds.</p>
-        <p class="t-body">Think of an AI employee the way you'd think of a hire: it takes time to customise to your business, and it's powerful when you give it that time. What matters is the quality of the output. You'll leave with the framework to build any AI employee, train it, and either hand it off to a human or keep managing it yourself.</p>
+        <p class="t-note">Straight answer on the five: they won't be perfect in six weeks. Nobody's are, and anyone promising that is selling you something.</p>
       </div>
     </div>
 
@@ -534,17 +549,16 @@ ul.checklist li:last-child{padding-bottom:0}
   </div>
 </section>
 
-<!-- ===================== 3a. NOT A COURSE YOU WATCH ===================== -->
+<!-- ===================== 4a. NOT A COURSE YOU WATCH ===================== -->
 <section class="livebuild">
   <div class="wrap narrow">
     <span class="eyebrow">Not a course you watch</span>
     <h2>You bring the problem. We build the flow live.</h2>
-    <p class="lead" style="margin-top:18px">Every week there's live coaching, and it works one way: you bring your biggest bottleneck and we map it on the call. What the flow should look like, which part the AI takes, which part stays human, and exactly what you hand to your assistant or your intern to go and set up.</p>
     <p class="accel-quote">You leave with a system, not notes.</p>
   </div>
 </section>
 
-<!-- ========================== 3b. THE SCHEDULE ==========================
+<!-- ========================== 5. THE SCHEDULE ==========================
      Mirrors /revenue/'s week-by-week build exactly - same phases, numbering,
      guest-teacher tags and endpoint - with one item excluded: revenue's
      "21 Oct - Sell Through Story, with ViKA". Its slot closes up, so the
@@ -593,12 +607,10 @@ ul.checklist li:last-child{padding-bottom:0}
 
       <div class="endpoint"><div class="end-n">&#10003;</div><div class="end-card"><b>You leave running your AI operating system.</b><p>A business that runs without you starting from zero every Monday.</p></div></div>
     </div>
-
-    <p class="wk-note">Every cohort is different. These sessions are built around the people in the room, and some tools get swapped for what that cohort actually needs.</p>
   </div>
 </section>
 
-<!-- ======================== 3b. GUEST SPEAKER ======================== -->
+<!-- ======================== 5a. GUEST SPEAKER ======================== -->
 <section class="section">
   <div class="wrap narrow">
     <span class="eyebrow">Guest speaker</span>
@@ -614,40 +626,12 @@ ul.checklist li:last-child{padding-bottom:0}
   </div>
 </section>
 
-<!-- ================== 4. YOU DON'T HAVE TO PICK THE RIGHT AI ================== -->
-<section class="section" id="section--stack">
-  <div class="wrap narrow">
-    <p class="eyebrow">NO TECH STACK REQUIRED</p>
-    <h2>You don’t have to pick the “right” AI</h2>
-
-    <p>Some of you have already built AI agents, but the hard part becomes training and managing them. Some of you haven’t touched either, and the thought of “technical” plus “managing people” makes you a bit nauseous. This accelerator is going to make both feel a lot easier once you build your AI operating system.</p>
-
-    <p>I’m not building this around one tech stack. ChatGPT, Claude, Perplexity, or an assistant
-  that lives inside your text messages — every model has its own superpower, and the right one
-  depends on what your business actually does. Writing all day is a different tool than research all
-  day. If AI still intimidates you, we start you on the one that feels like texting a friend.
-  I genuinely don’t mind what you use. You just have to use it.</p>
-
-    <p>What matters is that you stop starting over. Most people lose everything they’ve taught
-  their AI the moment they open a different tab — two years of context, personality, the way it
-  writes in your voice, gone, because it lived inside one chat window. We fix that. You’ll build
-  one shared memory that all of your models read from, so your context follows you instead of dying
-    in an app.</p>
-
-    <ul class="checklist">
-      <li>Model-agnostic — you leave knowing which tool to use for what, not locked into somebody’s subscription</li>
-      <li>One shared memory across your AI, so nothing gets re-explained ever again</li>
-      <li>Built in Notion and a folder system you already understand — I know a woman doing $15m a year on Notion. Simple wins</li>
-    </ul>
-  </div>
-</section>
-
-<!-- ===================== 5. THE LEADERSHIP LAYER ===================== -->
+<!-- ===================== 6. THE LEADERSHIP LAYER ===================== -->
 <section class="leadership">
   <div class="wrap narrow">
     <span class="eyebrow">The part nobody teaches</span>
     <h2>The leadership layer</h2>
-    <p class="lead" style="margin-top:18px">Using AI doesn't get you out of talking to humans. In fact, I can tell you how much relationship therapy I've had with Claude because I sharpened the leadership and communication skills needed in running a successful business &mdash; and that's something you'll get trained to do too.</p>
+    <p class="lead" style="margin-top:18px">Six months into building with AI I noticed something I didn't expect. I wasn't getting better at prompting. I was getting better at explaining what I actually wanted &mdash; to my agents, and to the humans I'd been quietly frustrated with for years. I've done more relationship therapy with Claude than I'd like to admit in writing.</p>
 
     <p class="accel-quote">The best AI operator and the best people-leader turn out to be the same person.</p>
 
@@ -697,28 +681,17 @@ ul.checklist li:last-child{padding-bottom:0}
       </li>
     </ol>
 
-    <p class="lead-close">You finish the week: space to think, feel, and build more for the business and yourself.</p>
+    <p class="lead-close">You finish the week with space to think, feel, and build &mdash; for the business and for yourself.</p>
   </div>
 </section>
 
-<!-- ============ 5a. IF YOU DON'T LEARN IT, SOMEONE ELSE WILL ============ -->
-<section class="ownit">
-  <div class="wrap narrow">
-    <span class="eyebrow">The part people don't say out loud</span>
-    <h2>If you don't learn it, someone in your business will</h2>
-    <div style="margin-top:22px">
-      <p>Here's what happens when a business owner sits this one out. Your intern learns the system. Your intern gets good at the system. Your intern leaves, gets hired somewhere on the back of it, and the whole thing walks out with them &mdash; because it was never yours.</p>
-      <p>That's the real argument for owning it. Not the tools. The control. You hold the playbook, you hold the context, and the next person you bring in inherits it on day one instead of rebuilding it.</p>
-    </div>
-  </div>
-</section>
-
-<!-- ======================== 6. TESTIMONIALS ======================== -->
+<!-- ======================== 7. TESTIMONIALS ======================== -->
 <section class="room">
   <div class="wrap">
     <div class="section-head">
       <span class="eyebrow">From the people in the room</span>
       <h2>Don't take my word for it.</h2>
+      <p class="wk-sub">These are from the workshops this programme grew out of. The six-week build has run twice.</p>
     </div>
     <!-- No photo between the heading and the cards, matching /revenue/: it runs
          eyebrow -> heading -> cards, and the event imagery is the moving photo
@@ -766,7 +739,7 @@ ul.checklist li:last-child{padding-bottom:0}
     <img width="520" height="640" loading="lazy" decoding="async" src="../revenue/img/rev-10.jpg" alt="" aria-hidden="true" />
   </div>
 </div>
-<!-- ========================= 7. THE DECISION ========================= -->
+<!-- ========================= 8. THE DECISION ========================= -->
 <section class="decision">
   <div class="wrap">
     <div class="section-head">
@@ -799,7 +772,7 @@ ul.checklist li:last-child{padding-bottom:0}
   </div>
 </section>
 
-<!-- ============ 8. ONE TIME ONLY: INTIMATE FIRST COHORT ============ -->
+<!-- ============ 9. ONE TIME ONLY: INTIMATE FIRST COHORT ============ -->
 <section class="cohort">
   <div class="wrap narrow">
     <span class="eyebrow">One time only</span>
@@ -812,17 +785,17 @@ ul.checklist li:last-child{padding-bottom:0}
     </div>
   </div>
 </section>
-<!-- ============================ 9. APPLY ============================ -->
+<!-- ============================ 10. APPLY ============================ -->
 <section class="apply" id="apply">
   <div class="wrap narrow" style="text-align:center">
     <span class="eyebrow">Founding cohort &middot; Limited spots</span>
     <h2>Applications are open.</h2>
-    <p class="lead" style="margin:16px auto 0;max-width:54ch">Eight questions, about three minutes.</p>
+    <p class="lead" style="margin:16px auto 0;max-width:54ch">Eight questions, about three minutes. At the end you'll save your spot on the onboarding session.</p>
     <div style="margin-top:28px"><a class="btn btn-xl" href="https://timerich.ai/sh-apply/" onclick="track('apply_section')">Apply now &rarr;</a></div>
   </div>
 </section>
 
-<!-- ============================== 10. FAQ ============================== -->
+<!-- ============================== 11. FAQ ============================== -->
 <section class="faq" id="faq">
   <div class="wrap">
     <div class="section-head">
@@ -866,12 +839,12 @@ ul.checklist li:last-child{padding-bottom:0}
   </div>
 </section>
 
-<!-- ========================= 11. CLOSING CTA ========================= -->
+<!-- ========================= 12. CLOSING CTA ========================= -->
 <section class="closing">
   <div class="wrap narrow">
     <span class="eyebrow">Founding cohort &middot; Limited spots</span>
     <h2>Applications are open.</h2>
-    <p style="margin:16px auto 0;max-width:54ch;color:var(--muted)">Founding-cohort pricing, and a call with Ella before anything is decided.</p>
+    <p style="margin:16px auto 0;max-width:54ch;color:var(--muted)">Eight questions, about three minutes. At the end you'll save your spot on the onboarding session. Founding-cohort pricing, and a call with Ella before anything is decided.</p>
     <div style="margin-top:28px"><a class="btn btn-xl" href="https://timerich.ai/sh-apply/" onclick="track('apply_closing')">Apply now &rarr;</a></div>
   </div>
 </section>
