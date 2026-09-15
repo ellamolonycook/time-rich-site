@@ -582,6 +582,12 @@ async function handleQualify(d, env, cors, ctx) {
     });
     if (!res.ok) return json({ ok: false, error: "Notion create failed", detail: await res.text() }, 502, cors);
 
+    // Notion answers with the page it made, url included. The row exists
+    // whether or not this parses, so a bad body must not turn a success into
+    // an error - the link is simply left off the Slack post.
+    let notionUrl = null;
+    try { notionUrl = (await res.json()).url || null; } catch {}
+
     // The row is in. Tell the channel - in the background, so a slow or broken
     // Slack can neither delay nor fail the submission. notifyQualifySlack()
     // never rejects; it logs and swallows.
@@ -592,6 +598,8 @@ async function handleQualify(d, env, cors, ctx) {
       revenue: revenue && revenue.select.name,
       funding: funding && funding.select.name,
       usBased: usBased && usBased.select.name,
+      industry: industry && industry.multi_select.map((o) => o.name).join(", "),
+      notionUrl,
     });
     if (ctx && typeof ctx.waitUntil === "function") ctx.waitUntil(heads);
 
@@ -635,10 +643,15 @@ async function notifyQualifySlack(env, s) {
           { type: "mrkdwn", text: `*Annual revenue*\n${or(s.revenue)}` },
           { type: "mrkdwn", text: `*Funding raised*\n${or(s.funding)}` },
           { type: "mrkdwn", text: `*US-based*\n${or(s.usBased)}` },
+          { type: "mrkdwn", text: `*Industry*\n${or(s.industry)}` },
           { type: "mrkdwn", text: `*Email*\n${or(s.email)}` },
         ],
       },
       { type: "context", elements: [{ type: "mrkdwn", text: `*LinkedIn:* ${li}` }] },
+      // Straight to the row, so whoever is reading the channel can act on it.
+      { type: "context", elements: [{ type: "mrkdwn", text: s.notionUrl
+          ? `<${safeUrl(s.notionUrl)}|Open in Notion →>`
+          : "_Notion link unavailable_" }] },
     ];
 
     const res = await fetch(url, {
