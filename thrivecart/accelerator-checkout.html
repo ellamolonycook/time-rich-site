@@ -1,0 +1,746 @@
+<style>
+@import url('https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=Archivo:wght@500;600;700;900&family=Inter:wght@400..700&display=swap');
+
+:root {
+  --cream: #FFFCEB;
+  --sage: #DCDEBF;
+  --green: #424B36;
+  --green-deep: #333A28;
+  --pop: #CCEEA0;
+  --lime: #67762E;
+  --lime-dim: #EDF7C6;
+  --line: rgba(66,75,54,0.20);
+  --muted: #5B6449;
+  --dim: #7E8768;
+  --oncard: #FFFCEB;
+  --oncard-muted: rgba(255,252,235,0.78);
+  --oncard-dim: rgba(255,252,235,0.60);
+  --oncard-line: rgba(255,252,235,0.20);
+  --on-pop: #333A28;
+  --font-display: 'DM Serif Display', Georgia, serif;
+  --font-ui: 'Archivo', -apple-system, sans-serif;
+  --font-body: 'Inter', -apple-system, sans-serif;
+}
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+/* ── Page background & ThriveCart container overrides ── */
+html,
+body,
+.main-page,
+.funnel-entry-page,
+.page-section,
+.section-content,
+.element-component,
+[class*="main-page"],
+[class*="page-section"],
+[class*="funnel-entry"],
+[class*="cvt-"] {
+  background: var(--cream) !important;
+  background-color: var(--cream) !important;
+}
+
+/* Remove navy blue outer page border / frame */
+.main-page,
+.funnel-entry-page,
+.page-section,
+.section-content,
+.cvt-section-box,
+.cvt-element-box,
+.element-component {
+  border-color: transparent !important;
+  box-shadow: none !important;
+}
+
+/* Ensure background behind checkout column is seamless cream / transparent */
+.checkout-slot,
+.checkout-widget-component,
+.checkout-widget-component__form,
+.checkout-widget-component__content,
+.checkout-widget-component__content-col,
+.checkout-widget-component__field-wrap {
+  background: #424B36 !important;
+  background-color: #424B36 !important;
+}
+
+.checkout-app {
+  width: 100%;
+  max-width: 1040px;
+  margin: 0 auto;
+  padding: 36px 24px 40px;
+  font-family: var(--font-body);
+  font-size: 15px;
+  color: var(--green-deep);
+  text-align: left;
+  -webkit-font-smoothing: antialiased;
+}
+.brand-logo { font-family: var(--font-display); font-size: 24px; color: var(--green-deep); text-decoration: none; display: inline-block; margin-bottom: 26px; line-height: 1; }
+.brand-logo b { color: var(--lime); font-weight: 400; }
+.brand-logo:hover { opacity: 0.75; }
+.headline-wrap { margin-bottom: 28px; }
+.headline-wrap { margin-bottom: 28px; }
+.page-headline { font-family: var(--font-display); font-size: clamp(30px,4.4vw,44px); font-weight: 400; line-height: 1.05; letter-spacing: -0.02em; color: var(--green-deep); margin-bottom: 10px; max-width: 30ch; }
+.hl { background: linear-gradient(180deg, transparent 62%, rgba(204,238,160,0.9) 62%); padding: 0 0.05em; }
+.page-subheadline { font-family: var(--font-ui); font-size: 15.5px; font-weight: 500; color: var(--muted); max-width: 46ch; line-height: 1.45; margin-bottom: 6px; }
+.page-subheadline-alt { font-family: var(--font-ui); font-size: 14.5px; font-weight: 500; color: var(--dim); max-width: 46ch; line-height: 1.45; margin: 0; }
+.page-subheadline-alt strong { color: var(--muted); font-weight: 700; }
+.proof-section { margin-bottom: 28px; }
+
+.proof-section { margin-bottom: 28px; }
+.proof-label { font-family: var(--font-ui); font-size: 11px; font-weight: 600; color: var(--dim); text-transform: uppercase; letter-spacing: 0.18em; padding-top: 16px; border-top: 1px solid var(--line); margin-bottom: 14px; }
+
+/* ── Proof / Value Cards: Clean white/cream cards with thin muted borders ── */
+.proof-gallery { display: grid; grid-template-columns: repeat(3,1fr); gap: 14px; }
+.proof-card {
+  background: #ffffff;
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  padding: 22px 20px;
+  font-size: 14px;
+  color: var(--muted);
+  line-height: 1.55;
+  box-shadow: 0 4px 16px -6px rgba(66, 75, 54, 0.08);
+  transition: border-color 0.15s ease, box-shadow 0.15s ease, transform 0.15s ease;
+}
+.proof-card:hover {
+  border-color: rgba(66, 75, 54, 0.38);
+  box-shadow: 0 12px 28px -10px rgba(66, 75, 54, 0.16);
+  transform: translateY(-2px);
+}
+.proof-card strong {
+  font-family: var(--font-display);
+  font-weight: 400;
+  font-size: 20px;
+  color: var(--green-deep);
+  display: block;
+  margin-bottom: 6px;
+  line-height: 1.2;
+}
+
+.checkout-grid { display: grid; grid-template-columns: minmax(0,0.92fr) minmax(0,1.08fr); gap: 24px; align-items: start; }
+.card {
+  background: #ffffff;
+  border-radius: 12px;
+  border: 1px solid var(--line);
+  padding: 24px;
+  min-width: 0;
+}
+
+/* Checkout slot: the ThriveCart form is moved in here by the script below */
+.checkout-slot {
+  min-height: 0;
+  background: transparent !important;
+  background-color: transparent !important;
+  border: none !important;
+  outline: none !important;
+  box-shadow: none !important;
+  padding: 0 !important;
+}
+
+/* ── ThriveCart Checkout Widget: Restyle default blue elements ── */
+
+/* 1. Buttons ("Pay with Card", "Apply", Submit) -> Deep green #424B36 with cream text */
+.checkout-widget-component .tc-btn,
+.checkout-widget-component button,
+.checkout-widget-component__submit .tc-btn,
+.checkout-widget-component__submit-actions .tc-btn,
+.checkout-widget-component input[type="submit"],
+.tc-btn,
+.tc-btn-primary,
+button.tc-btn {
+  background: var(--green) !important;
+  background-color: var(--green) !important;
+  border-color: var(--green) !important;
+  color: var(--cream) !important;
+  font-family: var(--font-ui) !important;
+  font-weight: 700 !important;
+  border-radius: 8px !important;
+  transition: background 0.15s ease, box-shadow 0.15s ease, transform 0.1s ease !important;
+}
+
+.checkout-widget-component .tc-btn:hover,
+.checkout-widget-component button:hover,
+.checkout-widget-component__submit .tc-btn:hover,
+.checkout-widget-component__submit-actions .tc-btn:hover,
+.checkout-widget-component input[type="submit"]:hover,
+.tc-btn:hover {
+  background: var(--green-deep) !important;
+  background-color: var(--green-deep) !important;
+  border-color: var(--green-deep) !important;
+  color: var(--cream) !important;
+  box-shadow: 0 12px 28px -10px rgba(51, 58, 40, 0.45) !important;
+}
+
+/* 2. The "Selected" chip / tag / badge -> Deep green with cream text */
+.checkout-widget-component__selected,
+.checkout-widget-component [class*="selected-chip"],
+.checkout-widget-component [class*="chip--selected"],
+.checkout-widget-component [class*="tag--selected"],
+.checkout-widget-component .tc-badge,
+.checkout-widget-component .selected-chip,
+.checkout-widget-component .ui-tag,
+.checkout-widget-component .ui-tag--selected,
+.checkout-widget-component .tc-tag,
+.checkout-widget-component [class*="-selected"],
+.checkout-widget-component .is-selected,
+.checkout-widget-component .active-option,
+.checkout-widget-component .payment-option--selected {
+  background: var(--green) !important;
+  background-color: var(--green) !important;
+  color: var(--cream) !important;
+  border-color: var(--green) !important;
+}
+
+/* Radio buttons & Checkboxes */
+.checkout-widget-component input[type="radio"]:checked,
+.checkout-widget-component input[type="checkbox"]:checked {
+  accent-color: var(--green) !important;
+}
+
+.checkout-widget-component .ui-radio__indicator,
+.checkout-widget-component .ui-checkbox {
+  border-color: var(--line) !important;
+}
+
+.checkout-widget-component input[type="radio"]:checked + .ui-radio,
+.checkout-widget-component input[type="radio"]:checked ~ .ui-radio,
+.checkout-widget-component input:checked + .ui-checkbox,
+.checkout-widget-component .ui-radio--checked,
+.checkout-widget-component .ui-checkbox--checked {
+  background: var(--green) !important;
+  border-color: var(--green) !important;
+}
+
+/* 3. Coupon Box: restyle from blue */
+.checkout-widget-component__coupon-wrap .tc-btn,
+.checkout-widget-component__coupon-wrap button,
+.checkout-widget-component .coupon-button {
+  background: var(--green) !important;
+  background-color: var(--green) !important;
+  color: var(--cream) !important;
+  border-color: var(--green) !important;
+}
+
+.checkout-widget-component__coupon-wrap .tc-btn:hover,
+.checkout-widget-component__coupon-wrap button:hover {
+  background: var(--green-deep) !important;
+  background-color: var(--green-deep) !important;
+}
+
+.checkout-widget-component__coupon-wrap input,
+.checkout-widget-component .coupon-input {
+  background: #ffffff !important;
+  border: 1px solid var(--line) !important;
+  color: var(--green-deep) !important;
+  border-radius: 8px !important;
+}
+
+.checkout-widget-component__coupon-wrap input:focus,
+.checkout-widget-component .coupon-input:focus {
+  outline: 2px solid var(--lime) !important;
+  border-color: var(--lime) !important;
+}
+
+/* 4. Links: deep green with underline, no default blue */
+.checkout-widget-component a,
+.checkout-widget-component a:visited,
+.checkout-widget-component .tc-link,
+.checkout-widget-component [class*="link"],
+.checkout-widget-component label a,
+.checkout-app a:not(.brand-logo) {
+  color: var(--green) !important;
+  text-decoration: underline !important;
+  text-underline-offset: 2px !important;
+}
+
+.checkout-widget-component a:hover,
+.checkout-widget-component .tc-link:hover,
+.checkout-app a:not(.brand-logo):hover {
+  color: var(--green-deep) !important;
+}
+
+/* 5. Inputs on cream background with lime focus */
+.checkout-widget-component input[type="text"],
+.checkout-widget-component input[type="email"],
+.checkout-widget-component input[type="password"],
+.checkout-widget-component input[type="tel"],
+.checkout-widget-component input:not([type]),
+.checkout-widget-component select,
+.checkout-widget-component textarea,
+.checkout-widget-component .form-input,
+.checkout-widget-component .tc-field {
+  width: 100% !important;
+  max-width: 100% !important;
+  background-color: #ffffff !important;
+  color: var(--green-deep) !important;
+  border: 1px solid var(--line) !important;
+  border-radius: 8px !important;
+  padding: 10px 14px !important;
+  font-family: var(--font-body) !important;
+}
+
+.checkout-widget-component input:focus,
+.checkout-widget-component select:focus,
+.checkout-widget-component textarea:focus {
+  outline: 2px solid var(--lime) !important;
+  outline-offset: 1px !important;
+  border-color: var(--lime) !important;
+  box-shadow: 0 0 0 3px rgba(103, 118, 46, 0.15) !important;
+}
+
+.checkout-widget-component input::placeholder,
+.checkout-widget-component textarea::placeholder {
+  color: var(--dim) !important;
+  opacity: 0.8 !important;
+}
+
+/* Order bump with lime accent */
+.checkout-widget-component__bump {
+  background: var(--lime-dim) !important;
+  border: 2px dashed var(--lime) !important;
+  border-radius: 12px !important;
+  padding: 18px !important;
+}
+.summary-card { padding: 28px 26px; background: var(--green); border-color: var(--green); color: var(--oncard); }
+.package-header { margin-bottom: 18px; }
+.tier-name { font-family: var(--font-display); font-size: clamp(28px,3.2vw,40px); font-weight: 400; color: var(--oncard); line-height: 1.1; letter-spacing: -0.01em; margin-bottom: 6px; }
+.tier-tagline { font-family: var(--font-ui); font-size: 16px; font-weight: 600; color: var(--oncard-muted); margin-bottom: 12px; line-height: 1.3; }
+.price-line { font-family: var(--font-display); font-size: clamp(36px,5vw,50px); font-weight: 400; color: var(--oncard); margin-bottom: 18px; line-height: 1; }
+.price-line span { font-family: var(--font-ui); font-size: 12px; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase; color: var(--oncard-dim); margin-left: 9px; vertical-align: middle; }
+.tick-list { list-style: none; margin: 12px 0 20px; display: flex; flex-direction: column; gap: 12px; }
+.tick-item { display: flex; align-items: flex-start; gap: 10px; font-size: 15px; line-height: 1.5; color: var(--oncard-muted); }
+.tick-item b { color: var(--oncard); font-weight: 700; }
+.tick-icon { color: var(--pop); font-weight: 700; font-size: 15px; min-width: 16px; line-height: 1.45; }
+.value-line { font-family: var(--font-ui); font-size: 12px; font-weight: 500; letter-spacing: 0.05em; color: var(--oncard-dim); padding-top: 14px; border-top: 1px solid var(--oncard-line); margin-bottom: 18px; }
+.value-line s { color: rgba(255,252,235,0.4); }
+.value-line b { color: var(--pop); font-weight: 700; }
+.item-dropdown { border-top: 1px solid var(--oncard-line); border-bottom: 1px solid var(--oncard-line); padding: 12px 0; margin-bottom: 18px; }
+.dropdown-header { display: flex; justify-content: space-between; align-items: center; width: 100%; background: none; border: 0; padding: 0; font-family: var(--font-ui); font-size: 12px; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: var(--oncard); cursor: pointer; }
+.dropdown-header:hover { color: var(--pop); }
+.arrow-icon { font-size: 14px; color: var(--oncard-dim); transition: transform 300ms; }
+.dropdown-header[aria-expanded="true"] .arrow-icon { transform: rotate(180deg); }
+.dropdown-content { max-height: 0; overflow: hidden; transition: max-height 300ms ease; }
+.dropdown-content.open { max-height: 520px; margin-top: 12px; }
+.sub-item-list { list-style: none; display: flex; flex-direction: column; gap: 7px; padding-left: 12px; border-left: 2px solid var(--oncard-line); counter-reset: tr-item; }
+.sub-item-list li { font-size: 13.5px; color: var(--oncard-muted); line-height: 1.45; counter-increment: tr-item; }
+.sub-item-list li::before { content: counter(tr-item) ". "; color: var(--pop); font-weight: 700; }
+.early-bird-band { background: var(--pop); color: var(--on-pop); font-family: var(--font-ui); font-size: 11.5px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.1em; text-align: center; padding: 10px 12px; border-radius: 8px; margin-bottom: 12px; line-height: 1.4; }
+.split-payment-note { font-size: 14px; color: var(--oncard-muted); text-align: center; margin-bottom: 16px; line-height: 1.5; }
+.split-payment-note b { color: var(--oncard); font-weight: 700; }
+.under-button-lines { font-size: 13.5px; color: var(--oncard-dim); line-height: 1.6; margin-top: 14px; }
+
+/* ── Responsive layout: let sections flow instead of ThriveCart's fixed grid ──
+   ThriveCart places every element at fixed grid coordinates that only line up
+   at one viewport width. We switch each section to normal document flow and
+   drop the form into .checkout-slot, so the existing media queries below
+   handle stacking at every width. */
+.page-section .section-content {
+  display: block !important;
+  height: auto !important;
+  min-height: 0 !important;
+  grid-template-rows: none !important;
+  grid-template-columns: none !important;
+}
+.page-section .section-content > .element-component {
+  position: static !important;
+  grid-area: auto !important;
+  width: 100% !important;
+  height: auto !important;
+  min-height: 0 !important;
+  margin: 0 !important;
+  transform: none !important;
+}
+.checkout-slot > .element-component,
+.checkout-slot .checkout-widget-component {
+  position: static !important;
+  grid-area: auto !important;
+  width: 100% !important;
+  max-width: 100% !important;
+  height: auto !important;
+  min-height: 0 !important;
+  margin: 0 !important;
+}
+
+@media (max-width: 980px) { .proof-gallery { grid-template-columns: repeat(2,1fr); } .proof-gallery .proof-card:last-child { grid-column: 1/-1; } }
+@media (max-width: 820px) { .checkout-app { padding: 24px 16px 32px; } .checkout-grid { grid-template-columns: 1fr; gap: 18px; } .checkout-slot { order: 2; min-height: 0; } .summary-card { order: 1; } }
+@media (max-width: 560px) { .proof-gallery { grid-template-columns: 1fr; } .checkout-app { padding: 20px 12px 28px; } }
+@media (prefers-reduced-motion: reduce) { * { transition: none !important; } }
+/* Keep the widget inside its column on mobile */
+.checkout-widget-component,
+.checkout-widget-component__form,
+.checkout-widget-component__content,
+.checkout-widget-component__content-col {
+  max-width: 100% !important;
+  width: 100% !important;
+  overflow-x: hidden !important;
+  box-sizing: border-box !important;
+}
+
+/* Section headings and submit button legible on green */
+.checkout-widget-component h1,
+.checkout-widget-component h2,
+.checkout-widget-component h3,
+.checkout-widget-component h4,
+.checkout-widget-component legend,
+.checkout-widget-component__section-title,
+.checkout-widget-component [class*="section-title"],
+.checkout-widget-component [class*="heading"] {
+  color: #FFFCEB !important;
+}
+
+.checkout-widget-component__submit .tc-btn,
+.checkout-widget-component__submit button,
+.checkout-widget-component input[type="submit"] {
+  background: #CCEEA0 !important;
+  border-color: #CCEEA0 !important;
+  color: #333A28 !important;
+}
+
+/* ══════════════════════════════════════════════════════════════
+   CONTRAST FIX — the widget ground is dark olive (#424B36), so
+   text and controls follow the surface they sit on.
+   ThriveCart's defaults assume a white ground; these correct that.
+   ══════════════════════════════════════════════════════════════ */
+
+/* 1. On the olive ground, text reads cream */
+.checkout-widget-component,
+.checkout-widget-component label,
+.checkout-widget-component__field-wrap-title,
+.checkout-widget-component__field-group label,
+.checkout-widget-component__step-nav-action:not(:disabled) {
+  color: var(--cream) !important;
+}
+/* secondary text on the ground: softened cream */
+.checkout-widget-component small,
+.checkout-widget-component [class*="hint"],
+.checkout-widget-component [class*="helper"],
+.checkout-widget-component [class*="description"],
+.checkout-widget-component [class*="note"] {
+  color: var(--oncard-muted) !important;
+}
+.checkout-widget-component__step-nav-action:disabled { color: var(--oncard-dim) !important; }
+
+/* links on the ground: the earlier rule made them #424B36, same as the ground */
+.checkout-widget-component a,
+.checkout-widget-component a:visited,
+.checkout-widget-component .tc-link,
+.checkout-widget-component [class*="link"],
+.checkout-widget-component label a {
+  color: var(--pop) !important;
+}
+.checkout-widget-component a:hover,
+.checkout-widget-component .tc-link:hover { color: var(--cream) !important; }
+
+/* status messages: ThriveCart's red/green were tuned for white */
+.checkout-widget-component__error-message,
+.checkout-widget-component--error { color: #FFB3A7 !important; }
+.checkout-widget-component__success-message { color: var(--pop) !important; }
+
+/* 2. White surfaces: everything inside reads dark.
+   Double-class prefix so these outrank the ground rules above. */
+.checkout-widget-component .checkout-widget-component__total-payment,
+.checkout-widget-component .checkout-widget-component__total-payment *,
+.checkout-widget-component .checkout-widget-component__step-nav-action-count,
+.checkout-widget-component .checkout-widget-component__stock-info,
+.checkout-widget-component .checkout-widget-component__stock-info * {
+  color: var(--green-deep) !important;
+}
+
+/* 3. Lime-dim surface (order bump): dark text */
+.checkout-widget-component .checkout-widget-component__bump,
+.checkout-widget-component .checkout-widget-component__bump *,
+.checkout-widget-component .checkout-widget-component__bump a {
+  color: var(--green-deep) !important;
+}
+
+/* 4. Inputs are white: dark text, restated so the cream default can't leak in */
+.checkout-widget-component .checkout-widget-component__input input,
+.checkout-widget-component .checkout-widget-component__input select,
+.checkout-widget-component .checkout-widget-component__input textarea {
+  color: var(--green-deep) !important;
+}
+
+/* 5. Checked checkbox / radio: was #424B36 on a #424B36 ground */
+.checkout-widget-component input:checked + .ui-checkbox,
+.checkout-widget-component .ui-checkbox--checked,
+.checkout-widget-component input[type="radio"]:checked + .ui-radio,
+.checkout-widget-component input[type="radio"]:checked ~ .ui-radio,
+.checkout-widget-component .ui-radio--checked {
+  background: var(--pop) !important;
+  border-color: var(--pop) !important;
+  color: var(--green-deep) !important;
+}
+.checkout-widget-component .ui-checkbox--checked svg,
+.checkout-widget-component .ui-checkbox--checked svg * { fill: var(--green-deep) !important; stroke: var(--green-deep) !important; }
+.checkout-widget-component input[type="radio"],
+.checkout-widget-component input[type="checkbox"] { accent-color: var(--pop) !important; }
+
+/* 6. Coupon "Apply" button: was #424B36 on the #424B36 ground */
+.checkout-widget-component__coupon-wrap .tc-btn,
+.checkout-widget-component__coupon-wrap button,
+.checkout-widget-component__check-wrap .tc-btn,
+.checkout-widget-component .coupon-button {
+  background: var(--pop) !important;
+  background-color: var(--pop) !important;
+  border-color: var(--pop) !important;
+  color: var(--green-deep) !important;
+}
+.checkout-widget-component__coupon-wrap .tc-btn:hover,
+.checkout-widget-component__coupon-wrap button:hover,
+.checkout-widget-component__check-wrap .tc-btn:hover {
+  background: var(--cream) !important;
+  background-color: var(--cream) !important;
+  border-color: var(--cream) !important;
+  color: var(--green-deep) !important;
+}
+/* ══════════════════════════════════════════════════════════════
+   SUBMIT BUTTON + CARD LOGOS
+   ══════════════════════════════════════════════════════════════ */
+
+/* Resting state: lime on olive, lifted slightly off the ground */
+.checkout-widget-component .checkout-widget-component__submit .tc-btn,
+.checkout-widget-component .checkout-widget-component__submit button,
+.checkout-widget-component .checkout-widget-component__submit-actions .tc-btn,
+.checkout-widget-component input[type="submit"] {
+  background: var(--pop) !important;
+  background-color: var(--pop) !important;
+  border: 1px solid var(--pop) !important;
+  color: var(--green-deep) !important;
+  letter-spacing: 0.01em !important;
+  box-shadow: 0 6px 18px -8px rgba(0, 0, 0, 0.45) !important;
+  transform: translateY(0) !important;
+  cursor: pointer !important;
+  transition: background-color 0.16s ease, border-color 0.16s ease,
+              box-shadow 0.16s ease, transform 0.16s ease !important;
+}
+
+/* Hover: brightens to cream, lifts 1px, lime glow on the olive ground.
+   Text stays dark — never invert to the ground colour. */
+.checkout-widget-component .checkout-widget-component__submit .tc-btn:hover,
+.checkout-widget-component .checkout-widget-component__submit button:hover,
+.checkout-widget-component .checkout-widget-component__submit-actions .tc-btn:hover,
+.checkout-widget-component input[type="submit"]:hover {
+  background: var(--cream) !important;
+  background-color: var(--cream) !important;
+  border-color: var(--cream) !important;
+  color: var(--green-deep) !important;
+  transform: translateY(-1px) !important;
+  box-shadow: 0 10px 26px -8px rgba(0, 0, 0, 0.5),
+              0 0 0 4px rgba(204, 238, 160, 0.22) !important;
+}
+
+/* Pressed: settles back down, glow tightens */
+.checkout-widget-component .checkout-widget-component__submit .tc-btn:active,
+.checkout-widget-component .checkout-widget-component__submit button:active,
+.checkout-widget-component input[type="submit"]:active {
+  transform: translateY(0) !important;
+  box-shadow: 0 3px 10px -6px rgba(0, 0, 0, 0.5),
+              0 0 0 3px rgba(204, 238, 160, 0.3) !important;
+}
+
+/* Keyboard focus: visible ring, no layout shift */
+.checkout-widget-component .checkout-widget-component__submit .tc-btn:focus-visible,
+.checkout-widget-component .checkout-widget-component__submit button:focus-visible,
+.checkout-widget-component input[type="submit"]:focus-visible {
+  outline: 2px solid var(--cream) !important;
+  outline-offset: 3px !important;
+}
+
+/* Disabled: ThriveCart disables this until the form validates.
+   Forced !important colours would otherwise hide that state. */
+.checkout-widget-component .checkout-widget-component__submit .tc-btn:disabled,
+.checkout-widget-component .checkout-widget-component__submit button:disabled,
+.checkout-widget-component input[type="submit"]:disabled {
+  opacity: 0.55 !important;
+  cursor: not-allowed !important;
+  transform: none !important;
+  box-shadow: none !important;
+}
+
+/* ── Card logos: white tiles, one size up ──────────────────────── */
+/* Tiles are em-sized (2.5em × 1.875em), so one font-size change
+   scales all four together: 16px → 19px gives ~48 × 36px. */
+.checkout-widget-component .checkout-widget-component__submit-icons {
+  font-size: 19px !important;
+  gap: 10px !important;
+  margin-top: 2px !important;
+}
+.checkout-widget-component .ui-brand-card-icon {
+  background: #ffffff !important;          /* the artwork is drawn for white */
+  border: 1px solid rgba(255, 252, 235, 0.16) !important;
+  border-radius: 8px !important;
+  padding: 0.35em !important;
+  box-shadow: 0 2px 8px -2px rgba(0, 0, 0, 0.4) !important;
+  opacity: 1 !important;
+  filter: none !important;
+}
+/* keep ThriveCart's per-brand padding exceptions, converted to em */
+.checkout-widget-component .ui-brand-card-icon--amex { padding: 0 !important; }
+.checkout-widget-component .ui-brand-card-icon--discover { padding: 0.2em !important; }
+.checkout-widget-component .ui-brand-card-icon img {
+  opacity: 1 !important;
+  filter: none !important;
+}
+/* ══ TRUE RESPONSIVE: neutralise the platform's zoom-to-fit ══
+   The builder lays the page out on a fixed 480px (phone) / 1280px (desktop)
+   canvas and CSS-zooms it to the viewport, so at 375px everything renders at
+   78% and the media queries above are partly defeated. Restore 1:1 so the
+   page reflows instead of shrinking. */
+.page-component__content { zoom: 1 !important; width: 100% !important; max-width: 100% !important; min-width: 0 !important; }
+.page-component, .page-component__content > * { width: 100% !important; max-width: 100% !important; min-width: 0 !important; }
+
+/* iOS zooms the page on focus when an input's font is under 16px */
+@media (max-width: 820px) {
+  .checkout-widget-component .checkout-widget-component__input input,
+  .checkout-widget-component .checkout-widget-component__input select,
+  .checkout-widget-component input[type="text"],
+  .checkout-widget-component input[type="email"],
+  .checkout-widget-component input[type="tel"],
+  .checkout-widget-component select { font-size: 16px !important; }
+}
+
+
+/* Convertri also sets text-size-adjust: 83% inline on <html>, which shrinks
+   all text on Android/iOS regardless of zoom. Desktop ignores the property,
+   so this only shows up on a real phone. */
+html { -webkit-text-size-adjust: 100% !important; text-size-adjust: 100% !important; }
+</style>
+
+<div class="checkout-app">
+
+  <a href="https://timerich.ai/" class="brand-logo">Time Rich<b>.</b></a>
+
+<div class="headline-wrap">
+  <h1 class="page-headline">Let&#x27;s build your <span class="hl">Time Rich AI Operating System</span>.</h1>
+  <p class="page-subheadline">Six weeks. Your context hub, your five AI employees, and the leadership habits that keep them useful.</p>
+  <p class="page-subheadline-alt">Most AI training teaches you to automate admin. <strong>This one is measured on revenue.</strong></p>
+</div>
+
+  <section class="proof-section">
+    <div class="proof-label">What you leave with</div>
+        <div class="proof-gallery">
+      <div class="proof-card">
+        <strong>5 AI employees</strong>
+        Chief of Staff, Chief Revenue Officer, Outbound Hunter, Follow-up Agent, Content Strategist. Built by you, one a week, doing real work before the cohort ends &mdash; not slides about agents.
+      </div>
+      <div class="proof-card">
+        <strong>Your context hub + AI operating system</strong>
+        Your business voice, offers and customers in one place, plus the org chart that shows which roles are human and which are agent.
+      </div>
+      <div class="proof-card">
+        <strong>Your delegation map</strong>
+        Every task sorted into one of three piles: agent, person, or you &mdash; with the QA loop (Builder &rarr; QA &rarr; You) that keeps the output usable.
+      </div>
+    </div>
+  </section>
+
+  <main class="checkout-grid">
+
+    <!-- Left column: blank space for ThriveCart personal checkout widget -->
+    <div class="checkout-slot" aria-hidden="true"></div>
+
+    <!-- Right column: offer summary -->
+    <section class="card summary-card" id="summary-card" aria-label="Order summary">
+
+      <header class="package-header">
+        <h2 class="tier-name">The Full System</h2>
+        <div class="tier-tagline">Your AI operating system, plus the leadership habits and the people to run it.</div>
+        <div class="price-line">$2,222 <span>One payment</span></div>
+      </header>
+
+      <ul class="tick-list" aria-label="Included">
+        <li class="tick-item"><span class="tick-icon" aria-hidden="true">&#10003;</span><span>Everything in <b>The Agent Build</b></span></li>
+        <li class="tick-item"><span class="tick-icon" aria-hidden="true">&#10003;</span><span>The <b>live recruitment campaign</b> and screening filter, run for real</span></li>
+        <li class="tick-item"><span class="tick-icon" aria-hidden="true">&#10003;</span><span>Role briefs written as AI onboarding, not job ads</span></li>
+        <li class="tick-item"><span class="tick-icon" aria-hidden="true">&#10003;</span><span>The <b>intern portal</b> &mdash; Slack, Notion and Drive wired together</span></li>
+        <li class="tick-item"><span class="tick-icon" aria-hidden="true">&#10003;</span><span>Security, compliance and the guardrails conversation</span></li>
+        <li class="tick-item"><span class="tick-icon" aria-hidden="true">&#10003;</span><span>Delegation for a team: shared memory and context hub, leaderboard, retention</span></li>
+      </ul>
+
+      <div class="value-line">Full price <s>$3,997</s> &middot; you save <b>$1,775</b></div>
+
+      <div class="item-dropdown">
+        <button class="dropdown-header" type="button" id="tr-drop-btn" aria-expanded="false" aria-controls="tr-drop-items">
+          <span>See everything included</span>
+          <span class="arrow-icon" aria-hidden="true">&darr;</span>
+        </button>
+        <div class="dropdown-content" id="tr-drop-items">
+          <ol class="sub-item-list">
+            <li>Everything in The Agent Build, all eight items</li>
+            <li>The live recruitment campaign, run for real</li>
+            <li>Your screening filter</li>
+            <li>Role briefs written as AI onboarding</li>
+            <li>The intern portal: Slack, Notion, Drive</li>
+            <li>Security, compliance and guardrails</li>
+            <li>Shared memory and context hub for a team</li>
+            <li>The leaderboard and retention loop</li>
+            <li>Six weeks of cohort calls</li>
+          </ol>
+        </div>
+      </div>
+
+      <div class="early-bird-band">Early bird &middot; founding member pricing &middot; price is going up</div>
+      <div class="split-payment-note">or <b>3 payments of $777.33</b> &mdash; first today, then monthly. Plan total $2,332.</div>
+      <div class="under-button-lines">
+        Day 1 is Monday 26 October. Your portal opens then, not before. Everything you're getting is listed above.</div>
+
+    </section>
+  </main>
+</div>
+
+<script>
+
+/* Pin the viewport. The platform's ViewportResizer rewrites this tag to
+   width=980 on every iPad (~2s after load) and zooms the page to fit. This
+   makes its writes land as device-width instead of fighting it in a loop. */
+(function () {
+  var WANT = 'width=device-width, initial-scale=1';
+  function pin(m) {
+    if (!m || m.__pinned) return;
+    m.__pinned = true;
+    var d = Object.getOwnPropertyDescriptor(HTMLMetaElement.prototype, 'content');
+    var setAttr = m.setAttribute.bind(m);
+    Object.defineProperty(m, 'content', {
+      configurable: true,
+      get: function () { return d.get.call(this); },
+      set: function () { d.set.call(this, WANT); }
+    });
+    m.setAttribute = function (k, v) { return setAttr(k, k === 'content' ? WANT : v); };
+    setAttr('content', WANT);
+  }
+  pin(document.getElementById('viewport-meta') || document.querySelector('meta[name="viewport"]'));
+  new MutationObserver(function () { pin(document.querySelector('meta[name="viewport"]')); })
+    .observe(document.head || document.documentElement, { childList: true, subtree: true });
+})();
+
+
+/* Move the ThriveCart checkout form into .checkout-slot so it sits in the
+   page flow (left column on desktop, after the summary on mobile). The
+   widget renders after this block, so wait for it. */
+(function () {
+  var slot = document.querySelector('.checkout-slot');
+  if (!slot) return;
+  function place() {
+    var widget = document.querySelector('.checkout-widget-component');
+    if (!widget || slot.contains(widget)) return false;
+    var box = widget.closest('.element-component') || widget;
+    slot.appendChild(box);
+    slot.removeAttribute('aria-hidden');
+    return true;
+  }
+  if (place()) return;
+  var obs = new MutationObserver(function () { if (place()) obs.disconnect(); });
+  obs.observe(document.body, { childList: true, subtree: true });
+  setTimeout(function () { place(); obs.disconnect(); }, 15000);
+})();
+(function () {
+  var btn = document.getElementById('tr-drop-btn');
+  var panel = document.getElementById('tr-drop-items');
+  if (!btn || !panel) return;
+  btn.addEventListener('click', function () {
+    var open = btn.getAttribute('aria-expanded') === 'true';
+    btn.setAttribute('aria-expanded', String(!open));
+    panel.classList.toggle('open', !open);
+  });
+})();
+</script>
