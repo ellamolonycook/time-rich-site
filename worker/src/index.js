@@ -81,7 +81,7 @@ export default {
     // /superhuman is: this database's select and multi-select columns have
     // fixed option sets, and nothing the browser sends may invent a new one.
     if (path.endsWith("/qualify")) {
-      return handleQualify(data, env, cors);
+      return handleQualify(data, env, cors, ctx);
     }
 
     // Route: AI Revenue Accelerator application -> its own Notion database.
@@ -502,7 +502,7 @@ const Q_APPLIES = [
   "We have raised venture funding",
 ];
 
-async function handleQualify(d, env, cors) {
+async function handleQualify(d, env, cors, ctx) {
   const dbId = env.NOTION_QUALIFY_DATABASE_ID;
   if (!env.NOTION_TOKEN || !dbId) {
     return json({ ok: false, error: "Qualify form not configured" }, 500, cors);
@@ -581,9 +581,76 @@ async function handleQualify(d, env, cors) {
       body: JSON.stringify({ parent: { database_id: dbId }, properties }),
     });
     if (!res.ok) return json({ ok: false, error: "Notion create failed", detail: await res.text() }, 502, cors);
+
+    // The row is in. Tell the channel - in the background, so a slow or broken
+    // Slack can neither delay nor fail the submission. notifyQualifySlack()
+    // never rejects; it logs and swallows.
+    const heads = notifyQualifySlack(env, {
+      name, email, linkedin,
+      role: role && role.select.name,
+      teamSize: teamSize && teamSize.select.name,
+      revenue: revenue && revenue.select.name,
+      funding: funding && funding.select.name,
+      usBased: usBased && usBased.select.name,
+    });
+    if (ctx && typeof ctx.waitUntil === "function") ctx.waitUntil(heads);
+
     return json({ ok: true }, 200, cors);
   } catch (err) {
     return json({ ok: false, error: "Unexpected error", detail: String(err) }, 500, cors);
+  }
+}
+
+// One compact block per qualify submission, posted to an incoming webhook.
+// Only the values that were actually written to Notion are shown, so what the
+// channel sees is what the row says. Anything that goes wrong in here is logged
+// and swallowed: the form has already succeeded by the time this runs, and this
+// must never be the reason it looks like it did not. The webhook URL is a
+// secret and is never logged - not even inside an error message.
+async function notifyQualifySlack(env, s) {
+  const url = env.SLACK_WEBHOOK_URL;
+  if (!url) {
+    console.log("qualify: SLACK_WEBHOOK_URL not set, skipping Slack post");
+    return;
+  }
+  // Everything from here down is inside one try: building the message is as
+  // capable of throwing on a strange value as sending it is, and neither may
+  // surface.
+  try {
+    const or = (v) => (v ? calEsc(v) : "—");
+    // A bare URL can carry the three characters mrkdwn reserves for links.
+    const safeUrl = (u) => String(u || "").replace(/[<>|]/g, "");
+    const li = s.linkedin
+      ? `<${safeUrl(s.linkedin)}|${calEsc(s.linkedin.replace(/^https?:\/\/(www\.)?/i, ""))}>`
+      : "—";
+
+    const text = `New qualify submission — ${s.name} (${s.role || "role not given"}, ${s.teamSize || "team size not given"})`;
+    const blocks = [
+      { type: "section", text: { type: "mrkdwn", text: `📝 *New qualify submission* — *${calEsc(s.name)}*` } },
+      {
+        type: "section",
+        fields: [
+          { type: "mrkdwn", text: `*Role*\n${or(s.role)}` },
+          { type: "mrkdwn", text: `*Team size*\n${or(s.teamSize)}` },
+          { type: "mrkdwn", text: `*Annual revenue*\n${or(s.revenue)}` },
+          { type: "mrkdwn", text: `*Funding raised*\n${or(s.funding)}` },
+          { type: "mrkdwn", text: `*US-based*\n${or(s.usBased)}` },
+          { type: "mrkdwn", text: `*Email*\n${or(s.email)}` },
+        ],
+      },
+      { type: "context", elements: [{ type: "mrkdwn", text: `*LinkedIn:* ${li}` }] },
+    ];
+
+    const res = await fetch(url, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ text, blocks, unfurl_links: false }),
+    });
+    // Webhooks answer a plain "ok"; anything else is a rejection worth seeing.
+    if (!res.ok) console.log("qualify: Slack post failed", res.status, clip(await res.text(), 200));
+  } catch (err) {
+    // A network error can quote the URL it was trying to reach - redact it.
+    console.log("qualify: Slack post failed", String((err && err.message) || err).split(url).join("[webhook]"));
   }
 }
 

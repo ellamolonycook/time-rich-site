@@ -11,6 +11,7 @@
 #   npx wrangler secret put CAL_WEBHOOK_SECRET    # the secret you set on the Cal.com webhook
 #   npx wrangler secret put SLACK_BOT_TOKEN       # xoxb-... with chat:write, for booking alerts
 #   npx wrangler secret put SLACK_CHANNEL_ID      # e.g. C0123ABCD — invite the bot to it first
+#   npx wrangler secret put SLACK_WEBHOOK_URL     # incoming webhook for /qualify submission alerts
 #
 # After deploy, wrangler prints a URL like:
 #   https://time-rich-forms.<your-subdomain>.workers.dev
