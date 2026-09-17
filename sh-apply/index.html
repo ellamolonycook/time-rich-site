@@ -466,6 +466,10 @@ main{flex:1 0 auto;padding:38px 0 96px}
   var FORM_ENDPOINT = 'https://time-rich-forms.timerich.workers.dev/superhuman';
   var STORE_KEY     = 'shApplyV2';        // in-progress answers (cleared on submit)
   var THANKS_KEY    = 'shApplyThanks';    // first name, read by /sh-apply/thanks/
+  // The thank-you page prefills the Cal booker with this, so the call is booked
+  // under the same address as the application - that is what the worker's
+  // webhook matches on to flip the Notion row to "Call booked".
+  var THANKS_EMAIL_KEY = 'shApplyThanksEmail';
   var THANKS_URL    = '/sh-apply/thanks/';
   var SELECT_DELAY  = 250;                // ms - lets the selection register visually
   var MIN_OUTCOME   = 15;
@@ -1145,7 +1149,10 @@ main{flex:1 0 auto;padding:38px 0 96px}
     }).then(function(res){
       if (!res.ok) throw new Error('bad response');
       track('sh_apply_submit', { page: 'sh-apply' });
-      try{ sessionStorage.setItem(THANKS_KEY, payload.first_name); }catch(e){}
+      try{
+        sessionStorage.setItem(THANKS_KEY, payload.first_name);
+        sessionStorage.setItem(THANKS_EMAIL_KEY, payload.email);
+      }catch(e){}
       // Wipe the lot - answers, the current screen, the swapped-field mode and
       // the stored copy - then drop #qsubmit from the URL, so nothing is left
       // for a revisit to restore from.
