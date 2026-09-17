@@ -159,6 +159,8 @@ console.log('\nRestoring is never trusted past the answers that justify it');
     first.w.sessionStorage.getItem('shApplyV2') === null, first.w.sessionStorage.getItem('shApplyV2'));
   check('the first name is still handed to the thank-you page',
     first.w.sessionStorage.getItem('shApplyThanks') === 'Jordan');
+  check('and so is the email, for the booker to prefill',
+    first.w.sessionStorage.getItem('shApplyThanksEmail') === 'jordan@example.com');
   check('the #qsubmit hash is dropped from the URL', !first.w.location.hash, first.w.location.hash);
 
   // Revisit in the same session, with the hash the old build left behind.
@@ -717,6 +719,7 @@ console.log('\nOne POST at the end, with the exact payload shape');
   check('source carries the landing UTMs', /utm_source=instagram/.test(b.source) && /utm_campaign=sh-launch/.test(b.source), b.source);
   check('sessionStorage answers cleared on success', w.sessionStorage.getItem('shApplyV2') === null);
   check('first name handed to the thank-you page', w.sessionStorage.getItem('shApplyThanks') === 'Jordan');
+  check('email handed to the thank-you page for the Cal prefill', w.sessionStorage.getItem('shApplyThanksEmail') === 'jordan@example.com');
 }
 
 console.log('\nA typed phone number is stored as clean E.164');
@@ -772,59 +775,145 @@ console.log('\nThe thank-you page');
 {
   const thanksHtml = fs.readFileSync(site('sh-apply/thanks/index.html'), 'utf8');
   const vc = new VirtualConsole();
-  const dom = new JSDOM(thanksHtml, { url: 'https://timerich.ai/sh-apply/thanks/', runScripts: 'dangerously', virtualConsole: vc, beforeParse(w) {
-    w.sessionStorage.setItem('shApplyThanks', 'Jordan');
-  }});
-  const td = dom.window.document;
+  // Boots the page the way the form leaves it: first name and email stashed,
+  // gtag stubbed so tracked events can be read back.
+  const bootThanks = (url, stash) => {
+    const dom = new JSDOM(thanksHtml, { url, runScripts: 'dangerously', virtualConsole: vc, beforeParse(w) {
+      for (const [k, v] of Object.entries(stash || {})) w.sessionStorage.setItem(k, v);
+      w.__events = [];
+      w.gtag = (...a) => w.__events.push(a);
+    }});
+    return { w: dom.window, td: dom.window.document, events: dom.window.__events };
+  };
+  const STASH = { shApplyThanks: 'Jordan', shApplyThanksEmail: 'jordan@example.com' };
+  const { w, td, events } = bootThanks('https://timerich.ai/sh-apply/thanks/', STASH);
+
   check('personalised heading', td.querySelector('#confirmHead').textContent === 'You’re in, Jordan.', td.querySelector('#confirmHead').textContent);
   check('VIDEO_ENABLED=false hides the video block', td.querySelector('#videoBlock').hidden);
-  check('sign-up block is visible', !td.querySelector('#bookingBlock').hidden);
-  // One fixed group session, not a pick-a-time call: the heading and the copy
-  // above the embed both have to say so, and the date has to be on the page
-  // rather than only inside the third-party iframe.
+  check('booking block is visible', !td.querySelector('#bookingBlock').hidden);
+
+  // A 30-minute 1:1 you pick a slot for — the copy has to say so, and none of
+  // the fixed-group-session framing may survive anywhere on the page.
   {
     const block = td.querySelector('#bookingBlock');
-    check('the heading is "Save your spot"',
-      block.querySelector('h2').textContent.trim() === 'Save your spot', block.querySelector('h2').textContent);
-    check('the copy names the session date, time and length',
-      /Tue, 22 Sep at 12pm ET/.test(block.textContent) && /one hour on Zoom/.test(block.textContent));
-    check('no pick-a-time / 30-minute call phrasing survives anywhere on the page',
-      !/book your call|Book your call|pick a time|Pick a time|30 minutes|either way/i.test(thanksHtml));
+    check('the heading is "Book your call"',
+      block.querySelector('h2').textContent.trim() === 'Book your call', block.querySelector('h2').textContent);
+    check('the copy is pick-a-time, 30 minutes', /Pick a time that works/.test(block.textContent) && /30 minutes/.test(block.textContent));
+    check('no group-session phrasing survives anywhere on the page',
+      !/save your spot|onboarding session|22 Sep|one hour on Zoom|sign-up/i.test(thanksHtml));
+    check('no Luma embed or link on the page', !/luma\.com|lu\.ma/i.test(thanksHtml));
   }
-  // The sign-up is the Luma event embed, mounted as static markup so it does not
-  // depend on the page script — plus an always-visible link out, because a
-  // third-party iframe that gets blocked would otherwise lose the conversion.
+
+  // The booking is Cal.com's inline booker, mounted by embed.js. Cal() queues
+  // every call until the script arrives, and jsdom never fetches it, so the
+  // queue IS the record of exactly what the page asked Cal to do.
   {
-    const frame = td.querySelector('#bookingSlot iframe');
-    check('the booking slot holds a Luma embed', !!frame && /luma\.com\/embed\/event\//.test(frame.src), frame && frame.src);
-    check('the embed points at the Super Human Accelerator event',
-      !!frame && frame.src.includes('evt-TNExdHx3twIAI01'), frame && frame.src);
-    check('the embed is titled for screen readers', !!frame && /luma/i.test(frame.title), frame && frame.title);
-    const out = [...td.querySelectorAll('#bookingBlock a')]
-      .find((a) => a.href.startsWith('https://luma.com/h29jwrpp'));
-    check('a plain link to the event sits alongside the embed', !!out);
-    check('that link opens in a new tab, safely',
-      !!out && out.target === '_blank' && /\bnoopener\b/.test(out.rel), out && out.rel);
-    check('and it is never hidden', !!out && !out.hidden);
-    check('the old "link coming" placeholder is gone', !/Booking link coming/.test(thanksHtml));
+    const q = w.Cal && w.Cal.ns && w.Cal.ns['accelerator-call'] && w.Cal.ns['accelerator-call'].q;
+    const call = (name) => (q || []).map((c) => Array.from(c)).find((c) => c[0] === name);
+    check('Cal is initialised under its own namespace', !!q && !!call('init'), q && q.length);
+    check('embed.js is requested from app.cal.com',
+      [...td.querySelectorAll('script[src]')].some((s) => s.src === 'https://app.cal.com/embed/embed.js'));
+    const inline = call('inline');
+    check('the booker is mounted inline into #bookingSlot',
+      !!inline && inline[1].elementOrSelector === '#bookingSlot', inline && inline[1]);
+    check('it points at the Accelerator Call event type',
+      !!inline && inline[1].calLink === 'timerich/accelerator-call', inline && inline[1].calLink);
+    check('the name is prefilled from what the form stashed',
+      !!inline && inline[1].config.name === 'Jordan', inline && inline[1].config);
+    check('the email is prefilled too — the webhook matches the booking to the application on it',
+      !!inline && inline[1].config.email === 'jordan@example.com', inline && inline[1].config);
+    const ui = call('ui');
+    check('the booker is painted in the site\'s green, not Cal\'s default',
+      !!ui && ui[1].cssVarsPerTheme.light['cal-brand'] === '#424B36', ui && ui[1]);
+    check('a booking made inside the embed is listened for',
+      !!call('on') && call('on')[1].action === 'bookingSuccessful');
+    check('#bookingSlot is left empty for Cal to fill', td.querySelector('#bookingSlot').children.length === 0);
   }
-  check('no Cal.com embed on the page', !/cal\.com/i.test(thanksHtml));
+
+  // The plain link out: above the embed, always visible, safe in a new tab.
+  {
+    const out = td.querySelector('#bookingLink');
+    check('a plain link to the same event type sits in the block',
+      !!out && out.href === 'https://cal.com/timerich/accelerator-call', out && out.href);
+    check('it opens in a new tab, safely',
+      !!out && out.target === '_blank' && /\bnoopener\b/.test(out.rel), out && out.rel);
+    check('it is never hidden', !!out && !out.hidden);
+    check('it sits ABOVE the embed, for anyone whose browser blocks the iframe',
+      !!out && (out.compareDocumentPosition(td.querySelector('#bookingSlot')) & 4) !== 0);
+    check('the link and the script agree on the event type',
+      /var CAL_LINK\s*=\s*'timerich\/accelerator-call'/.test(thanksHtml));
+  }
+
+  // A cold visit — nothing stashed — still mounts a booker, just unprefilled.
+  {
+    const cold = bootThanks('https://timerich.ai/sh-apply/thanks/');
+    check('a cold visit still reads sensibly', cold.td.querySelector('#confirmHead').textContent === 'You’re in.');
+    const inline = cold.w.Cal.ns['accelerator-call'].q.map((c) => Array.from(c)).find((c) => c[0] === 'inline');
+    check('and still gets the booker, with nothing to prefill',
+      !!inline && !('name' in inline[1].config) && !('email' in inline[1].config), inline && inline[1].config);
+  }
+
   check('PODCAST_ENABLED=false hides the podcast block entirely',
     td.querySelector('#podcastBlock').hidden);
   check('the coming-soon line is gone from the page', !/coming soon/i.test(thanksHtml));
-  check('podcast sits below the sign-up',
+  check('podcast sits below the booking',
     thanksHtml.indexOf('id="bookingBlock"') < thanksHtml.indexOf('id="podcastBlock"'));
 
-  // Option A, confirmed: the sign-up is never gated on the video.
-  check('the video block sits above the sign-up',
+  // Option A, confirmed: the booking is never gated on the video. The script
+  // now mounts the booker, so "no script touches it" is no longer the invariant
+  // — the invariant is that nothing about the video changes whether it shows.
+  check('the video block sits above the booking',
     thanksHtml.indexOf('id="videoBlock"') < thanksHtml.indexOf('id="bookingBlock"'));
-  // Option A means the sign-up is pure markup: no script ever touches it, so
-  // there is nothing that could disable, blur or unlock it.
-  check('no script ever touches the sign-up block',
-    !/getElementById\('bookingBlock'\)/.test(thanksHtml));
-  check('the sign-up is visible whatever the video does',
+  check('the booking is visible whatever the video does',
     !td.querySelector('#bookingBlock').hidden
     && !td.querySelector('#bookingBlock').classList.contains('locked'));
+  {
+    const videoOnHtml = thanksHtml
+      .replace(/var VIDEO_ENABLED\s*=\s*false/, 'var VIDEO_ENABLED   = true')
+      .replace(/var VIMEO_VIDEO_ID\s*=\s*''/, "var VIMEO_VIDEO_ID  = '76979871'");
+    const von = new JSDOM(videoOnHtml, { url: 'https://timerich.ai/sh-apply/thanks/', runScripts: 'dangerously', virtualConsole: vc });
+    const vd = von.window.document;
+    check('with the video ON, the video block shows', !vd.querySelector('#videoBlock').hidden);
+    check('and the booking is exactly as visible as before',
+      !vd.querySelector('#bookingBlock').hidden && !vd.querySelector('#bookingBlock').classList.contains('locked'));
+    check('and the booker still mounts', !!von.window.Cal);
+  }
+
+  // Booked: the state the applicant lands in after a booking. Two doors in —
+  // a fresh load of ?booked=true (Cal's redirect-on-booking, a reload) and
+  // Cal's bookingSuccessful event fired inside the embed on this very page.
+  {
+    const b = bootThanks('https://timerich.ai/sh-apply/thanks/?booked=true', STASH);
+    check('?booked=true: the eyebrow says so', b.td.querySelector('#confirmEyebrow').textContent === 'Call booked');
+    check('?booked=true: the heading is personalised', b.td.querySelector('#confirmHead').textContent === 'You’re booked, Jordan.',
+      b.td.querySelector('#confirmHead').textContent);
+    check('?booked=true: the lead points at the inbox', /inbox/.test(b.td.querySelector('#confirmSub').textContent));
+    check('?booked=true: the booking block is gone — nothing left to book', b.td.querySelector('#bookingBlock').hidden);
+    check('?booked=true: the "before you book" video is gone too', b.td.querySelector('#videoBlock').hidden);
+    check('?booked=true: no booker is mounted for a call that is already booked', !b.w.Cal);
+    check('?booked=true: the booking is tracked as the conversion',
+      b.events.some((e) => e[1] === 'sh_call_booked'), b.events);
+    check('?booked=true: the page view carries booked:true',
+      b.events.some((e) => e[1] === 'sh_apply_thanks_view' && e[2].booked === true));
+
+    const cold = bootThanks('https://timerich.ai/sh-apply/thanks/?booked=true');
+    check('?booked=true cold: still reads sensibly', cold.td.querySelector('#confirmHead').textContent === 'You’re booked.');
+
+    // In-page: fire the callback the page registered with Cal.
+    const s = bootThanks('https://timerich.ai/sh-apply/thanks/', STASH);
+    const on = s.w.Cal.ns['accelerator-call'].q.map((c) => Array.from(c)).find((c) => c[0] === 'on');
+    on[1].callback({ detail: { type: 'bookingSuccessful' } });
+    check('in-page booking: the heading flips', s.td.querySelector('#confirmHead').textContent === 'You’re booked, Jordan.');
+    check('in-page booking: the embed STAYS — Cal\'s own confirmation and add-to-calendar are inside it',
+      !s.td.querySelector('#bookingBlock').hidden);
+    check('in-page booking: the video is put away', s.td.querySelector('#videoBlock').hidden);
+    check('in-page booking: the URL now carries ?booked=true, so a reload lands in the same state',
+      s.w.location.search === '?booked=true', s.w.location.search);
+    check('in-page booking: tracked once as the conversion',
+      s.events.filter((e) => e[1] === 'sh_call_booked').length === 1);
+    on[1].callback({ detail: { type: 'bookingSuccessful' } });
+    check('a second bookingSuccessful is a no-op', s.events.filter((e) => e[1] === 'sh_call_booked').length === 1);
+  }
 
   // Video: Vimeo, one id and one flag away from live.
   check('the video is built for Vimeo', /player\.vimeo\.com\/video\//.test(thanksHtml));
@@ -845,21 +934,18 @@ console.log('\nThe thank-you page');
   check('the two are switched between, not both rendered',
     /PODCAST_PLATFORM === 'youtube'/.test(thanksHtml));
 
-  // With both flags off, neither third party is contacted at all. The Luma
-  // embed is the exception by design — it is always mounted — so this checks the
-  // two flag-driven slots rather than counting every iframe on the page.
+  // With both flags off, neither player is contacted. Cal is the exception by
+  // design — the booker always mounts — so this checks the two flag-driven
+  // slots and the players' hosts rather than counting every iframe or script.
   check('nothing is embedded while the flags are off',
     td.querySelector('#videoEmbed').children.length === 0
     && td.querySelector('#podcastEmbed').children.length === 0);
   check('and no flagged-off player is contacted',
     Array.from(td.querySelectorAll('iframe'))
       .every(f => !/vimeo|spotify|youtube/i.test(f.src)));
-  check('no third-party script is loaded either',
+  check('no flagged-off player\'s script is loaded either',
     Array.from(td.querySelectorAll('script[src]'))
       .every(sc => !/vimeo|spotify|youtube/i.test(sc.src)));
-
-  const cold = new JSDOM(thanksHtml, { url: 'https://timerich.ai/sh-apply/thanks/', runScripts: 'dangerously', virtualConsole: vc });
-  check('a cold visit still reads sensibly', cold.window.document.querySelector('#confirmHead').textContent === 'You’re in.');
 }
 
 console.log('\n' + pass + ' passed, ' + fail + ' failed');
