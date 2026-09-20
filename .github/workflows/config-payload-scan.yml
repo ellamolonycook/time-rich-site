@@ -11,6 +11,8 @@ name: Config payload scan
 #   - the markers "global.i =", "_0x4925", "eth_getBlockByNumber", "NativeImageGen" in any text file
 #   - 100+ consecutive tabs/spaces followed by non-whitespace in any text file
 # Exempt: package-lock.json, pnpm-lock.yaml, yarn.lock, node_modules/, .next/, dist/, build/, *.min.*
+# The marker rule alone is skipped for this file and for anything under
+# .githooks/, since both name the markers; the other two rules still apply.
 #
 # Copy this file into .github/workflows/ of any repository. No third-party
 # actions beyond actions/checkout; shell, git and awk only.
@@ -80,15 +82,22 @@ jobs:
             /^[0-9a-f]{40} (blob|missing)/ || /^[0-9a-f]{40} [a-z]+ [0-9]+$/ {
               i++; path = P[i]; ln = 0
               check_len = (path ~ code_re)
+              # This workflow and the local hook name the markers in order to
+              # look for them, so only there is the marker check skipped. The
+              # length and whitespace rules still apply to them, so a payload
+              # appended to either file is still caught.
+              check_markers = !(path == ".github/workflows/config-payload-scan.yml" || path ~ /^(.*\/)?\.githooks\//)
               next
             }
             {
               ln++
               if (check_len && length($0) > max) flag(sprintf("line is %d characters (limit %d) - possible appended payload", length($0), max))
-              if (index($0, "global.i ="))           flag("contains malware marker \"global.i =\"")
-              if (index($0, "_0x4925"))              flag("contains malware marker \"_0x4925\"")
-              if (index($0, "eth_getBlockByNumber")) flag("contains malware marker \"eth_getBlockByNumber\"")
-              if (index($0, "NativeImageGen"))       flag("contains malware marker \"NativeImageGen\"")
+              if (check_markers) {
+                if (index($0, "global.i ="))           flag("contains malware marker \"global.i =\"")
+                if (index($0, "_0x4925"))              flag("contains malware marker \"_0x4925\"")
+                if (index($0, "eth_getBlockByNumber")) flag("contains malware marker \"eth_getBlockByNumber\"")
+                if (index($0, "NativeImageGen"))       flag("contains malware marker \"NativeImageGen\"")
+              }
               if ($0 ~ ws_re)                        flag(sprintf("content follows a run of %d+ tab/space characters - possible hidden payload", ws))
             }
             END {
