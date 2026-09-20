@@ -1,0 +1,126 @@
+name: Config payload scan
+
+# Server-side twin of the local pre-commit hook (~/.githooks/pre-commit).
+# Scans EVERY tracked text file - not just the diff - so a payload that was
+# committed earlier (or pushed with --no-verify) is still caught on the next
+# push or pull request. Failures are emitted as GitHub annotations, so they
+# appear inline on the PR diff.
+#
+# Rules:
+#   - a line over 2000 characters in *.config.*, *.json, *.js, *.mjs, *.cjs, *.ts, *.tsx
+#   - the markers "global.i =", "_0x4925", "eth_getBlockByNumber", "NativeImageGen" in any text file
+#   - 100+ consecutive tabs/spaces followed by non-whitespace in any text file
+# Exempt: package-lock.json, pnpm-lock.yaml, yarn.lock, node_modules/, .next/, dist/, build/, *.min.*
+# The marker rule alone is skipped for this file and for anything under
+# .githooks/, since both name the markers; the other two rules still apply.
+#
+# Copy this file into .github/workflows/ of any repository. No third-party
+# actions beyond actions/checkout; shell, git and awk only.
+
+on:
+  push:
+    branches: ["**"]
+  pull_request:
+    branches: ["**"]
+
+permissions:
+  contents: read
+
+jobs:
+  scan:
+    name: Scan tracked files for appended payloads
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Scan every tracked text file
+        shell: bash
+        env:
+          MAX_LINE: "2000"
+          MAX_WS_RUN: "100"
+        run: |
+          set -u
+
+          # Tracked text files (git grep -I skips binaries and files marked
+          # binary in .gitattributes), minus the exemptions.
+          paths=$(
+            git grep -I -l -e '' -- . |
+            while IFS= read -r path; do
+              case "$path" in
+                package-lock.json|*/package-lock.json|pnpm-lock.yaml|*/pnpm-lock.yaml|yarn.lock|*/yarn.lock) continue ;;
+                node_modules/*|*/node_modules/*|.next/*|*/.next/*|dist/*|*/dist/*|build/*|*/build/*) continue ;;
+                *.min.*) continue ;;
+              esac
+              printf '%s\n' "$path"
+            done
+          )
+          if [ -z "$paths" ]; then
+            echo "No tracked text files to scan."
+            exit 0
+          fi
+          echo "Scanning $(printf '%s\n' "$paths" | wc -l) tracked text files..."
+
+          # One git process streams every blob at HEAD, one awk pass checks
+          # them all. cat-file --batch preserves input order, so the n-th
+          # blob header belongs to the n-th path.
+          printf '%s\n' "$paths" | sed 's/^/HEAD:/' |
+          git cat-file --batch |
+          awk -v paths="$paths" -v max="$MAX_LINE" -v ws="$MAX_WS_RUN" '
+            BEGIN {
+              n = split(paths, P, "\n"); i = 0; bad = 0
+              ws_re = "[ \t]{" ws ",}[^ \t\r\n]"
+              code_re = "(\\.config\\.|\\.json$|\\.js$|\\.mjs$|\\.cjs$|\\.ts$|\\.tsx$)"
+            }
+            function flag(reason) {
+              # GitHub annotation (inline on the PR diff) plus a plain line for the log.
+              printf "::error file=%s,line=%d,title=Config payload scan::%s\n", path, ln, reason
+              printf "  %s:%d  %s\n", path, ln, reason
+              bad++
+            }
+            /^[0-9a-f]{40} (blob|missing)/ || /^[0-9a-f]{40} [a-z]+ [0-9]+$/ {
+              i++; path = P[i]; ln = 0
+              check_len = (path ~ code_re)
+              # This workflow and the local hook name the markers in order to
+              # look for them, so only there is the marker check skipped. The
+              # length and whitespace rules still apply to them, so a payload
+              # appended to either file is still caught.
+              check_markers = !(path == ".github/workflows/config-payload-scan.yml" || path ~ /^(.*\/)?\.githooks\//)
+              next
+            }
+            {
+              ln++
+              if (check_len && length($0) > max) flag(sprintf("line is %d characters (limit %d) - possible appended payload", length($0), max))
+              if (check_markers) {
+                if (index($0, "global.i ="))           flag("contains malware marker \"global.i =\"")
+                if (index($0, "_0x4925"))              flag("contains malware marker \"_0x4925\"")
+                if (index($0, "eth_getBlockByNumber")) flag("contains malware marker \"eth_getBlockByNumber\"")
+                if (index($0, "NativeImageGen"))       flag("contains malware marker \"NativeImageGen\"")
+              }
+              if ($0 ~ ws_re)                        flag(sprintf("content follows a run of %d+ tab/space characters - possible hidden payload", ws))
+            }
+            END {
+              if (bad) {
+                printf "\n%d finding(s). A tracked file looks like an appended-payload injection.\n", bad
+                printf "Inspect the lines above. Do not merge until the file is restored to its intended content.\n"
+                exit 1
+              }
+              print "Clean: no long lines, markers or hidden-whitespace payloads found."
+            }
+          ' | tee scan.log
+          # printf | sed | git cat-file | awk | tee - awk is stage index 3.
+          status=${PIPESTATUS[3]}
+
+          {
+            echo "## Config payload scan"
+            if [ "$status" -eq 0 ]; then
+              echo "Clean."
+            else
+              echo "**Failed** - possible appended payload:"
+              echo
+              grep -v '^::' scan.log | sed 's/^/    /'
+            fi
+          } >> "$GITHUB_STEP_SUMMARY"
+
+          exit "$status"
