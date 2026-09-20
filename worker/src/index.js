@@ -455,7 +455,17 @@ const Q_ROLES = [
   "Head of People / HR",
   "Other",
 ];
-const Q_TEAM_SIZES = ["1-4", "5-19", "20-49", "50-199", "200-499", "500+"];
+const Q_TEAM_SIZES = [
+  "Self employed",
+  "1-2",
+  "3-5",
+  "5-10",
+  "10-20",
+  "20-50",
+  "50-100",
+  "100+",
+  "I work for a company with 100+",
+];
 const Q_REVENUE = ["Pre-revenue", "Under 1M", "1M - 5M", "5M - 20M", "20M - 100M", "100M+"];
 const Q_FUNDING = ["Bootstrapped", "Pre-seed / Seed", "Series A", "Series B", "Series C+", "Public"];
 const Q_INDUSTRIES = [
