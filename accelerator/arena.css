@@ -5,13 +5,13 @@
    not its own band. Uses brand tokens from accelerator/index.html. */
 
 .arena{
-  height:100vh;
-  height:100dvh;
+  /* content-height, not 100dvh: the six compact cards plus the animated
+     Trusted by strip are taller than one screen and were being clipped */
   box-sizing:border-box;
   display:flex;
   flex-direction:column;
   justify-content:center;
-  padding:28px 0 calc(76px + env(safe-area-inset-bottom));
+  padding:40px 0 calc(76px + env(safe-area-inset-bottom));
   overflow:hidden;
 }
 .arena .wrap{
@@ -25,21 +25,26 @@
 .arena .section-head{margin-bottom:16px;flex:0 0 auto}
 .arena .section-head h2{font-size:clamp(26px,3.4vw,40px)}
 
+/* People: compact horizontal cards - square headshot on the left, name, role
+   and proof line beside it. Three across on desktop, so six people make two
+   short rows instead of one row of very tall columns. */
 .arena-people{
   display:grid;
-  grid-template-columns:repeat(5,minmax(0,1fr));
-  gap:14px;
+  grid-template-columns:repeat(3,minmax(0,1fr));
+  gap:12px;
   align-items:stretch;
   min-height:0;
 }
 .arena-person{
-  display:flex;
-  flex-direction:column;
+  display:grid;
+  grid-template-columns:128px minmax(0,1fr);
+  gap:0 16px;
+  align-items:start;
   min-width:0;
   background:var(--panel);
   border:1px solid var(--line);
   border-radius:16px;
-  padding:12px 12px 14px;
+  padding:14px;
   transition:transform .16s ease,border-color .16s ease,box-shadow .16s ease;
 }
 .arena-person:hover{
@@ -48,11 +53,13 @@
   box-shadow:0 14px 34px -20px rgba(66,75,54,.45);
 }
 .arena-photo{
+  grid-column:1;
+  grid-row:1 / span 4;
   position:relative;
   display:block;
-  width:100%;
+  width:128px;
   aspect-ratio:1;
-  max-height:min(240px,28vh);
+  max-height:none;
   border-radius:12px;
   overflow:hidden;
   background:var(--panel2);
@@ -69,11 +76,11 @@
   object-position:top center;
 }
 .arena-name{
+  grid-column:2;
   display:block;
-  margin-top:12px;
   font-family:var(--display);
   font-weight:600;
-  font-size:clamp(15px,1.15vw,18px);
+  font-size:16px;
   letter-spacing:-.018em;
   line-height:1.2;
   color:var(--green-deep);
@@ -81,20 +88,24 @@
 }
 a.arena-name:hover{color:var(--lime)}
 .arena-role{
-  margin:5px 0 0;
+  grid-column:2;
+  margin:4px 0 0;
   font-family:var(--mono);
-  font-size:11px;
+  font-size:10.5px;
   letter-spacing:.04em;
-  line-height:1.4;
+  line-height:1.35;
   color:var(--lime);
 }
 .arena-proof{
+  grid-column:2;
   margin:6px 0 0;
-  font-size:13.5px;
+  font-size:13px;
   line-height:1.45;
   color:var(--muted);
 }
 .arena-social{
+  grid-column:2;
+  justify-self:start;
   display:inline-block;
   margin-top:6px;
   font-family:var(--mono);
@@ -186,34 +197,28 @@ a.arena-name:hover{color:var(--lime)}
 }
 
 @media (max-width:1099px){
-  .arena-people{
-    display:flex;
-    overflow-x:auto;
-    scroll-snap-type:x mandatory;
-    scroll-padding-inline:24px;
-    gap:14px;
-    padding-bottom:4px;
-    -webkit-overflow-scrolling:touch;
-    scrollbar-width:none;
-  }
-  .arena-people::-webkit-scrollbar{display:none}
-  .arena-person{flex:0 0 min(280px,72vw);scroll-snap-align:start}
-  .arena-photo{max-height:min(240px,30vh)}
+  .arena-people{grid-template-columns:repeat(2,minmax(0,1fr))}
+}
+@media (max-width:700px){
+  /* six stacked cards cannot fit a phone screen at readable size, so the
+     section sizes to its content here instead of being clamped to 100dvh
+     (which clipped the heading and the last cards) */
+  .arena{height:auto;min-height:0;display:block;overflow:visible;padding:40px 0 32px}
+  .arena-people{grid-template-columns:1fr;gap:10px}
+  .arena-person{grid-template-columns:104px minmax(0,1fr);gap:0 14px;padding:12px}
+  .arena-photo{width:104px}
+}
 }
 
 @media (max-width:880px){
-  .arena{
-    padding:22px 0 calc(72px + env(safe-area-inset-bottom));
-    height:100vh;
-    height:100dvh;
-  }
+  .arena{padding:22px 0 calc(72px + env(safe-area-inset-bottom))}
 }
 
+
 @media (max-width:520px){
-  .arena{padding:18px 0 calc(72px + env(safe-area-inset-bottom))}
+  .arena{padding:32px 0 calc(72px + env(safe-area-inset-bottom))}
   .arena .section-head{margin-bottom:12px}
   .arena .section-head h2{font-size:clamp(24px,7vw,30px)}
-  .arena-person{flex-basis:min(260px,78vw)}
   .arena-proof{font-size:13px}
 }
 
