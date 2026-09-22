@@ -105,28 +105,47 @@ a.arena-name:hover{color:var(--lime)}
 }
 .arena-social:hover{color:var(--green-deep)}
 
-.arena-trusted{flex:0 0 auto;margin-top:16px;min-width:0}
-.arena-trusted .eyebrow{margin-bottom:10px}
-.arena-marks{
-  list-style:none;
-  margin:0;
-  padding:0;
-  display:flex;
-  align-items:center;
-  gap:10px 22px;
-  overflow-x:auto;
-  scrollbar-width:none;
-  -webkit-overflow-scrolling:touch;
+.arena-trusted {
+  flex: 0 0 auto;
+  margin-top: 16px;
+  min-width: 0;
+  overflow: hidden;
+  mask-image: linear-gradient(to right, transparent, black 20px, black calc(100% - 20px), transparent);
+  -webkit-mask-image: linear-gradient(to right, transparent, black 20px, black calc(100% - 20px), transparent);
 }
-.arena-marks::-webkit-scrollbar{display:none}
-.arena-marks li{
-  flex:0 0 auto;
-  font-family:var(--mono);
-  font-size:13px;
-  letter-spacing:.04em;
-  color:var(--muted);
-  line-height:1;
-  white-space:nowrap;
+.arena-trusted .eyebrow {
+  margin-bottom: 10px;
+}
+.arena-marks-wrap {
+  display: flex;
+  width: max-content;
+  animation: scroll-marks 20s linear infinite;
+}
+.arena-marks-wrap:hover {
+  animation-play-state: paused;
+}
+.arena-marks {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  align-items: center;
+  gap: 10px 22px;
+  padding-right: 22px; /* same as gap */
+}
+.arena-marks li {
+  flex: 0 0 auto;
+  font-family: var(--mono);
+  font-size: 13px;
+  letter-spacing: .04em;
+  color: var(--muted);
+  line-height: 1;
+  white-space: nowrap;
+}
+
+@keyframes scroll-marks {
+  0% { transform: translateX(0); }
+  100% { transform: translateX(-50%); }
 }
 
 @media (max-width:1099px){
@@ -164,4 +183,10 @@ a.arena-name:hover{color:var(--lime)}
 @media (prefers-reduced-motion:reduce){
   .arena-person,
   .arena-person:hover{transform:none;transition:none}
+  .arena-marks-wrap { animation: none; }
+  .arena-trusted {
+    overflow-x: auto;
+    mask-image: none;
+    -webkit-mask-image: none;
+  }
 }
