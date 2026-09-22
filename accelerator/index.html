@@ -228,19 +228,6 @@ ul.t-list li:last-child{padding-bottom:0}
 .video-figure figcaption{margin-top:12px;font-family:var(--mono);font-size:12.5px;
   letter-spacing:.02em;color:var(--dim);text-align:center;line-height:1.6}
 
-/* ---------- GUEST SPEAKER ---------- */
-.speaker{display:flex;gap:28px;align-items:flex-start;background:var(--panel);
-  border:1px solid var(--line);border-radius:16px;padding:30px}
-.speaker img{flex:0 0 auto;width:200px;height:200px;border-radius:50%;display:block;
-  object-fit:cover;object-position:top center;border:1px solid var(--line);background:var(--panel2)}
-.speaker-body{min-width:0}
-.speaker-body h3{font-size:clamp(20px,2.3vw,26px);margin-bottom:4px}
-.speaker-body p{color:var(--muted);font-size:15.5px;line-height:1.65;margin-top:12px}
-@media (max-width:620px){
-  .speaker{flex-direction:column;gap:20px;padding:24px}
-  .speaker img{width:150px;height:150px}
-}
-
 /* process diagram — same language as the /revenue/ engine diagram */
 .machine{display:flex;gap:12px;align-items:stretch;flex-wrap:wrap;margin:44px 0 0}
 .m-io{font-family:var(--mono);font-size:13px;letter-spacing:.1em;text-transform:uppercase;border:1px dashed var(--line-2);border-radius:10px;padding:18px 22px;color:var(--muted);align-self:center;text-align:center}
@@ -430,6 +417,7 @@ ul.t-list li:last-child{padding-bottom:0}
   .stickybar .btn{width:100%;text-align:center}
 }
 </style>
+<link rel="stylesheet" href="arena.css" />
 <style id="top-v2">
 /* =========================================================================
    TOP OF PAGE v2 — hero through "What your seat includes".
@@ -1096,18 +1084,81 @@ html{scroll-padding-top:110px}
   </div>
 </section>
 
-<!-- ======================== 5a. GUEST SPEAKER ======================== -->
-<section class="section">
-  <div class="wrap narrow">
-    <span class="eyebrow">Guest speaker</span>
-    <div class="speaker">
-      <img width="600" height="600" loading="lazy" decoding="async"
-           src="img/terry-rice.jpg" alt="Terry Rice" />
-      <div class="speaker-body">
-        <h3>Terry Rice</h3>
-        <p>Terry Rice is an AI trainer who runs enterprise trainings for Google, L&rsquo;Or&eacute;al, Verizon, and Amazon. Former Meta and Adobe.</p>
-        <p>He's partnered with Verizon, Entrepreneur, and Oracle on branded content, and interviewed Shaq, Gary Vee, and Daymond John as a journalist.</p>
-      </div>
+<!-- ======================== 5a. PEOPLE IN THE ARENA ======================== -->
+<section class="arena" id="arena">
+  <div class="wrap">
+    <div class="section-head">
+      <span class="eyebrow">Learn from people in the arena</span>
+      <h2>The people in the arena.</h2>
+    </div>
+
+    <div class="arena-people">
+      <article class="arena-person">
+        <a class="arena-photo" href="https://www.linkedin.com/in/ciensolon" target="_blank" rel="noopener">
+          <img width="600" height="600" loading="lazy" decoding="async"
+               src="img/Cien-Solon.png" alt="Cien Solon" />
+        </a>
+        <a class="arena-name" href="https://www.linkedin.com/in/ciensolon" target="_blank" rel="noopener">Cien Solon</a>
+        <p class="arena-role">Co-Founder and CEO, LaunchLemonade</p>
+        <p class="arena-proof">20,000 AI agents built on her platform. 1.5M conversations.</p>
+      </article>
+
+      <article class="arena-person">
+        <div class="arena-photo">
+          <img width="600" height="600" loading="lazy" decoding="async"
+               src="img/Taylor-Offer.jpeg" alt="Taylor Offer" />
+        </div>
+        <span class="arena-name">Taylor Offer</span>
+        <p class="arena-role">Founder and CEO, Atrios</p>
+        <p class="arena-proof">Backed by a16z. First company passed $50M. Atrios: zero to $1M run rate in 4 months.</p>
+      </article>
+
+      <article class="arena-person">
+        <a class="arena-photo" href="https://www.linkedin.com/in/terry-rice" target="_blank" rel="noopener">
+          <img width="600" height="600" loading="lazy" decoding="async"
+               src="img/terry-rice.jpg" alt="Terry Rice" />
+        </a>
+        <a class="arena-name" href="https://www.linkedin.com/in/terry-rice" target="_blank" rel="noopener">Terry Rice</a>
+        <p class="arena-role">Enterprise AI trainer and keynote speaker</p>
+        <p class="arena-proof">Former Meta and Adobe. The trainer Google, EY, General Assembly and Amazon hire.</p>
+      </article>
+
+      <article class="arena-person">
+        <a class="arena-photo" href="https://www.linkedin.com/in/ellamolonycook/" target="_blank" rel="noopener">
+          <img width="600" height="750" loading="lazy" decoding="async"
+               src="../revenue/img/rev-01.jpg" alt="Ella Molony Cook" />
+        </a>
+        <a class="arena-name" href="https://www.linkedin.com/in/ellamolonycook/" target="_blank" rel="noopener">Ella Molony Cook</a>
+        <p class="arena-role">Founder and CEO, Time Rich</p>
+        <p class="arena-proof">4 companies, 1 exit, early Anthropic investor.</p>
+        <a class="arena-social" href="https://www.instagram.com/timerichtalk" target="_blank" rel="noopener">@timerichtalk</a>
+      </article>
+
+      <article class="arena-person">
+        <a class="arena-photo" href="https://www.linkedin.com/in/matyaskolsofszki" target="_blank" rel="noopener">
+          <img width="600" height="600" loading="lazy" decoding="async"
+               src="img/Matyas.png" alt="Matyas Kolsofszki" />
+        </a>
+        <a class="arena-name" href="https://www.linkedin.com/in/matyaskolsofszki" target="_blank" rel="noopener">Matyas Kolsofszki</a>
+        <p class="arena-role">Founder and CEO, 384k Ventures</p>
+        <p class="arena-proof">Investor, advisor and IP asset strategy. The intangible value investors actually pay for.</p>
+      </article>
+    </div>
+
+    <div class="arena-trusted">
+      <span class="eyebrow">Trusted by</span>
+      <ul class="arena-marks" aria-label="Organisations these people have worked with or been backed by">
+        <li>a16z</li>
+        <li>Anthropic</li>
+        <li>Google</li>
+        <li>Amazon</li>
+        <li>Meta</li>
+        <li>Adobe</li>
+        <li>Verizon</li>
+        <li>L&rsquo;Or&eacute;al</li>
+        <li>Forbes</li>
+        <li>Techstars</li>
+      </ul>
     </div>
   </div>
 </section>
