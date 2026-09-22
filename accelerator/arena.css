@@ -105,28 +105,84 @@ a.arena-name:hover{color:var(--lime)}
 }
 .arena-social:hover{color:var(--green-deep)}
 
-.arena-trusted{flex:0 0 auto;margin-top:16px;min-width:0}
-.arena-trusted .eyebrow{margin-bottom:10px}
-.arena-marks{
-  list-style:none;
-  margin:0;
-  padding:0;
-  display:flex;
-  align-items:center;
-  gap:10px 22px;
-  overflow-x:auto;
-  scrollbar-width:none;
-  -webkit-overflow-scrolling:touch;
+.arena-trusted {
+  flex: 0 0 auto;
+  margin-top: 40px; /* Brought 'Trusted By' a bit lower relative to the cards above */
+  min-width: 0;
+  overflow: hidden;
+  mask-image: linear-gradient(to right, transparent, black 20px, black calc(100% - 20px), transparent);
+  -webkit-mask-image: linear-gradient(to right, transparent, black 20px, black calc(100% - 20px), transparent);
 }
-.arena-marks::-webkit-scrollbar{display:none}
-.arena-marks li{
-  flex:0 0 auto;
-  font-family:var(--mono);
-  font-size:13px;
-  letter-spacing:.04em;
-  color:var(--muted);
-  line-height:1;
-  white-space:nowrap;
+.arena-trusted .eyebrow {
+  display: inline-block; /* Ensure margins apply */
+  margin-top: 32px; /* Bring it a lil lower */
+  margin-bottom: 10px;
+  margin-left: 16px; /* Bring 'Trusted By' to the right a little */
+  font-size: 22px; /* 2x bigger */
+  color: rgba(0, 0, 0, 0.45); /* Exact same grey as the logos (brightness 0 + opacity 0.45) */
+}
+.arena-marks-wrap {
+  display: flex;
+  margin-top: 32px;
+}
+.arena-marks-wrap:hover .arena-marks {
+  animation-play-state: paused;
+}
+.arena-marks {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  align-items: center;
+  flex-wrap: nowrap;
+  gap: 10px 48px;
+  padding-right: 48px; /* same as gap */
+  animation: scroll-marks 55s linear infinite; /* Made the loop slower */
+  will-change: transform;
+}
+.arena-marks li {
+  flex: 0 0 auto;
+  line-height: 0;
+  white-space: nowrap;
+}
+.trusted-logo {
+  height: 56px; /* Greatly increased base height for logos */
+  width: auto;
+  object-fit: contain;
+  filter: brightness(0) opacity(0.45);
+  transition: filter 0.2s ease, transform 0.2s ease;
+  will-change: filter;
+}
+/* Make specific logos significantly bigger as requested */
+.trusted-logo[alt="Forbes"] {
+  height: 76px;
+}
+.trusted-logo[alt="Techstars"] {
+  height: 68px;
+}
+.trusted-logo[alt="Anthropic"],
+.trusted-logo[alt="a16z"] {
+  height: 80px; /* Make them even bigger */
+}
+.trusted-logo[alt="Adobe"] {
+  height: 66px;
+}
+/* Tweaks for vertical alignment */
+.trusted-logo[alt="Amazon"] {
+  height: 42px;
+  margin-top: 8px; /* Push it down */
+}
+.trusted-logo[alt="L'Oréal"] {
+  margin-top: 6px;
+}
+.trusted-logo:hover {
+  filter: brightness(1) opacity(1);
+}
+
+@keyframes scroll-marks {
+  0% { transform: translate3d(0, 0, 0); }
+  /* Animating individual lists by -100% avoids subpixel parent rounding jitter */
+  100% { transform: translate3d(-100%, 0, 0); }
 }
 
 @media (max-width:1099px){
@@ -164,4 +220,10 @@ a.arena-name:hover{color:var(--lime)}
 @media (prefers-reduced-motion:reduce){
   .arena-person,
   .arena-person:hover{transform:none;transition:none}
+  .arena-marks-wrap { animation: none; }
+  .arena-trusted {
+    overflow-x: auto;
+    mask-image: none;
+    -webkit-mask-image: none;
+  }
 }
