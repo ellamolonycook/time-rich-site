@@ -404,6 +404,7 @@ ul.t-list li:last-child{padding-bottom:0}
 .v2 p+p{margin-top:.9em}
 .v2 p strong{color:var(--ink);font-weight:600}
 .v2 a{color:inherit}
+.v2 [hidden]{display:none !important}   /* [hidden] must beat any display:flex/grid below */
 .v2 .lbl{font-family:var(--monolbl);font-size:12px;letter-spacing:.14em;text-transform:uppercase;color:var(--ink2);display:block;line-height:1.5}
 
 .v2 .cta{display:inline-flex;align-items:center;justify-content:center;background:var(--tr);color:#fff;text-decoration:none;
@@ -413,6 +414,7 @@ ul.t-list li:last-child{padding-bottom:0}
 .v2 .cta:focus-visible{outline:2px solid var(--tr);outline-offset:3px}
 .v2 .cta-lg{font-size:14px;padding:19px 30px}
 .v2 .cta-note{margin-top:14px;font-size:14px;line-height:1.5;color:var(--ink2)}
+.s-weeks .cta-note{margin-top:18px}
 
 /* ---- announcement bar + nav: sticky together ---- */
 .topstick{position:sticky;top:0;z-index:60}
@@ -660,9 +662,10 @@ html{scroll-padding-top:110px}
 .wk-cols span:nth-child(3){grid-column:4}
 .wk-list{border-top:1px solid var(--hair)}
 .wk-row{border-bottom:1px solid var(--hair)}
+.wk-row:last-child{border-bottom:0}
 .wk-h{margin:0;font:inherit;letter-spacing:0}
 .wk-btn{display:grid;grid-template-columns:52px minmax(0,1fr) 56px minmax(0,1fr) 40px;align-items:center;gap:0 18px;
-  width:100%;padding:22px 20px;background:none;border:0;text-align:left;cursor:pointer;color:var(--ink);font:inherit;
+  width:100%;padding:24px 20px;background:none;border:0;text-align:left;cursor:pointer;color:var(--ink);font:inherit;
   transition:background .18s ease}
 .wk-btn:hover{background:var(--tint)}
 .wk-btn:focus-visible{outline:2px solid var(--tr);outline-offset:-2px}
@@ -684,8 +687,8 @@ html{scroll-padding-top:110px}
 .wk-panel-in{overflow:hidden;min-height:0;visibility:hidden;padding:0 20px}
 .wk-row.open .wk-panel{grid-template-rows:1fr}
 .wk-row.open .wk-panel-in{visibility:visible;padding-bottom:22px}
-.wk-foot{margin-top:22px;font-size:15px}
-.s-weeks .act{margin-top:26px}
+.s-weeks .wk-foot{margin-top:40px;font-size:15px}   /* .v2 p sets margin:0, so this needs two classes to win */
+.s-weeks .act{margin-top:36px}
 @media (prefers-reduced-motion:reduce){.wk-panel,.wk-chev{transition:none}}
 @media (max-width:820px){
   /* phone: Monday above Friday inside the row, connector turns vertical */
@@ -700,16 +703,129 @@ html{scroll-padding-top:110px}
   .wk-row.open .wk-panel-in{padding-bottom:18px}
 }
 
-/* ---- 11. what you keep ---- */
-.s-keep h2{font-size:clamp(32px,3.6vw,48px);margin-bottom:30px}
-.keeps{display:grid;grid-template-columns:1fr 1fr;gap:26px 56px}
-.keep h3{font-size:22px;margin-bottom:8px}
-.keep p{font-size:16px;line-height:1.55;max-width:46ch}
+/* ---- 11. what you keep ----
+   Four tinted cards on a 2x2 grid, equal height, each with a small numbered
+   rule above the heading so the list reads as a set rather than loose text. */
+.s-keep h2{font-size:clamp(32px,3.6vw,48px);margin-bottom:28px}
+.keeps{display:grid;grid-template-columns:1fr 1fr;gap:16px;align-items:stretch}
+.keep{background:var(--tint);border:1px solid rgba(103,118,46,.22);border-radius:16px;padding:26px 28px;
+  display:flex;flex-direction:column;transition:transform .18s ease,box-shadow .18s ease}
+.keep:hover{transform:translateY(-2px);box-shadow:0 16px 34px -24px rgba(26,24,22,.4)}
+.keep h3{font-size:21px;line-height:1.2;margin-bottom:10px}
+.keep p{font-size:15.5px;line-height:1.55;max-width:none;color:var(--ink2)}
 @media (max-width:820px){
-  .s-keep h2{margin-bottom:24px}
-  .keeps{grid-template-columns:1fr;gap:22px}
-  .keep h3{font-size:20px}
-  .keep p{font-size:15.5px;max-width:none}
+  .s-keep h2{margin-bottom:22px}
+  .keeps{grid-template-columns:1fr;gap:12px}
+  .keep{padding:22px 22px}
+  .keep h3{font-size:19px}
+  .keep p{font-size:15px}
+}
+
+/* ---- 12. more from the room ----
+   Same card as the section 5 quote, two up. The quote mark and attribution
+   keep that section's treatment; type is a step down because there are two. */
+.s-room h2{font-size:clamp(32px,3.6vw,48px)}
+.s-room .room-sub{margin-top:10px;font-size:17px;color:var(--ink2)}
+.rooms{display:grid;grid-template-columns:1fr 1fr;gap:18px;margin-top:34px;align-items:stretch}
+.s-room .qcard{display:flex;flex-direction:column;padding:38px 34px 28px;text-align:left}
+.s-room .qcard .qmark{left:20px;top:-12px;font-size:76px}
+.s-room blockquote{margin:0;flex:1 1 auto}
+.s-room blockquote p{font-size:clamp(17px,1.35vw,19px);font-weight:500;letter-spacing:-.015em;line-height:1.45;color:var(--ink);text-wrap:pretty}
+.s-room figcaption{margin-top:20px;font-size:10.5px}
+@media (max-width:820px){
+  .rooms{grid-template-columns:1fr;gap:14px;margin-top:26px}
+  .s-room .qcard{padding:32px 22px 24px}
+  .s-room .qcard .qmark{left:14px;top:-10px;font-size:64px}
+  .s-room blockquote p{font-size:16.5px}
+  .s-room .room-sub{font-size:16px}
+}
+
+/* ---- 15. before you join ----
+   One question per screen, like /qualifyform. The screens box keeps a steady
+   height so the section does not jump as questions swap. */
+.s-form h2{font-size:clamp(28px,2.8vw,38px)}
+.s-form .form-sub{margin-top:8px;font-size:16px;color:var(--ink2)}
+.qflow{max-width:680px;margin:30px 0 0}
+.qintro{display:flex}
+.qprogress{display:flex;align-items:center;gap:14px;margin-bottom:26px}
+.qbar{flex:1 1 auto;height:3px;border-radius:3px;background:rgba(103,118,46,.18);overflow:hidden}
+.qbar span{display:block;height:100%;width:12.5%;background:var(--tr);border-radius:3px;transition:width .45s cubic-bezier(.32,.72,0,1)}
+.qcount{flex:0 0 auto;font-family:var(--monolbl);font-size:10.5px;letter-spacing:.12em;text-transform:uppercase;color:var(--ink2)}
+.qscreens{position:relative;min-height:232px}
+.q-eyebrow{display:block;font-family:var(--monolbl);font-size:10.5px;letter-spacing:.14em;text-transform:uppercase;color:var(--ink2)}
+.q-title{margin:10px 0 18px;font-family:'DM Serif Display',Georgia,serif;font-weight:400;
+  font-size:clamp(22px,2.2vw,30px);line-height:1.2;letter-spacing:-.01em;color:var(--ink)}
+.q-title label{cursor:pointer}
+.s-form input[type=text],.s-form input[type=email],.s-form textarea{
+  width:100%;box-sizing:border-box;font:inherit;font-size:15px;color:var(--ink);
+  background:#fff;border:1px solid var(--hair);border-radius:10px;padding:11px 13px;transition:border-color .15s ease}
+.s-form textarea{resize:vertical;min-height:72px;line-height:1.45}
+.s-form input:focus,.s-form textarea:focus{outline:0;border-color:var(--tr)}
+.s-form ::placeholder{color:#A8A29E}
+.pair{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.pair.seat2{margin-top:12px}
+.opts{display:flex;flex-wrap:wrap;gap:8px}
+.opt{display:inline-flex;align-items:center;gap:8px;cursor:pointer;background:transparent;
+  border:1px solid var(--hair);border-radius:999px;padding:9px 15px;font:inherit;font-size:14px;color:var(--ink2);
+  transition:border-color .15s ease,background .15s ease,color .15s ease}
+.opt-key{font-family:var(--monolbl);font-size:10px;color:var(--ink2);opacity:.65}
+.opt:hover{border-color:rgba(103,118,46,.5);color:var(--ink)}
+.opt[aria-pressed=true]{background:var(--tint);border-color:rgba(103,118,46,.55);color:var(--ink)}
+.q-actions{display:flex;align-items:center;gap:14px;margin-top:20px}
+.q-actions [hidden]{display:none}
+.q-back{background:none;border:0;padding:0;font:inherit;font-size:13.5px;color:var(--ink2);cursor:pointer;text-decoration:underline;text-underline-offset:3px}
+.q-back:hover{color:var(--ink)}
+.qscreen.is-in{animation:qIn .38s cubic-bezier(.32,.72,0,1) both}
+.qscreen.is-in.is-back{animation-name:qInBack}
+@keyframes qIn{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:none}}
+@keyframes qInBack{from{opacity:0;transform:translateY(-14px)}to{opacity:1;transform:none}}
+@media (prefers-reduced-motion:reduce){.qscreen.is-in{animation:none}}
+
+/* ---- 17. book a call ---- */
+.s-call{padding:56px 0}
+.s-call .inner{max-width:640px}
+.s-call h2{font-size:clamp(28px,2.8vw,38px)}
+.s-call .call-sub{margin-top:8px;font-size:16px;color:var(--ink2)}
+.cta-ghost{display:inline-flex;align-items:center;margin-top:20px;background:transparent;color:var(--tr);
+  border:1px solid rgba(66,75,54,.45);border-radius:10px;padding:13px 22px;text-decoration:none;
+  font-size:14px;font-weight:500;letter-spacing:.01em;transition:background .15s ease,border-color .15s ease}
+.cta-ghost:hover{background:var(--tint);border-color:var(--tr)}
+
+/* ---- 18. final CTA ---- */
+.s-final{padding:72px 0}
+.s-final .inner{max-width:760px;margin:0 auto;text-align:center}
+.s-final .final-line{margin-top:16px;font-family:'DM Serif Display',Georgia,serif;font-weight:400;
+  font-size:clamp(24px,2.8vw,36px);line-height:1.25;letter-spacing:-.01em;color:var(--ink);text-wrap:balance}
+.s-final .cta-lg{margin-top:28px}
+
+@media (max-width:820px){
+  .qflow{margin-top:24px}
+  .qscreens{min-height:268px}
+  .q-title{font-size:21px;margin-bottom:16px}
+  .opt{font-size:13.5px;padding:8px 13px}
+  .s-call{padding:44px 0}
+  .s-final{padding:52px 0}
+  .s-final .inner{text-align:left}
+  .s-final .final-line{font-size:clamp(22px,6.4vw,28px)}
+}
+
+/* ---- "more from the room": one quote at a time on phones ----
+   Same stage as "What's included": the section pins under whatever is fixed at
+   the top and each card swipes in as you scroll. Desktop: inert wrappers. */
+@media (max-width:768px){
+  .s-room{--step:45svh}
+  .s-room .stack.live{height:calc(var(--pin-h,60vh) + 2 * var(--step))}
+  .s-room .stack.live .pin{position:sticky;top:var(--bar);padding-top:20px}
+  .s-room .stack.live .rooms{display:grid;grid-template-columns:1fr;align-items:start;margin-top:26px;
+    overflow:hidden;transition:height .45s cubic-bezier(.32,.72,0,1)}
+  .s-room .stack.live .qcard{grid-area:1 / 1;opacity:0;transform:translateX(110%);
+    transition:transform .5s cubic-bezier(.32,.72,0,1),opacity .35s ease;pointer-events:none;
+    padding:48px 24px 26px}
+  /* the stage clips overflow, so the quote mark sits inside the card here */
+  .s-room .stack.live .qcard .qmark{left:22px;top:6px;font-size:58px}
+  .s-room .stack.live .qcard.is-past{transform:translateX(-110%)}
+  .s-room .stack.live .qcard.is-active{opacity:1;transform:none;pointer-events:auto}
+  .s-room .stack.live blockquote p{font-size:17px;line-height:1.5}
 }
 
 /* ---- responsive ---- */
@@ -1148,7 +1264,7 @@ html{scroll-padding-top:110px}
     var stack = document.getElementById(stackId); if (!stack) return;
     var sec = stack.closest('.v2'), pin = stack.querySelector('.pin'), stage = stack.querySelector(stageSel), items = stack.querySelectorAll(itemSel);
     var mq = window.matchMedia('(max-width: 768px)'), rm = window.matchMedia('(prefers-reduced-motion: reduce)');
-    var n = items.length, active = -1, tick = false, pinTop = 0;
+    var n = items.length, active = -1, tick = false, pinTop = 0, pinH = 0;
     function fit(){ if (active >= 0) stage.style.height = items[active].offsetHeight + 'px'; }  // stage hugs the showing item
     function set(i){
       if (i === active) return; active = i;
@@ -1159,7 +1275,8 @@ html{scroll-padding-top:110px}
     function layout(){
       pinTop = parseFloat(getComputedStyle(sec).getPropertyValue('--bar')) || 0;
       stage.style.height = '';                              // measure with the tallest item
-      stack.style.setProperty('--pin-h', pin.offsetHeight + 'px');
+      pinH = pin.offsetHeight;                              // stable: the tallest item's pin
+      stack.style.setProperty('--pin-h', pinH + 'px');
       fit();
     }
     function update(){
@@ -1167,7 +1284,7 @@ html{scroll-padding-top:110px}
       if (!mq.matches || rm.matches) { stack.classList.remove('live'); stack.style.removeProperty('--pin-h'); stage.style.height = ''; return; }
       if (!stack.classList.contains('live')) { stack.classList.add('live'); layout(); }
       var r = stack.getBoundingClientRect();
-      var travel = r.height - pin.offsetHeight;            // how far the pin can ride
+      var travel = r.height - (pinH || pin.offsetHeight);  // how far the pin can ride
       var p = travel > 0 ? (pinTop - r.top) / travel : 0;  // 0 at pin start, 1 at release
       set(Math.max(0, Math.min(n - 1, Math.floor(p * n))));
     }
@@ -1468,6 +1585,34 @@ html{scroll-padding-top:110px}
   </div>
 </section>
 
+<!-- ======================== 12. MORE FROM THE ROOM ========================
+     Two quote cards in the same tinted style as the section 5 pull quote. -->
+<section class="v2 s-room" id="room">
+  <div class="wrap">
+    <!-- Phone only: .stack/.pin pin the section and show one quote at a time
+         on scroll, the same stage as "What's included". Inert on desktop. -->
+    <div class="stack" id="roomStack">
+    <div class="pin">
+    <h2 class="serif">More from the room</h2>
+    <p class="room-sub">From the workshops this accelerator grew out of.</p>
+    <div class="rooms">
+      <figure class="qcard">
+        <span class="qmark" aria-hidden="true">&ldquo;</span>
+        <blockquote><p>&ldquo;Ella thinks about AI agents the same way she thinks about building a business. Each agent has a role, responsibilities, and a purpose. I walked away with a better way to think about AI and, most importantly, the confidence to get started.&rdquo;</p></blockquote>
+        <figcaption class="lbl">Indra Klavins &middot; Organizational Strategist and Executive Advisor</figcaption>
+      </figure>
+      <figure class="qcard">
+        <span class="qmark" aria-hidden="true">&ldquo;</span>
+        <blockquote><p>&ldquo;Ella's workshops are actionable from the start. She teaches, shares her process, and leaves you with the full instructions to create your own AI team members.&rdquo;</p></blockquote>
+        <figcaption class="lbl">Jenni Ogden &middot; Founder, Eye Q Productions</figcaption>
+      </figure>
+    </div>
+    </div>
+    </div>
+  </div>
+  <script>window.trStage && window.trStage('roomStack', '.rooms', '.qcard');</script>
+</section>
+
 
 <!-- ========================= 8. THE DECISION ========================= -->
 <section class="decision">
@@ -1502,7 +1647,195 @@ html{scroll-padding-top:110px}
   </div>
 </section>
 
+<!-- ======================== 15. BEFORE YOU JOIN ========================
+     One question at a time, same flow as /qualifyform: options advance on the
+     first pick, typed answers advance on Continue or Enter, Back steps
+     through. Nothing submits - the last screen links to the checkout. -->
+<section class="v2 s-form" id="before-you-join">
+  <div class="wrap">
+    <div class="form-head">
+      <h2 class="serif">Tell us what you&rsquo;re building</h2>
+      <p class="form-sub">8 questions, 3 minutes. Your answers shape week one and your first hot seat.</p>
+    </div>
 
+    <div class="qflow" id="qflow">
+      <!-- Closed by default: the form opens on click, then runs straight
+           through to checkout - there is no qualification gate here. -->
+      <div class="qintro" id="qintro">
+        <button type="button" class="cta cta-lg" id="qstart" aria-expanded="false" aria-controls="qbody">Start &rarr;</button>
+      </div>
+
+      <div class="qbody" id="qbody" hidden>
+      <div class="qprogress">
+        <div class="qbar" role="progressbar" aria-valuemin="1" aria-valuemax="8" aria-valuenow="1" aria-label="Progress"><span id="qbarFill"></span></div>
+        <span class="qcount" id="qcount">1 of 8</span>
+      </div>
+
+      <div class="qscreens">
+        <div class="qscreen" data-step="1">
+          <span class="q-eyebrow">Question 1</span>
+          <h3 class="q-title">Name and email</h3>
+          <div class="pair">
+            <input type="text" autocomplete="name" aria-label="Name" placeholder="Name" />
+            <input type="email" autocomplete="email" aria-label="Email" placeholder="Email" />
+          </div>
+          <div class="q-actions"><button type="button" class="cta" data-next>Continue</button></div>
+        </div>
+
+        <div class="qscreen" data-step="2" hidden>
+          <span class="q-eyebrow">Question 2</span>
+          <h3 class="q-title"><label for="q-business">What&rsquo;s your business, or what do you make?</label></h3>
+          <input id="q-business" type="text" />
+          <div class="q-actions"><button type="button" class="cta" data-next>Continue</button><button type="button" class="q-back" data-back>Back</button></div>
+        </div>
+
+        <div class="qscreen" data-step="3" data-select hidden>
+          <span class="q-eyebrow">Question 3</span>
+          <h3 class="q-title">Which part do you want running on AI by 13 November?</h3>
+          <div class="opts" role="group">
+          <button type="button" class="opt" data-value="Sales"><span class="opt-key">1</span><span>Sales</span></button>
+          <button type="button" class="opt" data-value="Content"><span class="opt-key">2</span><span>Content</span></button>
+          <button type="button" class="opt" data-value="Ops"><span class="opt-key">3</span><span>Ops</span></button>
+          <button type="button" class="opt" data-value="Client delivery"><span class="opt-key">4</span><span>Client delivery</span></button>
+          <button type="button" class="opt" data-value="Not sure yet"><span class="opt-key">5</span><span>Not sure yet</span></button>
+          </div>
+          <div class="q-actions"><button type="button" class="q-back" data-back>Back</button></div>
+        </div>
+
+        <div class="qscreen" data-step="4" data-select hidden>
+          <span class="q-eyebrow">Question 4</span>
+          <h3 class="q-title">What have you built with AI so far?</h3>
+          <div class="opts" role="group">
+          <button type="button" class="opt" data-value="Nothing yet"><span class="opt-key">1</span><span>Nothing yet</span></button>
+          <button type="button" class="opt" data-value="Prompts"><span class="opt-key">2</span><span>Prompts</span></button>
+          <button type="button" class="opt" data-value="One agent"><span class="opt-key">3</span><span>One agent</span></button>
+          <button type="button" class="opt" data-value="Several running"><span class="opt-key">4</span><span>Several running</span></button>
+          </div>
+          <div class="q-actions"><button type="button" class="q-back" data-back>Back</button></div>
+        </div>
+
+        <div class="qscreen" data-step="5" data-select hidden>
+          <span class="q-eyebrow">Question 5</span>
+          <h3 class="q-title">Who else is in your business?</h3>
+          <div class="opts" role="group">
+          <button type="button" class="opt" data-value="Just me"><span class="opt-key">1</span><span>Just me</span></button>
+          <button type="button" class="opt" data-value="One or two"><span class="opt-key">2</span><span>One or two</span></button>
+          <button type="button" class="opt" data-value="Three to ten"><span class="opt-key">3</span><span>Three to ten</span></button>
+          <button type="button" class="opt" data-value="More"><span class="opt-key">4</span><span>More</span></button>
+          </div>
+          <div class="q-actions"><button type="button" class="q-back" data-back>Back</button></div>
+        </div>
+
+        <div class="qscreen" data-step="6" data-select hidden>
+          <span class="q-eyebrow">Question 6</span>
+          <h3 class="q-title">Your second seat is included. Who&rsquo;s taking it?</h3>
+          <div class="opts" role="group">
+          <button type="button" class="opt" data-value="Their name and email" data-reveal="seat2"><span class="opt-key">1</span><span>Their name and email</span></button>
+          <button type="button" class="opt" data-value="I'll name them later"><span class="opt-key">2</span><span>I'll name them later</span></button>
+          <button type="button" class="opt" data-value="I'm coming alone"><span class="opt-key">3</span><span>I'm coming alone</span></button>
+          </div>
+          <div class="pair seat2" id="seat2" hidden>
+            <input type="text" aria-label="Their name" placeholder="Their name" />
+            <input type="email" aria-label="Their email" placeholder="Their email" />
+          </div>
+          <div class="q-actions"><button type="button" class="cta" data-next hidden>Continue</button><button type="button" class="q-back" data-back>Back</button></div>
+        </div>
+
+        <div class="qscreen" data-step="7" hidden>
+          <span class="q-eyebrow">Question 7</span>
+          <h3 class="q-title"><label for="q-week">What&rsquo;s eating your week right now?</label></h3>
+          <textarea id="q-week" rows="3"></textarea>
+          <div class="q-actions"><button type="button" class="cta" data-next>Continue</button><button type="button" class="q-back" data-back>Back</button></div>
+        </div>
+
+        <div class="qscreen" data-step="8" hidden>
+          <span class="q-eyebrow">Question 8</span>
+          <h3 class="q-title"><label for="q-hotseat">What would you bring to a hot seat?</label></h3>
+          <textarea id="q-hotseat" rows="3"></textarea>
+          <div class="q-actions"><button type="button" class="cta" data-next>Continue</button><button type="button" class="q-back" data-back>Back</button></div>
+        </div>
+
+        <div class="qscreen qscreen--end" data-step="8" data-end hidden>
+          <span class="q-eyebrow">Last step</span>
+          <h3 class="q-title">That&rsquo;s everything.</h3>
+          <div class="q-actions">
+            <a class="cta cta-lg" href="https://agentlabs.thrivecart.com/accelerator/" onclick="track('join_form')">Continue to checkout &rarr;</a>
+            <button type="button" class="q-back" data-back>Back</button>
+          </div>
+        </div>
+      </div>
+      </div>
+    </div>
+  </div>
+  <script>
+  // One question at a time. Options advance on the first pick; typed answers
+  // advance on Continue or Enter. Nothing is stored or submitted.
+  (function(){
+    var flow = document.getElementById('qflow'); if (!flow) return;
+    var screens = [].slice.call(flow.querySelectorAll('.qscreen'));
+    var fill = document.getElementById('qbarFill'), count = document.getElementById('qcount');
+    var bar = flow.querySelector('.qbar'), seat2 = document.getElementById('seat2');
+    var reduce = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    var intro = document.getElementById('qintro'), body = document.getElementById('qbody');
+    var start = document.getElementById('qstart');
+    var i = 0, picked = {};
+
+    function show(next, quiet){
+      if (next < 0 || next >= screens.length) return;
+      var from = screens[i], to = screens[next], back = next < i;
+      i = next;
+      screens.forEach(function(s){ if (s !== to) s.hidden = true; });
+      to.hidden = false;
+      if (!reduce) {
+        to.classList.remove('is-in','is-back'); void to.offsetWidth;
+        to.classList.add('is-in'); if (back) to.classList.add('is-back');
+      }
+      var step = to.getAttribute('data-step');
+      count.textContent = to.hasAttribute('data-end') ? 'All 8 answered' : step + ' of 8';
+      fill.style.width = (step / 8 * 100) + '%';
+      bar.setAttribute('aria-valuenow', step);
+      if (quiet) return;
+      var field = to.querySelector('input:not([type=hidden]), textarea');
+      if (field && !reduce) setTimeout(function(){ try{ field.focus({preventScroll:true}); }catch(e){} }, 260);
+    }
+
+    flow.addEventListener('click', function(e){
+      if (e.target.closest('[data-next]')) { show(i + 1); return; }
+      if (e.target.closest('[data-back]')) { show(i - 1); return; }
+      var opt = e.target.closest('.opt'); if (!opt) return;
+      var screen = opt.closest('.qscreen'), first = !picked[screen.getAttribute('data-step')];
+      picked[screen.getAttribute('data-step')] = true;
+      screen.querySelectorAll('.opt').forEach(function(b){ b.setAttribute('aria-pressed', b === opt ? 'true' : 'false'); });
+      if (seat2 && screen.contains(seat2)) {
+        var reveal = opt.hasAttribute('data-reveal');
+        seat2.hidden = !reveal;
+        screen.querySelector('[data-next]').hidden = !reveal;
+        if (reveal) return;                       // they have fields to fill first
+      }
+      if (first) setTimeout(function(){ if (screens[i] === screen) show(i + 1); }, 220);
+    });
+
+    // Enter advances from the single-line fields; textareas keep their newlines.
+    flow.addEventListener('keydown', function(e){
+      if (e.key === 'Enter' && e.target.tagName === 'INPUT') { e.preventDefault(); show(i + 1); }
+    });
+    // The form opens on click; until then the section is just the invitation.
+    start.addEventListener('click', function(){
+      intro.hidden = true; body.hidden = false;
+      start.setAttribute('aria-expanded', 'true');
+      show(0);
+      var first = body.querySelector('input, textarea');
+      if (first) { try { first.focus({preventScroll:true}); } catch(e) {} }
+      track('form_open');
+    });
+    show(0, true);
+  })();
+  </script>
+</section>
+
+
+
+<!-- SECTION 16: QUESTIONS - owned by Ilya, do not build -->
 <!-- ============================== 11. FAQ ============================== -->
 <section class="faq" id="faq">
   <div class="wrap">
@@ -1543,6 +1876,29 @@ html{scroll-padding-top:110px}
         <summary><h3>What does it cost?</h3></summary>
         <div class="faq-a"><p>Founding-cohort pricing is the lowest this programme will ever run at. Apply, and we'll cover it on your call.</p></div>
       </details>
+    </div>
+  </div>
+</section>
+
+<!-- ============================ 17. BOOK A CALL ============================ -->
+<section class="v2 s-call" id="book-a-call">
+  <div class="wrap">
+    <div class="inner">
+      <h2 class="serif">Talk to Ella first</h2>
+      <p class="call-sub">30 minutes, on your business, before you decide.</p>
+      <a class="cta-ghost" href="https://cal.com/timerich/accelerator-call" target="_blank" rel="noopener" onclick="track('book_call')">Book a call &rarr;</a>
+    </div>
+  </div>
+</section>
+
+<!-- ============================= 18. FINAL CTA ============================= -->
+<section class="v2 s-final" id="final">
+  <div class="wrap">
+    <div class="inner">
+      <span class="lbl">Cohort starts Monday 19 October</span>
+      <p class="final-line">4 weeks. 8 sessions. 2 seats for the price of 1. One part of your business, running on AI.</p>
+      <a class="cta cta-lg" href="https://agentlabs.thrivecart.com/accelerator/" onclick="track('join_final')">Join the cohort &middot; $997 &middot; 2 seats</a>
+      <p class="cta-note">Early bird ends Sunday 11 October. $1,297 after. Payment plan available.</p>
     </div>
   </div>
 </section>
