@@ -1,0 +1,167 @@
+/* Arena faculty section — Learn from people in the arena
+   One viewport tall at every breakpoint. Five people sit in a single row on
+   a wide screen; below 1100px the cards snap-scroll so the section never
+   becomes a stacked biography page. TRUSTED BY is a caption under the names,
+   not its own band. Uses brand tokens from accelerator/index.html. */
+
+.arena{
+  height:100vh;
+  height:100dvh;
+  box-sizing:border-box;
+  display:flex;
+  flex-direction:column;
+  justify-content:center;
+  padding:28px 0 calc(76px + env(safe-area-inset-bottom));
+  overflow:hidden;
+}
+.arena .wrap{
+  flex:0 0 auto;
+  display:flex;
+  flex-direction:column;
+  min-height:0;
+  width:100%;
+  max-width:1240px;
+}
+.arena .section-head{margin-bottom:16px;flex:0 0 auto}
+.arena .section-head h2{font-size:clamp(26px,3.4vw,40px)}
+
+.arena-people{
+  display:grid;
+  grid-template-columns:repeat(5,minmax(0,1fr));
+  gap:14px;
+  align-items:stretch;
+  min-height:0;
+}
+.arena-person{
+  display:flex;
+  flex-direction:column;
+  min-width:0;
+  background:var(--panel);
+  border:1px solid var(--line);
+  border-radius:16px;
+  padding:12px 12px 14px;
+  transition:transform .16s ease,border-color .16s ease,box-shadow .16s ease;
+}
+.arena-person:hover{
+  transform:translateY(-3px);
+  border-color:var(--line-2);
+  box-shadow:0 14px 34px -20px rgba(66,75,54,.45);
+}
+.arena-photo{
+  position:relative;
+  display:block;
+  width:100%;
+  aspect-ratio:1;
+  max-height:min(240px,28vh);
+  border-radius:12px;
+  overflow:hidden;
+  background:var(--panel2);
+  border:1px solid var(--line);
+  text-decoration:none;
+}
+.arena-photo img{
+  position:absolute;
+  inset:0;
+  width:100%;
+  height:100%;
+  display:block;
+  object-fit:cover;
+  object-position:top center;
+}
+.arena-name{
+  display:block;
+  margin-top:12px;
+  font-family:var(--display);
+  font-weight:600;
+  font-size:clamp(15px,1.15vw,18px);
+  letter-spacing:-.018em;
+  line-height:1.2;
+  color:var(--green-deep);
+  text-decoration:none;
+}
+a.arena-name:hover{color:var(--lime)}
+.arena-role{
+  margin:5px 0 0;
+  font-family:var(--mono);
+  font-size:11px;
+  letter-spacing:.04em;
+  line-height:1.4;
+  color:var(--lime);
+}
+.arena-proof{
+  margin:6px 0 0;
+  font-size:13.5px;
+  line-height:1.45;
+  color:var(--muted);
+}
+.arena-social{
+  display:inline-block;
+  margin-top:6px;
+  font-family:var(--mono);
+  font-size:11.5px;
+  letter-spacing:.02em;
+  color:var(--dim);
+  text-decoration:none;
+}
+.arena-social:hover{color:var(--green-deep)}
+
+.arena-trusted{flex:0 0 auto;margin-top:16px;min-width:0}
+.arena-trusted .eyebrow{margin-bottom:10px}
+.arena-marks{
+  list-style:none;
+  margin:0;
+  padding:0;
+  display:flex;
+  align-items:center;
+  gap:10px 22px;
+  overflow-x:auto;
+  scrollbar-width:none;
+  -webkit-overflow-scrolling:touch;
+}
+.arena-marks::-webkit-scrollbar{display:none}
+.arena-marks li{
+  flex:0 0 auto;
+  font-family:var(--mono);
+  font-size:13px;
+  letter-spacing:.04em;
+  color:var(--muted);
+  line-height:1;
+  white-space:nowrap;
+}
+
+@media (max-width:1099px){
+  .arena-people{
+    display:flex;
+    overflow-x:auto;
+    scroll-snap-type:x mandatory;
+    scroll-padding-inline:24px;
+    gap:14px;
+    padding-bottom:4px;
+    -webkit-overflow-scrolling:touch;
+    scrollbar-width:none;
+  }
+  .arena-people::-webkit-scrollbar{display:none}
+  .arena-person{flex:0 0 min(280px,72vw);scroll-snap-align:start}
+  .arena-photo{max-height:min(240px,30vh)}
+}
+
+@media (max-width:880px){
+  .arena{
+    padding:22px 0 calc(72px + env(safe-area-inset-bottom));
+    height:100vh;
+    height:100dvh;
+  }
+}
+
+@media (max-width:520px){
+  .arena{padding:18px 0 calc(72px + env(safe-area-inset-bottom))}
+  .arena .section-head{margin-bottom:12px}
+  .arena .section-head h2{font-size:clamp(24px,7vw,30px)}
+  .arena-person{flex-basis:min(260px,78vw)}
+  .arena-proof{font-size:13px}
+}
+
+@media (prefers-reduced-motion:reduce){
+  .arena-person,
+  .arena-person:hover{transform:none;transition:none}
+}
