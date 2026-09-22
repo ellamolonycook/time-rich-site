@@ -298,15 +298,6 @@ ul.t-list li:last-child{padding-bottom:0}
 }
 
 /* ---------- LEADERSHIP LAYER ---------- */
-.accel-quote{font-family:var(--display);font-weight:600;font-size:clamp(21px,3vw,33px);line-height:1.3;letter-spacing:-.02em;color:var(--green-deep);margin:30px 0 8px;padding-left:22px;border-left:3px solid var(--lime)}
-.ladder{list-style:none;padding:0;margin:30px 0 0;display:grid;gap:14px}
-.rung{display:grid;grid-template-columns:auto 1fr;gap:22px;align-items:start;background:var(--panel);border:1px solid var(--line);border-radius:16px;padding:22px 24px;transition:transform .16s ease,border-color .16s ease,box-shadow .16s ease}
-.rung:hover{transform:translateY(-3px);border-color:rgba(66,75,54,.42);box-shadow:0 14px 34px -20px rgba(66,75,54,.45)}
-.rung .rn{font-family:var(--display);font-weight:700;font-size:26px;color:var(--lime);letter-spacing:-.02em;min-width:38px;font-variant-numeric:tabular-nums;line-height:1.2}
-.rung h3{font-family:var(--display);font-weight:600;font-size:18px;margin:0}
-.rung p{margin:5px 0 0;color:var(--muted);font-size:15px}
-.lead-sub{margin-top:44px;font-size:clamp(20px,2.6vw,28px)}
-.lead-close{margin-top:30px;font-family:var(--display);font-weight:600;font-size:clamp(18px,2.2vw,23px);line-height:1.4;color:var(--green-deep);max-width:52ch}
 
 /* ---------- THE DECISION ---------- */
 .fitgrid{display:grid;grid-template-columns:1fr 1fr;gap:18px}
@@ -324,14 +315,7 @@ ul.t-list li:last-child{padding-bottom:0}
 .fitgrid .fit.for li::before{background:var(--lime)}
 .fitgrid .fit.not li::before{background:var(--red);opacity:.7}
 
-/* ---------- COHORT NOTE ---------- */
-.cohort p{color:var(--muted)}
-.cohort p strong{color:var(--text)}
-.why-app{margin:26px 0 0;padding:20px 24px;border-left:2px solid var(--lime);background:var(--panel);border-radius:0 10px 10px 0;color:var(--muted)}
-.why-app b{color:var(--green-deep)}
 
-/* ---------- APPLY ---------- */
-.apply{background:var(--panel2)}
 
 /* ---------- FAQ ---------- */
 .faq-list{border-top:1px solid var(--line)}
@@ -404,7 +388,6 @@ ul.t-list li:last-child{padding-bottom:0}
   .hero-micro,.m-cap{font-size:14px}
   .fitgrid .fit h4{font-size:13px;letter-spacing:.08em}
   .fitgrid .fit,.tier{padding:26px 22px}
-  .rung{gap:14px 16px;padding:20px}
   .stickybar{padding:10px 14px calc(10px + env(safe-area-inset-bottom));gap:12px}
   .stickybar .btn{padding:12px 20px;font-size:15px}
   .legalbar{font-size:13px;letter-spacing:.03em;padding-bottom:calc(96px + env(safe-area-inset-bottom))}
@@ -454,7 +437,7 @@ ul.t-list li:last-child{padding-bottom:0}
 .annc{display:block;background:#424B36;color:#FFFDFB;text-decoration:none;text-align:center;
   font-family:'Inter',-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;font-size:13.5px;line-height:1.4;
   padding:9px 16px;letter-spacing:.01em}
-.annc s{opacity:.72}
+.annc s{text-decoration:line-through;text-decoration-color:#FF5A4E;text-decoration-thickness:2px;opacity:.9}
 .annc strong{font-weight:600}
 .annc:hover{background:#333A28}
 .annc[hidden]{display:none}
@@ -514,11 +497,12 @@ html{scroll-padding-top:110px}
 
 /* ---- 2. two seats band ---- */
 .s-seats{background:var(--tint)}
-.seats{display:grid;grid-template-columns:minmax(0,5fr) minmax(0,7fr);grid-template-rows:auto 1fr;gap:28px 72px;align-items:start}
-.seats .head{grid-column:1;grid-row:1}
-.seats .body{grid-column:2;grid-row:1 / span 2}
-.seats .act{grid-column:1;grid-row:2}
-.seats h2{font-size:clamp(34px,4vw,56px)}
+.seats{display:grid;grid-template-columns:minmax(0,5fr) minmax(0,7fr);gap:24px 64px;align-items:center}
+.seats .head{grid-column:1;grid-row:1 / span 2}
+.seats .body{grid-column:2;grid-row:1}
+.seats .act{grid-column:2;grid-row:2;margin-top:4px}
+.seats .head img{width:100%;height:auto;aspect-ratio:1/1;object-fit:cover;object-position:center 12%;border-radius:20%;display:block}
+.seats h2{font-size:clamp(30px,3.4vw,46px);margin-bottom:18px}
 /* tick list: the schedule's ✓ badge (.end-n) scaled down to sit in running text */
 .ticks{list-style:none;margin:20px 0;padding:0}
 .ticks li{display:flex;align-items:flex-start;gap:12px;font-size:17px;line-height:1.6;color:var(--ink)}
@@ -544,10 +528,11 @@ html{scroll-padding-top:110px}
 /* Desktop: square photo on the left, vertically centred against the letter;
    heading and text stacked on the right. Phone: heading, photo, then text. */
 .why{display:grid;grid-template-columns:minmax(0,4fr) minmax(0,7fr);grid-template-areas:"photo head" "photo txt";grid-template-rows:auto 1fr;gap:0 48px;align-items:center}
-.why .photo{grid-area:photo;align-self:center}
-.why h2{grid-area:head;align-self:end;font-size:clamp(26px,2.6vw,34px);margin-bottom:14px}
-.why .txt{grid-area:txt;align-self:start}
-.why img{width:100%;height:auto;aspect-ratio:1/1;object-fit:cover;object-position:top center;border-radius:16px;display:block}
+.why .photo{grid-area:photo;align-self:center;position:relative}
+.why h2.sticker{position:absolute;z-index:2;top:4px;left:-18px;right:auto;transform:rotate(-4deg);margin:0;
+  color:#CCEEA0;font-weight:700;font-size:13px;line-height:1.2;letter-spacing:.1em;padding:12px 17px;box-shadow:0 12px 26px -12px rgba(26,24,22,.5)}
+.why .txt{grid-area:txt / txt / head / head;align-self:center}
+.why img{width:100%;height:auto;aspect-ratio:1/1;object-fit:cover;object-position:top center;border-radius:20%;display:block}
 .why .txt{max-width:60ch}
 .why .txt p{font-size:16px;line-height:1.55;text-wrap:pretty}
 .why .txt p+p{margin-top:.7em}
@@ -555,32 +540,73 @@ html{scroll-padding-top:110px}
 .sig{margin-top:20px}
 .sig-name{display:block;font-family:'Caveat',cursive;font-weight:500;font-size:36px;line-height:1;color:var(--ink);letter-spacing:.01em}
 .sig .lbl{margin-top:8px;font-size:11px}
-.shots{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-top:20px}
-.shot{display:block;border:1px solid var(--hair);border-radius:12px;background:#fff;overflow:hidden;
-  transition:transform .2s ease,box-shadow .2s ease,border-color .2s ease;cursor:zoom-in}
-.shot:hover{transform:translateY(-3px);box-shadow:0 18px 40px -22px rgba(26,24,22,.35);border-color:rgba(26,24,22,.2)}
-.shot img{width:100%;height:auto;aspect-ratio:2/1;object-fit:cover;object-position:left top;display:block}
+/* Desktop: a deck. One screenshot shows at readable size, the next two peek
+   out beneath it, and the script rotates them every few seconds (paused on
+   hover / focus, off under reduced motion where it falls back to a 4-up grid). */
+.shots{position:relative;max-width:760px;margin:24px auto 0;aspect-ratio:2/1;padding-bottom:48px;box-sizing:content-box}
+.shot{display:block;position:absolute;inset:0 0 48px;border:1px solid rgba(26,24,22,.14);border-radius:14px;background:#fff;overflow:hidden;
+  transition:transform .7s cubic-bezier(.32,.72,0,1),opacity .55s ease,box-shadow .7s ease;cursor:zoom-in;
+  opacity:0;transform:translateY(64px) scale(.86);pointer-events:none;transform-origin:50% 100%}
+.shot img{width:100%;height:100%;object-fit:contain;object-position:center;display:block}
+/* the deck: front card flat, the two behind it fanned out lower and smaller so
+   their edges clearly read as more cards; the leaving card pops up and away */
+.shot.is-active{opacity:1;transform:none;z-index:4;pointer-events:auto;box-shadow:0 30px 60px -30px rgba(26,24,22,.5)}
+.shot.is-next{opacity:1;transform:translateY(22px) scale(.95) rotate(-1.6deg);z-index:3;box-shadow:0 18px 40px -26px rgba(26,24,22,.4)}
+.shot.is-next2{opacity:1;transform:translateY(44px) scale(.9) rotate(1.8deg);z-index:2;box-shadow:0 14px 30px -22px rgba(26,24,22,.35)}
+.shot.is-past{opacity:0;transform:translateY(-70px) scale(1.04) rotate(-2deg);z-index:5}
+@media (min-width:821px) and (prefers-reduced-motion:reduce){
+  .shots{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;max-width:none;aspect-ratio:auto;padding-bottom:0}
+  .shot{position:static;opacity:1;transform:none;pointer-events:auto;box-shadow:none}
+  .shot img{aspect-ratio:2/1;object-fit:cover;object-position:left top}
+}
 .shot-dialog{border:0;padding:0;background:transparent;max-width:min(1200px,calc(100vw - 32px));max-height:calc(100vh - 32px);margin:auto}
 .shot-dialog::backdrop{background:rgba(26,24,22,.72)}
 .shot-dialog img{display:block;max-width:100%;max-height:calc(100vh - 32px);width:auto;height:auto;border-radius:12px;background:#fff}
 .shot-close{position:absolute;top:8px;right:8px;width:40px;height:40px;border:0;border-radius:50%;background:rgba(26,24,22,.7);color:#fff;font-size:24px;line-height:1;cursor:pointer}
 
 /* ---- 4. the numbers ---- */
-/* One tinted panel, three cells split by hairlines. Number and label sit side
-   by side and centre on each other, so cells balance whatever the label
-   length. Phone: same rows, stacked. */
-.nums{display:grid;grid-template-columns:repeat(3,1fr);gap:0;background:var(--tint);border:1px solid rgba(103,118,46,.22);border-radius:20px;overflow:hidden}
-.num{display:grid;grid-template-columns:auto 1fr;align-items:center;gap:0 20px;padding:30px 30px;border-left:1px solid rgba(103,118,46,.22)}
+/* One tinted panel, three cells split by hairlines. Each number sits in a
+   lime badge that overlaps the panel's top edge (so it reads as pinned on),
+   counts up on reveal and lifts on hover. Phone: badge inline, rows stacked. */
+.nums{display:grid;grid-template-columns:repeat(3,1fr);gap:0;margin-top:34px;background:var(--tint);border:1px solid rgba(103,118,46,.22);border-radius:20px}
+.num{position:relative;padding:52px 30px 30px;border-left:1px solid rgba(103,118,46,.22)}
 .num:first-child{border-left:0}
-.num b{display:block;font-weight:500;font-size:clamp(56px,5vw,72px);letter-spacing:-.05em;line-height:.95;color:var(--ink);font-variant-numeric:tabular-nums}
-.num p{margin:0;font-size:15.5px;line-height:1.45;color:var(--ink);max-width:22ch;text-wrap:pretty}
+.num b{position:absolute;top:-34px;left:30px;width:68px;height:68px;display:flex;align-items:center;justify-content:center;
+  background:#CCEEA0;color:var(--ink);border:1px solid rgba(103,118,46,.35);border-radius:50%;
+  font-weight:500;font-size:32px;letter-spacing:-.04em;line-height:1;font-variant-numeric:tabular-nums;
+  box-shadow:0 12px 24px -14px rgba(26,24,22,.35);transition:transform .25s cubic-bezier(.32,.72,0,1),box-shadow .25s ease}
+.num:hover b{box-shadow:0 18px 30px -14px rgba(26,24,22,.4)}
+.num p{margin:0;font-size:16px;line-height:1.5;color:var(--ink);max-width:24ch;text-wrap:pretty}
+/* live tile: the list slides out under the label; a small + in the corner
+   hints that the cell does something and turns into a × when open */
+.num{cursor:pointer;outline:0}
+.num:focus-visible{box-shadow:inset 0 0 0 2px var(--tr)}
+.num .plus{position:absolute;top:14px;right:16px;width:22px;height:22px;border-radius:50%;border:1px solid rgba(103,118,46,.35);
+  color:var(--tr);transition:transform .3s cubic-bezier(.32,.72,0,1),background .2s ease}
+.num .plus::before,.num .plus::after{content:"";position:absolute;left:50%;top:50%;width:10px;height:1.5px;background:currentColor;transform:translate(-50%,-50%)}
+.num .plus::after{transform:translate(-50%,-50%) rotate(90deg)}
+.num .more{display:grid;grid-template-rows:0fr;opacity:0;transform:translateY(-6px);
+  transition:grid-template-rows .45s cubic-bezier(.32,.72,0,1),opacity .3s ease,transform .45s cubic-bezier(.32,.72,0,1),margin .45s cubic-bezier(.32,.72,0,1),padding .45s cubic-bezier(.32,.72,0,1)}
+.num .more>ul{overflow:hidden;min-height:0;list-style:none;margin:0;padding:0}
+.num .more li{display:flex;gap:10px;align-items:baseline;font-size:14px;line-height:1.45;color:var(--ink);padding:0}
+.num .more li+li{margin-top:6px}
+.num .more em{flex:0 0 auto;font-style:normal;font-family:var(--monolbl);font-size:10.5px;letter-spacing:.1em;text-transform:uppercase;color:var(--ink2);min-width:44px}
+@media (hover:hover){
+  .num:hover .more,.num.open .more{grid-template-rows:1fr;opacity:1;transform:none;margin-top:16px;padding-top:14px;border-top:1px solid rgba(103,118,46,.22)}
+  .num:hover .plus,.num.open .plus{transform:rotate(45deg);background:rgba(204,238,160,.6)}
+}
+@media (hover:none){
+  .num.open .more{grid-template-rows:1fr;opacity:1;transform:none;margin-top:14px;padding-top:12px;border-top:1px solid rgba(103,118,46,.22)}
+  .num.open .plus{transform:rotate(45deg);background:rgba(204,238,160,.6)}
+}
 
 /* ---- 5. quote ---- */
 .s-quote .inner{max-width:900px;margin:0 auto;text-align:center}
 .qcard{position:relative;background:var(--tint);border:1px solid rgba(103,118,46,.22);border-radius:28px;padding:56px 56px 48px}
 .qmark{position:absolute;left:28px;top:-18px;font-size:160px;line-height:.6;font-weight:600;letter-spacing:-.06em;color:#CCEEA0;pointer-events:none}
+/* sticker badge: used on the quote card and on Ella's photo */
 .sticker{position:absolute;right:-14px;top:-16px;transform:rotate(6deg);background:var(--tr);color:#CCEEA0;
-  font-family:var(--monolbl);font-size:11px;letter-spacing:.12em;text-transform:uppercase;padding:10px 14px;border-radius:999px;
+  font-family:var(--monolbl);font-weight:400;font-size:11px;letter-spacing:.12em;text-transform:uppercase;padding:10px 14px;border-radius:999px;
   box-shadow:0 10px 24px -12px rgba(26,24,22,.45);white-space:nowrap}
 .qface{width:64px;height:64px;border-radius:50%;display:block;margin:0 auto 22px;box-shadow:0 0 0 3px #FFFDFB,0 0 0 4px rgba(103,118,46,.35)}
 .s-quote blockquote{margin:0;position:relative}
@@ -604,7 +630,8 @@ html{scroll-padding-top:110px}
    sit off to the left, so scrolling up brings the current card back out to
    the right. Desktop: .stack/.pin are inert wrappers. */
 @media (max-width:768px){
-  .s-incl{--bar:97px;--step:45svh}
+  .v2{--bar:97px}            /* what is pinned above a stage: countdown bar + nav on tablets */
+  .s-incl{--step:45svh}
   .s-incl .stack.live{height:calc(var(--pin-h,70vh) + 4 * var(--step))}
   .s-incl .stack.live .pin{position:sticky;top:var(--bar);padding-top:8px}
   .s-incl .stack.live .cards{display:grid;grid-template-columns:1fr;align-items:start;margin-top:18px;overflow:hidden;transition:height .45s cubic-bezier(.32,.72,0,1)}  /* script sets height to the active card so the CTA follows it */
@@ -617,7 +644,20 @@ html{scroll-padding-top:110px}
   .s-incl .stack.live .act{margin-top:18px}
 }
 @media (max-width:520px){
-  .s-incl{--bar:45px}   /* the countdown bar (2 lines) is the only thing pinned on phones */
+  .v2{--bar:45px}   /* the countdown bar (2 lines) is the only thing pinned on phones */
+}
+
+/* ---- "the numbers": one tile at a time on phones (same stage as above) ----
+   Each tile becomes its own tinted card; the panel chrome goes. */
+@media (max-width:768px){
+  .s-nums{--step:40svh}
+  .s-nums .stack.live{height:calc(var(--pin-h,50vh) + 3 * var(--step))}
+  .s-nums .stack.live .pin{position:sticky;top:var(--bar);padding-top:8px}
+  .s-nums .stack.live .nums{display:grid;grid-template-columns:1fr;align-items:start;background:transparent;border:0;overflow:hidden;transition:height .45s cubic-bezier(.32,.72,0,1)}
+  .s-nums .stack.live .num{grid-area:1 / 1;background:var(--tint);border:1px solid rgba(103,118,46,.22);border-radius:16px;
+    opacity:0;transform:translateX(110%);transition:transform .5s cubic-bezier(.32,.72,0,1),opacity .35s ease;pointer-events:none}
+  .s-nums .stack.live .num.is-past{transform:translateX(-110%)}
+  .s-nums .stack.live .num.is-active{opacity:1;transform:none;pointer-events:auto}
 }
 
 /* ---- responsive ---- */
@@ -634,28 +674,33 @@ html{scroll-padding-top:110px}
   .s-hero{padding:48px 0 64px}
   .s-hero h1 .l{display:inline}
   .tw{margin-bottom:32px}
-  .seats{grid-template-columns:1fr;grid-template-rows:none;gap:24px}
+  .seats{grid-template-columns:1fr;grid-template-rows:none;gap:22px}
   .seats .head,.seats .body,.seats .act{grid-column:auto;grid-row:auto}
+  .seats .head{max-width:300px;margin-inline:auto}
   .s-problem .beat+.beat{margin-top:40px}
   .qcard{padding:44px 22px 36px;border-radius:20px}
   .qmark{left:14px;top:-10px;font-size:110px}
   .sticker{right:-6px;top:-14px;font-size:10px;padding:8px 12px}
-  .why{grid-template-columns:1fr;grid-template-areas:"head" "photo" "txt";grid-template-rows:auto;gap:0}
-  .why h2{margin-bottom:18px}
-  .why .photo{margin-bottom:22px}
-  .why img{aspect-ratio:4/3}
+  .why{grid-template-columns:1fr;grid-template-areas:"photo" "txt";grid-template-rows:auto;gap:0}
+  .why .txt{grid-area:txt}
+  .why h2.sticker{top:2px;left:-8px;right:auto;font-size:11.5px;padding:10px 13px}
+  .why .photo{margin:16px 0 22px}
+  .why img{aspect-ratio:1/1;object-position:center 18%}
+  .why .photo{max-width:320px;margin-inline:auto}
   /* phone: swipe one screenshot at a time. Bleeds to the screen edges, each
      tile snaps to centre with the next one peeking, tap opens it full size. */
-  .shots{display:flex;overflow-x:auto;gap:12px;margin:28px -20px 0;padding:0 20px 6px;scroll-snap-type:x mandatory;
+  .shots{display:flex;overflow-x:auto;gap:12px;margin:28px -20px 0;padding:0 20px 6px;max-width:none;aspect-ratio:auto;scroll-snap-type:x mandatory;
     scroll-padding:0 20px;-webkit-overflow-scrolling:touch;scrollbar-width:none}
   .shots::-webkit-scrollbar{display:none}
-  .shot{flex:0 0 84%;min-width:0;scroll-snap-align:center}
-  .shot:hover{transform:none;box-shadow:none}
-  .shot img{aspect-ratio:3/2}
-  .nums{grid-template-columns:1fr;border-radius:16px}
-  .num{grid-template-columns:56px 1fr;gap:0 14px;padding:16px 18px;border-left:0;border-top:1px solid rgba(103,118,46,.22)}
+  .shot{position:static;flex:0 0 88%;min-width:0;scroll-snap-align:center;opacity:1;transform:none;pointer-events:auto;box-shadow:none}
+  .shot img{height:auto;aspect-ratio:2/1;object-fit:contain}
+  .nums{grid-template-columns:1fr;border-radius:16px;margin-top:0}
+  .num{display:grid;grid-template-columns:56px 1fr;align-items:center;gap:0 14px;padding:16px 18px;border-left:0;border-top:1px solid rgba(103,118,46,.22)}
   .num:first-child{border-top:0}
-  .num b{font-size:44px}
+  .num b{position:relative;top:auto;left:auto;width:56px;height:56px;font-size:26px}
+  .num{grid-template-columns:56px 1fr;padding-right:44px}
+  .num .plus{top:33px;right:14px}
+  .num .more{grid-column:1 / -1}
   .num p{font-size:15px;max-width:none}
   .s-incl .cards{grid-template-columns:1fr}
   .card{padding:22px 22px}
@@ -688,7 +733,7 @@ html{scroll-padding-top:110px}
 
 <!-- ANNOUNCEMENT BAR + NAV: one sticky block -->
 <div class="topstick">
-<a class="annc" href="https://agentlabs.thrivecart.com/accelerator/" onclick="track('join_announce')"><span class="annc-price">Save $300 off RRP &middot; <s>$1,297</s> <strong>$997</strong> USD</span><span class="annc-cd" id="anncCd" hidden><span class="sep" aria-hidden="true">|</span><span id="anncCdText"></span></span></a>
+<a class="annc" href="https://agentlabs.thrivecart.com/accelerator/" onclick="track('join_announce')"><span class="annc-price">Save $300 &middot; <s>$1,297</s> <strong>$997</strong> &middot; 2 Seats For 1</span><span class="annc-cd" id="anncCd" hidden><span class="sep" aria-hidden="true">|</span><span id="anncCdText"></span></span></a>
 <script>
 // ---- Announcement countdown -------------------------------------------------
 // Counts down to the early-bird deadline (11:59pm ET, fixed offset so it is the
@@ -779,9 +824,10 @@ html{scroll-padding-top:110px}
 <section class="v2 s-seats" id="seats">
   <div class="wrap seats">
     <div class="head">
-      <h2>2 seats for the price of 1.</h2>
+      <img width="1206" height="1365" loading="lazy" decoding="async" src="img/two-seats.jpg" alt="Two founders standing together, the pair this ticket is built for" />
     </div>
     <div class="body">
+      <h2>2 seats for the price of 1.</h2>
       <p>Most AI training fails because one person learns it, then has to teach everyone else from memory.</p>
       <p>So your ticket comes with a second seat. Your co-founder, ops lead, EA or business partner.</p>
       <ul class="ticks">
@@ -838,9 +884,11 @@ html{scroll-padding-top:110px}
 <section class="v2 s-why" id="why">
   <div class="wrap">
     <div class="why">
-      <h2>I am not technical.</h2>
       <div class="photo">
-        <img width="1000" height="1250" loading="lazy" decoding="async" src="../revenue/img/rev-01.jpg" alt="Ella Molony Cook, founder of Time Rich" />
+        <!-- the section heading, worn as a sticker on the photo's corner -
+             same treatment as the Forbes sticker on the proof card -->
+        <h2 class="sticker">I am not technical.</h2>
+        <img width="900" height="1200" loading="lazy" decoding="async" src="../revenue/img/rev-32.jpg" alt="Ella Molony Cook, founder of Time Rich" />
       </div>
       <div class="txt">
         <p>I am a founder who exited, then got as lost in the AI noise as everyone else.</p>
@@ -862,6 +910,8 @@ html{scroll-padding-top:110px}
       <a class="shot" href="../media/img/testimonial-1.png"><img width="1600" height="800" loading="lazy" decoding="async" src="../media/img/testimonial-1.png" alt="LinkedIn recommendation from Indra Klavins, Keynote Speaker and Executive Advisor: Ella made working with AI visible, quite literally." /></a>
       <a class="shot" href="img/testimonial-3-crop.png"><img width="1600" height="486" loading="lazy" decoding="async" src="img/testimonial-3-crop.png" alt="LinkedIn recommendation from Jenni Ogden, Founder of Eye Q Productions: Ella's workshops are actionable from the start." /></a>
       <a class="shot" href="../media/img/testimonial-4.png"><img width="1546" height="320" loading="lazy" decoding="async" src="../media/img/testimonial-4.png" alt="LinkedIn recommendation from Alexis Morgan, Commercial Real Estate Analyst at Ackman-Ziff: working with Ella was an extremely energizing experience." /></a>
+      <a class="shot" href="img/testimonial-5.png?v=2"><img width="1546" height="360" loading="lazy" decoding="async" src="img/testimonial-5.png?v=2" alt="LinkedIn recommendation from Vika Victoria, Keynote Speaker and Strategist: Ella has an extraordinary capacity to break down complexity and teach AI in a way that feels easy." /></a>
+      <a class="shot" href="img/testimonial-6.png?v=2"><img width="1538" height="580" loading="lazy" decoding="async" src="img/testimonial-6.png?v=2" alt="LinkedIn recommendation from Melissa Barall, CFA: Ella brings the right people, ideas and opportunities together, and follows through." /></a>
     </div>
     <!-- Lightbox for the screenshots. Without JS the tiles are plain links to the full image. -->
     <dialog class="shot-dialog" id="shotDialog" aria-label="LinkedIn recommendation">
@@ -881,17 +931,110 @@ html{scroll-padding-top:110px}
       });
       d.addEventListener('click', function(e){ if (e.target === d || e.target.closest('.shot-close')) d.close(); });
     })();
+    // Desktop deck: cycle the screenshots one after another. Pauses while the
+    // pointer is over the deck or the lightbox is open; off under reduced motion.
+    (function(){
+      var wrap = document.getElementById('shots'); if (!wrap) return;
+      var cards = wrap.querySelectorAll('.shot'), n = cards.length, i = 0, timer = null, paused = false;
+      var desk = window.matchMedia('(min-width: 821px)'), rm = window.matchMedia('(prefers-reduced-motion: reduce)');
+      var dialog = document.getElementById('shotDialog');
+      function paint(){
+        cards.forEach(function(c, k){
+          var d = (k - i + n) % n;
+          c.classList.toggle('is-active', d === 0);
+          c.classList.toggle('is-next', d === 1);
+          c.classList.toggle('is-next2', d === 2);
+          c.classList.toggle('is-past', d > 2);
+        });
+      }
+      function tick(){ if (!paused && !(dialog && dialog.open)) { i = (i + 1) % n; paint(); } }
+      function start(){ if (!timer) { paint(); timer = setInterval(tick, 4500); } }
+      function stop(){ clearInterval(timer); timer = null; cards.forEach(function(c){ c.className = 'shot'; }); }
+      function sync(){ if (desk.matches && !rm.matches) start(); else stop(); }
+      wrap.addEventListener('mouseenter', function(){ paused = true; });
+      wrap.addEventListener('mouseleave', function(){ paused = false; });
+      wrap.addEventListener('focusin', function(){ paused = true; });
+      wrap.addEventListener('focusout', function(){ paused = false; });
+      desk.addEventListener ? desk.addEventListener('change', sync) : desk.addListener(sync);
+      rm.addEventListener ? rm.addEventListener('change', sync) : rm.addListener(sync);
+      sync();
+    })();
     </script>
   </div>
 </section>
 
 <!-- ============================ 4. THE NUMBERS ============================ -->
 <section class="v2 s-nums">
-  <div class="wrap nums">
-    <div class="num"><b>4</b><p>weeks from overwhelmed to operating on AI</p></div>
-    <div class="num"><b>8</b><p>live sessions coached by exited founders, investors and enterprise AI experts</p></div>
-    <div class="num"><b>2</b><p>seats for the price of 1</p></div>
+  <div class="wrap">
+  <!-- Phone only: .stack/.pin pin the panel and show one tile at a time on
+       scroll, exactly like "What your seat includes". Inert on desktop. -->
+  <div class="stack" id="numsStack">
+  <div class="pin">
+  <div class="nums">
+    <!-- Live tiles: hover (desktop) or tap (touch) a stat and the thing itself
+         slides out under the badge. Week dates come from the hero's range;
+         coaches from the "people in the arena" section; seats from the offer band. -->
+    <div class="num" tabindex="0" role="button" aria-expanded="false">
+      <b>4</b><p>weeks from overwhelmed to operating on AI</p>
+      <span class="plus" aria-hidden="true"></span>
+      <div class="more"><ul>
+        <li><em>Wk 1</em>Mon 19 Oct</li>
+        <li><em>Wk 2</em>Mon 26 Oct</li>
+        <li><em>Wk 3</em>Mon 2 Nov</li>
+        <li><em>Wk 4</em>Mon 9 Nov &middot; ends Fri 13 Nov</li>
+      </ul></div>
+    </div>
+    <div class="num" tabindex="0" role="button" aria-expanded="false">
+      <b>8</b><p>live sessions coached by exited founders, investors and enterprise AI experts</p>
+      <span class="plus" aria-hidden="true"></span>
+      <div class="more"><ul>
+        <li><em>12pm ET</em>Live and recorded</li>
+        <li><em>Coach</em>Cien Solon &middot; LaunchLemonade</li>
+        <li><em>Coach</em>Taylor Offer &middot; Atrios, a16z backed</li>
+        <li><em>Coach</em>Terry Rice &middot; enterprise AI trainer</li>
+        <li><em>Coach</em>Ella Molony Cook &middot; Time Rich</li>
+        <li><em>Coach</em>Matyas Kolsofszki &middot; 384k Ventures</li>
+      </ul></div>
+    </div>
+    <div class="num" tabindex="0" role="button" aria-expanded="false">
+      <b>2</b><p>seats for the price of 1</p>
+      <span class="plus" aria-hidden="true"></span>
+      <div class="more"><ul>
+        <li><em>Seat 1</em>You</li>
+        <li><em>Seat 2</em>Your co-founder, ops lead, EA or business partner</li>
+        <li><em>Both</em>Live in every session, own portal login</li>
+      </ul></div>
+    </div>
   </div>
+  </div>
+  </div>
+  </div>
+  <script>
+  // Live tiles. Desktop: hover opens (CSS), click/keyboard pins it open.
+  // Touch: tap toggles. Only one tile stays pinned at a time.
+  (function(){
+    var cells = document.querySelectorAll('.nums .num'); if (!cells.length) return;
+    function set(c, on){ c.classList.toggle('open', on); c.setAttribute('aria-expanded', on ? 'true' : 'false'); }
+    cells.forEach(function(c){
+      c.addEventListener('click', function(){
+        var on = !c.classList.contains('open');
+        cells.forEach(function(o){ if (o !== c) set(o, false); });
+        set(c, on);
+        var st = document.getElementById('numsStack'); if (st) { st.dispatchEvent(new Event('tr:refit')); setTimeout(function(){ st.dispatchEvent(new Event('tr:refit')); }, 480); }
+      });
+      c.addEventListener('keydown', function(e){ if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); c.click(); } });
+    });
+    document.addEventListener('click', function(e){ if (!e.target.closest('.nums')) cells.forEach(function(o){ set(o, false); }); });
+    // On the phone stage each tile opens itself as it slides in (and closes on
+    // the way out), so the detail is there without a tap; the + still toggles.
+    var stack = document.getElementById('numsStack');
+    if (stack) stack.addEventListener('tr:active', function(e){
+      cells.forEach(function(o){ set(o, o === e.detail.item); });
+      setTimeout(function(){ stack.dispatchEvent(new Event('tr:refit')); }, 60);
+      setTimeout(function(){ stack.dispatchEvent(new Event('tr:refit')); }, 520);
+    });
+  })();
+  </script>
 </section>
 
 <!-- ============================== 5. QUOTE ============================== -->
@@ -946,25 +1089,27 @@ html{scroll-padding-top:110px}
     </div>
   </div>
   <script>
-  // One card at a time on phones. Native scroll: the active card is a pure
+  // One item at a time on phones. Native scroll: the active item is a pure
   // function of how far the reader has scrolled through the tall .stack track,
-  // so it reverses on the way back up. The stage fills the screen under the
-  // countdown bar. Desktop and reduced motion: no-op.
-  (function(){
-    var stack = document.getElementById('inclStack'); if (!stack) return;
-    var sec = stack.closest('.s-incl'), pin = stack.querySelector('.pin'), stage = stack.querySelector('.cards'), cards = stack.querySelectorAll('.card');
+  // so it reverses on the way back up. Shared by "What your seat includes"
+  // (cards) and "The numbers" (tiles). Desktop and reduced motion: no-op.
+  window.trStage = function(stackId, stageSel, itemSel){
+    var stack = document.getElementById(stackId); if (!stack) return;
+    var sec = stack.closest('.v2'), pin = stack.querySelector('.pin'), stage = stack.querySelector(stageSel), items = stack.querySelectorAll(itemSel);
     var mq = window.matchMedia('(max-width: 768px)'), rm = window.matchMedia('(prefers-reduced-motion: reduce)');
-    var n = cards.length, active = -1, tick = false, pinTop = 0;
+    var n = items.length, active = -1, tick = false, pinTop = 0;
+    function fit(){ if (active >= 0) stage.style.height = items[active].offsetHeight + 'px'; }  // stage hugs the showing item
     function set(i){
       if (i === active) return; active = i;
-      cards.forEach(function(c, k){ c.classList.toggle('is-active', k === i); c.classList.toggle('is-past', k < i); });
-      stage.style.height = cards[i].offsetHeight + 'px';   // CTA sits right under whichever card is showing
+      items.forEach(function(c, k){ c.classList.toggle('is-active', k === i); c.classList.toggle('is-past', k < i); });
+      stack.dispatchEvent(new CustomEvent('tr:active', {detail:{index:i, item:items[i]}}));
+      fit();
     }
     function layout(){
       pinTop = parseFloat(getComputedStyle(sec).getPropertyValue('--bar')) || 0;
-      stage.style.height = '';                              // measure with the tallest card
+      stage.style.height = '';                              // measure with the tallest item
       stack.style.setProperty('--pin-h', pin.offsetHeight + 'px');
-      if (active >= 0) stage.style.height = cards[active].offsetHeight + 'px';
+      fit();
     }
     function update(){
       tick = false;
@@ -981,11 +1126,15 @@ html{scroll-padding-top:110px}
     window.addEventListener('resize', onResize, {passive:true});
     mq.addEventListener ? mq.addEventListener('change', update) : mq.addListener(update);
     rm.addEventListener ? rm.addEventListener('change', update) : rm.addListener(update);
-    // card heights shift once the embedded fonts apply, so measure again then
+    // item heights shift when fonts apply or an item expands (live tiles), so re-fit then
     if (document.fonts && document.fonts.ready) document.fonts.ready.then(onResize);
     window.addEventListener('load', onResize);
+    stack.addEventListener('transitionend', function(){ if (stack.classList.contains('live')) fit(); });
+    stack.addEventListener('tr:refit', function(){ if (stack.classList.contains('live')) fit(); });
     update();
-  })();
+  };
+  window.trStage('inclStack', '.cards', '.card');
+  window.trStage('numsStack', '.nums', '.num');
   </script>
 </section>
 
@@ -1163,65 +1312,6 @@ html{scroll-padding-top:110px}
   </div>
 </section>
 
-<!-- ===================== 6. THE LEADERSHIP LAYER ===================== -->
-<section class="leadership">
-  <div class="wrap narrow">
-    <span class="eyebrow">The part nobody teaches</span>
-    <h2>The leadership layer</h2>
-    <p class="lead" style="margin-top:18px">Six months into building with AI I noticed something I didn't expect. I wasn't getting better at prompting. I was getting better at explaining what I actually wanted &mdash; to my agents, and to the humans I'd been quietly frustrated with for years. I've done more relationship therapy with Claude than I'd like to admit in writing.</p>
-
-    <p class="accel-quote">The best AI operator and the best people-leader turn out to be the same person.</p>
-
-    <h3 class="lead-sub">What it means to be <span class="hl">an AI-native leader</span></h3>
-    <ol class="ladder">
-      <li class="rung">
-        <div class="rn">01</div>
-        <div>
-          <h3>Vision to operational reality</h3>
-          <p>The translation layer between what you want the business to be and what happens on a Tuesday.</p>
-        </div>
-      </li>
-      <li class="rung">
-        <div class="rn">02</div>
-        <div>
-          <h3>Lean team or big team</h3>
-          <p>Opposite systems. You'll decide which you actually are.</p>
-        </div>
-      </li>
-      <li class="rung">
-        <div class="rn">03</div>
-        <div>
-          <h3>How to brief</h3>
-          <p>Write a brief a stranger could execute, and you can run agents and people. Can't, and no tool fixes it.</p>
-        </div>
-      </li>
-      <li class="rung">
-        <div class="rn">04</div>
-        <div>
-          <h3>How to delegate without redoing it</h3>
-          <p>What "good enough" means, and letting an 8/10 ship instead of rewriting it at 11pm.</p>
-        </div>
-      </li>
-      <li class="rung">
-        <div class="rn">05</div>
-        <div>
-          <h3>How to give feedback that changes the work</h3>
-          <p>Supportive, not superficial; honest, not restrictive.</p>
-        </div>
-      </li>
-      <li class="rung">
-        <div class="rn">06</div>
-        <div>
-          <h3>How to teach people to be human</h3>
-          <p>Agents handle repetition; you build the part no agent can: judgment, taste, nerve.</p>
-        </div>
-      </li>
-    </ol>
-
-    <p class="lead-close">You finish the week with space to think, feel, and build &mdash; for the business and for yourself.</p>
-  </div>
-</section>
-
 <!-- ======================== 7. TESTIMONIALS ======================== -->
 <section class="room">
   <div class="wrap">
@@ -1309,28 +1399,6 @@ html{scroll-padding-top:110px}
   </div>
 </section>
 
-<!-- ============ 9. ONE TIME ONLY: INTIMATE FIRST COHORT ============ -->
-<section class="cohort">
-  <div class="wrap narrow">
-    <span class="eyebrow">One time only</span>
-    <h2>Intimate first cohort</h2>
-    <div style="margin-top:22px">
-      <p>That's why I'm not opening this to everyone. I'm capping this one on purpose, not because it's unproven (I've run it twice at scale and it works), but because there's a difference between watching a course and building something real with me in the room, and I can only be in so many rooms.</p>
-      <p>There's a second reason: you'll be bringing real people into your business. I want to know who I'm opening that door to, which means I'm personally involved with every business in this first cohort.</p>
-      <p><strong>So it stays small. You work directly with me. And the founding cohort gets the lowest price this programme will ever run at.</strong></p>
-      <div class="why-app"><p style="margin:0">There's no countdown and no manufactured scarcity. It's simply a <b>small first cohort, built carefully, with people being the heart of it.</b></p></div>
-    </div>
-  </div>
-</section>
-<!-- ============================ 10. APPLY ============================ -->
-<section class="apply" id="apply">
-  <div class="wrap narrow" style="text-align:center">
-    <span class="eyebrow">Founding cohort &middot; Limited spots</span>
-    <h2>Applications are open.</h2>
-    <p class="lead" style="margin:16px auto 0;max-width:54ch">Eight questions, about three minutes. At the end you'll save your spot on the onboarding session.</p>
-    <div style="margin-top:28px"><a class="btn btn-xl" href="https://timerich.ai/sh-apply/" onclick="track('apply_section')">Apply now &rarr;</a></div>
-  </div>
-</section>
 
 <!-- ============================== 11. FAQ ============================== -->
 <section class="faq" id="faq">
@@ -1436,7 +1504,7 @@ function track(name, params){
 
   // reveal on scroll
   if ('IntersectionObserver' in window && !reduce) {
-    var items = document.querySelectorAll('.tier,.machine,.rung,.fitgrid .fit,.room .card');
+    var items = document.querySelectorAll('.tier,.machine,.fitgrid .fit,.room .card');
     items.forEach(function(el){ el.classList.add('reveal'); });
     var ro = new IntersectionObserver(function(es){
       es.forEach(function(e){ if (e.isIntersecting) { e.target.classList.add('in'); ro.unobserve(e.target); } });
