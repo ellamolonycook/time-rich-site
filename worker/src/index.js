@@ -121,6 +121,13 @@ export default {
         env.NOTION_SUPERHUMAN_COHORT1_DATABASE_ID
       );
 
+      // Hot-lead alert. Fire-and-forget: notifyJoinSlack swallows its own
+      // errors, so neither the Notion write nor this response can be affected.
+      const slackPromise = notifyJoinSlack(env, { firstName, email, superhumanAnswer, trackingId });
+      if (ctx && typeof ctx.waitUntil === "function") {
+        ctx.waitUntil(slackPromise);
+      }
+
       // Append row to Intent tab of Google Sheet (Never block on this)
       const intentSheetUrl = env.GOOGLE_SHEET_INTENT_URL || env.GOOGLE_SHEET_WEBHOOK_URL;
       if (intentSheetUrl) {
@@ -912,7 +919,7 @@ async function processCalBooking(trigger, p, env) {
       name, email, timeZone, start, end, oldStart, videoUrl, reason, page, notionUp,
     });
     try {
-      await postCalSlack(env, message.blocks, message.text);
+      await postSlackMessage(env, message.blocks, message.text);
     } catch (err) {
       console.log("cal-webhook: Slack post failed", String(err));
     }
@@ -954,11 +961,52 @@ async function updateCalApplicant(env, pageId, properties) {
   return true;
 }
 
+// Pre-checkout form (POST /join): whoever fills this in is a hot lead whether
+// or not they go on to pay, so it posts on submission and never again. The
+// channel is configurable; this id is only the fallback.
+const HOTLEADS_CHANNEL_FALLBACK = "C0C4S1A48SC";
+
+// Every question the join modal asks, with the payload key its answer arrives
+// under, so the Slack message reads like the form the person filled in.
+const JOIN_QUESTIONS = [
+  ["What is your first name?", "firstName"],
+  ["What is your best email address?", "email"],
+  ["What will make you become superhuman?", "superhumanAnswer"],
+];
+
+function buildJoinSlackMessage(answers) {
+  const lines = ["*New pre-checkout form* \u2014 not paid yet"];
+  for (const [question, key] of JOIN_QUESTIONS) {
+    lines.push("*" + calEsc(question) + "*\n" + (answers[key] ? calEsc(answers[key]) : "\u2014"));
+  }
+  lines.push("*Tracking ID*\n`" + calEsc(answers.trackingId || "\u2014") + "`");
+  return {
+    text: "New pre-checkout form: " + (answers.firstName || "someone") + " (" + (answers.email || "no email") + ")",
+    blocks: [{ type: "section", text: { type: "mrkdwn", text: clip(lines.join("\n\n"), 2900) } }],
+  };
+}
+
+// Nothing in here may reject or throw: it runs alongside the Notion write and
+// must never be the reason a submission looks like it failed.
+async function notifyJoinSlack(env, answers) {
+  try {
+    const channel = env.SLACK_HOTLEADS_CHANNEL_ID || HOTLEADS_CHANNEL_FALLBACK;
+    const message = buildJoinSlackMessage(answers);
+    console.log("[JOIN] slack: posting", JSON.stringify({ channel, email: answers.email || null, trackingId: answers.trackingId || null }));
+    await postSlackMessage(env, message.blocks, message.text, channel);
+    console.log("[JOIN] slack: posted OK");
+  } catch (err) {
+    console.log("[JOIN] slack: post FAILED", err && err.message ? err.message : String(err));
+  }
+}
+
 // Slack answers 200 with { ok: false, error } on a rejected post, so the body
-// matters as much as the status.
-async function postCalSlack(env, blocks, text) {
-  if (!env.SLACK_BOT_TOKEN || !env.SLACK_CHANNEL_ID) {
-    console.log("cal-webhook: Slack not configured, skipping post");
+// matters as much as the status. `channel` is optional and defaults to the
+// booking-alerts channel, so existing callers are unchanged.
+async function postSlackMessage(env, blocks, text, channel) {
+  const target = channel || env.SLACK_CHANNEL_ID;
+  if (!env.SLACK_BOT_TOKEN || !target) {
+    console.log("slack: not configured, skipping post");
     return false;
   }
   const res = await fetch("https://slack.com/api/chat.postMessage", {
@@ -967,7 +1015,7 @@ async function postCalSlack(env, blocks, text) {
       Authorization: `Bearer ${env.SLACK_BOT_TOKEN}`,
       "Content-Type": "application/json; charset=utf-8",
     },
-    body: JSON.stringify({ channel: env.SLACK_CHANNEL_ID, text, blocks, unfurl_links: false }),
+    body: JSON.stringify({ channel: target, text, blocks, unfurl_links: false }),
   });
   let data = {};
   try { data = await res.json(); } catch { /* non-JSON body: fall through to the status */ }
