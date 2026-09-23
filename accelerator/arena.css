@@ -90,10 +90,10 @@
   padding:0 .06em;
   margin-left:-.06em;
 }
-/* Same lime underline as .hl2 ("I call bullshit") — color stays put */
+/* Same sage underline as .hl2 — slightly darker so it reads on panel fills */
 .arena-name:hover{
   color:var(--green-deep);
-  background:linear-gradient(180deg,transparent 64%,#CCEEA0 64%);
+  background:linear-gradient(180deg,transparent 64%,var(--sage-dk) 64%);
 }
 .arena-role{
   grid-column:2;
