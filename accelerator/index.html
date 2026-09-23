@@ -815,11 +815,26 @@ html{scroll-padding-top:110px}
   font-size:14px;font-weight:500;letter-spacing:.01em;transition:background .15s ease,border-color .15s ease}
 .cta-ghost:hover{background:var(--tint);border-color:var(--tr)}
 
-/* ---- 18. final CTA ---- */
-.s-final .inner{max-width:760px;margin:0 auto;text-align:center}
-.s-final .final-line{margin-top:16px;font-family:'DM Serif Display',Georgia,serif;font-weight:400;
-  font-size:clamp(24px,2.8vw,36px);line-height:1.25;letter-spacing:-.01em;color:var(--ink);text-wrap:balance}
-.s-final .cta-lg{margin-top:var(--space-act)}
+/* ---- 18. final CTA ----
+   Closing band: soft sage wash, one short promise, quiet facts, one CTA.
+   Keeps the page’s cream/sage system but marks the end of the sell. */
+.s-final{position:relative;overflow:hidden;
+  background:
+    radial-gradient(ellipse 90% 70% at 70% 120%,rgba(204,238,160,.55),transparent 60%),
+    radial-gradient(ellipse 60% 50% at 10% 0%,rgba(235,248,217,.9),transparent 55%),
+    linear-gradient(180deg,#FFFDFB 0%,#F3F8E8 100%);
+  border-top:1px solid rgba(103,118,46,.18)}
+.s-final .inner{position:relative;max-width:720px;margin:0 auto;text-align:center}
+.s-final .lbl{margin-bottom:18px;color:var(--tr)}
+.s-final .final-line{margin:0;font-family:'DM Serif Display',Georgia,serif;font-weight:400;
+  font-size:clamp(28px,3.4vw,44px);line-height:1.18;letter-spacing:-.015em;color:var(--ink);text-wrap:balance}
+.s-final .final-meta{margin-top:16px;font-family:var(--monolbl);font-size:12px;letter-spacing:.1em;
+  text-transform:uppercase;color:var(--ink2);line-height:1.5}
+.s-final .act{margin-top:var(--space-act)}
+.s-final .cta-lg{transition:background .15s ease,transform .2s cubic-bezier(.32,.72,0,1)}
+.s-final .cta-lg:hover{transform:translateY(-2px)}
+.s-final .cta-note{margin-top:14px}
+@media (prefers-reduced-motion:reduce){.s-final .cta-lg,.s-final .cta-lg:hover{transition:none;transform:none}}
 
 @media (max-width:820px){
   .qflow{margin-top:var(--space-head)}
@@ -827,7 +842,8 @@ html{scroll-padding-top:110px}
   .q-title{font-size:21px;margin-bottom:16px}
   .opt{font-size:13.5px;padding:8px 13px}
   .s-final .inner{text-align:left}
-  .s-final .final-line{font-size:clamp(22px,6.4vw,28px)}
+  .s-final .final-line{font-size:clamp(26px,7vw,32px)}
+  .s-final .final-meta{font-size:11px;letter-spacing:.08em}
 }
 
 /* ---- "more from the room": stacked quotes on phones, no scroll-stage ---- */
@@ -1851,9 +1867,12 @@ html{scroll-padding-top:110px}
   <div class="wrap">
     <div class="inner">
       <span class="lbl">Cohort starts Monday 19 October</span>
-      <p class="final-line">4 weeks. 8 sessions. 2 seats for the price of 1. One part of your business, running on AI.</p>
-      <a class="cta cta-lg" href="https://agentlabs.thrivecart.com/accelerator/" onclick="track('join_final')">Join the cohort &middot; $997 &middot; 2 seats</a>
-      <p class="cta-note">Early bird ends Sunday 11 October. $1,297 after. Payment plan available.</p>
+      <h2 class="final-line">One part of your business, running on AI.</h2>
+      <p class="final-meta">4 weeks &middot; 8 sessions &middot; 2 seats for the price of 1</p>
+      <div class="act">
+        <a class="cta cta-lg" href="/join/" onclick="openJoinModal(event); track('join_final')">Join the cohort &middot; $997 &middot; 2 seats</a>
+        <p class="cta-note">Early bird ends Sunday 11 October. $1,297 after. Payment plan available.</p>
+      </div>
     </div>
   </div>
 </section>
