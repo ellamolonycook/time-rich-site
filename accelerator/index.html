@@ -331,7 +331,7 @@ ul.t-list li:last-child{padding-bottom:0}
 
 /* ---------- RESPONSIVE ---------- */
 @media (max-width:880px){
-  .wrap{padding:0 20px}
+  .wrap{padding:0 24px}
   section{padding:56px 0}
   .hero{padding:40px 0 44px}
   .hero-grid,.story-grid{grid-template-columns:1fr;gap:36px}
@@ -395,8 +395,15 @@ ul.t-list li:last-child{padding-bottom:0}
   --tr:#424B36;--tr-dk:#333A28;--tint:#EBF8D9;
   --sans:'Inter',-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;
   --monolbl:'Space Mono',ui-monospace,SFMono-Regular,Menlo,monospace;
+  /* Shared vertical rhythm: every section uses the same padding; headings,
+     card stacks, and CTA blocks share one gap scale so the page feels even. */
+  --space-section:72px;
+  --space-head:28px;
+  --space-act:32px;
+  --space-gap:16px;
+  --space-card:26px 28px;
   background:#FFFDFB;color:var(--ink);font-family:var(--sans);
-  border-top:0;padding:72px 0;
+  border-top:0;padding:var(--space-section) 0;
 }
 .v2 .wrap{max-width:1120px;margin:0 auto;padding:0 32px}
 .v2 h1,.v2 h2,.v2 h3{font-family:var(--sans);font-weight:500;letter-spacing:-.04em;line-height:1.05;color:var(--ink);text-wrap:balance}
@@ -432,6 +439,7 @@ ul.t-list li:last-child{padding-bottom:0}
 @media (max-width:520px){
   .annc{font-size:12px;line-height:1.35;padding:6px 12px}
   .annc-cd{display:block}.annc-cd .sep{display:none}
+  .annc-seats{display:none}
 }
 
 /* ---- nav ---- */
@@ -464,9 +472,9 @@ html{scroll-padding-top:110px}
 .nav2 .brand .dot{color:var(--tr)}
 
 /* ---- 1. hero ---- */
-.s-hero{padding:64px 0 80px;text-align:center}
+.s-hero{padding:var(--space-section) 0;text-align:center}
 .s-hero .inner{max-width:880px;margin:0 auto}
-.tw{position:relative;font-size:clamp(18px,2vw,24px);font-weight:500;letter-spacing:-.02em;line-height:1.35;color:var(--ink2);margin:0 auto 40px;max-width:760px}
+.tw{position:relative;font-size:clamp(18px,2vw,24px);font-weight:500;letter-spacing:-.02em;line-height:1.35;color:var(--ink2);margin:0 auto var(--space-head);max-width:760px}
 .tw .sizer{visibility:hidden}
 .tw .live{position:absolute;inset:0}
 .tw .caret{display:inline-block;width:2px;height:.95em;background:var(--ink2);vertical-align:-.1em;margin-left:3px;animation:twBlink 1s steps(1) infinite}
@@ -477,20 +485,19 @@ html{scroll-padding-top:110px}
 .s-hero .sub{font-size:clamp(17px,1.5vw,20px);max-width:720px;margin:26px auto 0}
 .s-hero .meta{margin-top:24px;font-size:15px}
 .s-hero .two{margin-top:6px;font-size:15px}
-.s-hero .cta{margin-top:30px}
+.s-hero .cta{margin-top:var(--space-act)}
 
 /* ---- 2. two seats band ---- */
 /* page ground, not a full-bleed tint: the green now only appears on the tick
    badges and the hairline, so the band reads lighter */
-.s-seats{background:#FFFDFB;padding:56px 0;border-top:1px solid rgba(103,118,46,.18)}
-.seats{display:grid;grid-template-columns:minmax(0,5fr) minmax(0,7fr);gap:20px 48px;align-items:center}
+.s-seats{background:#FFFDFB;border-top:1px solid rgba(103,118,46,.18)}
+.seats{display:grid;grid-template-columns:minmax(0,5fr) minmax(0,7fr);gap:var(--space-gap) 48px;align-items:center}
 .seats .head{grid-column:1;grid-row:1 / span 2}
 .seats .body{grid-column:2;grid-row:1}
-.seats .act{grid-column:2;grid-row:2;margin-top:4px}
+.seats .act{grid-column:2;grid-row:2;margin-top:var(--space-act)}
 .seats .head img{width:100%;max-width:360px;height:auto;aspect-ratio:1/1;object-fit:cover;object-position:center 12%;border-radius:28px;display:block}
-.seats h2{font-size:clamp(28px,2.8vw,38px);margin-bottom:14px}
+.seats h2{font-size:clamp(28px,2.8vw,38px);margin-bottom:16px}
 .seats .body p{font-size:16px;line-height:1.55}
-.seats .act{margin-top:16px}
 /* tick list: the schedule's ✓ badge (.end-n) scaled down to sit in running text */
 .ticks{list-style:none;margin:16px 0;padding:0}
 .ticks li{display:flex;align-items:flex-start;gap:11px;font-size:16px;line-height:1.5;color:var(--ink)}
@@ -499,12 +506,12 @@ html{scroll-padding-top:110px}
 
 /* ---- 3. the problem: three beats ---- */
 .s-problem .inner{max-width:780px}
-.s-problem .beat+.beat{margin-top:56px}
+.s-problem .beat+.beat{margin-top:48px}
 .s-problem .noise{font-size:clamp(17px,1.5vw,20px);line-height:1.45;color:#A8A29E;margin:0}
 .s-problem .noise+.noise{margin-top:6px}
 .s-problem .call{margin-top:22px;font-size:clamp(28px,3vw,40px);font-weight:600;letter-spacing:-.03em;line-height:1.15;color:var(--ink)}
 .s-problem .hl2{background:linear-gradient(180deg,transparent 64%,#CCEEA0 64%);padding:0 .06em}
-.s-problem .pain{font-size:clamp(34px,4.4vw,60px);font-weight:500;letter-spacing:-.04em;line-height:1.08;color:var(--ink);text-wrap:balance;margin:0}
+.s-problem .pain{font-size:clamp(28px,3.6vw,46px);font-weight:500;letter-spacing:-.04em;line-height:1.08;color:var(--ink);text-wrap:balance;margin:0}
 .s-problem .turn p{font-size:17px;line-height:1.6;color:var(--ink2);max-width:55ch;text-wrap:pretty}
 .s-problem .turn p+p{margin-top:.9em}
 .s-problem .turn strong{color:var(--ink);font-weight:600}
@@ -512,7 +519,6 @@ html{scroll-padding-top:110px}
 .s-problem .beat.fade.in{opacity:1;transform:none}
 
 /* ---- 3b. why this exists: photo left, letter right, signed off ---- */
-.s-why{padding:56px 0}
 /* Desktop: square photo on the left, vertically centred against the letter;
    heading and text stacked on the right. Phone: heading, photo, then text. */
 .why{display:grid;grid-template-columns:minmax(0,5fr) minmax(0,7fr);grid-template-areas:"photo txt";gap:0 52px;align-items:start}
@@ -555,13 +561,16 @@ html{scroll-padding-top:110px}
 /* One tinted panel, three cells split by hairlines. Each number sits in a
    lime badge that overlaps the panel's top edge (so it reads as pinned on),
    counts up on reveal and lifts on hover. Phone: badge inline, rows stacked. */
-.nums{display:grid;grid-template-columns:repeat(3,1fr);gap:0;margin-top:34px;background:var(--tint);border:1px solid rgba(103,118,46,.22);border-radius:20px}
-/* number sits inline beside its label - no badge, no circle */
-.num{position:relative;display:grid;grid-template-columns:auto minmax(0,1fr);align-items:baseline;gap:0 18px;
-  padding:30px 44px 30px 30px;border-left:1px solid rgba(103,118,46,.22)}
+.nums{display:grid;grid-template-columns:repeat(3,1fr);gap:0;align-items:stretch;margin-top:var(--space-head);background:var(--tint);border:1px solid rgba(103,118,46,.22);border-radius:20px}
+/* number sits inline beside its label - no badge, no circle.
+   align-items:start + equal label min-height keeps the three big numbers
+   on one horizontal line and the cells (and their hairlines) the same height. */
+.num{position:relative;display:grid;grid-template-columns:auto minmax(0,1fr);grid-template-rows:auto auto;align-items:start;align-content:start;gap:0 18px;
+  padding:30px 44px 30px 30px;border-left:1px solid rgba(103,118,46,.22);min-height:100%}
 .num:first-child{border-left:0}
-.num b{font-weight:500;font-size:clamp(44px,4.4vw,58px);line-height:.9;letter-spacing:-.05em;color:var(--ink);font-variant-numeric:tabular-nums}
-.num p{grid-column:2;margin:0;font-size:16px;line-height:1.5;color:var(--ink);max-width:24ch;text-wrap:pretty}
+.num b{font-weight:500;font-size:clamp(44px,4.4vw,58px);line-height:.9;letter-spacing:-.05em;color:var(--ink);font-variant-numeric:tabular-nums;align-self:start}
+.num p{grid-column:2;margin:0;font-size:16px;line-height:1.5;color:var(--ink);max-width:24ch;text-wrap:pretty;
+  min-height:calc(3 * 1.5em)}
 .num .more{grid-column:1 / -1}
 /* live tile: the list slides out under the label; a small + in the corner
    hints that the cell does something and turns into a × when open */
@@ -591,7 +600,7 @@ html{scroll-padding-top:110px}
    top-right, quote sized down so the whole block stays small. */
 .s-quote .inner{max-width:760px;margin:0 auto;text-align:left}
 /* text left, face at the top right of it */
-.qcard{position:relative;background:var(--tint);border:1px solid rgba(103,118,46,.22);border-radius:20px;padding:40px 44px 32px;
+.qcard{position:relative;background:var(--tint);border:1px solid rgba(103,118,46,.22);border-radius:20px;padding:var(--space-card);
   display:grid;grid-template-columns:minmax(0,1fr) auto;gap:0 28px;align-items:start}
 .qmark{position:absolute;left:24px;top:-14px;font-size:96px;line-height:.6;font-weight:600;letter-spacing:-.06em;color:#CCEEA0;pointer-events:none}
 .sticker{position:absolute;right:-14px;top:-16px;left:auto;bottom:auto;transform:rotate(6deg);background:var(--tr);color:#CCEEA0;
@@ -604,59 +613,59 @@ html{scroll-padding-top:110px}
 .s-quote blockquote p{font-size:clamp(19px,1.9vw,26px);font-weight:500;letter-spacing:-.02em;line-height:1.3;color:var(--ink);text-wrap:balance}
 .s-quote figcaption{grid-column:1;grid-row:2;margin-top:18px;font-size:10.5px}
 
-/* ---- 6. what your seat includes ---- */
-.s-incl h2{font-size:clamp(34px,3.6vw,48px)}
-.s-incl .cards{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-top:28px}
-.card{background:#EBF8D9;border:1px solid rgba(103,118,46,.22);border-radius:16px;padding:26px 28px}
-.card h3{font-size:20px;letter-spacing:-.03em;margin-bottom:10px}
-.card p{font-size:15.5px;line-height:1.55}
-.s-incl .act{margin-top:32px}
+/* ---- 6. what your seat includes ----
+   Same live-tile pattern as the numbers: title + teaser stay visible; detail
+   drops open on hover (desktop) or stays open when .open / staged on mobile. */
+.s-incl h2{font-size:clamp(26px,3.4vw,40px)}
+.s-incl .cards{display:grid;grid-template-columns:1fr 1fr;grid-auto-rows:1fr;gap:var(--space-gap);margin-top:var(--space-head);align-items:stretch}
+.s-incl .card{position:relative;background:#EBF8D9;border:1px solid rgba(103,118,46,.22);border-radius:16px;
+  padding:var(--space-card);padding-right:48px;display:flex;flex-direction:column;height:100%;
+  cursor:pointer;outline:0;transition:border-color .18s ease,box-shadow .18s ease}
+.s-incl .card h3{font-size:20px;letter-spacing:-.03em;margin:0 0 8px;padding-right:8px}
+.s-incl .card .tease{font-size:15.5px;line-height:1.55;color:var(--ink2);margin:0;flex:0 0 auto}
+.s-incl .card:focus-visible{box-shadow:inset 0 0 0 2px var(--tr)}
+.s-incl .card .plus{position:absolute;top:26px;right:18px;width:22px;height:22px;border-radius:50%;
+  border:1px solid rgba(103,118,46,.35);color:var(--tr);
+  transition:transform .3s cubic-bezier(.32,.72,0,1),background .2s ease}
+.s-incl .card .plus::before,.s-incl .card .plus::after{content:"";position:absolute;left:50%;top:50%;width:10px;height:1.5px;background:currentColor;transform:translate(-50%,-50%)}
+.s-incl .card .plus::after{transform:translate(-50%,-50%) rotate(90deg)}
+.s-incl .card .more{display:grid;grid-template-rows:0fr;opacity:0;transform:translateY(-6px);
+  transition:grid-template-rows .45s cubic-bezier(.32,.72,0,1),opacity .3s ease,transform .45s cubic-bezier(.32,.72,0,1),margin .45s cubic-bezier(.32,.72,0,1),padding .45s cubic-bezier(.32,.72,0,1)}
+.s-incl .card .more>p{overflow:hidden;min-height:0;margin:0;font-size:15.5px;line-height:1.55;color:var(--ink)}
+@media (hover:hover){
+  .s-incl .card:hover .more,.s-incl .card.open .more{grid-template-rows:1fr;opacity:1;transform:none;margin-top:14px;padding-top:14px;border-top:1px solid rgba(103,118,46,.22)}
+  .s-incl .card:hover .plus,.s-incl .card.open .plus{transform:rotate(45deg);background:rgba(204,238,160,.6)}
+  .s-incl .card:hover,.s-incl .card.open{border-color:rgba(103,118,46,.45);box-shadow:0 16px 34px -24px rgba(26,24,22,.4)}
+}
+@media (hover:none){
+  .s-incl .card.open .more{grid-template-rows:1fr;opacity:1;transform:none;margin-top:14px;padding-top:12px;border-top:1px solid rgba(103,118,46,.22)}
+  .s-incl .card.open .plus{transform:rotate(45deg);background:rgba(204,238,160,.6)}
+  .s-incl .card.open{border-color:rgba(103,118,46,.45);box-shadow:0 16px 34px -24px rgba(26,24,22,.4)}
+}
+.s-incl .act{margin-top:var(--space-act)}
 
-/* ---- "what your seat includes": one card at a time on phones ----
-   .stack is a tall track (one screen + 4 steps of scroll). .pin sticks under
-   whatever is pinned at the top (--bar: the countdown bar; bar + nav on
-   tablets): heading, the card (its own height), then the CTA directly under
-   it. The script sets --pin-h so the track is the stage plus four steps. Cards share one grid
-   cell and swipe sideways: the next card waits off to the right, past cards
-   sit off to the left, so scrolling up brings the current card back out to
-   the right. Desktop: .stack/.pin are inert wrappers. */
+/* ---- "what your seat includes": stacked cards on phones, no scroll-stage ----
+   Desktop keeps the 2x2 grid. Phone: one column, normal document flow. */
 @media (max-width:768px){
-  .v2{--bar:97px}            /* what is pinned above a stage: countdown bar + nav on tablets */
-  .s-incl{--step:45svh}
-  .s-incl .stack.live{height:calc(var(--pin-h,70vh) + 4 * var(--step))}
-  .s-incl .stack.live .pin{position:sticky;top:var(--bar);padding-top:20px}
-  .s-incl .stack.live .cards{display:grid;grid-template-columns:1fr;align-items:start;margin-top:28px;overflow:hidden;transition:height .45s cubic-bezier(.32,.72,0,1)}  /* script sets height to the active card so the CTA follows it */
-  .s-incl .stack.live .card{grid-area:1 / 1;padding:30px 26px;
-    opacity:0;transform:translateX(110%);transition:transform .5s cubic-bezier(.32,.72,0,1),opacity .35s ease;pointer-events:none}
-  .s-incl .stack.live .card h3{font-size:clamp(26px,7.5vw,32px);margin-bottom:18px}
-  .s-incl .stack.live .card p{font-size:clamp(17px,4.9vw,19px);line-height:1.65}
-  .s-incl .stack.live .card.is-past{transform:translateX(-110%)}
-  .s-incl .stack.live .card.is-active{opacity:1;transform:none;pointer-events:auto}
-  .s-incl .stack.live .act{margin-top:28px}
-  .s-incl .stack.live .cta-note{margin-top:16px}
+  .v2{--bar:97px}            /* countdown bar + nav pinned above other stages */
+  .s-incl .cards{grid-template-columns:1fr;grid-auto-rows:auto}
+  .s-incl .card{opacity:1;transform:none;pointer-events:auto;height:auto}
 }
 @media (max-width:520px){
   .v2{--bar:45px}   /* the countdown bar (2 lines) is the only thing pinned on phones */
 }
 
-/* ---- "the numbers": one tile at a time on phones (same stage as above) ----
-   Each tile becomes its own tinted card; the panel chrome goes. */
+/* ---- "the numbers": stacked tiles on phones, no scroll-stage animation ---- */
 @media (max-width:768px){
-  .s-nums{--step:40svh}
-  .s-nums .stack.live{height:calc(var(--pin-h,50vh) + 3 * var(--step))}
-  .s-nums .stack.live .pin{position:sticky;top:var(--bar);padding-top:8px}
-  .s-nums .stack.live .nums{display:grid;grid-template-columns:1fr;align-items:start;background:transparent;border:0;overflow:hidden;transition:height .45s cubic-bezier(.32,.72,0,1)}
-  .s-nums .stack.live .num{grid-area:1 / 1;background:var(--tint);border:1px solid rgba(103,118,46,.22);border-radius:16px;
-    opacity:0;transform:translateX(110%);transition:transform .5s cubic-bezier(.32,.72,0,1),opacity .35s ease;pointer-events:none}
-  .s-nums .stack.live .num.is-past{transform:translateX(-110%)}
-  .s-nums .stack.live .num.is-active{opacity:1;transform:none;pointer-events:auto}
+  .s-nums .nums{grid-template-columns:1fr}
+  .s-nums .num{opacity:1;transform:none;pointer-events:auto}
 }
 
 /* ---- 9. the 4 weeks ---------------------------------------------------
    One row per week: number, Monday, a connector, Friday, chevron. The row is
    a button; the panel below it animates open with grid-template-rows. */
 .v2 .serif{font-family:'DM Serif Display',Georgia,'Times New Roman',serif;font-weight:400;letter-spacing:-.01em}
-.s-weeks h2{font-size:clamp(32px,3.6vw,48px);margin-bottom:26px}
+.s-weeks h2{font-size:clamp(32px,3.6vw,48px);margin-bottom:var(--space-head)}
 .wk-cols{display:grid;grid-template-columns:52px minmax(0,1fr) 56px minmax(0,1fr) 40px;gap:0 18px;
   font-family:var(--monolbl);font-size:10.5px;letter-spacing:.14em;text-transform:uppercase;color:var(--ink2);padding:0 20px 10px}
 .wk-cols span:nth-child(3){grid-column:4}
@@ -671,7 +680,9 @@ html{scroll-padding-top:110px}
 .wk-btn:focus-visible{outline:2px solid var(--tr);outline-offset:-2px}
 .wk-n{font-family:'DM Serif Display',Georgia,serif;font-size:26px;line-height:1;color:var(--ink2);transition:color .25s ease}
 .wk-btn:hover .wk-n{color:var(--tr)}
-.wk-sess{font-size:17px;line-height:1.45;font-weight:500;letter-spacing:-.01em}
+.wk-day{display:none}
+.wk-sess{display:flex;flex-wrap:wrap;align-items:baseline;font-size:17px;line-height:1.45;font-weight:500;letter-spacing:-.01em}
+.wk-when::after{content:" · "}
 .wk-link{position:relative;height:1px;background:var(--hair);overflow:visible}
 .wk-link::before{content:"";position:absolute;inset:0 100% 0 0;background:var(--tr);transition:inset .5s cubic-bezier(.32,.72,0,1)}
 .wk-link::after{content:"";position:absolute;left:0;top:-3px;width:7px;height:7px;border-radius:50%;background:#CCEEA0;border:1px solid rgba(103,118,46,.45);
@@ -687,36 +698,50 @@ html{scroll-padding-top:110px}
 .wk-panel-in{overflow:hidden;min-height:0;visibility:hidden;padding:0 20px}
 .wk-row.open .wk-panel{grid-template-rows:1fr}
 .wk-row.open .wk-panel-in{visibility:visible;padding-bottom:22px}
-.s-weeks .wk-foot{margin-top:40px;font-size:15px}   /* .v2 p sets margin:0, so this needs two classes to win */
-.s-weeks .act{margin-top:36px}
-@media (prefers-reduced-motion:reduce){.wk-panel,.wk-chev{transition:none}}
+.s-weeks .wk-foot{margin-top:var(--space-head);font-size:15px}   /* .v2 p sets margin:0, so this needs two classes to win */
+.s-weeks .act{margin-top:var(--space-act)}
+@media (prefers-reduced-motion:reduce){.wk-panel,.wk-chev,.wk-link::before,.wk-link::after{transition:none}}
 @media (max-width:820px){
-  /* phone: Monday above Friday inside the row, connector turns vertical */
+  /* phone: week number as a header, sessions as a full-width vertical timeline */
   .wk-cols{display:none}
-  .wk-btn{grid-template-columns:44px minmax(0,1fr) 28px;gap:4px 14px;padding:18px 14px}
-  .wk-n{grid-row:1 / span 3;align-self:start}
-  .wk-sess{grid-column:2;font-size:16px}
-  .wk-link{grid-column:2;width:1px;height:14px;justify-self:start;margin:2px 0 2px 2px;background:var(--hair)}
-  .wk-link::after{right:auto;left:-3px;top:auto;bottom:-4px}
-  .wk-chev{grid-column:3;grid-row:1 / span 3;align-self:center}
-  .wk-panel-in{padding:0 14px}
+  .wk-btn{display:grid;grid-template-columns:1fr 28px;grid-template-areas:"n chev" "s1 s1" "s2 s2";
+    gap:14px 0;padding:26px 0;align-items:start;background:transparent}
+  .wk-row.is-static .wk-btn{grid-template-columns:1fr;grid-template-areas:"n" "s1" "s2"}
+  .wk-btn:hover{background:transparent}
+  .wk-n{grid-area:n;display:flex;align-items:baseline;gap:10px;font-size:40px;line-height:1;margin:0;color:var(--ink2)}
+  .wk-n::before{content:"Week";font-family:var(--monolbl);font-size:11px;letter-spacing:.14em;text-transform:uppercase;
+    color:var(--ink2);position:relative;top:-10px}
+  .wk-btn:hover .wk-n{color:var(--tr)}
+  .wk-sess{display:grid;grid-template-columns:34px minmax(0,1fr);column-gap:12px;row-gap:2px;
+    align-items:start;padding:0 0 0 2px;font-size:inherit;font-weight:inherit;letter-spacing:0;position:relative}
+  .wk-sess:nth-child(2){grid-area:s1}
+  .wk-sess:nth-child(4){grid-area:s2}
+  .wk-day{display:block;grid-row:1 / span 2;font-family:var(--monolbl);font-size:10px;letter-spacing:.12em;text-transform:uppercase;
+    color:var(--ink2);line-height:1.2;padding-top:3px}
+  .wk-when{grid-column:2;font-family:var(--monolbl);font-size:11px;letter-spacing:.08em;text-transform:uppercase;
+    color:var(--ink2);font-weight:400;line-height:1.3}
+  .wk-when::after{content:none}
+  .wk-what{grid-column:2;font-size:17px;font-weight:500;letter-spacing:-.02em;line-height:1.35;color:var(--ink)}
+  .wk-link{display:none}
+  .wk-chev{grid-area:chev;justify-self:end;align-self:start;margin-top:10px}
+  .wk-panel-in{padding:0}
   .wk-row.open .wk-panel-in{padding-bottom:18px}
 }
 
 /* ---- 11. what you keep ----
    Four tinted cards on a 2x2 grid, equal height, each with a small numbered
    rule above the heading so the list reads as a set rather than loose text. */
-.s-keep h2{font-size:clamp(32px,3.6vw,48px);margin-bottom:28px}
-.keeps{display:grid;grid-template-columns:1fr 1fr;gap:16px;align-items:stretch}
-.keep{background:var(--tint);border:1px solid rgba(103,118,46,.22);border-radius:16px;padding:26px 28px;
+.s-keep h2{font-size:clamp(32px,3.6vw,48px);margin-bottom:var(--space-head)}
+.keeps{display:grid;grid-template-columns:1fr 1fr;gap:var(--space-gap);align-items:stretch}
+.keep{background:var(--tint);border:1px solid rgba(103,118,46,.22);border-radius:16px;padding:var(--space-card);
   display:flex;flex-direction:column;transition:transform .18s ease,box-shadow .18s ease}
 .keep:hover{transform:translateY(-2px);box-shadow:0 16px 34px -24px rgba(26,24,22,.4)}
 .keep h3{font-size:21px;line-height:1.2;margin-bottom:10px}
 .keep p{font-size:15.5px;line-height:1.55;max-width:none;color:var(--ink2)}
 @media (max-width:820px){
-  .s-keep h2{margin-bottom:22px}
+  .s-keep h2{margin-bottom:var(--space-head)}
   .keeps{grid-template-columns:1fr;gap:12px}
-  .keep{padding:22px 22px}
+  .keep{padding:22px}
   .keep h3{font-size:19px}
   .keep p{font-size:15px}
 }
@@ -726,15 +751,15 @@ html{scroll-padding-top:110px}
    keep that section's treatment; type is a step down because there are two. */
 .s-room h2{font-size:clamp(32px,3.6vw,48px)}
 .s-room .room-sub{margin-top:10px;font-size:17px;color:var(--ink2)}
-.rooms{display:grid;grid-template-columns:1fr 1fr;gap:18px;margin-top:34px;align-items:stretch}
-.s-room .qcard{display:flex;flex-direction:column;padding:38px 34px 28px;text-align:left}
+.rooms{display:grid;grid-template-columns:1fr 1fr;gap:var(--space-gap);margin-top:var(--space-head);align-items:stretch}
+.s-room .qcard{display:flex;flex-direction:column;padding:var(--space-card);text-align:left}
 .s-room .qcard .qmark{left:20px;top:-12px;font-size:76px}
 .s-room blockquote{margin:0;flex:1 1 auto}
 .s-room blockquote p{font-size:clamp(17px,1.35vw,19px);font-weight:500;letter-spacing:-.015em;line-height:1.45;color:var(--ink);text-wrap:pretty}
 .s-room figcaption{margin-top:20px;font-size:10.5px}
 @media (max-width:820px){
-  .rooms{grid-template-columns:1fr;gap:14px;margin-top:26px}
-  .s-room .qcard{padding:32px 22px 24px}
+  .rooms{grid-template-columns:1fr;gap:var(--space-gap);margin-top:var(--space-head)}
+  .s-room .qcard{padding:22px}
   .s-room .qcard .qmark{left:14px;top:-10px;font-size:64px}
   .s-room blockquote p{font-size:16.5px}
   .s-room .room-sub{font-size:16px}
@@ -744,10 +769,10 @@ html{scroll-padding-top:110px}
    One question per screen, like /qualifyform. The screens box keeps a steady
    height so the section does not jump as questions swap. */
 .s-form h2{font-size:clamp(28px,2.8vw,38px)}
-.s-form .form-sub{margin-top:8px;font-size:16px;color:var(--ink2)}
-.qflow{max-width:680px;margin:30px 0 0}
+.s-form .form-sub{margin-top:10px;font-size:16px;color:var(--ink2)}
+.qflow{max-width:680px;margin:var(--space-head) 0 0}
 .qintro{display:flex}
-.qprogress{display:flex;align-items:center;gap:14px;margin-bottom:26px}
+.qprogress{display:flex;align-items:center;gap:14px;margin-bottom:var(--space-head)}
 .qbar{flex:1 1 auto;height:3px;border-radius:3px;background:rgba(103,118,46,.18);overflow:hidden}
 .qbar span{display:block;height:100%;width:12.5%;background:var(--tr);border-radius:3px;transition:width .45s cubic-bezier(.32,.72,0,1)}
 .qcount{flex:0 0 auto;font-family:var(--monolbl);font-size:10.5px;letter-spacing:.12em;text-transform:uppercase;color:var(--ink2)}
@@ -782,71 +807,70 @@ html{scroll-padding-top:110px}
 @media (prefers-reduced-motion:reduce){.qscreen.is-in{animation:none}}
 
 /* ---- 17. book a call ---- */
-.s-call{padding:56px 0}
 .s-call .inner{max-width:640px}
 .s-call h2{font-size:clamp(28px,2.8vw,38px)}
-.s-call .call-sub{margin-top:8px;font-size:16px;color:var(--ink2)}
-.cta-ghost{display:inline-flex;align-items:center;margin-top:20px;background:transparent;color:var(--tr);
+.s-call .call-sub{margin-top:10px;font-size:16px;color:var(--ink2)}
+.cta-ghost{display:inline-flex;align-items:center;margin-top:var(--space-act);background:transparent;color:var(--tr);
   border:1px solid rgba(66,75,54,.45);border-radius:10px;padding:13px 22px;text-decoration:none;
   font-size:14px;font-weight:500;letter-spacing:.01em;transition:background .15s ease,border-color .15s ease}
 .cta-ghost:hover{background:var(--tint);border-color:var(--tr)}
 
-/* ---- 18. final CTA ---- */
-.s-final{padding:72px 0}
-.s-final .inner{max-width:760px;margin:0 auto;text-align:center}
-.s-final .final-line{margin-top:16px;font-family:'DM Serif Display',Georgia,serif;font-weight:400;
-  font-size:clamp(24px,2.8vw,36px);line-height:1.25;letter-spacing:-.01em;color:var(--ink);text-wrap:balance}
-.s-final .cta-lg{margin-top:28px}
+/* ---- 18. final CTA ----
+   Closing band: soft sage wash, one short promise, quiet facts, one CTA.
+   Keeps the page’s cream/sage system but marks the end of the sell. */
+.s-final{position:relative;overflow:hidden;
+  background:
+    radial-gradient(ellipse 90% 70% at 70% 120%,rgba(204,238,160,.55),transparent 60%),
+    radial-gradient(ellipse 60% 50% at 10% 0%,rgba(235,248,217,.9),transparent 55%),
+    linear-gradient(180deg,#FFFDFB 0%,#F3F8E8 100%);
+  border-top:1px solid rgba(103,118,46,.18)}
+.s-final .inner{position:relative;max-width:720px;margin:0 auto;text-align:center}
+.s-final .lbl{margin-bottom:18px;color:var(--tr)}
+.s-final .final-line{margin:0;font-family:'DM Serif Display',Georgia,serif;font-weight:400;
+  font-size:clamp(28px,3.4vw,44px);line-height:1.18;letter-spacing:-.015em;color:var(--ink);text-wrap:balance}
+.s-final .final-meta{margin-top:16px;font-family:var(--monolbl);font-size:12px;letter-spacing:.1em;
+  text-transform:uppercase;color:var(--ink2);line-height:1.5}
+.s-final .act{margin-top:var(--space-act)}
+.s-final .cta-lg{transition:background .15s ease,transform .2s cubic-bezier(.32,.72,0,1)}
+.s-final .cta-lg:hover{transform:translateY(-2px)}
+.s-final .cta-note{margin-top:14px}
+@media (prefers-reduced-motion:reduce){.s-final .cta-lg,.s-final .cta-lg:hover{transition:none;transform:none}}
 
 @media (max-width:820px){
-  .qflow{margin-top:24px}
+  .qflow{margin-top:var(--space-head)}
   .qscreens{min-height:268px}
   .q-title{font-size:21px;margin-bottom:16px}
   .opt{font-size:13.5px;padding:8px 13px}
-  .s-call{padding:44px 0}
-  .s-final{padding:52px 0}
   .s-final .inner{text-align:left}
-  .s-final .final-line{font-size:clamp(22px,6.4vw,28px)}
+  .s-final .final-line{font-size:clamp(26px,7vw,32px)}
+  .s-final .final-meta{font-size:11px;letter-spacing:.08em}
 }
 
-/* ---- "more from the room": one quote at a time on phones ----
-   Same stage as "What's included": the section pins under whatever is fixed at
-   the top and each card swipes in as you scroll. Desktop: inert wrappers. */
+/* ---- "more from the room": stacked quotes on phones, no scroll-stage ---- */
 @media (max-width:768px){
-  .s-room{--step:45svh}
-  .s-room .stack.live{height:calc(var(--pin-h,60vh) + 2 * var(--step))}
-  .s-room .stack.live .pin{position:sticky;top:var(--bar);padding-top:20px}
-  .s-room .stack.live .rooms{display:grid;grid-template-columns:1fr;align-items:start;margin-top:26px;
-    overflow:hidden;transition:height .45s cubic-bezier(.32,.72,0,1)}
-  .s-room .stack.live .qcard{grid-area:1 / 1;opacity:0;transform:translateX(110%);
-    transition:transform .5s cubic-bezier(.32,.72,0,1),opacity .35s ease;pointer-events:none;
-    padding:48px 24px 26px}
-  /* the stage clips overflow, so the quote mark sits inside the card here */
-  .s-room .stack.live .qcard .qmark{left:22px;top:6px;font-size:58px}
-  .s-room .stack.live .qcard.is-past{transform:translateX(-110%)}
-  .s-room .stack.live .qcard.is-active{opacity:1;transform:none;pointer-events:auto}
-  .s-room .stack.live blockquote p{font-size:17px;line-height:1.5}
+  .s-room .rooms{grid-template-columns:1fr}
+  .s-room .qcard{opacity:1;transform:none;pointer-events:auto}
 }
 
 /* ---- responsive ---- */
 @media (max-width:1024px){
-  .v2{padding:64px 0}
-  .seats{gap:24px 48px}
+  .v2{--space-section:64px;padding:var(--space-section) 0}
+  .seats{gap:var(--space-gap) 48px}
   .why{gap:40px}
 }
 @media (max-width:820px){
-  .v2{padding:56px 0}
-  .v2 .wrap{padding:0 20px}
+  .v2{--space-section:56px;--space-head:24px;--space-act:28px;--space-card:22px;padding:var(--space-section) 0}
+  .v2 .wrap{padding:0 24px}
   .nav2 .wrap{height:64px}
   .nav2 .cta{font-size:12px;padding:12px 14px;letter-spacing:.04em}
-  .s-hero{padding:48px 0 64px}
+  .s-hero{padding:var(--space-section) 0}
   .s-hero h1 .l{display:inline}
-  .tw{margin-bottom:32px}
-  .seats{grid-template-columns:1fr;grid-template-rows:none;gap:22px}
+  .tw{margin-bottom:var(--space-head)}
+  .seats{grid-template-columns:1fr;grid-template-rows:none;gap:var(--space-gap)}
   .seats .head,.seats .body,.seats .act{grid-column:auto;grid-row:auto}
   .seats .head{max-width:320px;margin-inline:auto}
   .s-problem .beat+.beat{margin-top:40px}
-  .qcard{padding:34px 20px 26px;border-radius:18px;gap:0 16px}
+  .qcard{padding:var(--space-card);border-radius:18px;gap:0 16px}
   .qmark{left:14px;top:-10px;font-size:68px}
   .sticker{right:-6px;top:-13px;left:auto;bottom:auto;font-size:9.5px;padding:8px 11px}
   .qface{width:76px;height:76px;margin:0}
@@ -858,26 +882,27 @@ html{scroll-padding-top:110px}
   .why .photo{max-width:320px;margin-inline:auto}
   /* phone: swipe one screenshot at a time. Bleeds to the screen edges, each
      tile snaps to centre with the next one peeking, tap opens it full size. */
-  .shots{display:flex;overflow-x:auto;gap:12px;margin:28px -20px 0;padding:0 20px 6px;max-width:none;aspect-ratio:auto;scroll-snap-type:x mandatory;
-    scroll-padding:0 20px;-webkit-overflow-scrolling:touch;scrollbar-width:none}
+  .shots{display:flex;overflow-x:auto;gap:12px;margin:28px -24px 0;padding:0 24px 6px;max-width:none;aspect-ratio:auto;scroll-snap-type:x mandatory;
+    scroll-padding:0 24px;-webkit-overflow-scrolling:touch;scrollbar-width:none}
   .shots::-webkit-scrollbar{display:none}
   .shot{position:static;flex:0 0 88%;min-width:0;scroll-snap-align:center;opacity:1;transform:none;pointer-events:auto;box-shadow:none}
   .shot img{height:auto;aspect-ratio:2/1;object-fit:contain}
   .nums{grid-template-columns:1fr;border-radius:16px;margin-top:0}
-  .num{grid-template-columns:auto minmax(0,1fr);align-items:baseline;gap:0 14px;padding:18px 44px 18px 18px;border-left:0;border-top:1px solid rgba(103,118,46,.22)}
+  .num{grid-template-columns:auto minmax(0,1fr);align-items:start;gap:0 14px;padding:18px 44px 18px 18px;border-left:0;border-top:1px solid rgba(103,118,46,.22)}
   .num:first-child{border-top:0}
   .num b{font-size:40px}
   .num .plus{top:20px;right:14px}
   .num .more{grid-column:1 / -1}
-  .num p{font-size:15px;max-width:none}
+  .num p{font-size:15px;max-width:none;min-height:0}
   .s-incl .cards{grid-template-columns:1fr}
-  .card{padding:22px 22px}
+  .s-incl .card{padding:22px;padding-right:48px}
 }
 @media (max-width:520px){
-  .v2 .wrap{padding:0 16px}
-  .s-nums .wrap{padding:0 20px}
-  .shots{margin-left:-16px;margin-right:-16px;padding-left:16px;padding-right:16px;scroll-padding:0 16px}
+  .v2 .wrap{padding:0 24px}
+  .s-nums .wrap{padding:0 24px}
+  .shots{margin-left:-24px;margin-right:-24px;padding-left:24px;padding-right:24px;scroll-padding:0 24px}
   .nav2 .brand{font-size:18px}
+  .s-incl h2{font-size:clamp(24px,7vw,30px)}
   /* phone: the announcement bar stays pinned; the nav scrolls away */
   .topstick{display:contents}
   .annc{position:sticky;top:0;z-index:60}
@@ -901,7 +926,7 @@ html{scroll-padding-top:110px}
 
 <!-- ANNOUNCEMENT BAR + NAV: one sticky block -->
 <div class="topstick">
-<a class="annc" href="/join/" onclick="openJoinModal(event); track('join_announce')"><span class="annc-price">Save $300 &middot; <s>$1,297</s> <strong>$997</strong> &middot; 2 Seats For 1</span><span class="annc-cd" id="anncCd" hidden><span class="sep" aria-hidden="true">|</span><span id="anncCdText"></span></span></a>
+<a class="annc" href="/join/" onclick="openJoinModal(event); track('join_announce')"><span class="annc-price">Save $300 &middot; <s>$1,297</s> <strong>$997</strong><span class="annc-seats"> &middot; 2 Seats For 1</span></span><span class="annc-cd" id="anncCd" hidden><span class="sep" aria-hidden="true">|</span><span id="anncCdText"></span></span></a>
 <script>
 // ---- Announcement countdown -------------------------------------------------
 // Counts down to the early-bird deadline (11:59pm ET, fixed offset so it is the
@@ -996,7 +1021,6 @@ html{scroll-padding-top:110px}
     </div>
     <div class="body">
       <h2>2 seats for the price of 1.</h2>
-      <p>Most AI training fails because one person learns it, then has to teach everyone else from memory.</p>
       <p>So your ticket comes with a second seat. Your co-founder, ops lead, EA or business partner.</p>
       <ul class="ticks">
         <li><span class="tick" aria-hidden="true">&#10003;</span>Both live in every session</li>
@@ -1017,8 +1041,6 @@ html{scroll-padding-top:110px}
     <div class="inner">
       <!-- Beat 1: the noise -->
       <div class="beat">
-        <p class="noise">Over hearing about AI from people who are not building.</p>
-        <p class="noise">A new tool every week.</p>
         <p class="noise">Everyone apparently is doing it better, agents quietly running their whole business.</p>
         <p class="call"><span class="hl2">I call bullshit.</span></p>
       </div>
@@ -1028,7 +1050,6 @@ html{scroll-padding-top:110px}
       </div>
       <!-- Beat 3: the turn -->
       <div class="beat turn">
-        <p>Nobody teaching in this room is hyping AI. They are building alongside you.</p>
         <p>You have been meaning to fix this all year. 4 weeks, a room that notices when you do not show up, and <strong>it is running before Christmas.</strong></p>
       </div>
     </div>
@@ -1132,14 +1153,9 @@ html{scroll-padding-top:110px}
 <!-- ============================ 4. THE NUMBERS ============================ -->
 <section class="v2 s-nums">
   <div class="wrap">
-  <!-- Phone only: .stack/.pin pin the panel and show one tile at a time on
-       scroll, exactly like "What your seat includes". Inert on desktop. -->
-  <div class="stack" id="numsStack">
-  <div class="pin">
   <div class="nums">
-    <!-- Live tiles: hover (desktop) or tap (touch) a stat and the thing itself
-         slides out under the badge. Week dates come from the hero's range;
-         coaches from the "people in the arena" section; seats from the offer band. -->
+    <!-- Live tiles: hover (desktop) or tap (touch) expands the detail list.
+         On phone the three tiles stack normally — no scroll-stage swipe. -->
     <div class="num" tabindex="0" role="button" aria-expanded="false">
       <b>4</b><p>weeks from overwhelmed to operating on AI</p>
       <span class="plus" aria-hidden="true"></span>
@@ -1159,7 +1175,6 @@ html{scroll-padding-top:110px}
         <li><em>Coach</em>Taylor Offer &middot; Atrios, a16z backed</li>
         <li><em>Coach</em>Terry Rice &middot; enterprise AI trainer</li>
         <li><em>Coach</em>AJ Yadav &middot; Otto AI</li>
-        <li><em>Coach</em>Ella Molony Cook &middot; Time Rich</li>
         <li><em>Coach</em>Matyas Kolsofszki &middot; 384k Ventures</li>
       </ul></div>
     </div>
@@ -1174,11 +1189,10 @@ html{scroll-padding-top:110px}
     </div>
   </div>
   </div>
-  </div>
-  </div>
   <script>
   // Live tiles. Desktop: hover opens (CSS), click/keyboard pins it open.
   // Touch: tap toggles. Only one tile stays pinned at a time.
+  // Phone: tiles are stacked in document flow — no scroll-stage animation.
   (function(){
     var cells = document.querySelectorAll('.nums .num'); if (!cells.length) return;
     function set(c, on){ c.classList.toggle('open', on); c.setAttribute('aria-expanded', on ? 'true' : 'false'); }
@@ -1187,19 +1201,10 @@ html{scroll-padding-top:110px}
         var on = !c.classList.contains('open');
         cells.forEach(function(o){ if (o !== c) set(o, false); });
         set(c, on);
-        var st = document.getElementById('numsStack'); if (st) { st.dispatchEvent(new Event('tr:refit')); setTimeout(function(){ st.dispatchEvent(new Event('tr:refit')); }, 480); }
       });
       c.addEventListener('keydown', function(e){ if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); c.click(); } });
     });
     document.addEventListener('click', function(e){ if (!e.target.closest('.nums')) cells.forEach(function(o){ set(o, false); }); });
-    // On the phone stage each tile opens itself as it slides in (and closes on
-    // the way out), so the detail is there without a tap; the + still toggles.
-    var stack = document.getElementById('numsStack');
-    if (stack) stack.addEventListener('tr:active', function(e){
-      cells.forEach(function(o){ set(o, o === e.detail.item); });
-      setTimeout(function(){ stack.dispatchEvent(new Event('tr:refit')); }, 60);
-      setTimeout(function(){ stack.dispatchEvent(new Event('tr:refit')); }, 520);
-    });
   })();
   </script>
 </section>
@@ -1223,86 +1228,58 @@ html{scroll-padding-top:110px}
 <!-- ======================= 6. WHAT YOUR SEAT INCLUDES ======================= -->
 <section class="v2 s-incl" id="includes">
   <div class="wrap">
-    <!-- Phone only: .stack is a tall scroll track, .pin fills the screen under
-         the countdown bar and shows one card at a time as you scroll (see the
-         script below). On desktop both are plain wrappers around the 2x2 grid
-         and the CTA sits under it as before. -->
-    <div class="stack" id="inclStack">
-    <div class="pin">
     <h2>What's included</h2>
     <div class="cards">
-      <div class="card">
+      <div class="card" tabindex="0" role="button" aria-expanded="false">
         <h3>The Accelerator</h3>
-        <p>8 live sessions, all hands on. We break every build down step by step until you can run it yourself. Then the expert Q&amp;A rooms, where you ask your question to venture backed founders, creators and investors building in the arena. Plus bonus sessions with a billion dollar founder and an a16z backed CEO.</p>
+        <p class="tease">8 live sessions, all hands on.</p>
+        <span class="plus" aria-hidden="true"></span>
+        <div class="more"><p>We break every build down step by step until you can run it yourself. Then the expert Q&amp;A rooms, where you ask your question to venture backed founders, creators and investors building in the arena. Plus bonus sessions with a billion dollar founder and an a16z backed CEO.</p></div>
       </div>
-      <div class="card">
+      <div class="card" tabindex="0" role="button" aria-expanded="false">
         <h3>The Arena</h3>
-        <p>Hot seat coaching in almost every session, plus Q&amp;A rooms where you bring whatever is in your way. Small rooms, answered out loud, on your business. You watch other people get unstuck and take half of it home with you. There is no silly question.</p>
+        <p class="tease">Hot seat coaching in almost every session.</p>
+        <span class="plus" aria-hidden="true"></span>
+        <div class="more"><p>Plus Q&amp;A rooms where you bring whatever is in your way. Small rooms, answered out loud, on your business. You watch other people get unstuck and take half of it home with you. There is no silly question.</p></div>
       </div>
-      <div class="card">
+      <div class="card" tabindex="0" role="button" aria-expanded="false">
         <h3>The Network</h3>
-        <p>Every question somebody else asks is one you did not know you had. You finish knowing what a room of founders, coaches and creators is working on, and who to call about it.</p>
+        <p class="tease">Every question somebody else asks is one you did not know you had.</p>
+        <span class="plus" aria-hidden="true"></span>
+        <div class="more"><p>You finish knowing what a room of founders, coaches and creators is working on, and who to call about it.</p></div>
       </div>
-      <div class="card">
+      <div class="card" tabindex="0" role="button" aria-expanded="false">
         <h3>The Second Seat</h3>
-        <p>One more person, free. They join every session live, get their own portal login, and keep everything you keep. You leave with a system two people can run, not one person's notes.</p>
+        <p class="tease">One more person, free.</p>
+        <span class="plus" aria-hidden="true"></span>
+        <div class="more"><p>They join every session live, get their own portal login, and keep everything you keep. You leave with a system two people can run, not one person's notes.</p></div>
       </div>
     </div>
     <div class="act">
       <a class="cta cta-lg" href="/join/" onclick="openJoinModal(event)" onclick="track('join_includes')">Join the cohort &middot; $997 &middot; 2 seats</a>
       <p class="cta-note">Early bird ends Sunday 11 October. Payment plan available.</p>
     </div>
-    </div>
-    </div>
   </div>
   <script>
-  // One item at a time on phones. Native scroll: the active item is a pure
-  // function of how far the reader has scrolled through the tall .stack track,
-  // so it reverses on the way back up. Shared by "What your seat includes"
-  // (cards) and "The numbers" (tiles). Desktop and reduced motion: no-op.
-  window.trStage = function(stackId, stageSel, itemSel){
-    var stack = document.getElementById(stackId); if (!stack) return;
-    var sec = stack.closest('.v2'), pin = stack.querySelector('.pin'), stage = stack.querySelector(stageSel), items = stack.querySelectorAll(itemSel);
-    var mq = window.matchMedia('(max-width: 768px)'), rm = window.matchMedia('(prefers-reduced-motion: reduce)');
-    var n = items.length, active = -1, tick = false, pinTop = 0, pinH = 0;
-    function fit(){ if (active >= 0) stage.style.height = items[active].offsetHeight + 'px'; }  // stage hugs the showing item
-    function set(i){
-      if (i === active) return; active = i;
-      items.forEach(function(c, k){ c.classList.toggle('is-active', k === i); c.classList.toggle('is-past', k < i); });
-      stack.dispatchEvent(new CustomEvent('tr:active', {detail:{index:i, item:items[i]}}));
-      fit();
-    }
-    function layout(){
-      pinTop = parseFloat(getComputedStyle(sec).getPropertyValue('--bar')) || 0;
-      stage.style.height = '';                              // measure with the tallest item
-      pinH = pin.offsetHeight;                              // stable: the tallest item's pin
-      stack.style.setProperty('--pin-h', pinH + 'px');
-      fit();
-    }
-    function update(){
-      tick = false;
-      if (!mq.matches || rm.matches) { stack.classList.remove('live'); stack.style.removeProperty('--pin-h'); stage.style.height = ''; return; }
-      if (!stack.classList.contains('live')) { stack.classList.add('live'); layout(); }
-      var r = stack.getBoundingClientRect();
-      var travel = r.height - (pinH || pin.offsetHeight);  // how far the pin can ride
-      var p = travel > 0 ? (pinTop - r.top) / travel : 0;  // 0 at pin start, 1 at release
-      set(Math.max(0, Math.min(n - 1, Math.floor(p * n))));
-    }
-    function onScroll(){ if (!tick) { tick = true; requestAnimationFrame(update); } }
-    function onResize(){ if (stack.classList.contains('live')) layout(); onScroll(); }
-    window.addEventListener('scroll', onScroll, {passive:true});
-    window.addEventListener('resize', onResize, {passive:true});
-    mq.addEventListener ? mq.addEventListener('change', update) : mq.addListener(update);
-    rm.addEventListener ? rm.addEventListener('change', update) : rm.addListener(update);
-    // item heights shift when fonts apply or an item expands (live tiles), so re-fit then
-    if (document.fonts && document.fonts.ready) document.fonts.ready.then(onResize);
-    window.addEventListener('load', onResize);
-    stack.addEventListener('transitionend', function(){ if (stack.classList.contains('live')) fit(); });
-    stack.addEventListener('tr:refit', function(){ if (stack.classList.contains('live')) fit(); });
-    update();
-  };
-  window.trStage('inclStack', '.cards', '.card');
-  window.trStage('numsStack', '.nums', '.num');
+  // What's included: hover opens via CSS; click/tap pins .open.
+  // Phone: cards stack normally — no scroll-stage swipe.
+  (function(){
+    var cards = document.querySelectorAll('.s-incl .card'); if (!cards.length) return;
+    function set(c, on){ c.classList.toggle('open', on); c.setAttribute('aria-expanded', on ? 'true' : 'false'); }
+    cards.forEach(function(c){
+      c.addEventListener('click', function(){
+        var on = !c.classList.contains('open');
+        cards.forEach(function(o){ if (o !== c) set(o, false); });
+        set(c, on);
+      });
+      c.addEventListener('keydown', function(e){
+        if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); c.click(); }
+      });
+    });
+    document.addEventListener('click', function(e){
+      if (!e.target.closest('.s-incl .cards')) cards.forEach(function(o){ set(o, false); });
+    });
+  })();
   </script>
 </section>
 
@@ -1396,7 +1373,7 @@ html{scroll-padding-top:110px}
         </a>
         <a class="arena-name" href="https://www.linkedin.com/in/yadavajay" target="_blank" rel="noopener">AJ Yadav</a>
         <p class="arena-role">Founder, Otto AI</p>
-        <p class="arena-proof">Exited VC-backed founder and AI creator. Simplified to 17M users. His AI clone grew his social media to 420,000 followers in under 5 months. Forbes 30 Under 30.</p>
+        <p class="arena-proof">Exited VC-backed founder. AI clone grew him to 420k followers in under 5 months. Forbes 30 Under 30.</p>
       </article>
       <article class="arena-person">
         <a class="arena-photo" href="https://www.linkedin.com/in/ellamolonycook/" target="_blank" rel="noopener">
@@ -1464,9 +1441,9 @@ html{scroll-padding-top:110px}
         <h3 class="wk-h">
           <button class="wk-btn" type="button" id="wk01-btn" aria-expanded="false" aria-controls="wk01-panel">
             <span class="wk-n">01</span>
-            <span class="wk-sess">19 Oct &middot; Open Business Surgery</span>
+            <span class="wk-sess"><span class="wk-day">Mon</span><span class="wk-when">19 Oct</span><span class="wk-what">Open Business Surgery</span></span>
             <span class="wk-link" aria-hidden="true"></span>
-            <span class="wk-sess">23 Oct &middot; Training Your Agent</span>
+            <span class="wk-sess"><span class="wk-day">Fri</span><span class="wk-when">23 Oct</span><span class="wk-what">Training Your Agent</span></span>
             <span class="wk-chev" aria-hidden="true">
               <svg viewBox="0 0 20 20" width="20" height="20"><path d="M5 8l5 5 5-5" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
             </span>
@@ -1482,9 +1459,9 @@ html{scroll-padding-top:110px}
         <h3 class="wk-h">
           <button class="wk-btn" type="button" id="wk02-btn" aria-expanded="false" aria-controls="wk02-panel">
             <span class="wk-n">02</span>
-            <span class="wk-sess">26 Oct &middot; Your AI Operating System</span>
+            <span class="wk-sess"><span class="wk-day">Mon</span><span class="wk-when">26 Oct</span><span class="wk-what">Your AI Operating System</span></span>
             <span class="wk-link" aria-hidden="true"></span>
-            <span class="wk-sess">30 Oct &middot; Expert Q&amp;A</span>
+            <span class="wk-sess"><span class="wk-day">Fri</span><span class="wk-when">30 Oct</span><span class="wk-what">Expert Q&amp;A</span></span>
             <span class="wk-chev" aria-hidden="true">
               <svg viewBox="0 0 20 20" width="20" height="20"><path d="M5 8l5 5 5-5" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
             </span>
@@ -1500,9 +1477,9 @@ html{scroll-padding-top:110px}
         <h3 class="wk-h">
           <button class="wk-btn" type="button" id="wk03-btn" aria-expanded="false" aria-controls="wk03-panel">
             <span class="wk-n">03</span>
-            <span class="wk-sess">2 Nov &middot; The AI Content Machine</span>
+            <span class="wk-sess"><span class="wk-day">Mon</span><span class="wk-when">2 Nov</span><span class="wk-what">The AI Content Machine</span></span>
             <span class="wk-link" aria-hidden="true"></span>
-            <span class="wk-sess">6 Nov &middot; Bonus: Taylor Offer</span>
+            <span class="wk-sess"><span class="wk-day">Fri</span><span class="wk-when">6 Nov</span><span class="wk-what">Bonus: Taylor Offer</span></span>
             <span class="wk-chev" aria-hidden="true">
               <svg viewBox="0 0 20 20" width="20" height="20"><path d="M5 8l5 5 5-5" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
             </span>
@@ -1518,9 +1495,9 @@ html{scroll-padding-top:110px}
         <h3 class="wk-h">
           <button class="wk-btn" type="button" id="wk04-btn" aria-expanded="false" aria-controls="wk04-panel">
             <span class="wk-n">04</span>
-            <span class="wk-sess">9 Nov &middot; Unfair AI Advantage</span>
+            <span class="wk-sess"><span class="wk-day">Mon</span><span class="wk-when">9 Nov</span><span class="wk-what">Unfair AI Advantage</span></span>
             <span class="wk-link" aria-hidden="true"></span>
-            <span class="wk-sess">13 Nov &middot; Expert Q&amp;A</span>
+            <span class="wk-sess"><span class="wk-day">Fri</span><span class="wk-when">13 Nov</span><span class="wk-what">Expert Q&amp;A</span></span>
             <span class="wk-chev" aria-hidden="true">
               <svg viewBox="0 0 20 20" width="20" height="20"><path d="M5 8l5 5 5-5" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
             </span>
@@ -1586,13 +1563,10 @@ html{scroll-padding-top:110px}
 </section>
 
 <!-- ======================== 12. MORE FROM THE ROOM ========================
-     Two quote cards in the same tinted style as the section 5 pull quote. -->
+     Two quote cards in the same tinted style as the section 5 pull quote.
+     Phone: stacked in document flow — no scroll-stage swipe. -->
 <section class="v2 s-room" id="room">
   <div class="wrap">
-    <!-- Phone only: .stack/.pin pin the section and show one quote at a time
-         on scroll, the same stage as "What's included". Inert on desktop. -->
-    <div class="stack" id="roomStack">
-    <div class="pin">
     <h2 class="serif">More from the room</h2>
     <p class="room-sub">From the workshops this accelerator grew out of.</p>
     <div class="rooms">
@@ -1607,10 +1581,7 @@ html{scroll-padding-top:110px}
         <figcaption class="lbl">Jenni Ogden &middot; Founder, Eye Q Productions</figcaption>
       </figure>
     </div>
-    </div>
-    </div>
   </div>
-  <script>window.trStage && window.trStage('roomStack', '.rooms', '.qcard');</script>
 </section>
 
 
@@ -1896,9 +1867,12 @@ html{scroll-padding-top:110px}
   <div class="wrap">
     <div class="inner">
       <span class="lbl">Cohort starts Monday 19 October</span>
-      <p class="final-line">4 weeks. 8 sessions. 2 seats for the price of 1. One part of your business, running on AI.</p>
-      <a class="cta cta-lg" href="https://agentlabs.thrivecart.com/accelerator/" onclick="track('join_final')">Join the cohort &middot; $997 &middot; 2 seats</a>
-      <p class="cta-note">Early bird ends Sunday 11 October. $1,297 after. Payment plan available.</p>
+      <h2 class="final-line">One part of your business, running on AI.</h2>
+      <p class="final-meta">4 weeks &middot; 8 sessions &middot; 2 seats for the price of 1</p>
+      <div class="act">
+        <a class="cta cta-lg" href="/join/" onclick="openJoinModal(event); track('join_final')">Join the cohort &middot; $997 &middot; 2 seats</a>
+        <p class="cta-note">Early bird ends Sunday 11 October. $1,297 after. Payment plan available.</p>
+      </div>
     </div>
   </div>
 </section>
