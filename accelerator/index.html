@@ -424,15 +424,105 @@ ul.t-list li:last-child{padding-bottom:0}
 
 
 
-/* ---------- FAQ ---------- */
-.faq-list{border-top:1px solid var(--line)}
-.faq-item{border-bottom:1px solid var(--line)}
-.faq-item summary{cursor:pointer;padding:24px 40px 24px 4px;list-style:none;position:relative}
-.faq-item summary h3{font-family:var(--display);font-weight:500;font-size:18.5px;display:inline}
-.faq-item summary::-webkit-details-marker{display:none}
-.faq-item summary::after{content:'+';position:absolute;right:8px;top:20px;font-family:var(--mono);font-size:22px;color:var(--lime);transition:transform .18s}
-.faq-item[open] summary::after{transform:rotate(45deg)}
-.faq-a{padding:0 4px 26px;color:var(--muted);max-width:680px}
+/* ---------- FAQ (Minimal Premium Cards) ---------- */
+.faq-list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin-top: 48px;
+  width: calc(100% + 24px);
+  margin-left: -12px;
+}
+.faq-item {
+  background: #ffffff;
+  border-radius: 12px;
+  border: 1px solid rgba(66,75,54,0.08);
+  box-shadow: 0 4px 16px -8px rgba(66,75,54,0.05);
+  transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+  overflow: hidden;
+}
+.faq-item:hover {
+  box-shadow: 0 20px 40px -12px rgba(66,75,54,0.15);
+  border-color: rgba(204,238,160,0.4);
+  transform: scale(1.01) translateY(-2px);
+  z-index: 2;
+  position: relative;
+}
+.faq-item.is-open {
+  border-color: rgba(204,238,160,0.8);
+  box-shadow: 0 24px 48px -12px rgba(66,75,54,0.18), 0 0 0 1px rgba(204,238,160,0.2); 
+  transform: scale(1.02);
+  z-index: 3;
+  position: relative;
+  margin: 16px 0;
+}
+
+.faq-item .faq-summary {
+  cursor: pointer;
+  padding: 24px 32px;
+  list-style: none;
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.faq-item .faq-summary h3 {
+  font-family: var(--display);
+  font-weight: 500;
+  font-size: 18.5px;
+  color: var(--green-deep);
+  margin: 0;
+  padding-right: 40px;
+  line-height: 1.4;
+  transition: color 0.3s ease;
+}
+.faq-item:hover .faq-summary h3 {
+  color: #799554; /* Brighter premium green */
+}
+
+/* The right aligned chevron icon */
+.faq-item .faq-summary::before {
+  display: none;
+}
+.faq-item .faq-summary::after {
+  content: '';
+  position: absolute;
+  right: 32px;
+  top: 50%;
+  width: 9px;
+  height: 9px;
+  margin-top: -6px;
+  background-color: transparent;
+  border-right: 2px solid var(--pop);
+  border-bottom: 2px solid var(--pop);
+  border-radius: 1px;
+  transform: rotate(45deg);
+  transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.faq-item.is-open .faq-summary::after {
+  transform: rotate(-135deg);
+  border-color: var(--green-deep);
+}
+
+/* Smooth CSS Grid Height Animation */
+.faq-a-wrap {
+  display: grid;
+  grid-template-rows: 0fr;
+  transition: grid-template-rows 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.faq-item.is-open .faq-a-wrap {
+  grid-template-rows: 1fr;
+}
+.faq-a {
+  overflow: hidden;
+}
+.faq-a-inner {
+  padding: 0 32px 32px 32px;
+  color: var(--muted);
+  font-size: 16px;
+  line-height: 1.6;
+  max-width: 720px;
+}
 
 /* ---------- FOOTER ---------- */
 .legalbar{background:var(--green);color:rgba(255,252,235,.66);font-family:var(--mono);font-size:12px;letter-spacing:.04em;padding:22px 0}
@@ -499,6 +589,13 @@ ul.t-list li:last-child{padding-bottom:0}
   .gc-tab span { writing-mode: horizontal-tb; transform: none !important; }
   .for-card .gc-content { padding: 24px; border-radius: 12px 12px 0 0; }
   .not-card .gc-content { padding: 24px; border-radius: 0 0 12px 12px; }
+
+  .faq-list { width: 100%; margin-left: 0; }
+  .faq-item .faq-summary { padding: 20px 24px; }
+  .faq-item .faq-summary h3 { padding-right: 32px; font-size: 17px; }
+  .faq-item .faq-summary::before { right: 20px; }
+  .faq-item .faq-summary::after { right: 25px; }
+  .faq-a-inner { padding: 0 24px 24px 24px; }
 
   .rung{gap:14px 16px;padding:20px}
   .tier{padding:26px 22px}
@@ -1870,38 +1967,38 @@ html{scroll-padding-top:110px}
       <h2>The honest answers</h2>
     </div>
     <div class="faq-list">
-      <details class="faq-item">
-        <summary><h3>Do I need to be technical?</h3></summary>
-        <div class="faq-a"><p>No. If you can write a clear brief for a new hire, you already have the skill that matters most.</p></div>
-      </details>
-      <details class="faq-item">
-        <summary><h3>Is this about replacing my team with AI?</h3></summary>
-        <div class="faq-a"><p>No. AI takes the repetitive work off their plate so they've got more time for what actually needs a human: judgement, creativity, relationships.</p></div>
-      </details>
-      <details class="faq-item">
-        <summary><h3>Is half this programme really about managing people?</h3></summary>
-        <div class="faq-a"><p>Yes. Clear context, set expectations, a real feedback process that works whether you're briefing an agent or a person. It's what stops everything landing back on your desk.</p></div>
-      </details>
-      <details class="faq-item">
-        <summary><h3>Which AI do I have to use?</h3></summary>
-        <div class="faq-a"><p>Whichever one you'll actually open. I'm not building this around one tech stack &mdash; ChatGPT, Claude, Perplexity, or something that lives in your text messages. Each model has a different superpower and we'll match it to what your business does. What you won't do is start over every time you switch.</p></div>
-      </details>
-      <details class="faq-item">
-        <summary><h3>I've been using ChatGPT for two years. Do I lose all of that?</h3></summary>
-        <div class="faq-a"><p>No, and this is the bit most people get wrong. All of that memory is an asset. We move it into a shared system your other models can read too, so the quality doesn't drop the moment you use a different tool.</p></div>
-      </details>
-      <details class="faq-item">
-        <summary><h3>Do I need to hire anyone to do this?</h3></summary>
-        <div class="faq-a"><p>No. If you already have one intern or one assistant, that's who we make superhuman. Half of this is about the people you already have, not the ones you haven't met yet.</p></div>
-      </details>
-      <details class="faq-item">
-        <summary><h3>I have a full-time job. Can I still do this?</h3></summary>
-        <div class="faq-a"><p>Yes &mdash; some of the best people in this cohort are building alongside something else. That's the whole point of a system: it has to hold when your week doesn't.</p></div>
-      </details>
-      <details class="faq-item">
-        <summary><h3>What does it cost?</h3></summary>
-        <div class="faq-a"><p>Founding-cohort pricing is the lowest this programme will ever run at. Apply, and we'll cover it on your call.</p></div>
-      </details>
+      <div class="faq-item">
+        <div class="faq-summary"><h3>Do I need to be technical?</h3></div><div class="faq-a-wrap">
+        <div class="faq-a"><div class="faq-a-inner"><p>No. If you can write a clear brief for a new hire, you already have the skill that matters most.</p></div></div></div>
+      </div>
+      <div class="faq-item">
+        <div class="faq-summary"><h3>Is this about replacing my team with AI?</h3></div><div class="faq-a-wrap">
+        <div class="faq-a"><div class="faq-a-inner"><p>No. AI takes the repetitive work off their plate so they've got more time for what actually needs a human: judgement, creativity, relationships.</p></div></div></div>
+      </div>
+      <div class="faq-item">
+        <div class="faq-summary"><h3>Is half this programme really about managing people?</h3></div><div class="faq-a-wrap">
+        <div class="faq-a"><div class="faq-a-inner"><p>Yes. Clear context, set expectations, a real feedback process that works whether you're briefing an agent or a person. It's what stops everything landing back on your desk.</p></div></div></div>
+      </div>
+      <div class="faq-item">
+        <div class="faq-summary"><h3>Which AI do I have to use?</h3></div><div class="faq-a-wrap">
+        <div class="faq-a"><div class="faq-a-inner"><p>Whichever one you'll actually open. I'm not building this around one tech stack &mdash; ChatGPT, Claude, Perplexity, or something that lives in your text messages. Each model has a different superpower and we'll match it to what your business does. What you won't do is start over every time you switch.</p></div></div></div>
+      </div>
+      <div class="faq-item">
+        <div class="faq-summary"><h3>I've been using ChatGPT for two years. Do I lose all of that?</h3></div><div class="faq-a-wrap">
+        <div class="faq-a"><div class="faq-a-inner"><p>No, and this is the bit most people get wrong. All of that memory is an asset. We move it into a shared system your other models can read too, so the quality doesn't drop the moment you use a different tool.</p></div></div></div>
+      </div>
+      <div class="faq-item">
+        <div class="faq-summary"><h3>Do I need to hire anyone to do this?</h3></div><div class="faq-a-wrap">
+        <div class="faq-a"><div class="faq-a-inner"><p>No. If you already have one intern or one assistant, that's who we make superhuman. Half of this is about the people you already have, not the ones you haven't met yet.</p></div></div></div>
+      </div>
+      <div class="faq-item">
+        <div class="faq-summary"><h3>I have a full-time job. Can I still do this?</h3></div><div class="faq-a-wrap">
+        <div class="faq-a"><div class="faq-a-inner"><p>Yes &mdash; some of the best people in this cohort are building alongside something else. That's the whole point of a system: it has to hold when your week doesn't.</p></div></div></div>
+      </div>
+      <div class="faq-item">
+        <div class="faq-summary"><h3>What does it cost?</h3></div><div class="faq-a-wrap">
+        <div class="faq-a"><div class="faq-a-inner"><p>Founding-cohort pricing is the lowest this programme will ever run at. Apply, and we'll cover it on your call.</p></div></div></div>
+      </div>
     </div>
   </div>
 </section>
@@ -2325,3 +2422,42 @@ textarea.m-input { resize: vertical; min-height: 95px; }
   };
 })();
 </script>
+
+
+
+<script>
+(function() {
+  document.querySelectorAll('.faq-item').forEach(item => {
+    const summary = item.querySelector('.faq-summary');
+    if(!summary) return;
+    summary.addEventListener('click', () => {
+      const wasOpen = item.classList.contains('is-open');
+      document.querySelectorAll('.faq-item').forEach(i => i.classList.remove('is-open'));
+      if(!wasOpen) item.classList.add('is-open');
+    });
+  });
+})();
+</script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
