@@ -615,7 +615,24 @@ html{scroll-padding-top:110px}
 .s-hero h1{font-size:clamp(38px,5vw,68px)}
 .s-hero h1 .l{display:block}
 .s-hero .sub{font-size:clamp(17px,1.5vw,20px);max-width:720px;margin:26px auto 0}
-.s-hero .meta{margin-top:24px;font-size:15px}
+.s-hero .sub .l{display:block}
+/* Four beats, lightly graded so the eye travels: an aside, the reader's line
+   (highlighted with the same wash used in the founder section), the turn in
+   the heading face, then the credential line a step down. */
+.s-hero .sub .s-quiet{color:var(--ink2)}
+.s-hero .sub .s-want{margin-top:10px;color:var(--ink);font-weight:500}
+.s-hero .sub .s-welcome{margin-top:16px;font-family:'Space Grotesk',system-ui,-apple-system,'Segoe UI',sans-serif;
+  font-weight:600;letter-spacing:-.022em;font-size:clamp(20px,1.8vw,25px);line-height:1.15;color:var(--ink)}
+.s-hero .sub .s-cred{margin-top:16px;max-width:52ch;margin-inline:auto;font-size:clamp(15px,1.15vw,16.5px);
+  line-height:1.5;color:var(--ink2)}
+/* the when/where line as one quiet pill: tinted ground, brand dots for the
+   separators, the dates in full ink so they carry */
+.s-hero .meta{display:inline-flex;align-items:center;flex-wrap:wrap;justify-content:center;gap:0 10px;
+  margin-top:24px;padding:9px 18px;border-radius:999px;
+  background:rgba(216,217,185,.45);border:1px solid rgba(103,118,46,.22);
+  font-size:14.5px;line-height:1.4;color:var(--ink2)}
+.s-hero .m-when{color:var(--ink);font-weight:500}
+.s-hero .m-dot{width:4px;height:4px;border-radius:50%;background:rgba(66,75,54,.45);flex:0 0 auto}
 .s-hero .two{margin-top:6px;font-size:15px}
 .s-hero .cta{margin-top:var(--space-act)}
 
@@ -954,6 +971,10 @@ html{scroll-padding-top:110px}
   .nav2 .cta{font-size:12px;padding:12px 14px;letter-spacing:.04em}
   .s-hero{padding:var(--space-section) 0}
   .s-hero h1 .l{display:inline}
+  .s-hero .sub .s-want{margin-top:8px}
+  .s-hero .sub .s-welcome{margin-top:12px;font-size:20px}
+  .s-hero .sub .s-cred{margin-top:12px;font-size:15px}
+  .s-hero .meta{font-size:13.5px;padding:8px 14px;gap:0 8px}
   .tw{margin-bottom:var(--space-head)}
   .seats{grid-template-columns:1fr;grid-template-rows:none;gap:var(--space-gap)}
   .seats .head,.seats .body,.seats .act{grid-column:auto;grid-row:auto}
@@ -1099,8 +1120,8 @@ html{scroll-padding-top:110px}
       </div>
       <span class="lbl">Superhuman Accelerator</span>
       <h1><span class="l">Your AI operating system.</span> <span class="l">Built in 4 weeks, by you.</span></h1>
-      <p class="sub">Coached by exited founders, the experts behind 20,000 AI agents, and an a16z backed CEO. You ask them, they build it live with you.</p>
-      <p class="meta">Mon 19 Oct to Fri 13 Nov &middot; 12pm ET &middot; Live and recorded</p>
+      <p class="sub"><span class="l s-quiet">Let&rsquo;s be honest. AI is confusing.</span> <span class="l s-want">I don&rsquo;t want another explainer. I want to <span class="hl3">learn from the people building it.</span></span> <span class="l s-welcome">Welcome to Superhuman.</span> <span class="l s-cred">Coached by exited founders, the platform behind 20,000 AI agents, and an a16z-backed CEO.</span></p>
+      <p class="meta"><span class="m-when">Mon 19 Oct to Fri 13 Nov</span><i class="m-dot" aria-hidden="true"></i><span>12pm ET</span><i class="m-dot" aria-hidden="true"></i><span>Live and recorded</span></p>
       <p class="two"><strong>2 seats for the price of 1.</strong> Bring whoever keeps you honest. ;)</p>
       <a class="cta cta-lg" href="/join/" onclick="openJoinModal(event); track('join_hero')">Join the cohort &middot; $997 &middot; 2 seats</a>
       <p class="cta-note">Early bird ends Sunday 11 October. $1,297 after. Payment plan available.</p>
