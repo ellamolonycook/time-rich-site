@@ -86,9 +86,8 @@ main {
 
 .onboard-card {
   width: 100%; max-width: 680px;
-  background: #ffffff; border: 1px solid var(--line);
-  border-radius: 20px; padding: 40px 36px;
-  box-shadow: 0 20px 50px -15px rgba(26, 24, 22, 0.08);
+  background: transparent; border: 0;
+  border-radius: 0; padding: 8px 0 40px;
 }
 @media (max-width: 540px) {
   .onboard-card { padding: 28px 20px; border-radius: 16px; }
@@ -103,8 +102,8 @@ main {
 
 /* ── Lookup state ── */
 .lookup-box {
-  background: var(--tint); border: 1px dashed var(--tint-line);
-  border-radius: 14px; padding: 24px; text-align: center; margin-bottom: 24px;
+  background: var(--tint); border: 1px solid var(--tint-line);
+  border-radius: 16px; padding: 24px; text-align: center; margin-bottom: 24px;
 }
 .lookup-box p { font-size: 14.5px; color: var(--muted); margin-bottom: 16px; }
 
@@ -113,11 +112,13 @@ main {
   /* min-width:0 lets the field shrink inside flex/grid; without it the
      placeholder's intrinsic width pushes the whole page wider than the phone. */
   flex: 1; min-width: 0; width: 100%;
-  font-family: var(--font-body); font-size: 15px; color: var(--green-deep);
-  background: #ffffff; border: 1.5px solid var(--line-2); border-radius: 10px;
-  padding: 12px 16px; outline: none; transition: border-color 0.15s ease;
+  font-family: var(--font-body); font-size: 15px; color: var(--text);
+  background: #ffffff; border: 1px solid rgba(66,75,54,.2); border-radius: 8px;
+  padding: 12px 16px; outline: none;
+  transition: border-color 0.15s ease, box-shadow 0.15s ease;
 }
-.input-field:focus { border-color: var(--green); }
+.input-field::placeholder { color: var(--dim); }
+.input-field:focus { border-color: var(--green); box-shadow: 0 0 0 3px var(--pop); }
 .btn-primary {
   background: var(--green); border: 1px solid var(--green); border-radius: 10px;
   padding: 12px 22px; font-family: var(--font-ui); font-size: 14.5px; font-weight: 700;
@@ -129,12 +130,13 @@ main {
 /* ── Seat 2 Options ── */
 .seat-options { display: flex; flex-direction: column; gap: 14px; margin-bottom: 28px; }
 .seat-option-card {
-  position: relative; background: var(--tint); border: 1.5px solid var(--tint-line);
-  border-radius: 14px; padding: 20px; cursor: pointer; transition: all 0.15s ease;
+  position: relative; background: var(--tint); border: 1px solid var(--tint-line);
+  border-radius: 16px; padding: 20px; cursor: pointer; transition: all 0.15s ease;
 }
 .seat-option-card:hover { border-color: var(--green); }
 .seat-option-card.selected {
-  border-color: var(--lime); background: #ffffff;
+  /* every card keeps the tint; selection reads as a stronger edge, not a colour swap */
+  border-color: var(--green); background: var(--tint);
   box-shadow: 0 0 0 3px rgba(103, 118, 46, 0.15);
 }
 
@@ -235,27 +237,27 @@ main {
 
     <!-- State 2: Verified - Seat 2 Selection Form -->
     <div id="verifiedFormState" style="display: none;">
-      <h1 class="section-title" id="welcomeTitle">Welcome to Cohort 1!</h1>
-      <p class="section-sub">Your seat is confirmed. Next: choose your second seat attendee to grant them full access.</p>
+      <h1 class="section-title" id="welcomeTitle">Welcome to the Superhumans.</h1>
+      <p class="section-sub">Your seat is confirmed. Now add your plus one.</p>
 
       <form onsubmit="handleSeatSubmit(event)">
         <div class="seat-options">
           <div class="seat-option-card selected" id="optNamed" onclick="selectSeatOption('named')">
             <div class="seat-option-header">
               <div class="seat-option-radio"></div>
-              <div class="seat-option-title">Option 1: Name your second attendee now</div>
+              <div class="seat-option-title">Option 1: Add them now</div>
             </div>
-            <div class="seat-option-desc">Grant instant cohort access to your co-founder, partner, or team member.</div>
+            <div class="seat-option-desc">Give your co-founder, partner or teammate full access.</div>
 
             <div class="named-attendee-fields" id="namedFields">
               <div>
-                <input type="text" id="attFirstName" class="input-field" placeholder="Attendee First Name" />
+                <input type="text" id="attFirstName" class="input-field" placeholder="First name" />
               </div>
               <div>
-                <input type="text" id="attLastName" class="input-field" placeholder="Attendee Last Name" />
+                <input type="text" id="attLastName" class="input-field" placeholder="Last name" />
               </div>
               <div class="full-width">
-                <input type="email" id="attEmail" class="input-field" placeholder="attendee@company.com" />
+                <input type="email" id="attEmail" class="input-field" placeholder="Email" />
               </div>
             </div>
           </div>
@@ -263,27 +265,27 @@ main {
           <div class="seat-option-card" id="optUndecided" onclick="selectSeatOption('undecided')">
             <div class="seat-option-header">
               <div class="seat-option-radio"></div>
-              <div class="seat-option-title">Option 2: Not sure yet</div>
+              <div class="seat-option-title">Option 2: Decide later</div>
             </div>
-            <div class="seat-option-desc">You can assign your second seat anytime before the cohort kick-off call.</div>
+            <div class="seat-option-desc">Add them any time before kickoff. Save this link and come back when you&rsquo;re ready.</div>
           </div>
         </div>
 
-        <button type="submit" class="btn-primary" id="btnSeatSubmit" style="width: 100%; padding: 15px; font-size: 16px;">Confirm & Join Cohort →</button>
+        <button type="submit" class="btn-primary" id="btnSeatSubmit" style="width: 100%; padding: 15px; font-size: 16px;">Confirm</button>
       </form>
     </div>
 
     <!-- State 3: Final Onboarding View (WhatsApp & Details) -->
     <div id="completedState" style="display: none;">
-      <h1 class="section-title">You're all set!</h1>
-      <p class="section-sub">Your cohort membership and second-seat details have been saved.</p>
+      <h1 class="section-title">You&rsquo;re in.</h1>
+      <p class="section-sub" id="completedSub">Your seat and plus one are saved.</p>
 
       <div class="whatsapp-box">
-        <h3>Join the Cohort 1 WhatsApp Group</h3>
-        <p>Connect with fellow founders, receive live call notifications, and access your onboarding resources directly.</p>
-        <a id="whatsappLink" href="#" target="_blank" rel="noopener" class="btn-whatsapp" hidden>
+        <h3>Join the Superhumans WhatsApp group</h3>
+        <p>Announcements, live call reminders and your onboarding resources all go here.</p>
+        <a id="whatsappLink" href="https://chat.whatsapp.com/E5GU1dvuHhFDI77yO88OIw?mode=gi_t" target="_blank" rel="noopener" class="btn-whatsapp">
           <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M.057 24l1.687-6.163c-1.041-1.804-1.588-3.849-1.587-5.946.003-6.556 5.338-11.891 11.893-11.891 3.181.001 6.167 1.24 8.413 3.488 2.245 2.248 3.481 5.236 3.48 8.414-.003 6.557-5.338 11.892-11.893 11.892-1.99-.001-3.951-.5-5.688-1.448l-6.305 1.654zm6.597-3.807c1.676.995 3.276 1.591 5.392 1.592 5.448 0 9.886-4.434 9.889-9.885.002-5.462-4.415-9.89-9.881-9.892-5.452 0-9.887 4.434-9.889 9.884-.001 2.225.651 3.891 1.746 5.634l-1.099 4.019 4.842-1.27%20z"/></svg>
-          Join WhatsApp Group →
+          Join the group →
         </a>
       </div>
 
@@ -340,9 +342,12 @@ function verifyOrder(tId, em) {
       if (data && data.ok && data.verified) {
         whatsappUrl = data.whatsappUrl || "";
         if (data.firstName) {
-          document.getElementById("welcomeTitle").textContent = "Welcome to Cohort 1, " + data.firstName + "!";
+          document.getElementById("welcomeTitle").textContent = "Welcome to the Superhumans, " + data.firstName + ".";
         }
         if (data.isCompleted) {
+          var link = document.getElementById("whatsappLink");
+          if (link && whatsappUrl) { link.href = whatsappUrl; }
+          setCompletedSub(/not sure/i.test(data.secondSeatChoice || "") ? "undecided" : "named");
           showState("completed");
         } else {
           showState("form");
@@ -357,6 +362,15 @@ function verifyOrder(tId, em) {
       showVerificationError("We couldn't verify your order right now. Please try again shortly.");
       showState("unverified");
     });
+}
+
+// Option 2 leaves the plus one open, so the confirmation says so.
+function setCompletedSub(choice) {
+  var el = document.getElementById("completedSub");
+  if (!el) return;
+  el.textContent = choice === "undecided"
+    ? "Your seat is saved. Add your plus one any time before kickoff."
+    : "Your seat and plus one are saved.";
 }
 
 function showVerificationError(message) {
@@ -398,7 +412,7 @@ function handleSeatSubmit(e) {
   e.preventDefault();
   var btn = document.getElementById("btnSeatSubmit");
   btn.disabled = true;
-  btn.textContent = "Saving preferences...";
+  btn.textContent = "Saving…";
 
   var attFN = document.getElementById("attFirstName").value.trim();
   var attLN = document.getElementById("attLastName").value.trim();
@@ -420,7 +434,8 @@ function handleSeatSubmit(e) {
   .then(function(data) {
     if (!data || !data.ok) throw new Error("Seat selection was not saved");
     var link = document.getElementById("whatsappLink");
-    if (link && whatsappUrl) { link.href = whatsappUrl; link.hidden = false; }
+    if (link && whatsappUrl) { link.href = whatsappUrl; }
+    setCompletedSub(selectedChoice);
     showState("completed");
   })
   .catch(function(err) {
