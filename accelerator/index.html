@@ -284,21 +284,143 @@ ul.t-list li:last-child{padding-bottom:0}
 
 /* ---------- LEADERSHIP LAYER ---------- */
 
-/* ---------- THE DECISION ---------- */
-.fitgrid{display:grid;grid-template-columns:1fr 1fr;gap:18px}
-.fitgrid .fit{border-radius:16px;padding:28px;border:1px solid var(--line);transition:transform .16s ease,border-color .16s ease,box-shadow .16s ease}
-.fitgrid .fit:hover{transform:translateY(-3px);box-shadow:0 14px 34px -20px rgba(66,75,54,.45)}
-.fitgrid .fit.for{background:var(--lime-dim);border-color:rgba(103,118,46,.38)}
-.fitgrid .fit.not{background:rgba(168,73,47,.07);border-color:rgba(168,73,47,.26)}
-.fitgrid .fit h4{font-family:var(--mono);font-size:12px;letter-spacing:.1em;text-transform:uppercase;margin:0 0 16px}
-.fitgrid .fit.for h4{color:var(--lime)}
-.fitgrid .fit.not h4{color:var(--red)}
-.fitgrid .fit ul{list-style:none;margin:0;padding:0}
-.fitgrid .fit li{position:relative;padding:0 0 11px 22px;color:var(--muted);font-size:15.5px;line-height:1.55}
-.fitgrid .fit li:last-child{padding-bottom:0}
-.fitgrid .fit li::before{content:"";position:absolute;left:0;top:10px;width:7px;height:7px;border-radius:50%}
-.fitgrid .fit.for li::before{background:var(--lime)}
-.fitgrid .fit.not li::before{background:var(--red);opacity:.7}
+/* ---------- THE DECISION (MINIMALIST INTERACTIVE) ---------- */
+.glass-decision-wrap {
+  width: 100vw;
+  max-width: 1180px;
+  position: relative;
+  left: 50%;
+  transform: translateX(-50%);
+  margin-top: 24px;
+  padding: 16px 56px; /* space for sliding tabs */
+}
+.glass-decision {
+  display: flex;
+  gap: 64px;
+}
+.glass-card {
+  flex: 1;
+  position: relative;
+  display: flex;
+  align-items: stretch;
+}
+.gc-content {
+  flex: 1;
+  background: #ffffff;
+  border-radius: 16px;
+  border: 1px solid rgba(66,75,54,0.12);
+  box-shadow: 0 4px 16px -8px rgba(66,75,54,0.05);
+  padding: 36px 32px;
+  position: relative;
+  z-index: 2;
+  transition: box-shadow 0.4s ease, border-color 0.4s ease, transform 0.4s ease;
+}
+.glass-card:hover .gc-content {
+  box-shadow: 0 20px 48px -12px rgba(66,75,54,0.12);
+  border-color: rgba(66,75,54,0.25);
+  transform: translateY(-4px);
+}
+
+.gc-tab {
+  position: absolute;
+  top: 32px;
+  bottom: 32px;
+  width: 44px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1;
+  transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1), background 0.4s ease, color 0.4s ease, border-color 0.4s ease;
+}
+.for-card .gc-tab {
+  left: 0;
+  transform: translateX(-18px); /* peeks out to the left */
+  background: var(--lime-dim);
+  color: var(--green-deep);
+  border-radius: 12px 0 0 12px;
+  border: 1px solid rgba(103,118,46,.2);
+  border-right: none;
+}
+.for-card:hover .gc-tab {
+  transform: translateX(-44px) translateY(-4px); /* slides left! */
+  background: var(--lime);
+  color: #fff;
+  border-color: var(--lime);
+}
+
+.not-card .gc-tab {
+  right: 0;
+  transform: translateX(18px); /* peeks out to the right */
+  background: rgba(168,73,47,.08);
+  color: var(--red);
+  border-radius: 0 12px 12px 0;
+  border: 1px solid rgba(168,73,47,.15);
+  border-left: none;
+}
+.not-card:hover .gc-tab {
+  transform: translateX(44px) translateY(-4px); /* slides right! */
+  background: var(--red);
+  color: #fff;
+  border-color: var(--red);
+}
+
+.gc-tab span {
+  writing-mode: vertical-rl;
+  font-family: var(--mono);
+  font-size: 12px;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+}
+.not-card .gc-tab span { transform: rotate(180deg); }
+
+.gc-content ul {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+.gc-content li {
+  display: flex;
+  align-items: flex-start;
+  gap: 16px;
+  font-size: 15px;
+  line-height: 1.55;
+  color: var(--muted);
+  transition: color 0.3s ease;
+}
+.glass-card:hover .gc-content li { color: var(--green-deep); }
+
+.gc-icon {
+  flex: 0 0 24px;
+  height: 24px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 13px;
+  font-weight: bold;
+  transition: transform 0.3s ease, background 0.3s ease, color 0.3s ease;
+}
+.for-card .gc-icon {
+  background: var(--lime-dim);
+  color: var(--green-deep);
+}
+.for-card:hover .gc-icon {
+  background: var(--lime);
+  color: #fff;
+  transform: scale(1.1);
+}
+.not-card .gc-icon {
+  background: rgba(168,73,47,.08);
+  color: var(--red);
+}
+.not-card:hover .gc-icon {
+  background: var(--red);
+  color: #fff;
+  transform: scale(1.1);
+}
 
 
 
@@ -368,8 +490,18 @@ ul.t-list li:last-child{padding-bottom:0}
   .announce a{display:inline-flex;align-items:center;min-height:44px;padding:4px 2px}
   .eyebrow{font-size:13px;letter-spacing:.12em}
   .hero-micro,.m-cap{font-size:14px}
-  .fitgrid .fit h4{font-size:13px;letter-spacing:.08em}
-  .fitgrid .fit,.tier{padding:26px 22px}
+  .glass-decision-wrap { padding: 30px 20px; }
+  .glass-decision { flex-direction: column; gap: 40px; }
+  .glass-card { flex-direction: column; }
+  .for-card { flex-direction: column-reverse; }
+  .gc-tab { position: static; width: 100%; height: 48px; transform: none !important; border-radius: 12px 12px 0 0; }
+  .for-card .gc-tab { border-radius: 0 0 12px 12px; }
+  .gc-tab span { writing-mode: horizontal-tb; transform: none !important; }
+  .for-card .gc-content { padding: 24px; border-radius: 12px 12px 0 0; }
+  .not-card .gc-content { padding: 24px; border-radius: 0 0 12px 12px; }
+
+  .rung{gap:14px 16px;padding:20px}
+  .tier{padding:26px 22px}
   .stickybar{padding:10px 14px calc(10px + env(safe-area-inset-bottom));gap:12px}
   .stickybar .btn{padding:12px 20px;font-size:15px}
   .legalbar{font-size:13px;letter-spacing:.03em;padding-bottom:calc(96px + env(safe-area-inset-bottom))}
@@ -1554,27 +1686,41 @@ html{scroll-padding-top:110px}
       <span class="eyebrow">Let's get honest</span>
       <h2>The decision</h2>
     </div>
-    <div class="fitgrid">
-      <div class="fit for">
-        <h4>This is for you if:</h4>
-        <ul>
-          <li>You run the business and can make the call yourself</li>
-          <li>You've used AI tools, seen the potential, and nothing quite clicks together yet</li>
-          <li>You've got real, repeatable work you're ready to hand off</li>
-          <li>You want people and AI working side by side, not one replacing the other</li>
-          <li>You want to own the system, not depend on someone else to run it</li>
-          <li>You already have one or two people helping you and you know you're underusing them</li>
-          <li>You're doing this alongside a full-time job, so it only works if the system does</li>
-        </ul>
-      </div>
-      <div class="fit not">
-        <h4>This is not for you if:</h4>
-        <ul>
-          <li>You want it done for you, not with you</li>
-          <li>You want more tools, not a different way of working</li>
-          <li>You'd rather keep paying an agency $4k a month for something you should own</li>
-          <li>You want it to be easy. If you want to, you will &mdash; that's the mindset this room runs on</li>
-        </ul>
+    <div class="glass-decision-wrap">
+      
+      <div class="glass-decision">
+        <!-- LEFT: FOR YOU -->
+        <div class="glass-card for-card">
+          <div class="gc-content">
+            <ul>
+              <li><div class="gc-icon">✓</div> <span>You run the business and can make the call yourself</span></li>
+              <li><div class="gc-icon">✓</div> <span>You've used AI tools, seen the potential, and nothing quite clicks together yet</span></li>
+              <li><div class="gc-icon">✓</div> <span>You've got real, repeatable work you're ready to hand off</span></li>
+              <li><div class="gc-icon">✓</div> <span>You want people and AI working side by side, not one replacing the other</span></li>
+              <li><div class="gc-icon">✓</div> <span>You want to own the system, not depend on someone else to run it</span></li>
+              <li><div class="gc-icon">✓</div> <span>You already have one or two people helping you and you know you're underusing them</span></li>
+              <li><div class="gc-icon">✓</div> <span>You're doing this alongside a full-time job, so it only works if the system does</span></li>
+            </ul>
+          </div>
+          <div class="gc-tab">
+            <span>FOR YOU</span>
+          </div>
+        </div>
+
+        <!-- RIGHT: NOT FOR YOU -->
+        <div class="glass-card not-card">
+          <div class="gc-tab">
+            <span>NOT FOR YOU</span>
+          </div>
+          <div class="gc-content">
+            <ul>
+              <li><div class="gc-icon">✕</div> <span>You want it done for you, not with you</span></li>
+              <li><div class="gc-icon">✕</div> <span>You want more tools, not a different way of working</span></li>
+              <li><div class="gc-icon">✕</div> <span>You'd rather keep paying an agency $4k a month for something you should own</span></li>
+              <li><div class="gc-icon">✕</div> <span>You want it to be easy. If you want to, you will &mdash; that's the mindset this room runs on</span></li>
+            </ul>
+          </div>
+        </div>
       </div>
     </div>
   </div>
@@ -1890,7 +2036,7 @@ function track(name, params){
 
   // reveal on scroll
   if ('IntersectionObserver' in window && !reduce) {
-    var items = document.querySelectorAll('.tier,.machine,.fitgrid .fit');
+    var items = document.querySelectorAll('.tier,.machine,.glass-card');
     items.forEach(function(el){ el.classList.add('reveal'); });
     var ro = new IntersectionObserver(function(es){
       es.forEach(function(e){ if (e.isIntersecting) { e.target.classList.add('in'); ro.unobserve(e.target); } });
