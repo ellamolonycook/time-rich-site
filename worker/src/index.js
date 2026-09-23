@@ -1178,6 +1178,18 @@ function json(obj, status, cors) {
 }
 
 // ---------------------------------------------------------------------------
+// ThriveCart sends order totals in whole cents ("99700" for $997.00), but the
+// Amount column in Notion is a text property, so it has to arrive already
+// formatted. Only a plain integer is treated as cents: anything else (an empty
+// value, something already carrying a decimal point, or a non-numeric string)
+// is passed through untouched rather than guessed at and turned into NaN.
+function centsToAmount(raw) {
+  const value = String(raw == null ? "" : raw).trim();
+  if (!value) return "";
+  if (!/^-?\d+$/.test(value)) return value;
+  return (Number(value) / 100).toFixed(2);
+}
+
 // ThriveCart Purchase Webhook (POST /thrivecart-webhook)
 // ---------------------------------------------------------------------------
 async function handleThriveCartWebhook(request, env, cors, ctx) {
@@ -1245,6 +1257,7 @@ async function handleThriveCartWebhook(request, env, cors, ctx) {
 
   const orderId = String(body.order_id || (body.order && body.order.id) || "").trim();
   const orderTotal = String(body.order_total || (body.order && body.order.total) || "").trim();
+  const orderAmount = centsToAmount(orderTotal);   // what the Notion Amount column gets
   const isRefund = event.includes("refund");
   const paymentStatus = isRefund ? "Refunded" : "Paid";
   console.log("[TC] branch:", isRefund ? "REFUNDED" : "PAID", JSON.stringify({
@@ -1254,6 +1267,7 @@ async function handleThriveCartWebhook(request, env, cors, ctx) {
     trackingId: trackingId || null,
     orderId: orderId || null,
     orderTotal: orderTotal || null,
+    orderAmountWritten: orderAmount || null,
   }));
 
   const dbId = env.NOTION_SUPERHUMAN_COHORT1_DATABASE_ID;
@@ -1296,7 +1310,7 @@ async function handleThriveCartWebhook(request, env, cors, ctx) {
             "Payment Status": { select: { name: paymentStatus } },
           };
           if (orderId) properties["Order ID"] = { rich_text: [{ text: { content: clip(orderId, 100) } }] };
-          if (orderTotal) properties["Amount"] = { rich_text: [{ text: { content: clip(orderTotal, 50) } }] };
+          if (orderAmount) properties["Amount"] = { rich_text: [{ text: { content: clip(orderAmount, 50) } }] };
 
           console.log("[TC] notion write: UPDATING existing row", existingPageId, "->", paymentStatus);
           const patchRes = await fetch(`https://api.notion.com/v1/pages/${existingPageId}`, {
