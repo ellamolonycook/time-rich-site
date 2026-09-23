@@ -23,12 +23,36 @@ export default {
     if (request.method === "OPTIONS") {
       return new Response(null, { status: 204, headers: cors });
     }
+    const url = new URL(request.url);
+    const path = url.pathname.replace(/\/+$/, "");
+
+    // ThriveCart pings a webhook URL with HEAD before it accepts the setup.
+    if (path.endsWith("/thrivecart-webhook") && request.method === "HEAD") {
+      return new Response(null, { status: 204, headers: cors });
+    }
+
+    // Route: Onboard lookup (GET /onboard?tracking_id=... or ?email=...)
+    if (path.endsWith("/onboard") && request.method === "GET") {
+      return handleOnboardVerification(request, env, cors, url);
+    }
+
     if (request.method !== "POST") {
       return json({ error: "Method not allowed" }, 405, cors);
     }
 
+    // Route: ThriveCart purchase webhook (handles order.success, order.subscription_payment, order.refund)
+    if (path.endsWith("/thrivecart-webhook")) {
+      return handleThriveCartWebhook(request, env, cors, ctx);
+    }
+
+    // Route: Onboard form submit (POST /onboard)
+    if (path.endsWith("/onboard")) {
+      let onboardData;
+      try { onboardData = await request.json(); } catch { return json({ error: "Invalid JSON" }, 400, cors); }
+      return handleOnboardSubmit(onboardData, env, cors, ctx);
+    }
+
     // Route: corner chatbot -> Anthropic.
-    const path = new URL(request.url).pathname.replace(/\/+$/, "");
     if (path.endsWith("/chat")) {
       return handleChat(request, env, cors);
     }
@@ -54,6 +78,77 @@ export default {
       data = await request.json();
     } catch {
       return json({ error: "Invalid JSON" }, 400, cors);
+    }
+
+    // Route: Superhuman Accelerator pre-checkout capture.
+    if (path.endsWith("/join")) {
+      const firstName = String(data.firstName || data.first_name || "").trim();
+      const email = String(data.email || "").trim();
+      const superhumanAnswer = String(
+        data.superhumanAnswer || data.superhuman_answer || ""
+      ).trim();
+
+      if (!firstName || !email || !superhumanAnswer) {
+        return json(
+          { error: "First name, email, and superhuman answer are required" },
+          400,
+          cors
+        );
+      }
+
+      const trackingId = String(data.trackingId || data.tracking_id || crypto.randomUUID()).trim();
+
+      const submission = {
+        Name: firstName,
+        Email: email,
+        "Superhuman Answer": superhumanAnswer,
+        TrackingID: trackingId,
+        "Payment Status": "Pending",
+      };
+
+      const notionPromise = createApplication(
+        submission,
+        env,
+        cors,
+        env.NOTION_SUPERHUMAN_COHORT1_DATABASE_ID
+      );
+
+      // Append row to Intent tab of Google Sheet (Never block on this)
+      const intentSheetUrl = env.GOOGLE_SHEET_INTENT_URL || env.GOOGLE_SHEET_WEBHOOK_URL;
+      if (intentSheetUrl) {
+        const sheetPromise = fetch(intentSheetUrl, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            tab: "Intent",
+            timestamp: new Date().toISOString(),
+            firstName,
+            email,
+            superhumanAnswer,
+            trackingId,
+            paymentStatus: "Pending",
+          }),
+        }).catch((err) => console.error("Google Sheet Intent append error:", err));
+
+        if (ctx && typeof ctx.waitUntil === "function") {
+          ctx.waitUntil(sheetPromise);
+        }
+      }
+
+      if (ctx && typeof ctx.waitUntil === "function") {
+        ctx.waitUntil(notionPromise);
+      } else {
+        await notionPromise.catch((err) => console.error("Notion error:", err));
+      }
+
+      return json(
+        {
+          ok: true,
+          trackingId,
+        },
+        200,
+        cors
+      );
     }
 
     // Route: Super Human Accelerator application -> its own Notion database.
@@ -104,73 +199,73 @@ export default {
 // Generic application intake: reads the target database schema, maps matching
 // fields, and always dumps the full submission into the page body.
 async function createApplication(data, env, cors, dbId, defaults) {
-    if (!env.NOTION_TOKEN || !dbId) {
-      return json({ error: "Server not configured" }, 500, cors);
+  if (!env.NOTION_TOKEN || !dbId) {
+    return json({ error: "Server not configured" }, 500, cors);
+  }
+
+  // Anti-spam: silently accept bot submissions (honeypot field filled in).
+  if (data._gotcha) return json({ ok: true }, 200, cors);
+  if (!data["Email"] && !data.email) {
+    return json({ error: "Email is required" }, 400, cors);
+  }
+  if (defaults) {
+    for (const [k, v] of Object.entries(defaults)) {
+      if (!String(data[k] || "").trim()) data[k] = v;
+    }
+  }
+
+  try {
+    // 1) Read the database schema to learn property names + types.
+    const dbRes = await fetch(
+      `https://api.notion.com/v1/databases/${dbId}`,
+      { headers: authHeaders(env) }
+    );
+    if (!dbRes.ok) {
+      return json({ error: "Notion DB fetch failed", detail: await dbRes.text() }, 502, cors);
+    }
+    const db = await dbRes.json();
+    const schema = db.properties || {};
+    const byLower = {};
+    for (const name of Object.keys(schema)) byLower[name.toLowerCase()] = name;
+    const titleName = Object.keys(schema).find((n) => schema[n].type === "title");
+
+    // 2) Map known fields to matching columns.
+    const properties = {};
+    const fullName = String(data["Full name"] || data["Name"] || "Applicant");
+    if (titleName) {
+      properties[titleName] = { title: [{ text: { content: clip(fullName, 2000) } }] };
+    }
+    for (const [key, raw] of Object.entries(data)) {
+      if (key.startsWith("_")) continue;
+      const value = (raw == null ? "" : String(raw)).trim();
+      if (!value) continue;
+      const propName = byLower[key.toLowerCase()];
+      if (!propName || propName === titleName) continue;
+      properties[propName] = buildProp(schema[propName].type, value);
     }
 
-    // Anti-spam: silently accept bot submissions (honeypot field filled in).
-    if (data._gotcha) return json({ ok: true }, 200, cors);
-    if (!data["Email"] && !data.email) {
-      return json({ error: "Email is required" }, 400, cors);
+    // 3) Full readable dump in the page body (guaranteed capture).
+    const children = Object.entries(data)
+      .filter(([k, v]) => !k.startsWith("_") && String(v || "").trim())
+      .map(([k, v]) => paragraph(`${k}: ${String(v).trim()}`));
+
+    // 4) Create the page.
+    const createRes = await fetch("https://api.notion.com/v1/pages", {
+      method: "POST",
+      headers: { ...authHeaders(env), "Content-Type": "application/json" },
+      body: JSON.stringify({
+        parent: { database_id: dbId },
+        properties,
+        children: children.slice(0, 100), // Notion caps children at 100 per request
+      }),
+    });
+    if (!createRes.ok) {
+      return json({ error: "Notion create failed", detail: await createRes.text() }, 502, cors);
     }
-    if (defaults) {
-      for (const [k, v] of Object.entries(defaults)) {
-        if (!String(data[k] || "").trim()) data[k] = v;
-      }
-    }
-
-    try {
-      // 1) Read the database schema to learn property names + types.
-      const dbRes = await fetch(
-        `https://api.notion.com/v1/databases/${dbId}`,
-        { headers: authHeaders(env) }
-      );
-      if (!dbRes.ok) {
-        return json({ error: "Notion DB fetch failed", detail: await dbRes.text() }, 502, cors);
-      }
-      const db = await dbRes.json();
-      const schema = db.properties || {};
-      const byLower = {};
-      for (const name of Object.keys(schema)) byLower[name.toLowerCase()] = name;
-      const titleName = Object.keys(schema).find((n) => schema[n].type === "title");
-
-      // 2) Map known fields to matching columns.
-      const properties = {};
-      const fullName = String(data["Full name"] || data["Name"] || "Applicant");
-      if (titleName) {
-        properties[titleName] = { title: [{ text: { content: clip(fullName, 2000) } }] };
-      }
-      for (const [key, raw] of Object.entries(data)) {
-        if (key.startsWith("_")) continue;
-        const value = (raw == null ? "" : String(raw)).trim();
-        if (!value) continue;
-        const propName = byLower[key.toLowerCase()];
-        if (!propName || propName === titleName) continue;
-        properties[propName] = buildProp(schema[propName].type, value);
-      }
-
-      // 3) Full readable dump in the page body (guaranteed capture).
-      const children = Object.entries(data)
-        .filter(([k, v]) => !k.startsWith("_") && String(v || "").trim())
-        .map(([k, v]) => paragraph(`${k}: ${String(v).trim()}`));
-
-      // 4) Create the page.
-      const createRes = await fetch("https://api.notion.com/v1/pages", {
-        method: "POST",
-        headers: { ...authHeaders(env), "Content-Type": "application/json" },
-        body: JSON.stringify({
-          parent: { database_id: dbId },
-          properties,
-          children: children.slice(0, 100), // Notion caps children at 100 per request
-        }),
-      });
-      if (!createRes.ok) {
-        return json({ error: "Notion create failed", detail: await createRes.text() }, 502, cors);
-      }
-      return json({ ok: true }, 200, cors);
-    } catch (err) {
-      return json({ error: "Unexpected error", detail: String(err) }, 500, cors);
-    }
+    return json({ ok: true }, 200, cors);
+  } catch (err) {
+    return json({ error: "Unexpected error", detail: String(err) }, 500, cors);
+  }
 }
 
 // Corner chatbot. Accepts { messages: [{role, content}, ...] }, calls Claude with
@@ -596,7 +691,7 @@ async function handleQualify(d, env, cors, ctx) {
     // whether or not this parses, so a bad body must not turn a success into
     // an error - the link is simply left off the Slack post.
     let notionUrl = null;
-    try { notionUrl = (await res.json()).url || null; } catch {}
+    try { notionUrl = (await res.json()).url || null; } catch { }
 
     // The row is in. Tell the channel - in the background, so a slow or broken
     // Slack can neither delay nor fail the submission. notifyQualifySlack()
@@ -659,9 +754,13 @@ async function notifyQualifySlack(env, s) {
       },
       { type: "context", elements: [{ type: "mrkdwn", text: `*LinkedIn:* ${li}` }] },
       // Straight to the row, so whoever is reading the channel can act on it.
-      { type: "context", elements: [{ type: "mrkdwn", text: s.notionUrl
-          ? `<${safeUrl(s.notionUrl)}|Open in Notion →>`
-          : "_Notion link unavailable_" }] },
+      {
+        type: "context", elements: [{
+          type: "mrkdwn", text: s.notionUrl
+            ? `<${safeUrl(s.notionUrl)}|Open in Notion →>`
+            : "_Notion link unavailable_"
+        }]
+      },
     ];
 
     const res = await fetch(url, {
@@ -958,10 +1057,10 @@ function calZone(iso, zone, clockOnly) {
   const opts = clockOnly
     ? { hour: "numeric", minute: "2-digit", hour12: true, timeZone: zone.timeZone }
     : {
-        weekday: "short", day: "numeric", month: "short",
-        hour: "numeric", minute: "2-digit", hour12: true,
-        timeZone: zone.timeZone, timeZoneName: "short",
-      };
+      weekday: "short", day: "numeric", month: "short",
+      hour: "numeric", minute: "2-digit", hour12: true,
+      timeZone: zone.timeZone, timeZoneName: "short",
+    };
   try {
     return new Intl.DateTimeFormat(zone.locale, opts).format(d);
   } catch {
@@ -1068,4 +1167,277 @@ function json(obj, status, cors) {
     status,
     headers: { ...cors, "Content-Type": "application/json" },
   });
+}
+
+// ---------------------------------------------------------------------------
+// ThriveCart Purchase Webhook (POST /thrivecart-webhook)
+// ---------------------------------------------------------------------------
+async function handleThriveCartWebhook(request, env, cors, ctx) {
+  let body;
+  const contentType = request.headers.get("content-type") || "";
+  try {
+    if (contentType.includes("application/x-www-form-urlencoded")) {
+      const text = await request.text();
+      const params = new URLSearchParams(text);
+      body = {};
+      for (const [k, v] of params.entries()) {
+        body[k] = v;
+      }
+    } else {
+      body = await request.json();
+    }
+  } catch (err) {
+    return json({ ok: false, error: "Invalid webhook payload" }, 400, cors);
+  }
+
+  if (!env.THRIVECART_SECRET) {
+    return json({ ok: false, error: "ThriveCart webhook is not configured" }, 503, cors);
+  }
+  const incomingSecret = body.thrivecart_secret || body.secret || request.headers.get("x-thrivecart-secret");
+  if (incomingSecret !== env.THRIVECART_SECRET) {
+    return json({ ok: false, error: "Invalid secret" }, 401, cors);
+  }
+
+  const event = String(body.event || body.type || "order.success").toLowerCase();
+  if (event !== "order.success" && event !== "order.refund") {
+    return json({ ok: true, ignored: true, event }, 200, cors);
+  }
+
+  // Extract customer data
+  const customer = body.customer || {};
+  const email = String(customer.email || body.email || body["customer[email]"] || "").trim();
+  const firstName = String(customer.first_name || body.first_name || body["customer[first_name]"] || "").trim();
+  const lastName = String(customer.last_name || body.last_name || body["customer[last_name]"] || "").trim();
+  const fullName = String(customer.name || body.name || `${firstName} ${lastName}`).trim();
+
+  // Extract passthrough tracking ID
+  const passthrough = body.passthrough || {};
+  const trackingId = String(
+    passthrough.tracking_id ||
+    passthrough.passthrough_id ||
+    body["passthrough[tracking_id]"] ||
+    body["passthrough[passthrough_id]"] ||
+    body.tracking_id ||
+    ""
+  ).trim();
+
+  const orderId = String(body.order_id || (body.order && body.order.id) || "").trim();
+  const orderTotal = String(body.order_total || (body.order && body.order.total) || "").trim();
+  const isRefund = event.includes("refund");
+  const paymentStatus = isRefund ? "Refunded" : "Paid";
+
+  const dbId = env.NOTION_SUPERHUMAN_COHORT1_DATABASE_ID;
+
+  if (env.NOTION_TOKEN && dbId) {
+    const notionWork = (async () => {
+      try {
+        let existingPageId = null;
+        if (trackingId || email) {
+          const filter = trackingId
+            ? { property: "TrackingID", rich_text: { equals: trackingId } }
+            : { property: "Email", email: { equals: email } };
+
+          const queryRes = await fetch(`https://api.notion.com/v1/databases/${dbId}/query`, {
+            method: "POST",
+            headers: { ...authHeaders(env), "Content-Type": "application/json" },
+            body: JSON.stringify({ filter }),
+          });
+
+          if (queryRes.ok) {
+            const queryData = await queryRes.json();
+            if (queryData.results && queryData.results.length > 0) {
+              existingPageId = queryData.results[0].id;
+            }
+          }
+        }
+
+        if (existingPageId) {
+          const properties = {
+            "Payment Status": { select: { name: paymentStatus } },
+          };
+          if (orderId) properties["Order ID"] = { rich_text: [{ text: { content: clip(orderId, 100) } }] };
+          if (orderTotal) properties["Amount"] = { rich_text: [{ text: { content: clip(orderTotal, 50) } }] };
+
+          await fetch(`https://api.notion.com/v1/pages/${existingPageId}`, {
+            method: "PATCH",
+            headers: { ...authHeaders(env), "Content-Type": "application/json" },
+            body: JSON.stringify({ properties }),
+          });
+        } else {
+          const properties = {
+            Name: { title: [{ text: { content: clip(fullName || email || "Purchaser", 200) } }] },
+            Email: { email: email || null },
+            TrackingID: { rich_text: [{ text: { content: clip(trackingId || crypto.randomUUID(), 100) } }] },
+            "Payment Status": { select: { name: paymentStatus } },
+          };
+          if (orderId) properties["Order ID"] = { rich_text: [{ text: { content: clip(orderId, 100) } }] };
+
+          await fetch("https://api.notion.com/v1/pages", {
+            method: "POST",
+            headers: { ...authHeaders(env), "Content-Type": "application/json" },
+            body: JSON.stringify({ parent: { database_id: dbId }, properties }),
+          });
+        }
+      } catch (err) {
+        console.error("ThriveCart Notion sync error:", err);
+      }
+    })();
+
+    if (ctx && typeof ctx.waitUntil === "function") {
+      ctx.waitUntil(notionWork);
+    }
+  }
+
+  // Preserve existing ThriveCart-to-Google-Sheet order integration, adding tracking ID
+  const ordersSheetUrl = env.GOOGLE_SHEET_ORDERS_URL || env.GOOGLE_SHEET_WEBHOOK_URL;
+  if (ordersSheetUrl) {
+    const sheetWork = fetch(ordersSheetUrl, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        tab: "Orders",
+        event,
+        timestamp: new Date().toISOString(),
+        orderId,
+        trackingId,
+        email,
+        name: fullName,
+        total: orderTotal,
+        paymentStatus,
+      }),
+    }).catch((err) => console.error("Google Sheet Orders error:", err));
+
+    if (ctx && typeof ctx.waitUntil === "function") {
+      ctx.waitUntil(sheetWork);
+    }
+  }
+
+  return json({ ok: true, event, trackingId }, 200, cors);
+}
+
+// ---------------------------------------------------------------------------
+// Onboard verification & submission (GET/POST /onboard)
+// ---------------------------------------------------------------------------
+async function handleOnboardVerification(request, env, cors, url) {
+  const trackingId = (url.searchParams.get("tracking_id") || url.searchParams.get("passthrough[tracking_id]") || "").trim();
+  const email = (url.searchParams.get("email") || url.searchParams.get("customer_email") || "").trim();
+
+  if (!trackingId && !email) {
+    return json({ ok: true, verified: false, message: "No tracking ID or email provided" }, 200, cors);
+  }
+
+  const dbId = env.NOTION_SUPERHUMAN_COHORT1_DATABASE_ID;
+  if (!env.NOTION_TOKEN || !dbId) {
+    return json({ ok: false, verified: false, error: "Onboarding is not configured" }, 503, cors);
+  }
+
+  try {
+    const row = await findPaidCohortOrder(env, dbId, trackingId, email);
+    if (!row) return json({ ok: true, verified: false, message: "No paid order found" }, 200, cors);
+    const props = row.properties || {};
+    const nameVal = calProp(props["Name"]) || calProp(props["First name"]) || "Cohort Member";
+    const firstName = nameVal.split(" ")[0] || "Cohort Member";
+    const paymentStatus = calProp(props["Payment Status"]) || "Paid";
+    const secondSeatChoice = calProp(props["Second Seat Option"]) || calProp(props["Second Seat Choice"]) || "";
+    const isCompleted = Boolean(secondSeatChoice);
+
+    return json({
+      ok: true,
+      verified: true,
+      firstName,
+      paymentStatus,
+      secondSeatChoice,
+      isCompleted,
+      trackingId: trackingId || calProp(props["TrackingID"]),
+      whatsappUrl: env.WHATSAPP_INVITE_URL || "",
+    }, 200, cors);
+  } catch (err) {
+    return json({ ok: false, verified: false, error: "Could not verify the order" }, 502, cors);
+  }
+}
+
+async function handleOnboardSubmit(data, env, cors, ctx) {
+  const trackingId = String(data.trackingId || data.tracking_id || "").trim();
+  const email = String(data.email || "").trim();
+  const choice = String(data.choice || "named").trim();
+  const attendeeFirstName = String(data.attendeeFirstName || "").trim();
+  const attendeeLastName = String(data.attendeeLastName || "").trim();
+  const attendeeEmail = String(data.attendeeEmail || "").trim();
+
+  const dbId = env.NOTION_SUPERHUMAN_COHORT1_DATABASE_ID;
+  if (!env.NOTION_TOKEN || !dbId) return json({ ok: false, error: "Onboarding is not configured" }, 503, cors);
+  if (!trackingId && !email) return json({ ok: false, error: "Order details are required" }, 400, cors);
+
+  let paidOrder;
+  try {
+    paidOrder = await findPaidCohortOrder(env, dbId, trackingId, email);
+  } catch {
+    return json({ ok: false, error: "Could not verify the order" }, 502, cors);
+  }
+  if (!paidOrder) return json({ ok: false, error: "A paid order is required" }, 403, cors);
+
+  {
+    const notionWork = (async () => {
+      try {
+        const properties = {
+          "Second Seat Option": { select: { name: choice === "named" ? "Named Attendee" : "Not Sure Yet" } },
+        };
+        if (choice === "named") {
+          if (attendeeFirstName) properties["Second Seat First Name"] = { rich_text: [{ text: { content: clip(attendeeFirstName, 100) } }] };
+          if (attendeeLastName) properties["Second Seat Last Name"] = { rich_text: [{ text: { content: clip(attendeeLastName, 100) } }] };
+          if (attendeeEmail) properties["Second Seat Email"] = { email: attendeeEmail };
+        }
+
+        await fetch(`https://api.notion.com/v1/pages/${paidOrder.id}`, {
+          method: "PATCH",
+          headers: { ...authHeaders(env), "Content-Type": "application/json" },
+          body: JSON.stringify({ properties }),
+        });
+      } catch (err) {
+        console.error("Onboard Notion sync error:", err);
+      }
+    })();
+
+    if (ctx && typeof ctx.waitUntil === "function") {
+      ctx.waitUntil(notionWork);
+    }
+  }
+
+  const sheetUrl = env.GOOGLE_SHEET_ORDERS_URL || env.GOOGLE_SHEET_WEBHOOK_URL;
+  if (sheetUrl) {
+    const sheetWork = fetch(sheetUrl, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        tab: "Onboarding",
+        timestamp: new Date().toISOString(),
+        trackingId,
+        email,
+        choice,
+        attendeeFirstName,
+        attendeeLastName,
+        attendeeEmail,
+      }),
+    }).catch((err) => console.error("Google Sheet Onboard error:", err));
+
+    if (ctx && typeof ctx.waitUntil === "function") {
+      ctx.waitUntil(sheetWork);
+    }
+  }
+
+  return json({ ok: true }, 200, cors);
+}
+
+async function findPaidCohortOrder(env, dbId, trackingId, email) {
+  const filter = trackingId
+    ? { property: "TrackingID", rich_text: { equals: trackingId } }
+    : { property: "Email", email: { equals: email } };
+  const response = await fetch(`https://api.notion.com/v1/databases/${dbId}/query`, {
+    method: "POST",
+    headers: { ...authHeaders(env), "Content-Type": "application/json" },
+    body: JSON.stringify({ filter }),
+  });
+  if (!response.ok) throw new Error("Notion order lookup failed");
+  const row = (await response.json()).results?.[0];
+  return row && calProp(row.properties?.["Payment Status"]).toLowerCase() === "paid" ? row : null;
 }

@@ -901,7 +901,7 @@ html{scroll-padding-top:110px}
 
 <!-- ANNOUNCEMENT BAR + NAV: one sticky block -->
 <div class="topstick">
-<a class="annc" href="https://agentlabs.thrivecart.com/accelerator/" onclick="track('join_announce')"><span class="annc-price">Save $300 &middot; <s>$1,297</s> <strong>$997</strong> &middot; 2 Seats For 1</span><span class="annc-cd" id="anncCd" hidden><span class="sep" aria-hidden="true">|</span><span id="anncCdText"></span></span></a>
+<a class="annc" href="/join/" onclick="openJoinModal(event); track('join_announce')"><span class="annc-price">Save $300 &middot; <s>$1,297</s> <strong>$997</strong> &middot; 2 Seats For 1</span><span class="annc-cd" id="anncCd" hidden><span class="sep" aria-hidden="true">|</span><span id="anncCdText"></span></span></a>
 <script>
 // ---- Announcement countdown -------------------------------------------------
 // Counts down to the early-bird deadline (11:59pm ET, fixed offset so it is the
@@ -935,7 +935,7 @@ html{scroll-padding-top:110px}
       <a href="#includes">What's included</a>
     </div>
     <div class="nav-right">
-      <a class="cta" href="https://agentlabs.thrivecart.com/accelerator/" onclick="track('join_nav')">Join the cohort &middot; $997 &middot; 2 seats</a>
+      <a class="cta" href="/join/" onclick="openJoinModal(event)" onclick="track('join_nav')">Join the cohort &middot; $997 &middot; 2 seats</a>
       <button class="nav-burger" id="navBurger" type="button" aria-label="Menu" aria-haspopup="dialog" aria-controls="navMenu">
         <svg width="22" height="22" viewBox="0 0 22 22" aria-hidden="true"><path d="M3 6h16M3 11h16M3 16h16" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
       </button>
@@ -951,7 +951,7 @@ html{scroll-padding-top:110px}
       <a href="#proof">Proof</a>
       <a href="#includes">What's included</a>
     </div>
-    <a class="cta cta-lg" href="https://agentlabs.thrivecart.com/accelerator/" onclick="track('join_menu')">Join the cohort &middot; $997 &middot; 2 seats</a>
+    <a class="cta cta-lg" href="/join/" onclick="openJoinModal(event)" onclick="track('join_menu')">Join the cohort &middot; $997 &middot; 2 seats</a>
   </dialog>
   <script>
   (function(){
@@ -982,7 +982,7 @@ html{scroll-padding-top:110px}
       <p class="sub">Coached by exited founders, the experts behind 20,000 AI agents, and an a16z backed CEO. You ask them, they build it live with you.</p>
       <p class="meta">Mon 19 Oct to Fri 13 Nov &middot; 12pm ET &middot; Live and recorded</p>
       <p class="two"><strong>2 seats for the price of 1.</strong> Bring whoever keeps you honest. ;)</p>
-      <a class="cta cta-lg" href="https://agentlabs.thrivecart.com/accelerator/" onclick="track('join_hero')">Join the cohort &middot; $997 &middot; 2 seats</a>
+      <a class="cta cta-lg" href="/join/" onclick="openJoinModal(event)" onclick="track('join_hero')">Join the cohort &middot; $997 &middot; 2 seats</a>
       <p class="cta-note">Early bird ends Sunday 11 October. $1,297 after. Payment plan available.</p>
     </div>
   </div>
@@ -1006,7 +1006,7 @@ html{scroll-padding-top:110px}
       <p>$997 for two seats until Sunday 11 October. That's under $500 a head.</p>
     </div>
     <div class="act">
-      <a class="cta cta-lg" href="https://agentlabs.thrivecart.com/accelerator/" onclick="track('join_seats')">Claim both seats &middot; $997</a>
+      <a class="cta cta-lg" href="/join/" onclick="openJoinModal(event)" onclick="track('join_seats')">Claim both seats &middot; $997</a>
     </div>
   </div>
 </section>
@@ -1249,7 +1249,7 @@ html{scroll-padding-top:110px}
       </div>
     </div>
     <div class="act">
-      <a class="cta cta-lg" href="https://agentlabs.thrivecart.com/accelerator/" onclick="track('join_includes')">Join the cohort &middot; $997 &middot; 2 seats</a>
+      <a class="cta cta-lg" href="/join/" onclick="openJoinModal(event)" onclick="track('join_includes')">Join the cohort &middot; $997 &middot; 2 seats</a>
       <p class="cta-note">Early bird ends Sunday 11 October. Payment plan available.</p>
     </div>
     </div>
@@ -1916,7 +1916,7 @@ html{scroll-padding-top:110px}
 <!-- STICKY APPLY BAR -->
 <div class="stickybar" id="stickybar" aria-hidden="true">
   <span class="sb-txt">Founding cohort &middot; Limited spots</span>
-  <a class="btn" href="https://agentlabs.thrivecart.com/accelerator/" onclick="track('join_sticky')">Join the cohort &middot; $997 &middot; 2 seats</a>
+  <a class="btn" href="/join/" onclick="openJoinModal(event)" onclick="track('join_sticky')">Join the cohort &middot; $997 &middot; 2 seats</a>
 </div>
 
 <script>
@@ -2008,5 +2008,291 @@ function track(name, params){
   }
 
   track('accelerator_view');
+})();
+</script>
+
+<!-- Pre-checkout Join Pop-Up Modal -->
+<style id="join-modal-styles">
+.join-modal-backdrop {
+  position: fixed; inset: 0; z-index: 10000;
+  background: rgba(51, 58, 40, 0.65);
+  -webkit-backdrop-filter: blur(8px); backdrop-filter: blur(8px);
+  display: flex; align-items: center; justify-content: center;
+  padding: 20px; opacity: 0; pointer-events: none;
+  transition: opacity 0.25s ease;
+}
+.join-modal-backdrop.is-open { opacity: 1; pointer-events: auto; }
+
+.join-modal-card {
+  position: relative; width: 100%; max-width: 520px;
+  background: #ffffff; border: 1px solid rgba(66,75,54,0.20);
+  border-radius: 20px; padding: 36px 32px;
+  box-shadow: 0 24px 60px -15px rgba(0,0,0,0.3);
+  transform: translateY(16px) scale(0.98);
+  transition: transform 0.25s cubic-bezier(.16,1,.3,1);
+}
+.join-modal-backdrop.is-open .join-modal-card { transform: translateY(0) scale(1); }
+
+.join-modal-close {
+  position: absolute; top: 18px; right: 20px;
+  background: transparent; border: none; font-size: 26px; line-height: 1;
+  color: #7E8768; cursor: pointer; padding: 4px; border-radius: 6px;
+  transition: color 0.15s ease;
+}
+.join-modal-close:hover { color: #333A28; }
+
+.join-modal-header { text-align: center; margin-bottom: 24px; }
+.join-modal-header h2 { font-family: 'Space Grotesk', -apple-system, sans-serif; font-size: 26px; font-weight: 700; color: #333A28; line-height: 1.2; margin-bottom: 6px; }
+.join-modal-header p { font-family: 'Archivo', -apple-system, sans-serif; font-size: 14px; color: #5B6449; }
+
+.join-modal-progress { display: flex; align-items: center; gap: 12px; margin-bottom: 24px; }
+.join-progress-bar { flex: 1; height: 5px; background: #DCDEBF; border-radius: 99px; overflow: hidden; }
+.join-progress-fill { height: 100%; width: 33.33%; background: #67762E; border-radius: 99px; transition: width 0.25s ease; }
+.join-progress-text { font-family: 'Archivo', -apple-system, sans-serif; font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.1em; color: #7E8768; }
+
+.m-q-step { display: none; opacity: 0; transform: translateY(12px); transition: all 0.25s ease; }
+.m-q-step.active { display: block; opacity: 1; transform: translateY(0); }
+
+.m-q-label { display: block; font-family: 'Archivo', -apple-system, sans-serif; font-size: 12px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.1em; color: #67762E; margin-bottom: 6px; }
+.m-q-title { font-family: 'Space Grotesk', -apple-system, sans-serif; font-size: 20px; font-weight: 600; color: #333A28; margin-bottom: 16px; line-height: 1.3; }
+
+.m-input {
+  width: 100%; font-family: 'Inter', -apple-system, sans-serif; font-size: 15px; color: #333A28;
+  background: #FFFCEB; border: 1.5px solid rgba(66,75,54,0.34); border-radius: 10px;
+  padding: 12px 16px; outline: none; transition: border-color 0.15s ease, box-shadow 0.15s ease;
+}
+.m-input:focus { border-color: #424B36; box-shadow: 0 0 0 3px rgba(66,75,54,0.12); background: #ffffff; }
+.m-input.invalid { border-color: #A8492F; box-shadow: 0 0 0 3px rgba(168,73,47,0.12); }
+textarea.m-input { resize: vertical; min-height: 95px; }
+
+.m-error-msg { font-size: 12.5px; color: #A8492F; margin-top: 6px; display: none; font-weight: 500; }
+.m-error-msg.visible { display: block; }
+
+.m-actions { display: flex; align-items: center; justify-content: space-between; margin-top: 24px; padding-top: 16px; border-top: 1px solid rgba(66,75,54,0.20); }
+.m-btn-back { background: transparent; border: 1px solid rgba(66,75,54,0.34); border-radius: 8px; padding: 10px 16px; font-family: 'Archivo', -apple-system, sans-serif; font-size: 13.5px; font-weight: 600; color: #5B6449; cursor: pointer; }
+.m-btn-back:hover { border-color: #424B36; color: #333A28; }
+.m-btn-back:disabled { opacity: 0.4; pointer-events: none; }
+
+.m-btn-next { background: #424B36; border: 1px solid #424B36; border-radius: 8px; padding: 11px 22px; font-family: 'Archivo', -apple-system, sans-serif; font-size: 14.5px; font-weight: 700; color: #FFFCEB; cursor: pointer; transition: all 0.15s ease; margin-left: auto; }
+.m-btn-next:hover { background: #333A28; border-color: #333A28; box-shadow: 0 8px 20px -6px rgba(51,58,40,0.4); }
+.m-btn-next:disabled { opacity: 0.6; cursor: not-allowed; }
+</style>
+
+<div class="join-modal-backdrop" id="joinModalBackdrop" onclick="closeJoinModalOnBackdrop(event)">
+  <div class="join-modal-card">
+    <button type="button" class="join-modal-close" onclick="closeJoinModal()" aria-label="Close modal">&times;</button>
+    <div class="join-modal-header">
+      <h2>Before you grab your seat.</h2>
+      <p>Three questions. Thirty seconds.</p>
+    </div>
+
+    <div class="join-modal-progress">
+      <div class="join-progress-bar"><div class="join-progress-fill" id="mProgressFill"></div></div>
+      <span class="join-progress-text" id="mProgressText">1 of 3</span>
+    </div>
+
+    <form id="modalJoinForm" onsubmit="handleModalSubmit(event)" novalidate>
+      <div class="m-q-step active" id="mStep1">
+        <span class="m-q-label">Question 1 of 3</span>
+        <h3 class="m-q-title">What is your first name?</h3>
+        <input type="text" id="mFirstName" class="m-input" placeholder="e.g. Alex" autocomplete="given-name" required onkeydown="handleModalKey(event, 1)" />
+        <div class="m-error-msg" id="mError1">Please enter your first name.</div>
+      </div>
+
+      <div class="m-q-step" id="mStep2">
+        <span class="m-q-label">Question 2 of 3</span>
+        <h3 class="m-q-title">What is your best email address?</h3>
+        <input type="email" id="mEmail" class="m-input" placeholder="alex@company.com" autocomplete="email" required onblur="validateModalEmailOnBlur()" onkeydown="handleModalKey(event, 2)" />
+        <div class="m-error-msg" id="mError2">Please enter a valid email address.</div>
+      </div>
+
+      <div class="m-q-step" id="mStep3">
+        <span class="m-q-label">Question 3 of 3</span>
+        <h3 class="m-q-title">What will make you become superhuman?</h3>
+        <textarea id="mSuperhumanAnswer" class="m-input" placeholder="The one thing in your business you'd hand to AI tomorrow." required></textarea>
+        <div class="m-error-msg" id="mError3">Please tell us what would make you superhuman.</div>
+      </div>
+
+      <div class="m-actions">
+        <button type="button" class="m-btn-back" id="mBtnBack" onclick="prevModalStep()" disabled>← Back</button>
+        <button type="button" class="m-btn-next" id="mBtnNext" onclick="nextModalStep()">Next →</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<script id="join-modal-script">
+(function() {
+  var mCurrentStep = 1;
+  var mTotalSteps = 3;
+  var JOIN_WORKER_ENDPOINT = 'https://time-rich-forms.timerich.workers.dev/join';
+  var THRIVECART_CLEAN_URL = 'https://agentlabs.thrivecart.com/accelerator/';
+
+  window.openJoinModal = function(e) {
+    if (e && (e.ctrlKey || e.metaKey || e.shiftKey || (e.button && e.button !== 0))) return;
+    if (e && e.preventDefault) e.preventDefault();
+    var backdrop = document.getElementById('joinModalBackdrop');
+    if (backdrop) {
+      backdrop.classList.add('is-open');
+      document.body.style.overflow = 'hidden';
+      showModalStep(1);
+    }
+  };
+
+  window.closeJoinModal = function() {
+    var backdrop = document.getElementById('joinModalBackdrop');
+    if (backdrop) {
+      backdrop.classList.remove('is-open');
+      document.body.style.overflow = '';
+    }
+  };
+
+  window.closeJoinModalOnBackdrop = function(e) {
+    if (e.target === document.getElementById('joinModalBackdrop')) closeJoinModal();
+  };
+
+  document.addEventListener('keydown', function(e) {
+    if (e.key === 'Escape') closeJoinModal();
+  });
+
+  function updateModalProgress() {
+    var fill = document.getElementById('mProgressFill');
+    var text = document.getElementById('mProgressText');
+    var backBtn = document.getElementById('mBtnBack');
+    var nextBtn = document.getElementById('mBtnNext');
+
+    if (fill) fill.style.width = (mCurrentStep / mTotalSteps * 100) + '%';
+    if (text) text.textContent = mCurrentStep + ' of ' + mTotalSteps;
+    if (backBtn) backBtn.disabled = mCurrentStep === 1;
+
+    if (nextBtn) {
+      if (mCurrentStep === mTotalSteps) {
+        nextBtn.innerHTML = 'Continue to checkout →';
+        nextBtn.type = 'submit';
+      } else {
+        nextBtn.innerHTML = 'Next →';
+        nextBtn.type = 'button';
+      }
+    }
+  }
+
+  function showModalStep(step) {
+    for (var i = 1; i <= mTotalSteps; i++) {
+      var screen = document.getElementById('mStep' + i);
+      if (screen) {
+        if (i === step) screen.classList.add('active');
+        else screen.classList.remove('active');
+      }
+    }
+    mCurrentStep = step;
+    updateModalProgress();
+    setTimeout(function() {
+      if (step === 1 && document.getElementById('mFirstName')) document.getElementById('mFirstName').focus();
+      if (step === 2 && document.getElementById('mEmail')) document.getElementById('mEmail').focus();
+      if (step === 3 && document.getElementById('mSuperhumanAnswer')) document.getElementById('mSuperhumanAnswer').focus();
+    }, 80);
+  }
+
+  window.validateModalEmailOnBlur = function() {
+    var input = document.getElementById('mEmail');
+    var error = document.getElementById('mError2');
+    if (!input) return true;
+    var val = input.value.trim();
+    if (val && !/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(val)) {
+      input.classList.add('invalid');
+      if (error) { error.textContent = 'Please enter a valid email address format.'; error.classList.add('visible'); }
+      return false;
+    } else {
+      input.classList.remove('invalid');
+      if (error) error.classList.remove('visible');
+      return true;
+    }
+  };
+
+  function validateModalStep(step) {
+    if (step === 1) {
+      var i1 = document.getElementById('mFirstName');
+      var e1 = document.getElementById('mError1');
+      if (!i1 || !i1.value.trim()) {
+        if (i1) i1.classList.add('invalid');
+        if (e1) e1.classList.add('visible');
+        return false;
+      }
+      i1.classList.remove('invalid'); if (e1) e1.classList.remove('visible'); return true;
+    }
+    if (step === 2) {
+      var i2 = document.getElementById('mEmail');
+      var e2 = document.getElementById('mError2');
+      var val = i2 ? i2.value.trim() : '';
+      if (!val || !/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(val)) {
+        if (i2) i2.classList.add('invalid');
+        if (e2) { e2.textContent = !val ? 'Email address is required.' : 'Please enter a valid email address.'; e2.classList.add('visible'); }
+        return false;
+      }
+      if (i2) i2.classList.remove('invalid'); if (e2) e2.classList.remove('visible'); return true;
+    }
+    if (step === 3) {
+      var i3 = document.getElementById('mSuperhumanAnswer');
+      var e3 = document.getElementById('mError3');
+      if (!i3 || !i3.value.trim()) {
+        if (i3) i3.classList.add('invalid');
+        if (e3) e3.classList.add('visible');
+        return false;
+      }
+      if (i3) i3.classList.remove('invalid'); if (e3) e3.classList.remove('visible'); return true;
+    }
+    return true;
+  }
+
+  window.nextModalStep = function() {
+    if (!validateModalStep(mCurrentStep)) return;
+    if (mCurrentStep < mTotalSteps) showModalStep(mCurrentStep + 1);
+    else submitModalForm();
+  };
+
+  window.prevModalStep = function() {
+    if (mCurrentStep > 1) showModalStep(mCurrentStep - 1);
+  };
+
+  window.handleModalKey = function(e, step) {
+    if (e.key === 'Enter') { e.preventDefault(); nextModalStep(); }
+  };
+
+  function submitModalForm() {
+    if (!validateModalStep(1) || !validateModalStep(2) || !validateModalStep(3)) {
+      if (!validateModalStep(1)) showModalStep(1);
+      else if (!validateModalStep(2)) showModalStep(2);
+      else showModalStep(3);
+      return;
+    }
+    var fn = document.getElementById('mFirstName').value.trim();
+    var em = document.getElementById('mEmail').value.trim();
+    var sa = document.getElementById('mSuperhumanAnswer').value.trim();
+    var btn = document.getElementById('mBtnNext');
+    if (btn) {
+      btn.disabled = true;
+      btn.innerHTML = 'Redirecting to checkout...';
+    }
+
+    var trackingId = typeof crypto !== 'undefined' && crypto.randomUUID ? crypto.randomUUID() : ('tr_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9));
+
+    try {
+      fetch(JOIN_WORKER_ENDPOINT, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ firstName: fn, email: em, superhumanAnswer: sa, trackingId: trackingId })
+      }).catch(function(err) { console.warn('Modal intent capture failed silently:', err); });
+    } catch (err) { console.warn('Modal intent dispatch error:', err); }
+
+    // ThriveCart's checkout currently fails with any query string. Keep this
+    // redirect clean; the Worker retains the capture record for email matching.
+    var redirectUrl = THRIVECART_CLEAN_URL;
+    setTimeout(function() { window.location.href = redirectUrl; }, 150);
+  }
+
+  window.handleModalSubmit = function(e) {
+    e.preventDefault();
+    submitModalForm();
+  };
 })();
 </script>
