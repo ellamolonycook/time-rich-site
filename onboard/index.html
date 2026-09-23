@@ -1,0 +1,417 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+<title>Cohort Onboarding — Superhuman Accelerator</title>
+<link rel="icon" href="/favicon.ico" sizes="any" />
+<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32.png" />
+<link rel="icon" type="image/png" sizes="16x16" href="/favicon-16.png" />
+<link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
+<meta name="description" content="Superhuman Accelerator Cohort 1 Onboarding & Second Seat Registration." />
+<link rel="canonical" href="https://timerich.ai/onboard/" />
+<meta name="robots" content="noindex, nofollow" />
+<meta name="theme-color" content="#FFFCEB" />
+
+<link rel="stylesheet" href="/sh-apply/fonts.css" />
+<style>
+:root {
+  --cream: #FFFCEB;
+  --sage: #DCDEBF;
+  --sage-lt: #E9EAD5;
+  --green: #424B36;
+  --green-deep: #333A28;
+  --pop: #CCEEA0;
+  --lime: #67762E;
+  --red: #A8492F;
+  --line: rgba(66,75,54,0.20);
+  --line-2: rgba(66,75,54,0.34);
+  --text: #424B36;
+  --muted: #5B6449;
+  --dim: #7E8768;
+
+  --font-display: 'Space Grotesk', -apple-system, sans-serif;
+  --font-ui: 'Archivo', -apple-system, sans-serif;
+  --font-body: 'Inter', -apple-system, sans-serif;
+}
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+  background: var(--cream);
+  color: var(--text);
+  font-family: var(--font-body);
+  font-size: 16px;
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+  min-height: 100vh;
+  min-height: 100dvh;
+  display: flex;
+  flex-direction: column;
+}
+
+::selection { background: var(--pop); color: var(--green-deep); }
+a { color: inherit; text-decoration: none; }
+
+.topbar {
+  position: sticky; top: 0; z-index: 50;
+  background: rgba(255, 252, 235, 0.94);
+  -webkit-backdrop-filter: blur(10px); backdrop-filter: blur(10px);
+  border-bottom: 1px solid var(--line);
+}
+.topbar-inner {
+  max-width: 760px; margin: 0 auto; padding: 0 24px; height: 64px;
+  display: flex; align-items: center; justify-content: space-between;
+}
+.brand-logo { font-family: var(--font-display); font-size: 20px; font-weight: 700; color: var(--green-deep); }
+.brand-logo span { color: var(--lime); }
+.badge-status {
+  display: inline-flex; align-items: center; gap: 6px;
+  background: rgba(103, 118, 46, 0.12); border: 1px solid rgba(103, 118, 46, 0.3);
+  padding: 4px 12px; border-radius: 99px;
+  font-family: var(--font-ui); font-size: 12px; font-weight: 700; color: var(--lime);
+}
+.badge-dot { width: 7px; height: 7px; border-radius: 50%; background: var(--lime); }
+
+main {
+  flex: 1 0 auto; display: flex; align-items: center; justify-content: center;
+  padding: 40px 24px 80px;
+}
+
+.onboard-card {
+  width: 100%; max-width: 680px;
+  background: #ffffff; border: 1px solid var(--line);
+  border-radius: 20px; padding: 40px 36px;
+  box-shadow: 0 20px 50px -15px rgba(66, 75, 54, 0.08);
+}
+@media (max-width: 540px) {
+  .onboard-card { padding: 28px 20px; border-radius: 16px; }
+}
+
+.section-title {
+  font-family: var(--font-display); font-size: clamp(26px, 4vw, 32px);
+  font-weight: 700; color: var(--green-deep); line-height: 1.15;
+  letter-spacing: -0.02em; margin-bottom: 8px;
+}
+.section-sub { font-family: var(--font-ui); font-size: 15px; color: var(--muted); margin-bottom: 28px; }
+
+/* ── Lookup state ── */
+.lookup-box {
+  background: var(--cream); border: 1px dashed var(--line-2);
+  border-radius: 14px; padding: 24px; text-align: center; margin-bottom: 24px;
+}
+.lookup-box p { font-size: 14.5px; color: var(--muted); margin-bottom: 16px; }
+
+.input-row { display: flex; gap: 10px; max-width: 480px; margin: 0 auto; }
+.input-field {
+  flex: 1; font-family: var(--font-body); font-size: 15px; color: var(--green-deep);
+  background: #ffffff; border: 1.5px solid var(--line-2); border-radius: 10px;
+  padding: 12px 16px; outline: none; transition: border-color 0.15s ease;
+}
+.input-field:focus { border-color: var(--green); }
+.btn-primary {
+  background: var(--green); border: 1px solid var(--green); border-radius: 10px;
+  padding: 12px 22px; font-family: var(--font-ui); font-size: 14.5px; font-weight: 700;
+  color: var(--cream); cursor: pointer; transition: all 0.15s ease; white-space: nowrap;
+}
+.btn-primary:hover { background: var(--green-deep); border-color: var(--green-deep); }
+.btn-primary:disabled { opacity: 0.6; cursor: not-allowed; }
+
+/* ── Seat 2 Options ── */
+.seat-options { display: flex; flex-direction: column; gap: 14px; margin-bottom: 28px; }
+.seat-option-card {
+  position: relative; background: var(--cream); border: 1.5px solid var(--line-2);
+  border-radius: 14px; padding: 20px; cursor: pointer; transition: all 0.15s ease;
+}
+.seat-option-card:hover { border-color: var(--green); }
+.seat-option-card.selected {
+  border-color: var(--lime); background: #ffffff;
+  box-shadow: 0 0 0 3px rgba(103, 118, 46, 0.15);
+}
+
+.seat-option-header { display: flex; align-items: center; gap: 12px; }
+.seat-option-radio {
+  width: 20px; height: 20px; border-radius: 50%; border: 2px solid var(--dim);
+  display: flex; align-items: center; justify-content: center; transition: all 0.15s ease;
+}
+.seat-option-card.selected .seat-option-radio { border-color: var(--lime); background: var(--lime); }
+.seat-option-radio::after {
+  content: ""; width: 8px; height: 8px; border-radius: 50%; background: #ffffff;
+  opacity: 0; transition: opacity 0.15s ease;
+}
+.seat-option-card.selected .seat-option-radio::after { opacity: 1; }
+
+.seat-option-title { font-family: var(--font-display); font-size: 18px; font-weight: 600; color: var(--green-deep); }
+.seat-option-desc { font-size: 13.5px; color: var(--muted); margin-top: 4px; padding-left: 32px; }
+
+.named-attendee-fields {
+  margin-top: 16px; padding-top: 16px; border-top: 1px solid var(--line);
+  display: grid; grid-template-columns: 1fr 1fr; gap: 12px;
+}
+.named-attendee-fields .full-width { grid-column: 1 / -1; }
+
+/* ── WhatsApp & Cohort Details ── */
+.whatsapp-box {
+  background: #E8F5E9; border: 1px solid #A5D6A7; border-radius: 16px;
+  padding: 28px 24px; text-align: center; margin-top: 24px;
+}
+.whatsapp-box h3 {
+  font-family: var(--font-display); font-size: 22px; font-weight: 700;
+  color: #1B5E20; margin-bottom: 6px;
+}
+.whatsapp-box p { font-size: 14.5px; color: #2E7D32; margin-bottom: 20px; max-width: 480px; margin-left: auto; margin-right: auto; }
+
+.btn-whatsapp {
+  display: inline-flex; align-items: center; gap: 10px;
+  background: #25D366; border: 1px solid #20BD5A; border-radius: 12px;
+  padding: 14px 28px; font-family: var(--font-ui); font-size: 16px; font-weight: 700;
+  color: #ffffff; text-decoration: none; box-shadow: 0 10px 20px -6px rgba(37, 211, 102, 0.4);
+  transition: all 0.15s ease;
+}
+.btn-whatsapp:hover { background: #20BD5A; transform: translateY(-1px); }
+
+.cohort-info {
+  margin-top: 32px; padding-top: 24px; border-top: 1px solid var(--line);
+}
+.cohort-info h4 {
+  font-family: var(--font-display); font-size: 18px; font-weight: 600;
+  color: var(--green-deep); margin-bottom: 12px;
+}
+.info-list { list-style: none; display: flex; flex-direction: column; gap: 10px; }
+.info-list li {
+  font-size: 14.5px; color: var(--muted); display: flex; align-items: flex-start; gap: 10px;
+}
+.info-list li span.icon { color: var(--lime); font-weight: 700; }
+</style>
+</head>
+<body>
+
+<header class="topbar">
+  <div class="topbar-inner">
+    <a href="/accelerator/" class="brand-logo">Time Rich<span>.</span></a>
+    <div class="badge-status" id="verifiedBadge">
+      <span class="badge-dot"></span> Order Verified
+    </div>
+  </div>
+</header>
+
+<main>
+  <div class="onboard-card">
+
+    <!-- State 1: Unverified Lookup Form -->
+    <div id="unverifiedState" style="display: none;">
+      <h1 class="section-title">Verify your order</h1>
+      <p class="section-sub">Enter the email address you used at checkout to unlock your cohort onboarding details.</p>
+      <div class="lookup-box">
+        <form onsubmit="handleVerifyLookup(event)">
+          <div class="input-row">
+            <input type="email" id="lookupEmail" class="input-field" placeholder="your-email@domain.com" required />
+            <button type="submit" class="btn-primary" id="btnLookup">Verify Order</button>
+          </div>
+        </form>
+        <p id="lookupMsg" style="margin-top: 12px; margin-bottom: 0; display: none; color: var(--red); font-size: 13.5px;"></p>
+      </div>
+    </div>
+
+    <!-- State 2: Verified - Seat 2 Selection Form -->
+    <div id="verifiedFormState" style="display: none;">
+      <h1 class="section-title" id="welcomeTitle">Welcome to Cohort 1!</h1>
+      <p class="section-sub">Your seat is confirmed. Next: choose your second seat attendee to grant them full access.</p>
+
+      <form onsubmit="handleSeatSubmit(event)">
+        <div class="seat-options">
+          <div class="seat-option-card selected" id="optNamed" onclick="selectSeatOption('named')">
+            <div class="seat-option-header">
+              <div class="seat-option-radio"></div>
+              <div class="seat-option-title">Option 1: Name your second attendee now</div>
+            </div>
+            <div class="seat-option-desc">Grant instant cohort access to your co-founder, partner, or team member.</div>
+
+            <div class="named-attendee-fields" id="namedFields">
+              <div>
+                <input type="text" id="attFirstName" class="input-field" placeholder="Attendee First Name" />
+              </div>
+              <div>
+                <input type="text" id="attLastName" class="input-field" placeholder="Attendee Last Name" />
+              </div>
+              <div class="full-width">
+                <input type="email" id="attEmail" class="input-field" placeholder="attendee@company.com" />
+              </div>
+            </div>
+          </div>
+
+          <div class="seat-option-card" id="optUndecided" onclick="selectSeatOption('undecided')">
+            <div class="seat-option-header">
+              <div class="seat-option-radio"></div>
+              <div class="seat-option-title">Option 2: Not sure yet</div>
+            </div>
+            <div class="seat-option-desc">You can assign your second seat anytime before the cohort kick-off call.</div>
+          </div>
+        </div>
+
+        <button type="submit" class="btn-primary" id="btnSeatSubmit" style="width: 100%; padding: 15px; font-size: 16px;">Confirm & Join Cohort →</button>
+      </form>
+    </div>
+
+    <!-- State 3: Final Onboarding View (WhatsApp & Details) -->
+    <div id="completedState" style="display: none;">
+      <h1 class="section-title">You're all set!</h1>
+      <p class="section-sub">Your cohort membership and second-seat details have been saved.</p>
+
+      <div class="whatsapp-box">
+        <h3>Join the Cohort 1 WhatsApp Group</h3>
+        <p>Connect with fellow founders, receive live call notifications, and access your onboarding resources directly.</p>
+        <a id="whatsappLink" href="#" target="_blank" rel="noopener" class="btn-whatsapp" hidden>
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M.057 24l1.687-6.163c-1.041-1.804-1.588-3.849-1.587-5.946.003-6.556 5.338-11.891 11.893-11.891 3.181.001 6.167 1.24 8.413 3.488 2.245 2.248 3.481 5.236 3.48 8.414-.003 6.557-5.338 11.892-11.893 11.892-1.99-.001-3.951-.5-5.688-1.448l-6.305 1.654zm6.597-3.807c1.676.995 3.276 1.591 5.392 1.592 5.448 0 9.886-4.434 9.889-9.885.002-5.462-4.415-9.89-9.881-9.892-5.452 0-9.887 4.434-9.889 9.884-.001 2.225.651 3.891 1.746 5.634l-1.099 4.019 4.842-1.27%20z"/></svg>
+          Join WhatsApp Group →
+        </a>
+      </div>
+
+      <div class="cohort-info">
+        <h4>What to expect next:</h4>
+        <ul class="info-list">
+          <li><span class="icon">✓</span> Calendar invitation with Zoom links sent to your email.</li>
+          <li><span class="icon">✓</span> Pre-cohort checklist & tool installation guide sent to WhatsApp.</li>
+          <li><span class="icon">✓</span> First live session starts this week.</li>
+        </ul>
+      </div>
+    </div>
+
+  </div>
+</main>
+
+<script>
+var ONBOARD_WORKER = "https://time-rich-forms.timerich.workers.dev/onboard";
+var currentTrackingId = "";
+var currentEmail = "";
+var selectedChoice = "named";
+var whatsappUrl = "";
+
+function getUrlParam(param) {
+  var search = window.location.search;
+  var params = new URLSearchParams(search);
+  return params.get(param) || params.get("passthrough[" + param + "]") || "";
+}
+
+function initOnboard() {
+  currentTrackingId = getUrlParam("tracking_id") || getUrlParam("passthrough_id") || getUrlParam("trackingId") || "";
+  currentEmail = getUrlParam("email") || getUrlParam("customer_email") || "";
+
+  if (currentTrackingId || currentEmail) {
+    verifyOrder(currentTrackingId, currentEmail);
+  } else {
+    showState("unverified");
+  }
+}
+
+function showState(stateName) {
+  document.getElementById("unverifiedState").style.display = stateName === "unverified" ? "block" : "none";
+  document.getElementById("verifiedFormState").style.display = stateName === "form" ? "block" : "none";
+  document.getElementById("completedState").style.display = stateName === "completed" ? "block" : "none";
+  document.getElementById("verifiedBadge").style.display = (stateName === "form" || stateName === "completed") ? "inline-flex" : "none";
+}
+
+function verifyOrder(tId, em) {
+  var url = ONBOARD_WORKER + "?tracking_id=" + encodeURIComponent(tId) + "&email=" + encodeURIComponent(em);
+
+  fetch(url)
+    .then(function(res) { return res.json(); })
+    .then(function(data) {
+      if (data && data.ok && data.verified) {
+        whatsappUrl = data.whatsappUrl || "";
+        if (data.firstName) {
+          document.getElementById("welcomeTitle").textContent = "Welcome to Cohort 1, " + data.firstName + "!";
+        }
+        if (data.isCompleted) {
+          showState("completed");
+        } else {
+          showState("form");
+        }
+      } else {
+        showVerificationError(data && data.message ? data.message : "We couldn't verify a paid order with those details.");
+        showState("unverified");
+      }
+    })
+    .catch(function(err) {
+      console.warn("Verification check fallback:", err);
+      showVerificationError("We couldn't verify your order right now. Please try again shortly.");
+      showState("unverified");
+    });
+}
+
+function showVerificationError(message) {
+  var el = document.getElementById("lookupMsg");
+  if (el) { el.textContent = message; el.style.display = "block"; }
+}
+
+function handleVerifyLookup(e) {
+  e.preventDefault();
+  var em = document.getElementById("lookupEmail").value.trim();
+  if (!em) return;
+
+  var btn = document.getElementById("btnLookup");
+  btn.disabled = true;
+  btn.textContent = "Checking...";
+
+  currentEmail = em;
+  verifyOrder("", em);
+}
+
+function selectSeatOption(opt) {
+  selectedChoice = opt;
+  var cardNamed = document.getElementById("optNamed");
+  var cardUndecided = document.getElementById("optUndecided");
+  var namedFields = document.getElementById("namedFields");
+
+  if (opt === "named") {
+    cardNamed.classList.add("selected");
+    cardUndecided.classList.remove("selected");
+    namedFields.style.display = "grid";
+  } else {
+    cardUndecided.classList.add("selected");
+    cardNamed.classList.remove("selected");
+    namedFields.style.display = "none";
+  }
+}
+
+function handleSeatSubmit(e) {
+  e.preventDefault();
+  var btn = document.getElementById("btnSeatSubmit");
+  btn.disabled = true;
+  btn.textContent = "Saving preferences...";
+
+  var attFN = document.getElementById("attFirstName").value.trim();
+  var attLN = document.getElementById("attLastName").value.trim();
+  var attEm = document.getElementById("attEmail").value.trim();
+
+  fetch(ONBOARD_WORKER, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({
+      trackingId: currentTrackingId,
+      email: currentEmail,
+      choice: selectedChoice,
+      attendeeFirstName: attFN,
+      attendeeLastName: attLN,
+      attendeeEmail: attEm
+    })
+  })
+  .then(function(res) { return res.json(); })
+  .then(function(data) {
+    if (!data || !data.ok) throw new Error("Seat selection was not saved");
+    var link = document.getElementById("whatsappLink");
+    if (link && whatsappUrl) { link.href = whatsappUrl; link.hidden = false; }
+    showState("completed");
+  })
+  .catch(function(err) {
+    console.warn("Onboard save error:", err);
+    btn.disabled = false;
+    btn.textContent = "Try again";
+  });
+}
+
+document.addEventListener("DOMContentLoaded", initOnboard);
+</script>
+</body>
+</html>
