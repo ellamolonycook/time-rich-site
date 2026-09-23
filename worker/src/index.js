@@ -31,6 +31,14 @@ export default {
       return new Response(null, { status: 204, headers: cors });
     }
 
+    // ThriveCart also validates the URL with a GET before it will save the
+    // webhook. Answer 200 with nothing but an ack: no config, no secrets, and
+    // no order data - the POST handler below still does the real work and
+    // still checks the shared secret.
+    if (path.endsWith("/thrivecart-webhook") && request.method === "GET") {
+      return json({ ok: true }, 200, cors);
+    }
+
     // Route: Onboard lookup (GET /onboard?tracking_id=... or ?email=...)
     if (path.endsWith("/onboard") && request.method === "GET") {
       return handleOnboardVerification(request, env, cors, url);
@@ -1190,16 +1198,30 @@ async function handleThriveCartWebhook(request, env, cors, ctx) {
     return json({ ok: false, error: "Invalid webhook payload" }, 400, cors);
   }
 
+  // [TC] tracing: everything below is console only - no behaviour depends on it.
+  console.log("[TC] received", JSON.stringify({
+    contentType,
+    keys: Object.keys(body).slice(0, 40),
+    eventRaw: body.event ?? body.type ?? null,
+    eventResolved: String(body.event || body.type || "order.success").toLowerCase(),
+    hasSecretInBody: Boolean(body.thrivecart_secret || body.secret),
+    hasSecretInHeader: Boolean(request.headers.get("x-thrivecart-secret")),
+  }));
+
   if (!env.THRIVECART_SECRET) {
+    console.log("[TC] secret check: FAILED - THRIVECART_SECRET is not set on the worker");
     return json({ ok: false, error: "ThriveCart webhook is not configured" }, 503, cors);
   }
   const incomingSecret = body.thrivecart_secret || body.secret || request.headers.get("x-thrivecart-secret");
   if (incomingSecret !== env.THRIVECART_SECRET) {
+    console.log("[TC] secret check: FAILED - sent secret does not match the worker's THRIVECART_SECRET");
     return json({ ok: false, error: "Invalid secret" }, 401, cors);
   }
+  console.log("[TC] secret check: PASSED");
 
   const event = String(body.event || body.type || "order.success").toLowerCase();
   if (event !== "order.success" && event !== "order.refund") {
+    console.log("[TC] branch: IGNORED - event", JSON.stringify(event), "is neither order.success nor order.refund; nothing written to Notion");
     return json({ ok: true, ignored: true, event }, 200, cors);
   }
 
@@ -1225,6 +1247,14 @@ async function handleThriveCartWebhook(request, env, cors, ctx) {
   const orderTotal = String(body.order_total || (body.order && body.order.total) || "").trim();
   const isRefund = event.includes("refund");
   const paymentStatus = isRefund ? "Refunded" : "Paid";
+  console.log("[TC] branch:", isRefund ? "REFUNDED" : "PAID", JSON.stringify({
+    event,
+    willWritePaymentStatus: paymentStatus,
+    email: email || null,
+    trackingId: trackingId || null,
+    orderId: orderId || null,
+    orderTotal: orderTotal || null,
+  }));
 
   const dbId = env.NOTION_SUPERHUMAN_COHORT1_DATABASE_ID;
 
@@ -1245,10 +1275,20 @@ async function handleThriveCartWebhook(request, env, cors, ctx) {
 
           if (queryRes.ok) {
             const queryData = await queryRes.json();
+            console.log("[TC] notion lookup:", JSON.stringify({
+              by: trackingId ? "TrackingID" : "Email",
+              value: trackingId || email,
+              httpStatus: queryRes.status,
+              matches: (queryData.results || []).length,
+            }));
             if (queryData.results && queryData.results.length > 0) {
               existingPageId = queryData.results[0].id;
             }
+          } else {
+            console.log("[TC] notion lookup: QUERY FAILED", queryRes.status, await queryRes.text());
           }
+        } else {
+          console.log("[TC] notion lookup: SKIPPED - the payload carried neither a tracking id nor an email");
         }
 
         if (existingPageId) {
@@ -1258,11 +1298,15 @@ async function handleThriveCartWebhook(request, env, cors, ctx) {
           if (orderId) properties["Order ID"] = { rich_text: [{ text: { content: clip(orderId, 100) } }] };
           if (orderTotal) properties["Amount"] = { rich_text: [{ text: { content: clip(orderTotal, 50) } }] };
 
-          await fetch(`https://api.notion.com/v1/pages/${existingPageId}`, {
+          console.log("[TC] notion write: UPDATING existing row", existingPageId, "->", paymentStatus);
+          const patchRes = await fetch(`https://api.notion.com/v1/pages/${existingPageId}`, {
             method: "PATCH",
             headers: { ...authHeaders(env), "Content-Type": "application/json" },
             body: JSON.stringify({ properties }),
           });
+          // Notion answers 400 for a select option that does not exist, and that
+          // is not an exception - so without this the row silently stays Pending.
+          console.log("[TC] notion write: PATCH status", patchRes.status, patchRes.ok ? "OK" : await patchRes.text());
         } else {
           const properties = {
             Name: { title: [{ text: { content: clip(fullName || email || "Purchaser", 200) } }] },
@@ -1272,14 +1316,17 @@ async function handleThriveCartWebhook(request, env, cors, ctx) {
           };
           if (orderId) properties["Order ID"] = { rich_text: [{ text: { content: clip(orderId, 100) } }] };
 
-          await fetch("https://api.notion.com/v1/pages", {
+          console.log("[TC] notion write: CREATING a new row ->", paymentStatus);
+          const createRes = await fetch("https://api.notion.com/v1/pages", {
             method: "POST",
             headers: { ...authHeaders(env), "Content-Type": "application/json" },
             body: JSON.stringify({ parent: { database_id: dbId }, properties }),
           });
+          console.log("[TC] notion write: CREATE status", createRes.status, createRes.ok ? "OK" : await createRes.text());
         }
       } catch (err) {
-        console.error("ThriveCart Notion sync error:", err);
+        console.error("[TC] notion sync threw:", err && err.stack ? err.stack : err);
+        try { console.error("[TC] error detail:", JSON.stringify(err, Object.getOwnPropertyNames(err || {}))); } catch (_) {}
       }
     })();
 
