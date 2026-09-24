@@ -701,35 +701,33 @@ html{scroll-padding-top:110px}
 .nav2 .brand .dot{color:var(--tr)}
 
 /* ---- 1. hero ---- */
-.s-hero{padding:var(--space-section) 0;text-align:center}
-.s-hero .inner{max-width:880px;margin:0 auto}
-.tw{position:relative;font-size:clamp(18px,2vw,24px);font-weight:500;letter-spacing:-.02em;line-height:1.35;color:var(--ink2);margin:0 auto var(--space-head);max-width:760px}
-.tw .sizer{visibility:hidden}
-.tw .live{position:absolute;inset:0}
-.tw .caret{display:inline-block;width:2px;height:.95em;background:var(--ink2);vertical-align:-.1em;margin-left:3px;animation:twBlink 1s steps(1) infinite}
-@keyframes twBlink{50%{opacity:0}}
+.s-hero{padding:var(--space-section) 0}
+/* Two columns: portrait left, copy left-aligned beside it. Everything in the
+   copy column was centred before, so the auto margins are unset here rather
+   than in each rule. */
+.s-hero .inner{display:grid;grid-template-columns:minmax(0,5fr) minmax(0,7fr);grid-template-areas:"shot copy";
+  gap:0 56px;align-items:center;max-width:1120px;text-align:left}
+.hero-shot{grid-area:shot;max-width:380px;width:100%;justify-self:start}
+.hero-copy{grid-area:copy}
+.hero-shot img{width:100%;height:auto;aspect-ratio:1/1;object-fit:cover;object-position:center 22%;border-radius:28px;display:block}
+.hero-copy{min-width:0}
+.hero-copy .sub,
+.hero-copy .s-cred{margin-left:0;margin-right:0}
+.hero-copy .cta-lg{margin-top:18px}
 .s-hero .lbl{margin-bottom:22px}
-.s-hero h1{font-size:clamp(38px,5vw,68px)}
+.s-hero h1{font-size:clamp(34px,3.7vw,54px)}
 .s-hero h1 .l{display:block}
-.s-hero .sub{font-size:clamp(17px,1.5vw,20px);max-width:720px;margin:26px auto 0}
+.s-hero .sub{font-size:clamp(16px,1.25vw,18px);max-width:56ch;margin:20px 0 0}
 .s-hero .sub .l{display:block}
 /* Four beats, lightly graded so the eye travels: an aside, the reader's line
    (highlighted with the same wash used in the founder section), the turn in
    the heading face, then the credential line a step down. */
 .s-hero .sub .s-quiet{color:var(--ink2)}
-.s-hero .sub .s-want{margin-top:10px;color:var(--ink);font-weight:500}
-.s-hero .sub .s-welcome{margin-top:16px;font-family:'Space Grotesk',system-ui,-apple-system,'Segoe UI',sans-serif;
+.s-hero .sub .s-want{margin-top:8px;color:var(--ink);font-weight:500}
+.s-hero .sub .s-welcome{margin-top:12px;font-family:'Space Grotesk',system-ui,-apple-system,'Segoe UI',sans-serif;
   font-weight:600;letter-spacing:-.022em;font-size:clamp(20px,1.8vw,25px);line-height:1.15;color:var(--ink)}
-.s-hero .sub .s-cred{margin-top:16px;max-width:52ch;margin-inline:auto;font-size:clamp(15px,1.15vw,16.5px);
+.s-hero .sub .s-cred{margin-top:12px;max-width:52ch;margin-inline:0;font-size:clamp(15px,1.15vw,16.5px);
   line-height:1.5;color:var(--ink2)}
-/* the when/where line as one quiet pill: tinted ground, brand dots for the
-   separators, the dates in full ink so they carry */
-.s-hero .meta{display:inline-flex;align-items:center;flex-wrap:wrap;justify-content:center;gap:0 10px;
-  margin-top:24px;padding:9px 18px;border-radius:999px;
-  background:rgba(216,217,185,.45);border:1px solid rgba(103,118,46,.22);
-  font-size:14.5px;line-height:1.4;color:var(--ink2)}
-.s-hero .m-when{color:var(--ink);font-weight:500}
-.s-hero .m-dot{width:4px;height:4px;border-radius:50%;background:rgba(66,75,54,.45);flex:0 0 auto}
 .s-hero .two{margin-top:6px;font-size:15px}
 .s-hero .cta{margin-top:var(--space-act)}
 
@@ -1067,12 +1065,13 @@ html{scroll-padding-top:110px}
   .nav2 .wrap{height:64px}
   .nav2 .cta{font-size:12px;padding:12px 14px;letter-spacing:.04em}
   .s-hero{padding:var(--space-section) 0}
+  .s-hero .inner{grid-template-columns:1fr;grid-template-areas:"shot" "copy";gap:22px}
+  .hero-shot{max-width:320px;height:auto}
+  .hero-shot img{height:auto;aspect-ratio:1/1;border-radius:22px}
   .s-hero h1 .l{display:inline}
   .s-hero .sub .s-want{margin-top:8px}
   .s-hero .sub .s-welcome{margin-top:12px;font-size:20px}
   .s-hero .sub .s-cred{margin-top:12px;font-size:15px}
-  .s-hero .meta{font-size:13.5px;padding:8px 14px;gap:0 8px}
-  .tw{margin-bottom:var(--space-head)}
   .seats{grid-template-columns:1fr;grid-template-rows:none;gap:var(--space-gap)}
   .seats .head,.seats .body,.seats .act{grid-column:auto;grid-row:auto}
   .seats .head{max-width:320px;margin-inline:auto}
@@ -1208,61 +1207,19 @@ html{scroll-padding-top:110px}
 <header class="v2 s-hero" id="top">
   <div class="wrap">
     <div class="inner">
-      <!-- Typewriter. .sizer holds the longest line, invisible, so the block
-           keeps one fixed height while the lines type and delete; .live is
-           painted over it. Loops forever; static fallback is the first line. -->
-      <div class="tw" aria-live="off">
-        <span class="sizer" aria-hidden="true">Want to ask your burning question to an a16z backed founder, not sit through jargon?</span>
-        <span class="live"><span id="twText">Over the AI hype?</span><span class="caret" aria-hidden="true"></span></span>
+      <div class="hero-shot">
+        <img width="1000" height="1250" fetchpriority="high" decoding="async"
+             src="../revenue/img/rev-01.jpg" alt="Ella Molony Cook, founder of Time Rich" />
       </div>
-      <span class="lbl">Superhuman Accelerator</span>
-      <h1><span class="l">Your AI operating system.</span> <span class="l">Built in 4 weeks, by you.</span></h1>
-      <p class="sub"><span class="l s-quiet">Let&rsquo;s be honest. AI is confusing.</span> <span class="l s-want">I don&rsquo;t want another explainer. I want to <span class="hl3">learn from the people building it.</span></span> <span class="l s-welcome">Welcome to Superhuman.</span> <span class="l s-cred">Coached by exited founders, the platform behind 20,000 AI agents, and an a16z-backed CEO.</span></p>
-      <p class="meta"><span class="m-when">Mon 19 Oct to Fri 13 Nov</span><i class="m-dot" aria-hidden="true"></i><span>12pm ET</span><i class="m-dot" aria-hidden="true"></i><span>Live and recorded</span></p>
-      <p class="two"><strong>2 seats for the price of 1.</strong> Bring whoever keeps you honest. ;)</p>
+      <div class="hero-copy">
+      <h1>Imagine your own AI Operating System, built by you in 4 weeks.</h1>
+      <p class="sub"><span class="l s-quiet">Think of the money, stress and time you&rsquo;ll save once you learn how to become superhuman with AI.</span> <span class="l s-welcome">Welcome to Superhuman Accelerator.</span> <span class="l s-cred">A 4-week live intensive, designed by exited founders.</span></p>
       <a class="cta cta-lg" href="/join/" onclick="openJoinModal(event); track('join_hero')">Join the cohort &middot; $997 &middot; 2 seats</a>
-      <p class="cta-note">Early bird ends Sunday 11 October. $1,297 after. Payment plan available.</p>
+      <p class="two"><strong>BONUS: 2 seats for the price of 1</strong> - bring who you want to win beside you.</p>
+      </div>
     </div>
   </div>
 </header>
-
-<script>
-// ---- Hero typewriter -------------------------------------------------------
-// Types each line, deletes it, types the next, and loops forever. Reduced
-// motion: the first line is already in the markup, so we just leave it and
-// hide the caret.
-(function(){
-  var el = document.getElementById('twText'); if (!el) return;
-  var lines = [
-    'Over the AI hype?',
-    'Still overwhelmed?',
-    'Want to learn AI from founders and creators who actually build?',
-    'From the trainer Google and Amazon hire?',
-    'Want to ask your burning question to an a16z backed founder, not sit through jargon?'
-  ];
-  if (window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
-    var c = el.parentNode.querySelector('.caret'); if (c) c.style.display = 'none';
-    return;
-  }
-  var TYPE = 42, DEL = 18, HOLD = 1100, GAP = 350;
-  var li = 0, ci = 0, deleting = false;
-  el.textContent = '';
-  function step(){
-    var line = lines[li];
-    if (!deleting) {
-      ci++;
-      el.textContent = line.slice(0, ci);
-      if (ci === line.length) { deleting = true; return setTimeout(step, HOLD); }
-      return setTimeout(step, TYPE);
-    }
-    ci--;
-    el.textContent = line.slice(0, ci);
-    if (ci === 0) { deleting = false; li = (li + 1) % lines.length; return setTimeout(step, GAP); }
-    setTimeout(step, DEL);
-  }
-  setTimeout(step, 500);
-})();
-</script>
 
 <!-- ======================== 5a. PEOPLE IN THE ARENA ======================== -->
 <section class="arena" id="arena">
