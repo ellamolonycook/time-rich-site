@@ -608,23 +608,15 @@ html{scroll-padding-top:110px}
 /* Two columns: portrait left, copy left-aligned beside it. Everything in the
    copy column was centred before, so the auto margins are unset here rather
    than in each rule. */
-.s-hero .inner{display:grid;grid-template-columns:minmax(0,5fr) minmax(0,7fr);grid-template-areas:"tw tw" "shot copy";
+.s-hero .inner{display:grid;grid-template-columns:minmax(0,5fr) minmax(0,7fr);grid-template-areas:"shot copy";
   gap:0 56px;align-items:center;max-width:1120px;text-align:left}
-.s-hero .inner > .tw{grid-area:tw}
 .hero-shot{grid-area:shot;max-width:380px;width:100%;justify-self:start}
 .hero-copy{grid-area:copy}
 .hero-shot img{width:100%;height:auto;aspect-ratio:1/1;object-fit:cover;object-position:center 22%;border-radius:28px;display:block}
 .hero-copy{min-width:0}
-.s-hero .inner > .tw{max-width:none;text-align:center}
-.hero-copy .tw,
 .hero-copy .sub,
 .hero-copy .s-cred{margin-left:0;margin-right:0}
 .hero-copy .cta-lg{margin-top:18px}
-.tw{position:relative;font-size:clamp(18px,2vw,24px);font-weight:500;letter-spacing:-.02em;line-height:1.35;color:var(--ink2);margin:0 0 var(--space-head);max-width:760px}
-.tw .sizer{visibility:hidden}
-.tw .live{position:absolute;inset:0}
-.tw .caret{display:inline-block;width:2px;height:.95em;background:var(--ink2);vertical-align:-.1em;margin-left:3px;animation:twBlink 1s steps(1) infinite}
-@keyframes twBlink{50%{opacity:0}}
 .s-hero .lbl{margin-bottom:22px}
 .s-hero h1{font-size:clamp(34px,3.7vw,54px)}
 .s-hero h1 .l{display:block}
@@ -976,14 +968,13 @@ html{scroll-padding-top:110px}
   .nav2 .wrap{height:64px}
   .nav2 .cta{font-size:12px;padding:12px 14px;letter-spacing:.04em}
   .s-hero{padding:var(--space-section) 0}
-  .s-hero .inner{grid-template-columns:1fr;grid-template-areas:"tw" "shot" "copy";gap:22px}
+  .s-hero .inner{grid-template-columns:1fr;grid-template-areas:"shot" "copy";gap:22px}
   .hero-shot{max-width:320px;height:auto}
   .hero-shot img{height:auto;aspect-ratio:1/1;border-radius:22px}
   .s-hero h1 .l{display:inline}
   .s-hero .sub .s-want{margin-top:8px}
   .s-hero .sub .s-welcome{margin-top:12px;font-size:20px}
   .s-hero .sub .s-cred{margin-top:12px;font-size:15px}
-  .tw{margin-bottom:var(--space-head)}
   .seats{grid-template-columns:1fr;grid-template-rows:none;gap:var(--space-gap)}
   .seats .head,.seats .body,.seats .act{grid-column:auto;grid-row:auto}
   .seats .head{max-width:320px;margin-inline:auto}
@@ -1119,13 +1110,6 @@ html{scroll-padding-top:110px}
 <header class="v2 s-hero" id="top">
   <div class="wrap">
     <div class="inner">
-      <!-- Typewriter. .sizer holds the longest line, invisible, so the block
-           keeps one fixed height while the lines type and delete; .live is
-           painted over it. Loops forever; static fallback is the first line. -->
-      <div class="tw" aria-live="off">
-        <span class="sizer" aria-hidden="true">Want to ask your burning question to an a16z backed founder, not sit through jargon?</span>
-        <span class="live"><span id="twText">Over the AI hype?</span><span class="caret" aria-hidden="true"></span></span>
-      </div>
       <div class="hero-shot">
         <img width="1000" height="1250" fetchpriority="high" decoding="async"
              src="../revenue/img/rev-01.jpg" alt="Ella Molony Cook, founder of Time Rich" />
@@ -1139,44 +1123,6 @@ html{scroll-padding-top:110px}
     </div>
   </div>
 </header>
-
-<script>
-// ---- Hero typewriter -------------------------------------------------------
-// Types each line, deletes it, types the next, and loops forever. Reduced
-// motion: the first line is already in the markup, so we just leave it and
-// hide the caret.
-(function(){
-  var el = document.getElementById('twText'); if (!el) return;
-  var lines = [
-    'Over the AI hype?',
-    'Still overwhelmed?',
-    'Want to learn AI from founders and creators who actually build?',
-    'From the trainer Google and Amazon hire?',
-    'Want to ask your burning question to an a16z backed founder, not sit through jargon?'
-  ];
-  if (window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
-    var c = el.parentNode.querySelector('.caret'); if (c) c.style.display = 'none';
-    return;
-  }
-  var TYPE = 42, DEL = 18, HOLD = 1100, GAP = 350;
-  var li = 0, ci = 0, deleting = false;
-  el.textContent = '';
-  function step(){
-    var line = lines[li];
-    if (!deleting) {
-      ci++;
-      el.textContent = line.slice(0, ci);
-      if (ci === line.length) { deleting = true; return setTimeout(step, HOLD); }
-      return setTimeout(step, TYPE);
-    }
-    ci--;
-    el.textContent = line.slice(0, ci);
-    if (ci === 0) { deleting = false; li = (li + 1) % lines.length; return setTimeout(step, GAP); }
-    setTimeout(step, DEL);
-  }
-  setTimeout(step, 500);
-})();
-</script>
 
 <!-- ======================== 5a. PEOPLE IN THE ARENA ======================== -->
 <section class="arena" id="arena">
