@@ -1129,6 +1129,13 @@ html{scroll-padding-top:110px}
   <div class="wrap">
     <div class="section-head">
       <span class="eyebrow">Learn from people in the arena</span>
+      <!-- .sizer holds the longest line, invisible, so the block keeps one fixed
+           height while the lines type and delete; .live is painted over it. The
+           first line is in the markup as the no-JS / reduced-motion fallback. -->
+      <div class="tw" aria-live="off">
+        <span class="sizer" aria-hidden="true">Want to ask your burning question to an a16z backed founder, not sit through jargon?</span>
+        <span class="live"><span id="twText">Over the AI hype?</span><span class="caret" aria-hidden="true"></span></span>
+      </div>
       <h2>Exited founders, creators + builders</h2>
     </div>
 
@@ -1223,6 +1230,52 @@ html{scroll-padding-top:110px}
     </div>
   </div>
 </section>
+
+<script>
+// ---- Arena typewriter ------------------------------------------------------
+// Types each line, deletes it, types the next, and loops forever. Mid-page, so
+// it waits until the section is on screen: arriving readers see it start from
+// the first character rather than halfway through a random line. Reduced
+// motion: the first line is already in the markup, so we leave it and hide the
+// caret.
+(function(){
+  var el = document.getElementById('twText'); if (!el) return;
+  var lines = [
+    'Over the AI hype?',
+    'Still overwhelmed?',
+    'Want to learn AI from founders and creators who actually build?',
+    'From the trainer Google and Amazon hire?',
+    'Want to ask your burning question to an a16z backed founder, not sit through jargon?'
+  ];
+  if (window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+    var c = el.parentNode.querySelector('.caret'); if (c) c.style.display = 'none';
+    return;
+  }
+  var TYPE = 42, DEL = 18, HOLD = 1100, GAP = 350;
+  var li = 0, ci = 0, deleting = false;
+  function step(){
+    var line = lines[li];
+    if (!deleting) {
+      ci++;
+      el.textContent = line.slice(0, ci);
+      if (ci === line.length) { deleting = true; return setTimeout(step, HOLD); }
+      return setTimeout(step, TYPE);
+    }
+    ci--;
+    el.textContent = line.slice(0, ci);
+    if (ci === 0) { deleting = false; li = (li + 1) % lines.length; return setTimeout(step, GAP); }
+    setTimeout(step, DEL);
+  }
+  function start(){ el.textContent = ''; setTimeout(step, 400); }
+  if (!window.IntersectionObserver) return start();
+  var io = new IntersectionObserver(function(entries){
+    if (!entries[0].isIntersecting) return;
+    io.disconnect();
+    start();
+  }, { threshold: 0.4 });
+  io.observe(el.closest('.tw'));
+})();
+</script>
 
 <!-- ============================ 4. THE NUMBERS ============================ -->
 <section class="v2 s-nums">
@@ -1888,7 +1941,6 @@ html{scroll-padding-top:110px}
     </div>
   </div>
 </section>
-
 
 <!-- LEGAL BAR -->
 <div class="legalbar">

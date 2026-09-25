@@ -25,6 +25,34 @@
 .arena .section-head{margin-bottom:28px;flex:0 0 auto}
 .arena .section-head h2{font-size:clamp(26px,3.4vw,40px)}
 
+/* The rotating question above the headline. .sizer is an invisible copy of the
+   longest line, so the block holds one height and the headline never jumps as
+   the lines type and delete; .live is painted over it. */
+.arena .tw{
+  position:relative;
+  /* wide enough for the longest line to stay on one row on a desktop, so the
+     reserved block is a single line high and sits tight under the headline */
+  max-width:980px;
+  margin:0 0 14px;
+  font-size:clamp(17px,1.9vw,22px);
+  font-weight:500;
+  letter-spacing:-.02em;
+  line-height:1.35;
+  color:var(--ink2);
+}
+.arena .tw .sizer{visibility:hidden}
+.arena .tw .live{position:absolute;inset:0}
+.arena .tw .caret{
+  display:inline-block;
+  width:2px;
+  height:.95em;
+  margin-left:3px;
+  vertical-align:-.1em;
+  background:var(--ink2);
+  animation:arenaCaret 1s steps(1) infinite;
+}
+@keyframes arenaCaret{50%{opacity:0}}
+
 /* People: compact horizontal cards - square headshot on the left, name, role
    and proof line beside it. Three across on desktop, so six people make two
    short rows instead of one row of very tall columns. */
@@ -226,12 +254,16 @@
   .arena{padding:56px 0}
   .arena .section-head{margin-bottom:24px}
   .arena .section-head h2{font-size:clamp(24px,7vw,30px)}
+  /* smaller here so the longest line reserves two rows, not three: the block
+     is fixed-height, so every unused row shows as air above the headline */
+  .arena .tw{font-size:15px}
   .arena-proof{font-size:13px}
 }
 
 @media (prefers-reduced-motion:reduce){
   .arena-person,
   .arena-person:hover{transform:none;transition:none}
+  .arena .tw .caret{animation:none}
   .arena-marks-wrap { animation: none; }
   .arena-trusted {
     overflow-x: auto;
