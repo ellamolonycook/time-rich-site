@@ -1,0 +1,748 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <script src="/js/pixel.js"></script>
+  <noscript><img height="1" width="1" style="display:none" alt=""
+    src="https://www.facebook.com/tr?id=1790181495468842&amp;ev=PageView&amp;noscript=1" /></noscript>
+  <title>Time Rich Content OS</title>
+  <meta name="description" content="The hub for the Time Rich Content Machine. Duplicate the Notion Content OS, download AI skills, and pick up new files after each workshop." />
+  <link rel="canonical" href="https://timerich.ai/content-os" />
+  <meta name="theme-color" content="#FFFCEB" />
+  <meta property="og:type" content="website" />
+  <meta property="og:site_name" content="Time Rich" />
+  <meta property="og:url" content="https://timerich.ai/content-os" />
+  <meta property="og:title" content="Time Rich Content OS" />
+  <meta property="og:description" content="Templates, AI skills, and workshop files for the Time Rich Content Machine." />
+  <meta property="og:image" content="https://timerich.ai/og-image.jpg" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <link rel="icon" href="/favicon.ico" sizes="any" />
+  <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+  <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32.png" />
+  <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16.png" />
+  <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Archivo:wght@500;600;700;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --bg: #FFFCEB;
+      --bg-2: #F3F2E0;
+      --card: #FFFFFF;
+      --ink: #2C3422;
+      --muted: #4E5840;
+      --dim: #6C7660;
+      --line: rgba(44, 52, 34, 0.12);
+      --line-strong: rgba(44, 52, 34, 0.22);
+      --lime: #CCEEA0;
+      --lime-deep: #3F4E22;
+      --moss: #67762E;
+      --shadow: 0 18px 40px rgba(44, 52, 34, 0.08);
+      --sans: "Archivo", system-ui, sans-serif;
+      --mono: "Archivo", system-ui, sans-serif;
+      --body: "Inter", system-ui, -apple-system, "Segoe UI", sans-serif;
+      --nav-h: 68px;
+    }
+    * { box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    @media (prefers-reduced-motion: reduce) {
+      html { scroll-behavior: auto; }
+      *, *::before, *::after { animation: none !important; transition: none !important; }
+    }
+    body {
+      margin: 0;
+      background:
+        radial-gradient(900px 420px at 90% -10%, rgba(204, 238, 160, 0.45), transparent 60%),
+        var(--bg);
+      color: var(--ink);
+      font-family: var(--body);
+      font-size: 17px;
+      line-height: 1.55;
+      -webkit-font-smoothing: antialiased;
+    }
+    img { max-width: 100%; display: block; }
+    a { color: inherit; }
+    :focus-visible { outline: 2px solid var(--moss); outline-offset: 3px; }
+    .wrap { width: min(1120px, calc(100% - 40px)); margin: 0 auto; }
+    .eyebrow {
+      margin: 0 0 12px;
+      font-family: var(--mono);
+      font-size: 12px;
+      font-weight: 600;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: var(--lime-deep);
+    }
+    h1, h2, h3 { font-family: var(--sans); font-weight: 800; letter-spacing: -0.02em; line-height: 1.05; margin: 0; }
+    h1 { font-size: clamp(46px, 7vw, 84px); max-width: 11ch; }
+    h2 { font-size: clamp(32px, 4vw, 48px); max-width: 16ch; }
+    .lede { margin: 14px 0 0; max-width: 46ch; color: var(--muted); font-size: 18px; }
+
+    .nav {
+      position: sticky;
+      top: 0;
+      z-index: 20;
+      background: rgba(255, 252, 235, 0.88);
+      backdrop-filter: blur(16px);
+      border-bottom: 1px solid var(--line);
+    }
+    .nav-in {
+      min-height: var(--nav-h);
+      display: flex;
+      align-items: center;
+      gap: 22px;
+    }
+    .brand {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      text-decoration: none;
+      font-family: var(--sans);
+      font-weight: 700;
+      letter-spacing: -0.03em;
+      font-size: 18px;
+    }
+    .brand img { width: 28px; height: 28px; border-radius: 7px; }
+    .nav-links { display: flex; gap: 4px; margin-left: auto; }
+    .nav-links a {
+      text-decoration: none;
+      font-family: var(--mono);
+      font-size: 12px;
+      font-weight: 500;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      color: var(--muted);
+      padding: 8px 10px;
+      border-radius: 999px;
+    }
+    .nav-links a:hover { color: var(--ink); background: rgba(44, 52, 34, 0.05); }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      min-height: 48px;
+      padding: 0 18px;
+      border-radius: 999px;
+      border: 1px solid transparent;
+      background: var(--lime);
+      color: #1C2414;
+      font-family: var(--sans);
+      font-weight: 700;
+      font-size: 15px;
+      letter-spacing: -0.02em;
+      text-decoration: none;
+      cursor: pointer;
+      transition: transform 0.15s ease, box-shadow 0.15s ease;
+    }
+    .btn:hover { transform: translateY(-1px); box-shadow: 0 10px 24px rgba(103, 118, 46, 0.18); }
+    .btn.ghost {
+      background: transparent;
+      border-color: var(--line-strong);
+      color: var(--ink);
+      box-shadow: none;
+    }
+    .btn.ghost:hover { border-color: var(--ink); box-shadow: none; }
+    .btn.small { min-height: 42px; font-size: 14px; }
+    .btn[aria-disabled="true"] { cursor: default; box-shadow: none; transform: none; }
+    .btn[aria-disabled="true"]:hover { transform: none; box-shadow: none; }
+    .nav .btn { margin-left: 8px; }
+
+    .hero { padding: 64px 0 28px; }
+    .hero-actions { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 28px; }
+    .path {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px 0;
+      list-style: none;
+      padding: 0;
+      margin: 36px 0 0;
+    }
+    .path li { display: inline-flex; align-items: center; font-family: var(--mono); font-size: 12px; letter-spacing: 0.04em; text-transform: uppercase; color: var(--dim); }
+    .path a { color: var(--ink); text-decoration: none; }
+    .path a:hover { text-decoration: underline; text-underline-offset: 3px; }
+    .path li + li::before { content: "→"; margin: 0 10px; color: var(--moss); }
+
+    section { padding: 72px 0; scroll-margin-top: calc(var(--nav-h) + 12px); }
+    .section-head { margin-bottom: 28px; }
+
+    .cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 280px), 1fr)); gap: 16px; }
+    .card {
+      background: var(--card);
+      border: 1px solid var(--line);
+      border-radius: 20px;
+      padding: 22px;
+      box-shadow: var(--shadow);
+      display: flex;
+      flex-direction: column;
+      min-height: 100%;
+    }
+    .icon {
+      width: 42px;
+      height: 42px;
+      border-radius: 12px;
+      display: grid;
+      place-items: center;
+      background: #F3F7E4;
+      color: var(--lime-deep);
+      margin-bottom: 18px;
+    }
+    .icon svg { width: 22px; height: 22px; }
+    .type {
+      font-family: var(--mono);
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--moss);
+      margin-bottom: 8px;
+    }
+    .card h3 { font-size: 26px; margin-bottom: 8px; }
+    .card p { margin: 0; color: var(--muted); font-size: 15.5px; }
+    .card .cta { margin-top: auto; padding-top: 20px; }
+
+    .dupes { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 220px), 1fr)); gap: 12px; margin-top: 8px; }
+    .dupe {
+      background: rgba(255, 255, 255, 0.62);
+      border: 1px solid var(--line);
+      border-radius: 16px;
+      padding: 18px 18px 16px;
+    }
+    .dupe .n {
+      font-family: var(--mono);
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--lime-deep);
+      margin-bottom: 8px;
+    }
+    .dupe h3 { font-size: 18px; margin-bottom: 6px; }
+    .dupe p { margin: 0; color: var(--muted); font-size: 15px; }
+    .dupe-cta { margin-top: 18px; }
+    .fine { margin: 12px 0 0; color: var(--dim); font-size: 14px; }
+
+    .skill h3 { font-size: 22px; }
+    .outcome {
+      margin-top: 16px;
+      padding-top: 14px;
+      border-top: 1px solid var(--line);
+    }
+    .outcome span {
+      display: block;
+      font-family: var(--mono);
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--moss);
+      margin-bottom: 6px;
+    }
+    .skill-foot { margin-top: auto; padding-top: 18px; display: grid; gap: 8px; }
+    .skill .btn { width: 100%; }
+    button.btn { font: inherit; font-family: var(--sans); font-weight: 700; font-size: 15px; }
+    .pending { margin: 0; color: var(--dim); font-size: 13px; }
+    .tag {
+      display: inline-flex;
+      align-self: flex-start;
+      margin-bottom: 10px;
+      padding: 4px 8px;
+      border-radius: 999px;
+      background: #F3F7E4;
+      color: var(--lime-deep);
+      font-family: var(--mono);
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+    }
+
+    .steps { display: grid; gap: 12px; }
+    .step {
+      display: grid;
+      grid-template-columns: auto 1fr minmax(200px, 280px);
+      gap: 22px;
+      align-items: center;
+      background: var(--card);
+      border: 1px solid var(--line);
+      border-radius: 20px;
+      padding: 18px 18px 18px 20px;
+    }
+    .num {
+      width: 42px;
+      height: 42px;
+      border-radius: 50%;
+      display: grid;
+      place-items: center;
+      background: var(--lime);
+      color: #1C2414;
+      font-family: var(--sans);
+      font-weight: 700;
+      font-size: 16px;
+    }
+    .step h3 { font-size: 20px; margin-bottom: 4px; }
+    .step p { margin: 0; color: var(--muted); font-size: 15.5px; }
+    .shot {
+      margin: 0;
+      border-radius: 14px;
+      overflow: hidden;
+      border: 1px dashed var(--line-strong);
+      background: var(--bg-2);
+      aspect-ratio: 16 / 10;
+    }
+    .shot img { width: 100%; height: 100%; object-fit: cover; }
+    .shot-ph {
+      height: 100%;
+      display: flex;
+      flex-direction: column;
+      padding: 10px;
+    }
+    .shot-bar { display: flex; gap: 5px; }
+    .shot-bar span { width: 7px; height: 7px; border-radius: 50%; background: rgba(44, 52, 34, 0.18); }
+    .shot-ph strong {
+      margin: auto;
+      font-family: var(--mono);
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--dim);
+    }
+
+    #later { padding-bottom: 88px; }
+    .later-grid:empty { display: none; }
+    .later-grid:not(:empty) { margin-bottom: 16px; }
+    .note {
+      border-radius: 20px;
+      background: #2C3422;
+      color: #FFFCEB;
+      padding: 28px;
+      display: grid;
+      grid-template-columns: 1.4fr 1fr;
+      gap: 24px;
+      align-items: center;
+    }
+    .note h2 { color: #FFFCEB; }
+    .note .lede { color: #D5D8C6; }
+    .note ol { margin: 0; padding: 0; list-style: none; display: grid; gap: 10px; }
+    .note li { display: flex; gap: 10px; align-items: baseline; color: #F3F2E0; font-size: 15.5px; }
+    .note li span {
+      font-family: var(--mono);
+      font-size: 12px;
+      color: var(--lime);
+      min-width: 1.6em;
+    }
+
+    footer {
+      border-top: 1px solid var(--line);
+      padding: 22px 0 28px;
+      color: var(--dim);
+      font-family: var(--mono);
+      font-size: 12px;
+      letter-spacing: 0.04em;
+    }
+    footer .wrap { display: flex; justify-content: space-between; gap: 12px; flex-wrap: wrap; }
+    footer a { color: var(--ink); }
+
+    @media (max-width: 800px) {
+      .nav-links { display: none; }
+      .step { grid-template-columns: auto 1fr; }
+      .shot { grid-column: 1 / -1; aspect-ratio: 16 / 9; }
+      .note { grid-template-columns: 1fr; padding: 22px; }
+      .wrap { width: min(1120px, calc(100% - 32px)); }
+      h1 { max-width: none; }
+    }
+  </style>
+</head>
+<body>
+  <header class="nav">
+    <div class="wrap nav-in">
+      <a class="brand" href="/">
+        <img src="/favicon.svg" alt="" width="28" height="28" />
+        Time Rich
+      </a>
+      <nav class="nav-links" aria-label="On this page">
+        <a href="#included">Included</a>
+        <a href="#skills">Skills</a>
+        <a href="#install">Install</a>
+      </nav>
+      <a class="btn small" id="navCta" href="#duplicate">Open the Content OS</a>
+    </div>
+  </header>
+
+  <main>
+    <section class="hero" id="top">
+      <div class="wrap">
+        <p class="eyebrow">Content Machine</p>
+        <h1>Time Rich Content OS</h1>
+        <p class="lede">The hub for the templates, AI skills, and files that come with the Time Rich Content Machine. Start with the Notion system, then download a skill.</p>
+        <div class="hero-actions">
+          <a class="btn" id="heroCta" href="#duplicate">Duplicate the Notion template</a>
+          <a class="btn ghost" href="#skills">Browse AI skills</a>
+        </div>
+        <ol class="path">
+          <li><a href="#included">Content hub</a></li>
+          <li><a href="#duplicate">Notion template</a></li>
+          <li><a href="#skills">AI skills</a></li>
+          <li><a href="#install">Install</a></li>
+          <li><a href="#later">Future workshops</a></li>
+        </ol>
+      </div>
+    </section>
+
+    <section id="included">
+      <div class="wrap">
+        <div class="section-head">
+          <p class="eyebrow">Included</p>
+          <h2>What you can open today</h2>
+          <p class="lede">Three starting points. New resources join this same grid after each workshop.</p>
+        </div>
+        <div class="cards" id="resourceGrid"></div>
+      </div>
+    </section>
+
+    <section id="duplicate">
+      <div class="wrap">
+        <div class="section-head">
+          <p class="eyebrow">Notion template</p>
+          <h2>Duplicate the Content OS</h2>
+          <p class="lede">Make your own copy in Notion. The skills read from the voice, offers, and proof you add there.</p>
+        </div>
+        <div class="dupes" id="dupeSteps"></div>
+        <div class="dupe-cta">
+          <a class="btn" id="dupeCta" href="#duplicate">Duplicate the Notion template</a>
+          <p class="fine" id="dupeNote" hidden></p>
+        </div>
+      </div>
+    </section>
+
+    <section id="skills">
+      <div class="wrap">
+        <div class="section-head">
+          <p class="eyebrow">AI skills</p>
+          <h2>Download a skill</h2>
+          <p class="lede">Each skill is a ZIP. Download it, keep it zipped, and upload it once. New skills are added here after every workshop.</p>
+        </div>
+        <div class="cards" id="skillGrid"></div>
+      </div>
+    </section>
+
+    <section id="install">
+      <div class="wrap">
+        <div class="section-head">
+          <p class="eyebrow">Install</p>
+          <h2>How to add a skill</h2>
+          <p class="lede">Seven short steps. Leave the file as a ZIP the whole way through.</p>
+        </div>
+        <div class="steps" id="stepList"></div>
+      </div>
+    </section>
+
+    <section id="later">
+      <div class="wrap">
+        <div class="cards later-grid" id="dropGrid"></div>
+        <div class="note">
+          <div>
+            <p class="eyebrow" style="color:#CCEEA0">After the workshop</p>
+            <h2>New files land on this page</h2>
+            <p class="lede">Bookmark it. Skills and extra resources from later workshops show up in the lists above.</p>
+          </div>
+          <ol>
+            <li><span>01</span> Come back to this hub.</li>
+            <li><span>02</span> Download the new skill or file.</li>
+            <li><span>03</span> Upload a skill the same way as the first one.</li>
+          </ol>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <div class="wrap">
+      <span>Time Rich Content Machine</span>
+      <a href="/">timerich.ai</a>
+    </div>
+  </footer>
+
+  <script>
+    /**
+     * Edit this object to publish the page.
+     * - notionUrl: the Notion link that duplicates the Content OS.
+     * - resources: cards in "What you can open today".
+     * - skills: one object per ZIP. Set file to the download path when the ZIP is ready.
+     * - steps: install tutorial. Set image to a path such as "images/install-1.png".
+     * - drops: extra workshop files. Leave empty until there is something to add.
+     * Cards layout themselves. You do not need a fixed number of items.
+     */
+    const HUB = {
+      notionUrl: "",
+      resources: [
+        {
+          name: "Content OS",
+          type: "Notion template",
+          description: "Your content system in Notion. Duplicate it, then add your voice, offers, and proof.",
+          cta: "Duplicate template",
+          action: "notion",
+          icon: "template"
+        },
+        {
+          name: "AI Skills",
+          type: "ZIP downloads",
+          description: "Packaged skills you upload once. They help with research, drafts, and edits.",
+          cta: "Browse skills",
+          href: "#skills",
+          icon: "skill"
+        },
+        {
+          name: "Content Machine resources",
+          type: "Workshop files",
+          description: "Guides and extras from the program. New files from live workshops are added here.",
+          cta: "See what's next",
+          href: "#later",
+          icon: "files"
+        }
+      ],
+      skills: [
+        {
+          name: "Tone of Voice",
+          description: "Captures how you sound so drafts start in your voice.",
+          outcome: "Build a voice profile the other skills can follow.",
+          file: "",
+          tag: ""
+        },
+        {
+          name: "Research",
+          description: "Finds angles and references already working in your niche.",
+          outcome: "Turn a topic into a short brief before you write.",
+          file: "",
+          tag: ""
+        },
+        {
+          name: "Caption Writer",
+          description: "Drafts the caption for a post you already have.",
+          outcome: "Get a first caption from one idea or a transcript.",
+          file: "",
+          tag: ""
+        }
+      ],
+      steps: [
+        {
+          title: "Download the ZIP",
+          body: "Use Download on the skill card. The file saves to your computer.",
+          image: ""
+        },
+        {
+          title: "Keep it zipped",
+          body: "Leave the skill as a ZIP. Uploading an unzipped folder will not work.",
+          image: ""
+        },
+        {
+          title: "Open Skills",
+          body: "In your AI tool, open the screen where you add Skills.",
+          image: ""
+        },
+        {
+          title: "Click Upload",
+          body: "Choose Upload on that screen.",
+          image: ""
+        },
+        {
+          title: "Select the ZIP",
+          body: "Pick the file you just downloaded. Do not rename it.",
+          image: ""
+        },
+        {
+          title: "Confirm and save",
+          body: "Accept the prompt so the skill is stored on your account.",
+          image: ""
+        },
+        {
+          title: "Start using it",
+          body: "Open a new chat. The skill is ready.",
+          image: ""
+        }
+      ],
+      drops: []
+    };
+
+    const ICONS = {
+      template: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" aria-hidden="true"><rect x="4" y="3" width="16" height="18" rx="2"/><path d="M8 8h8M8 12h8M8 16h5"/></svg>',
+      skill: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" aria-hidden="true"><path d="M12 3l1.6 5.2L19 10l-5.4 1.8L12 17l-1.6-5.2L5 10l5.4-1.8L12 3z"/><path d="M18 15l.7 2.1L21 18l-2.3.8L18 21l-.7-2.2L15 18l2.3-.9L18 15z"/></svg>',
+      files: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" aria-hidden="true"><path d="M4 7.5A1.5 1.5 0 0 1 5.5 6H10l2 2h6.5A1.5 1.5 0 0 1 20 9.5v8A1.5 1.5 0 0 1 18.5 19h-13A1.5 1.5 0 0 1 4 17.5v-10z"/></svg>',
+      download: '<svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="M12 4v11"/><path d="M7 11l5 5 5-5"/><path d="M5 19h14"/></svg>'
+    };
+
+    const DUPE_STEPS = [
+      ["01", "Open the template", "Use the button. It opens the Content OS in Notion."],
+      ["02", "Click Duplicate", "Copy it into your own Notion workspace."],
+      ["03", "Fill in the basics", "Add your voice, offers, and proof. Skills use what you put here."]
+    ];
+
+    function el(tag, attrs, kids) {
+      const node = document.createElement(tag);
+      Object.entries(attrs || {}).forEach(([key, value]) => {
+        if (value == null || value === false) return;
+        if (key === "class") node.className = value;
+        else if (key === "text") node.textContent = value;
+        else node.setAttribute(key, value);
+      });
+      (kids || []).forEach((kid) => { if (kid) node.append(kid); });
+      return node;
+    }
+
+    function icon(name) {
+      const wrap = el("span", { class: "icon", "aria-hidden": "true" });
+      wrap.innerHTML = ICONS[name] || ICONS.files;
+      return wrap;
+    }
+
+    function applyNotionLinks() {
+      const url = (HUB.notionUrl || "").trim();
+      ["navCta", "heroCta", "dupeCta"].forEach((id) => {
+        const link = document.getElementById(id);
+        if (!link) return;
+        if (url) {
+          link.href = url;
+          link.target = "_blank";
+          link.rel = "noopener noreferrer";
+        }
+      });
+      const note = document.getElementById("dupeNote");
+      if (!url && note) {
+        note.hidden = false;
+        note.textContent = "The Notion duplicate link is added to this button for the live session.";
+      }
+    }
+
+    function renderResources() {
+      const grid = document.getElementById("resourceGrid");
+      HUB.resources.forEach((item) => {
+        const url = item.action === "notion" ? (HUB.notionUrl || "").trim() : item.href;
+        const cta = el("a", {
+          class: "btn small",
+          href: url || "#duplicate",
+          text: item.cta
+        });
+        if (item.action === "notion" && url) {
+          cta.target = "_blank";
+          cta.rel = "noopener noreferrer";
+        }
+        grid.append(el("article", { class: "card" }, [
+          icon(item.icon),
+          el("div", { class: "type", text: item.type }),
+          el("h3", { text: item.name }),
+          el("p", { text: item.description }),
+          el("div", { class: "cta" }, [cta])
+        ]));
+      });
+    }
+
+    function renderDupes() {
+      const grid = document.getElementById("dupeSteps");
+      DUPE_STEPS.forEach(([n, title, body]) => {
+        grid.append(el("article", { class: "dupe" }, [
+          el("div", { class: "n", text: n }),
+          el("h3", { text: title }),
+          el("p", { text: body })
+        ]));
+      });
+    }
+
+    function renderSkills() {
+      const grid = document.getElementById("skillGrid");
+      HUB.skills.forEach((skill) => {
+        const file = (skill.file || "").trim();
+        const ready = Boolean(file);
+        const button = ready
+          ? el("a", { class: "btn", href: file, download: "" })
+          : el("button", { class: "btn", type: "button" });
+        button.insertAdjacentHTML("afterbegin", ICONS.download);
+        button.append(document.createTextNode("Download"));
+        if (!ready) {
+          button.addEventListener("click", () => {
+            const status = button.parentElement.querySelector(".pending");
+            if (status) status.textContent = "This ZIP will be linked on the card when the skill is released.";
+          });
+        }
+        const kids = [];
+        if (skill.tag) kids.push(el("div", { class: "tag", text: skill.tag }));
+        kids.push(
+          el("h3", { text: skill.name }),
+          el("p", { text: skill.description }),
+          el("div", { class: "outcome" }, [
+            el("span", { text: "Use it to" }),
+            el("p", { text: skill.outcome })
+          ]),
+          el("div", { class: "skill-foot" }, [
+            button,
+            ready ? null : el("p", { class: "pending", text: "ZIP link coming" })
+          ])
+        );
+        grid.append(el("article", { class: "card skill" }, kids));
+      });
+    }
+
+    function shotFigure(step, index) {
+      const figure = el("figure", { class: "shot" });
+      const src = (step.image || "").trim();
+      if (src) {
+        figure.append(el("img", {
+          src: src,
+          alt: step.imageAlt || step.title
+        }));
+        return figure;
+      }
+      const ph = el("div", { class: "shot-ph" }, [
+        el("div", { class: "shot-bar", "aria-hidden": "true" }, [
+          el("span"), el("span"), el("span")
+        ]),
+        el("strong", { text: "Screenshot · step " + (index + 1) })
+      ]);
+      figure.append(ph);
+      return figure;
+    }
+
+    function renderSteps() {
+      const list = document.getElementById("stepList");
+      HUB.steps.forEach((step, index) => {
+        list.append(el("article", { class: "step" }, [
+          el("div", { class: "num", text: String(index + 1) }),
+          el("div", {}, [
+            el("h3", { text: step.title }),
+            el("p", { text: step.body })
+          ]),
+          shotFigure(step, index)
+        ]));
+      });
+    }
+
+    function renderDrops() {
+      const grid = document.getElementById("dropGrid");
+      HUB.drops.forEach((item) => {
+        const cta = item.href
+          ? el("a", { class: "btn small", href: item.href, text: item.cta || "Open" })
+          : null;
+        if (cta && /^https?:\/\//.test(item.href)) {
+          cta.target = "_blank";
+          cta.rel = "noopener noreferrer";
+        }
+        grid.append(el("article", { class: "card" }, [
+          icon(item.icon || "files"),
+          item.tag ? el("div", { class: "tag", text: item.tag }) : null,
+          el("div", { class: "type", text: item.type || "Resource" }),
+          el("h3", { text: item.name }),
+          el("p", { text: item.description || "" }),
+          cta ? el("div", { class: "cta" }, [cta]) : null
+        ]));
+      });
+    }
+
+    applyNotionLinks();
+    renderResources();
+    renderDupes();
+    renderSkills();
+    renderSteps();
+    renderDrops();
+  </script>
+</body>
+</html>
