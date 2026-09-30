@@ -63,6 +63,13 @@ NOTION_WAITLIST_DATABASE_ID = "2db1e956-f2bd-4b14-bad0-aa00c0ea3e75"
 # (••• -> Connections) or writes will 404.
 NOTION_QUALIFY_DATABASE_ID = "bdd8e0c3-54da-404a-8ceb-a7139e18c65e"
 
+# Strategy intake (POST /strategy) -> the "Client Intake Form" database.
+# Id is from the database URL (294ef74510524e5aa53f532eea0b435e).
+# IMPORTANT: this one lives at the top level of the private workspace, so it is
+# NOT shared with anything by default. Connect the SAME Notion integration
+# (NOTION_TOKEN) to it (open the database -> ••• -> Connections) or writes 404.
+NOTION_STRATEGY_DATABASE_ID = "294ef745-1052-4e5a-a53f-532eea0b435e"
+
 # Superhuman Accelerator Cohort 1 checkout/onboarding
 # Uses the existing NOTION_TOKEN / TR Site integration.
 NOTION_SUPERHUMAN_COHORT1_DATABASE_ID = "3e3ca5eb-e557-80ab-9b32-e3c84d74784e"
