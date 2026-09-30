@@ -1,0 +1,1254 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+<title>Strategy intake</title>
+<link rel="icon" href="/favicon.ico" sizes="any" />
+<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32.png" />
+<link rel="icon" type="image/png" sizes="16x16" href="/favicon-16.png" />
+<link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
+<meta name="description" content="A private intake form: how the business runs today, and what a win would look like." />
+<link rel="canonical" href="https://timerich.ai/strategy/" />
+<meta name="robots" content="noindex, nofollow" />
+<meta name="theme-color" content="#FFFDFA" />
+
+<!-- No Meta Pixel here, unlike the public forms: this is a private intake sent
+     to one client at a time, so there is no ad attribution to do and no reason
+     to hand a third party the fact that it was opened. Same choice as /onboard/. -->
+
+<!-- The brand faces, already served (and cached) for /sh-apply/. -->
+<link rel="stylesheet" href="/sh-apply/fonts.css" />
+<style>
+/* =========================================================================
+   Motion tuning - identical to /qualifyform/ and /sh-apply/, so all three
+   forms feel like one product. Everything about the feel of a question
+   change lives here.
+   ========================================================================= */
+:root{
+  --q-travel:  28px;   /* how far a question travels */
+  --q-exit:   240ms;   /* the outgoing question, leaving as one block */
+  --q-enter:  380ms;   /* each part of the incoming question */
+  --q-offset:  60ms;   /* how long into the exit the arrival starts (the overlap) */
+  --q-stagger: 45ms;   /* the gap between each arriving part */
+  --q-ease: cubic-bezier(.16,1,.3,1);
+}
+
+/* =========================================================================
+   Strategy intake - same visual system as /qualifyform/ and /sh-apply/
+   (warm off-white ground, deep green ink, lime pop; Space Grotesk display,
+   Inter body). Every question here is long-form text, so there are no option
+   buttons on this page at all: the field is the question.
+
+   The ground is #FFFDFA. The token is still called --cream because that is the
+   name it carries everywhere else in the site, but the colour it holds is the
+   warm off-white that replaced the old cream (#FFFCEB) - so a page that reads
+   var(--cream) gets the new ground, not the retired one.
+   ========================================================================= */
+:root{
+  --cream:#FFFDFA;
+  --sage:#DCDEBF;
+  --sage-lt:#E9EAD5;
+  --green:#424B36;
+  --green-deep:#333A28;
+  --pop:#CCEEA0;                /* true lime - only on deep green */
+
+  --bg:#FFFDFA;
+  --panel:#DCDEBF;
+  --panel2:#E9EAD5;
+  --line:rgba(66,75,54,.20);
+  --line-2:rgba(66,75,54,.34);
+  --text:#424B36;
+  --muted:#5B6449;
+  --dim:#7E8768;
+  --lime:#67762E;
+  --red:#A8492F;
+
+  --display:'Space Grotesk',system-ui,-apple-system,'Segoe UI',sans-serif;
+  --mono:'Archivo',-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;
+  --body:'Inter',-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;
+}
+*{margin:0;padding:0;box-sizing:border-box}
+/* Reserving the scrollbar gutter keeps a question of a different height from
+   toggling a scrollbar on and off, which would change the viewport width and
+   reflow the whole page mid-slide. */
+html{-webkit-text-size-adjust:100%;text-size-adjust:100%;scrollbar-gutter:stable}
+html,body{max-width:100%;overflow-x:clip}
+body{background:var(--bg);color:var(--text);font-family:var(--body);font-size:17px;line-height:1.6;-webkit-font-smoothing:antialiased;min-height:100vh;display:flex;flex-direction:column}
+::selection{background:var(--pop);color:var(--green-deep)}
+h1,h2{font-family:var(--display);font-weight:600;line-height:1.1;letter-spacing:-.022em;color:var(--green-deep);text-wrap:balance;overflow-wrap:break-word}
+a{color:inherit}
+:focus-visible{outline:2px solid var(--green);outline-offset:3px;border-radius:6px}
+/* The question headings are focus targets for screen readers only: they take
+   focus as a question arrives so it gets announced, and they are not reachable
+   by Tab. A ring round a heading says nothing the user can act on. */
+.q-title[tabindex="-1"]:focus,#introHead:focus,#doneHead:focus{outline:none}
+.wrap{width:100%;max-width:660px;margin:0 auto;padding:0 20px}
+.sr-only{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap;border:0}
+
+/* ---------- HEADER + PROGRESS ---------- */
+.topbar{border-bottom:1px solid var(--line);background:rgba(255,253,250,.94);-webkit-backdrop-filter:blur(10px);backdrop-filter:blur(10px);position:sticky;top:0;z-index:20}
+.topbar-inner{display:flex;align-items:center;justify-content:space-between;gap:16px;height:58px}
+.brand-word{font-family:var(--display);font-weight:700;letter-spacing:-.02em;font-size:18px;color:var(--text);text-decoration:none;line-height:1}
+.brand-word .wm-dot{color:var(--lime)}
+.progress{display:flex;align-items:center;gap:12px;min-width:0}
+.progress[hidden]{display:none}
+.bar{width:104px;height:5px;border-radius:99px;background:var(--panel);overflow:hidden}
+/* scaleX, not width: this bar advances at the same moment a question is
+   sliding, and a width transition would force layout on every frame of it. */
+.bar-fill{height:100%;width:100%;border-radius:99px;background:var(--green);
+  transform:scaleX(0);transform-origin:left center;transition:transform .22s ease}
+.progress-label{font-family:var(--mono);font-size:12px;letter-spacing:.14em;text-transform:uppercase;color:var(--dim);white-space:nowrap}
+/* At 320px the bar and the label together crowd the wordmark out. */
+@media (max-width:400px){ .bar{width:64px} .progress{gap:9px} }
+
+/* ---------- STAGE ---------- */
+main{flex:1 0 auto;padding:38px 0 96px}
+@media (min-width:700px){ main{padding:64px 0 120px} }
+
+/* ---------- QUESTION TRANSITIONS ----------
+   Same system as /qualifyform/: the outgoing question keeps moving in the
+   direction of travel while the incoming one arrives from the opposite edge,
+   a part at a time, starting --q-offset into the exit so the two overlap and
+   read as one movement.
+
+   Compositor rules, strictly:
+   - transform and opacity only, so no frame can trigger layout.
+   - will-change applied a frame before the flip and dropped the moment it
+     settles, so an idle question never holds a promoted layer.
+   - the outgoing question is taken out of flow, so the stage's height is
+     always the incoming question's and nothing below it moves. */
+#strategyForm{position:relative}
+.screen[hidden]{display:none}
+.screen.is-leaving{position:absolute;top:0;left:0;right:0;pointer-events:none}
+.screen.q-will{will-change:transform,opacity}
+.screen.q-exit {transition:transform var(--q-exit) var(--q-ease),opacity var(--q-exit) var(--q-ease)}
+.screen.q-below{transform:translateY(var(--q-travel));opacity:0}
+.screen.q-above{transform:translateY(calc(-1 * var(--q-travel)));opacity:0}
+.screen.q-in-below > *,
+.screen.q-in-above > *,
+.screen.q-in-run > *{will-change:transform,opacity}
+.screen.q-in-below > *{opacity:0;transform:translateY(var(--q-travel))}
+.screen.q-in-above > *{opacity:0;transform:translateY(calc(-1 * var(--q-travel)))}
+.screen.q-in-run > *{
+  transition:opacity var(--q-enter) var(--q-ease),transform var(--q-enter) var(--q-ease);
+  transition-delay:calc(var(--q-offset) + var(--i,0) * var(--q-stagger));
+}
+/* Hover effects inside the stage are suspended while a question is in flight. */
+#strategyForm.q-busy .btn{transition:none}
+
+@media (prefers-reduced-motion:reduce){
+  /* Instant swap: no translate, no fade, no stagger, no layer promotion. */
+  .screen.q-exit,.screen.q-in-run > *{transition:none}
+  .screen.q-will,.screen.q-in-below > *,.screen.q-in-above > *,.screen.q-in-run > *{will-change:auto}
+  .screen.q-below,.screen.q-above,
+  .screen.q-in-below > *,.screen.q-in-above > *{transform:none;opacity:1}
+  .screen.is-leaving{display:none}
+  .bar-fill{transition:none}
+}
+
+.q-eyebrow{font-family:var(--mono);font-size:12px;letter-spacing:.18em;text-transform:uppercase;color:var(--lime);margin-bottom:14px;display:block}
+.q-title{font-size:clamp(26px,4.6vw,38px);margin-bottom:10px}
+/* The eighteen intake questions are full sentences rather than a short prompt,
+   and several run to two clauses. They step down a size so a three-line
+   heading does not push the field it belongs to off a phone screen. */
+.q-title--statement{font-size:clamp(20px,3.1vw,27px);line-height:1.22;letter-spacing:-.012em;max-width:24em}
+.q-help{font-size:15.5px;color:var(--muted);margin-bottom:22px}
+.q-title + .q-field{margin-top:22px}
+
+/* ---------- FIELDS ---------- */
+.q-field input[type=text],
+.q-field input[type=email],
+.q-field textarea{
+  width:100%;background:var(--cream);border:1px solid var(--line-2);border-radius:10px;
+  padding:15px 16px;font-size:17px;line-height:1.5;color:var(--text);font-family:var(--body);
+  min-height:52px;
+}
+/* The long-answer field. It opens at about five lines - enough that the box
+   itself says a sentence is not what we are after - grows with what is typed
+   (autogrow() in the script), and is still draggable by hand. Past the cap in
+   the script it stops growing and scrolls, so a very long answer can never
+   push Continue below the fold. */
+.q-field textarea{
+  display:block;min-height:148px;resize:vertical;overflow-y:auto;
+  line-height:1.55;padding:14px 16px;
+}
+.q-field input::placeholder,.q-field textarea::placeholder{color:var(--dim)}
+.q-field input:focus,.q-field textarea:focus{outline:none;border-color:var(--green);box-shadow:0 0 0 3px rgba(66,75,54,.12)}
+.q-field input[aria-invalid="true"],.q-field textarea[aria-invalid="true"]{border-color:var(--red)}
+
+/* The character count only appears near the ceiling. A counter under every
+   field from the first keystroke turns a question into a word budget; one that
+   turns up at 1,700 is a warning, which is what it is for. Notion stores at
+   most 2,000 characters in a text property, so that is the cap - the field
+   holds the line there rather than the answer being clipped later without
+   anyone being told. */
+.q-count{display:block;margin-top:8px;text-align:right;font-family:var(--mono);
+  font-size:11.5px;letter-spacing:.1em;text-transform:uppercase;color:var(--dim)}
+.q-count[hidden]{display:none}
+.q-count.at-cap{color:var(--red)}
+
+/* Errors: announced politely, never shown on keystroke - only on advance. */
+.q-error{display:block;margin-top:10px;min-height:1px;font-size:14.5px;color:var(--red)}
+
+/* ---------- ACTIONS ---------- */
+.q-actions{display:flex;align-items:center;gap:14px;margin-top:26px;flex-wrap:wrap}
+.btn{display:inline-flex;align-items:center;justify-content:center;min-height:52px;
+  font-family:var(--display);font-weight:700;font-size:16px;letter-spacing:.01em;text-decoration:none;
+  padding:14px 30px;border-radius:10px;background:var(--green);color:var(--cream);border:none;cursor:pointer;
+  transition:transform .12s ease,box-shadow .12s ease}
+.btn:hover{transform:translateY(-2px);box-shadow:0 12px 30px -12px rgba(66,75,54,.55)}
+.btn:disabled{opacity:.6;cursor:wait;transform:none;box-shadow:none}
+/* .btn sets display, which outranks the UA [hidden] rule - so say it here. */
+.btn[hidden]{display:none}
+.btn.ghost{background:transparent;color:var(--muted);border:1px solid var(--line-2);font-weight:500}
+.btn.ghost:hover{border-color:var(--green);color:var(--green-deep);box-shadow:none}
+.btn-back{min-height:44px;padding:10px 18px;font-size:15px}
+.hint{font-family:var(--mono);font-size:11.5px;letter-spacing:.08em;text-transform:uppercase;color:var(--dim)}
+@media (max-width:560px){ .hint{display:none} }
+
+/* ---------- INTRO + THANK YOU ---------- */
+.intro h1,.done h1{font-size:clamp(30px,6.2vw,46px);letter-spacing:-.03em;font-weight:700}
+.intro .lead,.done .lead{font-size:18px;color:var(--muted);margin-top:16px;max-width:34em}
+.intro .micro,.done .micro{margin-top:26px;font-family:var(--mono);font-size:12.5px;letter-spacing:.02em;color:var(--dim)}
+
+/* ---------- SUBMIT SCREEN ----------
+   Long answers, so this is a stack at every width rather than the two-column
+   list /qualifyform/ can get away with: a paragraph in a narrow right-hand
+   column beside a one-word label reads as confetti. pre-wrap because the
+   answers carry their own line breaks and those are part of the answer. */
+.summary{margin-top:22px;border:1px solid var(--line);border-radius:12px;background:var(--panel2);padding:18px 20px}
+.summary dl{margin:0;font-size:15px}
+.summary dt{font-family:var(--mono);font-size:11px;letter-spacing:.11em;text-transform:uppercase;color:var(--dim);margin-bottom:5px;line-height:1.5}
+.summary dd{color:var(--text);overflow-wrap:anywhere;white-space:pre-wrap;margin:0 0 16px}
+.summary dd:last-child{margin-bottom:0}
+.summary[hidden]{display:none}
+@media (max-width:430px){ .summary{padding:16px} }
+
+/* ---------- FOOTER ---------- */
+.foot{flex:0 0 auto;border-top:1px solid var(--line);padding:22px 0;font-size:13.5px;color:var(--dim)}
+.foot a{text-decoration:none}
+.foot a:hover{color:var(--green-deep)}
+.inapp-hint{margin-bottom:20px;border:1px solid var(--line-2);border-radius:10px;background:var(--panel2);padding:12px 14px;font-size:14.5px;color:var(--muted)}
+.inapp-hint[hidden]{display:none}
+</style>
+</head>
+<body>
+
+<header class="topbar">
+  <div class="wrap topbar-inner">
+    <a class="brand-word" href="https://timerich.ai/">Time Rich<span class="wm-dot">.</span></a>
+    <div class="progress" id="progress" hidden>
+      <div class="bar" role="progressbar" id="bar" aria-valuemin="1" aria-valuemax="21" aria-valuenow="1" aria-label="Progress">
+        <div class="bar-fill" id="barFill"></div>
+      </div>
+      <span class="progress-label" id="progressLabel">1 of 21</span>
+    </div>
+  </div>
+</header>
+
+<main>
+  <div class="wrap">
+    <div class="inapp-hint" id="inappHint" hidden>You&rsquo;re in an in-app browser. If the form won&rsquo;t submit, tap the <strong>&hellip;</strong> menu and choose <strong>Open in Safari / Chrome</strong>.</div>
+
+    <!-- Every screen - the intro and the thank-you included - is a direct child
+         of the form, so they share one positioned stage. During a transition
+         the outgoing question is taken out of flow and laid over the incoming
+         one; that is what lets the two motions overlap without the page height
+         (and the footer) twitching. -->
+    <form id="strategyForm" novalidate autocomplete="on">
+      <input type="text" name="_gotcha" id="f-gotcha" tabindex="-1" autocomplete="off" aria-hidden="true" style="position:absolute;left:-9999px;width:1px;height:1px;opacity:0;" />
+
+      <!-- ================= INTRO ================= -->
+      <section class="screen intro" id="s-intro" data-screen="intro">
+        <span class="q-eyebrow">Time Rich</span>
+        <h1 tabindex="-1" id="introHead">Before we build your strategy.</h1>
+        <p class="lead">Twenty-one questions about how the business runs today, what it costs you, and what a win would actually look like. The longer answers are the useful ones &mdash; write the way you&rsquo;d say it out loud.</p>
+        <p class="lead">Give it 20&ndash;30 minutes. Only your name and email are required; leave anything else blank if you&rsquo;d rather talk it through on the call.</p>
+        <p class="micro">Your answers are saved in this browser as you go, so you can stop and come back.</p>
+        <div class="q-actions">
+          <button type="button" class="btn" id="startBtn">Start</button>
+        </div>
+        <p class="micro" id="resumeNote" hidden>You have answers in progress &mdash; starting picks up where you left off.</p>
+      </section>
+
+      <!-- ================= STEP 1 - NAME ================= -->
+      <section class="screen" id="s-1" data-step="1" data-key="name" hidden>
+        <span class="q-eyebrow">Strategy intake</span>
+        <h2 class="q-title" id="h-1" tabindex="-1"><label for="f-name">Your name</label></h2>
+        <div class="q-field">
+          <input type="text" id="f-name" name="name" autocomplete="name" inputmode="text" autocapitalize="words" enterkeyhint="next" aria-describedby="e-1" />
+          <span class="q-error" id="e-1" aria-live="polite"></span>
+        </div>
+        <div class="q-actions">
+          <button type="button" class="btn" data-next>Continue</button>
+          <span class="hint">Press Enter</span>
+        </div>
+      </section>
+
+      <!-- ================= STEP 2 - EMAIL ================= -->
+      <section class="screen" id="s-2" data-step="2" data-key="email" hidden>
+        <span class="q-eyebrow">Strategy intake</span>
+        <h2 class="q-title" id="h-2" tabindex="-1"><label for="f-email">Email</label></h2>
+        <div class="q-field">
+          <input type="email" id="f-email" name="email" autocomplete="email" inputmode="email" autocapitalize="off" autocorrect="off" spellcheck="false" enterkeyhint="next" aria-describedby="e-2" />
+          <span class="q-error" id="e-2" aria-live="polite"></span>
+        </div>
+        <div class="q-actions">
+          <button type="button" class="btn" data-next>Continue</button>
+          <button type="button" class="btn ghost btn-back" data-back>Back</button>
+          <span class="hint">Press Enter</span>
+        </div>
+      </section>
+
+      <!-- ================= STEP 3 - ROLE ================= -->
+      <section class="screen" id="s-3" data-step="3" data-key="role" hidden>
+        <span class="q-eyebrow">Strategy intake</span>
+        <h2 class="q-title" id="h-3" tabindex="-1"><label for="f-role">Your role</label></h2>
+        <p class="q-help" id="help-3">Whatever you call it internally &mdash; founder, COO, ops lead.</p>
+        <div class="q-field">
+          <input type="text" id="f-role" name="role" autocomplete="organization-title" inputmode="text" enterkeyhint="next" aria-describedby="help-3 e-3" />
+          <span class="q-error" id="e-3" aria-live="polite"></span>
+        </div>
+        <div class="q-actions">
+          <button type="button" class="btn" data-next>Continue</button>
+          <button type="button" class="btn ghost btn-back" data-back>Back</button>
+          <span class="hint">Press Enter</span>
+        </div>
+      </section>
+
+      <!-- ================= STEP 4 - QUESTION 01 ================= -->
+      <section class="screen" id="s-4" data-step="4" data-key="q01" hidden>
+        <span class="q-eyebrow">Strategy intake</span>
+        <h2 class="q-title q-title--statement" id="h-4" tabindex="-1"><label for="f-q01">01. What made you want to bring in operational help now?</label></h2>
+        <div class="q-field">
+          <textarea id="f-q01" name="q01" rows="5" maxlength="2000" data-count-for="4" autocapitalize="sentences" enterkeyhint="enter" aria-describedby="c-4 e-4"></textarea>
+          <span class="q-count" id="c-4" aria-live="off" hidden></span>
+          <span class="q-error" id="e-4" aria-live="polite"></span>
+        </div>
+        <div class="q-actions">
+          <button type="button" class="btn" data-next>Continue</button>
+          <button type="button" class="btn ghost btn-back" data-back>Back</button>
+          <span class="hint" data-hint-continue>Ctrl + Enter</span>
+        </div>
+      </section>
+
+      <!-- ================= STEP 5 - QUESTION 02 ================= -->
+      <section class="screen" id="s-5" data-step="5" data-key="q02" hidden>
+        <span class="q-eyebrow">Strategy intake</span>
+        <h2 class="q-title q-title--statement" id="h-5" tabindex="-1"><label for="f-q02">02. Looking ahead, what does the business look like if this works?</label></h2>
+        <div class="q-field">
+          <textarea id="f-q02" name="q02" rows="5" maxlength="2000" data-count-for="5" autocapitalize="sentences" enterkeyhint="enter" aria-describedby="c-5 e-5"></textarea>
+          <span class="q-count" id="c-5" aria-live="off" hidden></span>
+          <span class="q-error" id="e-5" aria-live="polite"></span>
+        </div>
+        <div class="q-actions">
+          <button type="button" class="btn" data-next>Continue</button>
+          <button type="button" class="btn ghost btn-back" data-back>Back</button>
+          <span class="hint" data-hint-continue>Ctrl + Enter</span>
+        </div>
+      </section>
+
+      <!-- ================= STEP 6 - QUESTION 03 ================= -->
+      <section class="screen" id="s-6" data-step="6" data-key="q03" hidden>
+        <span class="q-eyebrow">Strategy intake</span>
+        <h2 class="q-title q-title--statement" id="h-6" tabindex="-1"><label for="f-q03">03. What would make this a clear win in the first 30 days?</label></h2>
+        <div class="q-field">
+          <textarea id="f-q03" name="q03" rows="5" maxlength="2000" data-count-for="6" autocapitalize="sentences" enterkeyhint="enter" aria-describedby="c-6 e-6"></textarea>
+          <span class="q-count" id="c-6" aria-live="off" hidden></span>
+          <span class="q-error" id="e-6" aria-live="polite"></span>
+        </div>
+        <div class="q-actions">
+          <button type="button" class="btn" data-next>Continue</button>
+          <button type="button" class="btn ghost btn-back" data-back>Back</button>
+          <span class="hint" data-hint-continue>Ctrl + Enter</span>
+        </div>
+      </section>
+
+      <!-- ================= STEP 7 - QUESTION 04 ================= -->
+      <section class="screen" id="s-7" data-step="7" data-key="q04" hidden>
+        <span class="q-eyebrow">Strategy intake</span>
+        <h2 class="q-title q-title--statement" id="h-7" tabindex="-1"><label for="f-q04">04. What would make this a clear win in the first 90 days?</label></h2>
+        <div class="q-field">
+          <textarea id="f-q04" name="q04" rows="5" maxlength="2000" data-count-for="7" autocapitalize="sentences" enterkeyhint="enter" aria-describedby="c-7 e-7"></textarea>
+          <span class="q-count" id="c-7" aria-live="off" hidden></span>
+          <span class="q-error" id="e-7" aria-live="polite"></span>
+        </div>
+        <div class="q-actions">
+          <button type="button" class="btn" data-next>Continue</button>
+          <button type="button" class="btn ghost btn-back" data-back>Back</button>
+          <span class="hint" data-hint-continue>Ctrl + Enter</span>
+        </div>
+      </section>
+
+      <!-- ================= STEP 8 - QUESTION 05 ================= -->
+      <section class="screen" id="s-8" data-step="8" data-key="q05" hidden>
+        <span class="q-eyebrow">Strategy intake</span>
+        <h2 class="q-title q-title--statement" id="h-8" tabindex="-1"><label for="f-q05">05. What would make this a clear win in the first 6 months?</label></h2>
+        <div class="q-field">
+          <textarea id="f-q05" name="q05" rows="5" maxlength="2000" data-count-for="8" autocapitalize="sentences" enterkeyhint="enter" aria-describedby="c-8 e-8"></textarea>
+          <span class="q-count" id="c-8" aria-live="off" hidden></span>
+          <span class="q-error" id="e-8" aria-live="polite"></span>
+        </div>
+        <div class="q-actions">
+          <button type="button" class="btn" data-next>Continue</button>
+          <button type="button" class="btn ghost btn-back" data-back>Back</button>
+          <span class="hint" data-hint-continue>Ctrl + Enter</span>
+        </div>
+      </section>
+
+      <!-- ================= STEP 9 - QUESTION 06 ================= -->
+      <section class="screen" id="s-9" data-step="9" data-key="q06" hidden>
+        <span class="q-eyebrow">Strategy intake</span>
+        <h2 class="q-title q-title--statement" id="h-9" tabindex="-1"><label for="f-q06">06. Which tasks eat the most hours each week, and who does them?</label></h2>
+        <p class="q-help" id="help-9">For example: scheduling, payroll, reporting, client follow-ups, admin</p>
+        <div class="q-field">
+          <textarea id="f-q06" name="q06" rows="5" maxlength="2000" data-count-for="9" autocapitalize="sentences" enterkeyhint="enter" aria-describedby="help-9 c-9 e-9"></textarea>
+          <span class="q-count" id="c-9" aria-live="off" hidden></span>
+          <span class="q-error" id="e-9" aria-live="polite"></span>
+        </div>
+        <div class="q-actions">
+          <button type="button" class="btn" data-next>Continue</button>
+          <button type="button" class="btn ghost btn-back" data-back>Back</button>
+          <span class="hint" data-hint-continue>Ctrl + Enter</span>
+        </div>
+      </section>
+
+      <!-- ================= STEP 10 - QUESTION 07 ================= -->
+      <section class="screen" id="s-10" data-step="10" data-key="q07" hidden>
+        <span class="q-eyebrow">Strategy intake</span>
+        <h2 class="q-title q-title--statement" id="h-10" tabindex="-1"><label for="f-q07">07. Walk us through the last time something broke or slipped. What happened?</label></h2>
+        <div class="q-field">
+          <textarea id="f-q07" name="q07" rows="5" maxlength="2000" data-count-for="10" autocapitalize="sentences" enterkeyhint="enter" aria-describedby="c-10 e-10"></textarea>
+          <span class="q-count" id="c-10" aria-live="off" hidden></span>
+          <span class="q-error" id="e-10" aria-live="polite"></span>
+        </div>
+        <div class="q-actions">
+          <button type="button" class="btn" data-next>Continue</button>
+          <button type="button" class="btn ghost btn-back" data-back>Back</button>
+          <span class="hint" data-hint-continue>Ctrl + Enter</span>
+        </div>
+      </section>
+
+      <!-- ================= STEP 11 - QUESTION 08 ================= -->
+      <section class="screen" id="s-11" data-step="11" data-key="q08" hidden>
+        <span class="q-eyebrow">Strategy intake</span>
+        <h2 class="q-title q-title--statement" id="h-11" tabindex="-1"><label for="f-q08">08. Where are you losing money or leaving it on the table?</label></h2>
+        <p class="q-help" id="help-11">Missed bookings, rework, slow billing, tools you pay for and do not use</p>
+        <div class="q-field">
+          <textarea id="f-q08" name="q08" rows="5" maxlength="2000" data-count-for="11" autocapitalize="sentences" enterkeyhint="enter" aria-describedby="help-11 c-11 e-11"></textarea>
+          <span class="q-count" id="c-11" aria-live="off" hidden></span>
+          <span class="q-error" id="e-11" aria-live="polite"></span>
+        </div>
+        <div class="q-actions">
+          <button type="button" class="btn" data-next>Continue</button>
+          <button type="button" class="btn ghost btn-back" data-back>Back</button>
+          <span class="hint" data-hint-continue>Ctrl + Enter</span>
+        </div>
+      </section>
+
+      <!-- ================= STEP 12 - QUESTION 09 ================= -->
+      <section class="screen" id="s-12" data-step="12" data-key="q09" hidden>
+        <span class="q-eyebrow">Strategy intake</span>
+        <h2 class="q-title q-title--statement" id="h-12" tabindex="-1"><label for="f-q09">09. If you could hand off one job tomorrow, what would it be?</label></h2>
+        <div class="q-field">
+          <textarea id="f-q09" name="q09" rows="5" maxlength="2000" data-count-for="12" autocapitalize="sentences" enterkeyhint="enter" aria-describedby="c-12 e-12"></textarea>
+          <span class="q-count" id="c-12" aria-live="off" hidden></span>
+          <span class="q-error" id="e-12" aria-live="polite"></span>
+        </div>
+        <div class="q-actions">
+          <button type="button" class="btn" data-next>Continue</button>
+          <button type="button" class="btn ghost btn-back" data-back>Back</button>
+          <span class="hint" data-hint-continue>Ctrl + Enter</span>
+        </div>
+      </section>
+
+      <!-- ================= STEP 13 - QUESTION 10 ================= -->
+      <section class="screen" id="s-13" data-step="13" data-key="q10" hidden>
+        <span class="q-eyebrow">Strategy intake</span>
+        <h2 class="q-title q-title--statement" id="h-13" tabindex="-1"><label for="f-q10">10. List every tool the team uses and what each does.</label></h2>
+        <p class="q-help" id="help-13">For example: your CRM, project management, payroll, scheduling, communication and AI tools</p>
+        <div class="q-field">
+          <textarea id="f-q10" name="q10" rows="5" maxlength="2000" data-count-for="13" autocapitalize="sentences" enterkeyhint="enter" aria-describedby="help-13 c-13 e-13"></textarea>
+          <span class="q-count" id="c-13" aria-live="off" hidden></span>
+          <span class="q-error" id="e-13" aria-live="polite"></span>
+        </div>
+        <div class="q-actions">
+          <button type="button" class="btn" data-next>Continue</button>
+          <button type="button" class="btn ghost btn-back" data-back>Back</button>
+          <span class="hint" data-hint-continue>Ctrl + Enter</span>
+        </div>
+      </section>
+
+      <!-- ================= STEP 14 - QUESTION 11 ================= -->
+      <section class="screen" id="s-14" data-step="14" data-key="q11" hidden>
+        <span class="q-eyebrow">Strategy intake</span>
+        <h2 class="q-title q-title--statement" id="h-14" tabindex="-1"><label for="f-q11">11. Where are you using AI today, and who uses it? What has worked and what has not?</label></h2>
+        <div class="q-field">
+          <textarea id="f-q11" name="q11" rows="5" maxlength="2000" data-count-for="14" autocapitalize="sentences" enterkeyhint="enter" aria-describedby="c-14 e-14"></textarea>
+          <span class="q-count" id="c-14" aria-live="off" hidden></span>
+          <span class="q-error" id="e-14" aria-live="polite"></span>
+        </div>
+        <div class="q-actions">
+          <button type="button" class="btn" data-next>Continue</button>
+          <button type="button" class="btn ghost btn-back" data-back>Back</button>
+          <span class="hint" data-hint-continue>Ctrl + Enter</span>
+        </div>
+      </section>
+
+      <!-- ================= STEP 15 - QUESTION 12 ================= -->
+      <section class="screen" id="s-15" data-step="15" data-key="q12" hidden>
+        <span class="q-eyebrow">Strategy intake</span>
+        <h2 class="q-title q-title--statement" id="h-15" tabindex="-1"><label for="f-q12">12. Where do tools fail to talk to each other, so someone copies data by hand?</label></h2>
+        <div class="q-field">
+          <textarea id="f-q12" name="q12" rows="5" maxlength="2000" data-count-for="15" autocapitalize="sentences" enterkeyhint="enter" aria-describedby="c-15 e-15"></textarea>
+          <span class="q-count" id="c-15" aria-live="off" hidden></span>
+          <span class="q-error" id="e-15" aria-live="polite"></span>
+        </div>
+        <div class="q-actions">
+          <button type="button" class="btn" data-next>Continue</button>
+          <button type="button" class="btn ghost btn-back" data-back>Back</button>
+          <span class="hint" data-hint-continue>Ctrl + Enter</span>
+        </div>
+      </section>
+
+      <!-- ================= STEP 16 - QUESTION 13 ================= -->
+      <section class="screen" id="s-16" data-step="16" data-key="q13" hidden>
+        <span class="q-eyebrow">Strategy intake</span>
+        <h2 class="q-title q-title--statement" id="h-16" tabindex="-1"><label for="f-q13">13. What would you budget for a full-time COO or operations lead hire?</label></h2>
+        <p class="q-help" id="help-16">A salary range is fine</p>
+        <div class="q-field">
+          <textarea id="f-q13" name="q13" rows="5" maxlength="2000" data-count-for="16" autocapitalize="sentences" enterkeyhint="enter" aria-describedby="help-16 c-16 e-16"></textarea>
+          <span class="q-count" id="c-16" aria-live="off" hidden></span>
+          <span class="q-error" id="e-16" aria-live="polite"></span>
+        </div>
+        <div class="q-actions">
+          <button type="button" class="btn" data-next>Continue</button>
+          <button type="button" class="btn ghost btn-back" data-back>Back</button>
+          <span class="hint" data-hint-continue>Ctrl + Enter</span>
+        </div>
+      </section>
+
+      <!-- ================= STEP 17 - QUESTION 14 ================= -->
+      <section class="screen" id="s-17" data-step="17" data-key="q14" hidden>
+        <span class="q-eyebrow">Strategy intake</span>
+        <h2 class="q-title q-title--statement" id="h-17" tabindex="-1"><label for="f-q14">14. What monthly budget do you have for fractional COO and AI systems support?</label></h2>
+        <div class="q-field">
+          <textarea id="f-q14" name="q14" rows="5" maxlength="2000" data-count-for="17" autocapitalize="sentences" enterkeyhint="enter" aria-describedby="c-17 e-17"></textarea>
+          <span class="q-count" id="c-17" aria-live="off" hidden></span>
+          <span class="q-error" id="e-17" aria-live="polite"></span>
+        </div>
+        <div class="q-actions">
+          <button type="button" class="btn" data-next>Continue</button>
+          <button type="button" class="btn ghost btn-back" data-back>Back</button>
+          <span class="hint" data-hint-continue>Ctrl + Enter</span>
+        </div>
+      </section>
+
+      <!-- ================= STEP 18 - QUESTION 15 ================= -->
+      <section class="screen" id="s-18" data-step="18" data-key="q15" hidden>
+        <span class="q-eyebrow">Strategy intake</span>
+        <h2 class="q-title q-title--statement" id="h-18" tabindex="-1"><label for="f-q15">15. What outcomes must be hit for this to pay for itself?</label></h2>
+        <p class="q-help" id="help-18">Name the number: hours saved, revenue, bookings, margin</p>
+        <div class="q-field">
+          <textarea id="f-q15" name="q15" rows="5" maxlength="2000" data-count-for="18" autocapitalize="sentences" enterkeyhint="enter" aria-describedby="help-18 c-18 e-18"></textarea>
+          <span class="q-count" id="c-18" aria-live="off" hidden></span>
+          <span class="q-error" id="e-18" aria-live="polite"></span>
+        </div>
+        <div class="q-actions">
+          <button type="button" class="btn" data-next>Continue</button>
+          <button type="button" class="btn ghost btn-back" data-back>Back</button>
+          <span class="hint" data-hint-continue>Ctrl + Enter</span>
+        </div>
+      </section>
+
+      <!-- ================= STEP 19 - QUESTION 16 ================= -->
+      <section class="screen" id="s-19" data-step="19" data-key="q16" hidden>
+        <span class="q-eyebrow">Strategy intake</span>
+        <h2 class="q-title q-title--statement" id="h-19" tabindex="-1"><label for="f-q16">16. Which one fix would give the company the biggest return, and why?</label></h2>
+        <p class="q-help" id="help-19">What would it free up or bring in?</p>
+        <div class="q-field">
+          <textarea id="f-q16" name="q16" rows="5" maxlength="2000" data-count-for="19" autocapitalize="sentences" enterkeyhint="enter" aria-describedby="help-19 c-19 e-19"></textarea>
+          <span class="q-count" id="c-19" aria-live="off" hidden></span>
+          <span class="q-error" id="e-19" aria-live="polite"></span>
+        </div>
+        <div class="q-actions">
+          <button type="button" class="btn" data-next>Continue</button>
+          <button type="button" class="btn ghost btn-back" data-back>Back</button>
+          <span class="hint" data-hint-continue>Ctrl + Enter</span>
+        </div>
+      </section>
+
+      <!-- ================= STEP 20 - QUESTION 17 ================= -->
+      <section class="screen" id="s-20" data-step="20" data-key="q17" hidden>
+        <span class="q-eyebrow">Strategy intake</span>
+        <h2 class="q-title q-title--statement" id="h-20" tabindex="-1"><label for="f-q17">17. Who signs off on spend, and how do you want to make the decision?</label></h2>
+        <div class="q-field">
+          <textarea id="f-q17" name="q17" rows="5" maxlength="2000" data-count-for="20" autocapitalize="sentences" enterkeyhint="enter" aria-describedby="c-20 e-20"></textarea>
+          <span class="q-count" id="c-20" aria-live="off" hidden></span>
+          <span class="q-error" id="e-20" aria-live="polite"></span>
+        </div>
+        <div class="q-actions">
+          <button type="button" class="btn" data-next>Continue</button>
+          <button type="button" class="btn ghost btn-back" data-back>Back</button>
+          <span class="hint" data-hint-continue>Ctrl + Enter</span>
+        </div>
+      </section>
+
+      <!-- ================= STEP 21 - QUESTION 18 ================= -->
+      <section class="screen" id="s-21" data-step="21" data-key="q18" hidden>
+        <span class="q-eyebrow">Strategy intake</span>
+        <h2 class="q-title q-title--statement" id="h-21" tabindex="-1"><label for="f-q18">18. What should we know that did not come up on the call?</label></h2>
+        <div class="q-field">
+          <textarea id="f-q18" name="q18" rows="5" maxlength="2000" data-count-for="21" autocapitalize="sentences" enterkeyhint="enter" aria-describedby="c-21 e-21"></textarea>
+          <span class="q-count" id="c-21" aria-live="off" hidden></span>
+          <span class="q-error" id="e-21" aria-live="polite"></span>
+        </div>
+        <div class="q-actions">
+          <button type="button" class="btn" data-next>Continue</button>
+          <button type="button" class="btn ghost btn-back" data-back>Back</button>
+          <span class="hint" data-hint-continue>Ctrl + Enter</span>
+        </div>
+      </section>
+
+      <!-- ================= SUBMIT ================= -->
+      <section class="screen" id="s-submit" data-step="21" data-screen="submit" hidden>
+        <span class="q-eyebrow">Last step</span>
+        <h2 class="q-title" id="h-submit" tabindex="-1">That&rsquo;s everything.</h2>
+        <p class="q-help">Have a read back, then send it over. Back takes you to the last question if you want to add to it.</p>
+        <div class="summary" id="summary"></div>
+        <div class="q-actions">
+          <button type="submit" class="btn" id="submitBtn">Send it</button>
+          <button type="button" class="btn ghost btn-back" data-back>Back</button>
+        </div>
+        <span class="q-error" id="e-submit" aria-live="polite" role="status"></span>
+      </section>
+
+      <!-- ================= THANK YOU ================= -->
+      <section class="screen done" id="s-done" data-screen="done" hidden>
+        <span class="q-eyebrow">All done</span>
+        <h1 tabindex="-1" id="doneHead">Got it &mdash; thank you.</h1>
+        <p class="lead">Your answers are in. We&rsquo;ll read them before we speak, and come back to you by email.</p>
+        <div class="q-actions">
+          <a class="btn ghost" href="https://timerich.ai/">Back to Time Rich</a>
+        </div>
+      </section>
+    </form>
+  </div>
+</main>
+
+<footer class="foot">
+  <div class="wrap">
+    &copy; 2026 Time Rich &middot; <a href="/privacy">Privacy</a> &middot; <a href="/terms">Terms</a>
+  </div>
+</footer>
+
+<script>
+(function(){
+  'use strict';
+
+  window.gtag = window.gtag || function(){};
+  function track(name, params){ try{ if(window.gtag) window.gtag('event', name, params||{}); }catch(e){} }
+
+  var FORM_ENDPOINT = 'https://time-rich-forms.timerich.workers.dev/strategy';
+  // localStorage, not the sessionStorage /qualifyform/ uses. That form is a
+  // two-minute run of taps; this one is twenty-one written answers, and losing
+  // the lot to a closed tab is a different order of loss. Cleared on submit.
+  var STORE_KEY   = 'strategyV1';
+  var TOTAL_STEPS = 21;
+  var MAX_CHARS   = 2000;   // Notion's ceiling for one text property
+  var COUNT_FROM  = 1700;   // where the character count starts showing
+  // Everything except name and email. An optional question counts as answered
+  // once they have passed through it, which is when commit() writes the key -
+  // even as an empty string.
+  var OPTIONAL_KEYS = ['role',
+    'q01','q02','q03','q04','q05','q06','q07','q08','q09',
+    'q10','q11','q12','q13','q14','q15','q16','q17','q18'];
+
+  var form     = document.getElementById('strategyForm');
+  var progress = document.getElementById('progress');
+  var bar      = document.getElementById('bar');
+  var barFill  = document.getElementById('barFill');
+  var progLbl  = document.getElementById('progressLabel');
+
+  // ---- Screen registry -----------------------------------------------------
+  // Document order is flow order. Screen 0 is the intro and the last is the
+  // thank-you; neither is a question.
+  var screens = Array.prototype.slice.call(form.querySelectorAll('section.screen'));
+  var SUBMIT_IDX = screens.indexOf(document.getElementById('s-submit'));
+  var DONE_IDX   = screens.indexOf(document.getElementById('s-done'));
+  var idx = 0;                     // index into screens
+  var answers = {};
+  var submitting = false;
+  var resumeTo = 0;                // question to jump back to when resuming
+
+  function screenAt(i){ return screens[Math.max(0, Math.min(i, screens.length - 1))]; }
+  function keyOf(el){ return el.getAttribute('data-key') || ''; }
+  function fieldOf(el){ return el.querySelector('textarea, input:not([type=hidden])'); }
+
+  // ---- Persistence ---------------------------------------------------------
+  var FORM_KEYS = [STORE_KEY];
+
+  function hasProgress(){
+    for (var k in answers) {
+      if (Object.prototype.hasOwnProperty.call(answers, k)) return true;
+    }
+    return false;
+  }
+  function save(){
+    if (!hasProgress()) { clearStore(); return; }
+    try{
+      localStorage.setItem(STORE_KEY, JSON.stringify({ answers: answers, idx: idx }));
+    }catch(e){}
+  }
+  function load(){
+    try{
+      var raw = localStorage.getItem(STORE_KEY);
+      if (!raw) return null;
+      var d = JSON.parse(raw);
+      return (d && typeof d === 'object') ? d : null;
+    }catch(e){ return null; }
+  }
+  function clearStore(){
+    try{ FORM_KEYS.forEach(function(k){ localStorage.removeItem(k); }); }catch(e){}
+  }
+  // Everything, in one go: answers, the screen they were on, and the stored
+  // copy of both. Anything less and a revisit can be restored to a screen the
+  // answers no longer support.
+  function resetFormState(){
+    answers = {};
+    idx = 0;
+    clearStore();
+  }
+  // Drops #qN from the address bar without adding a history entry.
+  function stripHash(){
+    try{ history.replaceState({ qs: 0 }, '', location.pathname + location.search); }catch(e){}
+  }
+
+  // ---- Progress ------------------------------------------------------------
+  function paintProgress(){
+    var el = screenAt(idx);
+    var step = parseInt(el.getAttribute('data-step') || '0', 10);
+    if (!step) { progress.hidden = true; return; }
+    progress.hidden = false;
+    progLbl.textContent = step + ' of ' + TOTAL_STEPS;
+    barFill.style.transform = 'scaleX(' + (step / TOTAL_STEPS) + ')';
+    bar.setAttribute('aria-valuenow', String(step));
+  }
+
+  // ---- Errors --------------------------------------------------------------
+  function setError(el, msg){
+    var slot = el.querySelector('.q-error');
+    if (slot) slot.textContent = msg || '';
+    var field = fieldOf(el);
+    if (field) {
+      if (msg) field.setAttribute('aria-invalid', 'true');
+      else field.removeAttribute('aria-invalid');
+    }
+  }
+
+  // ---- The long-answer field ----------------------------------------------
+  // Grows to fit what is in it, up to a little over half the viewport; past
+  // that it scrolls, so Continue never ends up below the fold. Every call is a
+  // forced layout read, so this only ever runs on a keystroke or as a question
+  // settles - never during a transition.
+  function autogrow(t){
+    if (!t || t.tagName !== 'TEXTAREA') return;
+    // A hidden field measures 0, and sizing to that would collapse it to
+    // nothing the next time it is shown. Nothing to do until it is on screen.
+    if (!t.offsetParent && t.scrollHeight === 0) return;
+    var cap = Math.max(180, Math.round((window.innerHeight || 800) * 0.52));
+    t.style.height = 'auto';
+    t.style.height = Math.min(t.scrollHeight + 2, cap) + 'px';
+  }
+  function paintCount(t){
+    if (!t || t.tagName !== 'TEXTAREA') return;
+    var slot = document.getElementById('c-' + t.getAttribute('data-count-for'));
+    if (!slot) return;
+    var n = t.value.length;
+    slot.hidden = n < COUNT_FROM;
+    slot.textContent = n + ' / ' + MAX_CHARS;
+    slot.classList.toggle('at-cap', n >= MAX_CHARS);
+  }
+
+  // ---- Show a screen -------------------------------------------------------
+  // Read the tuning constants straight off the stylesheet, once, at boot: the
+  // CSS is the single source of truth for the feel, and these only drive the
+  // cleanup and focus timings. One getComputedStyle call here, never during a
+  // transition.
+  var TIMING = (function(){
+    var cs = getComputedStyle(document.documentElement);
+    var ms = function(name, fallback){
+      var v = parseFloat(cs.getPropertyValue(name));
+      return isNaN(v) ? fallback : v;
+    };
+    return {
+      exit:    ms('--q-exit',    240),
+      enter:   ms('--q-enter',   380),
+      offset:  ms('--q-offset',   60),
+      stagger: ms('--q-stagger',  45)
+    };
+  })();
+
+  // Stamp each screen's direct children with their position, once, at boot: the
+  // stylesheet turns that into each part's transition-delay. Doing it here
+  // means no per-transition DOM writes and no hard-coded :nth-child list.
+  screens.forEach(function(s){
+    Array.prototype.forEach.call(s.children, function(child, n){
+      child.style.setProperty('--i', String(n));
+    });
+  });
+
+  // When the last part of a given screen has finished arriving.
+  function arrivalMs(el){
+    return TIMING.offset + Math.max(0, el.children.length - 1) * TIMING.stagger + TIMING.enter;
+  }
+  // When a particular part has finished arriving - used so the field takes
+  // focus as it lands, rather than waiting for the buttons below it.
+  function partArrivalMs(el, node){
+    var host = node;
+    while (host && host.parentNode !== el) host = host.parentNode;
+    var n = host ? Array.prototype.indexOf.call(el.children, host) : 0;
+    return TIMING.offset + Math.max(0, n) * TIMING.stagger + TIMING.enter;
+  }
+
+  var reduceMotion = (function(){
+    try{ return window.matchMedia('(prefers-reduced-motion: reduce)').matches; }catch(e){ return false; }
+  })();
+
+  var leaving = null, arriving = null, endTimer = null, focusTimer = null, rafHandle = 0;
+
+  // Two frames, not one. The first lets the browser render the start state (and
+  // act on will-change); the flip happens in the second. Batched into one frame
+  // the browser coalesces start and end and you get a pop instead of motion.
+  function nextTwoFrames(fn){
+    if (rafHandle) cancelAnimationFrame(rafHandle);
+    rafHandle = requestAnimationFrame(function(){
+      rafHandle = requestAnimationFrame(function(){ rafHandle = 0; fn(); });
+    });
+  }
+
+  // Settles whatever is in flight: the outgoing question goes back to the
+  // hidden pile, both questions drop their transition and will-change classes.
+  // Called on completion, and immediately if another advance interrupts - so
+  // however fast someone moves, exactly one question is left in the DOM and no
+  // idle element is holding a compositor layer.
+  function finishTransition(){
+    if (endTimer) { clearTimeout(endTimer); endTimer = null; }
+    if (focusTimer) { clearTimeout(focusTimer); focusTimer = null; }
+    if (rafHandle) { cancelAnimationFrame(rafHandle); rafHandle = 0; }
+    if (arriving) {
+      arriving.classList.remove('q-in-run', 'q-in-below', 'q-in-above', 'q-will');
+      arriving = null;
+    }
+    if (leaving) {
+      leaving.hidden = true;
+      leaving.classList.remove('is-leaving', 'q-exit', 'q-will', 'q-below', 'q-above');
+      leaving.removeAttribute('aria-hidden');
+      leaving = null;
+    }
+    form.classList.remove('q-busy');
+  }
+
+  // The field where there is one (its label is the heading, so the question is
+  // still announced), otherwise the heading itself.
+  function focusTargetOf(el){
+    var field = fieldOf(el);
+    return field ? field : el.querySelector('.q-title, h1');
+  }
+  function focusScreen(el){
+    var target = focusTargetOf(el);
+    if (!target) return;
+    // Sized as it lands, with what is already in it: a restored answer opens
+    // at its own height instead of five lines with the rest scrolled away.
+    autogrow(target);
+    try{ target.focus({ preventScroll:true }); }catch(e){ target.focus(); }
+  }
+
+  function show(i, opts){
+    opts = opts || {};
+    var prev = screenAt(idx);
+    idx = Math.max(0, Math.min(i, screens.length - 1));
+    var el = screenAt(idx);
+
+    // The one layout read in here, taken before any DOM write while layout is
+    // still clean. Scrolling is instant and only when we are actually away from
+    // the top: a smooth scroll animating the whole document alongside the
+    // question is the single worst thing that could share these frames.
+    var scrolled = window.pageYOffset || document.documentElement.scrollTop || 0;
+
+    finishTransition();                             // settle anything still in flight
+    setError(el, '');
+
+    // Direction of travel: registry order is flow order, so forward is always a
+    // higher index. On the very first render there is nothing to send away, but
+    // the arriving question still assembles itself, so the page lands with
+    // motion.
+    var swapping = prev !== el && !prev.hidden && !reduceMotion && !opts.entrance;
+    var entering = !reduceMotion && (swapping || opts.entrance);
+    var forward = screens.indexOf(el) >= screens.indexOf(prev);
+    var outEnd  = forward ? 'q-above' : 'q-below';       // where the outgoing one goes
+    var inStart = forward ? 'q-in-below' : 'q-in-above'; // where the arriving parts come from
+
+    if (scrolled > 8) window.scrollTo(0, 0);
+
+    // --- Frame 0: start state only. No style is read after this point, so
+    // nothing in here can force a synchronous layout mid-flip.
+    screens.forEach(function(s){ if (s !== el && !(swapping && s === prev)) s.hidden = true; });
+    if (swapping) {
+      prev.classList.add('is-leaving', 'q-will');
+      prev.setAttribute('aria-hidden', 'true');     // out of the a11y tree while it flies out
+      leaving = prev;
+    }
+    if (entering) {
+      form.classList.add('q-busy');
+      el.classList.add(inStart);
+      arriving = el;
+    }
+    el.hidden = false;
+
+    if (el.id === 's-submit') paintSummary();
+    paintProgress();
+
+    if (entering) {
+      // --- Frames 1-2: transitions on, then flip to the end state.
+      nextTwoFrames(function(){
+        if (arriving !== el) return;                // interrupted before we got here
+        if (leaving === prev && swapping) {
+          prev.classList.add('q-exit');
+          prev.classList.add(outEnd);
+        }
+        el.classList.add('q-in-run');
+        el.classList.remove(inStart);
+      });
+
+      // Focus follows the field down: it lands as that part arrives, not after
+      // the buttons below it have finished. Skipped on the first render - the
+      // browser already lands the reader at the top of a freshly loaded page.
+      if (!opts.entrance) {
+        focusTimer = setTimeout(function(){
+          focusTimer = null;
+          if (screenAt(idx) === el) focusScreen(el);
+        }, partArrivalMs(el, focusTargetOf(el)) + 40);
+      }
+
+      // Cleanup once the last part has landed. The slack covers the two frames
+      // spent getting to the flip.
+      endTimer = setTimeout(function(){
+        endTimer = null;
+        finishTransition();
+      }, arrivalMs(el) + 80);
+    } else if (!opts.entrance) {
+      focusScreen(el);
+    }
+
+    // On the first render nothing takes focus, so a long answer restored from
+    // an earlier visit would open at its starting height with the rest of it
+    // scrolled out of sight. Size it once the question has landed - after the
+    // transition, never during it.
+    if (opts.entrance) {
+      setTimeout(function(){
+        if (screenAt(idx) === el) autogrow(fieldOf(el));
+      }, entering ? arrivalMs(el) + 90 : 0);
+    }
+
+    if (!opts.noHistory) pushState();
+    save();
+  }
+
+  // ---- History: one entry per question ------------------------------------
+  function hashFor(i){
+    var el = screenAt(i);
+    if (el.id === 's-intro') return '';
+    return '#' + el.id.replace(/^s-/, 'q');
+  }
+  var pushed = 0;                  // history entries this page has added
+  function pushState(){
+    var url = location.pathname + location.search + hashFor(idx);
+    try{ history.pushState({ qs: idx }, '', url); pushed++; }catch(e){}
+  }
+  window.addEventListener('popstate', function(e){
+    pushed = Math.max(0, pushed - 1);
+    var target = (e.state && typeof e.state.qs === 'number') ? e.state.qs : 0;
+    show(target, { noHistory: true });
+  });
+
+  // ---- Value get/set per screen -------------------------------------------
+  function readScreen(el){
+    var field = fieldOf(el);
+    return field ? field.value.trim() : '';
+  }
+  function writeScreen(el, value){
+    var field = fieldOf(el);
+    if (!field) return;
+    field.value = value || '';
+    paintCount(field);
+  }
+
+  // ---- Validation (on advance only) ---------------------------------------
+  // Only the two required questions can fail. Everything else is optional by
+  // design: this form is read alongside a conversation, and an empty answer is
+  // information too.
+  function validate(el){
+    var key = keyOf(el);
+    var raw = readScreen(el);
+
+    if (key === 'name') {
+      if (!raw) return 'Please add your name.';
+      return '';
+    }
+    if (key === 'email') {
+      if (!raw) return 'Please add your email.';
+      if (!/^[^@\s]+@[^@\s]+\.[^@\s]{2,}$/.test(raw)) return 'That email doesn’t look right — check it over?';
+      return '';
+    }
+    return '';
+  }
+
+  // ---- Flow ----------------------------------------------------------------
+  // The furthest screen the current answers actually justify. A URL hash or a
+  // stored index pointing past this is stale - from a sent form, a shared link,
+  // or the browser walking back through the history entries this page pushed -
+  // and gets clamped to here instead of being trusted.
+  function firstIncompleteIndex(){
+    for (var i = 1; i < SUBMIT_IDX; i++) {
+      var key = keyOf(screens[i]);
+      var done = OPTIONAL_KEYS.indexOf(key) > -1
+        ? Object.prototype.hasOwnProperty.call(answers, key)
+        : !!answers[key];
+      if (!done) return i;
+    }
+    return SUBMIT_IDX;                                  // everything answered
+  }
+
+  function advance(){
+    var el = screenAt(idx);
+    var msg = validate(el);
+    if (msg) {
+      setError(el, msg);
+      var target = fieldOf(el) || el.querySelector('.q-title');
+      if (target) target.focus();
+      return;
+    }
+    setError(el, '');
+    commit(el);
+    show(idx + 1);
+  }
+  function commit(el){
+    var key = keyOf(el);
+    if (!key) return;
+    answers[key] = readScreen(el);
+    save();
+  }
+  function goBack(){
+    commit(screenAt(idx));                        // keep what they typed, valid or not
+    // Drive the in-page Back button through history so the browser's own Back
+    // stays in step with it (one entry per question, no growing stack).
+    if (pushed > 0) { history.back(); return; }
+    show(idx - 1, { noHistory: true });
+    try{ history.replaceState({ qs: idx }, '', location.pathname + location.search + hashFor(idx)); }catch(e){}
+  }
+
+  // ---- Wiring --------------------------------------------------------------
+  document.getElementById('startBtn').addEventListener('click', function(){
+    track('strategy_start');
+    show(idx === 0 ? (resumeTo || 1) : idx);
+  });
+
+  form.addEventListener('click', function(e){
+    var next = e.target.closest('[data-next]');
+    if (next) { e.preventDefault(); advance(); return; }
+    var back = e.target.closest('[data-back]');
+    if (back) { e.preventDefault(); goBack(); }
+  });
+
+  // Typing: keep the field the right size, keep the count honest, and save as
+  // they go so a closed tab costs them nothing. The save is debounced - one
+  // write per pause, not one per keystroke.
+  var saveTimer = null;
+  form.addEventListener('input', function(e){
+    var t = e.target;
+    if (t.tagName !== 'TEXTAREA' && t.tagName !== 'INPUT') return;
+    if (t.tagName === 'TEXTAREA') { autogrow(t); paintCount(t); }
+    // The screen this keystroke belongs to, captured now rather than read off
+    // idx when the timer fires: by then they may have moved on, and this would
+    // commit the next question instead of the one they were typing in.
+    var el = t.closest('.screen');
+    if (saveTimer) clearTimeout(saveTimer);
+    saveTimer = setTimeout(function(){
+      saveTimer = null;
+      if (el) commit(el);
+    }, 400);
+  });
+
+  // Enter advances on the one-line fields. In a long answer Enter is a
+  // paragraph break - that is the whole point of the field - so there it takes
+  // Ctrl (or Cmd) to move on, which is what the hint under the button says.
+  form.addEventListener('keydown', function(e){
+    if (e.key !== 'Enter') return;
+    var t = e.target;
+    if (t.tagName === 'INPUT' && t.type !== 'hidden') { e.preventDefault(); advance(); return; }
+    if (t.tagName === 'TEXTAREA' && (e.ctrlKey || e.metaKey)) { e.preventDefault(); advance(); }
+  });
+
+  // ---- Submit screen summary ----------------------------------------------
+  // Labels are the question's own words, shortened only where the full
+  // property name would be a paragraph in small caps. Order is the order they
+  // were asked in.
+  var SUMMARY_ROWS = [
+    ['Your name', 'name'],
+    ['Email', 'email'],
+    ['Your role', 'role'],
+    ['01. Why operational help now', 'q01'],
+    ['02. The business if this works', 'q02'],
+    ['03. A clear win in 30 days', 'q03'],
+    ['04. A clear win in 90 days', 'q04'],
+    ['05. A clear win in 6 months', 'q05'],
+    ['06. Tasks that eat the hours', 'q06'],
+    ['07. The last thing that slipped', 'q07'],
+    ['08. Where money is being lost', 'q08'],
+    ['09. One job to hand off tomorrow', 'q09'],
+    ['10. Every tool the team uses', 'q10'],
+    ['11. AI today', 'q11'],
+    ['12. Where tools don’t talk', 'q12'],
+    ['13. Budget for a full-time hire', 'q13'],
+    ['14. Monthly budget, fractional', 'q14'],
+    ['15. Outcomes to pay for itself', 'q15'],
+    ['16. The one highest-return fix', 'q16'],
+    ['17. Who signs off on spend', 'q17'],
+    ['18. Anything else we should know', 'q18']
+  ];
+  function paintSummary(){
+    var dl = document.createElement('dl');
+    SUMMARY_ROWS.forEach(function(row){
+      var v = answers[row[1]];
+      if (!v) return;                        // skipped questions are simply absent
+      var dt = document.createElement('dt'); dt.textContent = row[0];
+      var dd = document.createElement('dd'); dd.textContent = v;
+      dl.appendChild(dt); dl.appendChild(dd);
+    });
+    var box = document.getElementById('summary');
+    box.innerHTML = '';
+    // With no answers there is nothing to frame - an empty bordered panel just
+    // reads as a broken box.
+    box.hidden = !dl.children.length;
+    box.appendChild(dl);
+  }
+
+  // ---- Submit --------------------------------------------------------------
+  form.addEventListener('submit', function(e){
+    e.preventDefault();
+    if (submitting) return;
+
+    // Re-check the two required questions before the one POST.
+    var firstBad = -1;
+    for (var i = 1; i < SUBMIT_IDX; i++) {
+      var key = keyOf(screens[i]);
+      if (OPTIONAL_KEYS.indexOf(key) > -1) continue;
+      if (!answers[key]) { firstBad = i; break; }
+    }
+    if (firstBad > -1) {
+      document.getElementById('e-submit').textContent = 'One question still needs an answer — taking you back to it.';
+      setTimeout(function(){ show(firstBad); }, 600);
+      return;
+    }
+
+    var payload = { form_version: 'strategy-v1', _gotcha: document.getElementById('f-gotcha').value };
+    // Every key the form owns, present whether or not it was answered: a blank
+    // answer written as a blank column is the same statement as a blank column.
+    SUMMARY_ROWS.forEach(function(row){ payload[row[1]] = answers[row[1]] || ''; });
+
+    var btn = document.getElementById('submitBtn');
+    submitting = true;
+    btn.disabled = true;
+    btn.textContent = 'Sending…';
+    document.getElementById('e-submit').textContent = '';
+
+    fetch(FORM_ENDPOINT, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
+      body: JSON.stringify(payload)
+    }).then(function(res){
+      if (!res.ok) throw new Error('bad response');
+      track('strategy_submit', { page: 'strategy' });
+      // Wipe the lot - answers, the current screen and the stored copy of both -
+      // then show the thank-you and drop #qN from the URL, so nothing is left
+      // for a revisit to restore from.
+      var doneAt = DONE_IDX;
+      resetFormState();
+      idx = SUBMIT_IDX;                       // so the thank-you still arrives forward
+      show(doneAt, { noHistory: true });
+      stripHash();
+      // Back now leaves the page rather than walking into a form already sent.
+      pushed = 0;
+      submitting = false;
+      btn.disabled = false;
+      btn.textContent = 'Send it';
+    }).catch(function(){
+      track('strategy_error');
+      submitting = false;
+      btn.disabled = false;
+      btn.textContent = 'Send it';
+      document.getElementById('e-submit').textContent =
+        'That didn’t send. Check your connection and try again — nothing you wrote is lost.';
+    });
+  });
+
+  // ---- Boot ----------------------------------------------------------------
+  function isInAppBrowser(){
+    var ua = navigator.userAgent || '';
+    return /Instagram|FBAN|FBAV|FB_IAB|Messenger|Line\/|TikTok|Musical_ly|Snapchat|Pinterest|Twitter|LinkedInApp/i.test(ua);
+  }
+
+  // The keyboard hint is a lie on a Mac, where it is Cmd rather than Ctrl.
+  if (/Mac|iPhone|iPad|iPod/i.test(navigator.platform || navigator.userAgent || '')) {
+    Array.prototype.forEach.call(document.querySelectorAll('[data-hint-continue]'), function(h){
+      h.textContent = '⌘ + Enter';
+    });
+  }
+
+  var saved = load();
+  if (saved) {
+    answers = saved.answers || {};
+    screens.forEach(function(el){
+      var key = keyOf(el);
+      if (key && Object.prototype.hasOwnProperty.call(answers, key)) writeScreen(el, answers[key]);
+    });
+  }
+
+  var hint = document.getElementById('inappHint');
+  if (hint && isInAppBrowser()) { hint.hidden = false; track('strategy_inapp_browser'); }
+
+  // Where to land. Two rules, in this order:
+  //   1. No answers stored means the intro, whatever the URL says. A sent form,
+  //      a shared link and a fresh visit all land here.
+  //   2. With answers, take the question the URL or the store asks for, but
+  //      never further than the first one still unanswered.
+  var fromHash = location.hash ? document.getElementById(location.hash.replace(/^#q/, 's-')) : null;
+  var startAt = 0;
+  if (hasProgress()) {
+    var requested = 0;
+    if (fromHash && screens.indexOf(fromHash) > 0) requested = screens.indexOf(fromHash);
+    else if (saved && saved.idx > 0) requested = Math.min(saved.idx, screens.length - 1);
+    startAt = Math.min(requested, firstIncompleteIndex());
+  }
+  if (startAt === 0) stripHash();          // a stale #qN never survives a landing
+  // If they land on the intro with answers behind them, Start picks up at the
+  // first question still unanswered rather than at the top.
+  resumeTo = hasProgress() ? firstIncompleteIndex() : 0;
+
+  // Only worth saying on the intro; anywhere else they can see their own answers.
+  if (startAt === 0 && hasProgress()) {
+    document.getElementById('resumeNote').hidden = false;
+  }
+
+  idx = 0;
+  show(startAt, { noHistory: true, entrance: true });
+  try{ history.replaceState({ qs: idx }, '', location.pathname + location.search + hashFor(idx)); }catch(e){}
+
+  track('strategy_view');
+})();
+</script>
+</body>
+</html>

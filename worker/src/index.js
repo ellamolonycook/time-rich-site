@@ -194,6 +194,14 @@ export default {
       return handleQualify(data, env, cors, ctx);
     }
 
+    // Route: strategy intake (/strategy) -> the "Client Intake Form" database.
+    // Twenty-one written answers, mapped property-by-property below: every
+    // column on that database is plain text, and its names are the questions
+    // themselves, so the mapping table is the contract with the page.
+    if (path.endsWith("/strategy")) {
+      return handleStrategy(data, env, cors);
+    }
+
     // Route: AI Revenue Accelerator application -> its own Notion database.
     // Same schema-driven mapping as the club form; stamps Status = New so the
     // "Call today" / pipeline views pick fresh applications up.
@@ -788,6 +796,83 @@ async function notifyQualifySlack(env, s) {
   } catch (err) {
     // A network error can quote the URL it was trying to reach - redact it.
     console.log("qualify: Slack post failed", String((err && err.message) || err).split(url).join("[webhook]"));
+  }
+}
+
+// Strategy intake (/strategy) -> the "Client Intake Form" database.
+//
+// The eighteen questions ARE the column names on that database, numbering and
+// punctuation included, so this table is the whole mapping: the left side is
+// what /strategy/ posts, the right side is the Notion property, character for
+// character. A typo here is a silently dropped answer - Notion ignores a
+// property it does not recognise rather than complaining - so if the questions
+// are ever reworded in Notion, they have to be reworded here and on the page
+// in the same change.
+const STRATEGY_QUESTIONS = [
+  ["q01", "01. What made you want to bring in operational help now?"],
+  ["q02", "02. Looking ahead, what does the business look like if this works?"],
+  ["q03", "03. What would make this a clear win in the first 30 days?"],
+  ["q04", "04. What would make this a clear win in the first 90 days?"],
+  ["q05", "05. What would make this a clear win in the first 6 months?"],
+  ["q06", "06. Which tasks eat the most hours each week, and who does them?"],
+  ["q07", "07. Walk us through the last time something broke or slipped. What happened?"],
+  ["q08", "08. Where are you losing money or leaving it on the table?"],
+  ["q09", "09. If you could hand off one job tomorrow, what would it be?"],
+  ["q10", "10. List every tool the team uses and what each does."],
+  ["q11", "11. Where are you using AI today, and who uses it? What has worked and what has not?"],
+  ["q12", "12. Where do tools fail to talk to each other, so someone copies data by hand?"],
+  ["q13", "13. What would you budget for a full-time COO or operations lead hire?"],
+  ["q14", "14. What monthly budget do you have for fractional COO and AI systems support?"],
+  ["q15", "15. What outcomes must be hit for this to pay for itself?"],
+  ["q16", "16. Which one fix would give the company the biggest return, and why?"],
+  ["q17", "17. Who signs off on spend, and how do you want to make the decision?"],
+  ["q18", "18. What should we know that did not come up on the call?"],
+];
+
+async function handleStrategy(d, env, cors) {
+  const dbId = env.NOTION_STRATEGY_DATABASE_ID;
+  if (!env.NOTION_TOKEN || !dbId) {
+    return json({ ok: false, error: "Strategy form not configured" }, 500, cors);
+  }
+  if (d._gotcha) return json({ ok: true }, 200, cors);            // honeypot: silently accept bots
+
+  const name = String(d.name || "").trim();
+  const email = String(d.email || "").trim();
+  if (!name || !email) return json({ ok: false, error: "Missing name or email" }, 400, cors);
+  if (!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(email)) {
+    return json({ ok: false, error: "Invalid email" }, 400, cors);
+  }
+
+  // One rich-text run, trimmed, and cut to Notion's 2,000-character ceiling for
+  // a single text property. The page holds the same line in the field itself,
+  // so this only ever fires on something that bypassed it.
+  const rich = (s) => {
+    const v = String(s == null ? "" : s).trim();
+    return v ? [{ text: { content: clip(v, 2000) } }] : [];
+  };
+
+  const properties = {
+    "Your name": { title: rich(name) },
+    "Email": { email: email },
+    "Your role": { rich_text: rich(d.role) },
+  };
+  // An unanswered question is written as an empty column rather than left out:
+  // every row then has the same shape, and a blank says "they were asked and
+  // skipped it", which is worth knowing before the call.
+  for (const [key, property] of STRATEGY_QUESTIONS) {
+    properties[property] = { rich_text: rich(d[key]) };
+  }
+
+  try {
+    const res = await fetch("https://api.notion.com/v1/pages", {
+      method: "POST",
+      headers: { ...authHeaders(env), "Content-Type": "application/json" },
+      body: JSON.stringify({ parent: { database_id: dbId }, properties }),
+    });
+    if (!res.ok) return json({ ok: false, error: "Notion create failed", detail: await res.text() }, 502, cors);
+    return json({ ok: true }, 200, cors);
+  } catch (err) {
+    return json({ ok: false, error: "Unexpected error", detail: String(err) }, 500, cors);
   }
 }
 
