@@ -1,21 +1,21 @@
 {
-  "_note": "Seed list copied from the Notion Skills database on 2 Oct 2026. Descriptions are internal notes, not approved buyer copy. An empty description or download means it has not been written or uploaded yet.",
+  "_note": "Skill list for the portal Resources page. Updated 2 Oct 2026 to match the skills Ella runs now. An empty description or download means it has not been written or uploaded yet.",
   "groups": ["Superhuman", "LinkedIn"],
   "skills": [
     {
-      "name": "goal-superhuman",
+      "name": "security-superhuman",
       "group": "Superhuman",
-      "week": null,
-      "say": "Superhuman: set my goal",
-      "description": "Once at the start, then quarterly. Five questions, three lines you paste into COMPASS section 9, top 5 time sinks, a build list capped at 7.",
+      "week": 1,
+      "say": "Superhuman: lock down my Claude",
+      "description": "Walks you through three Claude settings and reports the counts back. Do it before you connect anything.",
       "download": ""
     },
     {
-      "name": "security-superhuman",
+      "name": "superhuman",
       "group": "Superhuman",
-      "week": null,
-      "say": "Superhuman: lock down my Claude",
-      "description": "Before the first connector is switched on, then quarterly and whenever a chat or artifact is shared. Walks you through three Claude settings and reports the counts back.",
+      "week": 1,
+      "say": "Superhuman: set my goal",
+      "description": "Locks your 90-day goal, pulls context from your connectors, shows your time sinks and produces a ranked build list.",
       "download": ""
     },
     {
@@ -23,23 +23,15 @@
       "group": "Superhuman",
       "week": 1,
       "say": "Superhuman: build my COMPASS",
-      "description": "Week 1, after the Goal. Builds COMPASS sections 1 to 8 from your own calls, docs, email and Notion, then asks only about gaps.",
+      "description": "Builds your Business COMPASS from your own calls, docs, email and Notion, fills the gaps with a short interview, then runs a Time Rich audit of where your time goes.",
       "download": "https://drive.google.com/drive/folders/1GYeDwH3SHhsESqfRTezI2EYCafmuWxSb"
-    },
-    {
-      "name": "context-superhuman",
-      "group": "Superhuman",
-      "week": 1,
-      "say": "Superhuman: build my context",
-      "description": "Week 1, after the Goal is in section 9. The one full interview in the pack; proposes COMPASS sections 1 to 8 in the fixed layout plus the operating tables. Every other skill reads its answers instead of asking again.",
-      "download": ""
     },
     {
       "name": "audit-superhuman",
       "group": "Superhuman",
       "week": 1,
       "say": "Superhuman: audit my AI",
-      "description": "Week 1, before building anything new. Counts projects, skills, scheduled tasks, prompts and chat habits; scores Live, Dead, Duplicate, Habit; maturity 1 to 5 from what ran; skills to build capped at 5.",
+      "description": "Counts projects, skills, scheduled tasks, prompts and chat habits; scores Live, Dead, Duplicate, Habit; maturity 1 to 5 from what ran; skills to build capped at 5.",
       "download": ""
     },
     {
@@ -47,7 +39,7 @@
       "group": "Superhuman",
       "week": 2,
       "say": "Superhuman: build my reply skill",
-      "description": "Week 2, once. Clusters the replies you keep writing, cuts the yeses that work against the Goal, pulls your voice from sent mail, writes a second SKILL.md for your chief of staff agent. Drafts only.",
+      "description": "Clusters the replies you keep writing, cuts the yeses that work against the Goal, pulls your voice from sent mail, and writes a reply skill for your chief of staff agent. Drafts only.",
       "download": ""
     },
     {
@@ -55,7 +47,7 @@
       "group": "Superhuman",
       "week": 3,
       "say": "Superhuman: revenue",
-      "description": "Week 3 and monthly. Revenue map by offer and per hour, the one lever, the leak, 10 ideas through three filters, a Moves list capped at 5.",
+      "description": "Revenue map by offer and per hour, the one lever, the leak, 10 ideas through three filters, a Moves list capped at 5.",
       "download": ""
     },
     {
@@ -63,7 +55,7 @@
       "group": "Superhuman",
       "week": 4,
       "say": "Superhuman: find my hooks",
-      "description": "Week 4 and monthly. One platform, business or personal, the three calls that went best; 10 hooks with reaction evidence, 10 open loops, 5 drafts. Never posts.",
+      "description": "One platform, business or personal, the three calls that went best; 10 hooks with reaction evidence, 10 open loops, 5 drafts. Never posts.",
       "download": ""
     },
     {
@@ -71,15 +63,47 @@
       "group": "Superhuman",
       "week": 4,
       "say": "Superhuman: build my story bank",
-      "description": "Week 4, then quarterly, or before a talk. Story bank of 8 to 15 from six transcripts, business arc and personal arc in five beats, slots table, Founder Story under 300 words.",
+      "description": "Story bank of 8 to 15 from six transcripts, business arc and personal arc in five beats, slots table, Founder Story under 300 words.",
       "download": ""
     },
     {
-      "name": "delegate-superhuman",
+      "name": "superhuman-delegate",
       "group": "Superhuman",
       "week": null,
       "say": "Task for ___",
-      "description": "Daily and weekly once the Goal is set. Morning voice note to briefed tasks in the Tasks database; receiving a brief; building and testing the follow-up agent; the Friday review scored by formula.",
+      "description": "Daily and weekly rhythm: turns a morning voice note into briefed tasks, handles a brief someone gives you, and runs the Friday review.",
+      "download": ""
+    },
+    {
+      "name": "follow-up-agent",
+      "group": "Superhuman",
+      "week": null,
+      "say": "Superhuman: build my follow-up agent",
+      "description": "Builds, tests and runs a meeting follow-up agent that drafts follow-up emails from your calendar and notetaker notes.",
+      "download": ""
+    },
+    {
+      "name": "channels-superhuman",
+      "group": "Superhuman",
+      "week": null,
+      "say": "Superhuman: map my channels",
+      "description": "Maps which platforms actually serve your Goal, then cuts one source (a newsletter, talk or hook bank) into platform-native drafts with one CTA each.",
+      "download": ""
+    },
+    {
+      "name": "cta-superhuman",
+      "group": "Superhuman",
+      "week": null,
+      "say": "Superhuman: pick my CTA",
+      "description": "Keeps your CTA library in Notion, picks the one CTA a post should carry, checks the link is live, and writes a CTA when none exists.",
+      "download": ""
+    },
+    {
+      "name": "build-icp-from-calls",
+      "group": "Superhuman",
+      "week": null,
+      "say": "",
+      "description": "Builds or sharpens your ideal client profile from recorded Granola calls, and pulls stories and ideas into a Notion Ideas + Story Bank.",
       "download": ""
     },
     {
@@ -87,23 +111,15 @@
       "group": "Superhuman",
       "week": null,
       "say": "Superhuman: set my content guardrails",
-      "description": "Before any skill mines Granola or another AI notetaker for content. Interviews you, writes the Guardrails page and the Extraction Rules block other content skills read, then tests the rules on 3 real calls.",
+      "description": "Interviews you about what is and isn't appropriate to pull from your call notes, then writes the guardrails every content skill follows.",
       "download": ""
-    },
-    {
-      "name": "icp-idea-bank-superhuman",
-      "group": "Superhuman",
-      "week": null,
-      "say": "",
-      "description": "",
-      "download": "https://drive.google.com/file/d/1aD3AJtLhswdT_zE0jKYqzebtVD1CH-TV/view"
     },
     {
       "name": "audit-linkedin-for-icp-goal",
       "group": "LinkedIn",
       "week": null,
       "say": "",
-      "description": "",
+      "description": "Audits a LinkedIn profile against one 90-day goal and one ideal client: asks goal and ICP first, scores 27 checks, returns ranked fixes with drafts.",
       "download": "https://drive.google.com/file/d/16Q-LcQoFoRgtWreLwznx2-CIzGGd3Hvo/view"
     },
     {
