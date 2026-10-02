@@ -1,0 +1,276 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Time Rich. — AI Education Portal</title>
+  <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin=""/>
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Newsreader:ital,opsz,wght@0,6..72,300;0,6..72,400;0,6..72,500;1,6..72,400&family=Plus+Jakarta+Sans:wght@300;400;500;600;700&family=JetBrains+Mono:wght@300;400;500&display=swap" rel="stylesheet"/>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            brand: {
+              cream: '#FFFCEB',
+              offwhite: '#FFFDFB',
+              sage: '#DCDEBF',
+              sagelt: '#E9EAD5',
+              green: '#424B36',
+              deep: '#333A28',
+              mid: '#4E5840',
+              lime: '#CCEEA0',
+              olive: '#67762E'
+            }
+          },
+          fontFamily: {
+            sans: ['"Plus Jakarta Sans"', 'sans-serif'],
+            display: ['"Space Grotesk"', 'sans-serif'],
+            serif: ['"Newsreader"', 'serif'],
+            mono: ['"JetBrains Mono"', 'monospace'],
+          }
+        }
+      }
+    }
+  </script>
+  <style>
+    .custom-scroll::-webkit-scrollbar { width: 4px; }
+    .custom-scroll::-webkit-scrollbar-track { background: transparent; }
+    .custom-scroll::-webkit-scrollbar-thumb { background: rgba(66,75,54,0.15); border-radius: 4px; }
+    
+    .grid-bg {
+      background-image: linear-gradient(rgba(66,75,54,.08) 1px, transparent 1px), linear-gradient(90deg, rgba(66,75,54,.08) 1px, transparent 1px);
+      background-size: 52px 52px;
+      background-position: left top;
+    }
+    
+    .glow-orb {
+      background: radial-gradient(circle, rgba(230,230,230,0.6) 0%, rgba(230,230,230,0) 70%);
+    }
+  
+    @keyframes float {
+      0%, 100% { transform: translateY(0) rotate(-5deg); }
+      50% { transform: translateY(-8px) rotate(-3deg); }
+    }
+    @keyframes float-alt {
+      0%, 100% { transform: translateY(0) rotate(4deg); }
+      50% { transform: translateY(6px) rotate(5deg); }
+    }
+    .animate-float { animation: float 6s ease-in-out infinite; }
+    .animate-float-alt { animation: float-alt 7s ease-in-out infinite; }
+    
+    /* Smooth card hover lift */
+    .card-lift { transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.3s cubic-bezier(0.16, 1, 0.3, 1), border-color 0.3s ease; }
+    .card-lift:hover { transform: translateY(-4px); box-shadow: 0 12px 24px -10px rgba(66,75,54,0.15); border-color: rgba(66,75,54,0.3); }
+
+  
+    h1, h2, h3, h4, h5, h6 { font-family: "Space Grotesk", sans-serif; letter-spacing: -0.022em; }
+    
+  </style>
+</head>
+<body class="bg-brand-cream text-brand-deep font-sans h-screen flex flex-col overflow-hidden selection:bg-brand-lime selection:text-brand-deep opacity-0" style="transform: scale(1.03); transition: opacity 1.2s cubic-bezier(0.4, 0, 0.2, 1), transform 1.5s cubic-bezier(0.16, 1, 0.3, 1);">
+<script>
+  // Trigger cinematic reveal on load
+  document.addEventListener("DOMContentLoaded", () => {
+    requestAnimationFrame(() => {
+      requestAnimationFrame(() => {
+        document.body.classList.remove('opacity-0');
+        document.body.classList.add('opacity-100');
+        document.body.style.transform = 'scale(1)';
+      });
+    });
+  });
+</script>
+
+  <!-- TOP NAVBAR -->
+  <header class="h-16 border-b border-brand-green/15 flex items-center justify-between px-8 shrink-0 bg-white z-20 relative">
+    <div class="flex items-center gap-12">
+      <!-- Logo -->
+      <a href="index.html" class="text-xl font-bold tracking-[-0.03em] flex items-baseline gap-0.5">
+        <span>Time Rich</span>
+        <span class="inline-block w-1.5 h-1.5 rounded-full bg-brand-deep ml-0.5"></span>
+      </a>
+      
+      
+    </div>
+
+    <!-- Right Actions -->
+    <div class="flex items-center gap-6">
+      <div class="relative flex items-center group">
+        <input type="text" placeholder="Search courses..." class="w-8 focus:w-48 lg:focus:w-64 bg-transparent focus:bg-brand-offwhite text-xs text-brand-deep placeholder-transparent focus:placeholder-brand-mid/60 border border-transparent focus:border-brand-green/20 ring-0 focus:ring-0 pl-7 pr-4 py-1.5 rounded-full cursor-pointer focus:cursor-text transition-all duration-300 ease-out outline-none focus:shadow-sm" />
+        <svg class="w-4 h-4 text-brand-mid absolute left-1.5 pointer-events-none group-focus-within:text-brand-deep transition-colors" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
+      </div>
+      <button class="text-brand-mid hover:text-brand-deep transition-colors relative">
+        <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"></path></svg>
+        <span class="absolute top-0 right-0 w-1.5 h-1.5 rounded-full bg-brand-deep border border-white"></span>
+      </button>
+    </div>
+  </header>
+
+  <!-- MAIN APP AREA -->
+  <div class="flex-1 flex overflow-hidden">
+    
+    <!-- LEFT SIDEBAR -->
+    <aside class="w-64 border-r border-brand-green/15 flex flex-col justify-between py-8 px-6 bg-white shrink-0 z-20 relative">
+      <nav class="space-y-1">
+        <a href="dashboard.html" class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-xs font-medium text-brand-mid hover:text-brand-deep hover:bg-brand-sagelt/50 transition-all duration-300 hover:translate-x-1">
+          <svg class="w-4 h-4 text-brand-deep" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"></path></svg>
+          Home
+        </a>
+        <a href="curriculum.html" class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-xs font-medium text-brand-mid hover:text-brand-deep hover:bg-brand-sagelt/50 transition-all duration-300 hover:translate-x-1">
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"></path></svg>
+          Curriculum
+        </a>
+        <a href="sessions.html" class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-xs font-medium text-brand-mid hover:text-brand-deep hover:bg-brand-sagelt/50 transition-all duration-300 hover:translate-x-1">
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z"></path></svg>
+          Live Sessions
+        </a>
+        <a href="resources.html" class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-xs font-semibold text-brand-deep bg-brand-sagelt transition-all duration-300 hover:translate-x-1">
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path></svg>
+          Resources
+        </a>
+      </nav>
+      
+      <div class="space-y-6">
+        <a href="#" class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-xs font-medium text-brand-mid hover:text-brand-deep hover:bg-brand-sagelt/50 transition-all duration-300 hover:translate-x-1">
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"></path><path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path></svg>
+          Settings
+        </a>
+
+      </div>
+    </aside>
+
+    <!-- CENTER SCROLLABLE CONTENT -->
+    <main class="flex-1 overflow-y-auto custom-scroll relative bg-white">
+      <!-- Grid Background spans entire main area -->
+      <div class="absolute inset-0 grid-bg opacity-100 z-0"></div>
+      
+      <div class="relative z-10 px-8 py-8 lg:py-12 max-w-[1200px] mr-auto ml-4 lg:ml-12">
+        
+        <!-- CONTENT -->
+        <div class="w-full space-y-16 max-w-3xl">
+          
+          <header class="space-y-4">
+            <h1 class="text-4xl lg:text-[42px] font-display font-bold tracking-tight text-brand-deep">Resources</h1>
+          </header>
+
+          <div class="space-y-2">
+            
+            <a href="#" class="group flex items-center justify-between py-6 border-b border-brand-green/10 hover:border-brand-deep transition-colors">
+              <div class="flex items-center gap-4">
+                <svg class="w-5 h-5 text-brand-mid group-hover:text-brand-deep transition-colors" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"></path></svg>
+                <span class="text-lg font-medium text-brand-deep">Workbook Link</span>
+              </div>
+              <svg class="w-4 h-4 text-brand-mid group-hover:text-brand-deep group-hover:translate-x-1 transition-all" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7"></path></svg>
+            </a>
+
+            <a href="#" class="group flex items-center justify-between py-6 border-b border-brand-green/10 hover:border-brand-deep transition-colors">
+              <div class="flex items-center gap-4">
+                <svg class="w-5 h-5 text-brand-mid group-hover:text-brand-deep transition-colors" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M18 9v3m0 0v3m0-3h3m-3 0h-3m-2-5a4 4 0 11-8 0 4 4 0 018 0zM3 20a6 6 0 0112 0v1H3v-1z"></path></svg>
+                <span class="text-lg font-medium text-brand-deep">Agent Invites</span>
+              </div>
+              <svg class="w-4 h-4 text-brand-mid group-hover:text-brand-deep group-hover:translate-x-1 transition-all" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7"></path></svg>
+            </a>
+
+            <a href="#" class="group flex items-center justify-between py-6 border-b border-brand-green/10 hover:border-brand-deep transition-colors">
+              <div class="flex items-center gap-4">
+                <svg class="w-5 h-5 text-brand-mid group-hover:text-brand-deep transition-colors" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M17 8h2a2 2 0 012 2v6a2 2 0 01-2 2h-2v4l-4-4H9a1.994 1.994 0 01-1.414-.586m0 0L11 14h4a2 2 0 002-2V6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2v4l.586-.586z"></path></svg>
+                <span class="text-lg font-medium text-brand-deep">WhatsApp Group</span>
+              </div>
+              <svg class="w-4 h-4 text-brand-mid group-hover:text-brand-deep group-hover:translate-x-1 transition-all" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7"></path></svg>
+            </a>
+
+            <a href="#" class="group flex items-center justify-between py-6 border-b border-brand-green/10 hover:border-brand-deep transition-colors">
+              <div class="flex items-center gap-4">
+                <svg class="w-5 h-5 text-brand-mid group-hover:text-brand-deep transition-colors" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M8 9l3 3-3 3m5 0h3M5 20h14a2 2 0 002-2V6a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>
+                <span class="text-lg font-medium text-brand-deep">Prompts Library</span>
+              </div>
+              <svg class="w-4 h-4 text-brand-mid group-hover:text-brand-deep group-hover:translate-x-1 transition-all" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7"></path></svg>
+            </a>
+
+          </div>
+</div>
+      </div>
+    </main>
+  </div>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      const area = document.getElementById('magnet-area');
+      const card = document.getElementById('magnet-card');
+      const smallCard = document.getElementById('magnet-card-small');
+
+      if (area && card) {
+        let mouseX = 0, mouseY = 0;
+        let currentX = 0, currentY = 0;
+        let isHovering = false;
+        let animationFrameId = null;
+
+        const lerp = (start, end, factor) => start + (end - start) * factor;
+
+        const animate = () => {
+          if (isHovering) {
+            currentX = lerp(currentX, mouseX, 0.07);
+            currentY = lerp(currentY, mouseY, 0.07);
+            
+            const moveX = currentX * 0.08;
+            const moveY = currentY * 0.08;
+            const rotateX = -(currentY * 0.02);
+            const rotateY = currentX * 0.02;
+
+            card.style.transform = `translate3d(${moveX}px, ${moveY}px, 0) rotateX(${rotateX}deg) rotateY(${rotateY}deg) scale(1.03)`;
+            
+            if (smallCard) {
+              const smallMoveX = currentX * 0.12;
+              const smallMoveY = currentY * 0.12;
+              smallCard.style.transform = `translate3d(${smallMoveX}px, ${smallMoveY}px, 30px) rotateX(${rotateX * 1.5}deg) rotateY(${rotateY * 1.5}deg) scale(1.05)`;
+            }
+            
+            animationFrameId = requestAnimationFrame(animate);
+          }
+        };
+
+        area.addEventListener('mousemove', (e) => {
+          const rect = area.getBoundingClientRect();
+          mouseX = e.clientX - rect.left - rect.width / 2;
+          mouseY = e.clientY - rect.top - rect.height / 2;
+        });
+
+        area.addEventListener('mouseenter', () => {
+          isHovering = true;
+          card.style.transition = 'none';
+          if (smallCard) smallCard.style.transition = 'none';
+          if (!animationFrameId) animate();
+        });
+
+        area.addEventListener('mouseleave', () => {
+          isHovering = false;
+          cancelAnimationFrame(animationFrameId);
+          animationFrameId = null;
+          
+          card.style.transition = 'transform 0.8s cubic-bezier(0.16, 1, 0.3, 1)';
+          card.style.transform = 'translate3d(0, 0, 0) rotateX(0deg) rotateY(0deg) scale(1)';
+          
+          if (smallCard) {
+            smallCard.style.transition = 'transform 0.8s cubic-bezier(0.16, 1, 0.3, 1)';
+            smallCard.style.transform = 'translate3d(0, 0, 0) rotateX(0deg) rotateY(0deg) scale(1)';
+          }
+
+          currentX = 0;
+          currentY = 0;
+          
+          setTimeout(() => {
+            if (!isHovering) {
+              card.style.transform = '';
+              if (smallCard) smallCard.style.transform = '';
+            }
+          }, 800);
+        });
+      }
+    });
+  </script>
+
+</body>
+</html>
