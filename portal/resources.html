@@ -158,6 +158,79 @@
             <h1 class="text-4xl lg:text-[42px] font-display font-bold tracking-tight text-brand-deep">Resources</h1>
           </header>
 
+          <!-- SKILL LIBRARY (rendered from skills.json) -->
+          <section class="space-y-8">
+            <div class="space-y-3">
+              <div class="text-[10px] font-mono uppercase tracking-[0.2em] text-brand-deep/60">SKILL LIBRARY</div>
+              <h2 class="text-2xl lg:text-3xl font-display font-bold tracking-tight text-brand-deep">Skill library</h2>
+              <p class="text-sm text-brand-mid leading-relaxed">Each skill is a ZIP. Download it, keep it zipped, and upload it once.</p>
+            </div>
+
+            <div id="skill-library" class="space-y-10">
+              <p class="text-sm text-brand-mid">Loading the skill library&hellip;</p>
+            </div>
+
+            <!-- Install steps, reused word for word from os/index.html -->
+            <div class="pt-2 space-y-6">
+              <div class="space-y-3">
+                <div class="text-[10px] font-mono uppercase tracking-[0.2em] text-brand-deep/60">INSTALL</div>
+                <h3 class="text-xl font-bold text-brand-deep">How to add a skill</h3>
+                <p class="text-sm text-brand-mid leading-relaxed">Seven short steps. Leave the file as a ZIP the whole way through.</p>
+              </div>
+              <ol class="space-y-4">
+                <li class="flex gap-4">
+                  <span class="font-mono text-[10px] text-brand-deep/40 pt-1 shrink-0">01</span>
+                  <div class="min-w-0">
+                    <p class="text-sm font-semibold text-brand-deep">Download the ZIP</p>
+                    <p class="text-sm text-brand-mid leading-relaxed">Use Download on the skill card. The file saves to your computer.</p>
+                  </div>
+                </li>
+                <li class="flex gap-4">
+                  <span class="font-mono text-[10px] text-brand-deep/40 pt-1 shrink-0">02</span>
+                  <div class="min-w-0">
+                    <p class="text-sm font-semibold text-brand-deep">Keep it zipped</p>
+                    <p class="text-sm text-brand-mid leading-relaxed">Leave the skill as a ZIP. Uploading an unzipped folder will not work.</p>
+                  </div>
+                </li>
+                <li class="flex gap-4">
+                  <span class="font-mono text-[10px] text-brand-deep/40 pt-1 shrink-0">03</span>
+                  <div class="min-w-0">
+                    <p class="text-sm font-semibold text-brand-deep">Open Skills</p>
+                    <p class="text-sm text-brand-mid leading-relaxed">In your AI tool, open the screen where you add Skills.</p>
+                  </div>
+                </li>
+                <li class="flex gap-4">
+                  <span class="font-mono text-[10px] text-brand-deep/40 pt-1 shrink-0">04</span>
+                  <div class="min-w-0">
+                    <p class="text-sm font-semibold text-brand-deep">Click Upload</p>
+                    <p class="text-sm text-brand-mid leading-relaxed">Choose Upload on that screen.</p>
+                  </div>
+                </li>
+                <li class="flex gap-4">
+                  <span class="font-mono text-[10px] text-brand-deep/40 pt-1 shrink-0">05</span>
+                  <div class="min-w-0">
+                    <p class="text-sm font-semibold text-brand-deep">Select the ZIP</p>
+                    <p class="text-sm text-brand-mid leading-relaxed">Pick the file you just downloaded. Do not rename it.</p>
+                  </div>
+                </li>
+                <li class="flex gap-4">
+                  <span class="font-mono text-[10px] text-brand-deep/40 pt-1 shrink-0">06</span>
+                  <div class="min-w-0">
+                    <p class="text-sm font-semibold text-brand-deep">Confirm and save</p>
+                    <p class="text-sm text-brand-mid leading-relaxed">Accept the prompt so the skill is stored on your account.</p>
+                  </div>
+                </li>
+                <li class="flex gap-4">
+                  <span class="font-mono text-[10px] text-brand-deep/40 pt-1 shrink-0">07</span>
+                  <div class="min-w-0">
+                    <p class="text-sm font-semibold text-brand-deep">Start using it</p>
+                    <p class="text-sm text-brand-mid leading-relaxed">Open a new chat. The skill is ready.</p>
+                  </div>
+                </li>
+              </ol>
+            </div>
+          </section>
+
           <div class="space-y-2">
             
             <div class="flex flex-wrap items-center justify-between gap-x-4 gap-y-2 py-6 border-b border-brand-green/10 cursor-not-allowed select-none" aria-disabled="true" title="Coming soon">
@@ -197,6 +270,127 @@
       </div>
     </main>
   </div>
+
+  <!-- Skill library: rendered from skills.json so a skill can be added by
+       editing that file alone. All text goes in via textContent. -->
+  <script>
+    (function () {
+      var root = document.getElementById('skill-library');
+      if (!root) return;
+
+      var SOON = 'px-2 py-0.5 rounded bg-brand-green/5 text-[9px] font-sans font-bold text-brand-mid whitespace-nowrap shrink-0';
+      var WEEK = 'px-2 py-0.5 rounded bg-brand-green/5 text-[9px] font-sans font-bold text-brand-mid whitespace-nowrap shrink-0';
+
+      function el(tag, cls, text) {
+        var n = document.createElement(tag);
+        if (cls) n.className = cls;
+        if (text != null) n.textContent = text;
+        return n;
+      }
+
+      function clear() {
+        while (root.firstChild) root.removeChild(root.firstChild);
+      }
+
+      function fail() {
+        clear();
+        root.appendChild(el('p', 'text-sm text-brand-mid', 'The skill library could not be loaded.'));
+      }
+
+      // Only ever link out to an absolute https:// URL from the JSON.
+      function safeUrl(value) {
+        return (typeof value === 'string' && value.indexOf('https://') === 0) ? value : '';
+      }
+
+      function str(value) {
+        return (typeof value === 'string') ? value.trim() : '';
+      }
+
+      function card(skill) {
+        var box = el('article', 'min-w-0 p-6 rounded-[1.5rem] bg-brand-offwhite border border-brand-green/10 shadow-sm flex flex-col gap-3');
+
+        var head = el('div', 'flex flex-wrap items-start justify-between gap-x-3 gap-y-2');
+        head.appendChild(el('h4', 'min-w-0 text-sm font-mono font-medium text-brand-deep break-words', str(skill.name)));
+        var week = skill.week;
+        if (week !== null && week !== undefined && week !== '') {
+          head.appendChild(el('span', WEEK, 'Week ' + week));
+        }
+        box.appendChild(head);
+
+        var description = str(skill.description);
+        if (description) {
+          box.appendChild(el('p', 'text-sm text-brand-mid leading-relaxed', description));
+        }
+
+        var say = str(skill.say);
+        if (say) {
+          var line = el('p', 'flex flex-wrap items-baseline gap-x-2 gap-y-1 text-xs');
+          line.appendChild(el('span', 'shrink-0 font-semibold text-brand-deep/70', 'Say:'));
+          line.appendChild(el('span', 'min-w-0 font-mono text-brand-mid break-words', say));
+          box.appendChild(line);
+        }
+
+        var foot = el('div', 'mt-auto pt-1');
+        var href = safeUrl(skill.download);
+        if (href) {
+          var link = el('a', 'inline-flex items-center gap-2 px-3 sm:px-4 py-2 bg-brand-deep text-brand-offwhite text-xs font-semibold rounded-xl hover:bg-brand-green transition-colors shadow-sm', 'Download');
+          link.href = href;
+          link.target = '_blank';
+          link.rel = 'noopener';
+          foot.appendChild(link);
+        } else {
+          foot.appendChild(el('span', SOON, 'Coming soon'));
+        }
+        box.appendChild(foot);
+
+        return box;
+      }
+
+      function render(data) {
+        var skills = (data && Array.isArray(data.skills)) ? data.skills : null;
+        if (!skills) { fail(); return; }
+
+        var ordered = (data && Array.isArray(data.groups)) ? data.groups.slice() : [];
+        // Any group present in the skills but missing from "groups" still gets
+        // rendered, after the listed ones, so no skill is silently dropped.
+        skills.forEach(function (skill) {
+          var group = str(skill && skill.group);
+          if (group && ordered.indexOf(group) === -1) ordered.push(group);
+        });
+
+        clear();
+        var shown = 0;
+
+        ordered.forEach(function (group) {
+          var inGroup = skills.filter(function (skill) {
+            return str(skill && skill.group) === group;
+          });
+          if (!inGroup.length) return;
+
+          var section = el('section', 'space-y-4');
+          section.appendChild(el('h3', 'text-[10px] font-mono uppercase tracking-[0.2em] text-brand-deep/60 font-bold', group));
+
+          var grid = el('div', 'grid grid-cols-1 lg:grid-cols-2 gap-4');
+          inGroup.forEach(function (skill) {
+            grid.appendChild(card(skill));
+            shown += 1;
+          });
+          section.appendChild(grid);
+          root.appendChild(section);
+        });
+
+        if (!shown) fail();
+      }
+
+      fetch('skills.json', { cache: 'no-store' })
+        .then(function (response) {
+          if (!response.ok) throw new Error('HTTP ' + response.status);
+          return response.json();
+        })
+        .then(render)
+        .catch(fail);
+    })();
+  </script>
 
   <script>
     document.addEventListener('DOMContentLoaded', () => {
