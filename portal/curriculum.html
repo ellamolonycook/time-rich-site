@@ -3,6 +3,7 @@
 <head>
   <meta charset="utf-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <meta name="robots" content="noindex, nofollow"/>
   <title>Time Rich. — AI Education Portal</title>
   <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
   <link rel="preconnect" href="https://fonts.googleapis.com"/>
@@ -134,10 +135,11 @@
       </nav>
       
       <div class="space-y-6">
-        <a href="#" class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-xs font-medium text-brand-mid hover:text-brand-deep hover:bg-brand-sagelt/50 transition-all duration-300 hover:translate-x-1">
+        <span class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-xs font-medium text-brand-mid/50 cursor-not-allowed select-none" aria-disabled="true" title="Coming soon">
           <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"></path><path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path></svg>
-          Settings
-        </a>
+          <span>Settings</span>
+          <span class="ml-auto px-1.5 py-0.5 rounded bg-brand-green/5 text-[8px] font-sans font-bold text-brand-mid/70 whitespace-nowrap">Soon</span>
+        </span>
 
       </div>
     </aside>
@@ -156,7 +158,7 @@
             <div class="text-[10px] font-mono uppercase tracking-[0.2em] text-brand-deep/60">PROGRAM OVERVIEW</div>
             <h1 class="text-4xl lg:text-[42px] font-display font-bold tracking-tight text-brand-deep">Curriculum</h1>
             <p class="text-sm text-brand-mid leading-relaxed max-w-xl">
-              Master AI integration step-by-step. Each phase is designed to build on the last, taking you from fundamentals to deploying autonomous agents.
+              Four weeks, eight live sessions. One on Monday and one on Friday each week, all at 12pm ET.
             </p>
           </header>
 
@@ -166,39 +168,33 @@
             <section class="space-y-6 relative">
               <div class="absolute -left-8 top-0 bottom-0 w-px bg-brand-green/10 hidden lg:block"></div>
               <div class="flex items-center gap-4">
-                <div class="w-8 h-8 rounded-full bg-brand-deep text-white flex items-center justify-center text-xs font-bold shadow-sm relative z-10 lg:-ml-[48px]">1</div>
-                <h2 class="text-xl font-bold text-brand-deep">Week 1: The AI Mindset</h2>
+                <div class="w-8 h-8 shrink-0 rounded-full bg-brand-offwhite border border-brand-green/15 text-brand-deep flex items-center justify-center text-xs font-bold shadow-sm relative z-10 lg:-ml-[48px]">1</div>
+                <h2 class="text-xl font-bold text-brand-deep">Week 1</h2>
               </div>
-              
-              <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
-                
-                <!-- Phase Card -->
-                <a href="#" class="block p-8 rounded-[1.5rem] bg-brand-offwhite border border-brand-green/10 shadow-sm card-lift group cursor-pointer h-full relative overflow-hidden flex flex-col">
-                  <div class="text-[10px] font-mono tracking-[0.2em] uppercase text-brand-deep/60 font-bold mb-4">Phase 1</div>
-                  <h3 class="text-xl font-bold text-brand-deep mb-3 group-hover:text-brand-mid transition-colors">Foundations & Strategy</h3>
-                  <p class="text-sm text-brand-mid leading-relaxed mb-8">Learn how to think about AI, identify high-leverage opportunities, and build your foundational strategy.</p>
-                  
-                  <div class="flex items-center justify-between mt-auto pt-6 border-t border-brand-green/10">
-                    <span class="text-xs text-brand-mid font-medium">5 Modules</span>
-                    <div class="w-8 h-8 rounded-full border border-brand-green/15 flex items-center justify-center group-hover:bg-brand-deep group-hover:border-brand-deep group-hover:text-white text-brand-deep transition-all duration-300">
-                      <svg class="w-4 h-4 transform group-hover:translate-x-0.5 transition-transform" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7"></path></svg>
-                    </div>
-                  </div>
-                </a>
 
-                <!-- Phase Card -->
-                <a href="#" class="block p-8 rounded-[1.5rem] bg-brand-offwhite border border-brand-green/10 shadow-sm card-lift group cursor-pointer h-full relative overflow-hidden flex flex-col">
-                  <div class="text-[10px] font-mono tracking-[0.2em] uppercase text-brand-deep/60 font-bold mb-4">Phase 2</div>
-                  <h3 class="text-xl font-bold text-brand-deep mb-3 group-hover:text-brand-mid transition-colors">The Prompting Engine</h3>
-                  <p class="text-sm text-brand-mid leading-relaxed mb-8">Master the art of prompt engineering to get consistent, high-quality outputs from any language model.</p>
-                  
+              <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
+
+                <!-- Monday session -->
+                <div class="block p-8 rounded-[1.5rem] bg-brand-offwhite border border-brand-green/10 shadow-sm card-lift h-full relative overflow-hidden flex flex-col">
+                  <div class="text-[10px] font-mono tracking-[0.2em] uppercase text-brand-deep/60 font-bold mb-4">Monday</div>
+                  <h3 class="text-xl font-bold text-brand-deep mb-3">Open Business Surgery</h3>
+                  <p class="text-sm text-brand-mid leading-relaxed mb-8">26 October &middot; 12pm ET</p>
+
                   <div class="flex items-center justify-between mt-auto pt-6 border-t border-brand-green/10">
-                    <span class="text-xs text-brand-mid font-medium">8 Modules</span>
-                    <div class="w-8 h-8 rounded-full border border-brand-green/15 flex items-center justify-center group-hover:bg-brand-deep group-hover:border-brand-deep group-hover:text-white text-brand-deep transition-all duration-300">
-                      <svg class="w-4 h-4 transform group-hover:translate-x-0.5 transition-transform" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7"></path></svg>
-                    </div>
+                    <span class="text-xs text-brand-mid font-medium">Live and recorded</span>
                   </div>
-                </a>
+                </div>
+
+                <!-- Friday session -->
+                <div class="block p-8 rounded-[1.5rem] bg-brand-offwhite border border-brand-green/10 shadow-sm card-lift h-full relative overflow-hidden flex flex-col">
+                  <div class="text-[10px] font-mono tracking-[0.2em] uppercase text-brand-deep/60 font-bold mb-4">Friday</div>
+                  <h3 class="text-xl font-bold text-brand-deep mb-3">Training Your Agent</h3>
+                  <p class="text-sm text-brand-mid leading-relaxed mb-8">30 October &middot; 12pm ET</p>
+
+                  <div class="flex items-center justify-between mt-auto pt-6 border-t border-brand-green/10">
+                    <span class="text-xs text-brand-mid font-medium">Live and recorded</span>
+                  </div>
+                </div>
 
               </div>
             </section>
@@ -207,37 +203,33 @@
             <section class="space-y-6 relative">
               <div class="absolute -left-8 top-0 bottom-0 w-px bg-brand-green/10 hidden lg:block"></div>
               <div class="flex items-center gap-4">
-                <div class="w-8 h-8 rounded-full bg-brand-offwhite border border-brand-green/15 text-brand-deep flex items-center justify-center text-xs font-bold shadow-sm relative z-10 lg:-ml-[48px]">2</div>
-                <h2 class="text-xl font-bold text-brand-deep">Week 2: Autonomous Agents</h2>
+                <div class="w-8 h-8 shrink-0 rounded-full bg-brand-offwhite border border-brand-green/15 text-brand-deep flex items-center justify-center text-xs font-bold shadow-sm relative z-10 lg:-ml-[48px]">2</div>
+                <h2 class="text-xl font-bold text-brand-deep">Week 2</h2>
               </div>
-              
-              <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
-                
-                <a href="#" class="block p-8 rounded-[1.5rem] bg-brand-offwhite border border-brand-green/10 shadow-sm card-lift group cursor-pointer h-full relative overflow-hidden flex flex-col">
-                  <div class="text-[10px] font-mono tracking-[0.2em] uppercase text-brand-deep/60 font-bold mb-4">Phase 3</div>
-                  <h3 class="text-xl font-bold text-brand-deep mb-3 group-hover:text-brand-mid transition-colors">Drafting Personas</h3>
-                  <p class="text-sm text-brand-mid leading-relaxed mb-8">Design specific AI agent personas tailored to your unique business operations and tone of voice.</p>
-                  
-                  <div class="flex items-center justify-between mt-auto pt-6 border-t border-brand-green/10">
-                    <span class="text-xs text-brand-mid font-medium">4 Modules</span>
-                    <div class="w-8 h-8 rounded-full border border-brand-green/15 flex items-center justify-center group-hover:bg-brand-deep group-hover:border-brand-deep group-hover:text-white text-brand-deep transition-all duration-300">
-                      <svg class="w-4 h-4 transform group-hover:translate-x-0.5 transition-transform" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7"></path></svg>
-                    </div>
-                  </div>
-                </a>
 
-                <a href="#" class="block p-8 rounded-[1.5rem] bg-brand-offwhite border border-brand-green/10 shadow-sm card-lift group cursor-pointer h-full relative overflow-hidden flex flex-col">
-                  <div class="text-[10px] font-mono tracking-[0.2em] uppercase text-brand-deep/60 font-bold mb-4">Phase 4</div>
-                  <h3 class="text-xl font-bold text-brand-deep mb-3 group-hover:text-brand-mid transition-colors">Building the Tools</h3>
-                  <p class="text-sm text-brand-mid leading-relaxed mb-8">Connect your personas to real-world tools using Zapier, Make, and API integrations.</p>
-                  
+              <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
+
+                <!-- Monday session -->
+                <div class="block p-8 rounded-[1.5rem] bg-brand-offwhite border border-brand-green/10 shadow-sm card-lift h-full relative overflow-hidden flex flex-col">
+                  <div class="text-[10px] font-mono tracking-[0.2em] uppercase text-brand-deep/60 font-bold mb-4">Monday</div>
+                  <h3 class="text-xl font-bold text-brand-deep mb-3">Your AI Operating System</h3>
+                  <p class="text-sm text-brand-mid leading-relaxed mb-8">2 November &middot; 12pm ET</p>
+
                   <div class="flex items-center justify-between mt-auto pt-6 border-t border-brand-green/10">
-                    <span class="text-xs text-brand-mid font-medium">6 Modules</span>
-                    <div class="w-8 h-8 rounded-full border border-brand-green/15 flex items-center justify-center group-hover:bg-brand-deep group-hover:border-brand-deep group-hover:text-white text-brand-deep transition-all duration-300">
-                      <svg class="w-4 h-4 transform group-hover:translate-x-0.5 transition-transform" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7"></path></svg>
-                    </div>
+                    <span class="text-xs text-brand-mid font-medium">Live and recorded</span>
                   </div>
-                </a>
+                </div>
+
+                <!-- Friday session -->
+                <div class="block p-8 rounded-[1.5rem] bg-brand-offwhite border border-brand-green/10 shadow-sm card-lift h-full relative overflow-hidden flex flex-col">
+                  <div class="text-[10px] font-mono tracking-[0.2em] uppercase text-brand-deep/60 font-bold mb-4">Friday</div>
+                  <h3 class="text-xl font-bold text-brand-deep mb-3">Expert Q&amp;A</h3>
+                  <p class="text-sm text-brand-mid leading-relaxed mb-8">6 November &middot; 12pm ET</p>
+
+                  <div class="flex items-center justify-between mt-auto pt-6 border-t border-brand-green/10">
+                    <span class="text-xs text-brand-mid font-medium">Live and recorded</span>
+                  </div>
+                </div>
 
               </div>
             </section>
@@ -246,31 +238,71 @@
             <section class="space-y-6 relative">
               <div class="absolute -left-8 top-0 bottom-0 w-px bg-brand-green/10 hidden lg:block"></div>
               <div class="flex items-center gap-4">
-                <div class="w-8 h-8 rounded-full bg-brand-offwhite border border-brand-green/15 text-brand-deep flex items-center justify-center text-xs font-bold shadow-sm relative z-10 lg:-ml-[48px]">3</div>
-                <h2 class="text-xl font-bold text-brand-deep">Week 3: Systems & Scale</h2>
+                <div class="w-8 h-8 shrink-0 rounded-full bg-brand-offwhite border border-brand-green/15 text-brand-deep flex items-center justify-center text-xs font-bold shadow-sm relative z-10 lg:-ml-[48px]">3</div>
+                <h2 class="text-xl font-bold text-brand-deep">Week 3</h2>
               </div>
-              
+
               <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
-                
-                <a href="#" class="block p-8 rounded-[1.5rem] bg-brand-offwhite border border-brand-green/10 shadow-sm card-lift group cursor-pointer h-full relative overflow-hidden flex flex-col opacity-75 hover:opacity-100 transition-opacity">
-                  <div class="text-[10px] font-mono tracking-[0.2em] uppercase text-brand-deep/60 font-bold mb-4 flex justify-between items-center">
-                    Phase 5
-                    <span class="px-2 py-0.5 rounded bg-brand-green/5 text-[9px] font-sans font-bold">Locked</span>
-                  </div>
-                  <h3 class="text-xl font-bold text-brand-deep mb-3">Workflow Automation</h3>
-                  <p class="text-sm text-brand-mid leading-relaxed mb-8">Chain multiple AI agents together to execute complex, multi-step business processes autonomously.</p>
-                  
+
+                <!-- Monday session -->
+                <div class="block p-8 rounded-[1.5rem] bg-brand-offwhite border border-brand-green/10 shadow-sm card-lift h-full relative overflow-hidden flex flex-col">
+                  <div class="text-[10px] font-mono tracking-[0.2em] uppercase text-brand-deep/60 font-bold mb-4">Monday</div>
+                  <h3 class="text-xl font-bold text-brand-deep mb-3">The AI Content Machine</h3>
+                  <p class="text-sm text-brand-mid leading-relaxed mb-8">9 November &middot; 12pm ET</p>
+
                   <div class="flex items-center justify-between mt-auto pt-6 border-t border-brand-green/10">
-                    <span class="text-xs text-brand-mid font-medium">7 Modules</span>
-                    <div class="w-8 h-8 rounded-full border border-brand-green/15 flex items-center justify-center text-brand-mid">
-                      <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"></path></svg>
-                    </div>
+                    <span class="text-xs text-brand-mid font-medium">Live and recorded</span>
                   </div>
-                </a>
+                </div>
+
+                <!-- Friday session -->
+                <div class="block p-8 rounded-[1.5rem] bg-brand-offwhite border border-brand-green/10 shadow-sm card-lift h-full relative overflow-hidden flex flex-col">
+                  <div class="text-[10px] font-mono tracking-[0.2em] uppercase text-brand-deep/60 font-bold mb-4">Friday</div>
+                  <h3 class="text-xl font-bold text-brand-deep mb-3">Bonus: Vika Victoria, Storytelling for GTM</h3>
+                  <p class="text-sm text-brand-mid leading-relaxed mb-8">13 November &middot; 12pm ET</p>
+
+                  <div class="flex items-center justify-between mt-auto pt-6 border-t border-brand-green/10">
+                    <span class="text-xs text-brand-mid font-medium">Live and recorded</span>
+                  </div>
+                </div>
 
               </div>
             </section>
 
+            <!-- Week 4 -->
+            <section class="space-y-6 relative">
+              <div class="absolute -left-8 top-0 bottom-0 w-px bg-brand-green/10 hidden lg:block"></div>
+              <div class="flex items-center gap-4">
+                <div class="w-8 h-8 shrink-0 rounded-full bg-brand-offwhite border border-brand-green/15 text-brand-deep flex items-center justify-center text-xs font-bold shadow-sm relative z-10 lg:-ml-[48px]">4</div>
+                <h2 class="text-xl font-bold text-brand-deep">Week 4</h2>
+              </div>
+
+              <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
+
+                <!-- Monday session -->
+                <div class="block p-8 rounded-[1.5rem] bg-brand-offwhite border border-brand-green/10 shadow-sm card-lift h-full relative overflow-hidden flex flex-col">
+                  <div class="text-[10px] font-mono tracking-[0.2em] uppercase text-brand-deep/60 font-bold mb-4">Monday</div>
+                  <h3 class="text-xl font-bold text-brand-deep mb-3">Unfair AI Advantage</h3>
+                  <p class="text-sm text-brand-mid leading-relaxed mb-8">16 November &middot; 12pm ET</p>
+
+                  <div class="flex items-center justify-between mt-auto pt-6 border-t border-brand-green/10">
+                    <span class="text-xs text-brand-mid font-medium">Live and recorded</span>
+                  </div>
+                </div>
+
+                <!-- Friday session -->
+                <div class="block p-8 rounded-[1.5rem] bg-brand-offwhite border border-brand-green/10 shadow-sm card-lift h-full relative overflow-hidden flex flex-col">
+                  <div class="text-[10px] font-mono tracking-[0.2em] uppercase text-brand-deep/60 font-bold mb-4">Friday</div>
+                  <h3 class="text-xl font-bold text-brand-deep mb-3">Bonus: Taylor Offer, last call</h3>
+                  <p class="text-sm text-brand-mid leading-relaxed mb-8">20 November &middot; 12pm ET</p>
+
+                  <div class="flex items-center justify-between mt-auto pt-6 border-t border-brand-green/10">
+                    <span class="text-xs text-brand-mid font-medium">Live and recorded</span>
+                  </div>
+                </div>
+
+              </div>
+            </section>
           </div>
 </div>
       </div>
