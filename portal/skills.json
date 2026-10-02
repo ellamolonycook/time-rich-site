@@ -1,0 +1,206 @@
+{
+  "_note": "Seed list copied from the Notion Skills database on 2 Oct 2026. Descriptions are internal notes, not approved buyer copy. An empty description or download means it has not been written or uploaded yet.",
+  "groups": ["Superhuman", "LinkedIn"],
+  "skills": [
+    {
+      "name": "goal-superhuman",
+      "group": "Superhuman",
+      "week": null,
+      "say": "Superhuman: set my goal",
+      "description": "Once at the start, then quarterly. Five questions, three lines you paste into COMPASS section 9, top 5 time sinks, a build list capped at 7.",
+      "download": ""
+    },
+    {
+      "name": "security-superhuman",
+      "group": "Superhuman",
+      "week": null,
+      "say": "Superhuman: lock down my Claude",
+      "description": "Before the first connector is switched on, then quarterly and whenever a chat or artifact is shared. Walks you through three Claude settings and reports the counts back.",
+      "download": ""
+    },
+    {
+      "name": "compass-superhuman",
+      "group": "Superhuman",
+      "week": 1,
+      "say": "Superhuman: build my COMPASS",
+      "description": "Week 1, after the Goal. Builds COMPASS sections 1 to 8 from your own calls, docs, email and Notion, then asks only about gaps.",
+      "download": "https://drive.google.com/drive/folders/1GYeDwH3SHhsESqfRTezI2EYCafmuWxSb"
+    },
+    {
+      "name": "context-superhuman",
+      "group": "Superhuman",
+      "week": 1,
+      "say": "Superhuman: build my context",
+      "description": "Week 1, after the Goal is in section 9. The one full interview in the pack; proposes COMPASS sections 1 to 8 in the fixed layout plus the operating tables. Every other skill reads its answers instead of asking again.",
+      "download": ""
+    },
+    {
+      "name": "audit-superhuman",
+      "group": "Superhuman",
+      "week": 1,
+      "say": "Superhuman: audit my AI",
+      "description": "Week 1, before building anything new. Counts projects, skills, scheduled tasks, prompts and chat habits; scores Live, Dead, Duplicate, Habit; maturity 1 to 5 from what ran; skills to build capped at 5.",
+      "download": ""
+    },
+    {
+      "name": "replies-superhuman",
+      "group": "Superhuman",
+      "week": 2,
+      "say": "Superhuman: build my reply skill",
+      "description": "Week 2, once. Clusters the replies you keep writing, cuts the yeses that work against the Goal, pulls your voice from sent mail, writes a second SKILL.md for your chief of staff agent. Drafts only.",
+      "download": ""
+    },
+    {
+      "name": "revenue-superhuman",
+      "group": "Superhuman",
+      "week": 3,
+      "say": "Superhuman: revenue",
+      "description": "Week 3 and monthly. Revenue map by offer and per hour, the one lever, the leak, 10 ideas through three filters, a Moves list capped at 5.",
+      "download": ""
+    },
+    {
+      "name": "hooks-superhuman",
+      "group": "Superhuman",
+      "week": 4,
+      "say": "Superhuman: find my hooks",
+      "description": "Week 4 and monthly. One platform, business or personal, the three calls that went best; 10 hooks with reaction evidence, 10 open loops, 5 drafts. Never posts.",
+      "download": ""
+    },
+    {
+      "name": "story-superhuman",
+      "group": "Superhuman",
+      "week": 4,
+      "say": "Superhuman: build my story bank",
+      "description": "Week 4, then quarterly, or before a talk. Story bank of 8 to 15 from six transcripts, business arc and personal arc in five beats, slots table, Founder Story under 300 words.",
+      "download": ""
+    },
+    {
+      "name": "delegate-superhuman",
+      "group": "Superhuman",
+      "week": null,
+      "say": "Task for ___",
+      "description": "Daily and weekly once the Goal is set. Morning voice note to briefed tasks in the Tasks database; receiving a brief; building and testing the follow-up agent; the Friday review scored by formula.",
+      "download": ""
+    },
+    {
+      "name": "content-guardrails-superhuman",
+      "group": "Superhuman",
+      "week": null,
+      "say": "Superhuman: set my content guardrails",
+      "description": "Before any skill mines Granola or another AI notetaker for content. Interviews you, writes the Guardrails page and the Extraction Rules block other content skills read, then tests the rules on 3 real calls.",
+      "download": ""
+    },
+    {
+      "name": "icp-idea-bank-superhuman",
+      "group": "Superhuman",
+      "week": null,
+      "say": "",
+      "description": "",
+      "download": "https://drive.google.com/file/d/1aD3AJtLhswdT_zE0jKYqzebtVD1CH-TV/view"
+    },
+    {
+      "name": "audit-linkedin-for-icp-goal",
+      "group": "LinkedIn",
+      "week": null,
+      "say": "",
+      "description": "",
+      "download": "https://drive.google.com/file/d/16Q-LcQoFoRgtWreLwznx2-CIzGGd3Hvo/view"
+    },
+    {
+      "name": "linkedin-profile-optimizer",
+      "group": "LinkedIn",
+      "week": null,
+      "say": "",
+      "description": "",
+      "download": "https://drive.google.com/drive/folders/1fwcaANFE2bAQ2gaFMGTyAWNZhb7aTHAP"
+    },
+    {
+      "name": "linkedin-content-planner",
+      "group": "LinkedIn",
+      "week": null,
+      "say": "",
+      "description": "",
+      "download": "https://drive.google.com/drive/folders/1LcNCm0LDCl7NpI8euHn-nyM6sKLZ-yXR"
+    },
+    {
+      "name": "linkedin-post-writer",
+      "group": "LinkedIn",
+      "week": null,
+      "say": "",
+      "description": "",
+      "download": "https://drive.google.com/drive/folders/1f4H2pD9G-ZLlENsxlj-5Iya-xlyUEhz9"
+    },
+    {
+      "name": "linkedin-hook-extractor",
+      "group": "LinkedIn",
+      "week": null,
+      "say": "",
+      "description": "",
+      "download": "https://drive.google.com/drive/folders/1cGtM-gK2v-MoA3hZG0LtffkJSlvFZfzX"
+    },
+    {
+      "name": "linkedin-humanizer",
+      "group": "LinkedIn",
+      "week": null,
+      "say": "",
+      "description": "",
+      "download": "https://drive.google.com/drive/folders/1FYh_SieHWk6NPecbTW39lCAeama99Rc4"
+    },
+    {
+      "name": "linkedin-repurposer",
+      "group": "LinkedIn",
+      "week": null,
+      "say": "",
+      "description": "",
+      "download": "https://drive.google.com/drive/folders/1TePZ35Pxey76PjcpHRVWuPDhWPIMDcUC"
+    },
+    {
+      "name": "linkedin-interviewer",
+      "group": "LinkedIn",
+      "week": null,
+      "say": "",
+      "description": "",
+      "download": "https://drive.google.com/drive/folders/1ZBGuFVb4aIxG8KKkn1mYeKOWbZ4C9Fc0"
+    },
+    {
+      "name": "linkedin-comment-drafter",
+      "group": "LinkedIn",
+      "week": null,
+      "say": "",
+      "description": "",
+      "download": "https://drive.google.com/drive/folders/16-4iJRvqGXZQgyP_bmKuMcHdC2QDIJHr"
+    },
+    {
+      "name": "linkedin-reply-handler",
+      "group": "LinkedIn",
+      "week": null,
+      "say": "",
+      "description": "",
+      "download": "https://drive.google.com/drive/folders/1F-VQr1dXBPMUeuquJx0IpOQgOA1Y-Rwd"
+    },
+    {
+      "name": "linkedin-thread-monitor",
+      "group": "LinkedIn",
+      "week": null,
+      "say": "",
+      "description": "",
+      "download": "https://drive.google.com/drive/folders/1yM0xqamxwQxZdNyUGQb0hjev3K4n9Sk6"
+    },
+    {
+      "name": "linkedin-engager-analytics",
+      "group": "LinkedIn",
+      "week": null,
+      "say": "",
+      "description": "",
+      "download": "https://drive.google.com/drive/folders/1-LxQ7Vrb4P1r5SuBqChzfkMmP9pu_xbr"
+    },
+    {
+      "name": "linkedin-employee-advocacy",
+      "group": "LinkedIn",
+      "week": null,
+      "say": "",
+      "description": "",
+      "download": "https://drive.google.com/drive/folders/1Br-Z0DvsCkSqI4_Kr_FOCbS_Abi54E8_"
+    }
+  ]
+}
