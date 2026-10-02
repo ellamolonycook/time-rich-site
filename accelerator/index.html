@@ -542,7 +542,7 @@ ul.t-list li:last-child{padding-bottom:0}
 @media(prefers-reduced-motion:reduce){.reveal{opacity:1 !important;transform:none !important}*{animation-duration:.001ms !important;animation-iteration-count:1 !important}}
 
 /* ---------- RESPONSIVE ---------- */
-@media (max-width:880px){
+@media (max-width:1024px){
   .wrap{padding:0 24px}
   section{padding:56px 0}
   .hero{padding:40px 0 44px}
@@ -582,13 +582,74 @@ ul.t-list li:last-child{padding-bottom:0}
   .hero-micro,.m-cap{font-size:14px}
   .glass-decision-wrap { padding: 30px 20px; }
   .glass-decision { flex-direction: column; gap: 40px; }
-  .glass-card { flex-direction: column; }
-  .for-card { flex-direction: column-reverse; }
-  .gc-tab { position: static; width: 100%; height: 48px; transform: none !important; border-radius: 12px 12px 0 0; }
-  .for-card .gc-tab { border-radius: 0 0 12px 12px; }
-  .gc-tab span { writing-mode: horizontal-tb; transform: none !important; }
-  .for-card .gc-content { padding: 24px; border-radius: 12px 12px 0 0; }
-  .not-card .gc-content { padding: 24px; border-radius: 0 0 12px 12px; }
+    
+    /* Reset wrappers */
+    .glass-card { flex-direction: column; border: none !important; overflow: visible !important; box-shadow: none !important; }
+    .for-card { flex-direction: column-reverse; }
+    
+    /* Give content the border and shadow */
+    .for-card .gc-content, .not-card .gc-content { 
+      padding: 32px 24px !important; 
+      border: 1px solid rgba(66,75,54,0.12) !important; 
+      border-radius: 12px !important; 
+      box-shadow: 0 4px 16px -8px rgba(66,75,54,0.05) !important; 
+      z-index: 2; 
+      position: relative; 
+      background: #fff;
+      transition: box-shadow 0.4s ease, border-color 0.4s ease, transform 0.4s ease !important;
+    }
+    
+    /* Position tabs absolutely, tucked behind the content */
+    .gc-tab { 
+      position: absolute !important; 
+      width: calc(100% - 48px) !important; 
+      left: 24px !important; 
+      height: 48px !important; 
+      z-index: 1; 
+      transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1), background 0.4s ease, color 0.4s ease, border-color 0.4s ease !important;
+    }
+    .gc-tab span { writing-mode: horizontal-tb; transform: none !important; }
+    
+    .for-card .gc-tab { 
+      top: 0 !important; bottom: auto !important; 
+      border-radius: 12px 12px 0 0 !important; 
+      border: 1px solid rgba(103,118,46,.2) !important; 
+      transform: translateY(-8px) !important; /* Peeks out up slightly */
+    }
+    .not-card .gc-tab { 
+      bottom: 0 !important; top: auto !important; 
+      border-radius: 0 0 12px 12px !important; 
+      border: 1px solid rgba(189,74,68,0.15) !important; 
+      transform: translateY(8px) !important; /* Peeks out down slightly */
+    }
+    
+    /* Hover Interactions */
+    .glass-card { transition: none; } /* disable wrapper lift */
+    
+    /* Content lifts */
+    .glass-card:hover .gc-content { 
+      transform: translateY(-4px) !important; 
+      box-shadow: 0 20px 48px -12px rgba(66,75,54,0.12) !important; 
+      border-color: rgba(66,75,54,0.25) !important; 
+    }    /* Tabs slide out from behind on HOVER (desktop) or SCROLL (.in class via JS) */
+    .for-card:hover .gc-tab, .for-card.in .gc-tab { 
+      transform: translateY(-44px) !important; /* Slides fully up */
+      background: var(--lime) !important; 
+      color: #fff !important; 
+      border-color: var(--lime) !important; 
+    }
+    .for-card.in .gc-tab { transition-delay: 0.3s !important; } /* slight delay so it slides out after card fades in */
+    
+    .not-card:hover .gc-tab, .not-card.in .gc-tab { 
+      transform: translateY(44px) !important; /* Slides fully down */
+      background: var(--red) !important; 
+      color: #fff !important; 
+      border-color: var(--red) !important; 
+    }
+    .not-card.in .gc-tab { transition-delay: 0.4s !important; } /* cascade delay */
+    
+    .for-card:hover .gc-icon, .for-card.in .gc-icon { background: var(--lime); color: #fff; transform: scale(1.1); }
+    .not-card:hover .gc-icon, .not-card.in .gc-icon { background: var(--red); color: #fff; transform: scale(1.1); }
 
   .faq-list { width: 100%; margin-left: 0; }
   .faq-item .faq-summary { padding: 20px 24px; }
@@ -1165,6 +1226,7 @@ html{scroll-padding-top:110px}
   <div class="wrap">
     <a href="/home" class="brand">Time Rich<span class="dot">.</span></a>
     <div class="nav-links">
+      <a href="../portal/">Portal</a>
       <a href="#seats">The offer</a>
       <a href="#why">Why this exists</a>
       <a href="#proof">Proof</a>
@@ -1182,6 +1244,7 @@ html{scroll-padding-top:110px}
     <button class="nav-menu-close" type="button" aria-label="Close">&times;</button>
     <div class="nav-menu-links">
       <a href="#top">Home</a>
+      <a href="../portal/">Portal</a>
       <a href="#seats">The offer</a>
       <a href="#why">Why this exists</a>
       <a href="#proof">Proof</a>
@@ -2088,12 +2151,25 @@ function track(name, params){
 
   // reveal on scroll
   if ('IntersectionObserver' in window && !reduce) {
-    var items = document.querySelectorAll('.tier,.machine,.glass-card');
+    var items = document.querySelectorAll('.tier,.machine'); // removed glass-card
     items.forEach(function(el){ el.classList.add('reveal'); });
     var ro = new IntersectionObserver(function(es){
       es.forEach(function(e){ if (e.isIntersecting) { e.target.classList.add('in'); ro.unobserve(e.target); } });
     }, {threshold:.12, rootMargin:'0px 0px -6% 0px'});
     items.forEach(function(el){ ro.observe(el); });
+
+    // Interactive scrolling for glass-cards (they slide out and in as you scroll past them!)
+    var cards = document.querySelectorAll('.glass-card');
+    var roCards = new IntersectionObserver(function(es){
+      es.forEach(function(e){
+        if (e.isIntersecting) {
+          e.target.classList.add('in');
+        } else {
+          e.target.classList.remove('in');
+        }
+      });
+    }, {threshold: 0.15}); // Triggers when 15% of the card is visible
+    cards.forEach(function(el){ roCards.observe(el); });
   }
 
   // Schedule spine fills as you scroll through it (imported from /revenue/).
@@ -2446,6 +2522,7 @@ textarea.m-input { resize: vertical; min-height: 95px; }
   });
 })();
 </script>
+
 
 
 
