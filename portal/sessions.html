@@ -3,6 +3,7 @@
 <head>
   <meta charset="utf-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <meta name="robots" content="noindex, nofollow"/>
   <title>Time Rich. — AI Education Portal</title>
   <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
   <link rel="preconnect" href="https://fonts.googleapis.com"/>
@@ -134,10 +135,11 @@
       </nav>
       
       <div class="space-y-6">
-        <a href="#" class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-xs font-medium text-brand-mid hover:text-brand-deep hover:bg-brand-sagelt/50 transition-all duration-300 hover:translate-x-1">
+        <span class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-xs font-medium text-brand-mid/50 cursor-not-allowed select-none" aria-disabled="true" title="Coming soon">
           <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"></path><path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path></svg>
-          Settings
-        </a>
+          <span>Settings</span>
+          <span class="ml-auto px-1.5 py-0.5 rounded bg-brand-green/5 text-[8px] font-sans font-bold text-brand-mid/70 whitespace-nowrap">Soon</span>
+        </span>
 
       </div>
     </aside>
@@ -156,134 +158,147 @@
             <div class="text-[10px] font-mono uppercase tracking-[0.2em] text-brand-deep/60">LIVE CALLS</div>
             <h1 class="text-4xl lg:text-[42px] font-display font-bold tracking-tight text-brand-deep">Live Sessions</h1>
             <p class="text-sm text-brand-mid leading-relaxed max-w-xl">
-              Join our weekly group Q&A calls to get unblocked, review your agent personas, and discuss strategies. Recordings are available 24 hours after each call.
+              Eight live sessions across four weeks. Every session runs at 12pm ET and is live and recorded.
             </p>
           </header>
 
           <div class="space-y-6">
             
-            <!-- Session 1 (Recorded) -->
-            <div class="group flex flex-col md:flex-row items-start md:items-center justify-between p-6 lg:p-8 rounded-[1.5rem] bg-brand-offwhite border border-brand-green/10 shadow-sm transition-all hover:border-brand-green/20">
-              <div class="flex items-start gap-6 lg:gap-8">
-                <div class="hidden sm:flex w-12 h-12 rounded-full bg-brand-green/5 text-brand-mid items-center justify-center">
-                  <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z"></path><path stroke-linecap="round" stroke-linejoin="round" d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
-                </div>
-                <div class="space-y-2">
-                  <div class="flex items-center gap-3">
-                    <span class="text-[10px] font-mono tracking-[0.2em] uppercase text-brand-deep/60 font-bold">Session 1</span>
-                    <span class="px-2 py-0.5 rounded bg-brand-green/5 text-[9px] font-sans font-bold text-brand-mid">Recorded</span>
-                  </div>
-                  <h3 class="text-lg font-bold text-brand-deep">Foundations & Mindset</h3>
-                  <p class="text-sm text-brand-mid">Thursday, September 14, 2:00 PM</p>
-                </div>
-              </div>
-              <div class="mt-6 md:mt-0 w-full md:w-auto">
-                <button class="w-full md:w-auto px-6 py-3 bg-white text-brand-deep text-xs font-semibold rounded-xl border border-brand-green/15 hover:bg-brand-sagelt transition-colors flex items-center justify-center gap-2">
-                  <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z"></path></svg>
-                  Watch Recording
-                </button>
-              </div>
-            </div>
-
-            <!-- Session 2 (Recorded) -->
-            <div class="group flex flex-col md:flex-row items-start md:items-center justify-between p-6 lg:p-8 rounded-[1.5rem] bg-brand-offwhite border border-brand-green/10 shadow-sm transition-all hover:border-brand-green/20">
-              <div class="flex items-start gap-6 lg:gap-8">
-                <div class="hidden sm:flex w-12 h-12 rounded-full bg-brand-green/5 text-brand-mid items-center justify-center">
-                  <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z"></path><path stroke-linecap="round" stroke-linejoin="round" d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
-                </div>
-                <div class="space-y-2">
-                  <div class="flex items-center gap-3">
-                    <span class="text-[10px] font-mono tracking-[0.2em] uppercase text-brand-deep/60 font-bold">Session 2</span>
-                    <span class="px-2 py-0.5 rounded bg-brand-green/5 text-[9px] font-sans font-bold text-brand-mid">Recorded</span>
-                  </div>
-                  <h3 class="text-lg font-bold text-brand-deep">Prompt Engineering Deep Dive</h3>
-                  <p class="text-sm text-brand-mid">Thursday, September 21, 2:00 PM</p>
-                </div>
-              </div>
-              <div class="mt-6 md:mt-0 w-full md:w-auto">
-                <button class="w-full md:w-auto px-6 py-3 bg-white text-brand-deep text-xs font-semibold rounded-xl border border-brand-green/15 hover:bg-brand-sagelt transition-colors flex items-center justify-center gap-2">
-                  <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z"></path></svg>
-                  Watch Recording
-                </button>
-              </div>
-            </div>
-
-            <!-- Session 3 (Upcoming/Next) -->
-            <div class="relative group flex flex-col md:flex-row items-start md:items-center justify-between p-6 lg:p-8 rounded-[1.5rem] bg-white border-2 border-brand-deep shadow-lg transform -translate-y-1 transition-all z-10">
-              <div class="flex items-start gap-6 lg:gap-8">
-                <div class="hidden sm:flex w-12 h-12 rounded-full bg-brand-deep text-white items-center justify-center shadow-md">
+            <!-- Session 1 (Up Next) -->
+            <div class="relative group flex flex-col md:flex-row items-start md:items-center justify-between gap-6 p-6 lg:p-8 rounded-[1.5rem] bg-white border-2 border-brand-deep shadow-lg md:-translate-y-1 transition-all z-10">
+              <div class="flex items-start gap-4 sm:gap-6 lg:gap-8 min-w-0">
+                <div class="hidden sm:flex w-12 h-12 shrink-0 rounded-full bg-brand-deep text-white items-center justify-center shadow-md">
                   <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z"></path></svg>
                 </div>
-                <div class="space-y-2">
-                  <div class="flex items-center gap-3">
-                    <span class="text-[10px] font-mono tracking-[0.2em] uppercase text-brand-deep/60 font-bold">Session 3</span>
+                <div class="space-y-2 min-w-0">
+                  <div class="flex flex-wrap items-center gap-3">
+                    <span class="text-[10px] font-mono tracking-[0.2em] uppercase text-brand-deep/60 font-bold">Session 1</span>
                     <div class="bg-brand-deep/5 text-brand-deep text-[10px] font-bold px-2 py-0.5 rounded uppercase tracking-wider flex items-center gap-1.5 border border-brand-deep/10"><span class="w-1.5 h-1.5 rounded-full bg-brand-deep animate-pulse"></span>Up Next</div>
                   </div>
-                  <h3 class="text-xl font-bold text-brand-deep">Reviewing Agent Personas</h3>
-                  <p class="text-sm text-brand-mid font-medium">Thursday, September 28, 2:00 PM (Local)</p>
+                  <h3 class="text-lg sm:text-xl font-bold text-brand-deep">Open Business Surgery</h3>
+                  <p class="text-sm text-brand-mid font-medium">Monday 26 October &middot; 12pm ET</p>
                 </div>
               </div>
-              <div class="mt-6 md:mt-0 w-full md:w-auto flex flex-col sm:flex-row gap-3">
-                <button class="w-full md:w-auto px-6 py-3 bg-brand-deep text-brand-offwhite text-xs font-semibold rounded-xl hover:bg-brand-green transition-colors shadow-sm flex items-center justify-center gap-2">
-                  Join via Zoom
+              <div class="w-full md:w-auto flex flex-col lg:flex-row gap-3 shrink-0">
+                <button type="button" disabled title="Coming soon" class="w-full md:w-auto px-6 py-3 bg-brand-deep/40 text-brand-offwhite text-xs font-semibold rounded-xl cursor-not-allowed flex items-center justify-center gap-2">
+                  Join via Zoom <span class="px-1.5 py-0.5 rounded bg-white/20 text-[9px] font-bold whitespace-nowrap">Coming soon</span>
                 </button>
-                <button class="w-full md:w-auto px-4 py-3 bg-brand-sagelt text-brand-deep text-xs font-semibold rounded-xl hover:bg-brand-sage transition-colors flex items-center justify-center">
-                  Add to Calendar
+                <button type="button" disabled title="Coming soon" class="w-full md:w-auto px-4 py-3 bg-brand-sagelt/60 text-brand-deep/50 text-xs font-semibold rounded-xl cursor-not-allowed flex items-center justify-center gap-2">
+                  Add to Calendar <span class="px-1.5 py-0.5 rounded bg-brand-green/10 text-[9px] font-bold whitespace-nowrap">Coming soon</span>
                 </button>
+              </div>
+            </div>
+
+            <!-- Session 2 (Upcoming) -->
+            <div class="group flex flex-col md:flex-row items-start md:items-center justify-between p-6 lg:p-8 rounded-[1.5rem] bg-brand-offwhite/50 border border-brand-green/10 transition-all hover:bg-brand-offwhite">
+              <div class="flex items-start gap-4 sm:gap-6 lg:gap-8 min-w-0 opacity-75 group-hover:opacity-100 transition-opacity">
+                <div class="hidden sm:flex w-12 h-12 shrink-0 rounded-full border border-brand-green/15 text-brand-mid/50 items-center justify-center">
+                  <span class="text-xs font-bold">2</span>
+                </div>
+                <div class="space-y-2 min-w-0">
+                  <div class="flex items-center gap-3">
+                    <span class="text-[10px] font-mono tracking-[0.2em] uppercase text-brand-deep/40 font-bold">Session 2</span>
+                  </div>
+                  <h3 class="text-lg font-bold text-brand-deep/80">Training Your Agent</h3>
+                  <p class="text-sm text-brand-mid/80">Friday 30 October &middot; 12pm ET</p>
+                </div>
+              </div>
+            </div>
+
+            <!-- Session 3 (Upcoming) -->
+            <div class="group flex flex-col md:flex-row items-start md:items-center justify-between p-6 lg:p-8 rounded-[1.5rem] bg-brand-offwhite/50 border border-brand-green/10 transition-all hover:bg-brand-offwhite">
+              <div class="flex items-start gap-4 sm:gap-6 lg:gap-8 min-w-0 opacity-75 group-hover:opacity-100 transition-opacity">
+                <div class="hidden sm:flex w-12 h-12 shrink-0 rounded-full border border-brand-green/15 text-brand-mid/50 items-center justify-center">
+                  <span class="text-xs font-bold">3</span>
+                </div>
+                <div class="space-y-2 min-w-0">
+                  <div class="flex items-center gap-3">
+                    <span class="text-[10px] font-mono tracking-[0.2em] uppercase text-brand-deep/40 font-bold">Session 3</span>
+                  </div>
+                  <h3 class="text-lg font-bold text-brand-deep/80">Your AI Operating System</h3>
+                  <p class="text-sm text-brand-mid/80">Monday 2 November &middot; 12pm ET</p>
+                </div>
               </div>
             </div>
 
             <!-- Session 4 (Upcoming) -->
             <div class="group flex flex-col md:flex-row items-start md:items-center justify-between p-6 lg:p-8 rounded-[1.5rem] bg-brand-offwhite/50 border border-brand-green/10 transition-all hover:bg-brand-offwhite">
-              <div class="flex items-start gap-6 lg:gap-8 opacity-75 group-hover:opacity-100 transition-opacity">
-                <div class="hidden sm:flex w-12 h-12 rounded-full border border-brand-green/15 text-brand-mid/50 items-center justify-center">
+              <div class="flex items-start gap-4 sm:gap-6 lg:gap-8 min-w-0 opacity-75 group-hover:opacity-100 transition-opacity">
+                <div class="hidden sm:flex w-12 h-12 shrink-0 rounded-full border border-brand-green/15 text-brand-mid/50 items-center justify-center">
                   <span class="text-xs font-bold">4</span>
                 </div>
-                <div class="space-y-2">
+                <div class="space-y-2 min-w-0">
                   <div class="flex items-center gap-3">
                     <span class="text-[10px] font-mono tracking-[0.2em] uppercase text-brand-deep/40 font-bold">Session 4</span>
                   </div>
-                  <h3 class="text-lg font-bold text-brand-deep/80">Connecting Zapier & Make</h3>
-                  <p class="text-sm text-brand-mid/80">Thursday, October 5, 2:00 PM</p>
+                  <h3 class="text-lg font-bold text-brand-deep/80">Expert Q&amp;A</h3>
+                  <p class="text-sm text-brand-mid/80">Friday 6 November &middot; 12pm ET</p>
                 </div>
               </div>
             </div>
 
             <!-- Session 5 (Upcoming) -->
             <div class="group flex flex-col md:flex-row items-start md:items-center justify-between p-6 lg:p-8 rounded-[1.5rem] bg-brand-offwhite/50 border border-brand-green/10 transition-all hover:bg-brand-offwhite">
-              <div class="flex items-start gap-6 lg:gap-8 opacity-75 group-hover:opacity-100 transition-opacity">
-                <div class="hidden sm:flex w-12 h-12 rounded-full border border-brand-green/15 text-brand-mid/50 items-center justify-center">
+              <div class="flex items-start gap-4 sm:gap-6 lg:gap-8 min-w-0 opacity-75 group-hover:opacity-100 transition-opacity">
+                <div class="hidden sm:flex w-12 h-12 shrink-0 rounded-full border border-brand-green/15 text-brand-mid/50 items-center justify-center">
                   <span class="text-xs font-bold">5</span>
                 </div>
-                <div class="space-y-2">
+                <div class="space-y-2 min-w-0">
                   <div class="flex items-center gap-3">
                     <span class="text-[10px] font-mono tracking-[0.2em] uppercase text-brand-deep/40 font-bold">Session 5</span>
                   </div>
-                  <h3 class="text-lg font-bold text-brand-deep/80">Workflow Automation QA</h3>
-                  <p class="text-sm text-brand-mid/80">Thursday, October 12, 2:00 PM</p>
+                  <h3 class="text-lg font-bold text-brand-deep/80">The AI Content Machine</h3>
+                  <p class="text-sm text-brand-mid/80">Monday 9 November &middot; 12pm ET</p>
                 </div>
               </div>
             </div>
 
             <!-- Session 6 (Upcoming) -->
             <div class="group flex flex-col md:flex-row items-start md:items-center justify-between p-6 lg:p-8 rounded-[1.5rem] bg-brand-offwhite/50 border border-brand-green/10 transition-all hover:bg-brand-offwhite">
-              <div class="flex items-start gap-6 lg:gap-8 opacity-75 group-hover:opacity-100 transition-opacity">
-                <div class="hidden sm:flex w-12 h-12 rounded-full border border-brand-green/15 text-brand-mid/50 items-center justify-center">
+              <div class="flex items-start gap-4 sm:gap-6 lg:gap-8 min-w-0 opacity-75 group-hover:opacity-100 transition-opacity">
+                <div class="hidden sm:flex w-12 h-12 shrink-0 rounded-full border border-brand-green/15 text-brand-mid/50 items-center justify-center">
                   <span class="text-xs font-bold">6</span>
                 </div>
-                <div class="space-y-2">
+                <div class="space-y-2 min-w-0">
                   <div class="flex items-center gap-3">
                     <span class="text-[10px] font-mono tracking-[0.2em] uppercase text-brand-deep/40 font-bold">Session 6</span>
                   </div>
-                  <h3 class="text-lg font-bold text-brand-deep/80">Deploying Your First Agent</h3>
-                  <p class="text-sm text-brand-mid/80">Thursday, October 19, 2:00 PM</p>
+                  <h3 class="text-lg font-bold text-brand-deep/80">Bonus: Vika Victoria, Storytelling for GTM</h3>
+                  <p class="text-sm text-brand-mid/80">Friday 13 November &middot; 12pm ET</p>
                 </div>
               </div>
             </div>
 
-            <!-- Session 7, 8, 9 Collapsed / Faded for minimalism -->
-            <div class="pt-4 flex items-center gap-4 before:h-px before:flex-1 before:bg-brand-green/10 after:h-px after:flex-1 after:bg-brand-green/10">
-              <span class="text-[10px] font-mono uppercase tracking-[0.2em] text-brand-deep/40">3 More Upcoming Sessions</span>
+            <!-- Session 7 (Upcoming) -->
+            <div class="group flex flex-col md:flex-row items-start md:items-center justify-between p-6 lg:p-8 rounded-[1.5rem] bg-brand-offwhite/50 border border-brand-green/10 transition-all hover:bg-brand-offwhite">
+              <div class="flex items-start gap-4 sm:gap-6 lg:gap-8 min-w-0 opacity-75 group-hover:opacity-100 transition-opacity">
+                <div class="hidden sm:flex w-12 h-12 shrink-0 rounded-full border border-brand-green/15 text-brand-mid/50 items-center justify-center">
+                  <span class="text-xs font-bold">7</span>
+                </div>
+                <div class="space-y-2 min-w-0">
+                  <div class="flex items-center gap-3">
+                    <span class="text-[10px] font-mono tracking-[0.2em] uppercase text-brand-deep/40 font-bold">Session 7</span>
+                  </div>
+                  <h3 class="text-lg font-bold text-brand-deep/80">Unfair AI Advantage</h3>
+                  <p class="text-sm text-brand-mid/80">Monday 16 November &middot; 12pm ET</p>
+                </div>
+              </div>
+            </div>
+
+            <!-- Session 8 (Upcoming) -->
+            <div class="group flex flex-col md:flex-row items-start md:items-center justify-between p-6 lg:p-8 rounded-[1.5rem] bg-brand-offwhite/50 border border-brand-green/10 transition-all hover:bg-brand-offwhite">
+              <div class="flex items-start gap-4 sm:gap-6 lg:gap-8 min-w-0 opacity-75 group-hover:opacity-100 transition-opacity">
+                <div class="hidden sm:flex w-12 h-12 shrink-0 rounded-full border border-brand-green/15 text-brand-mid/50 items-center justify-center">
+                  <span class="text-xs font-bold">8</span>
+                </div>
+                <div class="space-y-2 min-w-0">
+                  <div class="flex items-center gap-3">
+                    <span class="text-[10px] font-mono tracking-[0.2em] uppercase text-brand-deep/40 font-bold">Session 8</span>
+                  </div>
+                  <h3 class="text-lg font-bold text-brand-deep/80">Bonus: Taylor Offer, last call</h3>
+                  <p class="text-sm text-brand-mid/80">Friday 20 November &middot; 12pm ET</p>
+                </div>
+              </div>
             </div>
 
           </div>
