@@ -11,5 +11,5 @@
  */
 window.TR_PORTAL_CONFIG = {
   url: "https://hmnqnkchwmxkwchqvxyj.supabase.co",
-  key: "sb_publishable_0MQv1aTwy5Be9xzC0ITu0A_e4cc0S-t"
+  key: "PASTE_YOUR_SUPABASE_ANON_KEY_HERE"
 };
