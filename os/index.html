@@ -7,14 +7,14 @@
   <noscript><img height="1" width="1" style="display:none" alt=""
     src="https://www.facebook.com/tr?id=1790181495468842&amp;ev=PageView&amp;noscript=1" /></noscript>
   <title>Time Rich Content OS</title>
-  <meta name="description" content="The hub for the Time Rich Content Machine. Duplicate the Notion Content OS, download AI skills, and pick up new files after each workshop." />
+  <meta name="description" content="The Time Rich OS: direct-download LinkedIn skills, Accelerator information, and upcoming live events." />
   <link rel="canonical" href="https://timerich.ai/os" />
   <meta name="theme-color" content="#FFFDFB" />
   <meta property="og:type" content="website" />
   <meta property="og:site_name" content="Time Rich" />
   <meta property="og:url" content="https://timerich.ai/os" />
   <meta property="og:title" content="Time Rich Content OS" />
-  <meta property="og:description" content="Templates, AI skills, and workshop files for the Time Rich Content Machine." />
+  <meta property="og:description" content="Direct-download LinkedIn skills, Accelerator information, and upcoming live events." />
   <meta property="og:image" content="https://timerich.ai/og-image.jpg" />
   <meta name="twitter:card" content="summary_large_image" />
   <link rel="icon" href="/favicon.ico" sizes="any" />
@@ -225,6 +225,20 @@
     .fine { margin: 12px 0 0; color: var(--dim); font-size: 14px; }
 
     .skill h3 { font-size: 22px; }
+    .skill-group-head {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 16px;
+      min-height: 92px;
+      margin: 0 0 16px;
+      padding-bottom: 12px;
+      border-bottom: 1px solid var(--line);
+    }
+    .skill-group-head h3 { font-size: 22px; }
+    .skill-group-head p { margin: 0; color: var(--dim); font-size: 14px; }
+    .skill-group .cards { grid-auto-rows: 330px; }
+    .skill-group .card { height: 100%; }
     .outcome {
       margin-top: 16px;
       padding-top: 14px;
@@ -262,7 +276,7 @@
     .steps { display: grid; gap: 12px; }
     .step {
       display: grid;
-      grid-template-columns: auto 1fr minmax(200px, 280px);
+      grid-template-columns: auto 1fr;
       gap: 22px;
       align-items: center;
       background: var(--card);
@@ -284,33 +298,6 @@
     }
     .step h3 { font-size: 20px; margin-bottom: 4px; }
     .step p { margin: 0; color: var(--muted); font-size: 15.5px; }
-    .shot {
-      margin: 0;
-      border-radius: 14px;
-      overflow: hidden;
-      border: 1px dashed var(--line-strong);
-      background: var(--bg-2);
-      aspect-ratio: 16 / 10;
-    }
-    .shot img { width: 100%; height: 100%; object-fit: cover; }
-    .shot-ph {
-      height: 100%;
-      display: flex;
-      flex-direction: column;
-      padding: 10px;
-    }
-    .shot-bar { display: flex; gap: 5px; }
-    .shot-bar span { width: 7px; height: 7px; border-radius: 50%; background: rgba(66, 75, 54, 0.18); }
-    .shot-ph strong {
-      margin: auto;
-      font-family: var(--mono);
-      font-size: 11px;
-      font-weight: 600;
-      letter-spacing: 0.12em;
-      text-transform: uppercase;
-      color: var(--dim);
-    }
-
     #later { padding-bottom: 88px; }
     .later-grid:empty { display: none; }
     .later-grid:not(:empty) { margin-bottom: 16px; }
@@ -336,6 +323,30 @@
       min-width: 1.6em;
     }
 
+    .accelerator-panel {
+      overflow: hidden;
+      border-radius: 24px;
+      background: var(--heading);
+      color: var(--cream);
+      padding: clamp(28px, 5vw, 56px);
+      display: grid;
+      grid-template-columns: minmax(0, 1.3fr) minmax(240px, .7fr);
+      gap: 42px;
+      align-items: end;
+    }
+    .accelerator-panel h2 { color: var(--cream); max-width: 13ch; }
+    .accelerator-panel .lede { color: var(--sage); }
+    .accelerator-panel .eyebrow { color: var(--sage); }
+    .accelerator-points { margin: 0; padding: 0; list-style: none; display: grid; gap: 12px; }
+    .accelerator-points li { padding: 14px 0; border-top: 1px solid rgba(255,255,255,.18); font-size: 15px; }
+    .accelerator-points strong { display: block; color: var(--cream); font-family: var(--sans); font-size: 17px; }
+    .accelerator-points span { color: var(--sage); }
+    .accelerator-actions { margin-top: 26px; }
+    .accelerator-panel .btn { background: var(--sage); color: var(--heading); }
+    .event-card { min-height: auto; box-shadow: none; }
+    .event-date { color: var(--moss); font-family: var(--mono); font-size: 12px; font-weight: 600; letter-spacing: .1em; text-transform: uppercase; margin-bottom: 18px; }
+    .event-card h3 { font-size: 23px; }
+
     footer {
       border-top: 1px solid var(--line);
       padding: 22px 0 28px;
@@ -350,8 +361,8 @@
     @media (max-width: 800px) {
       .nav-links { display: none; }
       .step { grid-template-columns: auto 1fr; }
-      .shot { grid-column: 1 / -1; aspect-ratio: 16 / 9; }
       .note { grid-template-columns: 1fr; padding: 22px; }
+      .accelerator-panel { grid-template-columns: 1fr; gap: 28px; }
       .wrap { width: min(1120px, calc(100% - 32px)); }
       h1 { max-width: none; }
     }
@@ -365,30 +376,29 @@
         Time Rich
       </a>
       <nav class="nav-links" aria-label="On this page">
-        <a href="#included">Included</a>
         <a href="#skills">Skills</a>
-        <a href="#install">Install</a>
+        <a href="#accelerator">Accelerator</a>
+        <a href="#events">Events</a>
       </nav>
-      <a class="btn small" id="navCta" href="#duplicate">Open the Content OS</a>
+      <a class="btn small" href="#skills">Browse skills</a>
     </div>
   </header>
 
   <main>
     <section class="hero" id="top">
       <div class="wrap">
-        <p class="eyebrow">Content Machine</p>
+        <p class="eyebrow">Time Rich OS</p>
         <h1>Time Rich Content OS</h1>
-        <p class="lede">The hub for the templates, AI skills, and files that come with the Time Rich Content Machine. Start with the Notion system, then download a skill.</p>
+        <p class="lede">A practical library for building a stronger LinkedIn presence. Pick a skill, download it directly, and use it with the way you already work.</p>
         <div class="hero-actions">
-          <a class="btn" id="heroCta" href="#duplicate">Duplicate the Notion template</a>
-          <a class="btn ghost" href="#skills">Browse AI skills</a>
+          <a class="btn" href="#skills">Browse LinkedIn skills</a>
+          <a class="btn ghost" href="#accelerator">About the Accelerator</a>
         </div>
         <ol class="path">
-          <li><a href="#included">Content hub</a></li>
-          <li><a href="#duplicate">Notion template</a></li>
-          <li><a href="#skills">AI skills</a></li>
-          <li><a href="#install">Install</a></li>
-          <li><a href="#later">Future workshops</a></li>
+          <li><a href="#skills">LinkedIn skills</a></li>
+          <li><a href="#install">How skills work</a></li>
+          <li><a href="#accelerator">Accelerator</a></li>
+          <li><a href="#events">Upcoming events</a></li>
         </ol>
       </div>
     </section>
@@ -396,9 +406,9 @@
     <section id="included">
       <div class="wrap">
         <div class="section-head">
-          <p class="eyebrow">Included</p>
-          <h2>What you can open today</h2>
-          <p class="lede">Three starting points. New resources join this same grid after each workshop.</p>
+          <p class="eyebrow">Start here</p>
+          <h2>Tools for better LinkedIn work</h2>
+          <p class="lede">The skills below give AI one clear job at a time, from planning a week of posts to responding to the right conversations.</p>
         </div>
         <div class="cards" id="resourceGrid"></div>
       </div>
@@ -407,13 +417,13 @@
     <section id="duplicate">
       <div class="wrap">
         <div class="section-head">
-          <p class="eyebrow">Notion template</p>
-          <h2>Duplicate the Content OS</h2>
-          <p class="lede">Make your own copy in Notion. The skills read from the voice, offers, and proof you add there.</p>
+          <p class="eyebrow">Your setup</p>
+          <h2>Start with your content context</h2>
+          <p class="lede">The Content OS keeps your voice, offers, proof, and ideas in one place. Use it to give your skills useful context.</p>
         </div>
         <div class="dupes" id="dupeSteps"></div>
         <div class="dupe-cta">
-          <a class="btn" id="dupeCta" href="#duplicate">Duplicate the Notion template</a>
+          <a class="btn" id="dupeCta" href="#duplicate">Open the Content OS</a>
           <p class="fine" id="dupeNote" hidden></p>
         </div>
       </div>
@@ -422,9 +432,9 @@
     <section id="skills">
       <div class="wrap">
         <div class="section-head">
-          <p class="eyebrow">AI skills</p>
-          <h2>Download a skill</h2>
-          <p class="lede">Each skill is a ZIP. Download it, keep it zipped, and upload it once. New skills are added here after every workshop.</p>
+          <p class="eyebrow">LinkedIn skills</p>
+          <h2>Give AI a specific LinkedIn job</h2>
+          <p class="lede">Each skill is a ready-to-upload ZIP file. Choose the job you need, download it here, then add it to your AI tool.</p>
         </div>
         <div class="cards" id="skillGrid"></div>
       </div>
@@ -433,11 +443,40 @@
     <section id="install">
       <div class="wrap">
         <div class="section-head">
-          <p class="eyebrow">Install</p>
-          <h2>How to add a skill</h2>
-          <p class="lede">Seven short steps. Leave the file as a ZIP the whole way through.</p>
+          <p class="eyebrow">How skills work</p>
+          <h2>Download, upload, use</h2>
+          <p class="lede">A skill is a small pack of instructions that helps AI handle one type of work well. Keep the file zipped when you upload it.</p>
         </div>
         <div class="steps" id="stepList"></div>
+      </div>
+    </section>
+
+    <section id="accelerator">
+      <div class="wrap">
+        <div class="accelerator-panel">
+          <div>
+            <p class="eyebrow">Superhuman Accelerator</p>
+            <h2>Build your AI operating system in four weeks.</h2>
+            <p class="lede">A live, practical programme for founders who want AI to take real work off their plate. You will build the context, workflows, and trained agents that support your business.</p>
+            <div class="accelerator-actions"><a class="btn" href="/accelerator/">Explore the Accelerator</a></div>
+          </div>
+          <ul class="accelerator-points">
+            <li><strong>Live build sessions</strong><span>Make progress with support, not another pile of videos.</span></li>
+            <li><strong>Built for your business</strong><span>Work from your offers, voice, customers, and real priorities.</span></li>
+            <li><strong>Useful from week one</strong><span>Leave with systems you can keep using after the programme.</span></li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <section id="events">
+      <div class="wrap">
+        <div class="section-head">
+          <p class="eyebrow">Upcoming events</p>
+          <h2>What is coming up</h2>
+          <p class="lede">The next live sessions in the Superhuman Accelerator.</p>
+        </div>
+        <div class="cards" id="eventGrid"></div>
       </div>
     </section>
 
@@ -471,9 +510,9 @@
     /**
      * Edit this object to publish the page.
      * - notionUrl: the Notion link that duplicates the Content OS.
-     * - resources: cards in "What you can open today".
-     * - skills: one object per ZIP. Set file to the download path when the ZIP is ready.
-     * - steps: install tutorial. Set image to a path such as "images/install-1.png".
+     * - resources: cards in "Start here".
+     * - skills: one object per ZIP.
+     * - steps: the quick install guide.
      * - drops: extra workshop files. Leave empty until there is something to add.
      * Cards layout themselves. You do not need a fixed number of items.
      */
@@ -491,79 +530,125 @@
         {
           name: "AI Skills",
           type: "ZIP downloads",
-          description: "Packaged skills you upload once. They help with research, drafts, and edits.",
+          description: "Ready-to-use LinkedIn skills for planning, writing, and building relationships.",
           cta: "Browse skills",
           href: "#skills",
           icon: "skill"
         },
         {
-          name: "Content Machine resources",
-          type: "Workshop files",
-          description: "Guides and extras from the program. New files from live workshops are added here.",
-          cta: "See what's next",
-          href: "#later",
+          name: "Superhuman Accelerator",
+          type: "Live programme",
+          description: "A four-week live programme for building useful AI systems around your business.",
+          cta: "See the programme",
+          href: "#accelerator",
           icon: "files"
         }
       ],
       skills: [
         {
-          name: "Tone of Voice",
-          description: "Captures how you sound so drafts start in your voice.",
-          outcome: "Build a voice profile the other skills can follow.",
-          file: "",
-          tag: ""
+          name: "Content Planner",
+          category: "Plan and position",
+          description: "Build a seven-day LinkedIn plan from your theme, audience, and content pillars.",
+          outcome: "Turn a rough idea into a clear week of posts.",
+          file: "/downloads/linkedin-content-planner.zip"
         },
         {
-          name: "Research",
-          description: "Finds angles and references already working in your niche.",
-          outcome: "Turn a topic into a short brief before you write.",
-          file: "",
-          tag: ""
+          name: "Profile Optimizer",
+          category: "Plan and position",
+          description: "Review and improve the parts of your LinkedIn profile that people see first.",
+          outcome: "Make your profile clearer for the people you want to reach.",
+          file: "/downloads/linkedin-profile-optimizer.zip"
         },
         {
-          name: "Caption Writer",
-          description: "Drafts the caption for a post you already have.",
-          outcome: "Get a first caption from one idea or a transcript.",
-          file: "",
-          tag: ""
+          name: "Interviewer",
+          category: "Plan and position",
+          description: "Pull out the stories, numbers, turning points, and opinions worth sharing.",
+          outcome: "Build a bank of real material for future posts.",
+          file: "/downloads/linkedin-interviewer.zip"
+        },
+        {
+          name: "Hook Extractor",
+          category: "Write and improve",
+          description: "Break down why a strong LinkedIn hook works and turn it into a usable formula.",
+          outcome: "Find sharper ways to open your own posts.",
+          file: "/downloads/linkedin-hook-extractor.zip"
+        },
+        {
+          name: "Post Writer",
+          category: "Write and improve",
+          description: "Draft a LinkedIn post from an idea using tested hook and structure options.",
+          outcome: "Get a solid first draft without staring at a blank page.",
+          file: "/downloads/linkedin-post-writer.zip"
+        },
+        {
+          name: "Humanizer",
+          category: "Write and improve",
+          description: "Clean up stiff, generic AI writing so it sounds more like a real person.",
+          outcome: "Make a draft feel natural before you publish it.",
+          file: "/downloads/linkedin-humanizer.zip"
+        },
+        {
+          name: "Repurposer",
+          category: "Write and improve",
+          description: "Turn an existing piece of content into a LinkedIn post.",
+          outcome: "Get more useful posts from work you have already done.",
+          file: "/downloads/linkedin-repurposer.zip"
+        },
+        {
+          name: "Comment Drafter",
+          category: "Engage and grow",
+          description: "Write thoughtful comments or repost copy from a LinkedIn post you want to join.",
+          outcome: "Show up in the right conversations with something useful to say.",
+          file: "/downloads/linkedin-comment-drafter.zip"
+        },
+        {
+          name: "Reply Handler",
+          category: "Engage and grow",
+          description: "Draft replies for the comments and threads that deserve your attention.",
+          outcome: "Keep good conversations moving without losing your voice.",
+          file: "/downloads/linkedin-reply-handler.zip"
+        },
+        {
+          name: "Thread Monitor",
+          category: "Engage and grow",
+          description: "Track the comments that get replies from a post author and flag warm follow-up moments.",
+          outcome: "Spot conversations that could lead somewhere useful.",
+          file: "/downloads/linkedin-thread-monitor.zip"
+        },
+        {
+          name: "Engager Analytics",
+          category: "Engage and grow",
+          description: "Sort your likers and commenters by fit, then decide who to follow up with.",
+          outcome: "Focus your time on the people most likely to matter.",
+          file: "/downloads/linkedin-engager-analytics.zip"
+        },
+        {
+          name: "Employee Advocacy",
+          category: "Engage and grow",
+          description: "Set up a simple LinkedIn advocacy programme for your team.",
+          outcome: "Help marketing and sales show up with a more consistent voice.",
+          file: "/downloads/linkedin-employee-advocacy.zip"
         }
       ],
       steps: [
         {
           title: "Download the ZIP",
-          body: "Use Download on the skill card. The file saves to your computer.",
-          image: ""
+          body: "Choose a skill and use the download button. The ZIP saves straight to your computer."
         },
         {
-          title: "Keep it zipped",
-          body: "Leave the skill as a ZIP. Uploading an unzipped folder will not work.",
-          image: ""
+          title: "Upload it to your AI tool",
+          body: "Open the Skills area in your AI tool and upload the ZIP. Leave the file zipped."
         },
         {
-          title: "Open Skills",
-          body: "In your AI tool, open the screen where you add Skills.",
-          image: ""
-        },
-        {
-          title: "Click Upload",
-          body: "Choose Upload on that screen.",
-          image: ""
-        },
-        {
-          title: "Select the ZIP",
-          body: "Pick the file you just downloaded. Do not rename it.",
-          image: ""
-        },
-        {
-          title: "Confirm and save",
-          body: "Accept the prompt so the skill is stored on your account.",
-          image: ""
-        },
-        {
-          title: "Start using it",
-          body: "Open a new chat. The skill is ready.",
-          image: ""
+          title: "Give it a job",
+          body: "Start a new chat and ask the skill to handle the job on its card."
         }
+      ],
+      events: [
+        { date: "Mon 26 Oct", title: "Open Business Surgery", description: "Bring the work that needs a practical answer." },
+        { date: "Fri 30 Oct", title: "Training Your Agent", description: "Turn your context into something your AI can use." },
+        { date: "Mon 2 Nov", title: "Your AI Operating System", description: "Connect the pieces that keep your business moving." },
+        { date: "Fri 6 Nov", title: "Expert Q&A", description: "Bring your questions and leave with clear next steps." }
       ],
       drops: []
     };
@@ -653,23 +738,27 @@
 
     function renderSkills() {
       const grid = document.getElementById("skillGrid");
-      HUB.skills.forEach((skill) => {
+      const groups = [
+        ["Plan and position", "Set the direction before you start posting."],
+        ["Write and improve", "Shape a good idea into a post that sounds like you."],
+        ["Engage and grow", "Spend time on the conversations that are worth having."]
+      ];
+      groups.forEach(([name, description]) => {
+        const cards = el("div", { class: "cards" });
+        const group = el("div", { class: "skill-group" }, [
+          el("div", { class: "skill-group-head" }, [
+            el("h3", { text: name }),
+            el("p", { text: description })
+          ]),
+          cards
+        ]);
+        grid.append(group);
+        HUB.skills.filter((skill) => skill.category === name).forEach((skill) => {
         const file = (skill.file || "").trim();
-        const ready = Boolean(file);
-        const button = ready
-          ? el("a", { class: "btn", href: file, download: "" })
-          : el("button", { class: "btn", type: "button" });
+        const button = el("a", { class: "btn", href: file, download: "" });
         button.insertAdjacentHTML("afterbegin", ICONS.download);
-        button.append(document.createTextNode("Download"));
-        if (!ready) {
-          button.addEventListener("click", () => {
-            const status = button.parentElement.querySelector(".pending");
-            if (status) status.textContent = "This ZIP will be linked on the card when the skill is released.";
-          });
-        }
-        const kids = [];
-        if (skill.tag) kids.push(el("div", { class: "tag", text: skill.tag }));
-        kids.push(
+        button.append(document.createTextNode("Download skill"));
+        cards.append(el("article", { class: "card skill" }, [
           el("h3", { text: skill.name }),
           el("p", { text: skill.description }),
           el("div", { class: "outcome" }, [
@@ -677,32 +766,11 @@
             el("p", { text: skill.outcome })
           ]),
           el("div", { class: "skill-foot" }, [
-            button,
-            ready ? null : el("p", { class: "pending", text: "ZIP link coming" })
+            button
           ])
-        );
-        grid.append(el("article", { class: "card skill" }, kids));
+        ]));
+        });
       });
-    }
-
-    function shotFigure(step, index) {
-      const figure = el("figure", { class: "shot" });
-      const src = (step.image || "").trim();
-      if (src) {
-        figure.append(el("img", {
-          src: src,
-          alt: step.imageAlt || step.title
-        }));
-        return figure;
-      }
-      const ph = el("div", { class: "shot-ph" }, [
-        el("div", { class: "shot-bar", "aria-hidden": "true" }, [
-          el("span"), el("span"), el("span")
-        ]),
-        el("strong", { text: "Screenshot · step " + (index + 1) })
-      ]);
-      figure.append(ph);
-      return figure;
     }
 
     function renderSteps() {
@@ -713,8 +781,18 @@
           el("div", {}, [
             el("h3", { text: step.title }),
             el("p", { text: step.body })
-          ]),
-          shotFigure(step, index)
+          ])
+        ]));
+      });
+    }
+
+    function renderEvents() {
+      const grid = document.getElementById("eventGrid");
+      HUB.events.forEach((event) => {
+        grid.append(el("article", { class: "card event-card" }, [
+          el("div", { class: "event-date", text: event.date }),
+          el("h3", { text: event.title }),
+          el("p", { text: event.description })
         ]));
       });
     }
@@ -745,6 +823,7 @@
     renderDupes();
     renderSkills();
     renderSteps();
+    renderEvents();
     renderDrops();
   </script>
 </body>
