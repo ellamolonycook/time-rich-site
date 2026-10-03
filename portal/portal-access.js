@@ -286,32 +286,61 @@
     }
   }
 
+  
   /* ---- items --------------------------------------------------------- */
 
   function itemCard(item) {
-    var card = el('article', 'trp-item');
+    var url = safeUrl(item && item.url);
+    var isLink = (item && item.kind === 'link') && url;
+    var tag = isLink ? 'a' : 'div';
+    var card = el(tag, 'block p-8 rounded-[1.5rem] bg-brand-offwhite border border-brand-green/10 shadow-sm card-lift group h-full relative overflow-hidden flex flex-col');
+    if (isLink) card.href = url.href;
+
+    var title = str(item && item.title) || 'Untitled';
+    var body = str(item && item.body);
+    
+    // Eyebrow / Phase
+    var eyebrow = el('div', 'text-[10px] font-mono tracking-[0.2em] uppercase text-brand-deep/60 font-bold mb-4');
+    eyebrow.textContent = 'Module';
+    card.appendChild(eyebrow);
+
+    // Title
+    card.appendChild(el('h3', 'text-xl font-bold text-brand-deep mb-3 group-hover:text-brand-mid transition-colors', title));
+
+    // Video embedding
     var kind = str(item && item.kind);
-    var title = str(item && item.title);
-    var body  = (item && typeof item.body === 'string') ? item.body : '';
-    var url   = safeUrl(item && item.url);
-
-    if (title) card.appendChild(el('h4', 'trp-item-title', title));
-
-    // kind "video" puts the player above the body text.
     if (kind === 'video' && url) {
       var src = embedSrc(url);
-      if (src) card.appendChild(videoFrame(src, title));
+      if (src) {
+         var v = videoFrame(src, title);
+         v.className = 'w-full aspect-video rounded-xl overflow-hidden mb-4 bg-brand-deep/5';
+         card.appendChild(v);
+      }
     }
 
-    if (body) card.appendChild(el('p', 'trp-item-body', body));
+    // Body
+    if (body) {
+       card.appendChild(el('p', 'text-sm text-brand-mid leading-relaxed mb-8 flex-1', body));
+    }
 
-    if (kind === 'link' && url) {
-      card.appendChild(linkButton(url, 'Open'));
+    // Bottom action
+    var bottom = el('div', 'flex items-center justify-between mt-auto pt-6 border-t border-brand-green/10');
+    if (isLink) {
+       bottom.appendChild(el('span', 'text-xs text-brand-mid font-medium', 'Open resource'));
     } else if (kind === 'video' && url && !embedSrc(url)) {
-      // A video we cannot safely embed is still reachable as a link.
-      card.appendChild(linkButton(url, 'Watch'));
+       var a = el('a', 'text-xs text-brand-mid font-medium hover:text-brand-deep', 'Watch video');
+       a.href = url.href;
+       a.target = '_blank';
+       bottom.appendChild(a);
+    } else {
+       bottom.appendChild(el('span', 'text-xs text-brand-mid font-medium', 'Content'));
     }
 
+    var iconWrapper = el('div', 'w-8 h-8 rounded-full border border-brand-green/15 flex items-center justify-center group-hover:bg-brand-deep group-hover:border-brand-deep group-hover:text-white text-brand-deep transition-all duration-300');
+    iconWrapper.innerHTML = '<svg class="w-4 h-4 transform group-hover:translate-x-0.5 transition-transform" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7"></path></svg>';
+    bottom.appendChild(iconWrapper);
+
+    card.appendChild(bottom);
     return card;
   }
 
@@ -328,37 +357,47 @@
   /* ---- weeks ---------------------------------------------------------- */
 
   function weekCard(week) {
-    var card     = el('section', 'trp-week');
+    var card     = el('section', 'space-y-6 relative mb-16');
     var unlocked = week && week.unlocked === true;
     var title    = str(week && week.title);
     var summary  = str(week && week.summary);
+    var weekNum  = num(week && week.id, 0) || 1;
 
-    var head = el('div', 'trp-week-head');
-    head.appendChild(el('h3', 'trp-week-title', title || 'Untitled'));
+    // Timeline line
+    var line = el('div', 'absolute -left-8 top-0 bottom-0 w-px bg-brand-green/10 hidden lg:block');
+    card.appendChild(line);
 
-    if (!unlocked) {
-      card.className = 'trp-week trp-week-locked';
-      head.appendChild(el('span', 'trp-badge', 'Locked'));
-    }
+    // Header flex
+    var head = el('div', 'flex items-center gap-4');
+    var badge = el('div', 'w-8 h-8 rounded-full bg-brand-offwhite border border-brand-green/15 text-brand-deep flex items-center justify-center text-xs font-bold shadow-sm relative z-10 lg:-ml-[48px]');
+    badge.textContent = weekNum;
+    head.appendChild(badge);
+    head.appendChild(el('h2', 'text-xl font-bold text-brand-deep', title || 'Untitled'));
     card.appendChild(head);
 
-    if (!unlocked) {
-      var when = formatUnlockDate(week && week.release_at);
-      card.appendChild(el('p', 'trp-week-meta', when ? ('Unlocks ' + when) : 'Unlocks soon'));
-      return card;                       // a locked week shows nothing else
+    // Summary
+    if (summary) {
+       card.appendChild(el('p', 'text-sm text-brand-mid max-w-2xl', summary));
     }
 
-    if (summary) card.appendChild(el('p', 'trp-week-summary', summary));
-
-    var items = sortedItems(week);
-    if (!items.length) {
-      card.appendChild(el('p', 'trp-empty', 'Content coming soon.'));
+    if (!unlocked) {
+      var lockedBox = el('div', 'p-8 rounded-[1.5rem] bg-brand-offwhite/50 border border-brand-green/10 flex items-center gap-4');
+      lockedBox.innerHTML = '<div class="w-8 h-8 rounded-full bg-brand-deep/5 flex items-center justify-center"><svg class="w-4 h-4 text-brand-mid" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"></path></svg></div>';
+      var when = formatUnlockDate(week && week.release_at);
+      lockedBox.appendChild(el('p', 'text-sm font-medium text-brand-mid', when ? ('Unlocks ' + when) : 'Unlocks soon'));
+      card.appendChild(lockedBox);
       return card;
     }
 
-    var list = el('div', 'trp-items');
-    items.forEach(function (item) { list.appendChild(itemCard(item)); });
-    card.appendChild(list);
+    var items = sortedItems(week);
+    if (!items.length) {
+      card.appendChild(el('p', 'text-sm text-brand-mid/60 italic', 'Content coming soon.'));
+      return card;
+    }
+
+    var grid = el('div', 'grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6');
+    items.forEach(function (item) { grid.appendChild(itemCard(item)); });
+    card.appendChild(grid);
 
     return card;
   }
@@ -371,30 +410,77 @@
     weeks.sort(function (a, b) { return num(a && a.id, 0) - num(b && b.id, 0); });
 
     if (!weeks.length) {
-      target.appendChild(el('p', 'trp-empty', 'Content coming soon.'));
+      target.appendChild(el('p', 'text-brand-mid', 'Content coming soon.'));
       return;
     }
 
-    weeks.forEach(function (week) { target.appendChild(weekCard(week)); });
+    var container = el('div', 'space-y-16 lg:pl-12 pt-8');
+    weeks.forEach(function (week) { container.appendChild(weekCard(week)); });
+    target.appendChild(container);
   }
 
   /* ---- sessions -------------------------------------------------------- */
 
-  function sessionRow(session) {
-    var row = el('article', 'trp-session');
+  function sessionRow(session, index) {
+    var row = el('div', 'group flex flex-col md:flex-row items-start md:items-center justify-between p-6 lg:p-8 rounded-[1.5rem] bg-brand-offwhite border border-brand-green/10 shadow-sm transition-all hover:shadow-md card-lift mb-6');
+    var isNext = index === 0;
 
-    row.appendChild(el('h4', 'trp-session-title', str(session && session.title) || 'Untitled'));
+    var leftSide = el('div', 'flex items-start gap-6 lg:gap-8');
+    var iconBox = el('div', 'hidden sm:flex w-12 h-12 rounded-full bg-brand-deep/5 text-brand-deep items-center justify-center');
+    if (isNext) {
+       iconBox.innerHTML = '<svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z"></path></svg>';
+    } else {
+       iconBox.innerHTML = '<span class="text-xs font-bold">' + (index + 1) + '</span>';
+       iconBox.className = 'hidden sm:flex w-12 h-12 rounded-full border border-brand-green/15 text-brand-mid/50 items-center justify-center';
+       row.className = 'group flex flex-col md:flex-row items-start md:items-center justify-between p-6 lg:p-8 rounded-[1.5rem] bg-brand-offwhite/50 border border-brand-green/10 transition-all hover:bg-brand-offwhite mb-6';
+       leftSide.className = 'flex items-start gap-6 lg:gap-8 opacity-75 group-hover:opacity-100 transition-opacity';
+    }
+    leftSide.appendChild(iconBox);
 
+    var contentBox = el('div', 'space-y-2');
+    var eyebrowFlex = el('div', 'flex items-center gap-3');
+    var eyebrow = el('span', 'text-[10px] font-mono tracking-[0.2em] uppercase text-brand-deep/60 font-bold');
+    eyebrow.textContent = 'Session ' + (index + 1);
+    eyebrowFlex.appendChild(eyebrow);
+
+    if (isNext) {
+       var badge = el('div', 'bg-brand-deep/5 text-brand-deep text-[10px] font-bold px-2 py-0.5 rounded uppercase tracking-wider flex items-center gap-1.5 border border-brand-deep/10');
+       badge.innerHTML = '<span class="w-1.5 h-1.5 rounded-full bg-brand-deep animate-pulse"></span>Up Next';
+       eyebrowFlex.appendChild(badge);
+    }
+    contentBox.appendChild(eyebrowFlex);
+
+    contentBox.appendChild(el('h3', isNext ? 'text-xl font-bold text-brand-deep' : 'text-lg font-bold text-brand-deep/80', str(session && session.title) || 'Untitled'));
+    
     var when = formatSessionDate(session && session.starts_at);
-    if (when) row.appendChild(el('p', 'trp-session-meta', when));
+    if (when) {
+       contentBox.appendChild(el('p', isNext ? 'text-sm text-brand-mid font-medium' : 'text-sm text-brand-mid/80', when));
+    }
+    leftSide.appendChild(contentBox);
+    row.appendChild(leftSide);
 
     var join = safeUrl(session && session.join_url);
     var rec  = safeUrl(session && session.recording_url);
 
     if (join || rec) {
-      var actions = el('div', 'trp-actions');
-      if (join) actions.appendChild(linkButton(join, 'Join'));
-      if (rec)  actions.appendChild(linkButton(rec, 'Watch recording'));
+      var actions = el('div', 'mt-6 md:mt-0 w-full md:w-auto flex flex-col sm:flex-row gap-3');
+      if (join) {
+         var jBtn = linkButton(join, 'Join via Zoom');
+         jBtn.className = 'w-full md:w-auto px-6 py-3 bg-brand-deep text-brand-offwhite text-xs font-semibold rounded-xl hover:bg-brand-green transition-colors shadow-sm flex items-center justify-center gap-2';
+         actions.appendChild(jBtn);
+      }
+      if (rec) {
+         var rBtn = linkButton(rec, 'Watch recording');
+         rBtn.className = 'w-full md:w-auto px-4 py-3 bg-brand-sagelt text-brand-deep text-xs font-semibold rounded-xl hover:bg-brand-sage transition-colors flex items-center justify-center';
+         actions.appendChild(rBtn);
+      }
+      row.appendChild(actions);
+    } else if (isNext) {
+      // Just a placeholder button so it looks designed
+      var actions = el('div', 'mt-6 md:mt-0 w-full md:w-auto flex flex-col sm:flex-row gap-3');
+      var rBtn = el('button', 'w-full md:w-auto px-4 py-3 bg-brand-sagelt text-brand-deep text-xs font-semibold rounded-xl hover:bg-brand-sage transition-colors flex items-center justify-center');
+      rBtn.textContent = "Link coming soon";
+      actions.appendChild(rBtn);
       row.appendChild(actions);
     }
 
@@ -413,14 +499,15 @@
     });
 
     if (!sessions.length) {
-      target.appendChild(el('p', 'trp-empty', 'No sessions scheduled yet.'));
+      target.appendChild(el('p', 'text-brand-mid', 'No sessions scheduled yet.'));
       return;
     }
 
-    sessions.forEach(function (session) { target.appendChild(sessionRow(session)); });
+    var container = el('div', 'space-y-6 pt-8');
+    sessions.forEach(function (session, index) { container.appendChild(sessionRow(session, index)); });
+    target.appendChild(container);
   }
-
-  /* ---- auto-mount ------------------------------------------------------- */
+/* ---- auto-mount ------------------------------------------------------- */
 
   function applyData(data) {
     var first = str(data && data.member && data.member.first_name);
