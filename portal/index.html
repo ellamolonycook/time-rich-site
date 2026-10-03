@@ -88,6 +88,7 @@
   <style>
     .font-montserrat { font-family: 'Montserrat', sans-serif !important; }
   </style>
+  <link rel="stylesheet" href="portal-content.css">
 </head>
 <body class="h-screen overflow-hidden flex items-center justify-center font-sans selection:bg-[#CCEEA0] relative text-[#1a1a1a]">
 
@@ -228,7 +229,7 @@
       </h1>
 
       <!-- Access Form -->
-      <form id="portal-login-form" class="space-y-0">
+      <form id="portal-login-form" class="space-y-0" data-portal-login>
         <!-- Input field with eye icon -->
         <div class="relative mb-[52px]">
           <input
@@ -322,5 +323,8 @@
       }, 700);
     });
   </script>
+
+  <script src="portal-config.js"></script>
+  <script src="portal-access.js"></script>
 </body>
 </html>
