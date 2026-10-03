@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <meta name="robots" content="noindex, nofollow"/>
+  <title>Portal preview — Time Rich</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin=""/>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Plus+Jakarta+Sans:wght@300;400;500;600;700&family=JetBrains+Mono:wght@300;400;500&display=swap"/>
+
+  <link rel="stylesheet" href="portal-content.css"/>
+
+  <style>
+    /* Page chrome only. Everything inside the portal sections is styled
+       by portal-content.css. */
+    html, body { margin: 0; background: #FFFCEB; }
+    body { font-family: "Plus Jakarta Sans", ui-sans-serif, system-ui, sans-serif; }
+    .pv-note {
+      max-width: 48rem;
+      margin: 0 auto;
+      padding: 0.75rem 1rem;
+      border-bottom: 1px solid rgba(66, 75, 54, 0.12);
+      font-family: "JetBrains Mono", ui-monospace, monospace;
+      font-size: 0.625rem;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: rgba(78, 88, 64, 0.8);
+    }
+    .pv-bar {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+      gap: 0.75rem;
+      margin-bottom: 1.5rem;
+    }
+  </style>
+
+  <!-- Config first, then the library. Both are deferred so the DOM is
+       ready before the script mounts. -->
+  <script src="portal-config.js" defer></script>
+  <script src="portal-access.js" defer></script>
+</head>
+
+<body>
+
+  <p class="pv-note">Preview page &middot; not indexed &middot; not linked from the portal</p>
+
+  <main class="trp-wrap">
+
+    <noscript>
+      <p class="trp-error">This page needs JavaScript to show your portal content.</p>
+    </noscript>
+
+    <!-- Shown only while the stored code is being checked. -->
+    <div class="trp-when-loading">
+      <p class="trp-empty">Checking your access&hellip;</p>
+    </div>
+
+    <!-- Shown when there is no valid code. -->
+    <div class="trp-when-out">
+      <form class="trp-login" data-portal-login novalidate>
+        <p class="trp-eyebrow">Accelerator portal</p>
+        <h1 class="trp-h1">Enter your code</h1>
+
+        <!-- The input deliberately has no name attribute, so even a stray
+             native submit could never put the passcode in the URL. -->
+        <label class="trp-label" for="tr-code">Access code</label>
+        <input class="trp-input"
+               id="tr-code"
+               type="text"
+               inputmode="text"
+               autocomplete="one-time-code"
+               autocapitalize="characters"
+               autocorrect="off"
+               spellcheck="false"
+               placeholder="XXXXX-XXXXX"/>
+
+        <button class="trp-btn" type="submit">Unlock</button>
+
+        <p class="trp-error" data-portal-error role="alert"></p>
+        <p class="trp-hint">Your code was sent with your order confirmation.</p>
+      </form>
+    </div>
+
+    <!-- Shown only once a valid code has loaded. -->
+    <div class="trp-when-in">
+
+      <div class="pv-bar">
+        <h1 class="trp-h1" style="margin: 0;">Welcome<span class="trp-name" data-portal-name></span></h1>
+        <button class="trp-btn trp-btn-quiet" type="button" data-portal-signout>Sign out</button>
+      </div>
+
+      <section class="trp-section">
+        <p class="trp-eyebrow">Your weeks</p>
+        <h2 class="trp-h2">Course content</h2>
+        <div data-portal-weeks></div>
+      </section>
+
+      <section class="trp-section">
+        <p class="trp-eyebrow">Live calls</p>
+        <h2 class="trp-h2">Sessions</h2>
+        <div data-portal-sessions></div>
+      </section>
+
+    </div>
+
+  </main>
+
+</body>
+</html>

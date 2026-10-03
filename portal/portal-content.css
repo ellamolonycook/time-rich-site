@@ -1,0 +1,357 @@
+/* =====================================================================
+ * Time Rich accelerator portal - content styles.
+ *
+ * Every class is prefixed "trp-" so nothing here can collide with the
+ * existing portal pages or with Tailwind's utilities. Colours and fonts
+ * are the portal's own, lifted from portal/dashboard.html.
+ *
+ * To restyle: override the custom properties on :root, or just rewrite
+ * the rules. No JavaScript depends on any of these declarations, only
+ * on the class names.
+ * ===================================================================== */
+
+:root {
+  --trp-cream:    #FFFCEB;
+  --trp-offwhite: #FFFDFB;
+  --trp-sage:     #DCDEBF;
+  --trp-sagelt:   #E9EAD5;
+  --trp-green:    #424B36;
+  --trp-deep:     #333A28;
+  --trp-mid:      #4E5840;
+  --trp-lime:     #CCEEA0;
+  --trp-olive:    #67762E;
+
+  --trp-line:     rgba(66, 75, 54, 0.12);
+  --trp-shadow:   0 1px 2px rgba(66, 75, 54, 0.06);
+  --trp-radius:   1.5rem;
+
+  --trp-sans:    "Plus Jakarta Sans", ui-sans-serif, system-ui, sans-serif;
+  --trp-display: "Space Grotesk", var(--trp-sans);
+  --trp-mono:    "JetBrains Mono", ui-monospace, SFMono-Regular, Menlo, monospace;
+}
+
+/* ---- gating -----------------------------------------------------------
+ * portal-access.js sets data-tr-portal on <html> to "loading", "in" or
+ * "out". Both member content and the login form stay hidden until the
+ * script knows which it is, so neither flashes on load.
+ * --------------------------------------------------------------------- */
+
+.trp-when-in,
+.trp-when-out,
+.trp-when-loading { display: none; }
+
+[data-tr-portal="in"]      .trp-when-in      { display: block; }
+[data-tr-portal="out"]     .trp-when-out     { display: block; }
+[data-tr-portal="loading"] .trp-when-loading { display: block; }
+
+/* ---- layout ----------------------------------------------------------- */
+
+.trp-wrap {
+  box-sizing: border-box;
+  width: 100%;
+  max-width: 48rem;
+  margin: 0 auto;
+  padding: 2rem 1rem 4rem;
+  font-family: var(--trp-sans);
+  color: var(--trp-deep);
+}
+
+.trp-wrap *,
+.trp-wrap *::before,
+.trp-wrap *::after { box-sizing: border-box; }
+
+.trp-section { margin-top: 2.5rem; }
+
+.trp-eyebrow {
+  margin: 0 0 0.5rem;
+  font-family: var(--trp-mono);
+  font-size: 0.625rem;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: rgba(51, 58, 40, 0.6);
+}
+
+.trp-h1,
+.trp-h2 {
+  font-family: var(--trp-display);
+  letter-spacing: -0.022em;
+  color: var(--trp-deep);
+  margin: 0 0 0.75rem;
+  overflow-wrap: break-word;
+}
+
+.trp-h1 { font-size: clamp(1.75rem, 6vw, 2.25rem); font-weight: 700; }
+.trp-h2 { font-size: clamp(1.125rem, 4vw, 1.375rem); font-weight: 700; }
+
+/* The comma only appears once there is actually a name to show. */
+.trp-name:not(:empty)::before { content: ", "; }
+
+/* ---- weeks -------------------------------------------------------------- */
+
+.trp-week {
+  background: var(--trp-offwhite);
+  border: 1px solid var(--trp-line);
+  border-radius: var(--trp-radius);
+  box-shadow: var(--trp-shadow);
+  padding: 1.25rem;
+  margin-bottom: 1rem;
+}
+
+.trp-week-locked { background: transparent; box-shadow: none; }
+
+.trp-week-head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 0.5rem 0.75rem;
+  margin-bottom: 0.5rem;
+}
+
+.trp-week-title {
+  font-family: var(--trp-display);
+  font-size: 1.125rem;
+  font-weight: 700;
+  margin: 0;
+  min-width: 0;
+  overflow-wrap: break-word;
+}
+
+.trp-week-locked .trp-week-title { color: rgba(51, 58, 40, 0.6); }
+
+.trp-week-summary,
+.trp-week-meta {
+  margin: 0 0 0.75rem;
+  font-size: 0.875rem;
+  line-height: 1.6;
+  color: var(--trp-mid);
+  overflow-wrap: break-word;
+}
+
+.trp-week-meta { font-size: 0.8125rem; color: rgba(78, 88, 64, 0.8); }
+
+.trp-badge {
+  flex: none;
+  padding: 0.125rem 0.5rem;
+  border-radius: 0.25rem;
+  background: rgba(66, 75, 54, 0.06);
+  font-size: 0.5625rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: var(--trp-mid);
+  white-space: nowrap;
+}
+
+/* ---- items --------------------------------------------------------------- */
+
+.trp-items {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  margin-top: 1rem;
+}
+
+.trp-item {
+  min-width: 0;
+  padding-top: 1rem;
+  border-top: 1px solid var(--trp-line);
+}
+
+.trp-item:first-child { padding-top: 0; border-top: 0; }
+
+.trp-item-title {
+  font-family: var(--trp-display);
+  font-size: 0.9375rem;
+  font-weight: 700;
+  margin: 0 0 0.375rem;
+  overflow-wrap: break-word;
+}
+
+.trp-item-body {
+  margin: 0 0 0.75rem;
+  font-size: 0.875rem;
+  line-height: 1.6;
+  color: var(--trp-mid);
+  white-space: pre-wrap;        /* keeps the line breaks in body text */
+  overflow-wrap: break-word;
+}
+
+.trp-empty {
+  margin: 0;
+  font-size: 0.875rem;
+  color: rgba(78, 88, 64, 0.75);
+}
+
+/* ---- video ---------------------------------------------------------------- */
+
+.trp-video {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 16 / 9;
+  margin: 0 0 0.75rem;
+  border-radius: 0.75rem;
+  overflow: hidden;
+  background: var(--trp-sagelt);
+}
+
+.trp-video iframe {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  border: 0;
+  display: block;
+}
+
+/* Fallback for browsers without aspect-ratio. */
+@supports not (aspect-ratio: 16 / 9) {
+  .trp-video { height: 0; padding-bottom: 56.25%; }
+}
+
+/* ---- sessions --------------------------------------------------------------- */
+
+.trp-session {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 0.5rem 1rem;
+  padding: 1rem 0;
+  border-bottom: 1px solid var(--trp-line);
+}
+
+.trp-session-title {
+  font-family: var(--trp-display);
+  font-size: 0.9375rem;
+  font-weight: 700;
+  margin: 0;
+  flex: 1 1 14rem;
+  min-width: 0;
+  overflow-wrap: break-word;
+}
+
+.trp-session-meta {
+  margin: 0;
+  font-size: 0.8125rem;
+  color: var(--trp-mid);
+  flex: 1 1 100%;
+}
+
+/* ---- buttons and links ---------------------------------------------------------- */
+
+.trp-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.trp-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  padding: 0.5rem 1rem;
+  border: 0;
+  border-radius: 0.75rem;
+  background: var(--trp-deep);
+  color: var(--trp-cream);
+  font-family: var(--trp-sans);
+  font-size: 0.75rem;
+  font-weight: 600;
+  line-height: 1.4;
+  text-decoration: none;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+.trp-btn:hover  { background: var(--trp-green); }
+.trp-btn:focus-visible {
+  outline: 2px solid var(--trp-olive);
+  outline-offset: 2px;
+}
+.trp-btn[disabled] { opacity: 0.5; cursor: not-allowed; }
+
+.trp-btn-quiet {
+  background: transparent;
+  color: var(--trp-mid);
+  border: 1px solid var(--trp-line);
+}
+.trp-btn-quiet:hover { background: var(--trp-sagelt); color: var(--trp-deep); }
+
+/* ---- login form ------------------------------------------------------------------- */
+
+.trp-login {
+  max-width: 24rem;
+  margin: 0 auto;
+  padding: 1.5rem;
+  background: var(--trp-offwhite);
+  border: 1px solid var(--trp-line);
+  border-radius: var(--trp-radius);
+  box-shadow: var(--trp-shadow);
+}
+
+.trp-label {
+  display: block;
+  margin-bottom: 0.375rem;
+  font-family: var(--trp-mono);
+  font-size: 0.625rem;
+  font-weight: 700;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--trp-mid);
+}
+
+.trp-input {
+  display: block;
+  width: 100%;
+  padding: 0.75rem 1rem;
+  margin-bottom: 0.75rem;
+  border: 1px solid var(--trp-sage);
+  border-radius: 0.75rem;
+  background: var(--trp-offwhite);
+  color: var(--trp-deep);
+  font-family: var(--trp-mono);
+  font-size: 1rem;              /* 16px stops iOS zooming on focus */
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.trp-input::placeholder { color: rgba(78, 88, 64, 0.45); letter-spacing: normal; }
+
+.trp-input:focus {
+  outline: none;
+  border-color: var(--trp-olive);
+  box-shadow: 0 0 0 3px rgba(103, 118, 46, 0.15);
+}
+
+.trp-login .trp-btn { width: 100%; padding: 0.75rem 1rem; font-size: 0.8125rem; }
+
+.trp-error:empty { display: none; }
+
+.trp-error {
+  margin: 0.75rem 0 0;
+  font-size: 0.8125rem;
+  line-height: 1.5;
+  color: #8A2F22;
+  overflow-wrap: break-word;
+}
+
+.trp-hint {
+  margin: 0.75rem 0 0;
+  font-size: 0.75rem;
+  color: rgba(78, 88, 64, 0.8);
+}
+
+/* ---- phone ---------------------------------------------------------------------------- */
+
+@media (max-width: 480px) {
+  .trp-wrap    { padding: 1.5rem 1rem 3rem; }
+  .trp-week    { padding: 1rem; border-radius: 1rem; }
+  .trp-login   { padding: 1.25rem; border-radius: 1rem; }
+  .trp-actions { width: 100%; }
+  .trp-actions .trp-btn { flex: 1 1 auto; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .trp-btn { transition: none; }
+}
