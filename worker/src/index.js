@@ -60,6 +60,15 @@ export default {
       return handleOnboardSubmit(onboardData, env, cors, ctx);
     }
 
+    // Route: buyer questionnaire (POST /onboard-questionnaire). Lands on the
+    // same Notion row as /onboard. Unlike the rest of the writes here this one
+    // is awaited, because the page has to be able to say it did not save.
+    if (path.endsWith("/onboard-questionnaire")) {
+      let questionnaireData;
+      try { questionnaireData = await request.json(); } catch { return json({ error: "Invalid JSON" }, 400, cors); }
+      return handleOnboardQuestionnaire(questionnaireData, env, cors, ctx);
+    }
+
     // Route: corner chatbot -> Anthropic.
     if (path.endsWith("/chat")) {
       return handleChat(request, env, cors);
@@ -1534,6 +1543,9 @@ async function handleOnboardVerification(request, env, cors, url) {
     const paymentStatus = calProp(props["Payment Status"]) || "Paid";
     const secondSeatChoice = calProp(props["Second Seat Option"]) || calProp(props["Second Seat Choice"]) || "";
     const isCompleted = Boolean(secondSeatChoice);
+    // calProp returns "" for an empty date, so this is false until the
+    // questionnaire has actually been saved.
+    const questionnaireCompleted = Boolean(calProp(props["Questionnaire Completed"]));
 
     return json({
       ok: true,
@@ -1542,6 +1554,7 @@ async function handleOnboardVerification(request, env, cors, url) {
       paymentStatus,
       secondSeatChoice,
       isCompleted,
+      questionnaireCompleted,
       trackingId: trackingId || calProp(props["TrackingID"]),
       whatsappUrl: env.WHATSAPP_INVITE_URL || "",
     }, 200, cors);
@@ -1574,7 +1587,10 @@ async function handleOnboardSubmit(data, env, cors, ctx) {
     const notionWork = (async () => {
       try {
         const properties = {
-          "Second Seat Option": { select: { name: choice === "named" ? "Named Attendee" : "Not Sure Yet" } },
+          // "Not Sure yet" is spelled exactly as the Notion select option is.
+          // Notion rejects an option it does not already have, so the casing
+          // here is load bearing.
+          "Second Seat Option": { select: { name: choice === "named" ? "Named Attendee" : "Not Sure yet" } },
         };
         if (choice === "named") {
           if (attendeeFirstName) properties["Second Seat First Name"] = { rich_text: [{ text: { content: clip(attendeeFirstName, 100) } }] };
@@ -1613,6 +1629,174 @@ async function handleOnboardSubmit(data, env, cors, ctx) {
         attendeeEmail,
       }),
     }).catch((err) => console.error("Google Sheet Onboard error:", err));
+
+    if (ctx && typeof ctx.waitUntil === "function") {
+      ctx.waitUntil(sheetWork);
+    }
+  }
+
+  return json({ ok: true }, 200, cors);
+}
+
+// ---------------------------------------------------------------------------
+// Buyer questionnaire (POST /onboard-questionnaire)
+//
+// Allowlists for every select and multi-select column below. The browser can
+// only ever land one of these strings: Notion refuses an option a database does
+// not already have, and answers the whole PATCH with a 400 when it sees one, so
+// an unexpected value is dropped rather than taking the write down with it.
+// ---------------------------------------------------------------------------
+const BQ_BUILD_PRIORITY = [
+  "Outreach", "Content", "Systems", "Creating Structure with AI", "Building Agents", "Storytelling/Pitch",
+];
+const BQ_PROJECT_MANAGEMENT = [
+  "Notion", "Asana", "ClickUp", "Monday", "Trello", "Spreadsheet", "In my head", "Other",
+];
+const BQ_TEAM_SIZE = ["Just me", "2-5", "6-15", "16+"];
+const BQ_REVENUE = ["Pre-revenue", "Under $100K/yr", "$100K-500K/yr", "$500K-2M/yr", "$2M+/yr"];
+const BQ_ONE_TO_ONE = ["Ella Molony Cook", "ViKa Victoria", "Not interested right now"];
+const BQ_AI_DAILY_OUTREACH = ["Yes", "No", "Some days"];
+const BQ_LEAD_GEN = [
+  "LinkedIn", "Instagram", "Email / newsletter", "Cold email or cold call",
+  "Referrals", "Events / IRL", "Paid Ads", "Other",
+];
+const BQ_YES_NO = ["Yes", "No"];
+
+async function handleOnboardQuestionnaire(data, env, cors, ctx) {
+  const trackingId = String(data.trackingId || data.tracking_id || "").trim();
+  const email = String(data.email || "").trim();
+
+  const dbId = env.NOTION_SUPERHUMAN_COHORT1_DATABASE_ID;
+  if (!env.NOTION_TOKEN || !dbId) return json({ ok: false, error: "Onboarding is not configured" }, 503, cors);
+  if (!trackingId && !email) return json({ ok: false, error: "Order details are required" }, 400, cors);
+
+  let paidOrder;
+  try {
+    paidOrder = await findPaidCohortOrder(env, dbId, trackingId, email);
+  } catch {
+    return json({ ok: false, error: "Could not verify the order" }, 502, cors);
+  }
+  if (!paidOrder) return json({ ok: false, error: "A paid order is required" }, 403, cors);
+
+  // The same three helpers /qualify uses, for the same reasons.
+  const rich = (s) => {
+    const v = String(s == null ? "" : s).trim();
+    return v ? [{ text: { content: clip(v, 2000) } }] : [];
+  };
+  const pick = (value, allowed) => {
+    const v = String(value == null ? "" : value).trim();
+    return allowed.includes(v) ? { select: { name: v } } : null;
+  };
+  const picks = (value, allowed) => {
+    const list = Array.isArray(value) ? value : String(value == null ? "" : value).split(",");
+    const names = [];
+    for (const item of list) {
+      const v = String(item == null ? "" : item).trim();
+      if (allowed.includes(v) && names.indexOf(v) === -1) names.push(v);
+    }
+    return names.length ? { multi_select: names.map((name) => ({ name })) } : null;
+  };
+
+  const properties = {
+    // What the page reads back to decide whether the questionnaire is still open.
+    "Questionnaire Completed": { date: { start: new Date().toISOString().slice(0, 10) } },
+  };
+
+  // An empty answer leaves its column alone rather than blanking it, so a
+  // second pass over the form can only ever add to what is already there.
+  const text = (prop, value) => {
+    const body = rich(value);
+    if (body.length) properties[prop] = { rich_text: body };
+  };
+  const select = (prop, value, allowed) => {
+    const chosen = pick(value, allowed);
+    if (chosen) properties[prop] = chosen;
+  };
+  const multi = (prop, value, allowed) => {
+    const chosen = picks(value, allowed);
+    if (chosen) properties[prop] = chosen;
+  };
+
+  text("Q Focus Ranking", data.focus_ranking);
+  text("Q Success by 20 Nov", data.success_by_20_nov);
+  text("Q Personal Transformation", data.personal_transformation);
+  select("Q Build Priority", data.build_priority, BQ_BUILD_PRIORITY);
+  text("Q Tech Stack", data.tech_stack);
+  select("Q Project Management", data.project_management, BQ_PROJECT_MANAGEMENT);
+  select("Q Team Size", data.team_size, BQ_TEAM_SIZE);
+  select("Q Revenue", data.revenue, BQ_REVENUE);
+  text("Q Agents Question", data.agents_question);
+  text("Q Content Question", data.content_question);
+  text("Q AI OS Question", data.ai_os_question);
+  text("Q Storytelling Question", data.storytelling_question);
+  multi("Q 1:1 Session", data.one_to_one, BQ_ONE_TO_ONE);
+  text("Q Automation Needed", data.automation_needed);
+  text("Q Recurring Tasks", data.recurring_tasks);
+  select("Q AI Daily Outreach", data.ai_daily_outreach, BQ_AI_DAILY_OUTREACH);
+  multi("Q Lead Gen Platforms", data.lead_gen_platforms, BQ_LEAD_GEN);
+  text("Q AI in Outreach", data.ai_in_outreach);
+  select("Q $100 Vendor Call", data.vendor_call_100, BQ_YES_NO);
+  text("Q Bring Someone In", data.bring_someone_in);
+  text("Q Other Answers", data.other_answers);
+
+  // Awaited on purpose, unlike every other Notion write in this worker. The
+  // page holds the answers in sessionStorage until this comes back ok, so a
+  // fire-and-forget failure here would quietly lose someone's typing.
+  let saved = false;
+  try {
+    const res = await fetch(`https://api.notion.com/v1/pages/${paidOrder.id}`, {
+      method: "PATCH",
+      headers: { ...authHeaders(env), "Content-Type": "application/json" },
+      body: JSON.stringify({ properties }),
+    });
+    saved = res.ok;
+    if (!res.ok) {
+      // A missing column or select option comes back as a 400, and the body is
+      // the only thing that says which one.
+      console.error("[BQ] notion write failed:", res.status, await res.text());
+    }
+  } catch (err) {
+    console.error("[BQ] notion write threw:", err && err.stack ? err.stack : err);
+  }
+
+  if (!saved) return json({ ok: false, error: "Could not save the questionnaire" }, 502, cors);
+
+  // The sheet is a mirror of a write that already succeeded, so it stays
+  // fire-and-forget like the rest of them.
+  const sheetUrl = env.GOOGLE_SHEET_ORDERS_URL || env.GOOGLE_SHEET_WEBHOOK_URL;
+  if (sheetUrl) {
+    const list = (value) => (Array.isArray(value) ? value.join(", ") : String(value == null ? "" : value));
+    const sheetWork = fetch(sheetUrl, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        tab: "Questionnaire",
+        timestamp: new Date().toISOString(),
+        trackingId,
+        email,
+        focusRanking: data.focus_ranking || "",
+        successBy20Nov: data.success_by_20_nov || "",
+        personalTransformation: data.personal_transformation || "",
+        buildPriority: data.build_priority || "",
+        techStack: data.tech_stack || "",
+        projectManagement: data.project_management || "",
+        teamSize: data.team_size || "",
+        revenue: data.revenue || "",
+        agentsQuestion: data.agents_question || "",
+        contentQuestion: data.content_question || "",
+        aiOsQuestion: data.ai_os_question || "",
+        storytellingQuestion: data.storytelling_question || "",
+        oneToOneSession: list(data.one_to_one),
+        automationNeeded: data.automation_needed || "",
+        recurringTasks: data.recurring_tasks || "",
+        aiDailyOutreach: data.ai_daily_outreach || "",
+        leadGenPlatforms: list(data.lead_gen_platforms),
+        aiInOutreach: data.ai_in_outreach || "",
+        vendorCall100: data.vendor_call_100 || "",
+        bringSomeoneIn: data.bring_someone_in || "",
+        otherAnswers: data.other_answers || "",
+      }),
+    }).catch((err) => console.error("Google Sheet Questionnaire error:", err));
 
     if (ctx && typeof ctx.waitUntil === "function") {
       ctx.waitUntil(sheetWork);

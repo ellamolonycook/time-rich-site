@@ -740,8 +740,9 @@ console.log('\nEight questions, said the same way everywhere');
   check('the apply page never promises a call to book',
     !/book a call|booking your call|book your call/i.test(HTML));
   const accel = fs.readFileSync(site('accelerator/index.html'), 'utf8');
-  check('the accelerator applications block says eight too',
-    /Eight questions, about three minutes/.test(accel) && !/Nine questions/i.test(accel));
+  // The accelerator page used to repeat the "Eight questions" line next to a
+  // link out to /sh-apply. 532fb41 replaced that block with the inline form, so
+  // there is no second copy of the count to keep in step any more.
   check('and it no longer promises a call with Ella',
     !/book a call with Ella/i.test(accel));
 }
