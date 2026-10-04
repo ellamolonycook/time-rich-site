@@ -1806,16 +1806,69 @@ async function handleOnboardQuestionnaire(data, env, cors, ctx) {
   return json({ ok: true }, 200, cors);
 }
 
-async function findPaidCohortOrder(env, dbId, trackingId, email) {
-  const filter = trackingId
-    ? { property: "TrackingID", rich_text: { equals: trackingId } }
-    : { property: "Email", email: { equals: email } };
+// Comparison key for everything matched below: trimmed and lowercased, so a
+// stored "Paid " or "Gideon@Example.com" lines up with what the page asks for.
+function normKey(value) {
+  return String(value == null ? "" : value).trim().toLowerCase();
+}
+
+// One query against one property, returning that buyer's paid row.
+//
+// The filter is deliberately looser than the comparison. Notion's string
+// "equals" is an exact byte match, which is the same trap findCalApplicant
+// documents above, so a cell saved with capitals or a stray space never
+// matched. "contains" is matched case insensitively by Notion, and the exact
+// check is then done here against the real value.
+//
+// Every returned row is checked, not just the first. A buyer can legitimately
+// have more than one: POST /join writes a Pending row before checkout, and the
+// ThriveCart webhook only updates that row when the tracking id or email lines
+// up, so a Pending and a Paid row can both exist for one person. Notion
+// promises no particular order, so reading results[0] was a coin flip, and
+// landing on the Pending row told a genuinely paid buyer there was no order.
+async function findPaidRow(env, dbId, property, value) {
+  const wanted = normKey(value);
+  if (!wanted) return null;
+
+  const needle = String(value).trim();
+  const filter = property === "Email"
+    ? { property, email: { contains: needle } }
+    : { property, rich_text: { contains: needle } };
+
   const response = await fetch(`https://api.notion.com/v1/databases/${dbId}/query`, {
     method: "POST",
     headers: { ...authHeaders(env), "Content-Type": "application/json" },
-    body: JSON.stringify({ filter }),
+    body: JSON.stringify({ filter, page_size: 100 }),
   });
   if (!response.ok) throw new Error("Notion order lookup failed");
-  const row = (await response.json()).results?.[0];
-  return row && calProp(row.properties?.["Payment Status"]).toLowerCase() === "paid" ? row : null;
+
+  const results = (await response.json()).results || [];
+  // "contains" can over-match, so only rows whose value really is the one
+  // asked for are considered.
+  const mine = results.filter((row) => normKey(calProp(row.properties?.[property])) === wanted);
+  const paid = mine.find((row) => normKey(calProp(row.properties?.["Payment Status"])) === "paid");
+
+  if (!paid) {
+    // The one line worth having in the tail when a buyer says they cannot get in.
+    console.log("[onboard] lookup miss:", JSON.stringify({
+      by: property,
+      rowsReturned: results.length,
+      rowsMatchingExactly: mine.length,
+      statusesSeen: mine.map((row) => calProp(row.properties?.["Payment Status"])),
+    }));
+  }
+  return paid || null;
+}
+
+async function findPaidCohortOrder(env, dbId, trackingId, email) {
+  // Tracking id first, since it names the order exactly. A tracking id that
+  // does not line up with the row, from an old link or a capture written
+  // before checkout, used to end the search there even when the email would
+  // have found the buyer, so the email is now tried after it.
+  if (trackingId) {
+    const hit = await findPaidRow(env, dbId, "TrackingID", trackingId);
+    if (hit) return hit;
+  }
+  if (email) return findPaidRow(env, dbId, "Email", email);
+  return null;
 }

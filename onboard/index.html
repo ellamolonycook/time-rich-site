@@ -343,7 +343,7 @@ main {
             <button type="submit" class="btn-primary" id="btnLookup">Verify Order</button>
           </div>
         </form>
-        <p id="lookupMsg" style="margin-top: 12px; margin-bottom: 0; display: none; color: var(--red); font-size: 13.5px;"></p>
+        <p id="lookupMsg" role="status" aria-live="polite" style="margin-top: 12px; margin-bottom: 0; display: none; color: var(--red); font-size: 13.5px;"></p>
       </div>
     </div>
 
@@ -384,6 +384,7 @@ main {
         </div>
 
         <button type="submit" class="btn-primary" id="btnSeatSubmit" style="width: 100%; padding: 15px;">Confirm</button>
+        <p id="seatMsg" role="status" aria-live="polite" style="margin-top: 12px; margin-bottom: 0; display: none; color: var(--red); font-size: 13.5px;"></p>
       </form>
     </div>
 
@@ -423,6 +424,15 @@ var currentEmail = "";
 var selectedChoice = "named";
 var whatsappUrl = "";
 
+// Resting labels, kept here so a busy state always has the exact text to put
+// back rather than a guess written at the call site.
+var LOOKUP_LABEL = "Verify Order";
+var SEAT_LABEL = "Confirm";
+
+// One flag per request so a second submit is ignored while the first is open.
+var verifyInFlight = false;
+var seatInFlight = false;
+
 function getUrlParam(param) {
   var search = window.location.search;
   var params = new URLSearchParams(search);
@@ -432,6 +442,11 @@ function getUrlParam(param) {
 function initOnboard() {
   currentTrackingId = getUrlParam("tracking_id") || getUrlParam("passthrough_id") || getUrlParam("trackingId") || "";
   currentEmail = getUrlParam("email") || getUrlParam("customer_email") || "";
+
+  // Typing is the buyer answering the error, so the error goes as soon as they
+  // start rather than sitting there contradicting the box they are correcting.
+  var lookupEmail = document.getElementById("lookupEmail");
+  if (lookupEmail) lookupEmail.addEventListener("input", clearVerificationError);
 
   if (currentTrackingId || currentEmail) {
     verifyOrder(currentTrackingId, currentEmail);
@@ -453,6 +468,9 @@ function showState(stateName) {
 
 function verifyOrder(tId, em) {
   var url = ONBOARD_WORKER + "?tracking_id=" + encodeURIComponent(tId) + "&email=" + encodeURIComponent(em);
+
+  verifyInFlight = true;
+  setLookupBusy(true);
 
   fetch(url)
     .then(function(res) { return res.json(); })
@@ -481,6 +499,14 @@ function verifyOrder(tId, em) {
       console.warn("Verification check fallback:", err);
       showVerificationError("We couldn't verify your order right now. Please try again shortly.");
       showState("unverified");
+    })
+    // Every outcome lands here, so there is no path that can leave the button
+    // sitting disabled on "Checking...". That was the bug: a lookup that found
+    // no paid order, or that failed outright, left the buyer with nothing to
+    // press and a refresh as the only way on.
+    .finally(function() {
+      verifyInFlight = false;
+      setLookupBusy(false);
     });
 }
 
@@ -498,15 +524,29 @@ function showVerificationError(message) {
   if (el) { el.textContent = message; el.style.display = "block"; }
 }
 
+function clearVerificationError() {
+  var el = document.getElementById("lookupMsg");
+  if (el) { el.textContent = ""; el.style.display = "none"; }
+}
+
+// The lookup button is driven from one place, so the busy state and the label
+// can never drift apart. initOnboard() can also call verifyOrder() before this
+// button is on screen, which is why a missing button is not an error here.
+function setLookupBusy(busy) {
+  var btn = document.getElementById("btnLookup");
+  if (!btn) return;
+  btn.disabled = busy;
+  btn.textContent = busy ? "Checking..." : LOOKUP_LABEL;
+}
+
 function handleVerifyLookup(e) {
   e.preventDefault();
+  if (verifyInFlight) return;              // a second Enter while one is open
+
   var em = document.getElementById("lookupEmail").value.trim();
   if (!em) return;
 
-  var btn = document.getElementById("btnLookup");
-  btn.disabled = true;
-  btn.textContent = "Checking...";
-
+  clearVerificationError();
   currentEmail = em;
   verifyOrder("", em);
 }
@@ -528,11 +568,22 @@ function selectSeatOption(opt) {
   }
 }
 
+function showSeatError(message) {
+  var el = document.getElementById("seatMsg");
+  if (!el) return;
+  if (message) { el.textContent = message; el.style.display = "block"; }
+  else { el.textContent = ""; el.style.display = "none"; }
+}
+
 function handleSeatSubmit(e) {
   e.preventDefault();
+  if (seatInFlight) return;
+
   var btn = document.getElementById("btnSeatSubmit");
+  seatInFlight = true;
   btn.disabled = true;
   btn.textContent = "Saving…";
+  showSeatError("");
 
   var attFN = document.getElementById("attFirstName").value.trim();
   var attLN = document.getElementById("attLastName").value.trim();
@@ -560,8 +611,15 @@ function handleSeatSubmit(e) {
   })
   .catch(function(err) {
     console.warn("Onboard save error:", err);
+    // The failure is said in the message line. Overwriting the label with
+    // "Try again" used to strand the button on that text for good, since a
+    // second failure had nothing left to put back.
+    showSeatError("We couldn't save your plus one. Please try again.");
+  })
+  .finally(function() {
+    seatInFlight = false;
     btn.disabled = false;
-    btn.textContent = "Try again";
+    btn.textContent = SEAT_LABEL;
   });
 }
 
@@ -775,6 +833,7 @@ var Q_OTHER_PREFIX = [
 
 var Q_OTHER_VALUE = "Other";
 var Q_TEXT_LIMIT = 2000;          // Notion's per-rich-text ceiling
+var Q_SAVE_LABEL = "Save answers";
 
 var qFlow = [];
 var qAnswers = {};
@@ -986,7 +1045,7 @@ function qBuildQuestion(screen, spec) {
 
   var actions = qEl("div", "q-actions");
   var last = qStep === qFlow.length - 2;
-  var next = qEl("button", "btn-primary", last ? "Save answers" : "Next");
+  var next = qEl("button", "btn-primary", last ? Q_SAVE_LABEL : "Next");
   next.type = "button";
   next.id = "qNext";
   next.addEventListener("click", qGoNext);
@@ -1214,15 +1273,23 @@ function qSubmit() {
       if (!data || !data.ok) throw new Error("Questionnaire was not saved");
       // Only now is the stored copy safe to drop.
       qClearStore();
-      qSubmitting = false;
       qStep = qFlow.length - 1;
       qRender();
     })
     .catch(function (err) {
       console.warn("Questionnaire save error:", err);
-      qSubmitting = false;
-      if (button) { button.disabled = false; button.textContent = "Save answers"; }
       qShowError("We couldn't save your answers. Please try again.");
+    })
+    // Both branches used to clear this flag on their own, which is one edit
+    // away from a save that can never be retried.
+    .finally(function () {
+      qSubmitting = false;
+      // A good save has already swapped in the thank-you screen, so only a
+      // button still on the page needs its label back.
+      if (button && button.isConnected) {
+        button.disabled = false;
+        button.textContent = Q_SAVE_LABEL;
+      }
     });
 }
 
