@@ -100,6 +100,11 @@
   <!-- TOP NAVBAR -->
   <header class="h-10 border-b border-black/[0.06] flex items-center justify-between pl-8 pr-8 shrink-0 bg-transparent z-20 relative">
     <div class="flex items-center gap-12">
+      <!-- Mobile Menu Button -->
+      <button id="mobile-menu-btn" class="lg:hidden text-brand-deep p-1.5 -ml-1.5 hover:bg-black/5 rounded-md transition-colors" aria-label="Open menu">
+        <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5"></path></svg>
+      </button>
+
       <!-- Logo -->
       <a class="group flex items-baseline text-[18px] font-medium tracking-tight text-brand-deep focus:outline-none rounded" style="font-family: 'Inter', sans-serif;" href="index.html">
           Time Rich<span class="text-brand-green">.</span>
@@ -125,7 +130,7 @@
   <div class="flex-1 flex overflow-hidden">
     
     <!-- LEFT SIDEBAR -->
-    <aside class="w-64 border-r border-brand-green/15 flex flex-col justify-between py-8 px-6 bg-transparent shrink-0 z-20 relative">
+    <aside class="w-64 border-r border-brand-green/15 hidden lg:flex flex-col justify-between py-8 px-6 bg-transparent shrink-0 z-20 relative">
       <nav class="space-y-1">
         <a href="dashboard.html" class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-xs font-semibold text-brand-deep bg-brand-sagelt transition-all duration-300 hover:translate-x-1">
           <svg class="w-4 h-4 text-brand-deep" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"></path></svg>
@@ -159,15 +164,15 @@
       <!-- Grid Background spans entire main area -->
       <div class="absolute inset-0 pointer-events-none z-0 opacity-[0.04]" style="background-image: linear-gradient(#1a1a1a 1px, transparent 1px), linear-gradient(90deg, #1a1a1a 1px, transparent 1px); background-size: 64px 64px; background-position: -1px -1px;"></div>
       
-      <div class="relative z-10 px-8 py-8 lg:py-12 max-w-[1200px] mr-auto ml-4 lg:ml-12">
+      <div class="relative z-10 px-6 sm:px-8 py-8 lg:py-12 max-w-[1200px] mx-auto lg:ml-12">
         
         <!-- FULL WIDTH COLUMN -->
         <div class="w-full space-y-16">
           
           <!-- HERO SECTION -->
-          <section class="flex flex-col md:flex-row gap-12 items-center pt-4">
+          <section class="flex flex-col lg:flex-row gap-8 lg:gap-12 items-center pt-4">
             <div class="space-y-6 z-20 flex-1">
-              <h1 class="text-4xl sm:text-5xl lg:text-[48px] font-display font-bold tracking-tight text-[#1a1a1a] leading-[1.15]">
+              <h1 class="text-4xl sm:text-5xl lg:text-[48px] font-display font-bold tracking-tight text-brand-deep leading-[1.1]">
                 Draft your first AI agent personas.
               </h1>
               <p class="text-[15px] sm:text-base text-brand-mid leading-relaxed max-w-md">
@@ -185,7 +190,7 @@
             </div>
             
             <!-- Graphic / Abstract Glow -->
-            <div id="magnet-area" class="relative h-[20rem] flex-none w-[24rem] flex items-center justify-center z-10 cursor-pointer ml-auto" style="perspective: 1000px;">
+            <div id="magnet-area" class="relative h-[20rem] flex-none w-full md:w-[24rem] flex items-center justify-center z-10 cursor-pointer md:ml-auto mt-8 md:mt-0" style="perspective: 1000px;">
               <div class="absolute inset-0 glow-orb opacity-100 blur-2xl pointer-events-none"></div>
               <!-- Floating Glass Panel -->
               <div class="animate-float z-10 relative w-full h-full flex items-center justify-center pointer-events-none">
@@ -331,5 +336,73 @@
 
   <script src="portal-config.js"></script>
   <script src="portal-access.js"></script>
+
+  <!-- MOBILE MENU OVERLAY -->
+  <div id="mobile-menu-overlay" class="fixed inset-0 bg-brand-deep/20 backdrop-blur-sm z-[100] opacity-0 pointer-events-none transition-opacity duration-500"></div>
+  
+  <div id="mobile-menu" class="fixed top-0 left-0 bottom-0 w-[85%] max-w-[320px] bg-brand-offwhite/95 backdrop-blur-xl border-r border-white/40 shadow-2xl z-[101] -translate-x-full transition-transform duration-500 flex flex-col" style="transition-timing-function: cubic-bezier(0.16, 1, 0.3, 1);">
+    <div class="flex items-center justify-between p-6 border-b border-black/[0.06]">
+      <a class="flex items-baseline text-[18px] font-medium tracking-tight text-brand-deep focus:outline-none" style="font-family: 'Inter', sans-serif;" href="dashboard.html">
+        Time Rich<span class="text-brand-green">.</span>
+      </a>
+      <button id="mobile-menu-close" class="p-2 -mr-2 text-brand-mid hover:text-brand-deep transition-colors bg-black/5 rounded-full">
+        <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"></path></svg>
+      </button>
+    </div>
+    <div class="flex-1 overflow-y-auto p-6 flex flex-col justify-between">
+      <nav class="space-y-2">
+        <a href="dashboard.html" class="flex items-center gap-4 px-4 py-3.5 rounded-xl text-sm font-semibold text-brand-deep hover:bg-white/60 transition-colors">
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"></path></svg>
+          Home
+        </a>
+        <a href="curriculum.html" class="flex items-center gap-4 px-4 py-3.5 rounded-xl text-sm font-medium text-brand-mid hover:text-brand-deep hover:bg-white/60 transition-colors">
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"></path></svg>
+          Curriculum
+        </a>
+        <a href="sessions.html" class="flex items-center gap-4 px-4 py-3.5 rounded-xl text-sm font-medium text-brand-mid hover:text-brand-deep hover:bg-white/60 transition-colors">
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z"></path></svg>
+          Live Sessions
+        </a>
+        <a href="resources.html" class="flex items-center gap-4 px-4 py-3.5 rounded-xl text-sm font-medium text-brand-mid hover:text-brand-deep hover:bg-white/60 transition-colors">
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path></svg>
+          Resources
+        </a>
+      </nav>
+      <div class="space-y-4 pt-8">
+        <a href="#" data-portal-signout class="flex items-center gap-4 px-4 py-3.5 rounded-xl text-sm font-medium text-brand-mid hover:text-brand-deep hover:bg-white/60 transition-colors">
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M15.75 9V5.25A2.25 2.25 0 0013.5 3h-6a2.25 2.25 0 00-2.25 2.25v13.5A2.25 2.25 0 007.5 21h6a2.25 2.25 0 002.25-2.25V15m3 0l3-3m0 0l-3-3m3 3H9"></path></svg>
+          Sign Out
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    document.addEventListener("DOMContentLoaded", () => {
+      const btn = document.getElementById("mobile-menu-btn");
+      const closeBtn = document.getElementById("mobile-menu-close");
+      const menu = document.getElementById("mobile-menu");
+      const overlay = document.getElementById("mobile-menu-overlay");
+
+      function openMenu() {
+        overlay.classList.remove("opacity-0", "pointer-events-none");
+        overlay.classList.add("opacity-100", "pointer-events-auto");
+        menu.classList.remove("-translate-x-full");
+        menu.classList.add("translate-x-0");
+      }
+
+      function closeMenu() {
+        overlay.classList.remove("opacity-100", "pointer-events-auto");
+        overlay.classList.add("opacity-0", "pointer-events-none");
+        menu.classList.remove("translate-x-0");
+        menu.classList.add("-translate-x-full");
+      }
+
+      if(btn) btn.addEventListener("click", openMenu);
+      if(closeBtn) closeBtn.addEventListener("click", closeMenu);
+      if(overlay) overlay.addEventListener("click", closeMenu);
+    });
+  </script>
+
 </body>
 </html>
