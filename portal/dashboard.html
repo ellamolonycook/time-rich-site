@@ -68,10 +68,40 @@
   
     h1, h2, h3, h4, h5, h6 { font-family: "Space Grotesk", sans-serif; letter-spacing: -0.022em; }
     
+  
+    /* Full-screen organic atmospheric olive/sage background */
+    body {
+      background-color: #BAC6A3;
+      background-image:
+        radial-gradient(ellipse 110% 80% at 5% 5%, rgba(121,131,93,0.7) 0%, transparent 70%),
+        radial-gradient(ellipse 100% 80% at 20% 55%, rgba(221,230,195,0.95) 0%, transparent 65%),
+        radial-gradient(ellipse 80% 60% at 85% 30%, rgba(198,208,175,0.6) 0%, transparent 60%),
+        radial-gradient(ellipse 100% 80% at 90% 90%, rgba(123,138,100,0.65) 0%, transparent 75%),
+        linear-gradient(150deg, #A4B28A 0%, #CCD7B3 40%, #B8C59F 70%, #95A47C 100%);
+    }
+
+    /* Ultra-premium frosted glass card embedded into background */
+    .glass-card {
+      background: rgba(255, 255, 255, 0.05);
+      backdrop-filter: blur(40px) saturate(1.15);
+      -webkit-backdrop-filter: blur(40px) saturate(1.15);
+      border: 1px solid rgba(255, 255, 255, 0.15);
+    }
+    
+    .noise-overlay {
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      z-index: 1;
+      opacity: 0.11;
+      mix-blend-mode: multiply;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 250 250' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
+    }
+
   </style>
   <link rel="stylesheet" href="portal-content.css">
 </head>
-<body class="bg-brand-offwhite text-brand-deep font-sans h-screen flex flex-col overflow-hidden selection:bg-brand-lime selection:text-brand-deep opacity-0" style="transform: scale(1.03); transition: opacity 1.2s cubic-bezier(0.4, 0, 0.2, 1), transform 1.5s cubic-bezier(0.16, 1, 0.3, 1);">
+<body class="text-brand-deep font-sans h-screen flex flex-col overflow-hidden selection:bg-brand-lime selection:text-brand-deep opacity-0" style="transform: scale(1.03); transition: opacity 1.2s cubic-bezier(0.4, 0, 0.2, 1), transform 1.5s cubic-bezier(0.16, 1, 0.3, 1);">
 <script>
   // Trigger cinematic reveal on load
   document.addEventListener("DOMContentLoaded", () => {
@@ -87,18 +117,12 @@
 
   
   <!-- Noise Texture Overlay -->
-  <svg class="pointer-events-none fixed inset-0 z-[-1] h-full w-full opacity-[0.05] mix-blend-multiply" xmlns="http://www.w3.org/2000/svg">
-    <filter id="noiseFilter">
-      <feTurbulence type="fractalNoise" baseFrequency="0.8" numOctaves="3" stitchTiles="stitch"></feTurbulence>
-    </filter>
-    <rect width="100%" height="100%" filter="url(#noiseFilter)"></rect>
-  </svg>
+  <div class="noise-overlay"></div>
 
 
-  <!-- Solid Top Bar -->
-  <div class="w-full h-4 sm:h-6 bg-brand-green border-b border-[#CCEEA0] hover:bg-[#2c3324] transition-colors duration-300 cursor-pointer relative z-50 shadow-md shrink-0"></div>
+  
   <!-- TOP NAVBAR -->
-  <header class="h-10 border-b border-black/[0.06] flex items-center justify-between pl-8 pr-8 shrink-0 bg-transparent z-20 relative">
+  <header class="h-10 border-b border-white/20 flex items-center justify-between pl-8 pr-8 shrink-0 bg-transparent z-20 relative">
     <div class="flex items-center gap-12">
       
       <!-- Mobile Menu Button -->
@@ -107,7 +131,7 @@
       </button>
 
       <!-- Logo -->
-      <a class="group flex items-baseline text-[18px] font-medium tracking-tight text-brand-deep focus:outline-none rounded" style="font-family: 'Inter', sans-serif;" href="index.html">
+      <a class="group flex items-baseline text-[18px] font-medium tracking-tight text-brand-deep focus:outline-none rounded" style="font-family: 'Space Grotesk', sans-serif; font-weight: 700;" href="index.html">
           Time Rich<span class="text-brand-green">.</span>
         </a>
       
@@ -117,7 +141,7 @@
     <!-- Right Actions -->
     <div class="flex items-center gap-6">
       <div class="relative flex items-center group">
-        <input type="text" placeholder="Search courses..." class="hidden sm:block w-8 focus:w-48 lg:focus:w-64 bg-transparent focus:bg-brand-offwhite text-xs text-brand-deep placeholder-transparent focus:placeholder-brand-mid/60 border border-transparent focus:border-brand-green/20 ring-0 focus:ring-0 pl-7 pr-4 py-1.5 rounded-full cursor-pointer focus:cursor-text transition-all duration-300 ease-out outline-none focus:shadow-sm" />
+        <input type="text" placeholder="Search courses..." class="hidden sm:block w-8 focus:w-48 lg:focus:w-64 bg-transparent focus:bg-transparent text-xs text-brand-deep placeholder-transparent focus:placeholder-brand-mid/60 border-0 border-b border-transparent focus:border-brand-deep/30 ring-0 focus:ring-0 pl-7 pr-4 py-1.5 cursor-pointer focus:cursor-text transition-all duration-300 ease-out outline-none" />
         <svg class="w-4 h-4 text-brand-mid absolute left-1.5 pointer-events-none group-focus-within:text-brand-deep transition-colors" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
       </div>
       <button class="text-brand-mid hover:text-brand-deep transition-colors relative">
@@ -131,28 +155,28 @@
   <div class="flex-1 flex overflow-hidden">
     
     <!-- LEFT SIDEBAR -->
-    <aside class="w-64 border-r border-brand-green/15 hidden lg:flex flex-col justify-between py-8 px-6 bg-transparent shrink-0 z-20 relative">
+    <aside class="w-64 border-r border-white/20 hidden lg:flex flex-col justify-between py-8 px-6 bg-transparent shrink-0 z-20 relative">
       <nav class="space-y-1">
-        <a href="dashboard.html" class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-xs font-semibold text-brand-deep bg-brand-sagelt transition-all duration-300 hover:translate-x-1">
+        <a href="dashboard.html" class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-xs font-semibold text-brand-deep bg-white/20 shadow-sm border border-white/30 backdrop-blur-md transition-all duration-300 hover:translate-x-1">
           <svg class="w-4 h-4 text-brand-deep" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"></path></svg>
           Home
         </a>
-        <a href="curriculum.html" class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-xs font-medium text-brand-mid hover:text-brand-deep hover:bg-white/60 hover:shadow-sm transition-all duration-300 hover:translate-x-1">
+        <a href="curriculum.html" class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-xs font-medium text-brand-mid hover:text-brand-deep hover:bg-white/20 hover:border-white/30 hover:backdrop-blur-md hover:shadow-sm border border-transparent transition-all duration-300 hover:translate-x-1">
           <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"></path></svg>
           Curriculum
         </a>
-        <a href="sessions.html" class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-xs font-medium text-brand-mid hover:text-brand-deep hover:bg-white/60 hover:shadow-sm transition-all duration-300 hover:translate-x-1">
+        <a href="sessions.html" class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-xs font-medium text-brand-mid hover:text-brand-deep hover:bg-white/20 hover:border-white/30 hover:backdrop-blur-md hover:shadow-sm border border-transparent transition-all duration-300 hover:translate-x-1">
           <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z"></path></svg>
           Live Sessions
         </a>
-        <a href="resources.html" class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-xs font-medium text-brand-mid hover:text-brand-deep hover:bg-white/60 hover:shadow-sm transition-all duration-300 hover:translate-x-1">
+        <a href="resources.html" class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-xs font-medium text-brand-mid hover:text-brand-deep hover:bg-white/20 hover:border-white/30 hover:backdrop-blur-md hover:shadow-sm border border-transparent transition-all duration-300 hover:translate-x-1">
           <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path></svg>
           Resources
         </a>
       </nav>
       
       <div class="space-y-6">
-        <a href="#" class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-xs font-medium text-brand-mid hover:text-brand-deep hover:bg-white/60 hover:shadow-sm transition-all duration-300 hover:translate-x-1">
+        <a href="#" class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-xs font-medium text-brand-mid hover:text-brand-deep hover:bg-white/20 hover:border-white/30 hover:backdrop-blur-md hover:shadow-sm border border-transparent transition-all duration-300 hover:translate-x-1">
           <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"></path><path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path></svg>
           Settings
         </a>
@@ -162,8 +186,7 @@
 
     <!-- CENTER SCROLLABLE CONTENT -->
     <main class="flex-1 overflow-y-auto custom-scroll relative bg-transparent">
-      <!-- Grid Background spans entire main area -->
-      <div class="absolute inset-0 pointer-events-none z-0 opacity-[0.04]" style="background-image: linear-gradient(#1a1a1a 1px, transparent 1px), linear-gradient(90deg, #1a1a1a 1px, transparent 1px); background-size: 64px 64px; background-position: -1px -1px;"></div>
+      
       
       <div class="relative z-10 px-6 sm:px-8 py-8 lg:py-12 max-w-[1200px] mx-auto lg:ml-12">
         
@@ -180,7 +203,7 @@
                 Finish drafting your agent personas and prompt structures so they're ready for the upcoming live review session on Thursday.
               </p>
               <div class="flex items-center gap-4 pt-2">
-                <a href="#featured-courses" class="inline-flex items-center justify-center gap-2 px-6 py-3 bg-brand-deep text-brand-offwhite rounded-xl text-sm font-semibold hover:bg-brand-green transition-all shadow-lg shadow-brand-deep/10">
+                <a href="#featured-courses" class="inline-flex items-center justify-center gap-2 px-8 py-3.5 bg-[#1a1a1a] text-brand-offwhite rounded-full text-sm font-semibold hover:bg-black transition-all shadow-xl shadow-black/20">
                   Resume Curriculum <span class="font-mono text-brand-sagelt text-[10px]">&rarr;</span>
                 </a>
                 <button class="inline-flex items-center gap-2 text-sm font-semibold text-brand-deep hover:text-brand-deep transition-colors px-4 py-3">
@@ -191,24 +214,56 @@
             </div>
             
             <!-- Graphic / Abstract Glow -->
-            <div id="magnet-area" class="relative h-[20rem] flex-none w-full md:w-[24rem] flex items-center justify-center z-10 cursor-pointer md:ml-auto mt-8 md:mt-0" style="perspective: 1000px;">
+            <div id="magnet-area" class="relative h-[22rem] flex-none w-full md:w-[28rem] flex items-center justify-center z-10 cursor-pointer md:ml-auto mt-8 md:mt-0" style="perspective: 1000px;">
               <div class="absolute inset-0 glow-orb opacity-100 blur-2xl pointer-events-none"></div>
               <!-- Floating Glass Panel -->
               <div class="animate-float z-10 relative w-full h-full flex items-center justify-center pointer-events-none">
-                <div id="magnet-card" class="relative w-[20rem] h-[14rem] bg-white/40 backdrop-blur-md border border-white/60 rounded-[1.5rem] shadow-2xl shadow-brand-deep/10 flex flex-col p-6 overflow-hidden pointer-events-auto" style="transition: transform 0.8s cubic-bezier(0.16, 1, 0.3, 1);">
-                  <video autoplay loop muted playsinline class="absolute inset-0 w-full h-full object-cover opacity-60 z-0">
-                    <!-- You can replace this src with your own video URL -->
-                    <source src="https://assets.mixkit.co/videos/preview/mixkit-abstract-technology-lines-background-loop-32742-large.mp4" type="video/mp4">
-                  </video>
+                <div id="magnet-card" class="group relative w-full max-w-[24rem] sm:max-w-[26rem] h-[16rem] sm:h-[18rem] bg-white/40 backdrop-blur-md border border-white/60 rounded-[1.5rem] shadow-2xl shadow-brand-deep/10 flex flex-col p-6 overflow-hidden pointer-events-auto" style="transition: transform 0.8s cubic-bezier(0.16, 1, 0.3, 1);">
+                  <video id="promo-video" loop muted playsinline poster="../accelerator/accelerator-promo-poster.jpg" class="absolute inset-0 w-full h-full object-cover opacity-100 z-0">
+                      <source src="../accelerator/accelerator-promo.mp4" type="video/mp4">
+                    </video>
+                    
+                    
+                      <div class="absolute inset-0 z-20 flex items-center justify-center pointer-events-none">
+                        <button id="promo-play-btn" class="w-12 h-12 rounded-full bg-black/50 hover:bg-black/70 backdrop-blur-md text-white flex items-center justify-center transition-all hover:scale-110 shadow-lg cursor-pointer pointer-events-auto" aria-label="Toggle Play">
+                          <svg id="icon-play" class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z" /></svg>
+                          <svg id="icon-pause" class="w-6 h-6 hidden" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M10 9v6m4-6v6" /></svg>
+                        </button>
+                      </div>
+<!-- Video Controls -->
+                    <div class="absolute bottom-4 left-4 z-20 flex gap-2 ">
+                      <button id="promo-mute-btn" class="w-8 h-8 rounded-full bg-black/50 hover:bg-black/70 backdrop-blur-md text-white flex items-center justify-center transition-all hover:scale-110 shadow-lg cursor-pointer" aria-label="Toggle Mute">
+                        <svg id="icon-muted" class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M5.586 15H4a1 1 0 01-1-1v-4a1 1 0 011-1h1.586l4.707-4.707C10.923 3.663 12 4.109 12 5v14c0 .891-1.077 1.337-1.707.707L5.586 15z" /><path stroke-linecap="round" stroke-linejoin="round" d="M17 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2" /></svg>
+                        <svg id="icon-unmuted" class="w-4 h-4 hidden" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M15.536 8.464a5 5 0 010 7.072m2.828-9.9a9 9 0 010 12.728M5.586 15H4a1 1 0 01-1-1v-4a1 1 0 011-1h1.586l4.707-4.707C10.923 3.663 12 4.109 12 5v14c0 .891-1.077 1.337-1.707.707L5.586 15z" /></svg>
+                      </button>
+                      
+                    </div>
                   <!-- Clean video card without text/lines -->
                 </div>
               </div>
               <!-- Smaller floating element -->
-              <div class="absolute z-20 top-0 right-0 w-32 bg-gradient-to-br from-[#FFFDF0] to-[#FDF7CA] border border-[#E9E4B7] rounded-xl shadow-[0_20px_40px_-10px_rgba(214,206,145,0.6)] ring-1 ring-white/50 ring-inset p-4 animate-float-alt group-hover:rotate-0 group-hover:translate-x-2 group-hover:-translate-y-2 transition-all duration-700 ease-out space-y-2.5 text-[9px] font-mono text-brand-deep font-semibold">
-                <div class="flex items-center gap-2 px-2 py-1 -mx-2 rounded hover:bg-white/60 hover:shadow-sm cursor-pointer transition-all duration-300 hover:translate-x-1"><span class="text-brand-deep font-bold">+</span> Goal</div>
-                <div class="flex items-center gap-2 pl-6 py-1 -mx-2 rounded hover:bg-white/60 hover:shadow-sm cursor-pointer transition-colors text-brand-mid font-medium">Actions</div>
-                <div class="flex items-center gap-2 pl-6 py-1 -mx-2 rounded hover:bg-white/60 hover:shadow-sm cursor-pointer transition-colors text-brand-mid font-medium">Content</div>
-                <div class="flex items-center gap-2 px-2 py-1 -mx-2 rounded hover:bg-white/60 hover:shadow-sm cursor-pointer transition-all duration-300 hover:translate-x-1"><span class="text-brand-deep font-bold">+</span> Next</div>
+              <div class="absolute z-20 -top-6 -right-4 sm:-right-6 w-28 bg-gradient-to-br from-[#FFFDF0] to-[#FDF7CA] border border-[#E9E4B7] rounded-xl shadow-[0_10px_30px_-10px_rgba(214,206,145,0.6)] ring-1 ring-white/50 ring-inset p-3.5 animate-float-alt space-y-2 text-[9.5px] font-mono font-semibold pointer-events-none">
+                
+                <div class="flex items-center gap-2 text-brand-mid/70 line-through decoration-brand-mid/30">
+                  <svg class="w-3 h-3 text-brand-green flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="3.5"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7" /></svg>
+                  Goal
+                </div>
+
+                <div class="flex items-center gap-2 text-brand-mid/70 line-through decoration-brand-mid/30">
+                  <svg class="w-3 h-3 text-brand-green flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="3.5"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7" /></svg>
+                  Actions
+                </div>
+
+                <div class="flex items-center gap-2 text-brand-mid/70 line-through decoration-brand-mid/30">
+                  <svg class="w-3 h-3 text-brand-green flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="3.5"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7" /></svg>
+                  Content
+                </div>
+
+                <div class="flex items-center gap-2 text-brand-deep">
+                  <div class="w-3 h-3 rounded-full border-[1.5px] border-brand-green/40 flex-shrink-0"></div>
+                  Next
+                </div>
+
               </div>
             </div>
           </section>
@@ -217,8 +272,8 @@
           <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mt-16">
             
             <!-- Next Session -->
-            <div class="p-8 rounded-[1.5rem] bg-[#DCDEBF] border border-transparent shadow-none flex flex-col hover:-translate-y-1 transition-transform duration-500 ease-out cursor-pointer group h-full relative overflow-hidden">
-              <div class="text-[11px] font-mono tracking-[0.3em] uppercase text-brand-deep/70 font-black mb-6">Next Session</div>
+            <div class="p-8 rounded-[1.5rem] glass-card flex flex-col hover:-translate-y-1 transition-transform duration-500 ease-out cursor-pointer group h-full relative overflow-hidden">
+              <div class="text-[11px] font-[Montserrat] tracking-[0.2em] uppercase text-brand-deep/70 font-semibold mb-6">Next Session</div>
               <div class="flex items-center gap-3 mb-4">
                 <div class="bg-brand-deep/5 text-brand-deep text-[10px] font-bold px-2.5 py-1 rounded-md uppercase tracking-wider flex items-center gap-1.5"><span class="w-1.5 h-1.5 rounded-full bg-brand-deep animate-pulse"></span>Live Call</div>
                 <div class="text-sm text-brand-mid font-medium">Thursday, 2:00 PM (Local)</div>
@@ -226,23 +281,23 @@
               <h3 class="text-2xl font-bold text-brand-deep mb-3 group-hover:text-brand-mid transition-colors">Weekly Group Q&A</h3>
               <p class="text-sm text-brand-mid leading-relaxed mb-8 flex-1">Bring your questions on Phase 1 implementation. We'll be reviewing agent personas live.</p>
               <div class="flex items-center gap-3 mt-auto">
-                <button class="px-5 py-2.5 bg-brand-deep text-brand-offwhite text-xs font-semibold rounded-xl hover:bg-brand-green transition-colors shadow-sm">
+                <button class="px-6 py-3 bg-[#1a1a1a] text-brand-offwhite text-xs font-semibold rounded-full hover:bg-black transition-colors shadow-lg shadow-black/20 flex items-center gap-2"><svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z" /></svg>
                   Join via Zoom
                 </button>
-                <button class="px-5 py-2.5 text-brand-deep text-xs font-semibold rounded-xl border border-brand-green/15 hover:bg-brand-sagelt transition-colors">
-                  Add to Calendar
-                </button>
+                <button class="px-6 py-3 text-brand-deep text-xs font-semibold rounded-full border border-brand-deep/20 hover:bg-white/10 hover:border-brand-deep/40 backdrop-blur-sm transition-colors">
+                    Add to Calendar
+                  </button>
               </div>
             </div>
 
             <!-- Current Phase -->
-            <div class="p-8 rounded-[1.5rem] bg-[#DCDEBF] border border-transparent shadow-none flex flex-col hover:-translate-y-1 transition-transform duration-500 ease-out cursor-pointer group h-full relative overflow-hidden">
-              <div class="text-[11px] font-mono tracking-[0.3em] uppercase text-brand-deep/70 font-black mb-6">Current Phase</div>
+            <div class="p-8 rounded-[1.5rem] glass-card flex flex-col hover:-translate-y-1 transition-transform duration-500 ease-out cursor-pointer group h-full relative overflow-hidden">
+              <div class="text-[11px] font-[Montserrat] tracking-[0.2em] uppercase text-brand-deep/70 font-semibold mb-6">Current Phase</div>
               <h3 class="text-2xl font-bold text-brand-deep mb-3 group-hover:text-brand-mid transition-colors mt-2">Foundations & Strategy</h3>
               <p class="text-sm text-brand-mid leading-relaxed mb-8 flex-1">You are currently learning how to build the foundational strategy for your custom AI agents.</p>
               
               <div class="mt-auto">
-                <div class="w-full bg-brand-green/10 rounded-full h-2 mb-4 overflow-hidden">
+                <div class="w-full bg-black/5 border border-white/20 rounded-full h-2 mb-4 overflow-hidden">
                   <div class="bg-brand-deep h-full rounded-full transition-all duration-1000 ease-out" style="width: 60%"></div>
                 </div>
                 <div class="flex justify-between text-xs text-brand-deep font-medium">
@@ -265,6 +320,10 @@
       const smallCard = document.getElementById('magnet-card-small');
 
       if (area && card) {
+          // Disable on mobile/touch devices
+          if (window.matchMedia("(hover: none)").matches || window.innerWidth < 768) {
+            return;
+          }
         let mouseX = 0, mouseY = 0;
         let currentX = 0, currentY = 0;
         let isHovering = false;
@@ -342,8 +401,8 @@
   <div id="mobile-menu-overlay" class="fixed inset-0 bg-brand-deep/20 backdrop-blur-sm z-[100] opacity-0 pointer-events-none transition-opacity duration-500"></div>
   
   <div id="mobile-menu" class="fixed top-0 left-0 bottom-0 w-[85%] max-w-[320px] bg-brand-offwhite/95 backdrop-blur-xl border-r border-white/40 shadow-2xl z-[101] -translate-x-full transition-transform duration-500 flex flex-col" style="transition-timing-function: cubic-bezier(0.16, 1, 0.3, 1);">
-    <div class="flex items-center justify-between p-6 border-b border-black/[0.06]">
-      <a class="flex items-baseline text-[18px] font-medium tracking-tight text-brand-deep focus:outline-none" style="font-family: 'Inter', sans-serif;" href="dashboard.html">
+    <div class="flex items-center justify-between p-6 border-b border-white/20">
+      <a class="flex items-baseline text-[18px] font-medium tracking-tight text-brand-deep focus:outline-none" style="font-family: 'Space Grotesk', sans-serif; font-weight: 700;" href="dashboard.html">
         Time Rich<span class="text-brand-green">.</span>
       </a>
       <button id="mobile-menu-close" class="p-2 -mr-2 text-brand-mid hover:text-brand-deep transition-colors bg-black/5 rounded-full">
@@ -405,5 +464,49 @@
     });
   </script>
 
+
+    <script>
+      document.addEventListener('DOMContentLoaded', () => {
+        const video = document.getElementById('promo-video');
+        const playBtn = document.getElementById('promo-play-btn');
+        const muteBtn = document.getElementById('promo-mute-btn');
+        
+        const iconPlay = document.getElementById('icon-play');
+        const iconPause = document.getElementById('icon-pause');
+        const iconMuted = document.getElementById('icon-muted');
+        const iconUnmuted = document.getElementById('icon-unmuted');
+
+        if(playBtn && video) {
+          playBtn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            if (video.paused) {
+              video.play();
+              iconPlay.classList.add('hidden');
+              iconPause.classList.remove('hidden');
+            } else {
+              video.pause();
+              iconPause.classList.add('hidden');
+              iconPlay.classList.remove('hidden');
+            }
+          });
+        }
+
+        if(muteBtn && video) {
+          muteBtn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            if (video.muted) {
+              video.muted = false;
+              iconMuted.classList.add('hidden');
+              iconUnmuted.classList.remove('hidden');
+            } else {
+              video.muted = true;
+              iconUnmuted.classList.add('hidden');
+              iconMuted.classList.remove('hidden');
+            }
+          });
+        }
+      });
+    </script>
 </body>
+
 </html>
