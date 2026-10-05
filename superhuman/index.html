@@ -333,20 +333,20 @@ var Q_ROLE_ALIASES = {
 var Q_SPEC = [
   {
     key: "name", type: "short", required: true,
-    eyebrow: "You",
+    eyebrow: "About you",
     title: "Your name",
     placeholder: "First and last name"
   },
   {
     key: "email", type: "email", required: true,
-    eyebrow: "You",
+    eyebrow: "About you",
     title: "Your email",
     help: "The address we use to match your answers to you.",
     placeholder: "you@domain.com"
   },
   {
     key: "role", type: "one", required: true,
-    eyebrow: "You",
+    eyebrow: "About you",
     title: "You're joining as…",
     options: [
       { value: "Buyer" },
@@ -360,7 +360,7 @@ var Q_SPEC = [
   // the answers only make sense read together.
   {
     key: "about_you", type: "fields", required: true,
-    eyebrow: "About you",
+    eyebrow: "Your links",
     title: "About you",
     help: "Paste the full link for each (starting with https://).",
     fields: [
@@ -372,7 +372,7 @@ var Q_SPEC = [
   },
   {
     key: "your_company", type: "fields", required: true,
-    eyebrow: "Your company",
+    eyebrow: "Your business",
     title: "Your company",
     fields: [
       { key: "job_title", kind: "short", required: true, label: "Title", placeholder: "Founder, Head of Growth" },
