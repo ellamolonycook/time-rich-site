@@ -4,6 +4,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 <!-- Meta Pixel -->
 <script src="/js/pixel.js"></script>
+<script src="/js/affiliate.js"></script>
 <noscript><img height="1" width="1" style="display:none" alt=""
   src="https://www.facebook.com/tr?id=1790181495468842&amp;ev=PageView&amp;noscript=1" /></noscript>
 <title>Superhuman Accelerator | Time Rich</title>
@@ -1990,7 +1991,7 @@ html{scroll-padding-top:110px}
           <span class="q-eyebrow">Last step</span>
           <h3 class="q-title">That&rsquo;s everything.</h3>
           <div class="q-actions">
-            <a class="cta cta-lg" href="https://checkout.timerich.ai/accelerator/" onclick="track('join_form')">Continue to checkout &rarr;</a>
+            <a class="cta cta-lg" data-checkout href="https://checkout.timerich.ai/accelerator/" onclick="track('join_form')">Continue to checkout &rarr;</a>
             <button type="button" class="q-back" data-back>Back</button>
           </div>
         </div>
@@ -2530,9 +2531,12 @@ textarea.m-input { resize: vertical; min-height: 95px; }
       }).catch(function(err) { console.warn('Modal intent capture failed silently:', err); });
     } catch (err) { console.warn('Modal intent dispatch error:', err); }
 
-    // ThriveCart's checkout currently fails with any query string. Keep this
-    // redirect clean; the Worker retains the capture record for email matching.
-    var redirectUrl = THRIVECART_CLEAN_URL;
+    // Every other query parameter still goes: the Worker keeps the capture
+    // record for email matching, so nothing needs carrying but the affiliate
+    // tag, which is ThriveCart's own and is the one an affiliate is paid on.
+    var redirectUrl = window.TR_AFFILIATE
+      ? window.TR_AFFILIATE.tag(THRIVECART_CLEAN_URL)
+      : THRIVECART_CLEAN_URL;
     setTimeout(function() { window.location.href = redirectUrl; }, 150);
   }
 

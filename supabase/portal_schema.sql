@@ -403,6 +403,26 @@ $do$;
 --
 --    Re-running changes nothing: existing rows are left exactly as they
 --    are, including any edits made since the first run.
+--
+--    One consequence worth knowing before this is run again. A session is
+--    skipped only when a row already has that exact title AND that exact
+--    starts_at, so a session that has been RETITLED here is a new row as far
+--    as this file is concerned. Three of them were retitled for the final
+--    schedule (9, 13 and 20 November) and one was added (18 November). On a
+--    database that was seeded before that, running this inserts the new
+--    titles alongside the old ones rather than replacing them, which shows
+--    up as two sessions at the same time. On such a database, update the
+--    three titles by hand instead:
+--
+--      update public.portal_sessions set title = 'Storytelling for GTM'
+--       where starts_at = (timestamp '2026-11-09 12:00') at time zone 'America/New_York';
+--      update public.portal_sessions set title = 'The AI Content Machine + Q&A'
+--       where starts_at = (timestamp '2026-11-13 12:00') at time zone 'America/New_York';
+--      update public.portal_sessions set title = 'Q&A Exited Founder'
+--       where starts_at = (timestamp '2026-11-20 12:00') at time zone 'America/New_York';
+--
+--    The 18 November row is genuinely new, so it is the one case the insert
+--    below handles correctly on an existing database.
 -- ---------------------------------------------------------------------
 
 insert into public.portal_weeks (id, title, summary, release_at) values
@@ -425,13 +445,15 @@ select v.week_id, v.title, v.starts_at
         (timestamp '2026-11-02 12:00') at time zone 'America/New_York'),
     (2, 'Expert Q&A',
         (timestamp '2026-11-06 12:00') at time zone 'America/New_York'),
-    (3, 'The AI Content Machine',
+    (3, 'Storytelling for GTM',
         (timestamp '2026-11-09 12:00') at time zone 'America/New_York'),
-    (3, 'Bonus: Vika Victoria, Storytelling for GTM',
+    (3, 'The AI Content Machine + Q&A',
         (timestamp '2026-11-13 12:00') at time zone 'America/New_York'),
     (4, 'Unfair AI Advantage',
         (timestamp '2026-11-16 12:00') at time zone 'America/New_York'),
-    (4, 'Bonus: Taylor Offer, last call',
+    (4, 'Networking Session',
+        (timestamp '2026-11-18 12:00') at time zone 'America/New_York'),
+    (4, 'Q&A Exited Founder',
         (timestamp '2026-11-20 12:00') at time zone 'America/New_York')
   ) as v(week_id, title, starts_at)
  where not exists (
