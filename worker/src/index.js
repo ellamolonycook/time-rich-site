@@ -1669,7 +1669,13 @@ const BQ_PROJECT_MANAGEMENT = [
   "Notion", "Asana", "ClickUp", "Monday", "Trello", "Spreadsheet", "In my head", "Other",
 ];
 const BQ_TEAM_SIZE = ["Just me", "2-5", "6-15", "16+"];
-const BQ_REVENUE = ["Pre-revenue", "Under $100K/yr", "$100K-500K/yr", "$500K-2M/yr", "$2M+/yr"];
+// "$2M+/yr" is no longer offered on /superhuman but stays here: it is still a
+// live option on the Notion select, /onboard-questionnaire still offers it,
+// and a page cached before this change can still send it.
+const BQ_REVENUE = [
+  "Pre-revenue", "Under $100K/yr", "$100K-500K/yr", "$500K-2M/yr",
+  "$2M+/yr", "$2M-5M/yr", "$5M+/yr",
+];
 const BQ_ONE_TO_ONE = ["Ella Molony Cook", "ViKa Victoria", "Not interested right now"];
 const BQ_AI_DAILY_OUTREACH = ["Yes", "No", "Some days"];
 const BQ_LEAD_GEN = [
@@ -1903,6 +1909,32 @@ async function handleSuperhumanQuestionnaire(data, env, cors, ctx) {
     const chosen = picks(value, allowed);
     if (chosen) properties[prop] = chosen;
   };
+  // Notion rejects "" for a url column, so an empty or unusable link leaves
+  // its column alone. https only, matching what the page enforces: anything
+  // else is a half-pasted address, and guessing a scheme onto it would store
+  // a link that does not resolve.
+  const link = (prop, value) => {
+    const v = String(value == null ? "" : value).trim();
+    if (!v) return;
+    let parsed;
+    try { parsed = new URL(v); } catch { return; }
+    if (parsed.protocol !== "https:") return;
+    properties[prop] = { url: clip(v, 2000) };
+  };
+
+
+  // Who they are and what they do. The page asks these on two grouped screens
+  // but sends them flat, one key per Notion column.
+  link("LinkedIn", data.linkedin);
+  link("Instagram", data.instagram);
+  text("Other Links", data.other_links);
+  text("Title", data.job_title);
+  text("Company", data.company);
+  text("What the Company Does", data.company_does);
+  text("Who They Serve", data.who_you_serve);
+  text("Bio", data.bio);
+  link("Photo Link", data.photo_link);
+  text("Superpower", data.superpower);
 
   text("Q Focus Ranking", data.focus_ranking);
   text("Q Success by 20 Nov", data.success_by_20_nov);
@@ -1921,7 +1953,9 @@ async function handleSuperhumanQuestionnaire(data, env, cors, ctx) {
   text("Q Recurring Tasks", data.recurring_tasks);
   select("Q AI Daily Outreach", data.ai_daily_outreach, BQ_AI_DAILY_OUTREACH);
   multi("Q Lead Gen Platforms", data.lead_gen_platforms, BQ_LEAD_GEN);
-  text("Q AI in Outreach", data.ai_in_outreach);
+  // "Q AI in Outreach" is deliberately not written: the question that fed it
+  // was dropped from the page. The Notion column is kept for the answers
+  // already in it.
   select("Q $100 Vendor Call", data.vendor_call_100, BQ_YES_NO);
   text("Q Bring Someone In", data.bring_someone_in);
   text("Q Other Answers", data.other_answers);
@@ -1978,6 +2012,16 @@ async function handleSuperhumanQuestionnaire(data, env, cors, ctx) {
         name,
         email,
         role,
+        linkedin: data.linkedin || "",
+        instagram: data.instagram || "",
+        otherLinks: data.other_links || "",
+        jobTitle: data.job_title || "",
+        company: data.company || "",
+        companyDoes: data.company_does || "",
+        whoTheyServe: data.who_you_serve || "",
+        bio: data.bio || "",
+        photoLink: data.photo_link || "",
+        superpower: data.superpower || "",
         focusRanking: data.focus_ranking || "",
         successBy20Nov: data.success_by_20_nov || "",
         personalTransformation: data.personal_transformation || "",
@@ -1995,7 +2039,6 @@ async function handleSuperhumanQuestionnaire(data, env, cors, ctx) {
         recurringTasks: data.recurring_tasks || "",
         aiDailyOutreach: data.ai_daily_outreach || "",
         leadGenPlatforms: list(data.lead_gen_platforms),
-        aiInOutreach: data.ai_in_outreach || "",
         vendorCall100: data.vendor_call_100 || "",
         bringSomeoneIn: data.bring_someone_in || "",
         otherAnswers: data.other_answers || "",
