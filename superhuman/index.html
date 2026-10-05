@@ -128,6 +128,10 @@ main {
 
 .q-screen { animation: q-in 0.22s ease both; }
 @keyframes q-in { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: none; } }
+/* A screen rebuilt in place - a chosen option, an "Other" box opening - is the
+   same screen, so it must not replay the entrance. Without this every click
+   slid the question up 6px and faded it from zero, which is the "jump". */
+.q-screen.is-static { animation: none; }
 
 /* Mono uppercase label with the "›" prompt. The glyph is decorative, so it
    lives in CSS and stays out of the accessible name. */
@@ -159,8 +163,35 @@ main {
   transition: border-color 0.15s ease, box-shadow 0.15s ease;
 }
 .q-textarea { min-height: 132px; resize: vertical; line-height: 1.55; }
+/* A field inside a multi-field screen asks for one or two sentences, so the
+   full-height box would push the rest of the screen off a phone. */
+.q-textarea-sm { min-height: 88px; }
 .q-input::placeholder, .q-textarea::placeholder { color: var(--dim); }
 .q-input:focus, .q-textarea:focus { border-color: var(--green); box-shadow: 0 0 0 3px var(--pop); }
+
+/* ── Multi-field screens ──────────────────────────────────────────────────
+   Several questions on one screen, each with its own label. Stacked at every
+   width: two columns would put a pasted URL in a box too narrow to read. */
+.q-fields { display: flex; flex-direction: column; gap: 18px; margin-bottom: 8px; }
+.q-fields .q-field { margin-bottom: 0; }
+.q-label {
+  display: block; margin-bottom: 7px;
+  font-size: 14.5px; font-weight: 500; color: var(--green-deep); line-height: 1.4;
+}
+.q-optional {
+  margin-left: 8px; font-family: var(--font-mono); font-size: 10.5px; font-weight: 400;
+  letter-spacing: 0.1em; text-transform: uppercase; color: var(--muted);
+  vertical-align: 1px;
+}
+
+/* Character count for a capped answer. Reserves its line so the box below it
+   cannot move as the number changes. */
+.q-count {
+  display: block; min-height: 18px; margin-top: 6px; text-align: right;
+  font-family: var(--font-mono); font-size: 11.5px; letter-spacing: 0.06em;
+  color: var(--muted);
+}
+.q-count.is-full { color: var(--red); }
 
 /* Options. 56px floor so every row is a comfortable tap target on a phone. */
 .q-opts { display: flex; flex-direction: column; gap: 10px; margin-bottom: 8px; }
@@ -209,7 +240,7 @@ main {
 .q-back[hidden], .q-skip[hidden] { display: none; }
 .q-spacer { flex: 1; }
 
-/* Intro, interstitial and thank-you share the tinted panel of the other states. */
+/* Intro and thank-you share the tinted panel of the other states. */
 .q-panel {
   background: var(--tint); border: 1px solid var(--tint-line);
   border-radius: 16px; padding: 28px 24px;
@@ -323,6 +354,54 @@ var Q_SPEC = [
       { value: "Ambassador" }
     ]
   },
+  // ── About you, company and portal profile ────────────────────────────────
+  // The two "fields" screens hold several inputs each: a person filling in
+  // their own links or their own job does not want five screens to do it, and
+  // the answers only make sense read together.
+  {
+    key: "about_you", type: "fields", required: true,
+    eyebrow: "About you",
+    title: "About you",
+    help: "Paste the full link for each (starting with https://).",
+    fields: [
+      { key: "linkedin", kind: "url", required: true, label: "LinkedIn profile URL", placeholder: "https://www.linkedin.com/in/you" },
+      { key: "instagram", kind: "url", label: "Instagram URL", placeholder: "https://www.instagram.com/you" },
+      // One link per line, each checked the same way as the single-link fields.
+      { key: "other_links", kind: "urls", label: "Other platforms, one per line", placeholder: "https://yoursite.com\nhttps://youtube.com/@you" }
+    ]
+  },
+  {
+    key: "your_company", type: "fields", required: true,
+    eyebrow: "Your company",
+    title: "Your company",
+    fields: [
+      { key: "job_title", kind: "short", required: true, label: "Title", placeholder: "Founder, Head of Growth" },
+      { key: "company", kind: "short", required: true, label: "Company name" },
+      { key: "company_does", kind: "long", required: true, label: "What does your company do? 1–2 sentences." },
+      { key: "who_you_serve", kind: "long", required: true, label: "Who do you serve?" }
+    ]
+  },
+  {
+    key: "bio", type: "short", required: true, maxLength: 80,
+    eyebrow: "Your bio",
+    title: "What's your career bio in 5–7 words?",
+    help: "The line that hooks people in. Think of it as your bio inside the accelerator.",
+    placeholder: "Ex-Google PM turned AI systems builder"
+  },
+  {
+    key: "photo_link", type: "url",
+    eyebrow: "Your photo",
+    title: "Share a Google Drive link to a high-quality photo of you for the portal.",
+    help: "Set sharing to “Anyone with the link” so we can open it.",
+    placeholder: "https://drive.google.com/…"
+  },
+  {
+    key: "superpower", type: "long", required: true,
+    eyebrow: "Superpower",
+    title: "What's your superpower?",
+    help: "The thing you want other attendees to come to you for.",
+    placeholder: "The thing people already ask you about."
+  },
   {
     key: "focus_ranking", type: "rank", required: true,
     eyebrow: "Focus",
@@ -346,7 +425,8 @@ var Q_SPEC = [
   {
     key: "personal_transformation", type: "long",
     eyebrow: "Transformation",
-    title: "What's the personal transformation that's taken place as a result of you crushing this accelerator? Who do you get to become? How does it positively change your mindset, day to day and leadership?",
+    title: "What's the personal transformation that's taken place as a result of you crushing this accelerator?",
+    help: "Who do you get to become? How does it positively change your mindset, day to day and leadership?",
     placeholder: "Your words, not a polished version."
   },
   {
@@ -405,13 +485,13 @@ var Q_SPEC = [
       { value: "Under $100K/yr" },
       { value: "$100K-500K/yr", label: "$100K–500K/yr" },
       { value: "$500K-2M/yr", label: "$500K–2M/yr" },
-      { value: "$2M+/yr" }
+      { value: "$2M-5M/yr", label: "$2M–5M/yr" },
+      { value: "$5M+/yr" }
     ]
   },
   {
     key: "agents_question", type: "long",
     eyebrow: "Agents",
-    interstitial: "The next four feed the live sessions directly. One real question each.",
     title: "What's your biggest question about building agents?",
     placeholder: "One real question."
   },
@@ -482,12 +562,6 @@ var Q_SPEC = [
     ]
   },
   {
-    key: "ai_in_outreach", type: "long",
-    eyebrow: "AI in outreach",
-    title: "Where do you need AI to actually support you in outreach and lead gen?",
-    placeholder: "The part you want taken off your hands."
-  },
-  {
     key: "vendor_call_100", type: "one",
     eyebrow: "Vendor call",
     title: "Want $100 to take a short call with one of our vendor partners?",
@@ -522,12 +596,11 @@ var qStep = 0;
 var qStarted = false;
 var qSubmitting = false;
 
-// Intro, the interstitial and the thank-you are screens in their own right, so
-// the flow is built once and then only ever indexed into.
+// The intro and the thank-you are screens in their own right, so the flow is
+// built once and then only ever indexed into.
 function qBuildFlow() {
   var flow = [{ kind: "intro" }];
   for (var i = 0; i < Q_SPEC.length; i++) {
-    if (Q_SPEC[i].interstitial) flow.push({ kind: "note", text: Q_SPEC[i].interstitial });
     flow.push({ kind: "question", spec: Q_SPEC[i] });
   }
   flow.push({ kind: "done" });
@@ -580,17 +653,83 @@ function qRestore() {
 // for it rather than twenty screens later as a failed save.
 var Q_EMAIL_RE = /^[^@\s]+@[^@\s]+\.[^@\s]+$/;
 
+var Q_LINK_MESSAGE = "Please paste the full link, starting with https://";
+
+// A link has to parse and be https. URL() rejects "linkedin.com/in/me" and
+// "www.linkedin.com/in/me" outright, which is the common paste and exactly
+// what the message above is there to correct. http:// parses, so the protocol
+// is checked separately.
+function qIsLink(value) {
+  var v = String(value == null ? "" : value).trim();
+  if (!v) return false;
+  try { return new URL(v).protocol === "https:"; } catch (err) { return false; }
+}
+
+// The "urls" fields hold one link per line. Blank lines are ignored, so a
+// trailing newline is not an error.
+function qLinkLines(value) {
+  return String(value == null ? "" : value).split("\n")
+    .map(function (line) { return line.trim(); })
+    .filter(function (line) { return line !== ""; });
+}
+
+// A multi-field screen stores one object under the screen's key. Reading
+// through this keeps every caller from having to guard the shape.
+function qFieldValue(spec, field) {
+  var bag = qAnswers[spec.key];
+  var value = bag && typeof bag === "object" ? bag[field.key] : "";
+  return typeof value === "string" ? value : "";
+}
+
+// Null when the field is fine, otherwise the message to show. Empty and
+// optional is fine; empty and required is not; and a link that is present has
+// to be a real https one whether or not it was required.
+function qFieldProblem(spec, field) {
+  var value = qFieldValue(spec, field).trim();
+
+  if (!value) return field.required ? "Please fill in " + field.label.replace(/[.?]$/, "") + "." : null;
+
+  if (field.kind === "url") return qIsLink(value) ? null : Q_LINK_MESSAGE;
+  if (field.kind === "urls") {
+    var lines = qLinkLines(value);
+    for (var i = 0; i < lines.length; i++) {
+      if (!qIsLink(lines[i])) return Q_LINK_MESSAGE;
+    }
+  }
+  return null;
+}
+
+// The first thing wrong on a multi-field screen, so the message names one
+// problem at a time rather than a list.
+function qFirstFieldProblem(spec) {
+  for (var i = 0; i < spec.fields.length; i++) {
+    var problem = qFieldProblem(spec, spec.fields[i]);
+    if (problem) return problem;
+  }
+  return null;
+}
+
 function qIsAnswered(spec) {
   var value = qAnswers[spec.key];
+  if (spec.type === "fields") return qFirstFieldProblem(spec) === null;
   if (spec.type === "rank" || spec.type === "many") return Array.isArray(value) && value.length > 0;
+  // An optional link still has to be a real link when something is typed, so
+  // this one answers "is this screen clear to leave", not "is it filled in".
+  if (spec.type === "url") {
+    var typed = typeof value === "string" ? value.trim() : "";
+    if (!typed) return !spec.required;
+    return qIsLink(typed);
+  }
   if (typeof value !== "string" || value.trim() === "") return false;
   if (spec.type === "email") return Q_EMAIL_RE.test(value.trim());
   return true;
 }
 
 function qMissingMessage(spec) {
+  if (spec.type === "fields") return qFirstFieldProblem(spec) || "Please answer this one to continue.";
   if (spec.type === "rank") return "Please rank at least one to continue.";
   if (spec.type === "one" || spec.type === "many") return "Please pick one to continue.";
+  if (spec.type === "url") return Q_LINK_MESSAGE;
   if (spec.type === "email") {
     var typed = typeof qAnswers[spec.key] === "string" ? qAnswers[spec.key].trim() : "";
     return typed ? "Please check that email address." : "Please add your email to continue.";
@@ -600,8 +739,7 @@ function qMissingMessage(spec) {
 
 function qTotalQuestions() { return Q_SPEC.length; }
 
-// Progress counts the question screens up to and including the current one, so
-// the interstitial holds its position rather than jumping the bar.
+// Progress counts the question screens up to and including the current one.
 function qProgressPercent() {
   var seen = 0;
   for (var i = 0; i <= qStep && i < qFlow.length; i++) {
@@ -615,16 +753,27 @@ function qRenderProgress() {
   var wrap = document.getElementById("qProgress");
   var fill = document.getElementById("qProgressFill");
   var kind = qFlow[qStep] ? qFlow[qStep].kind : "intro";
-  var show = kind === "question" || kind === "note";
+  var show = kind === "question";
   wrap.hidden = !show;
   if (show) fill.style.width = qProgressPercent() + "%";
+}
+
+// Types that validate what was typed even when the answer is optional. Both
+// hold links, and a half-pasted link is never what anyone meant.
+function qGuardsWhenOptional(spec) {
+  return spec.type === "url" || spec.type === "fields";
 }
 
 function qGoNext() {
   var step = qFlow[qStep];
 
   if (step.kind === "question") {
-    if (step.spec.required && !qIsAnswered(step.spec)) {
+    // Required screens must be answered. Optional ones may be left empty, but
+    // what is typed still has to be valid: an optional link that does not
+    // parse is a mistake worth catching here, not something to drop silently
+    // in the worker. qIsAnswered() answers "clear to leave" for those types.
+    var mustPass = step.spec.required || qGuardsWhenOptional(step.spec);
+    if (mustPass && !qIsAnswered(step.spec)) {
       qShowError(qMissingMessage(step.spec));
       return;
     }
@@ -648,6 +797,14 @@ function qGoBack() {
 }
 
 function qSkip() {
+  // Skip means "no answer", so a half-typed link is dropped rather than sent.
+  // Only reachable on the optional photo link: every other guarded screen is
+  // required and has no Skip.
+  var step = qFlow[qStep];
+  if (step.kind === "question" && qGuardsWhenOptional(step.spec) && !qIsAnswered(step.spec)) {
+    delete qAnswers[step.spec.key];
+  }
+
   if (qStep === qFlow.length - 2) { qSubmit(); return; }
   if (qStep < qFlow.length - 1) {
     qStep++;
@@ -663,18 +820,28 @@ function qShowError(message) {
 
 // ── Screen building ────────────────────────────────────────────────────────
 
-function qRender() {
+// The step the screen on display was built from. A render for the same step is
+// an in-place update - a chosen option, an "Other" box opening - and must not
+// animate or move focus, or it reads as the screen jumping under the cursor.
+var qShownStep = null;
+
+function qRender(opts) {
   var host = document.getElementById("qHost");
+  var sameStep = qShownStep === qStep;
+  // The control that had focus, so a rebuild hands it back rather than
+  // dropping a keyboard user at the top of the screen.
+  // != null, not a truthiness test: the first option is index 0, and a falsy
+  // check there dropped focus to <body> on every click of the top row.
+  var hadFocus = sameStep && opts && opts.keepFocus != null ? opts.keepFocus : null;
+
   while (host.firstChild) host.removeChild(host.firstChild);
 
   var step = qFlow[qStep];
-  var screen = qEl("div", "q-screen");
+  var screen = qEl("div", sameStep ? "q-screen is-static" : "q-screen");
 
   if (step.kind === "intro") {
     qBuildPanel(screen, "Superhuman Accelerator", "The Superhuman questionnaire",
       "Take your time, as your answers shape the curriculum and your hot seat breakout room.", "Start");
-  } else if (step.kind === "note") {
-    qBuildPanel(screen, "Live sessions", step.text, null, "Continue");
   } else if (step.kind === "done") {
     // No button: this page is the end of the road, so there is nothing left to
     // send anyone to.
@@ -685,11 +852,37 @@ function qRender() {
 
   host.appendChild(screen);
   qRenderProgress();
+  qShownStep = qStep;
 
-  // Focus the heading rather than the field: on a phone an autofocused input
-  // throws the keyboard up over the question before it has been read.
+  if (sameStep) {
+    // Nothing else moves. Put focus back on the option that was clicked so the
+    // keyboard keeps its place; a mouse click needs no ring, and :focus-visible
+    // keeps it from drawing one.
+    if (hadFocus != null) {
+      var again = screen.querySelectorAll(".q-opt")[hadFocus];
+      if (again) again.focus({ preventScroll: true });
+    }
+    return;
+  }
+
+  // A new screen: focus its heading rather than the field, because on a phone
+  // an autofocused input throws the keyboard up over the question before it
+  // has been read. preventScroll keeps the browser from scrolling the heading
+  // into view on top of the scroll reset below.
   var heading = screen.querySelector(".q-title");
-  if (heading) { heading.setAttribute("tabindex", "-1"); heading.focus(); }
+  if (heading) {
+    heading.setAttribute("tabindex", "-1");
+    heading.focus({ preventScroll: true });
+  }
+  // One question per screen, so a new one starts at the top. Without this a
+  // long screen followed by a short one opens part-scrolled.
+  qScrollToTop();
+}
+
+// Instant, and never fights prefers-reduced-motion, because the CSS smooth
+// scrolling this page does not set is not something to emulate here.
+function qScrollToTop() {
+  try { window.scrollTo(0, 0); } catch (err) { /* nothing worth failing over */ }
 }
 
 function qBuildPanel(screen, eyebrow, title, help, buttonText) {
@@ -732,7 +925,9 @@ function qBuildQuestion(screen, spec) {
   screen.appendChild(qEl("h1", "q-title", spec.title));
   if (spec.help) screen.appendChild(qEl("p", "q-help", spec.help));
 
-  if (spec.type === "long" || spec.type === "short" || spec.type === "email") {
+  if (spec.type === "fields") {
+    screen.appendChild(qBuildFields(spec));
+  } else if (spec.type === "long" || spec.type === "short" || spec.type === "email" || spec.type === "url") {
     screen.appendChild(qBuildTextField(spec));
   } else {
     screen.appendChild(qBuildOptions(spec));
@@ -773,9 +968,11 @@ function qBuildTextField(spec) {
   var long = spec.type === "long";
   var input = document.createElement(long ? "textarea" : "input");
   input.className = long ? "q-textarea" : "q-input";
-  // type="email" gets the right phone keyboard; the real check is
-  // qIsAnswered(), since a bare input type is not validation.
-  if (!long) input.type = spec.type === "email" ? "email" : "text";
+  // type="email" and type="url" get the right phone keyboard; the real check
+  // is qIsAnswered(), since a bare input type is not validation.
+  if (!long) {
+    input.type = spec.type === "email" ? "email" : (spec.type === "url" ? "url" : "text");
+  }
   if (spec.key === "name") input.autocomplete = "name";
   if (spec.type === "email") {
     input.autocomplete = "email";
@@ -783,19 +980,49 @@ function qBuildTextField(spec) {
     input.setAttribute("autocapitalize", "none");
     input.setAttribute("spellcheck", "false");
   }
+  if (spec.type === "url") qApplyLinkHints(input);
   input.id = "qField";
-  input.maxLength = Q_TEXT_LIMIT;
+  input.maxLength = spec.maxLength || Q_TEXT_LIMIT;
   if (spec.placeholder) input.placeholder = spec.placeholder;
   input.setAttribute("aria-label", spec.title);
   // .value, never innerHTML or textContent, so a stored answer is only ever
   // data going back into the control it came from.
   input.value = typeof qAnswers[spec.key] === "string" ? qAnswers[spec.key] : "";
 
+  // A tight cap needs saying out loud: 80 characters runs out mid-sentence and
+  // an input that simply stops accepting keys reads as broken.
+  var counter = null;
+  var paint = function () {};
+  if (spec.maxLength) {
+    counter = qEl("span", "q-count", "");
+    counter.setAttribute("aria-hidden", "true");
+    paint = function () {
+      counter.textContent = input.value.length + " / " + spec.maxLength;
+      counter.classList.toggle("is-full", input.value.length >= spec.maxLength);
+    };
+  }
+
+  // One handler, so the clamp always runs before the count is painted.
   input.addEventListener("input", function () {
+    // maxLength only stops the browser accepting more keystrokes; it does not
+    // constrain a value set any other way, including one restored from an
+    // older session. Clamping here is what actually makes the cap hold.
+    if (spec.maxLength && input.value.length > spec.maxLength) {
+      input.value = input.value.slice(0, spec.maxLength);
+    }
     qAnswers[spec.key] = input.value;
+    paint();
     qShowError("");
     qStore();
   });
+
+  // A restored answer from before the cap existed is trimmed on sight, so the
+  // screen never opens showing more than it will keep.
+  if (spec.maxLength && input.value.length > spec.maxLength) {
+    input.value = input.value.slice(0, spec.maxLength);
+    qAnswers[spec.key] = input.value;
+  }
+  paint();
 
   // Enter moves on. On the long answers Shift+Enter is the newline, which is
   // why this checks the modifier rather than the control type.
@@ -807,7 +1034,71 @@ function qBuildTextField(spec) {
   });
 
   field.appendChild(input);
+  if (counter) field.appendChild(counter);
   return field;
+}
+
+// Link inputs share these: a URL keyboard, and none of the autocapitalising or
+// spellchecking that mangles a pasted address.
+function qApplyLinkHints(input) {
+  input.setAttribute("inputmode", "url");
+  input.setAttribute("autocapitalize", "none");
+  input.setAttribute("autocorrect", "off");
+  input.setAttribute("spellcheck", "false");
+}
+
+// A screen that asks several things at once. The answers live together in one
+// object under the screen's key, so the stored shape mirrors the screen.
+function qBuildFields(spec) {
+  var wrap = qEl("div", "q-fields");
+  var inputs = [];
+
+  if (!qAnswers[spec.key] || typeof qAnswers[spec.key] !== "object") qAnswers[spec.key] = {};
+  var bag = qAnswers[spec.key];
+
+  spec.fields.forEach(function (field, index) {
+    var row = qEl("div", "q-field");
+    var id = "qField_" + spec.key + "_" + field.key;
+
+    var label = qEl("label", "q-label", field.label);
+    label.setAttribute("for", id);
+    if (!field.required) label.appendChild(qEl("span", "q-optional", "Optional"));
+    row.appendChild(label);
+
+    var multiline = field.kind === "long" || field.kind === "urls";
+    var input = document.createElement(multiline ? "textarea" : "input");
+    input.className = multiline ? "q-textarea q-textarea-sm" : "q-input";
+    if (!multiline) input.type = field.kind === "url" ? "url" : "text";
+    if (field.kind === "url" || field.kind === "urls") qApplyLinkHints(input);
+    input.id = id;
+    input.maxLength = Q_TEXT_LIMIT;
+    if (field.placeholder) input.placeholder = field.placeholder;
+    input.value = typeof bag[field.key] === "string" ? bag[field.key] : "";
+
+    input.addEventListener("input", function () {
+      bag[field.key] = input.value;
+      qShowError("");
+      qStore();
+    });
+
+    // Enter walks down the screen rather than leaving it: four fields in and
+    // being thrown to the next question would lose the rest. The last control
+    // is the one that moves on. Textareas keep Enter as a newline.
+    if (!multiline) {
+      input.addEventListener("keydown", function (e) {
+        if (e.key !== "Enter" || e.shiftKey) return;
+        e.preventDefault();
+        var next = inputs[index + 1];
+        if (next) next.focus(); else qGoNext();
+      });
+    }
+
+    inputs[index] = input;
+    row.appendChild(input);
+    wrap.appendChild(row);
+  });
+
+  return wrap;
 }
 
 function qBuildOptions(spec) {
@@ -864,10 +1155,15 @@ function qBuildOption(spec, opt, chosen) {
   button.appendChild(qEl("span", "q-opt-label", qOptionLabel(opt)));
 
   button.addEventListener("click", function () {
+    // Index within the rendered option list, so the rebuilt screen can hand
+    // focus back to this same row.
+    var opts = button.parentNode ? button.parentNode.querySelectorAll(".q-opt") : [];
+    var at = Array.prototype.indexOf.call(opts, button);
+
     qToggle(spec, opt);
     qShowError("");
     qStore();
-    qRender();
+    qRender({ keepFocus: at });
   });
 
   return button;
@@ -950,7 +1246,15 @@ function qPayload() {
   for (var i = 0; i < Q_SPEC.length; i++) {
     var spec = Q_SPEC[i];
     var value = qAnswers[spec.key];
-    if (spec.type === "rank") {
+    if (spec.type === "fields") {
+      // Flat on the wire: the screen groups the fields for the person filling
+      // it in, but each one is its own Notion column, so each goes up under
+      // its own field key rather than nested under the screen's.
+      for (var f = 0; f < spec.fields.length; f++) {
+        var field = spec.fields[f];
+        payload[field.key] = qFieldValue(spec, field).trim();
+      }
+    } else if (spec.type === "rank") {
       payload[spec.key] = qRankString(spec.key);
     } else if (spec.type === "many") {
       payload[spec.key] = Array.isArray(value) ? value : [];
