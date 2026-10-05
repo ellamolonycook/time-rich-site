@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" class="scroll-smooth">
 <head>
   <meta charset="utf-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
@@ -36,6 +36,47 @@
       gap: 0.75rem;
       margin-bottom: 1.5rem;
     }
+  
+    /* === SMOOTH PORTAL TRANSITIONS === */
+    html { scroll-behavior: smooth; }
+    
+    /* Smooth all interactive elements */
+    a, button, [role="button"] {
+      transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+    
+    /* Smooth focus states */
+    *:focus-visible {
+      outline: 2px solid rgba(89, 108, 36, 0.4);
+      outline-offset: 2px;
+      transition: outline 0.2s ease;
+    }
+    
+    /* Smooth image loading */
+    img {
+      transition: opacity 0.4s ease;
+    }
+    
+    /* Accordion smooth expand/collapse */
+    .accordion-content {
+      max-height: 0;
+      overflow: hidden;
+      transition: max-height 0.5s cubic-bezier(0.16, 1, 0.3, 1), 
+                  opacity 0.4s ease, 
+                  padding 0.4s ease;
+      opacity: 0;
+    }
+    .accordion-content.open {
+      opacity: 1;
+    }
+    
+  
+    /* Smooth press feedback on cards */
+    .glass-card:active {
+      transform: translateY(-1px) scale(0.995);
+      transition: transform 0.15s ease;
+    }
+    
   </style>
 
   <!-- Config first, then the library. Both are deferred so the DOM is
@@ -108,6 +149,25 @@
     </div>
 
   </main>
+
+
+  <script>
+    // === SMOOTH PAGE TRANSITIONS ===
+    // Intercept all internal nav links for smooth exit
+    document.addEventListener('DOMContentLoaded', () => {
+      document.querySelectorAll('a[href]').forEach(link => {
+        const href = link.getAttribute('href');
+        if (href && !href.startsWith('http') && !href.startsWith('#') && !href.startsWith('mailto') && href.endsWith('.html')) {
+          link.addEventListener('click', (e) => {
+            e.preventDefault();
+            document.body.style.opacity = '0';
+            document.body.style.transform = 'scale(0.98)';
+            setTimeout(() => { window.location.href = href; }, 280);
+          });
+        }
+      });
+    });
+  </script>
 
 </body>
 </html>
