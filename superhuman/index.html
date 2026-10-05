@@ -2,263 +2,1035 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<script src="/js/pixel.js"></script>
-<script src="/js/affiliate.js"></script>
-<title>The Super Human Accelerator</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+<title>Superhuman Questionnaire — Time Rich</title>
 <link rel="icon" href="/favicon.ico" sizes="any" />
 <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32.png" />
+<link rel="icon" type="image/png" sizes="16x16" href="/favicon-16.png" />
 <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
-<meta name="description" content="An AI operating system for one department of your business. Two tracks, founding member pricing. Starts Mon, 26 October 2026." />
+<meta name="description" content="The Superhuman Accelerator questionnaire. Your answers shape the curriculum and your hot seat breakout room." />
 <link rel="canonical" href="https://timerich.ai/superhuman/" />
-<meta name="theme-color" content="#DCDEBF" />
-<meta property="og:title" content="The Super Human Accelerator" />
-<meta property="og:description" content="An AI operating system for one department of your business. Founding cohort starts Mon, 26 October." />
-<meta property="og:url" content="https://timerich.ai/superhuman/" />
-<meta property="og:type" content="website" />
+<meta name="robots" content="noindex, nofollow" />
+<meta name="theme-color" content="#FFFDFA" />
+
+<link rel="stylesheet" href="/sh-apply/fonts.css" />
 <style>
-@font-face{font-family:'Space Grotesk';font-weight:400 700;font-display:swap;src:url('/brand/fonts/SpaceGrotesk-Variable.ttf') format('truetype');}
+/* fonts.css carries Space Grotesk, Inter and Archivo. The small uppercase
+   labels want a mono face, and JetBrains Mono is already in /brand/fonts for
+   the rest of the Superhuman pages, so it is loaded from there rather than
+   inlining a second base64 blob of Space Mono. */
 @font-face{font-family:'JetBrains Mono';font-weight:400 700;font-display:swap;src:url('/brand/fonts/JetBrainsMono-Variable.ttf') format('truetype');}
 
-/* One palette for everyone. The page used to follow the visitor's OS theme, so
-   most people met it as dark olive. The ground is now the accelerator's card
-   tone, and the pricing cards keep the old dark-theme fills - dark cards on a
-   light ground. All three blocks carry the same values so nobody gets a
-   different page; they are kept rather than collapsed so the theming hooks
-   survive if this is ever revisited.
+/* Tokens, ground and shared controls are the onboarding page's, so the two
+   steps of the same flow look like one thing. */
+:root {
+  --cream: #FFFDFA;            /* page ground */
+  --tint: #EBF8D9;             /* tinted card surface */
+  --tint-line: rgba(103,118,46,.22);
+  --green: #424B36;
+  --green-deep: #333A28;
+  --pop: #CCEEA0;
+  --lime: #424B36;             /* dark accent: brand green, readable on light ground */
+  --red: #A8492F;
+  --line: rgba(103,118,46,.22);
+  --text: #1A1816;
+  --muted: #57534E;
+  --dim: #A8A29E;
+  --ink2: #57534E;
 
-   The tokens below are the ON-PAGE set, for everything sitting on the sage.
-   Inside .track the text tokens flip back to the dark theme's light values -
-   see the scoped block on .track. Every pairing is checked to WCAG AA (4.5:1);
-   --dim had to come up to meet --muted, because nothing lighter clears AA on
-   sage. */
-:root{
-  color-scheme:light;
-  --void:#DCDEBF; --panel:#353E29; --panel-2:#3D4730; --raise:#FFFFFF;
-  --line:rgba(66,75,54,.18); --line-2:rgba(66,75,54,.32);
-  --fg:#333A28; --muted:#5B6449; --dim:#5B6449;
-  --lime:#CCEEA0; --lime-ink:#556226; --lime-dim:#EDF7C6;
-  --moss:#424B36; --sage:#DCDEBF;
-  --shadow:0 20px 50px rgba(66,75,54,.14);
-  --accent:var(--lime-ink);
-  --sans:'Space Grotesk',system-ui,-apple-system,'Segoe UI',sans-serif;
-  --body:system-ui,-apple-system,'Segoe UI',Roboto,Helvetica,sans-serif;
-  --mono:'JetBrains Mono',ui-monospace,SFMono-Regular,Menlo,monospace;
-}
-@media (prefers-color-scheme:light){:root:not([data-theme]){
-  color-scheme:light;
-  --void:#DCDEBF; --panel:#353E29; --panel-2:#3D4730; --raise:#FFFFFF;
-  --line:rgba(66,75,54,.18); --line-2:rgba(66,75,54,.32);
-  --fg:#333A28; --muted:#5B6449; --dim:#5B6449;
-  --lime:#CCEEA0; --lime-ink:#556226; --lime-dim:#EDF7C6;
-  --moss:#424B36; --sage:#DCDEBF;
-  --shadow:0 20px 50px rgba(66,75,54,.14);
-}}
-:root[data-theme="light"]{
-  color-scheme:light;
-  --void:#DCDEBF; --panel:#353E29; --panel-2:#3D4730; --raise:#FFFFFF;
-  --line:rgba(66,75,54,.18); --line-2:rgba(66,75,54,.32);
-  --fg:#333A28; --muted:#5B6449; --dim:#5B6449;
-  --lime:#CCEEA0; --lime-ink:#556226; --lime-dim:#EDF7C6;
-  --moss:#424B36; --sage:#DCDEBF;
-  --shadow:0 20px 50px rgba(66,75,54,.14);
+  --font-display: 'Space Grotesk', system-ui, -apple-system, 'Segoe UI', sans-serif;
+  --font-body: 'Inter', -apple-system, sans-serif;
+  --font-mono: 'JetBrains Mono', ui-monospace, SFMono-Regular, Menlo, monospace;
 }
 
-*{box-sizing:border-box}
-html{-webkit-text-size-adjust:100%;scroll-padding-top:70px}
-body{margin:0;background:var(--void);color:var(--fg);font-family:var(--body);line-height:1.6;font-size:16px;-webkit-font-smoothing:antialiased}
-a{color:var(--accent);text-underline-offset:3px}
-.wrap{max-width:940px;margin:0 auto;padding:0 26px}
-.display{font-family:var(--sans);font-weight:700;letter-spacing:-.02em;line-height:1.0;text-wrap:balance}
-.eyebrow{font-family:var(--mono);font-weight:600;text-transform:uppercase;letter-spacing:.16em;
-  font-size:11px;color:var(--accent);margin:0 0 16px;display:inline-flex;align-items:center;gap:9px}
-.eyebrow::before{content:"\203A";color:var(--lime-ink);font-weight:700}
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
-.back{font-family:var(--mono);font-size:11.5px;letter-spacing:.08em;text-transform:uppercase;
-  color:var(--dim);text-decoration:none;display:inline-block}
-.back:hover{color:var(--accent)}
-
-/* ---- STICKY HEADER ----------------------------------------------------
-   Three columns: the way back on the left, the page title in the middle, the
-   cohort tag on the right. The outer columns are both 1fr, so the title sits
-   centred on the bar rather than centred on whatever space is left over.
-   Translucent sage over a blur, so the page reads as passing underneath. */
-.topbar{position:sticky;top:0;z-index:50;background:rgba(220,222,191,.92);
-  -webkit-backdrop-filter:blur(10px);backdrop-filter:blur(10px);
-  border-bottom:1px solid var(--line)}
-.topbar-inner{display:grid;grid-template-columns:1fr auto 1fr;align-items:center;
-  gap:18px;min-height:58px}
-.topbar .back{justify-self:start}
-.topbar h1{justify-self:center;margin:0;font-size:clamp(14px,2.2vw,20px);
-  white-space:nowrap;line-height:1}
-.topbar .eyebrow{justify-self:end;margin:0}
-@media (max-width:720px){
-  /* The cohort tag goes first: the title and the way back both have to survive
-     on a phone. The empty third column keeps the title centred. */
-  .topbar .eyebrow{display:none}
-  .topbar-inner{gap:12px;min-height:52px}
+body {
+  background: var(--cream);
+  color: var(--text);
+  font-family: var(--font-body);
+  font-size: 16px;
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+  min-height: 100vh;
+  min-height: 100dvh;
+  display: flex;
+  flex-direction: column;
 }
 
-.hero{padding:34px 0 46px;text-align:center}
-.hero .sub{max-width:56ch;margin:0 auto;color:var(--muted);font-size:17px}
-.datebar{font-family:var(--mono);font-size:12px;letter-spacing:.09em;text-transform:uppercase;
-  color:var(--dim);margin-top:22px;border-top:1px solid var(--line);padding-top:18px;display:inline-block}
-.datebar b{color:var(--fg);font-weight:600}
+::selection { background: var(--pop); color: var(--green-deep); }
+a { color: inherit; text-decoration: none; }
 
-.tracks{display:grid;grid-template-columns:1fr 1fr;gap:20px;padding-bottom:10px}
-@media (max-width:760px){.tracks{grid-template-columns:1fr}}
-/* The cards keep the original dark-theme fills, so every text token inside them
-   flips back to that theme's light values. Custom properties inherit, so this
-   one block re-skins everything nested in a card - headings, body, tag row,
-   prices, bullets, dividers, buttons, small print - without touching a single
-   component rule. --accent is redeclared explicitly: it was computed on :root
-   as var(--lime-ink) and would otherwise keep the on-page moss.
-   Checked on the darker of the two fills (#3D4730, the picked card):
-     #FFFCEB  9.51:1   #C3C8AC 5.68:1   #B0B798 4.70:1   #CCEEA0 7.61:1 */
-.track{
-  --fg:#FFFCEB; --muted:#C3C8AC; --dim:#B0B798;
-  --line:rgba(255,252,235,.11); --line-2:rgba(255,252,235,.21);
-  --lime-ink:#CCEEA0; --accent:#CCEEA0;
-  color:var(--fg);
-  background:var(--panel);border:1px solid var(--line);border-radius:18px;padding:30px 28px;
-  display:flex;flex-direction:column;box-shadow:var(--shadow)}
-.track.pick{border-color:var(--lime-ink);background:var(--panel-2)}
-.tag{font-family:var(--mono);font-size:10.5px;letter-spacing:.13em;text-transform:uppercase;color:var(--dim);
-  display:flex;justify-content:space-between;align-items:center;gap:10px;margin-bottom:14px}
-.tag .flag{color:#2C3422;background:var(--lime);border-radius:999px;padding:4px 10px;font-weight:700}
-.track h2{font-family:var(--sans);font-weight:700;letter-spacing:-.02em;font-size:25px;margin:0 0 6px;line-height:1.1}
-.track .who{color:var(--muted);font-size:15px;margin:0 0 22px}
-.price{display:flex;align-items:baseline;gap:10px;margin-bottom:4px}
-.price .n{font-family:var(--sans);font-weight:700;font-size:44px;letter-spacing:-.03em;line-height:1}
-.price .per{font-family:var(--mono);font-size:11.5px;letter-spacing:.08em;text-transform:uppercase;color:var(--dim)}
-.next{font-family:var(--mono);font-size:11.5px;letter-spacing:.08em;text-transform:uppercase;
-  color:var(--dim);margin:0 0 20px;display:flex;align-items:baseline;gap:8px}
-.next b{font-family:var(--sans);font-weight:700;font-size:23px;letter-spacing:-.02em;
-  text-transform:none;color:var(--muted)}
-ul.gets{list-style:none;margin:0 0 26px;padding:0;border-top:1px solid var(--line);padding-top:18px}
-ul.gets li{position:relative;padding:0 0 9px 20px;font-size:15px;color:var(--muted)}
-ul.gets li::before{content:"";position:absolute;left:0;top:9px;width:7px;height:7px;border-radius:50%;background:var(--lime-ink)}
-ul.gets li b{color:var(--fg);font-weight:600}
-.plus{font-family:var(--mono);font-size:10.5px;letter-spacing:.11em;text-transform:uppercase;color:var(--accent);
-  margin:0 0 12px;padding-top:18px;border-top:1px solid var(--line)}
-ul.gets.tight{border-top:0;padding-top:0}
-.cta{margin-top:auto}
-.btn{font-family:var(--mono);font-weight:600;font-size:13px;letter-spacing:.04em;text-transform:uppercase;
-  border-radius:999px;padding:15px 22px;cursor:pointer;text-decoration:none;display:flex;align-items:center;
-  justify-content:center;gap:9px;border:1px solid transparent;width:100%;
-  transition:transform .14s ease,background .14s ease,border-color .14s ease}
-.btn:hover{transform:translateY(-1px)}
-.btn-primary{background:var(--lime);color:#2C3422;border-color:var(--lime)}
-.btn-ghost{background:transparent;color:var(--fg);border-color:var(--line-2)}
-.btn-ghost:hover{border-color:var(--lime-ink);color:var(--accent)}
+.topbar {
+  position: sticky; top: 0; z-index: 50;
+  background: rgba(255, 253, 250, 0.94);
+  -webkit-backdrop-filter: blur(10px); backdrop-filter: blur(10px);
+  border-bottom: 1px solid var(--line);
+}
+.topbar-inner {
+  max-width: 760px; margin: 0 auto; padding: 0 24px; height: 64px;
+  display: flex; align-items: center; justify-content: space-between; gap: 12px;
+}
+.brand-logo { font-family: var(--font-body); font-size: 18px; font-weight: 500; letter-spacing: -0.03em; color: var(--text); }
+.brand-logo span { color: var(--lime); }
+.badge-status {
+  display: inline-flex; align-items: center; gap: 6px;
+  background: rgba(103, 118, 46, 0.12); border: 1px solid rgba(103, 118, 46, 0.3);
+  padding: 4px 12px; border-radius: 99px;
+  font-family: var(--font-mono); font-size: 12px; font-weight: 400;
+  letter-spacing: 0.14em; text-transform: uppercase; color: var(--ink2);
+}
 
-.plannote{font-family:var(--mono);font-size:11px;line-height:1.5;letter-spacing:.03em;color:var(--dim);
-  text-align:center;margin:13px 0 0}
-.plannote a{color:var(--accent);text-decoration:underline;text-underline-offset:2px}
-.steer{margin:34px 0 0;padding:24px 26px;border-left:2px solid var(--lime-ink);background:var(--lime-dim);
-  border-radius:0 12px 12px 0;color:var(--fg);font-size:15.5px}
-.steer b{font-weight:700}
-footer{margin-top:56px;border-top:1px solid var(--line);padding:26px 0 40px;
-  font-family:var(--mono);font-size:11.5px;letter-spacing:.05em;color:var(--dim);text-align:center}
-footer a{color:var(--dim);text-decoration:none}
-footer a:hover{color:var(--accent)}
+main {
+  flex: 1 0 auto; display: flex; align-items: center; justify-content: center;
+  padding: 40px 24px 80px;
+}
+
+.onboard-card {
+  width: 100%; max-width: 680px;
+  background: transparent; border: 0;
+  border-radius: 0; padding: 8px 0 40px;
+}
+
+.btn-primary {
+  background: var(--green); border: 1px solid var(--green); border-radius: 10px;
+  padding: 12px 22px; font-family: var(--font-body); font-size: 14px; font-weight: 500;
+  letter-spacing: 0.06em; text-transform: uppercase;
+  color: var(--cream); cursor: pointer; transition: all 0.15s ease; white-space: nowrap;
+}
+.btn-primary:hover { background: var(--green-deep); border-color: var(--green-deep); }
+.btn-primary:disabled { opacity: 0.6; cursor: not-allowed; }
+
+/* The honeypot. Off-screen rather than display:none, because a bot that reads
+   the computed style skips a hidden field and happily fills this one. It is
+   taken out of the tab order and hidden from the accessibility tree, so nobody
+   using the page can reach it. */
+.q-trap {
+  position: absolute; left: -9999px; top: auto;
+  width: 1px; height: 1px; overflow: hidden;
+}
+/* ── Questionnaire ──────────────────────────────────────────────────────
+   One question per screen, same ground and tokens as the states above.
+   --pop is the only accent: it marks the current progress and whatever the
+   person has chosen, and nothing else. */
+
+/* Thin rule under the title. The fill is --green rather than --pop because a
+   3px pastel line on cream is too faint to read as progress. */
+.q-progress {
+  height: 3px; border-radius: 99px; overflow: hidden;
+  background: rgba(103, 118, 46, 0.14); margin-bottom: 28px;
+}
+.q-progress-fill {
+  height: 100%; width: 0%; border-radius: 99px; background: var(--green);
+  transition: width 0.3s cubic-bezier(.4, 0, .2, 1);
+}
+
+.q-screen { animation: q-in 0.22s ease both; }
+@keyframes q-in { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: none; } }
+
+/* Mono uppercase label with the "›" prompt. The glyph is decorative, so it
+   lives in CSS and stays out of the accessible name. */
+.q-eyebrow {
+  display: block; font-family: var(--font-mono); font-size: 11.5px;
+  letter-spacing: 0.16em; text-transform: uppercase; color: var(--lime);
+  margin-bottom: 10px;
+}
+.q-eyebrow::before { content: "\203A"; margin-right: 7px; opacity: 0.75; }
+
+.q-title {
+  font-family: var(--font-display); font-size: clamp(22px, 3.4vw, 28px);
+  font-weight: 600; letter-spacing: -0.022em; line-height: 1.22;
+  color: var(--green-deep); margin-bottom: 10px;
+}
+/* Each new screen moves focus to its heading so a screen reader reads the
+   question. The heading is not a control, so the ring it would otherwise draw
+   is noise: the moved focus is the signal, and every real control keeps its
+   own :focus-visible ring. */
+.q-title:focus { outline: none; }
+.q-help { font-size: 14.5px; color: var(--muted); margin-bottom: 20px; }
+
+.q-field { margin-bottom: 8px; }
+.q-input, .q-textarea {
+  width: 100%; min-width: 0; display: block;
+  font-family: var(--font-body); font-size: 16px; color: var(--text);
+  background: #ffffff; border: 1px solid rgba(66, 75, 54, .2); border-radius: 10px;
+  padding: 14px 16px; outline: none;
+  transition: border-color 0.15s ease, box-shadow 0.15s ease;
+}
+.q-textarea { min-height: 132px; resize: vertical; line-height: 1.55; }
+.q-input::placeholder, .q-textarea::placeholder { color: var(--dim); }
+.q-input:focus, .q-textarea:focus { border-color: var(--green); box-shadow: 0 0 0 3px var(--pop); }
+
+/* Options. 56px floor so every row is a comfortable tap target on a phone. */
+.q-opts { display: flex; flex-direction: column; gap: 10px; margin-bottom: 8px; }
+.q-opt {
+  display: flex; align-items: center; gap: 12px; width: 100%;
+  min-height: 56px; padding: 14px 16px; text-align: left;
+  font-family: var(--font-body); font-size: 15.5px; color: var(--text);
+  background: var(--tint); border: 1px solid var(--tint-line); border-radius: 12px;
+  cursor: pointer; transition: border-color 0.15s ease, background 0.15s ease, box-shadow 0.15s ease;
+}
+.q-opt:hover { border-color: var(--green); }
+.q-opt:focus-visible { outline: none; border-color: var(--green); box-shadow: 0 0 0 3px var(--pop); }
+.q-opt.is-on { background: var(--pop); border-color: var(--green); }
+.q-opt-label { flex: 1; min-width: 0; line-height: 1.4; }
+
+/* The marker is a circle for "pick one", a square for "pick any", and a
+   numbered pill once something is ranked. */
+.q-mark {
+  flex: 0 0 auto; width: 24px; height: 24px; border-radius: 50%;
+  border: 2px solid var(--dim); background: #ffffff;
+  display: flex; align-items: center; justify-content: center;
+  font-family: var(--font-mono); font-size: 11.5px; font-weight: 700;
+  color: var(--green-deep); line-height: 1;
+}
+.q-opt[data-shape="box"] .q-mark { border-radius: 7px; }
+.q-opt.is-on .q-mark { border-color: var(--green); background: var(--green); color: var(--cream); }
+.q-opt.is-on[data-shape="dot"] .q-mark::after,
+.q-opt.is-on[data-shape="box"] .q-mark::after {
+  content: ""; width: 8px; height: 8px; border-radius: 50%; background: var(--cream);
+}
+.q-opt[data-shape="box"].is-on .q-mark::after { border-radius: 2px; }
+
+.q-other { margin-top: 10px; }
+.q-error { display: block; min-height: 20px; font-size: 13.5px; color: var(--red); margin-top: 4px; }
+
+.q-actions { display: flex; align-items: center; gap: 12px; margin-top: 20px; }
+/* The shared button lands at 43px from its padding alone, just under a
+   comfortable tap target, so the questionnaire's copy of it is floored at 48. */
+.q-actions .btn-primary { min-height: 48px; }
+.q-back, .q-skip {
+  font-family: var(--font-body); font-size: 14px; color: var(--muted);
+  background: none; border: 0; padding: 12px 6px; min-height: 44px;
+  cursor: pointer; text-decoration: underline; text-underline-offset: 3px;
+}
+.q-back:hover, .q-skip:hover { color: var(--green-deep); }
+.q-back[hidden], .q-skip[hidden] { display: none; }
+.q-spacer { flex: 1; }
+
+/* Intro, interstitial and thank-you share the tinted panel of the other states. */
+.q-panel {
+  background: var(--tint); border: 1px solid var(--tint-line);
+  border-radius: 16px; padding: 28px 24px;
+}
+.q-panel .q-title { margin-bottom: 10px; }
+.q-panel .q-help { margin-bottom: 22px; }
+.q-panel-tight .q-help { margin-bottom: 0; }
+
+/* ── Small screens ──────────────────────────────────────────────────────
+   Kept at the end so these win on source order over the base rules above. */
+@media (max-width: 540px) {
+  .onboard-card { padding: 8px 0 32px; }
+  .btn-primary { width: 100%; }
+
+  /* The primary action goes full width and sits first, with back and skip
+     underneath, so the thumb lands on Next every time. */
+  .q-actions { flex-wrap: wrap; gap: 4px 12px; }
+  .q-actions .btn-primary { order: -1; width: 100%; margin-bottom: 6px; }
+  .q-spacer { display: none; }
+  .q-panel { padding: 24px 18px; }
+  .q-title { font-size: 22px; }
+  .q-opt { padding: 13px 14px; font-size: 15px; }
+}
 </style>
 </head>
 <body>
+
 <header class="topbar">
-  <div class="wrap topbar-inner">
-    <a class="back" href="/">&larr; Time Rich</a>
-    <h1 class="display">Super Human Accelerator</h1>
-    <span class="eyebrow">Founding cohort</span>
+  <div class="topbar-inner">
+    <a href="/accelerator/" class="brand-logo">Time Rich<span>.</span></a>
+    <span class="badge-status">Superhuman</span>
   </div>
 </header>
 
-<div class="wrap">
-  <div class="hero">
-    <p class="sub">An AI operating system for one department of your business, and the repeatable process that turns everyone you bring in after this into someone who arrives already able to do the job.</p>
-    <div class="datebar">Starts <b>Mon, 26 October</b> &nbsp;·&nbsp; Two tracks &nbsp;·&nbsp; Founding member pricing</div>
-  </div>
-
-  <div class="tracks">
-
-    <div class="track">
-      <div class="tag"><span>Track one</span><span>6 weeks</span></div>
-      <h2>The Agent Build</h2>
-      <p class="who">For the founder who is not hiring yet.</p>
-      <div class="price"><span class="n">$1,111</span><span class="per">Founding</span></div>
-      <p class="next">Full price <b>$1,997</b></p>
-      <ul class="gets">
-        <li><b>Five agents</b>, built by you, running in your business</li>
-        <li>Your <b>delegation map</b> - every task sorted into agent, person, or you</li>
-        <li>Your <b>context pack</b> - makes a new person or agent useful in week one</li>
-        <li>The onboarding process, written down, in your words</li>
-        <li>The QA loop: Builder &rarr; QA &rarr; You</li>
-        <li>The AI OS Playbook</li>
-      </ul>
-      <div class="cta">
-        <a class="btn btn-ghost" id="buy-agent" href="/sh-apply/">Apply for the founding cohort</a>
-        <p class="plannote">Want a payment plan? <a href="/sh-apply/">Fill out the application</a> and I will set one up.</p>
-      </div>
+<main>
+  <div class="onboard-card">
+    <div class="q-progress" id="qProgress" hidden>
+      <div class="q-progress-fill" id="qProgressFill"></div>
     </div>
+    <div id="qHost"></div>
 
-    <div class="track pick">
-      <div class="tag"><span>Track two</span><span class="flag">Most founders</span></div>
-      <h2>The Full System</h2>
-      <p class="who">For the founder who is bringing people in this year.</p>
-      <div class="price"><span class="n">$2,222</span><span class="per">Founding</span></div>
-      <p class="next">Full price <b>$3,997</b></p>
-      <ul class="gets">
-        <li>Everything in <b>The Agent Build</b></li>
-      </ul>
-      <p class="plus">Plus, over ten weeks</p>
-      <ul class="gets tight">
-        <li>The <b>live recruitment campaign</b> and screening filter, run for real</li>
-        <li>Role briefs written as AI onboarding, not job ads</li>
-        <li>The <b>intern portal</b> - Slack, Notion and Drive wired together</li>
-        <li>Security, compliance and the guardrails conversation</li>
-        <li>Delegation for a team: shared context pack, leaderboard, retention</li>
-      </ul>
-      <div class="cta">
-        <a class="btn btn-primary" id="buy-full" href="/sh-apply/">Apply for the founding cohort</a>
-        <p class="plannote">Want a payment plan? <a href="/sh-apply/">Fill out the application</a> and I will set one up.</p>
-      </div>
+    <!-- Honeypot. A real person never sees or tabs to this; a bot that fills
+         every input it finds does, and the worker drops that submission. -->
+    <div class="q-trap" aria-hidden="true">
+      <label for="qTrap">Leave this field empty</label>
+      <input type="text" id="qTrap" name="_gotcha" tabindex="-1" autocomplete="off" />
     </div>
-
   </div>
-
-  <p class="steer"><b>The honest steer:</b> if you are hiring anyone in the next six months, take the full system. The agents are the easy half. Running the loop with humans in it is the half that changes your year.</p>
-
-  <footer>
-    &copy; 2026 Time Rich &nbsp;·&nbsp; <a href="/privacy">Privacy</a> &nbsp;·&nbsp; <a href="/terms">Terms</a> &nbsp;·&nbsp; <a href="/">Home</a>
-  </footer>
-</div>
+</main>
 
 <script>
-  window.gtag = window.gtag || function(){};
-  function track(n,p){ try{ if(window.gtag) window.gtag('event',n,p||{}); }catch(e){} }
+// ---------------------------------------------------------------------------
+// Superhuman questionnaire
+//
+// Lifted whole from /onboard, which used to carry it behind an order check.
+// It now stands on its own page with no purchase lookup: buyers, second seats
+// and ambassadors all answer the same thing, and who they are is the first
+// three screens rather than something the worker looks up.
+//
+// Same shape as /sh-apply: a spec array drives the screens, every answer lives
+// in one object, each screen is rebuilt from the spec on render, and the lot is
+// mirrored into sessionStorage so a refresh or a failed save never costs
+// anyone their typing.
+//
+// Screens are built with createElement and textContent only. No answer ever
+// reaches innerHTML.
+//
+// "label" is what the screen shows, "value" is what Notion stores. Where the
+// two differ it is because the Notion option is a fixed string and a mismatch
+// is rejected outright, so the display text cannot be sent as it reads.
+// ---------------------------------------------------------------------------
+var QUESTIONNAIRE_WORKER = "https://time-rich-forms.timerich.workers.dev/superhuman-questionnaire";
+var Q_STORE_KEY = "tr_superhuman_questionnaire_v1";
 
-  /* ------------------------------------------------------------------
-     CHECKOUT LINKS - FULL PRICE ONLY. Paste the two Stripe payment links
-     here and the buttons switch from "Apply" to "Buy now" automatically.
-     Leave a value empty to keep that button pointing at the application form.
-     Payment plans are deliberately NOT sold here: anyone who wants one is
-     sent to the application instead (see the note under each button).
-     ------------------------------------------------------------------ */
-  var CHECKOUT = {
-    agentBuild: "",   /* TODO: Stripe payment link for $1,111 */
-    fullSystem: ""    /* TODO: Stripe payment link for $2,222 */
-  };
+// The ?role= spellings that map onto each of the three Notion Role options.
+// The options themselves are the "role" entry in Q_SPEC below.
+var Q_ROLE_ALIASES = {
+  "buyer": "Buyer",
+  "+1": "+1",
+  "1": "+1",
+  "plus1": "+1",
+  "plusone": "+1",
+  "plus-one": "+1",
+  "plus one": "+1",
+  "second seat": "+1",
+  "secondseat": "+1",
+  "ambassador": "Ambassador"
+};
 
-  function wire(id, url, label, ev){
-    var el = document.getElementById(id);
-    if (!el || !url) return;                 /* no link yet -> stays "Apply" */
-    el.href = url;
-    el.textContent = label;
-    el.addEventListener('click', function(){ track(ev); });
+var Q_SPEC = [
+  {
+    key: "name", type: "short", required: true,
+    eyebrow: "You",
+    title: "Your name",
+    placeholder: "First and last name"
+  },
+  {
+    key: "email", type: "email", required: true,
+    eyebrow: "You",
+    title: "Your email",
+    help: "The address we use to match your answers to you.",
+    placeholder: "you@domain.com"
+  },
+  {
+    key: "role", type: "one", required: true,
+    eyebrow: "You",
+    title: "You're joining as…",
+    options: [
+      { value: "Buyer" },
+      { value: "+1", label: "+1 (second seat)" },
+      { value: "Ambassador" }
+    ]
+  },
+  {
+    key: "focus_ranking", type: "rank", required: true,
+    eyebrow: "Focus",
+    title: "What's your focus? Rank these in order of priority.",
+    help: "Tap them in the order that matters most. Tap one again to undo it.",
+    other: true,
+    options: [
+      { value: "Increased revenue" },
+      { value: "Becoming visible" },
+      { value: "A system that runs without you" },
+      { value: "Leveling up your AI skills" },
+      { value: "Telling a better story/pitch" }
+    ]
+  },
+  {
+    key: "success_by_20_nov", type: "long", required: true,
+    eyebrow: "Success by 20 November",
+    title: "By November 20, what does success look like for you in practical terms? What's true now that wasn't true before?",
+    placeholder: "Be as concrete as you can."
+  },
+  {
+    key: "personal_transformation", type: "long",
+    eyebrow: "Transformation",
+    title: "What's the personal transformation that's taken place as a result of you crushing this accelerator? Who do you get to become? How does it positively change your mindset, day to day and leadership?",
+    placeholder: "Your words, not a polished version."
+  },
+  {
+    key: "build_priority", type: "one", required: true,
+    eyebrow: "First build",
+    title: "Which one are you building first?",
+    options: [
+      { value: "Outreach" },
+      { value: "Content" },
+      { value: "Systems" },
+      { value: "Creating Structure with AI" },
+      { value: "Building Agents" },
+      { value: "Storytelling/Pitch" }
+    ]
+  },
+  {
+    key: "tech_stack", type: "short",
+    eyebrow: "Tech stack",
+    title: "What are you running today? Tools only, one line.",
+    placeholder: "Notion, Slack, HubSpot, ChatGPT"
+  },
+  {
+    key: "project_management", type: "one",
+    eyebrow: "Projects",
+    title: "What do you run projects on?",
+    other: true,
+    options: [
+      { value: "Notion" },
+      { value: "Asana" },
+      { value: "ClickUp" },
+      { value: "Monday" },
+      { value: "Trello" },
+      { value: "Spreadsheet" },
+      // Reads as a sentence on screen, stores as the short Notion option.
+      { value: "In my head", label: "Nothing, it's in my head" }
+    ]
+  },
+  {
+    key: "team_size", type: "one", required: true,
+    eyebrow: "Team",
+    title: "How many people touch this business day to day, including you?",
+    // En dashes read better on screen; Notion holds the plain hyphen version.
+    options: [
+      { value: "Just me" },
+      { value: "2-5", label: "2–5" },
+      { value: "6-15", label: "6–15" },
+      { value: "16+" }
+    ]
+  },
+  {
+    key: "revenue", type: "one", required: true,
+    eyebrow: "Revenue",
+    title: "Where's the business right now?",
+    options: [
+      { value: "Pre-revenue" },
+      { value: "Under $100K/yr" },
+      { value: "$100K-500K/yr", label: "$100K–500K/yr" },
+      { value: "$500K-2M/yr", label: "$500K–2M/yr" },
+      { value: "$2M+/yr" }
+    ]
+  },
+  {
+    key: "agents_question", type: "long",
+    eyebrow: "Agents",
+    interstitial: "The next four feed the live sessions directly. One real question each.",
+    title: "What's your biggest question about building agents?",
+    placeholder: "One real question."
+  },
+  {
+    key: "content_question", type: "long",
+    eyebrow: "Content",
+    title: "What's your burning question about content creation?",
+    placeholder: "One real question."
+  },
+  {
+    key: "ai_os_question", type: "long",
+    eyebrow: "AI operating system",
+    title: "What's your top question about the AI operating system?",
+    placeholder: "One real question."
+  },
+  {
+    key: "storytelling_question", type: "long",
+    eyebrow: "Storytelling",
+    title: "What's your biggest curiosity around storytelling, communication or pitch?",
+    placeholder: "One real question."
+  },
+  {
+    key: "one_to_one", type: "many",
+    eyebrow: "One to one",
+    title: "Want 1:1 time with either of these? Pick any that apply.",
+    options: [
+      { value: "Ella Molony Cook", label: "Ella Molony Cook, Business strategy & AI systems" },
+      { value: "ViKa Victoria", label: "ViKa Victoria, Storytelling, public speaking, selling yourself without ick, mastering your pitch" },
+      // Exclusive: picking this clears the others, and picking any other clears this.
+      { value: "Not interested right now", exclusive: true }
+    ]
+  },
+  {
+    key: "automation_needed", type: "long",
+    eyebrow: "Automation",
+    title: "What's the one automation or workflow you need built?",
+    placeholder: "The one that would change your week."
+  },
+  {
+    key: "recurring_tasks", type: "long",
+    eyebrow: "Daily time",
+    title: "What do you do every day that eats your time, where you want AI running it instead of you?",
+    placeholder: "The jobs you would hand over tomorrow."
+  },
+  {
+    key: "ai_daily_outreach", type: "one",
+    eyebrow: "Outbound",
+    title: "Is AI supporting you with daily outbound?",
+    options: [
+      { value: "Yes" },
+      { value: "No" },
+      { value: "Some days", label: "Some days, not consistently" }
+    ]
+  },
+  {
+    key: "lead_gen_platforms", type: "many",
+    eyebrow: "Lead gen",
+    title: "Which platforms do you focus on for lead generation? Select all that apply.",
+    other: true,
+    options: [
+      { value: "LinkedIn" },
+      { value: "Instagram" },
+      { value: "Email / newsletter" },
+      { value: "Cold email or cold call" },
+      { value: "Referrals" },
+      { value: "Events / IRL" },
+      { value: "Paid Ads" }
+    ]
+  },
+  {
+    key: "ai_in_outreach", type: "long",
+    eyebrow: "AI in outreach",
+    title: "Where do you need AI to actually support you in outreach and lead gen?",
+    placeholder: "The part you want taken off your hands."
+  },
+  {
+    key: "vendor_call_100", type: "one",
+    eyebrow: "Vendor call",
+    title: "Want $100 to take a short call with one of our vendor partners?",
+    options: [
+      { value: "Yes" },
+      { value: "No" }
+    ]
+  },
+  {
+    key: "bring_someone_in", type: "long",
+    eyebrow: "Bring someone in",
+    title: "Who needs to be in this cohort that you want to see thrive? Drop their name and best way to reach them.",
+    placeholder: "Name, and the best way to reach them."
   }
-  wire('buy-agent', CHECKOUT.agentBuild, 'Buy now · $1,111', 'checkout_agent_build');
-  wire('buy-full',  CHECKOUT.fullSystem, 'Buy now · $2,222', 'checkout_full_system');
-  track('superhuman_view');
+];
+// Only these three offer an "Other" box, and their text is folded into one
+// Notion column. The prefix is what that column shows for each.
+var Q_OTHER_PREFIX = [
+  { key: "focus_ranking", prefix: "Focus" },
+  { key: "project_management", prefix: "Projects" },
+  { key: "lead_gen_platforms", prefix: "Platforms" }
+];
+
+var Q_OTHER_VALUE = "Other";
+var Q_TEXT_LIMIT = 2000;          // Notion's per-rich-text ceiling
+var Q_SAVE_LABEL = "Save answers";
+
+var qFlow = [];
+var qAnswers = {};
+var qOther = {};
+var qStep = 0;
+var qStarted = false;
+var qSubmitting = false;
+
+// Intro, the interstitial and the thank-you are screens in their own right, so
+// the flow is built once and then only ever indexed into.
+function qBuildFlow() {
+  var flow = [{ kind: "intro" }];
+  for (var i = 0; i < Q_SPEC.length; i++) {
+    if (Q_SPEC[i].interstitial) flow.push({ kind: "note", text: Q_SPEC[i].interstitial });
+    flow.push({ kind: "question", spec: Q_SPEC[i] });
+  }
+  flow.push({ kind: "done" });
+  return flow;
+}
+
+function qEl(tag, cls, text) {
+  var node = document.createElement(tag);
+  if (cls) node.className = cls;
+  if (text != null) node.textContent = text;
+  return node;
+}
+
+function qOptionLabel(opt) { return opt.label || opt.value; }
+
+// Every option list gets the shared "Other" row appended when the spec asks
+// for it, so the value is the same string everywhere.
+function qOptions(spec) {
+  var list = spec.options.slice();
+  if (spec.other) list = list.concat([{ value: Q_OTHER_VALUE }]);
+  return list;
+}
+
+function qStore() {
+  try {
+    sessionStorage.setItem(Q_STORE_KEY, JSON.stringify({ step: qStep, answers: qAnswers, other: qOther }));
+  } catch (err) { /* private mode and full quotas are not worth failing over */ }
+}
+
+function qClearStore() {
+  try { sessionStorage.removeItem(Q_STORE_KEY); } catch (err) {}
+}
+
+function qRestore() {
+  try {
+    var raw = sessionStorage.getItem(Q_STORE_KEY);
+    if (!raw) return;
+    var saved = JSON.parse(raw);
+    if (!saved || typeof saved !== "object") return;
+    if (saved.answers && typeof saved.answers === "object") qAnswers = saved.answers;
+    if (saved.other && typeof saved.other === "object") qOther = saved.other;
+    if (typeof saved.step === "number" && saved.step > 0 && saved.step < qFlow.length) qStep = saved.step;
+    // Never reopen on the thank-you screen: that is only ever reached by a
+    // save that worked, and a stored step means the save had not happened yet.
+    while (qStep > 0 && qFlow[qStep].kind === "done") qStep--;
+  } catch (err) { /* a corrupt blob just means starting at the intro */ }
+}
+
+// Same shape the worker checks, so a typo is caught on the screen that asked
+// for it rather than twenty screens later as a failed save.
+var Q_EMAIL_RE = /^[^@\s]+@[^@\s]+\.[^@\s]+$/;
+
+function qIsAnswered(spec) {
+  var value = qAnswers[spec.key];
+  if (spec.type === "rank" || spec.type === "many") return Array.isArray(value) && value.length > 0;
+  if (typeof value !== "string" || value.trim() === "") return false;
+  if (spec.type === "email") return Q_EMAIL_RE.test(value.trim());
+  return true;
+}
+
+function qMissingMessage(spec) {
+  if (spec.type === "rank") return "Please rank at least one to continue.";
+  if (spec.type === "one" || spec.type === "many") return "Please pick one to continue.";
+  if (spec.type === "email") {
+    var typed = typeof qAnswers[spec.key] === "string" ? qAnswers[spec.key].trim() : "";
+    return typed ? "Please check that email address." : "Please add your email to continue.";
+  }
+  return "Please answer this one to continue.";
+}
+
+function qTotalQuestions() { return Q_SPEC.length; }
+
+// Progress counts the question screens up to and including the current one, so
+// the interstitial holds its position rather than jumping the bar.
+function qProgressPercent() {
+  var seen = 0;
+  for (var i = 0; i <= qStep && i < qFlow.length; i++) {
+    if (qFlow[i].kind === "question") seen++;
+  }
+  if (qFlow[qStep] && qFlow[qStep].kind === "done") return 100;
+  return Math.round((seen / qTotalQuestions()) * 100);
+}
+
+function qRenderProgress() {
+  var wrap = document.getElementById("qProgress");
+  var fill = document.getElementById("qProgressFill");
+  var kind = qFlow[qStep] ? qFlow[qStep].kind : "intro";
+  var show = kind === "question" || kind === "note";
+  wrap.hidden = !show;
+  if (show) fill.style.width = qProgressPercent() + "%";
+}
+
+function qGoNext() {
+  var step = qFlow[qStep];
+
+  if (step.kind === "question") {
+    if (step.spec.required && !qIsAnswered(step.spec)) {
+      qShowError(qMissingMessage(step.spec));
+      return;
+    }
+    // The last question is the one that saves. The thank-you screen is only
+    // ever shown once Notion has taken the answers.
+    if (qStep === qFlow.length - 2) { qSubmit(); return; }
+  }
+
+  if (qStep < qFlow.length - 1) {
+    qStep++;
+    qStore();
+    qRender();
+  }
+}
+
+function qGoBack() {
+  if (qStep === 0) return;
+  qStep--;
+  qStore();
+  qRender();
+}
+
+function qSkip() {
+  if (qStep === qFlow.length - 2) { qSubmit(); return; }
+  if (qStep < qFlow.length - 1) {
+    qStep++;
+    qStore();
+    qRender();
+  }
+}
+
+function qShowError(message) {
+  var el = document.getElementById("qError");
+  if (el) el.textContent = message;
+}
+
+// ── Screen building ────────────────────────────────────────────────────────
+
+function qRender() {
+  var host = document.getElementById("qHost");
+  while (host.firstChild) host.removeChild(host.firstChild);
+
+  var step = qFlow[qStep];
+  var screen = qEl("div", "q-screen");
+
+  if (step.kind === "intro") {
+    qBuildPanel(screen, "Superhuman Accelerator", "The Superhuman questionnaire",
+      "Take your time, as your answers shape the curriculum and your hot seat breakout room.", "Start");
+  } else if (step.kind === "note") {
+    qBuildPanel(screen, "Live sessions", step.text, null, "Continue");
+  } else if (step.kind === "done") {
+    // No button: this page is the end of the road, so there is nothing left to
+    // send anyone to.
+    qBuildPanel(screen, "All done", "Thank you. We'll use this to shape your sessions.", null, null);
+  } else {
+    qBuildQuestion(screen, step.spec);
+  }
+
+  host.appendChild(screen);
+  qRenderProgress();
+
+  // Focus the heading rather than the field: on a phone an autofocused input
+  // throws the keyboard up over the question before it has been read.
+  var heading = screen.querySelector(".q-title");
+  if (heading) { heading.setAttribute("tabindex", "-1"); heading.focus(); }
+}
+
+function qBuildPanel(screen, eyebrow, title, help, buttonText) {
+  var panel = qEl("div", help ? "q-panel" : "q-panel q-panel-tight");
+  panel.appendChild(qEl("span", "q-eyebrow", eyebrow));
+  panel.appendChild(qEl("h1", "q-title", title));
+  if (help) panel.appendChild(qEl("p", "q-help", help));
+  screen.appendChild(panel);
+
+  var actions = qEl("div", "q-actions");
+  // buttonText null means a panel with nothing to press, which is the
+  // thank-you screen.
+  if (buttonText) {
+    var next = qEl("button", "btn-primary", buttonText);
+    next.type = "button";
+    next.id = "qNext";
+    next.addEventListener("click", qGoNext);
+    actions.appendChild(next);
+  }
+
+  var back = qEl("button", "q-back", "Back");
+  back.type = "button";
+  back.addEventListener("click", qGoBack);
+  // The thank-you screen has nothing useful to go back to.
+  back.hidden = qStep === 0 || qFlow[qStep].kind === "done";
+  actions.appendChild(back);
+
+  // The thank-you screen has neither button, so its action row is left off
+  // rather than appended empty for its margin.
+  if (actions.querySelector("button:not([hidden])")) screen.appendChild(actions);
+
+  var error = qEl("span", "q-error", "");
+  error.id = "qError";
+  error.setAttribute("aria-live", "polite");
+  screen.appendChild(error);
+}
+
+function qBuildQuestion(screen, spec) {
+  screen.appendChild(qEl("span", "q-eyebrow", spec.eyebrow));
+  screen.appendChild(qEl("h1", "q-title", spec.title));
+  if (spec.help) screen.appendChild(qEl("p", "q-help", spec.help));
+
+  if (spec.type === "long" || spec.type === "short" || spec.type === "email") {
+    screen.appendChild(qBuildTextField(spec));
+  } else {
+    screen.appendChild(qBuildOptions(spec));
+  }
+
+  var actions = qEl("div", "q-actions");
+  var last = qStep === qFlow.length - 2;
+  var next = qEl("button", "btn-primary", last ? Q_SAVE_LABEL : "Next");
+  next.type = "button";
+  next.id = "qNext";
+  next.addEventListener("click", qGoNext);
+  actions.appendChild(next);
+
+  var back = qEl("button", "q-back", "Back");
+  back.type = "button";
+  back.addEventListener("click", qGoBack);
+  actions.appendChild(back);
+
+  actions.appendChild(qEl("span", "q-spacer"));
+
+  if (!spec.required) {
+    var skip = qEl("button", "q-skip", "Skip");
+    skip.type = "button";
+    skip.addEventListener("click", qSkip);
+    actions.appendChild(skip);
+  }
+
+  screen.appendChild(actions);
+
+  var error = qEl("span", "q-error", "");
+  error.id = "qError";
+  error.setAttribute("aria-live", "polite");
+  screen.appendChild(error);
+}
+
+function qBuildTextField(spec) {
+  var field = qEl("div", "q-field");
+  var long = spec.type === "long";
+  var input = document.createElement(long ? "textarea" : "input");
+  input.className = long ? "q-textarea" : "q-input";
+  // type="email" gets the right phone keyboard; the real check is
+  // qIsAnswered(), since a bare input type is not validation.
+  if (!long) input.type = spec.type === "email" ? "email" : "text";
+  if (spec.key === "name") input.autocomplete = "name";
+  if (spec.type === "email") {
+    input.autocomplete = "email";
+    input.setAttribute("inputmode", "email");
+    input.setAttribute("autocapitalize", "none");
+    input.setAttribute("spellcheck", "false");
+  }
+  input.id = "qField";
+  input.maxLength = Q_TEXT_LIMIT;
+  if (spec.placeholder) input.placeholder = spec.placeholder;
+  input.setAttribute("aria-label", spec.title);
+  // .value, never innerHTML or textContent, so a stored answer is only ever
+  // data going back into the control it came from.
+  input.value = typeof qAnswers[spec.key] === "string" ? qAnswers[spec.key] : "";
+
+  input.addEventListener("input", function () {
+    qAnswers[spec.key] = input.value;
+    qShowError("");
+    qStore();
+  });
+
+  // Enter moves on. On the long answers Shift+Enter is the newline, which is
+  // why this checks the modifier rather than the control type.
+  input.addEventListener("keydown", function (e) {
+    if (e.key === "Enter" && !e.shiftKey) {
+      e.preventDefault();
+      qGoNext();
+    }
+  });
+
+  field.appendChild(input);
+  return field;
+}
+
+function qBuildOptions(spec) {
+  var wrap = qEl("div", "q-opts");
+  wrap.setAttribute("role", "group");
+  wrap.setAttribute("aria-label", spec.title);
+
+  var options = qOptions(spec);
+  var chosen = Array.isArray(qAnswers[spec.key]) ? qAnswers[spec.key] : [];
+
+  for (var i = 0; i < options.length; i++) {
+    wrap.appendChild(qBuildOption(spec, options[i], chosen));
+  }
+
+  // The Other box only exists once Other is actually chosen.
+  if (spec.other && qOtherChosen(spec)) {
+    var holder = qEl("div", "q-other");
+    var other = document.createElement("input");
+    other.type = "text";
+    other.className = "q-input";
+    other.placeholder = "Tell us what it is";
+    other.setAttribute("aria-label", "Your other answer");
+    other.maxLength = 200;
+    other.value = typeof qOther[spec.key] === "string" ? qOther[spec.key] : "";
+    other.addEventListener("input", function () {
+      qOther[spec.key] = other.value;
+      qStore();
+    });
+    other.addEventListener("keydown", function (e) {
+      if (e.key === "Enter" && !e.shiftKey) { e.preventDefault(); qGoNext(); }
+    });
+    holder.appendChild(other);
+    wrap.appendChild(holder);
+  }
+
+  return wrap;
+}
+
+function qBuildOption(spec, opt, chosen) {
+  var button = qEl("button", "q-opt");
+  button.type = "button";
+
+  var isRank = spec.type === "rank";
+  var position = chosen.indexOf(opt.value);
+  var on = spec.type === "one" ? qAnswers[spec.key] === opt.value : position !== -1;
+
+  button.setAttribute("data-shape", isRank ? "rank" : (spec.type === "one" ? "dot" : "box"));
+  button.setAttribute("aria-pressed", on ? "true" : "false");
+  if (on) button.classList.add("is-on");
+
+  var mark = qEl("span", "q-mark", isRank && on ? String(position + 1) : "");
+  mark.setAttribute("aria-hidden", "true");
+  button.appendChild(mark);
+  button.appendChild(qEl("span", "q-opt-label", qOptionLabel(opt)));
+
+  button.addEventListener("click", function () {
+    qToggle(spec, opt);
+    qShowError("");
+    qStore();
+    qRender();
+  });
+
+  return button;
+}
+
+function qOtherChosen(spec) {
+  if (spec.type === "one") return qAnswers[spec.key] === Q_OTHER_VALUE;
+  var chosen = Array.isArray(qAnswers[spec.key]) ? qAnswers[spec.key] : [];
+  return chosen.indexOf(Q_OTHER_VALUE) !== -1;
+}
+
+function qToggle(spec, opt) {
+  if (spec.type === "one") {
+    // Tapping the chosen one again clears it, which matters for the optional
+    // questions where there is no other way back to "no answer".
+    qAnswers[spec.key] = qAnswers[spec.key] === opt.value ? "" : opt.value;
+    if (qAnswers[spec.key] !== Q_OTHER_VALUE) delete qOther[spec.key];
+    return;
+  }
+
+  var chosen = Array.isArray(qAnswers[spec.key]) ? qAnswers[spec.key].slice() : [];
+  var at = chosen.indexOf(opt.value);
+
+  if (at !== -1) {
+    // Rank and multi both undo on a second tap. For a ranking the rest simply
+    // close up, so the numbers stay 1..n with no gaps.
+    chosen.splice(at, 1);
+  } else if (spec.type === "many" && opt.exclusive) {
+    chosen = [opt.value];
+  } else {
+    if (spec.type === "many") {
+      chosen = chosen.filter(function (value) { return !qIsExclusive(spec, value); });
+    }
+    chosen.push(opt.value);
+  }
+
+  qAnswers[spec.key] = chosen;
+  if (chosen.indexOf(Q_OTHER_VALUE) === -1) delete qOther[spec.key];
+}
+
+function qIsExclusive(spec, value) {
+  for (var i = 0; i < spec.options.length; i++) {
+    if (spec.options[i].value === value && spec.options[i].exclusive) return true;
+  }
+  return false;
+}
+
+// ── Save ───────────────────────────────────────────────────────────────────
+
+// "1. Increased revenue; 2. Becoming visible" and so on.
+function qRankString(key) {
+  var chosen = Array.isArray(qAnswers[key]) ? qAnswers[key] : [];
+  return chosen.map(function (value, i) { return (i + 1) + ". " + value; }).join("; ");
+}
+
+// The three Other boxes share one Notion column. A box is only read when its
+// question still has Other selected, so changing your mind leaves nothing behind.
+function qOtherAnswers() {
+  var parts = [];
+  for (var i = 0; i < Q_OTHER_PREFIX.length; i++) {
+    var entry = Q_OTHER_PREFIX[i];
+    var spec = null;
+    for (var j = 0; j < Q_SPEC.length; j++) {
+      if (Q_SPEC[j].key === entry.key) { spec = Q_SPEC[j]; break; }
+    }
+    if (!spec || !qOtherChosen(spec)) continue;
+    var text = (qOther[entry.key] || "").trim();
+    if (text) parts.push(entry.prefix + ": " + text);
+  }
+  return parts.join(" | ");
+}
+
+function qPayload() {
+  // name, email and role are the first three entries in Q_SPEC, so the loop
+  // below puts them on the payload with everything else. Nothing is looked up
+  // here any more: the worker takes the page's word for who this is.
+  var trap = document.getElementById("qTrap");
+  var payload = { _gotcha: trap ? trap.value : "" };
+
+  for (var i = 0; i < Q_SPEC.length; i++) {
+    var spec = Q_SPEC[i];
+    var value = qAnswers[spec.key];
+    if (spec.type === "rank") {
+      payload[spec.key] = qRankString(spec.key);
+    } else if (spec.type === "many") {
+      payload[spec.key] = Array.isArray(value) ? value : [];
+    } else {
+      payload[spec.key] = typeof value === "string" ? value : "";
+    }
+  }
+
+  payload.other_answers = qOtherAnswers();
+  return payload;
+}
+
+function qSubmit() {
+  if (qSubmitting) return;
+  qSubmitting = true;
+
+  var button = document.getElementById("qNext");
+  if (button) { button.disabled = true; button.textContent = "Saving…"; }
+  qShowError("");
+
+  fetch(QUESTIONNAIRE_WORKER, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(qPayload())
+  })
+    .then(function (res) { return res.json().catch(function () { return null; }); })
+    .then(function (data) {
+      if (!data || !data.ok) throw new Error("Questionnaire was not saved");
+      // Only now is the stored copy safe to drop.
+      qClearStore();
+      qStep = qFlow.length - 1;
+      qRender();
+    })
+    .catch(function (err) {
+      console.warn("Questionnaire save error:", err);
+      qShowError("We couldn't save your answers. Please try again.");
+    })
+    // Both branches used to clear this flag on their own, which is one edit
+    // away from a save that can never be retried.
+    .finally(function () {
+      qSubmitting = false;
+      // A good save has already swapped in the thank-you screen, so only a
+      // button still on the page needs its label back.
+      if (button && button.isConnected) {
+        button.disabled = false;
+        button.textContent = Q_SAVE_LABEL;
+      }
+    });
+}
+
+// ── Prefill and start ──────────────────────────────────────────────────────
+
+function qUrlParam(name) {
+  try {
+    return new URLSearchParams(window.location.search).get(name) || "";
+  } catch (err) { return ""; }
+}
+
+// /onboard sends people here with ?email=...&role=buyer. Anything already
+// typed into this browser wins, so a prefill can never overwrite an answer
+// someone came back to finish.
+function qPrefillFromUrl() {
+  var email = qUrlParam("email").trim();
+  if (email && !qAnswers.email) qAnswers.email = email;
+
+  var role = Q_ROLE_ALIASES[qUrlParam("role").trim().toLowerCase()];
+  if (role && !qAnswers.role) qAnswers.role = role;
+}
+
+function startQuestionnaire() {
+  if (!qStarted) {
+    qFlow = qBuildFlow();
+    qRestore();
+    qPrefillFromUrl();
+    qStarted = true;
+  }
+  qRender();
+}
+
+document.addEventListener("DOMContentLoaded", startQuestionnaire);
 </script>
 </body>
 </html>

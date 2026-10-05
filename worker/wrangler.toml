@@ -74,3 +74,11 @@ NOTION_STRATEGY_DATABASE_ID = "294ef745-1052-4e5a-a53f-532eea0b435e"
 # Uses the existing NOTION_TOKEN / TR Site integration.
 NOTION_SUPERHUMAN_COHORT1_DATABASE_ID = "3e3ca5eb-e557-80ab-9b32-e3c84d74784e"
 # Required Worker secrets: THRIVECART_SECRET and WHATSAPP_INVITE_URL.
+
+# Superhuman questionnaire (POST /superhuman-questionnaire) -> its own Notion
+# database. The page at /superhuman/ is open to buyers, second seats and
+# ambassadors alike, so there is no order lookup: Name, Email and Role come
+# straight off the form, and the email is the key the handler updates on.
+# IMPORTANT: connect the SAME Notion integration (NOTION_TOKEN) to this
+# database (••• -> Connections) or writes will 404.
+NOTION_SUPERHUMAN_QUESTIONNAIRE_DATABASE_ID = "a4b3fdd6-c528-47a8-8ff6-ab27924b2862"
