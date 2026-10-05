@@ -1,0 +1,1002 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Time Rich. — AI Education Portal</title>
+  <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin=""/>
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Newsreader:ital,opsz,wght@0,6..72,300;0,6..72,400;0,6..72,500;1,6..72,400&family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet"/>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            brand: {
+              cream: '#FFFCEB',
+              offwhite: '#FFFDFB',
+              sage: '#DCDEBF',
+              sagelt: '#E9EAD5',
+              green: '#424B36',
+              deep: '#333A28',
+              mid: '#4E5840',
+              lime: '#CCEEA0',
+              olive: '#67762E'
+            }
+          },
+          fontFamily: {
+            sans: ['"Inter"', 'sans-serif'],
+            display: ['"Space Grotesk"', 'sans-serif'],
+            serif: ['"Newsreader"', 'serif'],
+            mono: ['"JetBrains Mono"', 'monospace'],
+          }
+        }
+      }
+    }
+  </script>
+  <style>
+    .custom-scroll::-webkit-scrollbar { width: 4px; }
+    .custom-scroll::-webkit-scrollbar-track { background: transparent; }
+    .custom-scroll::-webkit-scrollbar-thumb { background: rgba(66,75,54,0.15); border-radius: 4px; }
+    
+    .grid-bg {
+      background-image: linear-gradient(rgba(66,75,54,.08) 1px, transparent 1px), linear-gradient(90deg, rgba(66,75,54,.08) 1px, transparent 1px);
+      background-size: 52px 52px;
+      background-position: left top;
+    }
+    
+    .glow-orb {
+      background: radial-gradient(circle, rgba(230,230,230,0.6) 0%, rgba(230,230,230,0) 70%);
+    }
+  
+    @keyframes float {
+      0%, 100% { transform: translateY(0) rotate(-5deg); }
+      50% { transform: translateY(-8px) rotate(-3deg); }
+    }
+    @keyframes float-alt {
+      0%, 100% { transform: translateY(0) rotate(4deg); }
+      50% { transform: translateY(6px) rotate(5deg); }
+    }
+    .animate-float { animation: float 6s ease-in-out infinite; }
+    .animate-float-alt { animation: float-alt 7s ease-in-out infinite; }
+    
+    /* Smooth card hover lift */
+    .card-lift { transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.3s cubic-bezier(0.16, 1, 0.3, 1), border-color 0.3s ease; }
+    .card-lift:hover { transform: translateY(-4px); box-shadow: 0 12px 24px -10px rgba(66,75,54,0.15); border-color: rgba(66,75,54,0.3); }
+
+    h1, h2, h3, h4, h5, h6 { font-family: "Space Grotesk", sans-serif; letter-spacing: -0.022em; }
+
+    /* Full-screen organic atmospheric olive/sage background */
+                                                                                                                                                                                                                                                                body {
+          background-color: #D5DCD0;
+          background-image:
+            radial-gradient(circle at 10% 10%, rgba(250, 253, 245, 0.95) 0%, transparent 70%),
+            radial-gradient(circle at 90% 90%, rgba(170, 185, 165, 0.5) 0%, transparent 80%),
+            radial-gradient(circle at 50% 60%, rgba(195, 210, 185, 0.6) 0%, transparent 70%);
+          min-height: 100vh;
+      }
+
+    .main-grid {
+      background-image:
+        linear-gradient(rgba(0, 0, 0, 0.04) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(0, 0, 0, 0.04) 1px, transparent 1px);
+      background-size: 40px 40px;
+      background-position: top left;
+    }
+
+    /* Ultra-premium frosted glass card embedded into background */
+    
+    .noise-overlay {
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      z-index: 1;
+      opacity: 0.11;
+      mix-blend-mode: multiply;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 250 250' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
+    }
+
+      .font-montserrat { font-family: 'Montserrat', sans-serif !important; }
+  
+.glass3d { 
+  --filter-glass3d: blur(15px) brightness(0.66) saturate(2); 
+  --color-glass3d: rgba(186, 198, 163, 0.98); 
+  --noise-glass3d: url("https://www.transparenttextures.com/patterns/egg-shell.png"); 
+
+  position: relative; 
+  box-shadow:  
+    0 0 0.75px hsl(205 20% 10% / 0.2), 
+    0.7px 0.8px 1.2px -0.4px hsl(205 20% 10% / 0.1), 
+    1.3px 1.5px 2.2px -0.8px hsl(205 20% 10% / 0.1), 
+    2.3px 2.6px 3.9px -1.2px hsl(205 20% 10% / 0.1), 
+    3.9px 4.4px 6.6px -1.7px hsl(205 20% 10% / 0.1), 
+    6.5px 7.2px 10.9px -2.1px hsl(205 20% 10% / 0.1), 
+    8px 9px 14px -2.5px hsl(205 20% 10% / 0.2); 
+}
+
+.glass3d::before { 
+  content: ""; 
+  position: absolute; 
+  inset: 0; 
+  pointer-events: none; 
+  border-radius: inherit; 
+  overflow: hidden; 
+  z-index: -1; /* Keep it below content */
+  
+  -webkit-backdrop-filter: var(--filter-glass3d); 
+  backdrop-filter: var(--filter-glass3d); 
+  background-color: var(--color-glass3d); 
+  background-image: var(--noise-glass3d); 
+  background-size: 100px; 
+  background-repeat: repeat; 
+}
+
+.glass3d::after { 
+  content: ""; 
+  position: absolute; 
+  inset: 0; 
+  pointer-events: none; 
+  border-radius: inherit; 
+  overflow: hidden; 
+  z-index: 5; 
+  
+  box-shadow: 
+    inset 2px 2px 1px -3px hsl(205 20% 90% / 0.8), 
+    inset 4px 4px 2px -6px hsl(205 20% 90% / 0.3), 
+    inset 1.5px 1.5px 1.5px -0.75px hsl(205 20% 90% / 0.15), 
+    inset 1.5px 1.5px 0.25px hsl(205 20% 90% / 0.03), 
+    inset 0 0 0.25px 0.5px hsl(205 20% 90% / 0.03); 
+}
+
+.glass3d > * { 
+  position: relative; 
+  z-index: 6; 
+}
+
+
+    .nav-noise {
+        background-color: transparent !important;
+        background-image: 
+            linear-gradient(135deg, rgba(51, 58, 40, 0.98) 0%, rgba(30, 35, 24, 0.98) 100%),
+            url("data:image/svg+xml,%3Csvg viewBox='0 0 250 250' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='1.2' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)' opacity='0.25'/%3E%3C/svg%3E");
+        background-blend-mode: normal, normal;
+        border-color: rgba(255, 255, 255, 0.08) !important;
+    }
+
+    .premium-dropdown {
+      background: linear-gradient(135deg, rgba(255, 255, 255, 0.98) 0%, rgba(250, 255, 245, 0.85) 100%);
+      backdrop-filter: blur(64px) saturate(1.5);
+      -webkit-backdrop-filter: blur(64px) saturate(1.5);
+      border: 1px solid rgba(255, 255, 255, 0.8);
+      box-shadow: 
+        0 32px 64px -12px rgba(90, 105, 75, 0.25),
+        0 8px 24px rgba(90, 105, 75, 0.1),
+        inset 0 1px 0 rgba(255, 255, 255, 1),
+        inset 0 0 24px rgba(255, 255, 255, 0.3);
+    }
+  
+    /* === SMOOTH PORTAL TRANSITIONS === */
+    html { scroll-behavior: smooth; }
+    
+    /* Smooth all interactive elements */
+    a, button, [role="button"] {
+      transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+    
+    /* Smooth focus states */
+    *:focus-visible {
+      outline: 2px solid rgba(89, 108, 36, 0.4);
+      outline-offset: 2px;
+      transition: outline 0.2s ease;
+    }
+    
+    /* Smooth image loading */
+    img {
+      transition: opacity 0.4s ease;
+    }
+    
+    /* Accordion smooth expand/collapse */
+    .accordion-content {
+      max-height: 0;
+      overflow: hidden;
+      transition: max-height 0.5s cubic-bezier(0.16, 1, 0.3, 1), 
+                  opacity 0.4s ease, 
+                  padding 0.4s ease;
+      opacity: 0;
+    }
+    .accordion-content.open {
+      opacity: 1;
+    }
+    
+  
+    /* Smooth press feedback on cards */
+    .glass-card:active {
+      transform: translateY(-1px) scale(0.995);
+      transition: transform 0.15s ease;
+    }
+    
+  </style>
+  <link rel="stylesheet" href="portal-content.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@600&display=swap" rel="stylesheet">
+
+  <style>
+    .hide-scrollbar::-webkit-scrollbar {
+      display: none;
+    }
+  
+.glass3d { 
+  --filter-glass3d: blur(15px) brightness(0.66) saturate(2); 
+  --color-glass3d: rgba(186, 198, 163, 0.98); 
+  --noise-glass3d: url("https://www.transparenttextures.com/patterns/egg-shell.png"); 
+
+  position: relative; 
+  box-shadow:  
+    0 0 0.75px hsl(205 20% 10% / 0.2), 
+    0.7px 0.8px 1.2px -0.4px hsl(205 20% 10% / 0.1), 
+    1.3px 1.5px 2.2px -0.8px hsl(205 20% 10% / 0.1), 
+    2.3px 2.6px 3.9px -1.2px hsl(205 20% 10% / 0.1), 
+    3.9px 4.4px 6.6px -1.7px hsl(205 20% 10% / 0.1), 
+    6.5px 7.2px 10.9px -2.1px hsl(205 20% 10% / 0.1), 
+    8px 9px 14px -2.5px hsl(205 20% 10% / 0.2); 
+}
+
+.glass3d::before { 
+  content: ""; 
+  position: absolute; 
+  inset: 0; 
+  pointer-events: none; 
+  border-radius: inherit; 
+  overflow: hidden; 
+  z-index: -1; /* Keep it below content */
+  
+  -webkit-backdrop-filter: var(--filter-glass3d); 
+  backdrop-filter: var(--filter-glass3d); 
+  background-color: var(--color-glass3d); 
+  background-image: var(--noise-glass3d); 
+  background-size: 100px; 
+  background-repeat: repeat; 
+}
+
+.glass3d::after { 
+  content: ""; 
+  position: absolute; 
+  inset: 0; 
+  pointer-events: none; 
+  border-radius: inherit; 
+  overflow: hidden; 
+  z-index: 5; 
+  
+  box-shadow: 
+    inset 2px 2px 1px -3px hsl(205 20% 90% / 0.8), 
+    inset 4px 4px 2px -6px hsl(205 20% 90% / 0.3), 
+    inset 1.5px 1.5px 1.5px -0.75px hsl(205 20% 90% / 0.15), 
+    inset 1.5px 1.5px 0.25px hsl(205 20% 90% / 0.03), 
+    inset 0 0 0.25px 0.5px hsl(205 20% 90% / 0.03); 
+}
+
+.glass3d > * { 
+  position: relative; 
+  z-index: 6; 
+}
+
+
+    .nav-noise {
+        background-color: transparent !important;
+        background-image: 
+            linear-gradient(135deg, rgba(51, 58, 40, 0.98) 0%, rgba(30, 35, 24, 0.98) 100%),
+            url("data:image/svg+xml,%3Csvg viewBox='0 0 250 250' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='1.2' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)' opacity='0.25'/%3E%3C/svg%3E");
+        background-blend-mode: normal, normal;
+        border-color: rgba(255, 255, 255, 0.08) !important;
+    }
+
+    .premium-dropdown {
+      background: linear-gradient(135deg, rgba(255, 255, 255, 0.98) 0%, rgba(250, 255, 245, 0.85) 100%);
+      backdrop-filter: blur(64px) saturate(1.5);
+      -webkit-backdrop-filter: blur(64px) saturate(1.5);
+      border: 1px solid rgba(255, 255, 255, 0.8);
+      box-shadow: 
+        0 32px 64px -12px rgba(90, 105, 75, 0.25),
+        0 8px 24px rgba(90, 105, 75, 0.1),
+        inset 0 1px 0 rgba(255, 255, 255, 1),
+        inset 0 0 24px rgba(255, 255, 255, 0.3);
+    }
+  </style>
+
+<style>
+  @keyframes marquee {
+    0% { transform: translateX(0); }
+    100% { transform: translateX(-50%); }
+  }
+  .animate-marquee {
+    animation: marquee 100s linear infinite;
+    width: max-content;
+  }
+  .animate-marquee:hover {
+    animation-play-state: paused;
+  }
+
+.glass3d { 
+  --filter-glass3d: blur(15px) brightness(0.66) saturate(2); 
+  --color-glass3d: rgba(186, 198, 163, 0.98); 
+  --noise-glass3d: url("https://www.transparenttextures.com/patterns/egg-shell.png"); 
+
+  position: relative; 
+  box-shadow:  
+    0 0 0.75px hsl(205 20% 10% / 0.2), 
+    0.7px 0.8px 1.2px -0.4px hsl(205 20% 10% / 0.1), 
+    1.3px 1.5px 2.2px -0.8px hsl(205 20% 10% / 0.1), 
+    2.3px 2.6px 3.9px -1.2px hsl(205 20% 10% / 0.1), 
+    3.9px 4.4px 6.6px -1.7px hsl(205 20% 10% / 0.1), 
+    6.5px 7.2px 10.9px -2.1px hsl(205 20% 10% / 0.1), 
+    8px 9px 14px -2.5px hsl(205 20% 10% / 0.2); 
+}
+
+.glass3d::before { 
+  content: ""; 
+  position: absolute; 
+  inset: 0; 
+  pointer-events: none; 
+  border-radius: inherit; 
+  overflow: hidden; 
+  z-index: -1; /* Keep it below content */
+  
+  -webkit-backdrop-filter: var(--filter-glass3d); 
+  backdrop-filter: var(--filter-glass3d); 
+  background-color: var(--color-glass3d); 
+  background-image: var(--noise-glass3d); 
+  background-size: 100px; 
+  background-repeat: repeat; 
+}
+
+.glass3d::after { 
+  content: ""; 
+  position: absolute; 
+  inset: 0; 
+  pointer-events: none; 
+  border-radius: inherit; 
+  overflow: hidden; 
+  z-index: 5; 
+  
+  box-shadow: 
+    inset 2px 2px 1px -3px hsl(205 20% 90% / 0.8), 
+    inset 4px 4px 2px -6px hsl(205 20% 90% / 0.3), 
+    inset 1.5px 1.5px 1.5px -0.75px hsl(205 20% 90% / 0.15), 
+    inset 1.5px 1.5px 0.25px hsl(205 20% 90% / 0.03), 
+    inset 0 0 0.25px 0.5px hsl(205 20% 90% / 0.03); 
+}
+
+.glass3d > * { 
+  position: relative; 
+  z-index: 6; 
+}
+
+    /* Premium Marquee Mask */
+    .expert-marquee-mask {
+      mask-image: linear-gradient(to right, transparent 0%, rgba(0,0,0,0.1) 20px, rgba(0,0,0,0.4) 60px, black 120px, black calc(100% - 60px), transparent 100%);
+      -webkit-mask-image: linear-gradient(to right, transparent 0%, rgba(0,0,0,0.1) 20px, rgba(0,0,0,0.4) 60px, black 120px, black calc(100% - 60px), transparent 100%);
+    }
+    @media (min-width: 1024px) {
+      .expert-marquee-mask {
+        mask-image: linear-gradient(to right, transparent 0%, rgba(0,0,0,0.1) 60px, rgba(0,0,0,0.4) 140px, black 280px, black calc(100% - 200px), transparent 100%);
+        -webkit-mask-image: linear-gradient(to right, transparent 0%, rgba(0,0,0,0.1) 60px, rgba(0,0,0,0.4) 140px, black 280px, black calc(100% - 200px), transparent 100%);
+      }
+    }
+    
+    /* Touch Swipable Marquee on Mobile */
+    @media (max-width: 1023px) {
+      .animate-marquee {
+        animation: none !important;
+        width: 100% !important;
+        overflow-x: auto !important;
+        overflow-y: hidden !important;
+        -webkit-overflow-scrolling: touch !important;
+        scroll-snap-type: x mandatory;
+        scrollbar-width: none;
+        -ms-overflow-style: none;
+      }
+      .animate-marquee::-webkit-scrollbar {
+        display: none;
+      }
+      .animate-marquee > div > div {
+        scroll-snap-align: center;
+      }
+    }
+
+    .nav-noise {
+        background-color: transparent !important;
+        background-image: 
+            linear-gradient(135deg, rgba(51, 58, 40, 0.98) 0%, rgba(30, 35, 24, 0.98) 100%),
+            url("data:image/svg+xml,%3Csvg viewBox='0 0 250 250' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='1.2' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)' opacity='0.25'/%3E%3C/svg%3E");
+        background-blend-mode: normal, normal;
+        border-color: rgba(255, 255, 255, 0.08) !important;
+    }
+
+    .premium-dropdown {
+      background: linear-gradient(135deg, rgba(255, 255, 255, 0.98) 0%, rgba(250, 255, 245, 0.85) 100%);
+      backdrop-filter: blur(64px) saturate(1.5);
+      -webkit-backdrop-filter: blur(64px) saturate(1.5);
+      border: 1px solid rgba(255, 255, 255, 0.8);
+      box-shadow: 
+        0 32px 64px -12px rgba(90, 105, 75, 0.25),
+        0 8px 24px rgba(90, 105, 75, 0.1),
+        inset 0 1px 0 rgba(255, 255, 255, 1),
+        inset 0 0 24px rgba(255, 255, 255, 0.3);
+    }
+  </style>
+
+  <style>
+    .glass-card {
+      background: linear-gradient(135deg, rgba(255, 255, 255, 0.75) 0%, rgba(245, 250, 240, 0.4) 100%);
+      backdrop-filter: blur(48px) saturate(1.2);
+      -webkit-backdrop-filter: blur(48px) saturate(1.2);
+      border: 1px solid rgba(255, 255, 255, 0.5);
+      box-shadow: 
+        0 24px 48px -12px rgba(90, 105, 75, 0.25),
+        inset 0 1px 0 rgba(255, 255, 255, 0.8),
+        inset 0 0 24px rgba(255, 255, 255, 0.2);
+      transition: all 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+    .glass-card:hover {
+      background: linear-gradient(135deg, rgba(255, 255, 255, 0.85) 0%, rgba(250, 255, 245, 0.5) 100%);
+      box-shadow: 
+        0 32px 64px -16px rgba(90, 105, 75, 0.3),
+        inset 0 1px 0 rgba(255, 255, 255, 1),
+        inset 0 0 24px rgba(255, 255, 255, 0.3);
+      transform: translateY(-4px);
+    }
+    .premium-nav {
+      background: linear-gradient(to bottom, rgba(255, 255, 255, 0.75) 0%, rgba(250, 255, 245, 0.4) 100%) !important;
+      backdrop-filter: blur(48px) saturate(1.2) !important;
+      -webkit-backdrop-filter: blur(48px) saturate(1.2) !important;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.5) !important;
+      box-shadow: 
+        0 12px 32px -8px rgba(90, 105, 75, 0.15),
+        inset 0 -1px 0 rgba(255, 255, 255, 0.4) !important;
+    }
+    .premium-nav.scrolled {
+      background: linear-gradient(to bottom, rgba(255, 255, 255, 0.9) 0%, rgba(250, 255, 245, 0.6) 100%) !important;
+      box-shadow: 
+        0 20px 40px -10px rgba(90, 105, 75, 0.25) !important;
+    }
+    .nav-active {
+      background: linear-gradient(135deg, rgba(255, 255, 255, 0.8) 0%, rgba(245, 250, 240, 0.4) 100%) !important;
+      border: 1px solid rgba(255, 255, 255, 0.6) !important;
+      box-shadow: 
+        0 8px 16px -4px rgba(90, 105, 75, 0.2),
+        inset 0 1px 0 rgba(255, 255, 255, 0.8) !important;
+    }
+    .nav-item:hover {
+      background: linear-gradient(135deg, rgba(255, 255, 255, 0.4) 0%, rgba(245, 250, 240, 0.1) 100%) !important;
+      border-color: rgba(255, 255, 255, 0.3) !important;
+    }
+  
+    .premium-dropdown {
+      background: linear-gradient(135deg, rgba(255, 255, 255, 0.98) 0%, rgba(250, 255, 245, 0.85) 100%);
+      backdrop-filter: blur(64px) saturate(1.5);
+      -webkit-backdrop-filter: blur(64px) saturate(1.5);
+      border: 1px solid rgba(255, 255, 255, 0.8);
+      box-shadow: 
+        0 32px 64px -12px rgba(90, 105, 75, 0.25),
+        0 8px 24px rgba(90, 105, 75, 0.1),
+        inset 0 1px 0 rgba(255, 255, 255, 1),
+        inset 0 0 24px rgba(255, 255, 255, 0.3);
+    }
+  </style>
+</head>
+
+
+
+<body class="text-brand-deep font-sans h-screen flex flex-col overflow-hidden selection:bg-brand-lime selection:text-brand-deep">
+<script>
+  // Trigger cinematic reveal on load
+  document.addEventListener("DOMContentLoaded", () => {
+    requestAnimationFrame(() => {
+      requestAnimationFrame(() => {
+        document.body.classList.remove('opacity-0');
+        document.body.classList.add('opacity-100');
+        document.body.style.transform = 'scale(1)';
+      });
+    });
+  });
+</script>
+
+  <!-- Noise Texture Overlay -->
+  <div class="noise-overlay"></div>
+
+  <!-- MOBILE MENU OVERLAY -->
+  <div id="mobile-menu-overlay" class="fixed inset-0 bg-brand-deep/20 backdrop-blur-sm z-[100] opacity-0 pointer-events-none transition-opacity duration-500 snap-center"></div>
+  
+  <div id="mobile-menu" class="fixed top-0 left-0 bottom-0 w-[85%] max-w-[320px] bg-[#E8ECE0] border-r border-white/40 shadow-2xl z-[101] -translate-x-full transition-transform duration-500 flex flex-col" style="transition-timing-function: cubic-bezier(0.16, 1, 0.3, 1);">
+    <div class="flex-1 overflow-y-auto p-6 pt-24 flex flex-col justify-between">
+      <nav class="space-y-2">
+        <a href="dashboard.html" class="flex items-center gap-3 px-4 py-2.5 rounded-[14px] text-xs font-medium text-brand-mid hover:text-brand-deep transition-all duration-300">
+          <svg class="w-4 h-4 text-brand-deep" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"></path></svg>
+          Home
+        </a>
+        <a href="curriculum.html" class="flex items-center gap-3 px-4 py-2 text-xs font-medium text-brand-deep nav-item border border-transparent rounded-[14px] transition-all duration-300">
+          <svg class="w-4 h-4 text-brand-mid" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"></path></svg>
+          Curriculum
+        </a>
+        <a href="sessions.html" class="flex items-center gap-3 px-4 py-2 text-xs font-medium text-brand-deep nav-item border border-transparent rounded-[14px] transition-all duration-300">
+          <svg class="w-4 h-4 text-brand-mid" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z"></path></svg>
+          Live Sessions
+        </a>
+        <a href="resources.html" class="flex items-center gap-3 px-4 py-2 text-xs font-medium text-brand-deep nav-item border border-transparent rounded-[14px] transition-all duration-300">
+          <svg class="w-4 h-4 text-brand-mid" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"></path></svg>
+          Resources
+        </a>
+      </nav>
+      <div class="mt-8 border-t border-white/20 pt-8 space-y-2">
+        
+        <a href="index.html" class="flex items-center gap-3 px-4 py-2 text-xs font-medium text-brand-deep nav-item border border-transparent rounded-[14px] transition-all duration-300">
+          <svg class="w-4 h-4 text-brand-mid" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1"></path></svg>
+          Back home
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <!-- TOP NAVBAR -->
+  <header id="top-nav" class="h-16 transition-all duration-500 ease-out flex items-center justify-between px-4 sm:px-8 lg:px-12 shrink-0 premium-nav z-[9999] relative">
+    <div class="flex items-center gap-4 sm:gap-12 shrink-0">
+      
+      <!-- Mobile Menu Button -->
+      <button id="mobile-menu-btn" class="lg:hidden flex items-center justify-center w-11 h-11 rounded-xl bg-white/10 shadow-[inset_0_1px_0_rgba(255,255,255,0.2),0_2px_8px_rgba(0,0,0,0.04)] border border-white/20 backdrop-blur-xl hover:bg-brand-deep/15 hover:scale-105 active:scale-95 transition-all cursor-pointer relative" aria-label="Toggle menu">
+        <svg id="hamburger-icon" class="w-5 h-5 text-brand-deep transition-all duration-300" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5"></path></svg>
+          <svg id="close-icon" class="w-5 h-5 text-brand-deep absolute opacity-0 scale-50 transition-all duration-300" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"></path></svg>
+      </button>
+
+      <!-- Logo -->
+      <a class="group flex items-center gap-1.5 sm:gap-4 focus:outline-none rounded shrink-0 whitespace-nowrap" href="index.html">
+          <div class="flex items-baseline text-[17px] sm:text-[22px] font-bold tracking-tighter text-brand-deep" style="font-family: 'Space Grotesk', sans-serif; font-weight: 700;">
+            Time Rich<span class="bg-gradient-to-br from-[#748c2f] via-[#596C24] to-[#354015] bg-clip-text text-transparent drop-shadow-sm">.</span>
+          </div>
+          <div class="w-px h-5 bg-brand-deep/15"></div>
+          <div class="text-[8px] sm:text-[12px] font-montserrat tracking-[0.15em] sm:tracking-[0.25em] uppercase bg-gradient-to-br from-[#748c2f] via-[#596C24] to-[#354015] bg-clip-text text-transparent drop-shadow-sm font-semibold mt-0.5">
+            PORTAL
+          </div>
+        </a>
+
+    </div>
+
+    <!-- Right Actions -->
+    <div class="flex items-center gap-3 sm:gap-6">
+      <div class="relative flex items-center group">
+        <input type="text" placeholder="Search courses..." class="w-8 focus:w-[110px] sm:focus:w-48 lg:focus:w-64 bg-transparent focus:bg-transparent text-xs text-brand-deep placeholder-transparent focus:placeholder-brand-mid/60 border-0 border-b border-transparent focus:border-brand-deep/30 ring-0 focus:ring-0 pl-6 pr-4 py-2 cursor-pointer focus:cursor-text transition-all duration-300 ease-out outline-none" />
+        <svg class="w-4 h-4 text-brand-mid/80 absolute left-0 pointer-events-none group-focus-within:text-brand-deep transition-colors" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
+      </div>
+      <div class="relative">
+          <button id="notif-btn" class="text-brand-mid hover:text-brand-deep transition-all relative p-2 -mr-2 rounded-full hover:bg-white/10 hover:backdrop-blur-md">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"></path></svg>
+            <span class="absolute top-[6px] right-[6px] w-[6px] h-[6px] rounded-full bg-[#EF4444] shadow-[0_0_8px_#EF4444] ring-1 ring-[#EF4444]/50 animate-pulse"></span>
+          </button>
+          
+          <div id="notif-dropdown" class="premium-dropdown absolute right-0 mt-3 w-[22rem] rounded-[1.5rem] p-2 flex flex-col gap-1 opacity-0 pointer-events-none translate-y-[-10px] transition-all duration-300 ease-out z-[9999] origin-top-right">
+            <div class="px-4 py-3 flex items-center justify-between border-b border-black/5 mb-2">
+              <span class="text-[11px] font-semibold text-brand-deep font-montserrat tracking-[0.15em] uppercase">Notifications</span>
+              <button class="text-[10px] text-brand-mid hover:text-brand-deep transition-colors font-medium">Mark all as read</button>
+            </div>
+            
+            <a href="#" class="flex items-start gap-4 p-3 rounded-xl hover:bg-white/60 transition-all hover:shadow-sm hover:-translate-y-[1px] group">
+              <div class="w-8 h-8 rounded-full bg-[#1a1a1a] text-white flex items-center justify-center shrink-0 shadow-md group-hover:scale-105 transition-transform">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+              </div>
+              <div class="flex flex-col gap-1">
+                <span class="text-sm font-semibold text-brand-deep leading-tight">Phase 1 Curriculum Unlocked</span>
+                <span class="text-[11px] font-medium text-brand-mid/80">Your agent strategy modules are now available.</span>
+                <span class="text-[10px] font-semibold bg-gradient-to-br from-[#748c2f] via-[#596C24] to-[#354015] bg-clip-text text-transparent drop-shadow-sm mt-1">2 hours ago</span>
+              </div>
+              <div class="w-2 h-2 rounded-full bg-[#1a1a1a] shrink-0 mt-1"></div>
+            </a>
+            
+            <a href="#" class="flex items-start gap-4 p-3 rounded-xl hover:bg-white/60 transition-all hover:shadow-sm hover:-translate-y-[1px] group opacity-70">
+              <div class="w-8 h-8 rounded-full bg-brand-deep/5 text-brand-deep border border-brand-deep/10 flex items-center justify-center shrink-0 group-hover:scale-105 transition-transform">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z"></path></svg>
+              </div>
+              <div class="flex flex-col gap-1">
+                <span class="text-sm font-semibold text-brand-deep leading-tight">Live Session starts in 10 mins</span>
+                <span class="text-[11px] font-medium text-brand-mid/80">Join the weekly group Q&A on Zoom.</span>
+                <span class="text-[10px] font-medium text-brand-mid mt-1">5 hours ago</span>
+              </div>
+            </a>
+          </div>
+        </div>
+    </div>
+  </header>
+
+  <!-- MAIN APP AREA -->
+  <div class="flex-1 flex overflow-hidden">
+    
+    <!-- LEFT SIDEBAR -->
+    
+    <style>
+      #desktop-sidebar { will-change: width, transform; }
+    #desktop-sidebar.collapsed {
+        width: 5.5rem !important;
+        padding-left: 0 !important;
+        padding-right: 0 !important;
+        align-items: center !important; /* Force children to center */
+      }
+      #desktop-sidebar { will-change: width, transform; }
+    #desktop-sidebar.collapsed nav, 
+      #desktop-sidebar { will-change: width, transform; }
+    #desktop-sidebar.collapsed .mb-4 {
+        width: 100%;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+      }
+      #desktop-sidebar { will-change: width, transform; }
+    #desktop-sidebar.collapsed .sidebar-text {
+        max-width: 0 !important;
+        opacity: 0 !important;
+        margin-left: 0 !important;
+        padding: 0 !important;
+      }
+      #desktop-sidebar { will-change: width, transform; }
+    #desktop-sidebar.collapsed .sidebar-toggle-icon {
+        transform: rotate(180deg);
+      }
+      /* Center the toggle button container */
+      #desktop-sidebar { will-change: width, transform; }
+    #desktop-sidebar.collapsed .justify-end {
+        justify-content: center !important;
+        padding: 0 !important;
+      }
+      /* Make the link boxes perfect squares and center them */
+      #desktop-sidebar { will-change: width, transform; }
+    #desktop-sidebar.collapsed a {
+        justify-content: center;
+        padding-left: 0 !important;
+        padding-right: 0 !important;
+        width: 3rem !important;
+        height: 3rem !important;
+        margin: 0 auto !important;
+      }
+      #desktop-sidebar { will-change: width, transform; }
+    #desktop-sidebar.collapsed a svg {
+        margin: 0 auto;
+        transform: translateX(-1px); /* micro-adjustment to perfectly center the icon visually */
+      }
+
+    .premium-dropdown {
+      background: linear-gradient(135deg, rgba(255, 255, 255, 0.98) 0%, rgba(250, 255, 245, 0.85) 100%);
+      backdrop-filter: blur(64px) saturate(1.5);
+      -webkit-backdrop-filter: blur(64px) saturate(1.5);
+      border: 1px solid rgba(255, 255, 255, 0.8);
+      box-shadow: 
+        0 32px 64px -12px rgba(90, 105, 75, 0.25),
+        0 8px 24px rgba(90, 105, 75, 0.1),
+        inset 0 1px 0 rgba(255, 255, 255, 1),
+        inset 0 0 24px rgba(255, 255, 255, 0.3);
+    }
+  </style>
+<aside id="desktop-sidebar" class="hidden lg:flex w-[17rem] transition-all duration-500 ease-[cubic-bezier(0.16,1,0.3,1)] flex-shrink-0 flex-col justify-between pt-8 pb-16 px-6 mt-0 ml-0 mb-6 h-[calc(100vh-1.5rem)] rounded-none rounded-br-[2.5rem] bg-white/50 backdrop-blur-md border-r border-b border-white/20 z-20 shadow-[0_20px_40px_rgba(0,0,0,0.08)]">
+        <div class="flex items-center justify-end px-2 mb-4 shrink-0">
+          <button id="sidebar-toggle" class="p-2 rounded-xl text-brand-mid hover:text-brand-deep hover:bg-white/20 transition-all duration-300" title="Toggle Sidebar">
+            <svg class="w-5 h-5 sidebar-toggle-icon transition-transform duration-500" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25H12"></path>
+            </svg>
+          </button>
+        </div>
+
+        
+
+        <div class="flex-1 flex flex-col justify-center">
+          <nav class="space-y-2">
+          <a href="dashboard.html" class="group flex items-center px-4 py-2.5 rounded-[14px] text-xs font-semibold text-brand-mid hover:text-brand-deep nav-item border border-transparent transition-all duration-300 hover:translate-x-1">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1"></path></svg>
+            <span class="sidebar-text ml-3 transition-all duration-500 ease-[cubic-bezier(0.16,1,0.3,1)] whitespace-nowrap overflow-hidden opacity-100 max-w-[150px]">Dashboard</span>
+          </a>
+          <a href="curriculum.html" class="group flex items-center px-4 py-2.5 rounded-[14px] text-xs font-semibold text-brand-deep nav-active backdrop-blur-xl border border-white/40 shadow-sm transition-all duration-300">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"></path></svg>
+            <span class="sidebar-text ml-3 transition-all duration-500 ease-[cubic-bezier(0.16,1,0.3,1)] whitespace-nowrap overflow-hidden opacity-100 max-w-[150px]">Curriculum</span>
+          </a>
+          <a href="sessions.html" class="group flex items-center px-4 py-2.5 rounded-[14px] text-xs font-semibold text-brand-mid hover:text-brand-deep nav-item border border-transparent transition-all duration-300 hover:translate-x-1">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z"></path></svg>
+            <span class="sidebar-text ml-3 transition-all duration-500 ease-[cubic-bezier(0.16,1,0.3,1)] whitespace-nowrap overflow-hidden opacity-100 max-w-[150px]">Live Sessions</span>
+          </a>
+          <a href="resources.html" class="group flex items-center px-4 py-2.5 rounded-[14px] text-xs font-semibold text-brand-mid hover:text-brand-deep nav-item border border-transparent transition-all duration-300 hover:translate-x-1">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"></path></svg>
+            <span class="sidebar-text ml-3 transition-all duration-500 ease-[cubic-bezier(0.16,1,0.3,1)] whitespace-nowrap overflow-hidden opacity-100 max-w-[150px]">Resources</span>
+          </a>
+        </nav>
+        </div>
+
+        <div class="space-y-6 shrink-0 mt-8">
+        <div class="h-px w-full bg-black/5 my-2"></div>
+          <a href="index.html" class="group flex items-center px-4 py-2.5 rounded-[14px] text-xs font-semibold text-brand-mid hover:text-brand-deep nav-item border border-transparent transition-all duration-300 hover:translate-x-1">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1"></path></svg>
+            <span class="sidebar-text ml-3 transition-all duration-500 ease-[cubic-bezier(0.16,1,0.3,1)] whitespace-nowrap overflow-hidden opacity-100 max-w-[150px]">Back home</span>
+          </a>
+      </div>
+    </aside>
+
+    <!-- CENTER SCROLLABLE CONTENT -->
+    <main class="flex-1 overflow-y-auto custom-scroll relative bg-transparent main-grid">
+        <div class="relative z-10 px-6 sm:px-8 py-8 lg:py-12 max-w-[900px] mx-auto transition-all duration-500 ease-[cubic-bezier(0.16,1,0.3,1)]">
+          
+          <!-- BREADCRUMBS -->
+          <nav class="flex items-center gap-2 text-[11px] sm:text-xs font-semibold text-brand-mid/80 mb-8 font-montserrat uppercase tracking-[0.1em]">
+            <a href="curriculum.html" class="hover:text-brand-deep transition-colors">Curriculum</a>
+            <span class="text-brand-mid/40">/</span>
+            <span class="text-brand-deep">Module 1</span>
+            <span class="text-brand-mid/40">/</span>
+            <span class="bg-gradient-to-br from-[#748c2f] via-[#596C24] to-[#354015] bg-clip-text text-transparent">Drafting Personas</span>
+          </nav>
+
+          <!-- HERO HEADER -->
+          <header class="mb-12">
+            <h1 class="text-3xl sm:text-4xl lg:text-[42px] font-display font-bold tracking-tight text-brand-deep leading-[1.1] mb-6">
+              Drafting your first AI Agent Personas
+            </h1>
+            <p class="text-lg text-brand-mid leading-relaxed max-w-2xl">
+              Learn how to define clear boundaries, knowledge bases, and interaction styles to prevent your AI agents from hallucinating or going off-script.
+            </p>
+          </header>
+
+          <!-- LOOM VIDEO EMBED (Placeholder) -->
+          <div class="w-full aspect-video rounded-3xl overflow-hidden glass-card border border-brand-deep/10 shadow-xl mb-16 relative group cursor-pointer">
+            <div class="absolute inset-0 bg-brand-deep/5 flex flex-col items-center justify-center">
+              <div class="w-16 h-16 rounded-full bg-white/90 shadow-lg flex items-center justify-center text-brand-deep group-hover:scale-110 transition-transform duration-300">
+                <svg class="w-6 h-6 ml-1" fill="currentColor" viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
+              </div>
+              <span class="mt-4 text-sm font-semibold text-brand-deep/60 tracking-wider uppercase font-montserrat">Loom Video Embed</span>
+            </div>
+          </div>
+
+          <!-- WRITTEN CONTENT (Prose) -->
+          <article class="prose prose-lg prose-slate max-w-none prose-headings:font-display prose-headings:text-brand-deep prose-p:text-brand-mid prose-p:leading-relaxed prose-a:text-[#596C24] prose-strong:text-brand-deep">
+            
+            <h2 class="text-2xl font-bold tracking-tight mb-4 mt-12">Why Personas Matter</h2>
+            <p class="mb-8">
+              When you deploy an AI agent into your company's Slack or customer-facing portal, it needs to know exactly <strong>who it is</strong> and <strong>what it is allowed to do</strong>. Without a strict persona, an LLM will default to being a generic, helpful assistant - which often leads to it answering questions outside its domain or making up company policies.
+            </p>
+
+            <!-- CLICKABLE PROMPT BOX -->
+            <div class="my-10 bg-white/60 backdrop-blur-sm border border-brand-deep/10 rounded-2xl overflow-hidden shadow-sm">
+              <div class="flex items-center justify-between px-5 py-3 border-b border-brand-deep/5 bg-brand-deep/[0.02]">
+                <div class="flex items-center gap-2">
+                  <svg class="w-4 h-4 text-[#596C24]" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M8 9l3 3-3 3m5 0h3M5 20h14a2 2 0 002-2V6a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>
+                  <span class="text-xs font-bold text-brand-deep/80 font-montserrat uppercase tracking-wider">System Prompt Template</span>
+                </div>
+                <button onclick="navigator.clipboard.writeText(this.parentElement.nextElementSibling.innerText); this.innerHTML='Copied!'; setTimeout(() => this.innerHTML='Copy', 2000);" class="text-[10px] font-bold text-brand-deep/60 hover:text-brand-deep uppercase tracking-wider bg-white px-3 py-1.5 rounded-md border border-brand-deep/10 transition-colors">
+                  Copy
+                </button>
+              </div>
+              <div class="p-6 text-sm text-brand-deep font-mono leading-relaxed bg-[#fcfdfa] overflow-x-auto whitespace-pre-wrap">You are an expert customer support agent for [Company]. 
+Your tone is professional, concise, and deeply empathetic.
+
+Core Rules:
+1. Never invent policies. If you don't know, tell the user you will escalate to a human.
+2. Only answer questions related to [Product Domain].
+3. Keep responses under 3 sentences unless explaining a technical fix.</div>
+            </div>
+
+            <h2 class="text-2xl font-bold tracking-tight mb-4 mt-12">Building the Knowledge Base</h2>
+            <p class="mb-8">
+              The persona is just the behavioral wrapper. The actual brain of your agent comes from the knowledge base you connect to it. Make sure to upload your internal wikis, standard operating procedures (SOPs), and historical support tickets.
+            </p>
+
+            <!-- SCREENSHOT PLACEHOLDER -->
+            <figure class="my-12">
+              <div class="w-full bg-brand-deep/5 rounded-2xl border border-brand-deep/10 overflow-hidden shadow-sm flex items-center justify-center p-2">
+                 <div class="w-full h-[300px] bg-white rounded-xl shadow-sm border border-black/5 flex flex-col items-center justify-center text-brand-mid/40">
+                    <svg class="w-10 h-10 mb-2" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>
+                    <span class="text-sm font-semibold">Screenshot: Uploading documents</span>
+                 </div>
+              </div>
+              <figcaption class="text-center text-xs text-brand-mid mt-3 font-medium">Fig 1. Connecting a Google Drive folder to your agent.</figcaption>
+            </figure>
+
+          </article>
+
+          <!-- BOTTOM NAVIGATION -->
+          <div class="mt-20 pt-10 border-t border-brand-deep/10 flex flex-col sm:flex-row items-center justify-between gap-6">
+            <a href="curriculum.html" class="group flex items-center gap-4 w-full sm:w-auto p-4 rounded-2xl hover:bg-white/40 transition-colors border border-transparent hover:border-brand-deep/5">
+              <div class="w-10 h-10 rounded-full bg-white border border-brand-deep/10 flex items-center justify-center text-brand-deep group-hover:-translate-x-1 transition-transform">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M15 19l-7-7 7-7"></path></svg>
+              </div>
+              <div>
+                <div class="text-[10px] font-montserrat font-bold text-brand-mid uppercase tracking-wider mb-1">Previous Lesson</div>
+                <div class="text-sm font-semibold text-brand-deep group-hover:text-[#596C24] transition-colors">Intro to LLMs</div>
+              </div>
+            </a>
+
+            <a href="curriculum.html" class="group flex items-center gap-4 w-full sm:w-auto p-4 rounded-2xl hover:bg-white/40 transition-colors border border-transparent hover:border-brand-deep/5 text-right flex-row-reverse sm:flex-row">
+              <div class="text-left sm:text-right">
+                <div class="text-[10px] font-montserrat font-bold text-brand-mid uppercase tracking-wider mb-1">Next Lesson</div>
+                <div class="text-sm font-semibold text-brand-deep group-hover:text-[#596C24] transition-colors">Connecting Zapier</div>
+              </div>
+              <div class="w-10 h-10 rounded-full bg-brand-deep text-white shadow-md flex items-center justify-center group-hover:bg-[#596C24] group-hover:translate-x-1 transition-all">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7"></path></svg>
+              </div>
+            </a>
+          </div>
+
+        </div>
+</main> <!-- CLOSE main -->
+    </div> <!-- CLOSE h-screen container -->
+
+  <script>
+    document.addEventListener("DOMContentLoaded", () => {
+      // 1. Mobile Menu Toggle
+      const btn = document.getElementById("mobile-menu-btn");
+      const closeBtn = document.getElementById("mobile-menu-close");
+      const menu = document.getElementById("mobile-menu");
+      const overlay = document.getElementById("mobile-menu-overlay");
+
+      function openMenu() {
+        if(overlay) {
+          overlay.classList.remove("opacity-0", "pointer-events-none");
+          overlay.classList.add("opacity-100", "pointer-events-auto");
+        }
+        if(menu) {
+          menu.classList.remove("-translate-x-full");
+          menu.classList.add("translate-x-0");
+        }
+      }
+
+      function closeMenu() {
+        if(overlay) {
+          overlay.classList.remove("opacity-100", "pointer-events-auto");
+          overlay.classList.add("opacity-0", "pointer-events-none");
+        }
+        const hamburgerIcon = document.getElementById("hamburger-icon");
+          const closeIcon = document.getElementById("close-icon");
+          if (hamburgerIcon) { hamburgerIcon.classList.remove("opacity-0", "scale-50"); hamburgerIcon.classList.add("opacity-100", "scale-100"); }
+          if (closeIcon) { closeIcon.classList.add("opacity-0", "scale-50"); closeIcon.classList.remove("opacity-100", "scale-100"); }
+          if(menu) {
+          menu.classList.remove("translate-x-0");
+          menu.classList.add("-translate-x-full");
+        }
+      }
+        if(btn) btn.addEventListener("click", (e) => {
+          e.stopPropagation();
+          const hamburgerIcon = document.getElementById("hamburger-icon");
+          const closeIcon = document.getElementById("close-icon");
+          if (menu && menu.classList.contains("-translate-x-full")) {
+            if(overlay) {
+              overlay.classList.remove("opacity-0", "pointer-events-none");
+              overlay.classList.add("opacity-100", "pointer-events-auto");
+            }
+            if(menu) {
+              menu.classList.remove("-translate-x-full");
+              menu.classList.add("translate-x-0");
+            }
+            if (hamburgerIcon) { hamburgerIcon.classList.add("opacity-0", "scale-50"); hamburgerIcon.classList.remove("opacity-100", "scale-100"); }
+            if (closeIcon) { closeIcon.classList.remove("opacity-0", "scale-50"); closeIcon.classList.add("opacity-100", "scale-100"); }
+          } else {
+            if(overlay) {
+              overlay.classList.remove("opacity-100", "pointer-events-auto");
+              overlay.classList.add("opacity-0", "pointer-events-none");
+            }
+            if(menu) {
+              menu.classList.remove("translate-x-0");
+              menu.classList.add("-translate-x-full");
+            }
+            if (hamburgerIcon) { hamburgerIcon.classList.remove("opacity-0", "scale-50"); hamburgerIcon.classList.add("opacity-100", "scale-100"); }
+            if (closeIcon) { closeIcon.classList.add("opacity-0", "scale-50"); closeIcon.classList.remove("opacity-100", "scale-100"); }
+          }
+        });
+
+      if(closeBtn) closeBtn.addEventListener("click", closeMenu);
+      if(overlay) overlay.addEventListener("click", closeMenu);
+
+      // 2. Notification Toggle
+      const notifBtn = document.getElementById('notif-btn');
+      const notifDropdown = document.getElementById('notif-dropdown');
+      
+      if (notifBtn && notifDropdown) {
+        notifBtn.addEventListener('click', (e) => {
+          e.stopPropagation();
+          const isOpen = !notifDropdown.classList.contains('opacity-0');
+          if (isOpen) {
+            notifDropdown.classList.add('opacity-0', 'pointer-events-none', 'translate-y-[-10px]');
+            notifDropdown.classList.remove('opacity-100', 'pointer-events-auto', 'translate-y-0');
+          } else {
+            notifDropdown.classList.remove('opacity-0', 'pointer-events-none', 'translate-y-[-10px]');
+            notifDropdown.classList.add('opacity-100', 'pointer-events-auto', 'translate-y-0');
+          }
+        });
+        
+        // Close when clicking outside
+        document.addEventListener('click', (e) => {
+          if (!notifBtn.contains(e.target) && !notifDropdown.contains(e.target)) {
+            notifDropdown.classList.add('opacity-0', 'pointer-events-none', 'translate-y-[-10px]');
+            notifDropdown.classList.remove('opacity-100', 'pointer-events-auto', 'translate-y-0');
+          }
+        });
+      }
+
+      // 3. Video Controls
+      const video = document.getElementById('promo-video');
+      const playBtn = document.getElementById('promo-play-btn');
+      const muteBtn = document.getElementById('promo-mute-btn');
+      
+      const iconPlay = document.getElementById('icon-play');
+      const iconPause = document.getElementById('icon-pause');
+      const iconMuted = document.getElementById('icon-muted');
+      const iconUnmuted = document.getElementById('icon-unmuted');
+
+      if(playBtn && video) {
+        playBtn.addEventListener('click', (e) => {
+          e.stopPropagation();
+          if (video.paused) {
+            video.play();
+            iconPlay.classList.add('hidden');
+            iconPause.classList.remove('hidden');
+          } else {
+            video.pause();
+            iconPause.classList.add('hidden');
+            iconPlay.classList.remove('hidden');
+          }
+        });
+      }
+
+      if(muteBtn && video) {
+        muteBtn.addEventListener('click', (e) => {
+          e.stopPropagation();
+          if (video.muted) {
+            video.muted = false;
+            iconMuted.classList.add('hidden');
+            iconUnmuted.classList.remove('hidden');
+          } else {
+            video.muted = true;
+            iconUnmuted.classList.add('hidden');
+            iconMuted.classList.remove('hidden');
+          }
+        });
+      }
+    
+        
+        // Sidebar Toggle Logic
+        const sidebar = document.getElementById('desktop-sidebar');
+        const sidebarToggle = document.getElementById('sidebar-toggle');
+        if (sidebar && sidebarToggle) {
+          sidebarToggle.addEventListener('click', () => {
+            sidebar.classList.toggle('collapsed');
+          });
+        }
+
+        // 4. Navbar Scroll Effect
+        const mainScroll = document.querySelector('main.overflow-y-auto');
+        const topNav = document.getElementById('top-nav');
+        if (mainScroll && topNav) {
+          mainScroll.addEventListener('scroll', () => {
+            if (mainScroll.scrollTop > 20) {
+              topNav.classList.remove('h-16');
+              topNav.classList.add('h-[3.25rem]', 'scrolled');
+            } else {
+              topNav.classList.add('h-16');
+              topNav.classList.remove('h-[3.25rem]', 'scrolled');
+            }
+          });
+        }
+    });
+  </script>
+
+  <script>
+    // === SMOOTH PAGE TRANSITIONS ===
+    // Intercept all internal nav links for smooth exit
+    document.addEventListener('DOMContentLoaded', () => {
+      document.querySelectorAll('a[href]').forEach(link => {
+        const href = link.getAttribute('href');
+        if (href && !href.startsWith('http') && !href.startsWith('#') && !href.startsWith('mailto') && href.endsWith('.html')) {
+          link.addEventListener('click', (e) => {
+            e.preventDefault();
+            document.body.style.opacity = '0';
+            document.body.style.transform = 'scale(0.98)';
+            setTimeout(() => { window.location.href = href; }, 280);
+          });
+        }
+      });
+    });
+  </script>
+
+</body>
+</html>
+
