@@ -8,14 +8,14 @@
   <noscript><img height="1" width="1" style="display:none" alt=""
     src="https://www.facebook.com/tr?id=1790181495468842&amp;ev=PageView&amp;noscript=1" /></noscript>
   <title>Time Rich Content OS</title>
-  <meta name="description" content="The Time Rich OS: direct-download LinkedIn skills, Accelerator information, and upcoming live events." />
+  <meta name="description" content="The Time Rich OS: direct-download LinkedIn skills, Accelerator information, and upcoming workshops." />
   <link rel="canonical" href="https://timerich.ai/os" />
   <meta name="theme-color" content="#FFFDFB" />
   <meta property="og:type" content="website" />
   <meta property="og:site_name" content="Time Rich" />
   <meta property="og:url" content="https://timerich.ai/os" />
   <meta property="og:title" content="Time Rich Content OS" />
-  <meta property="og:description" content="Direct-download LinkedIn skills, Accelerator information, and upcoming live events." />
+  <meta property="og:description" content="Direct-download LinkedIn skills, Accelerator information, and upcoming workshops." />
   <meta property="og:image" content="https://timerich.ai/og-image.jpg" />
   <meta name="twitter:card" content="summary_large_image" />
   <link rel="icon" href="/favicon.ico" sizes="any" />
@@ -356,9 +356,6 @@
     .accelerator-points span { color: var(--sage); }
     .accelerator-actions { margin-top: 26px; }
     .accelerator-panel .btn { background: var(--sage); color: var(--heading); }
-    .event-card { min-height: auto; box-shadow: none; }
-    .event-date { color: var(--moss); font-family: var(--mono); font-size: 12px; font-weight: 600; letter-spacing: .1em; text-transform: uppercase; margin-bottom: 18px; }
-    .event-card h3 { font-size: 23px; }
 
     .prompt-list { display: grid; gap: 16px; }
     .prompt-card {
@@ -444,7 +441,7 @@
         <a href="#skills">Skills</a>
         <a href="#prompts">Prompts</a>
         <a href="#accelerator">Accelerator</a>
-        <a href="#events">Events</a>
+        <a href="#events">Workshops</a>
       </nav>
       <div class="nav-social">
         <a href="https://www.linkedin.com/in/ellamolonycook/" target="_blank" rel="noopener" aria-label="Ella on LinkedIn">
@@ -476,7 +473,7 @@
           <li><a href="#install">How skills work</a></li>
           <li><a href="#prompts">Prompts</a></li>
           <li><a href="#accelerator">Accelerator</a></li>
-          <li><a href="#events">Upcoming events</a></li>
+          <li><a href="#events">Upcoming workshops</a></li>
         </ol>
       </div>
     </section>
@@ -571,11 +568,13 @@
     <section id="events">
       <div class="wrap">
         <div class="section-head">
-          <p class="eyebrow">Upcoming events</p>
+          <p class="eyebrow">Upcoming workshops</p>
           <h2>What is coming up</h2>
-          <p class="lede">The next live sessions in the Superhuman Accelerator.</p>
+          <p class="lede">Every live Time Rich workshop is on our Luma calendar. Please make sure you attend.</p>
         </div>
-        <div class="cards" id="eventGrid"></div>
+        <div class="hero-actions">
+          <a class="btn" href="https://luma.com/timerich" target="_blank" rel="noopener noreferrer">Upcoming workshops</a>
+        </div>
       </div>
     </section>
 
@@ -776,17 +775,6 @@
         "In Claude, open Customize → Skills, click Add and choose “Upload a skill”, then select the ZIP.",
         "Check code execution is on: Settings → Capabilities.",
         "Start a new chat and use “Copy the prompt” from the skill’s card."
-      ],
-      events: [
-        { iso: "2026-10-26", date: "Mon 26 Oct", time: "12pm ET", title: "Open Business Surgery", description: "Bring the work that needs a practical answer." },
-        { iso: "2026-10-30", date: "Fri 30 Oct", time: "12pm ET", title: "Training Your Agent", description: "Turn your context into something your AI can use." },
-        { iso: "2026-11-02", date: "Mon 2 Nov", time: "12pm ET", title: "Your AI Operating System", description: "Connect the pieces that keep your business moving." },
-        { iso: "2026-11-06", date: "Fri 6 Nov", time: "12pm ET", title: "Expert Q&A", description: "Bring your questions and leave with clear next steps." },
-        { iso: "2026-11-09", date: "Mon 9 Nov", time: "12pm ET", title: "Storytelling for GTM", description: "Find the stories that move a buyer, not just an audience." },
-        { iso: "2026-11-13", date: "Fri 13 Nov", time: "12pm ET", title: "The AI Content Machine + Q&A", description: "Build the system that keeps your content shipping." },
-        { iso: "2026-11-16", date: "Mon 16 Nov", time: "12pm ET", title: "Unfair AI Advantage", description: "The moves most of your market has not made yet." },
-        { iso: "2026-11-18", date: "Wed 18 Nov", time: "12pm ET", title: "Networking Session", description: "Meet the other founders building alongside you." },
-        { iso: "2026-11-20", date: "Fri 20 Nov", time: "12pm ET", title: "Q&A Exited Founder", description: "Ask someone who has already sold the business." }
       ],
       prompts: [
         {
@@ -1059,34 +1047,6 @@
       });
     }
 
-    /** Today as an ISO date string in the reader's own timezone. */
-    function todayIso() {
-      const now = new Date();
-      const month = String(now.getMonth() + 1).padStart(2, "0");
-      const day = String(now.getDate()).padStart(2, "0");
-      return `${now.getFullYear()}-${month}-${day}`;
-    }
-
-    function renderEvents() {
-      const grid = document.getElementById("eventGrid");
-      const today = todayIso();
-      const upcoming = HUB.events.filter((event) => !event.iso || event.iso >= today);
-      if (!upcoming.length) {
-        grid.append(el("p", { class: "pending", text: "The next dates are being confirmed." }));
-        return;
-      }
-      upcoming.forEach((event) => {
-        const when = event.time ? `${event.date} · ${event.time}` : event.date;
-        grid.append(el("article", { class: "card event-card" }, [
-          el("div", { class: "event-date" }, [
-            el("time", { datetime: event.iso, text: when })
-          ]),
-          el("h3", { text: event.title }),
-          el("p", { text: event.description })
-        ]));
-      });
-    }
-
     function renderDrops() {
       const grid = document.getElementById("dropGrid");
       HUB.drops.forEach((item) => {
@@ -1114,7 +1074,6 @@
     renderSkills();
     renderSteps();
     renderPrompts();
-    renderEvents();
     renderDrops();
   </script>
 </body>
