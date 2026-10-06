@@ -77,6 +77,65 @@
       transition: transform 0.15s ease;
     }
     
+  
+    /* === MOBILE PERFORMANCE === */
+    @media (max-width: 768px) {
+      /* Reduce blur intensity on mobile for performance */
+      .glass-card,
+      .premium-dropdown {
+        -webkit-backdrop-filter: blur(16px) !important;
+        backdrop-filter: blur(16px) !important;
+      }
+      .glass3d::before {
+        -webkit-backdrop-filter: blur(8px) brightness(0.8) !important;
+        backdrop-filter: blur(8px) brightness(0.8) !important;
+      }
+      /* Disable noise overlay on mobile */
+      .noise-overlay {
+        display: none !important;
+      }
+      /* Disable shimmer hover on touch devices */
+      .shimmer-card::before {
+        display: none !important;
+      }
+      /* Reduce box-shadow complexity */
+      .glass3d {
+        box-shadow: 0 2px 8px rgba(0,0,0,0.1) !important;
+      }
+      /* Reduce floating animations */
+      .animate-float, .animate-float-alt {
+        animation: none !important;
+      }
+      /* Faster page transitions on mobile */
+      body {
+        transition: opacity 0.4s ease, transform 0.4s ease !important;
+      }
+      /* Disable grid lines on mobile for performance */
+      .main-grid {
+        background-image: none !important;
+      }
+    }
+    
+    /* Respect reduced motion preferences */
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+      }
+    }
+    
+    /* Touch device optimizations */
+    @media (hover: none) {
+      .card-lift:hover {
+        transform: none;
+        box-shadow: none;
+      }
+      .shimmer-card::before {
+        display: none;
+      }
+    }
+    
   </style>
 
   <!-- Config first, then the library. Both are deferred so the DOM is
@@ -153,29 +212,18 @@
 
   <script>
     // === SMOOTH PAGE TRANSITIONS ===
-    // Internal .html links fade the page out before navigating. The fade is
-    // decoration; the navigation is the job, so every path below ends in a
-    // navigation even when the animation never runs or is cut short.
-    (function () {
-      var FADE_MS = 280;
-
-      var reduced = false;
-      try {
-        reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-      } catch (e) { /* no matchMedia: treat as no preference */ }
-
-      // Coming back via the Back button can restore this page from the bfcache
-      // with the fade still applied, which shows a blank screen.
-      //
-      // Only this script's own fade is undone. Every portal page sets its own
-      // entrance transform inline on <body>, so clearing that unconditionally
-      // would kill the page's open animation on a normal load.
-      var LEAVING = 'data-trp-leaving';
-      window.addEventListener('pageshow', function () {
-        if (!document.body.hasAttribute(LEAVING)) return;
-        document.body.removeAttribute(LEAVING);
-        document.body.style.opacity = '';
-        document.body.style.transform = '';
+    // Intercept all internal nav links for smooth exit
+    document.addEventListener('DOMContentLoaded', () => {
+      document.querySelectorAll('a[href]').forEach(link => {
+        const href = link.getAttribute('href');
+        if (href && !href.startsWith('http') && !href.startsWith('#') && !href.startsWith('mailto') && href.endsWith('.html')) {
+          link.addEventListener('click', (e) => {
+            e.preventDefault();
+            document.body.style.opacity = '0';
+            document.body.style.transform = 'scale(0.98)';
+            setTimeout(() => { window.location.href = href; }, window.innerWidth < 768 ? 120 : 280);
+          });
+        } origin/main
       });
 
       document.addEventListener('DOMContentLoaded', function () {

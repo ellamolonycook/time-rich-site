@@ -132,6 +132,65 @@
       transition: transform 0.15s ease;
     }
     
+  
+    /* === MOBILE PERFORMANCE === */
+    @media (max-width: 768px) {
+      /* Reduce blur intensity on mobile for performance */
+      .glass-card,
+      .premium-dropdown {
+        -webkit-backdrop-filter: blur(16px) !important;
+        backdrop-filter: blur(16px) !important;
+      }
+      .glass3d::before {
+        -webkit-backdrop-filter: blur(8px) brightness(0.8) !important;
+        backdrop-filter: blur(8px) brightness(0.8) !important;
+      }
+      /* Disable noise overlay on mobile */
+      .noise-overlay {
+        display: none !important;
+      }
+      /* Disable shimmer hover on touch devices */
+      .shimmer-card::before {
+        display: none !important;
+      }
+      /* Reduce box-shadow complexity */
+      .glass3d {
+        box-shadow: 0 2px 8px rgba(0,0,0,0.1) !important;
+      }
+      /* Reduce floating animations */
+      .animate-float, .animate-float-alt {
+        animation: none !important;
+      }
+      /* Faster page transitions on mobile */
+      body {
+        transition: opacity 0.4s ease, transform 0.4s ease !important;
+      }
+      /* Disable grid lines on mobile for performance */
+      .main-grid {
+        background-image: none !important;
+      }
+    }
+    
+    /* Respect reduced motion preferences */
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+      }
+    }
+    
+    /* Touch device optimizations */
+    @media (hover: none) {
+      .card-lift:hover {
+        transform: none;
+        box-shadow: none;
+      }
+      .shimmer-card::before {
+        display: none;
+      }
+    }
+    
   </style>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -192,7 +251,7 @@
             </div>
             <!-- Terry Rice -->
             <div class="relative group cursor-pointer hover:z-10 transition-transform duration-300 hover:scale-110">
-              <img src="assets/terry-rice.jpg" alt="Terry Rice" class="w-[38px] h-[38px] rounded-full object-cover border-2 border-white/70 shadow-sm"/>
+              <img loading="lazy" src="assets/terry-rice.jpg" alt="Terry Rice" class="w-[38px] h-[38px] rounded-full object-cover border-2 border-white/70 shadow-sm"/>
               <div class="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 w-max px-2.5 py-1 bg-[#252D1C] text-white text-[11px] font-sans font-medium rounded opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none shadow-lg">
                 Terry Rice
                 <div class="absolute top-full left-1/2 -translate-x-1/2 border-[4px] border-transparent border-t-[#252D1C]"></div>
@@ -200,7 +259,7 @@
             </div>
             <!-- AJ Yadav -->
             <div class="relative group cursor-pointer hover:z-10 transition-transform duration-300 hover:scale-110">
-              <img src="assets/aj-yadav.jpg" alt="AJ Yadav" class="w-[38px] h-[38px] rounded-full object-cover border-2 border-white/70 shadow-sm"/>
+              <img loading="lazy" src="assets/aj-yadav.jpg" alt="AJ Yadav" class="w-[38px] h-[38px] rounded-full object-cover border-2 border-white/70 shadow-sm"/>
               <div class="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 w-max px-2.5 py-1 bg-[#252D1C] text-white text-[11px] font-sans font-medium rounded opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none shadow-lg">
                 AJ Yadav
                 <div class="absolute top-full left-1/2 -translate-x-1/2 border-[4px] border-transparent border-t-[#252D1C]"></div>
@@ -208,7 +267,7 @@
             </div>
             <!-- ViKa Victoria -->
             <div class="relative group cursor-pointer hover:z-10 transition-transform duration-300 hover:scale-110">
-              <img src="assets/vika-victoria-square.jpg" alt="ViKa Victoria" class="w-[38px] h-[38px] rounded-full object-cover border-2 border-white/70 shadow-sm"/>
+              <img loading="lazy" src="assets/vika-victoria-square.jpg" alt="Vika Victoria" class="w-[38px] h-[38px] rounded-full object-cover border-2 border-white/70 shadow-sm"/> origin/main
               <div class="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 w-max px-2.5 py-1 bg-[#252D1C] text-white text-[11px] font-sans font-medium rounded opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none shadow-lg">
                 ViKa Victoria
                 <div class="absolute top-full left-1/2 -translate-x-1/2 border-[4px] border-transparent border-t-[#252D1C]"></div>
@@ -216,7 +275,7 @@
             </div>
             <!-- Matyas Kolsofszki -->
             <div class="relative group cursor-pointer hover:z-10 transition-transform duration-300 hover:scale-110">
-              <img src="assets/Matyas.png" alt="Matyas Kolsofszki" class="w-[38px] h-[38px] rounded-full object-cover border-2 border-white/70 shadow-sm"/>
+              <img loading="lazy" src="assets/Matyas.png" alt="Matyas Kolsofszki" class="w-[38px] h-[38px] rounded-full object-cover border-2 border-white/70 shadow-sm"/>
               <div class="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 w-max px-2.5 py-1 bg-[#252D1C] text-white text-[11px] font-sans font-medium rounded opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none shadow-lg">
                 Matyas Kolsofszki
                 <div class="absolute top-full left-1/2 -translate-x-1/2 border-[4px] border-transparent border-t-[#252D1C]"></div>
@@ -224,7 +283,7 @@
             </div>
             <!-- Ella -->
             <div class="relative group cursor-pointer hover:z-10 transition-transform duration-300 hover:scale-110">
-              <img src="assets/ella-portrait.jpg" alt="Ella" class="w-[38px] h-[38px] rounded-full object-cover border-2 border-white/70 shadow-sm object-top"/>
+              <img loading="lazy" src="assets/ella-portrait.jpg" alt="Ella" class="w-[38px] h-[38px] rounded-full object-cover border-2 border-white/70 shadow-sm object-top"/>
               <div class="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 w-max px-2.5 py-1 bg-[#252D1C] text-white text-[11px] font-sans font-medium rounded opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none shadow-lg">
                 Ella
                 <div class="absolute top-full left-1/2 -translate-x-1/2 border-[4px] border-transparent border-t-[#252D1C]"></div>
@@ -385,29 +444,18 @@
 
   <script>
     // === SMOOTH PAGE TRANSITIONS ===
-    // Internal .html links fade the page out before navigating. The fade is
-    // decoration; the navigation is the job, so every path below ends in a
-    // navigation even when the animation never runs or is cut short.
-    (function () {
-      var FADE_MS = 280;
-
-      var reduced = false;
-      try {
-        reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-      } catch (e) { /* no matchMedia: treat as no preference */ }
-
-      // Coming back via the Back button can restore this page from the bfcache
-      // with the fade still applied, which shows a blank screen.
-      //
-      // Only this script's own fade is undone. Every portal page sets its own
-      // entrance transform inline on <body>, so clearing that unconditionally
-      // would kill the page's open animation on a normal load.
-      var LEAVING = 'data-trp-leaving';
-      window.addEventListener('pageshow', function () {
-        if (!document.body.hasAttribute(LEAVING)) return;
-        document.body.removeAttribute(LEAVING);
-        document.body.style.opacity = '';
-        document.body.style.transform = '';
+    // Intercept all internal nav links for smooth exit
+    document.addEventListener('DOMContentLoaded', () => {
+      document.querySelectorAll('a[href]').forEach(link => {
+        const href = link.getAttribute('href');
+        if (href && !href.startsWith('http') && !href.startsWith('#') && !href.startsWith('mailto') && href.endsWith('.html')) {
+          link.addEventListener('click', (e) => {
+            e.preventDefault();
+            document.body.style.opacity = '0';
+            document.body.style.transform = 'scale(0.98)';
+            setTimeout(() => { window.location.href = href; }, window.innerWidth < 768 ? 120 : 280);
+          });
+        } origin/main
       });
 
       document.addEventListener('DOMContentLoaded', function () {
