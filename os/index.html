@@ -120,6 +120,18 @@
       border-radius: 999px;
     }
     .nav-links a:hover { color: var(--heading); background: rgba(66, 75, 54, 0.05); }
+    .nav-social { display: flex; align-items: center; gap: 2px; }
+    .nav-social a {
+      display: grid;
+      place-items: center;
+      width: 36px;
+      height: 36px;
+      border-radius: 999px;
+      color: var(--muted);
+      text-decoration: none;
+    }
+    .nav-social a:hover { color: var(--heading); background: rgba(66, 75, 54, 0.05); }
+    .nav-social svg { width: 18px; height: 18px; fill: currentColor; }
 
     .btn {
       display: inline-flex;
@@ -238,7 +250,7 @@
     }
     .skill-group-head h3 { font-size: 22px; }
     .skill-group-head p { margin: 0; color: var(--dim); font-size: 14px; }
-    .skill-group .cards { grid-auto-rows: 330px; }
+    .skill-group .cards { grid-auto-rows: minmax(390px, auto); }
     .skill-group .card { height: 100%; }
     .outcome {
       margin-top: 16px;
@@ -298,7 +310,7 @@
       font-size: 16px;
     }
     .step h3 { font-size: 20px; margin-bottom: 4px; }
-    .step p { margin: 0; color: var(--muted); font-size: 15.5px; }
+    .step p { margin: 0; color: var(--ink); font-size: 16.5px; }
     #later { padding-bottom: 88px; }
     .later-grid:empty { display: none; }
     .later-grid:not(:empty) { margin-bottom: 16px; }
@@ -348,6 +360,51 @@
     .event-date { color: var(--moss); font-family: var(--mono); font-size: 12px; font-weight: 600; letter-spacing: .1em; text-transform: uppercase; margin-bottom: 18px; }
     .event-card h3 { font-size: 23px; }
 
+    .prompt-list { display: grid; gap: 16px; }
+    .prompt-card {
+      background: var(--card);
+      border: 1px solid var(--line);
+      border-radius: 20px;
+      padding: 22px;
+      box-shadow: var(--shadow);
+    }
+    .prompt-card h3 { font-size: 22px; margin-bottom: 8px; }
+    .prompt-card > p { margin: 0 0 16px; color: var(--muted); font-size: 15.5px; }
+    .prompt-text {
+      margin: 0;
+      padding: 16px;
+      border-radius: 14px;
+      background: rgba(66, 75, 54, 0.045);
+      border: 1px solid var(--line);
+      color: var(--ink);
+      font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+      font-size: 13.5px;
+      line-height: 1.6;
+      white-space: pre-wrap;
+      overflow-wrap: break-word;
+      max-height: 300px;
+      overflow: auto;
+    }
+    .prompt-card .cta { margin-top: 16px; }
+    .prompt-alt { margin-top: 18px; padding-top: 16px; border-top: 1px solid var(--line); }
+    .sr-prompt { margin-top: 4px; font-size: 12.5px; max-height: 200px; }
+    [hidden] { display: none !important; }
+    .save-once { margin-top: 16px; }
+    .save-once h3 { font-size: 22px; margin-bottom: 8px; }
+    .save-once > p { margin: 0 0 14px; color: var(--muted); font-size: 15.5px; }
+    .save-once ul { margin: 0; padding-left: 20px; display: grid; gap: 8px; color: var(--muted); font-size: 15.5px; }
+    .save-once ul ul { margin-top: 8px; padding-left: 18px; }
+    .save-once strong { color: var(--heading); }
+    .save-once code {
+      font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+      font-size: 0.92em;
+      padding: 1px 5px;
+      border-radius: 5px;
+      background: rgba(66, 75, 54, 0.07);
+    }
+    .install-link { margin: 16px 0 0; font-size: 15px; }
+    .install-link a { color: var(--lime-deep); text-decoration: underline; text-underline-offset: 3px; }
+
     footer {
       border-top: 1px solid var(--line);
       padding: 22px 0 28px;
@@ -361,11 +418,18 @@
 
     @media (max-width: 800px) {
       .nav-links { display: none; }
+      .nav-social { margin-left: auto; }
       .step { grid-template-columns: auto 1fr; }
       .note { grid-template-columns: 1fr; padding: 22px; }
       .accelerator-panel { grid-template-columns: 1fr; gap: 28px; }
       .wrap { width: min(1120px, calc(100% - 32px)); }
       h1 { max-width: none; }
+    }
+
+    @media (max-width: 560px) {
+      .nav-in > .btn { display: none; }
+      .prompt-card, .step { padding: 18px; }
+      .prompt-text { font-size: 13px; padding: 14px; }
     }
   </style>
 </head>
@@ -378,9 +442,21 @@
       </a>
       <nav class="nav-links" aria-label="On this page">
         <a href="#skills">Skills</a>
+        <a href="#prompts">Prompts</a>
         <a href="#accelerator">Accelerator</a>
         <a href="#events">Events</a>
       </nav>
+      <div class="nav-social">
+        <a href="https://www.linkedin.com/in/ellamolonycook/" target="_blank" rel="noopener" aria-label="Ella on LinkedIn">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20.45 20.45h-3.56v-5.57c0-1.33-.02-3.04-1.85-3.04-1.85 0-2.14 1.45-2.14 2.94v5.67H9.34V9h3.42v1.56h.05c.48-.9 1.64-1.85 3.37-1.85 3.6 0 4.27 2.37 4.27 5.46v6.28zM5.34 7.43a2.06 2.06 0 110-4.13 2.06 2.06 0 010 4.13zM7.12 20.45H3.56V9h3.56v11.45zM22.22 0H1.77C.79 0 0 .77 0 1.72v20.56C0 23.23.79 24 1.77 24h20.45c.98 0 1.78-.77 1.78-1.72V1.72C24 .77 23.2 0 22.22 0z"/></svg>
+        </a>
+        <a href="https://www.instagram.com/timerichtalk" target="_blank" rel="noopener" aria-label="Time Rich on Instagram">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2.16c3.2 0 3.58.01 4.85.07 1.17.05 1.8.25 2.23.41.56.22.96.48 1.38.9.42.42.68.82.9 1.38.16.42.36 1.06.41 2.23.06 1.27.07 1.65.07 4.85s-.01 3.58-.07 4.85c-.05 1.17-.25 1.8-.41 2.23-.22.56-.48.96-.9 1.38-.42.42-.82.68-1.38.9-.42.16-1.06.36-2.23.41-1.27.06-1.65.07-4.85.07s-3.58-.01-4.85-.07c-1.17-.05-1.8-.25-2.23-.41a3.7 3.7 0 01-1.38-.9 3.7 3.7 0 01-.9-1.38c-.16-.42-.36-1.06-.41-2.23C2.17 15.58 2.16 15.2 2.16 12s.01-3.58.07-4.85c.05-1.17.25-1.8.41-2.23.22-.56.48-.96.9-1.38.42-.42.82-.68 1.38-.9.42-.16 1.06-.36 2.23-.41C8.42 2.17 8.8 2.16 12 2.16zm0 1.62c-3.15 0-3.52.01-4.76.07-.9.04-1.39.19-1.71.32-.43.17-.74.37-1.06.69-.32.32-.52.63-.69 1.06-.13.32-.28.81-.32 1.71-.06 1.24-.07 1.61-.07 4.76s.01 3.52.07 4.76c.04.9.19 1.39.32 1.71.17.43.37.74.69 1.06.32.32.63.52 1.06.69.32.13.81.28 1.71.32 1.24.06 1.61.07 4.76.07s3.52-.01 4.76-.07c.9-.04 1.39-.19 1.71-.32.43-.17.74-.37 1.06-.69.32-.32.52-.63.69-1.06.13-.32.28-.81.32-1.71.06-1.24.07-1.61.07-4.76s-.01-3.52-.07-4.76c-.04-.9-.19-1.39-.32-1.71a2.85 2.85 0 00-.69-1.06 2.85 2.85 0 00-1.06-.69c-.32-.13-.81-.28-1.71-.32-1.24-.06-1.61-.07-4.76-.07zm0 2.76a5.3 5.3 0 110 10.6 5.3 5.3 0 010-10.6zm0 8.74a3.44 3.44 0 100-6.88 3.44 3.44 0 000 6.88zm6.75-8.94a1.24 1.24 0 11-2.48 0 1.24 1.24 0 012.48 0z"/></svg>
+        </a>
+        <a href="mailto:emc@timerich.ai" aria-label="Email Time Rich">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20 4H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4l-8 5-8-5V6l8 5 8-5v2z"/></svg>
+        </a>
+      </div>
       <a class="btn small" href="#skills">Browse skills</a>
     </div>
   </header>
@@ -398,6 +474,7 @@
         <ol class="path">
           <li><a href="#skills">LinkedIn skills</a></li>
           <li><a href="#install">How skills work</a></li>
+          <li><a href="#prompts">Prompts</a></li>
           <li><a href="#accelerator">Accelerator</a></li>
           <li><a href="#events">Upcoming events</a></li>
         </ol>
@@ -449,6 +526,27 @@
           <p class="lede">A skill is a small pack of instructions that helps AI handle one type of work well. Keep the file zipped when you upload it.</p>
         </div>
         <div class="steps" id="stepList"></div>
+        <p class="install-link"><a href="https://support.claude.com/en/articles/12512180-use-skills-in-claude" target="_blank" rel="noopener noreferrer">Full guide from Anthropic</a></p>
+      </div>
+    </section>
+
+    <section id="prompts">
+      <div class="wrap">
+        <div class="section-head">
+          <p class="eyebrow">Prompts</p>
+          <h2>Two prompts worth keeping</h2>
+          <p class="lede">Copy either one and paste it into a new chat. The first goes on top of everything you ask. The second finds the work worth automating.</p>
+        </div>
+        <div class="prompt-list" id="promptList"></div>
+        <div class="prompt-card save-once">
+          <h3>Save it once</h3>
+          <p>Make a text shortcut so typing <code>;mp</code> pastes the master prompt. Text shortcuts handle line breaks badly, so use the one-paragraph version above.</p>
+          <ul>
+            <li><strong>Mac:</strong> System Settings → Keyboard → Text Replacements → <strong>+</strong>. Replace: <code>;mp</code>. With: the paragraph. Click Add.</li>
+            <li><strong>iPhone:</strong> Settings → General → Keyboard → Text Replacement → <strong>+</strong>. Phrase: the paragraph. Shortcut: <code>;mp</code>. Save. If you set it up on your Mac first, iCloud syncs it.</li>
+            <li><strong>Test it:</strong> open Notes, type <code>;mp</code> and press space.</li>
+          </ul>
+        </div>
       </div>
     </section>
 
@@ -517,8 +615,14 @@
      * - drops: extra workshop files. Leave empty until there is something to add.
      * Cards layout themselves. You do not need a fixed number of items.
      */
+    /**
+     * Appended to the end of every skill prompt, word for word.
+     * It is also the one-paragraph master prompt used by the ;mp text shortcut.
+     */
+    const PROMPT_FOOTER = "Before you start: restate my goal in one line and tell me if it's the right goal. Don't assume; if you need more context, ask me up to 3 questions first. When you finish: rate your work out of 10, say what would make it a 10, then fix it. Push back on me: where is my thinking weak, what could go wrong, what am I missing? Tell me the one thing to do next, and what you learned about me that should be saved to my Context page.";
+
     const HUB = {
-      notionUrl: "",
+      notionUrl: "https://superhumanos.notion.site/Content-Hub-Template-793ca5ebe55782799ab901aa6f143387",
       resources: [
         {
           name: "Content OS",
@@ -551,105 +655,202 @@
           category: "Plan and position",
           description: "Build a seven-day LinkedIn plan from your theme, audience, and content pillars.",
           outcome: "Turn a rough idea into a clear week of posts.",
-          file: "/downloads/linkedin-content-planner.zip"
+          file: "/downloads/linkedin-content-planner.zip",
+          prompt: "Plan my week on LinkedIn. My audience is [who you want to reach], my theme this week is [your theme], and I post on [your posting days]. [paste your content pillars or a few past posts here]"
         },
         {
           name: "Profile Optimizer",
           category: "Plan and position",
           description: "Review and improve the parts of your LinkedIn profile that people see first.",
           outcome: "Make your profile clearer for the people you want to reach.",
-          file: "/downloads/linkedin-profile-optimizer.zip"
+          file: "/downloads/linkedin-profile-optimizer.zip",
+          prompt: "Review my profile and run a full profile audit, then rewrite whatever is failing. My goal is [clients, job seeking or authority]. [paste your LinkedIn profile URL here]"
         },
         {
           name: "Interviewer",
           category: "Plan and position",
           description: "Pull out the stories, numbers, turning points, and opinions worth sharing.",
           outcome: "Build a bank of real material for future posts.",
-          file: "/downloads/linkedin-interviewer.zip"
+          file: "/downloads/linkedin-interviewer.zip",
+          prompt: "Interview me and build my Story Bank. Ask one question at a time, and press me whenever an answer is too soft for a post to use. [paste anything you have already written, or say you are starting from scratch]"
         },
         {
           name: "Hook Extractor",
           category: "Write and improve",
           description: "Break down why a strong LinkedIn hook works and turn it into a usable formula.",
           outcome: "Find sharper ways to open your own posts.",
-          file: "/downloads/linkedin-hook-extractor.zip"
+          file: "/downloads/linkedin-hook-extractor.zip",
+          prompt: "Reverse-engineer the hook formula in this post, tell me why it worked, and give me a blank template mapped to [your topic]. [paste the LinkedIn post URL or the post text here]"
         },
         {
           name: "Post Writer",
           category: "Write and improve",
           description: "Draft a LinkedIn post from an idea using tested hook and structure options.",
           outcome: "Get a solid first draft without staring at a blank page.",
-          file: "/downloads/linkedin-post-writer.zip"
+          file: "/downloads/linkedin-post-writer.zip",
+          prompt: "Write me a LinkedIn post about [your topic]. My audience is [who you want to reach] and the goal is [comments, reposts, likes or saves]. [paste your rough angle or notes here]"
         },
         {
           name: "Humanizer",
           category: "Write and improve",
           description: "Clean up stiff, generic AI writing so it sounds more like a real person.",
           outcome: "Make a draft feel natural before you publish it.",
-          file: "/downloads/linkedin-humanizer.zip"
+          file: "/downloads/linkedin-humanizer.zip",
+          prompt: "Humanize this draft and scrub the AI tells, then audit it before I post. Tell me which tells you found rather than only handing back the rewrite. [paste your draft here]"
         },
         {
           name: "Repurposer",
           category: "Write and improve",
           description: "Turn an existing piece of content into a LinkedIn post.",
           outcome: "Get more useful posts from work you have already done.",
-          file: "/downloads/linkedin-repurposer.zip"
+          file: "/downloads/linkedin-repurposer.zip",
+          prompt: "Repurpose this for LinkedIn and re-hook it so the hook lands before the fold. The goal is [comments, reposts, likes or saves]. [paste your tweet, thread, blog, newsletter or video script here]"
         },
         {
           name: "Comment Drafter",
           category: "Engage and grow",
           description: "Write thoughtful comments or repost copy from a LinkedIn post you want to join.",
           outcome: "Show up in the right conversations with something useful to say.",
-          file: "/downloads/linkedin-comment-drafter.zip"
+          file: "/downloads/linkedin-comment-drafter.zip",
+          prompt: "Draft me a comment on this post that the author would actually want to reply to, and give me two or three variants. [paste the LinkedIn post URL here]"
         },
         {
           name: "Reply Handler",
           category: "Engage and grow",
           description: "Draft replies for the comments and threads that deserve your attention.",
           outcome: "Keep good conversations moving without losing your voice.",
-          file: "/downloads/linkedin-reply-handler.zip"
+          file: "/downloads/linkedin-reply-handler.zip",
+          prompt: "Sweep the comments on this post and draft a reply to every one worth answering. Tell me which ones you filtered out and why. [paste the LinkedIn post URL here]"
         },
         {
           name: "Thread Monitor",
           category: "Engage and grow",
           description: "Track the comments that get replies from a post author and flag warm follow-up moments.",
           outcome: "Spot conversations that could lead somewhere useful.",
-          file: "/downloads/linkedin-thread-monitor.zip"
+          file: "/downloads/linkedin-thread-monitor.zip",
+          prompt: "Monitor my comments and tell me what threads need follow-up today. My LinkedIn handle is [your-handle] and the window is [number] hours. [paste any recent comment URLs you have here]"
         },
         {
           name: "Engager Analytics",
           category: "Engage and grow",
           description: "Sort your likers and commenters by fit, then decide who to follow up with.",
           outcome: "Focus your time on the people most likely to matter.",
-          file: "/downloads/linkedin-engager-analytics.zip"
+          file: "/downloads/linkedin-engager-analytics.zip",
+          prompt: "Tell me who engaged with this post and segment them by ICP fit, then give me the action list. My ICP is [target titles, company size and industry]. [paste the LinkedIn post URL here]"
         },
         {
           name: "Employee Advocacy",
           category: "Engage and grow",
           description: "Set up a simple LinkedIn advocacy programme for your team.",
           outcome: "Help marketing and sales show up with a more consistent voice.",
-          file: "/downloads/linkedin-employee-advocacy.zip"
+          file: "/downloads/linkedin-employee-advocacy.zip",
+          prompt: "Help me get the team posting and launch advocacy properly. We are [number] people, the goal is [reach, pipeline, recruiting or thought leadership], and right now [everyone is silent, some are active, or output is inconsistent]. [paste your brand guideline constraints here]"
+        },
+        {
+          name: "Story Superhuman",
+          category: "Storytelling",
+          description: "Finds the real stories in your calls, voice notes and posts, and banks them in a Story Bank you can use on stage, in posts and on sales calls.",
+          outcome: "Stop losing the stories you already tell well.",
+          file: "/downloads/story-superhuman.zip",
+          prompt: "Mine my calls for stories and build my story bank. Search the last [number] days of my call transcripts, voice notes and posts, and flag any story I tell more than once. Never invent a detail, and leave a field blank if the source does not have it. [paste a transcript, or say which sources to search]"
+        },
+        {
+          name: "Social Proof",
+          category: "Content prompts",
+          description: "Turns one real result into 5 short on-screen lines that build curiosity.",
+          outcome: "Make one result carry a whole piece of content.",
+          file: "/downloads/social-proof-superhuman.zip",
+          prompt: "Write me social proof lines for this result: five on-screen lines for a Reel, then mark the strongest and tell me why. Do not round the number up or invent anything. [paste the result, with the number and the timeframe, here]"
+        },
+        {
+          name: "CTA Writer",
+          category: "Content prompts",
+          description: "Writes 10 specific calls to action that get comments and saves.",
+          outcome: "End a post with one clear ask instead of a vague one.",
+          file: "/downloads/cta-writer-superhuman.zip",
+          prompt: "Write CTAs for this post about [your topic]. My goal is [comments, saves, DMs or link clicks], and nothing generic like “Thoughts?” or “Follow for more”. [paste your post here]"
         }
       ],
       steps: [
-        {
-          title: "Download the ZIP",
-          body: "Choose a skill and use the download button. The ZIP saves straight to your computer."
-        },
-        {
-          title: "Upload it to your AI tool",
-          body: "Open the Skills area in your AI tool and upload the ZIP. Leave the file zipped."
-        },
-        {
-          title: "Give it a job",
-          body: "Start a new chat and ask the skill to handle the job on its card."
-        }
+        "Download the ZIP. Keep it zipped.",
+        "In Claude, open Customize → Skills, click Add and choose “Upload a skill”, then select the ZIP.",
+        "Check code execution is on: Settings → Capabilities.",
+        "Start a new chat and use “Copy the prompt” from the skill’s card."
       ],
       events: [
-        { date: "Mon 26 Oct", title: "Open Business Surgery", description: "Bring the work that needs a practical answer." },
-        { date: "Fri 30 Oct", title: "Training Your Agent", description: "Turn your context into something your AI can use." },
-        { date: "Mon 2 Nov", title: "Your AI Operating System", description: "Connect the pieces that keep your business moving." },
-        { date: "Fri 6 Nov", title: "Expert Q&A", description: "Bring your questions and leave with clear next steps." }
+        { iso: "2026-10-26", date: "Mon 26 Oct", time: "12pm ET", title: "Open Business Surgery", description: "Bring the work that needs a practical answer." },
+        { iso: "2026-10-30", date: "Fri 30 Oct", time: "12pm ET", title: "Training Your Agent", description: "Turn your context into something your AI can use." },
+        { iso: "2026-11-02", date: "Mon 2 Nov", time: "12pm ET", title: "Your AI Operating System", description: "Connect the pieces that keep your business moving." },
+        { iso: "2026-11-06", date: "Fri 6 Nov", time: "12pm ET", title: "Expert Q&A", description: "Bring your questions and leave with clear next steps." },
+        { iso: "2026-11-09", date: "Mon 9 Nov", time: "12pm ET", title: "Storytelling for GTM", description: "Find the stories that move a buyer, not just an audience." },
+        { iso: "2026-11-13", date: "Fri 13 Nov", time: "12pm ET", title: "The AI Content Machine + Q&A", description: "Build the system that keeps your content shipping." },
+        { iso: "2026-11-16", date: "Mon 16 Nov", time: "12pm ET", title: "Unfair AI Advantage", description: "The moves most of your market has not made yet." },
+        { iso: "2026-11-18", date: "Wed 18 Nov", time: "12pm ET", title: "Networking Session", description: "Meet the other founders building alongside you." },
+        { iso: "2026-11-20", date: "Fri 20 Nov", time: "12pm ET", title: "Q&A Exited Founder", description: "Ask someone who has already sold the business." }
+      ],
+      prompts: [
+        {
+          name: "The master prompt",
+          description: "Add this to every prompt. It makes AI ask before it guesses, rate its own work and push back on you.",
+          body: [
+            "Before you start:",
+            "Restate my goal in one line, and tell me if it’s the right goal.",
+            "Don’t assume. If you need more context, ask me up to 3 questions first.",
+            "",
+            "When you finish:",
+            "Rate your work out of 10. Say what would make it a 10, then fix it.",
+            "Push back on me: where is my thinking weak, what could go wrong, what am I missing?",
+            "Tell me the one thing to do next.",
+            "Tell me what you learned about me or my work that should be saved to my Context page, so you’re smarter next time."
+          ].join("\n"),
+          altLabel: "One-paragraph version for text shortcuts",
+          altBody: PROMPT_FOOTER
+        },
+        {
+          name: "Recurring work audit",
+          description: "Run this once a month. It finds what to turn into a skill, what to schedule and what to stop doing.",
+          body: [
+            "You are my Chief of Staff. Audit everything I do on a repeating basis and tell me what to turn into a skill, what to turn into a scheduled task, and what to stop doing.",
+            "",
+            "Look back over the last 60 days in: Gmail (sent mail and templates), Google Calendar, Slack, Notion, Granola meeting notes and Google Drive. Count something as recurring if it happened 3 or more times, or happens on a fixed rhythm (daily, weekly, monthly, per client or per event).",
+            "",
+            "Before you start:",
+            "Restate my goal in one line, and tell me if it’s the right goal.",
+            "Don’t assume. If you need more context, ask me up to 3 questions first.",
+            "",
+            "When you finish:",
+            "Rate your work out of 10. Say what would make it a 10, then fix it.",
+            "Push back on me: where is my thinking weak, what could go wrong, what am I missing?",
+            "Tell me the one thing to do next.",
+            "Tell me what you learned about me or my work that should be saved to my Context page, so you’re smarter next time.",
+            "",
+            "Sort every item by department:",
+            "Sales: outreach, follow-ups, proposals, CRM updates, pitches",
+            "Marketing and Content: newsletter, LinkedIn, Instagram, repurposing, event promo",
+            "Operations: admin, scheduling, invoicing, onboarding, team handoffs",
+            "Programs: delivery, workshops, client work",
+            "",
+            "Use these definitions:",
+            "Skill: a repeatable task I trigger on demand that needs my context, voice or judgement. Example: writing a follow-up email after a sales call.",
+            "Scheduled task: something that runs on its own at a set time and doesn’t need me to start it. Example: a Monday 8am pipeline brief.",
+            "Both: a skill that a scheduled task runs on a timer.",
+            "Cut: work that doesn’t move my top goals forward.",
+            "",
+            "For each item, give me one table row with these columns:",
+            "Department | Task | How often | Hours per month (estimate) | Evidence (link to email, thread or doc) | Skill, Scheduled task, Both or Cut | Why, in one line | Trigger or schedule",
+            "",
+            "Then give me:",
+            "The top 5 items ranked by hours saved per month.",
+            "For the number one item, a draft skill description (name, when it triggers, inputs, output) or a scheduled task spec (name, cadence, time, what it delivers and where).",
+            "Any email I send repeatedly that should become a template. Quote the first line of each.",
+            "",
+            "Rules:",
+            "Evidence only. If you can’t link to it, leave it out.",
+            "Don’t create, send or schedule anything. This is an audit.",
+            "Keep the whole thing to one page. Put the table first and skip the intro.",
+            "If a source isn’t connected, say which one in a single line and carry on with the rest."
+          ].join("\n")
+        }
       ],
       drops: []
     };
@@ -737,12 +938,49 @@
       });
     }
 
+    /**
+     * Copies text to the clipboard and flashes "Copied" on the button for 2 seconds.
+     * Falls back to selecting the text so the reader can copy it by hand when the
+     * Clipboard API is missing or blocked (no HTTPS, older Safari, denied permission).
+     */
+    function wireCopy(button, getText, getFallbackNode) {
+      const label = button.textContent;
+      let timer = null;
+      function flash() {
+        button.textContent = "Copied";
+        clearTimeout(timer);
+        timer = setTimeout(() => { button.textContent = label; }, 2000);
+      }
+      function selectInstead() {
+        const node = getFallbackNode && getFallbackNode();
+        if (!node) return;
+        const range = document.createRange();
+        range.selectNodeContents(node);
+        const selection = window.getSelection();
+        selection.removeAllRanges();
+        selection.addRange(range);
+        button.textContent = "Press Ctrl+C or Cmd+C";
+        clearTimeout(timer);
+        timer = setTimeout(() => { button.textContent = label; }, 4000);
+      }
+      button.addEventListener("click", () => {
+        const text = getText();
+        if (navigator.clipboard && navigator.clipboard.writeText) {
+          navigator.clipboard.writeText(text).then(flash, selectInstead);
+        } else {
+          selectInstead();
+        }
+      });
+    }
+
     function renderSkills() {
       const grid = document.getElementById("skillGrid");
       const groups = [
         ["Plan and position", "Set the direction before you start posting."],
         ["Write and improve", "Shape a good idea into a post that sounds like you."],
-        ["Engage and grow", "Spend time on the conversations that are worth having."]
+        ["Engage and grow", "Spend time on the conversations that are worth having."],
+        ["Storytelling", "Find the stories you already tell, and keep them."],
+        ["Content prompts", "Short jobs that turn one idea into something you can post."]
       ];
       groups.forEach(([name, description]) => {
         const cards = el("div", { class: "cards" });
@@ -759,6 +997,17 @@
         const button = el("a", { class: "btn", href: file, download: "" });
         button.insertAdjacentHTML("afterbegin", ICONS.download);
         button.append(document.createTextNode("Download skill"));
+        const foot = el("div", { class: "skill-foot" }, [button]);
+        if (skill.prompt) {
+          const text = skill.prompt + "\n\n" + PROMPT_FOOTER;
+          const hidden = el("p", { class: "prompt-text sr-prompt", hidden: "", text: text });
+          const copy = el("button", { class: "btn ghost", type: "button", text: "Copy the prompt" });
+          wireCopy(copy, () => text, () => {
+            hidden.hidden = false;
+            return hidden;
+          });
+          foot.append(copy, hidden);
+        }
         cards.append(el("article", { class: "card skill" }, [
           el("h3", { text: skill.name }),
           el("p", { text: skill.description }),
@@ -766,9 +1015,7 @@
             el("span", { text: "Use it to" }),
             el("p", { text: skill.outcome })
           ]),
-          el("div", { class: "skill-foot" }, [
-            button
-          ])
+          foot
         ]));
         });
       });
@@ -780,18 +1027,60 @@
         list.append(el("article", { class: "step" }, [
           el("div", { class: "num", text: String(index + 1) }),
           el("div", {}, [
-            el("h3", { text: step.title }),
-            el("p", { text: step.body })
+            el("p", { text: step })
           ])
         ]));
       });
     }
 
+    function renderPrompts() {
+      const list = document.getElementById("promptList");
+      HUB.prompts.forEach((item) => {
+        const body = el("p", { class: "prompt-text", text: item.body });
+        const copy = el("button", { class: "btn", type: "button", text: "Copy the prompt" });
+        wireCopy(copy, () => item.body, () => body);
+        const card = el("article", { class: "prompt-card" }, [
+          el("h3", { text: item.name }),
+          el("p", { text: item.description }),
+          body,
+          el("div", { class: "cta" }, [copy])
+        ]);
+        if (item.altBody) {
+          const alt = el("p", { class: "prompt-text", text: item.altBody });
+          const altCopy = el("button", { class: "btn ghost", type: "button", text: "Copy the paragraph" });
+          wireCopy(altCopy, () => item.altBody, () => alt);
+          card.append(el("div", { class: "prompt-alt" }, [
+            el("div", { class: "type", text: item.altLabel || "Alternative" }),
+            alt,
+            el("div", { class: "cta" }, [altCopy])
+          ]));
+        }
+        list.append(card);
+      });
+    }
+
+    /** Today as an ISO date string in the reader's own timezone. */
+    function todayIso() {
+      const now = new Date();
+      const month = String(now.getMonth() + 1).padStart(2, "0");
+      const day = String(now.getDate()).padStart(2, "0");
+      return `${now.getFullYear()}-${month}-${day}`;
+    }
+
     function renderEvents() {
       const grid = document.getElementById("eventGrid");
-      HUB.events.forEach((event) => {
+      const today = todayIso();
+      const upcoming = HUB.events.filter((event) => !event.iso || event.iso >= today);
+      if (!upcoming.length) {
+        grid.append(el("p", { class: "pending", text: "The next dates are being confirmed." }));
+        return;
+      }
+      upcoming.forEach((event) => {
+        const when = event.time ? `${event.date} · ${event.time}` : event.date;
         grid.append(el("article", { class: "card event-card" }, [
-          el("div", { class: "event-date", text: event.date }),
+          el("div", { class: "event-date" }, [
+            el("time", { datetime: event.iso, text: when })
+          ]),
           el("h3", { text: event.title }),
           el("p", { text: event.description })
         ]));
@@ -824,6 +1113,7 @@
     renderDupes();
     renderSkills();
     renderSteps();
+    renderPrompts();
     renderEvents();
     renderDrops();
   </script>
