@@ -417,14 +417,6 @@
         inset 0 0 24px rgba(255, 255, 255, 0.2);
       transition: all 0.5s cubic-bezier(0.16, 1, 0.3, 1);
     }
-    .glass-card:hover {
-      background: linear-gradient(135deg, rgba(255, 255, 255, 0.85) 0%, rgba(250, 255, 245, 0.5) 100%);
-      box-shadow: 
-        0 32px 64px -16px rgba(90, 105, 75, 0.3),
-        inset 0 1px 0 rgba(255, 255, 255, 1),
-        inset 0 0 24px rgba(255, 255, 255, 0.3);
-      transform: translateY(-4px);
-    }
     .premium-nav {
       background: linear-gradient(to bottom, rgba(255, 255, 255, 0.75) 0%, rgba(250, 255, 245, 0.4) 100%) !important;
       backdrop-filter: blur(48px) saturate(1.2) !important;
@@ -490,9 +482,9 @@
   <div id="mobile-menu" class="fixed top-0 left-0 bottom-0 w-[85%] max-w-[320px] bg-[#E8ECE0] border-r border-white/40 shadow-2xl z-[101] -translate-x-full transition-transform duration-500 flex flex-col" style="transition-timing-function: cubic-bezier(0.16, 1, 0.3, 1);">
     <div class="flex-1 overflow-y-auto p-6 pt-24 flex flex-col justify-between">
       <nav class="space-y-2">
-        <a href="dashboard.html" class="flex items-center gap-3 px-4 py-2.5 rounded-[14px] text-xs font-medium text-brand-mid hover:text-brand-deep transition-all duration-300">
-          <svg class="w-4 h-4 text-brand-deep" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"></path></svg>
-          Home
+        <a href="dashboard.html" class="flex items-center gap-3 px-4 py-2 text-xs font-medium text-brand-deep nav-item border border-transparent rounded-[14px] transition-all duration-300">
+          <svg class="w-4 h-4 text-brand-mid" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"></path></svg>
+          Dashboard
         </a>
         <a href="curriculum.html" class="flex items-center gap-3 px-4 py-2 text-xs font-medium text-brand-deep nav-item border border-transparent rounded-[14px] transition-all duration-300">
           <svg class="w-4 h-4 text-brand-mid" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"></path></svg>
@@ -532,13 +524,17 @@
           <div class="flex items-baseline text-[17px] sm:text-[22px] font-bold tracking-tighter text-brand-deep" style="font-family: 'Space Grotesk', sans-serif; font-weight: 700;">
             Time Rich<span class="bg-gradient-to-br from-[#748c2f] via-[#596C24] to-[#354015] bg-clip-text text-transparent drop-shadow-sm">.</span>
           </div>
-          <div class="w-px h-5 bg-brand-deep/15"></div>
-          <div class="text-[8px] sm:text-[12px] font-montserrat tracking-[0.15em] sm:tracking-[0.25em] uppercase bg-gradient-to-br from-[#748c2f] via-[#596C24] to-[#354015] bg-clip-text text-transparent drop-shadow-sm font-semibold mt-0.5">
-            PORTAL
-          </div>
         </a>
 
     </div>
+
+    <!-- Desktop Nav -->
+    <nav class="hidden lg:flex items-center gap-1 xl:gap-2 absolute left-1/2 -translate-x-1/2">
+        <a href="dashboard.html" class="px-3 py-1.5 rounded-full text-xs font-medium text-brand-mid hover:text-brand-deep transition-colors">Dashboard</a>
+        <a href="curriculum.html" class="px-3 py-1.5 rounded-full text-xs font-semibold text-brand-deep nav-active border border-white/40">Curriculum</a>
+        <a href="sessions.html" class="px-3 py-1.5 rounded-full text-xs font-medium text-brand-mid hover:text-brand-deep transition-colors">Live Sessions</a>
+        <a href="resources.html" class="px-3 py-1.5 rounded-full text-xs font-medium text-brand-mid hover:text-brand-deep transition-colors">Resources</a>
+    </nav>
 
     <!-- Right Actions -->
     <div class="flex items-center gap-3 sm:gap-6">
@@ -652,7 +648,7 @@
         inset 0 0 24px rgba(255, 255, 255, 0.3);
     }
   </style>
-<aside id="desktop-sidebar" class="hidden lg:flex w-[17rem] transition-all duration-500 ease-[cubic-bezier(0.16,1,0.3,1)] flex-shrink-0 flex-col justify-between pt-8 pb-16 px-6 mt-0 ml-0 mb-6 h-[calc(100vh-1.5rem)] rounded-none rounded-br-[2.5rem] bg-white/50 backdrop-blur-md border-r border-b border-white/20 z-20 shadow-[0_20px_40px_rgba(0,0,0,0.08)]">
+<aside id="desktop-sidebar" class="hidden w-[17rem] transition-all duration-500 ease-[cubic-bezier(0.16,1,0.3,1)] flex-shrink-0 flex-col justify-between pt-8 pb-16 px-6 mt-0 ml-0 mb-6 h-[calc(100vh-1.5rem)] rounded-none rounded-br-[2.5rem] bg-white/50 backdrop-blur-md border-r border-b border-white/20 z-20 shadow-[0_20px_40px_rgba(0,0,0,0.08)]">
         <div class="flex items-center justify-end px-2 mb-4 shrink-0">
           <button id="sidebar-toggle" class="p-2 rounded-xl text-brand-mid hover:text-brand-deep hover:bg-white/20 transition-all duration-300" title="Toggle Sidebar">
             <svg class="w-5 h-5 sidebar-toggle-icon transition-transform duration-500" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24">
