@@ -1144,18 +1144,29 @@
 
   <script>
     // === SMOOTH PAGE TRANSITIONS ===
-    // Intercept all internal nav links for smooth exit
-    document.addEventListener('DOMContentLoaded', () => {
-      document.querySelectorAll('a[href]').forEach(link => {
-        const href = link.getAttribute('href');
-        if (href && !href.startsWith('http') && !href.startsWith('#') && !href.startsWith('mailto') && href.endsWith('.html')) {
-          link.addEventListener('click', (e) => {
-            e.preventDefault();
-            document.body.style.opacity = '0';
-            document.body.style.transform = 'scale(0.98)';
-            setTimeout(() => { window.location.href = href; }, window.innerWidth < 768 ? 120 : 280);
-          });
-        } origin/main
+    // Internal .html links fade the page out before navigating. The fade is
+    // decoration; the navigation is the job, so every path below ends in a
+    // navigation even when the animation never runs or is cut short.
+    (function () {
+      var FADE_MS = 280;
+
+      var reduced = false;
+      try {
+        reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+      } catch (e) { /* no matchMedia: treat as no preference */ }
+
+      // Coming back via the Back button can restore this page from the bfcache
+      // with the fade still applied, which shows a blank screen.
+      //
+      // Only this script's own fade is undone. Every portal page sets its own
+      // entrance transform inline on <body>, so clearing that unconditionally
+      // would kill the page's open animation on a normal load.
+      var LEAVING = 'data-trp-leaving';
+      window.addEventListener('pageshow', function () {
+        if (!document.body.hasAttribute(LEAVING)) return;
+        document.body.removeAttribute(LEAVING);
+        document.body.style.opacity = '';
+        document.body.style.transform = '';
       });
 
       document.addEventListener('DOMContentLoaded', function () {
