@@ -1155,9 +1155,55 @@
             document.body.style.transform = 'scale(0.98)';
             setTimeout(() => { window.location.href = href; }, window.innerWidth < 768 ? 120 : 280);
           });
-        }
+        } origin/main
       });
-    });
+
+      document.addEventListener('DOMContentLoaded', function () {
+        document.querySelectorAll('a[href]').forEach(function (link) {
+          var href = link.getAttribute('href');
+          if (!href) return;
+          if (href.indexOf('http') === 0 || href.charAt(0) === '#' || href.indexOf('mailto') === 0) return;
+          if (href.slice(-5) !== '.html') return;
+          // A link meant for another tab keeps its default behaviour.
+          if (link.target && link.target !== '_self') return;
+
+          link.addEventListener('click', function (e) {
+            // Cmd/Ctrl/Shift/Alt click and middle click open a new tab.
+            // Hijacking those would quietly break them.
+            if (e.button !== 0 || e.metaKey || e.ctrlKey || e.shiftKey || e.altKey) return;
+
+            e.preventDefault();
+
+            // Anyone who asked for less motion simply goes.
+            if (reduced) { window.location.href = href; return; }
+
+            var done = false;
+            function go() {
+              if (done) return;
+              done = true;
+              window.location.href = href;
+            }
+
+            try {
+              document.body.setAttribute(LEAVING, '');
+              document.body.style.opacity = '0';
+              document.body.style.transform = 'scale(0.98)';
+              // Whichever comes first wins.
+              document.body.addEventListener('transitionend', go, { once: true });
+            } catch (err) {
+              go();                 // styling failed, so just navigate
+              return;
+            }
+
+            setTimeout(go, FADE_MS);
+            // Last resort. transitionend never fires in a backgrounded tab and
+            // timers there are throttled, so this guarantees a click can never
+            // end on a page left sitting faded out.
+            setTimeout(go, FADE_MS + 1200);
+          });
+        });
+      });
+    })();
   </script>
 
 </body>

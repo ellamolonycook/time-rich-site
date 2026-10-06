@@ -60,6 +60,29 @@ export default {
       return handleOnboardSubmit(onboardData, env, cors, ctx);
     }
 
+    // Route: buyer questionnaire (POST /onboard-questionnaire). Lands on the
+    // same Notion row as /onboard. Unlike the rest of the writes here this one
+    // is awaited, because the page has to be able to say it did not save.
+    if (path.endsWith("/onboard-questionnaire")) {
+      let questionnaireData;
+      try { questionnaireData = await request.json(); } catch { return json({ error: "Invalid JSON" }, 400, cors); }
+      return handleOnboardQuestionnaire(questionnaireData, env, cors, ctx);
+    }
+
+    // Route: the standalone questionnaire at /superhuman/ (POST
+    // /superhuman-questionnaire). Open to buyers, second seats and
+    // ambassadors, so there is no order lookup: the form says who it is and
+    // the email is the key. Awaited, like /onboard-questionnaire, because the
+    // page has to be able to say it did not save.
+    //
+    // This path does not end with "/superhuman", so the legacy /sh-apply
+    // route further down is unaffected.
+    if (path.endsWith("/superhuman-questionnaire")) {
+      let shqData;
+      try { shqData = await request.json(); } catch { return json({ error: "Invalid JSON" }, 400, cors); }
+      return handleSuperhumanQuestionnaire(shqData, env, cors, ctx);
+    }
+
     // Route: corner chatbot -> Anthropic.
     if (path.endsWith("/chat")) {
       return handleChat(request, env, cors);
@@ -167,6 +190,8 @@ export default {
     }
 
     // Route: Super Human Accelerator application -> its own Notion database.
+    // This is the /sh-apply application form, NOT the questionnaire; the
+    // questionnaire is /superhuman-questionnaire above.
     if (path.endsWith("/superhuman")) {
       // The rebuilt /sh-apply form (eight questions, one at a time) posts a
       // snake_case payload and is mapped property-by-property below, the same
@@ -1534,6 +1559,9 @@ async function handleOnboardVerification(request, env, cors, url) {
     const paymentStatus = calProp(props["Payment Status"]) || "Paid";
     const secondSeatChoice = calProp(props["Second Seat Option"]) || calProp(props["Second Seat Choice"]) || "";
     const isCompleted = Boolean(secondSeatChoice);
+    // calProp returns "" for an empty date, so this is false until the
+    // questionnaire has actually been saved.
+    const questionnaireCompleted = Boolean(calProp(props["Questionnaire Completed"]));
 
     return json({
       ok: true,
@@ -1542,6 +1570,7 @@ async function handleOnboardVerification(request, env, cors, url) {
       paymentStatus,
       secondSeatChoice,
       isCompleted,
+      questionnaireCompleted,
       trackingId: trackingId || calProp(props["TrackingID"]),
       whatsappUrl: env.WHATSAPP_INVITE_URL || "",
     }, 200, cors);
@@ -1574,7 +1603,10 @@ async function handleOnboardSubmit(data, env, cors, ctx) {
     const notionWork = (async () => {
       try {
         const properties = {
-          "Second Seat Option": { select: { name: choice === "named" ? "Named Attendee" : "Not Sure Yet" } },
+          // "Not Sure yet" is spelled exactly as the Notion select option is.
+          // Notion rejects an option it does not already have, so the casing
+          // here is load bearing.
+          "Second Seat Option": { select: { name: choice === "named" ? "Named Attendee" : "Not Sure yet" } },
         };
         if (choice === "named") {
           if (attendeeFirstName) properties["Second Seat First Name"] = { rich_text: [{ text: { content: clip(attendeeFirstName, 100) } }] };
@@ -1622,16 +1654,491 @@ async function handleOnboardSubmit(data, env, cors, ctx) {
   return json({ ok: true }, 200, cors);
 }
 
-async function findPaidCohortOrder(env, dbId, trackingId, email) {
-  const filter = trackingId
-    ? { property: "TrackingID", rich_text: { equals: trackingId } }
-    : { property: "Email", email: { equals: email } };
+// ---------------------------------------------------------------------------
+// Buyer questionnaire (POST /onboard-questionnaire)
+//
+// Allowlists for every select and multi-select column below. The browser can
+// only ever land one of these strings: Notion refuses an option a database does
+// not already have, and answers the whole PATCH with a 400 when it sees one, so
+// an unexpected value is dropped rather than taking the write down with it.
+// ---------------------------------------------------------------------------
+const BQ_BUILD_PRIORITY = [
+  "Outreach", "Content", "Systems", "Creating Structure with AI", "Building Agents", "Storytelling/Pitch",
+];
+const BQ_PROJECT_MANAGEMENT = [
+  "Notion", "Asana", "ClickUp", "Monday", "Trello", "Spreadsheet", "In my head", "Other",
+];
+const BQ_TEAM_SIZE = ["Just me", "2-5", "6-15", "16+"];
+// "$2M+/yr" is no longer offered on /superhuman but stays here: it is still a
+// live option on the Notion select, /onboard-questionnaire still offers it,
+// and a page cached before this change can still send it.
+const BQ_REVENUE = [
+  "Pre-revenue", "Under $100K/yr", "$100K-500K/yr", "$500K-2M/yr",
+  "$2M+/yr", "$2M-5M/yr", "$5M+/yr",
+];
+const BQ_ONE_TO_ONE = ["Ella Molony Cook", "ViKa Victoria", "Not interested right now"];
+const BQ_AI_DAILY_OUTREACH = ["Yes", "No", "Some days"];
+const BQ_LEAD_GEN = [
+  "LinkedIn", "Instagram", "Email / newsletter", "Cold email or cold call",
+  "Referrals", "Events / IRL", "Paid Ads", "Other",
+];
+const BQ_YES_NO = ["Yes", "No"];
+
+async function handleOnboardQuestionnaire(data, env, cors, ctx) {
+  const trackingId = String(data.trackingId || data.tracking_id || "").trim();
+  const email = String(data.email || "").trim();
+
+  const dbId = env.NOTION_SUPERHUMAN_COHORT1_DATABASE_ID;
+  if (!env.NOTION_TOKEN || !dbId) return json({ ok: false, error: "Onboarding is not configured" }, 503, cors);
+  if (!trackingId && !email) return json({ ok: false, error: "Order details are required" }, 400, cors);
+
+  let paidOrder;
+  try {
+    paidOrder = await findPaidCohortOrder(env, dbId, trackingId, email);
+  } catch {
+    return json({ ok: false, error: "Could not verify the order" }, 502, cors);
+  }
+  if (!paidOrder) return json({ ok: false, error: "A paid order is required" }, 403, cors);
+
+  // The same three helpers /qualify uses, for the same reasons.
+  const rich = (s) => {
+    const v = String(s == null ? "" : s).trim();
+    return v ? [{ text: { content: clip(v, 2000) } }] : [];
+  };
+  const pick = (value, allowed) => {
+    const v = String(value == null ? "" : value).trim();
+    return allowed.includes(v) ? { select: { name: v } } : null;
+  };
+  const picks = (value, allowed) => {
+    const list = Array.isArray(value) ? value : String(value == null ? "" : value).split(",");
+    const names = [];
+    for (const item of list) {
+      const v = String(item == null ? "" : item).trim();
+      if (allowed.includes(v) && names.indexOf(v) === -1) names.push(v);
+    }
+    return names.length ? { multi_select: names.map((name) => ({ name })) } : null;
+  };
+
+  const properties = {
+    // What the page reads back to decide whether the questionnaire is still open.
+    "Questionnaire Completed": { date: { start: new Date().toISOString().slice(0, 10) } },
+  };
+
+  // An empty answer leaves its column alone rather than blanking it, so a
+  // second pass over the form can only ever add to what is already there.
+  const text = (prop, value) => {
+    const body = rich(value);
+    if (body.length) properties[prop] = { rich_text: body };
+  };
+  const select = (prop, value, allowed) => {
+    const chosen = pick(value, allowed);
+    if (chosen) properties[prop] = chosen;
+  };
+  const multi = (prop, value, allowed) => {
+    const chosen = picks(value, allowed);
+    if (chosen) properties[prop] = chosen;
+  };
+
+  text("Q Focus Ranking", data.focus_ranking);
+  text("Q Success by 20 Nov", data.success_by_20_nov);
+  text("Q Personal Transformation", data.personal_transformation);
+  select("Q Build Priority", data.build_priority, BQ_BUILD_PRIORITY);
+  text("Q Tech Stack", data.tech_stack);
+  select("Q Project Management", data.project_management, BQ_PROJECT_MANAGEMENT);
+  select("Q Team Size", data.team_size, BQ_TEAM_SIZE);
+  select("Q Revenue", data.revenue, BQ_REVENUE);
+  text("Q Agents Question", data.agents_question);
+  text("Q Content Question", data.content_question);
+  text("Q AI OS Question", data.ai_os_question);
+  text("Q Storytelling Question", data.storytelling_question);
+  multi("Q 1:1 Session", data.one_to_one, BQ_ONE_TO_ONE);
+  text("Q Automation Needed", data.automation_needed);
+  text("Q Recurring Tasks", data.recurring_tasks);
+  select("Q AI Daily Outreach", data.ai_daily_outreach, BQ_AI_DAILY_OUTREACH);
+  multi("Q Lead Gen Platforms", data.lead_gen_platforms, BQ_LEAD_GEN);
+  text("Q AI in Outreach", data.ai_in_outreach);
+  select("Q $100 Vendor Call", data.vendor_call_100, BQ_YES_NO);
+  text("Q Bring Someone In", data.bring_someone_in);
+  text("Q Other Answers", data.other_answers);
+
+  // Awaited on purpose, unlike every other Notion write in this worker. The
+  // page holds the answers in sessionStorage until this comes back ok, so a
+  // fire-and-forget failure here would quietly lose someone's typing.
+  let saved = false;
+  try {
+    const res = await fetch(`https://api.notion.com/v1/pages/${paidOrder.id}`, {
+      method: "PATCH",
+      headers: { ...authHeaders(env), "Content-Type": "application/json" },
+      body: JSON.stringify({ properties }),
+    });
+    saved = res.ok;
+    if (!res.ok) {
+      // A missing column or select option comes back as a 400, and the body is
+      // the only thing that says which one.
+      console.error("[BQ] notion write failed:", res.status, await res.text());
+    }
+  } catch (err) {
+    console.error("[BQ] notion write threw:", err && err.stack ? err.stack : err);
+  }
+
+  if (!saved) return json({ ok: false, error: "Could not save the questionnaire" }, 502, cors);
+
+  // The sheet is a mirror of a write that already succeeded, so it stays
+  // fire-and-forget like the rest of them.
+  const sheetUrl = env.GOOGLE_SHEET_ORDERS_URL || env.GOOGLE_SHEET_WEBHOOK_URL;
+  if (sheetUrl) {
+    const list = (value) => (Array.isArray(value) ? value.join(", ") : String(value == null ? "" : value));
+    const sheetWork = fetch(sheetUrl, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        tab: "Questionnaire",
+        timestamp: new Date().toISOString(),
+        trackingId,
+        email,
+        focusRanking: data.focus_ranking || "",
+        successBy20Nov: data.success_by_20_nov || "",
+        personalTransformation: data.personal_transformation || "",
+        buildPriority: data.build_priority || "",
+        techStack: data.tech_stack || "",
+        projectManagement: data.project_management || "",
+        teamSize: data.team_size || "",
+        revenue: data.revenue || "",
+        agentsQuestion: data.agents_question || "",
+        contentQuestion: data.content_question || "",
+        aiOsQuestion: data.ai_os_question || "",
+        storytellingQuestion: data.storytelling_question || "",
+        oneToOneSession: list(data.one_to_one),
+        automationNeeded: data.automation_needed || "",
+        recurringTasks: data.recurring_tasks || "",
+        aiDailyOutreach: data.ai_daily_outreach || "",
+        leadGenPlatforms: list(data.lead_gen_platforms),
+        aiInOutreach: data.ai_in_outreach || "",
+        vendorCall100: data.vendor_call_100 || "",
+        bringSomeoneIn: data.bring_someone_in || "",
+        otherAnswers: data.other_answers || "",
+      }),
+    }).catch((err) => console.error("Google Sheet Questionnaire error:", err));
+
+    if (ctx && typeof ctx.waitUntil === "function") {
+      ctx.waitUntil(sheetWork);
+    }
+  }
+
+  return json({ ok: true }, 200, cors);
+}
+
+// ---------------------------------------------------------------------------
+// Superhuman questionnaire (POST /superhuman-questionnaire)
+//
+// The same twenty questions /onboard-questionnaire takes, on a page of their
+// own, with three differences:
+//
+//   * no order lookup at all. Buyers, second seats and ambassadors all answer
+//     the same thing, so the gate is a shape check on name, email and role
+//     plus the honeypot, not a paid row in Notion;
+//   * the row is created here rather than found, because there is no order row
+//     to hang the answers off. An email that has already answered is PATCHed,
+//     so a second pass tops up one row instead of leaving two;
+//   * Name, Email, Role and Submitted are written alongside the Q columns.
+//
+// Everything else - the allowlists, the 2,000-char trim, the "empty answers
+// leave their column alone" rule and the awaited write - is lifted straight
+// from handleOnboardQuestionnaire, deliberately: the two land the same answers
+// and must agree on exactly what Notion will accept.
+// ---------------------------------------------------------------------------
+const SHQ_ROLES = ["Buyer", "+1", "Ambassador"];
+
+async function handleSuperhumanQuestionnaire(data, env, cors, ctx) {
+  // Honeypot first, and answered 200 rather than 4xx: a bot told it failed
+  // tries again, and nothing downstream has run yet.
+  if (String(data._gotcha || "").trim()) return json({ ok: true }, 200, cors);
+
+  const dbId = env.NOTION_SUPERHUMAN_QUESTIONNAIRE_DATABASE_ID;
+  if (!env.NOTION_TOKEN || !dbId) {
+    return json({ ok: false, error: "The questionnaire is not configured" }, 503, cors);
+  }
+
+  const name = String(data.name || "").trim();
+  const email = String(data.email || "").trim();
+  const role = String(data.role || "").trim();
+
+  if (!name) return json({ ok: false, error: "A name is required" }, 400, cors);
+  if (!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(email)) {
+    return json({ ok: false, error: "A valid email is required" }, 400, cors);
+  }
+  if (!SHQ_ROLES.includes(role)) return json({ ok: false, error: "A role is required" }, 400, cors);
+
+  // The same three helpers /qualify and /onboard-questionnaire use.
+  const rich = (s) => {
+    const v = String(s == null ? "" : s).trim();
+    return v ? [{ text: { content: clip(v, 2000) } }] : [];
+  };
+  const pick = (value, allowed) => {
+    const v = String(value == null ? "" : value).trim();
+    return allowed.includes(v) ? { select: { name: v } } : null;
+  };
+  const picks = (value, allowed) => {
+    const list = Array.isArray(value) ? value : String(value == null ? "" : value).split(",");
+    const names = [];
+    for (const item of list) {
+      const v = String(item == null ? "" : item).trim();
+      if (allowed.includes(v) && names.indexOf(v) === -1) names.push(v);
+    }
+    return names.length ? { multi_select: names.map((n) => ({ name: n })) } : null;
+  };
+
+  const properties = {
+    "Name": { title: rich(name) },
+    "Email": { email: email },
+    "Role": { select: { name: role } },
+    "Submitted": { date: { start: new Date().toISOString().slice(0, 10) } },
+  };
+
+  // An empty answer leaves its column alone rather than blanking it, so a
+  // second pass over the form can only ever add to what is already there.
+  const text = (prop, value) => {
+    const body = rich(value);
+    if (body.length) properties[prop] = { rich_text: body };
+  };
+  const select = (prop, value, allowed) => {
+    const chosen = pick(value, allowed);
+    if (chosen) properties[prop] = chosen;
+  };
+  const multi = (prop, value, allowed) => {
+    const chosen = picks(value, allowed);
+    if (chosen) properties[prop] = chosen;
+  };
+  // Notion rejects "" for a url column, so an empty or unusable link leaves
+  // its column alone. https only, matching what the page enforces: anything
+  // else is a half-pasted address, and guessing a scheme onto it would store
+  // a link that does not resolve.
+  const link = (prop, value) => {
+    const v = String(value == null ? "" : value).trim();
+    if (!v) return;
+    let parsed;
+    try { parsed = new URL(v); } catch { return; }
+    if (parsed.protocol !== "https:") return;
+    properties[prop] = { url: clip(v, 2000) };
+  };
+
+
+  // Who they are and what they do. The page asks these on two grouped screens
+  // but sends them flat, one key per Notion column.
+  link("LinkedIn", data.linkedin);
+  link("Instagram", data.instagram);
+  text("Other Links", data.other_links);
+  text("Title", data.job_title);
+  text("Company", data.company);
+  text("What the Company Does", data.company_does);
+  text("Who They Serve", data.who_you_serve);
+  text("Bio", data.bio);
+  link("Photo Link", data.photo_link);
+  text("Superpower", data.superpower);
+
+  text("Q Focus Ranking", data.focus_ranking);
+  text("Q Success by 20 Nov", data.success_by_20_nov);
+  text("Q Personal Transformation", data.personal_transformation);
+  select("Q Build Priority", data.build_priority, BQ_BUILD_PRIORITY);
+  text("Q Tech Stack", data.tech_stack);
+  select("Q Project Management", data.project_management, BQ_PROJECT_MANAGEMENT);
+  select("Q Team Size", data.team_size, BQ_TEAM_SIZE);
+  select("Q Revenue", data.revenue, BQ_REVENUE);
+  text("Q Agents Question", data.agents_question);
+  text("Q Content Question", data.content_question);
+  text("Q AI OS Question", data.ai_os_question);
+  text("Q Storytelling Question", data.storytelling_question);
+  multi("Q 1:1 Session", data.one_to_one, BQ_ONE_TO_ONE);
+  text("Q Automation Needed", data.automation_needed);
+  text("Q Recurring Tasks", data.recurring_tasks);
+  select("Q AI Daily Outreach", data.ai_daily_outreach, BQ_AI_DAILY_OUTREACH);
+  multi("Q Lead Gen Platforms", data.lead_gen_platforms, BQ_LEAD_GEN);
+  // "Q AI in Outreach" is deliberately not written: the question that fed it
+  // was dropped from the page. The Notion column is kept for the answers
+  // already in it.
+  select("Q $100 Vendor Call", data.vendor_call_100, BQ_YES_NO);
+  text("Q Bring Someone In", data.bring_someone_in);
+  text("Q Other Answers", data.other_answers);
+
+  // One row per email. A failed lookup is not fatal: creating a second row is
+  // a far better outcome than telling someone their answers were lost, so the
+  // miss is logged and the write falls through to a create.
+  let existing = null;
+  try {
+    existing = await findRowByEmail(env, dbId, email);
+  } catch (err) {
+    console.error("[SHQ] existing-row lookup failed:", err && err.stack ? err.stack : err);
+  }
+
+  // Awaited on purpose, unlike most of the Notion writes in this worker. The
+  // page holds the answers in sessionStorage until this comes back ok, so a
+  // fire-and-forget failure here would quietly lose someone's typing.
+  let saved = false;
+  try {
+    const res = existing
+      ? await fetch(`https://api.notion.com/v1/pages/${existing.id}`, {
+          method: "PATCH",
+          headers: { ...authHeaders(env), "Content-Type": "application/json" },
+          body: JSON.stringify({ properties }),
+        })
+      : await fetch("https://api.notion.com/v1/pages", {
+          method: "POST",
+          headers: { ...authHeaders(env), "Content-Type": "application/json" },
+          body: JSON.stringify({ parent: { database_id: dbId }, properties }),
+        });
+    saved = res.ok;
+    if (!res.ok) {
+      // A missing column or select option comes back as a 400, and the body is
+      // the only thing that says which one.
+      console.error("[SHQ] notion write failed:", res.status, await res.text());
+    }
+  } catch (err) {
+    console.error("[SHQ] notion write threw:", err && err.stack ? err.stack : err);
+  }
+
+  if (!saved) return json({ ok: false, error: "Could not save the questionnaire" }, 502, cors);
+
+  // The sheet is a mirror of a write that already succeeded, so it stays
+  // fire-and-forget like the rest of them.
+  const sheetUrl = env.GOOGLE_SHEET_ORDERS_URL || env.GOOGLE_SHEET_WEBHOOK_URL;
+  if (sheetUrl) {
+    const list = (value) => (Array.isArray(value) ? value.join(", ") : String(value == null ? "" : value));
+    const sheetWork = fetch(sheetUrl, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        tab: "Superhuman Questionnaire",
+        timestamp: new Date().toISOString(),
+        name,
+        email,
+        role,
+        linkedin: data.linkedin || "",
+        instagram: data.instagram || "",
+        otherLinks: data.other_links || "",
+        jobTitle: data.job_title || "",
+        company: data.company || "",
+        companyDoes: data.company_does || "",
+        whoTheyServe: data.who_you_serve || "",
+        bio: data.bio || "",
+        photoLink: data.photo_link || "",
+        superpower: data.superpower || "",
+        focusRanking: data.focus_ranking || "",
+        successBy20Nov: data.success_by_20_nov || "",
+        personalTransformation: data.personal_transformation || "",
+        buildPriority: data.build_priority || "",
+        techStack: data.tech_stack || "",
+        projectManagement: data.project_management || "",
+        teamSize: data.team_size || "",
+        revenue: data.revenue || "",
+        agentsQuestion: data.agents_question || "",
+        contentQuestion: data.content_question || "",
+        aiOsQuestion: data.ai_os_question || "",
+        storytellingQuestion: data.storytelling_question || "",
+        oneToOneSession: list(data.one_to_one),
+        automationNeeded: data.automation_needed || "",
+        recurringTasks: data.recurring_tasks || "",
+        aiDailyOutreach: data.ai_daily_outreach || "",
+        leadGenPlatforms: list(data.lead_gen_platforms),
+        vendorCall100: data.vendor_call_100 || "",
+        bringSomeoneIn: data.bring_someone_in || "",
+        otherAnswers: data.other_answers || "",
+      }),
+    }).catch((err) => console.error("Google Sheet Superhuman Questionnaire error:", err));
+
+    if (ctx && typeof ctx.waitUntil === "function") ctx.waitUntil(sheetWork);
+  }
+
+  return json({ ok: true }, 200, cors);
+}
+
+// The questionnaire's own lookup: one row per email, with no payment status in
+// the picture. Same filter-then-check shape as findPaidRow below and for the
+// same reason - Notion's "equals" on a string is an exact byte match, so a
+// stored "Ada@Example.com " would never match - but "contains" is matched case
+// insensitively, and the exact comparison is then done here.
+async function findRowByEmail(env, dbId, email) {
+  const wanted = normKey(email);
+  if (!wanted) return null;
+
   const response = await fetch(`https://api.notion.com/v1/databases/${dbId}/query`, {
     method: "POST",
     headers: { ...authHeaders(env), "Content-Type": "application/json" },
-    body: JSON.stringify({ filter }),
+    body: JSON.stringify({
+      filter: { property: "Email", email: { contains: String(email).trim() } },
+      page_size: 100,
+    }),
+  });
+  if (!response.ok) throw new Error("Notion questionnaire lookup failed");
+
+  const results = (await response.json()).results || [];
+  // "contains" can over-match, so only a row whose address really is the one
+  // asked for counts.
+  return results.find((row) => normKey(calProp(row.properties?.["Email"])) === wanted) || null;
+}
+
+// Comparison key for everything matched below: trimmed and lowercased, so a
+// stored "Paid " or "Gideon@Example.com" lines up with what the page asks for.
+function normKey(value) {
+  return String(value == null ? "" : value).trim().toLowerCase();
+}
+
+// One query against one property, returning that buyer's paid row.
+//
+// The filter is deliberately looser than the comparison. Notion's string
+// "equals" is an exact byte match, which is the same trap findCalApplicant
+// documents above, so a cell saved with capitals or a stray space never
+// matched. "contains" is matched case insensitively by Notion, and the exact
+// check is then done here against the real value.
+//
+// Every returned row is checked, not just the first. A buyer can legitimately
+// have more than one: POST /join writes a Pending row before checkout, and the
+// ThriveCart webhook only updates that row when the tracking id or email lines
+// up, so a Pending and a Paid row can both exist for one person. Notion
+// promises no particular order, so reading results[0] was a coin flip, and
+// landing on the Pending row told a genuinely paid buyer there was no order.
+async function findPaidRow(env, dbId, property, value) {
+  const wanted = normKey(value);
+  if (!wanted) return null;
+
+  const needle = String(value).trim();
+  const filter = property === "Email"
+    ? { property, email: { contains: needle } }
+    : { property, rich_text: { contains: needle } };
+
+  const response = await fetch(`https://api.notion.com/v1/databases/${dbId}/query`, {
+    method: "POST",
+    headers: { ...authHeaders(env), "Content-Type": "application/json" },
+    body: JSON.stringify({ filter, page_size: 100 }),
   });
   if (!response.ok) throw new Error("Notion order lookup failed");
-  const row = (await response.json()).results?.[0];
-  return row && calProp(row.properties?.["Payment Status"]).toLowerCase() === "paid" ? row : null;
+
+  const results = (await response.json()).results || [];
+  // "contains" can over-match, so only rows whose value really is the one
+  // asked for are considered.
+  const mine = results.filter((row) => normKey(calProp(row.properties?.[property])) === wanted);
+  const paid = mine.find((row) => normKey(calProp(row.properties?.["Payment Status"])) === "paid");
+
+  if (!paid) {
+    // The one line worth having in the tail when a buyer says they cannot get in.
+    console.log("[onboard] lookup miss:", JSON.stringify({
+      by: property,
+      rowsReturned: results.length,
+      rowsMatchingExactly: mine.length,
+      statusesSeen: mine.map((row) => calProp(row.properties?.["Payment Status"])),
+    }));
+  }
+  return paid || null;
+}
+
+async function findPaidCohortOrder(env, dbId, trackingId, email) {
+  // Tracking id first, since it names the order exactly. A tracking id that
+  // does not line up with the row, from an old link or a capture written
+  // before checkout, used to end the search there even when the email would
+  // have found the buyer, so the email is now tried after it.
+  if (trackingId) {
+    const hit = await findPaidRow(env, dbId, "TrackingID", trackingId);
+    if (hit) return hit;
+  }
+  if (email) return findPaidRow(env, dbId, "Email", email);
+  return null;
 }

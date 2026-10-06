@@ -3,6 +3,7 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+<script src="/js/affiliate.js"></script>
 <title>Before you grab your seat — Time Rich Accelerator</title>
 <link rel="icon" href="/favicon.ico" sizes="any" />
 <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
@@ -379,7 +380,7 @@ textarea.input-field {
 var currentStep = 1;
 var totalSteps = 3;
 var WORKER_ENDPOINT = "https://time-rich-forms.timerich.workers.dev/join";
-var THRIVECART_BASE_URL = "https://agentlabs.thrivecart.com/accelerator/";
+var THRIVECART_BASE_URL = "https://checkout.timerich.ai/accelerator/";
 
 function updateProgress() {
   var fill = document.getElementById("progressFill");
@@ -547,9 +548,12 @@ function submitForm() {
     console.warn("Intent capture dispatch error:", err);
   }
 
-  // ThriveCart's checkout currently fails with any query string. Keep this
-  // redirect clean; the Worker retains the capture record for email matching.
-  var redirectUrl = THRIVECART_BASE_URL;
+  // Every other query parameter still goes: the Worker keeps the capture
+  // record for email matching, so nothing needs carrying but the affiliate
+  // tag, which is ThriveCart's own and is the one an affiliate is paid on.
+  var redirectUrl = window.TR_AFFILIATE
+    ? window.TR_AFFILIATE.tag(THRIVECART_BASE_URL)
+    : THRIVECART_BASE_URL;
 
   setTimeout(function() {
     window.location.href = redirectUrl;

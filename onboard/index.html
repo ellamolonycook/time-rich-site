@@ -36,6 +36,7 @@
   --text: #1A1816;
   --muted: #57534E;
   --dim: #A8A29E;
+  --ink2: #57534E;             /* same value as --muted; the status badge reads against the tint */
 
   /* same stack as /accelerator: Space Grotesk headings, Inter body,
      Space Mono for the small uppercase labels. */
@@ -188,6 +189,16 @@ main {
 }
 .btn-whatsapp:hover { background: #20BD5A; transform: translateY(-1px); }
 
+/* .btn-primary is written for a <button>; as an anchor it needs the box
+   behaviour and the padding of the WhatsApp button beside it. The label is
+   long enough to overflow a 320px screen, so this one wraps where the shared
+   button does not. */
+.btn-questionnaire {
+  display: inline-flex; align-items: center; justify-content: center;
+  padding: 14px 28px; text-decoration: none;
+  white-space: normal; text-align: center; line-height: 1.35;
+}
+
 /* ── Small screens ──────────────────────────────────────────────────────
    Kept at the end so these win on source order over the base rules above. */
 @media (max-width: 540px) {
@@ -197,6 +208,7 @@ main {
   .lookup-box { padding: 20px 16px; }
   .whatsapp-box { padding: 24px 18px; }
   .btn-whatsapp { width: 100%; justify-content: center; }
+  .btn-questionnaire { width: 100%; justify-content: center; }
 }
 </style>
 </head>
@@ -225,7 +237,7 @@ main {
             <button type="submit" class="btn-primary" id="btnLookup">Verify Order</button>
           </div>
         </form>
-        <p id="lookupMsg" style="margin-top: 12px; margin-bottom: 0; display: none; color: var(--red); font-size: 13.5px;"></p>
+        <p id="lookupMsg" role="status" aria-live="polite" style="margin-top: 12px; margin-bottom: 0; display: none; color: var(--red); font-size: 13.5px;"></p>
       </div>
     </div>
 
@@ -266,6 +278,7 @@ main {
         </div>
 
         <button type="submit" class="btn-primary" id="btnSeatSubmit" style="width: 100%; padding: 15px;">Confirm</button>
+        <p id="seatMsg" role="status" aria-live="polite" style="margin-top: 12px; margin-bottom: 0; display: none; color: var(--red); font-size: 13.5px;"></p>
       </form>
     </div>
 
@@ -283,6 +296,12 @@ main {
         </a>
       </div>
 
+      <div class="whatsapp-box">
+        <h3>One more thing</h3>
+        <p>Twenty questions that shape the curriculum and your hot seat breakout room. Ten minutes, and you can come back to it.</p>
+        <a id="questionnaireLink" href="/superhuman/?role=buyer" class="btn-primary btn-questionnaire">Answer the Superhuman questionnaire</a>
+      </div>
+
     </div>
 
   </div>
@@ -295,6 +314,15 @@ var currentEmail = "";
 var selectedChoice = "named";
 var whatsappUrl = "";
 
+// Resting labels, kept here so a busy state always has the exact text to put
+// back rather than a guess written at the call site.
+var LOOKUP_LABEL = "Verify Order";
+var SEAT_LABEL = "Confirm";
+
+// One flag per request so a second submit is ignored while the first is open.
+var verifyInFlight = false;
+var seatInFlight = false;
+
 function getUrlParam(param) {
   var search = window.location.search;
   var params = new URLSearchParams(search);
@@ -304,6 +332,11 @@ function getUrlParam(param) {
 function initOnboard() {
   currentTrackingId = getUrlParam("tracking_id") || getUrlParam("passthrough_id") || getUrlParam("trackingId") || "";
   currentEmail = getUrlParam("email") || getUrlParam("customer_email") || "";
+
+  // Typing is the buyer answering the error, so the error goes as soon as they
+  // start rather than sitting there contradicting the box they are correcting.
+  var lookupEmail = document.getElementById("lookupEmail");
+  if (lookupEmail) lookupEmail.addEventListener("input", clearVerificationError);
 
   if (currentTrackingId || currentEmail) {
     verifyOrder(currentTrackingId, currentEmail);
@@ -316,11 +349,28 @@ function showState(stateName) {
   document.getElementById("unverifiedState").style.display = stateName === "unverified" ? "block" : "none";
   document.getElementById("verifiedFormState").style.display = stateName === "form" ? "block" : "none";
   document.getElementById("completedState").style.display = stateName === "completed" ? "block" : "none";
-  document.getElementById("verifiedBadge").style.display = (stateName === "form" || stateName === "completed") ? "inline-flex" : "none";
+  var verified = stateName === "form" || stateName === "completed";
+  document.getElementById("verifiedBadge").style.display = verified ? "inline-flex" : "none";
+
+  if (stateName === "completed") setQuestionnaireLink();
+}
+
+// The questionnaire now lives at /superhuman/, which has no order lookup, so
+// the buyer's email and role ride along in the query string to save them
+// typing it again. A lookup that found the order but no email still gets a
+// working link: /superhuman/ just asks for the address itself.
+function setQuestionnaireLink() {
+  var link = document.getElementById("questionnaireLink");
+  if (!link) return;
+  link.href = "/superhuman/?role=buyer" +
+    (currentEmail ? "&email=" + encodeURIComponent(currentEmail) : "");
 }
 
 function verifyOrder(tId, em) {
   var url = ONBOARD_WORKER + "?tracking_id=" + encodeURIComponent(tId) + "&email=" + encodeURIComponent(em);
+
+  verifyInFlight = true;
+  setLookupBusy(true);
 
   fetch(url)
     .then(function(res) { return res.json(); })
@@ -347,6 +397,14 @@ function verifyOrder(tId, em) {
       console.warn("Verification check fallback:", err);
       showVerificationError("We couldn't verify your order right now. Please try again shortly.");
       showState("unverified");
+    })
+    // Every outcome lands here, so there is no path that can leave the button
+    // sitting disabled on "Checking...". That was the bug: a lookup that found
+    // no paid order, or that failed outright, left the buyer with nothing to
+    // press and a refresh as the only way on.
+    .finally(function() {
+      verifyInFlight = false;
+      setLookupBusy(false);
     });
 }
 
@@ -364,15 +422,29 @@ function showVerificationError(message) {
   if (el) { el.textContent = message; el.style.display = "block"; }
 }
 
+function clearVerificationError() {
+  var el = document.getElementById("lookupMsg");
+  if (el) { el.textContent = ""; el.style.display = "none"; }
+}
+
+// The lookup button is driven from one place, so the busy state and the label
+// can never drift apart. initOnboard() can also call verifyOrder() before this
+// button is on screen, which is why a missing button is not an error here.
+function setLookupBusy(busy) {
+  var btn = document.getElementById("btnLookup");
+  if (!btn) return;
+  btn.disabled = busy;
+  btn.textContent = busy ? "Checking..." : LOOKUP_LABEL;
+}
+
 function handleVerifyLookup(e) {
   e.preventDefault();
+  if (verifyInFlight) return;              // a second Enter while one is open
+
   var em = document.getElementById("lookupEmail").value.trim();
   if (!em) return;
 
-  var btn = document.getElementById("btnLookup");
-  btn.disabled = true;
-  btn.textContent = "Checking...";
-
+  clearVerificationError();
   currentEmail = em;
   verifyOrder("", em);
 }
@@ -394,11 +466,22 @@ function selectSeatOption(opt) {
   }
 }
 
+function showSeatError(message) {
+  var el = document.getElementById("seatMsg");
+  if (!el) return;
+  if (message) { el.textContent = message; el.style.display = "block"; }
+  else { el.textContent = ""; el.style.display = "none"; }
+}
+
 function handleSeatSubmit(e) {
   e.preventDefault();
+  if (seatInFlight) return;
+
   var btn = document.getElementById("btnSeatSubmit");
+  seatInFlight = true;
   btn.disabled = true;
   btn.textContent = "Saving…";
+  showSeatError("");
 
   var attFN = document.getElementById("attFirstName").value.trim();
   var attLN = document.getElementById("attLastName").value.trim();
@@ -426,8 +509,15 @@ function handleSeatSubmit(e) {
   })
   .catch(function(err) {
     console.warn("Onboard save error:", err);
+    // The failure is said in the message line. Overwriting the label with
+    // "Try again" used to strand the button on that text for good, since a
+    // second failure had nothing left to put back.
+    showSeatError("We couldn't save your plus one. Please try again.");
+  })
+  .finally(function() {
+    seatInFlight = false;
     btn.disabled = false;
-    btn.textContent = "Try again";
+    btn.textContent = SEAT_LABEL;
   });
 }
 
