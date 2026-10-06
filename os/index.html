@@ -120,6 +120,7 @@
       border-radius: 999px;
     }
     .nav-links a:hover { color: var(--heading); background: rgba(66, 75, 54, 0.05); }
+    .nav-toggle { display: none; }
     .nav-social { display: flex; align-items: center; gap: 2px; }
     .nav-social a {
       display: grid;
@@ -161,24 +162,26 @@
     }
     .btn.ghost:hover { border-color: var(--green); color: var(--heading); box-shadow: none; }
     .btn.small { min-height: 42px; font-size: 14px; }
+    .to-top {
+      position: fixed;
+      right: 20px;
+      bottom: 20px;
+      z-index: 30;
+      border-radius: 999px;
+      box-shadow: 0 12px 30px -12px rgba(66, 75, 54, 0.55);
+      opacity: 0;
+      visibility: hidden;
+      transform: translateY(8px);
+      transition: opacity 0.2s ease, transform 0.2s ease, visibility 0.2s;
+    }
+    .to-top.show { opacity: 1; visibility: visible; transform: none; }
+    .to-top svg { width: 16px; height: 16px; }
     .btn[aria-disabled="true"] { cursor: default; box-shadow: none; transform: none; }
     .btn[aria-disabled="true"]:hover { transform: none; box-shadow: none; }
     .nav .btn { margin-left: 8px; }
 
     .hero { padding: 64px 0 28px; }
     .hero-actions { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 28px; }
-    .path {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 8px 0;
-      list-style: none;
-      padding: 0;
-      margin: 36px 0 0;
-    }
-    .path li { display: inline-flex; align-items: center; font-family: var(--mono); font-size: 12px; letter-spacing: 0.04em; text-transform: uppercase; color: var(--dim); }
-    .path a { color: var(--ink); text-decoration: none; }
-    .path a:hover { text-decoration: underline; text-underline-offset: 3px; }
-    .path li + li::before { content: "→"; margin: 0 10px; color: var(--moss); }
 
     section { padding: 72px 0; scroll-margin-top: calc(var(--nav-h) + 12px); }
     .section-head { margin-bottom: 28px; }
@@ -205,6 +208,7 @@
       margin-bottom: 18px;
     }
     .icon svg { width: 22px; height: 22px; }
+    .logo { width: 42px; height: 42px; border-radius: 12px; object-fit: cover; display: block; margin-bottom: 18px; }
     .type {
       font-family: var(--mono);
       font-size: 11px;
@@ -252,6 +256,40 @@
     .skill-group-head p { margin: 0; color: var(--dim); font-size: 14px; }
     .skill-group .cards { grid-auto-rows: minmax(390px, auto); }
     .skill-group .card { height: 100%; }
+    .skill-sections { display: grid; gap: 16px; }
+    .skill-drop { background: var(--card); border: 1px solid var(--line); border-radius: 20px; }
+    .skill-drop > summary {
+      list-style: none;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      padding: 20px 22px;
+      border-radius: 20px;
+    }
+    .skill-drop > summary::-webkit-details-marker { display: none; }
+    .skill-drop > summary h3 { font-size: 24px; margin-bottom: 4px; }
+    .skill-drop > summary p { margin: 0; color: var(--dim); font-size: 14px; }
+    .skill-drop > summary:focus-visible { outline: 2px solid var(--heading); outline-offset: 2px; }
+    .skill-drop .chev {
+      flex: none;
+      width: 12px;
+      height: 12px;
+      border-right: 2px solid var(--heading);
+      border-bottom: 2px solid var(--heading);
+      transform: translateY(-3px) rotate(45deg);
+      transition: transform .2s ease;
+    }
+    .skill-drop[open] .chev { transform: translateY(3px) rotate(-135deg); }
+    .skill-drop[open] > summary { border-bottom: 1px solid var(--line); border-radius: 20px 20px 0 0; }
+    .skill-drop > .skill-stack { padding: 22px; }
+    .skill-drop > .cards { padding: 22px; grid-template-columns: repeat(auto-fill, minmax(min(100%, 280px), 1fr)); }
+    .hub-row { margin-top: 24px; }
+    .hub-row .skill-group-head { min-height: 0; justify-content: flex-start; gap: 24px; align-items: baseline; }
+    .skill-stack .skill-group + .skill-group { margin-top: 40px; padding-top: 32px; border-top: 1px solid var(--line); }
+    .skill-stack .skill-group-head { min-height: 0; justify-content: flex-start; gap: 24px; align-items: baseline; }
+    .skill-drop .skill-group .cards { grid-template-columns: repeat(auto-fill, minmax(min(100%, 280px), 1fr)); }
     .outcome {
       margin-top: 16px;
       padding-top: 14px;
@@ -356,9 +394,6 @@
     .accelerator-points span { color: var(--sage); }
     .accelerator-actions { margin-top: 26px; }
     .accelerator-panel .btn { background: var(--sage); color: var(--heading); }
-    .event-card { min-height: auto; box-shadow: none; }
-    .event-date { color: var(--moss); font-family: var(--mono); font-size: 12px; font-weight: 600; letter-spacing: .1em; text-transform: uppercase; margin-bottom: 18px; }
-    .event-card h3 { font-size: 23px; }
 
     .prompt-list { display: grid; gap: 16px; }
     .prompt-card {
@@ -418,6 +453,39 @@
 
     @media (max-width: 800px) {
       .nav-links { display: none; }
+      /* Mobile menu: the same links as the bar, full screen. */
+      .nav-links.open {
+        display: flex;
+        flex-direction: column;
+        gap: 6px;
+        position: fixed;
+        inset: 0;
+        z-index: 98;
+        height: 100dvh;
+        margin: 0;
+        padding: calc(var(--nav-h) + 28px) 28px 48px;
+        background: var(--bg);
+      }
+      .nav-links.open a { font-size: 18px; padding: 14px 4px; border-radius: 0; border-bottom: 1px solid var(--line); }
+      /* backdrop-filter would trap the fixed menu inside the bar. Drop it while open. */
+      .nav.menu-open { backdrop-filter: none; background: var(--bg); }
+      .nav-toggle {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 44px;
+        height: 44px;
+        margin-right: -10px;
+        padding: 0;
+        background: none;
+        border: none;
+        cursor: pointer;
+        color: var(--heading);
+        font-size: 24px;
+        line-height: 1;
+        position: relative;
+        z-index: 99;
+      }
       .nav-social { margin-left: auto; }
       .step { grid-template-columns: auto 1fr; }
       .note { grid-template-columns: 1fr; padding: 22px; }
@@ -440,11 +508,12 @@
         <img src="/favicon.svg" alt="" width="28" height="28" />
         Time Rich
       </a>
-      <nav class="nav-links" aria-label="On this page">
+      <nav class="nav-links" id="navlinks" aria-label="On this page">
+        <a href="#included">Tools</a>
         <a href="#skills">Skills</a>
         <a href="#prompts">Prompts</a>
-        <a href="#accelerator">Accelerator</a>
         <a href="#events">Events</a>
+        <a href="#accelerator">Accelerator</a>
       </nav>
       <div class="nav-social">
         <a href="https://www.linkedin.com/in/ellamolonycook/" target="_blank" rel="noopener" aria-label="Ella on LinkedIn">
@@ -458,6 +527,7 @@
         </a>
       </div>
       <a class="btn small" href="#skills">Browse skills</a>
+      <button class="nav-toggle" id="navToggle" type="button" aria-label="Open menu" aria-expanded="false" aria-controls="navlinks">&#9776;</button>
     </div>
   </header>
 
@@ -466,18 +536,7 @@
       <div class="wrap">
         <p class="eyebrow">Time Rich OS</p>
         <h1>Time Rich Content OS</h1>
-        <p class="lede">A practical library for building a stronger LinkedIn presence. Pick a skill, download it directly, and use it with the way you already work.</p>
-        <div class="hero-actions">
-          <a class="btn" href="#skills">Browse LinkedIn skills</a>
-          <a class="btn ghost" href="#accelerator">About the Accelerator</a>
-        </div>
-        <ol class="path">
-          <li><a href="#skills">LinkedIn skills</a></li>
-          <li><a href="#install">How skills work</a></li>
-          <li><a href="#prompts">Prompts</a></li>
-          <li><a href="#accelerator">Accelerator</a></li>
-          <li><a href="#events">Upcoming events</a></li>
-        </ol>
+        <p class="lede">One hub for the skills, prompts, tools and workshops behind your content. Pick what you need, see where it fits, and use it with the way you already work.</p>
       </div>
     </section>
 
@@ -485,10 +544,33 @@
       <div class="wrap">
         <div class="section-head">
           <p class="eyebrow">Start here</p>
-          <h2>Tools for better LinkedIn work</h2>
-          <p class="lede">The skills below give AI one clear job at a time, from planning a week of posts to responding to the right conversations.</p>
+          <h2>Tools for better content work</h2>
+          <p class="lede">See what each tool does, where it fits in your content work, and how to get started.</p>
         </div>
-        <div class="cards" id="resourceGrid"></div>
+        <div class="skill-sections" id="resourceGrid"></div>
+      </div>
+    </section>
+
+    <section id="skills">
+      <div class="wrap">
+        <div class="section-head">
+          <p class="eyebrow">Skills</p>
+          <h2>Give AI one clear job</h2>
+          <p class="lede">Each skill is a ready-to-upload ZIP file. Choose the job you need, download it here, then add it to your AI tool.</p>
+        </div>
+        <div class="skill-sections" id="skillGrid"></div>
+      </div>
+    </section>
+
+    <section id="install">
+      <div class="wrap">
+        <div class="section-head">
+          <p class="eyebrow">How skills work</p>
+          <h2>Download, upload, use</h2>
+          <p class="lede">A skill is a small pack of instructions that helps AI handle one type of work well. Keep the file zipped when you upload it.</p>
+        </div>
+        <div class="steps" id="stepList"></div>
+        <p class="install-link"><a href="https://support.claude.com/en/articles/12512180-use-skills-in-claude" target="_blank" rel="noopener noreferrer">Full guide from Anthropic</a></p>
       </div>
     </section>
 
@@ -504,29 +586,6 @@
           <a class="btn" id="dupeCta" href="#duplicate">Open the Content OS</a>
           <p class="fine" id="dupeNote" hidden></p>
         </div>
-      </div>
-    </section>
-
-    <section id="skills">
-      <div class="wrap">
-        <div class="section-head">
-          <p class="eyebrow">LinkedIn skills</p>
-          <h2>Give AI a specific LinkedIn job</h2>
-          <p class="lede">Each skill is a ready-to-upload ZIP file. Choose the job you need, download it here, then add it to your AI tool.</p>
-        </div>
-        <div class="cards" id="skillGrid"></div>
-      </div>
-    </section>
-
-    <section id="install">
-      <div class="wrap">
-        <div class="section-head">
-          <p class="eyebrow">How skills work</p>
-          <h2>Download, upload, use</h2>
-          <p class="lede">A skill is a small pack of instructions that helps AI handle one type of work well. Keep the file zipped when you upload it.</p>
-        </div>
-        <div class="steps" id="stepList"></div>
-        <p class="install-link"><a href="https://support.claude.com/en/articles/12512180-use-skills-in-claude" target="_blank" rel="noopener noreferrer">Full guide from Anthropic</a></p>
       </div>
     </section>
 
@@ -550,32 +609,16 @@
       </div>
     </section>
 
-    <section id="accelerator">
-      <div class="wrap">
-        <div class="accelerator-panel">
-          <div>
-            <p class="eyebrow">Superhuman Accelerator</p>
-            <h2>Build your AI operating system in four weeks.</h2>
-            <p class="lede">A live, practical programme for founders who want AI to take real work off their plate. You will build the context, workflows, and trained agents that support your business.</p>
-            <div class="accelerator-actions"><a class="btn" href="/accelerator/">Explore the Accelerator</a></div>
-          </div>
-          <ul class="accelerator-points">
-            <li><strong>Live build sessions</strong><span>Make progress with support, not another pile of videos.</span></li>
-            <li><strong>Built for your business</strong><span>Work from your offers, voice, customers, and real priorities.</span></li>
-            <li><strong>Useful from week one</strong><span>Leave with systems you can keep using after the programme.</span></li>
-          </ul>
-        </div>
-      </div>
-    </section>
-
     <section id="events">
       <div class="wrap">
         <div class="section-head">
-          <p class="eyebrow">Upcoming events</p>
+          <p class="eyebrow">Upcoming workshops</p>
           <h2>What is coming up</h2>
-          <p class="lede">The next live sessions in the Superhuman Accelerator.</p>
+          <p class="lede">Every live Time Rich workshop is on our Luma calendar. Please make sure you attend.</p>
         </div>
-        <div class="cards" id="eventGrid"></div>
+        <div class="hero-actions">
+          <a class="btn" href="https://luma.com/timerich" target="_blank" rel="noopener noreferrer">Upcoming workshops</a>
+        </div>
       </div>
     </section>
 
@@ -596,6 +639,24 @@
         </div>
       </div>
     </section>
+
+    <section id="accelerator">
+      <div class="wrap">
+        <div class="accelerator-panel">
+          <div>
+            <p class="eyebrow">Superhuman Accelerator</p>
+            <h2>Build your AI operating system in four weeks.</h2>
+            <p class="lede">A live, practical program for founders who want AI to take real work off their plate. You will build the context, workflows, and trained agents that support your business.</p>
+            <div class="accelerator-actions"><a class="btn" href="/accelerator/">Explore the Accelerator</a></div>
+          </div>
+          <ul class="accelerator-points">
+            <li><strong>Live build sessions</strong><span>Make progress with support, not another pile of videos.</span></li>
+            <li><strong>Built for your business</strong><span>Work from your offers, voice, customers, and real priorities.</span></li>
+            <li><strong>Useful from week one</strong><span>Leave with systems you can keep using after the program.</span></li>
+          </ul>
+        </div>
+      </div>
+    </section>
   </main>
 
   <footer>
@@ -604,6 +665,11 @@
       <a href="/">timerich.ai</a>
     </div>
   </footer>
+
+  <a class="btn small to-top" id="toTop" href="#top">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M12 19V5"/><path d="M6 11l6-6 6 6"/></svg>
+    Back to top
+  </a>
 
   <script>
     /**
@@ -625,6 +691,87 @@
       notionUrl: "https://superhumanos.notion.site/Content-Hub-Template-793ca5ebe55782799ab901aa6f143387",
       resources: [
         {
+          name: "Opus Clip",
+          group: "video",
+          type: "Video clips",
+          description: "Turns a long video into shorter clips. Use it after recording, when you want shorter videos from the same piece of content.",
+          cta: "Try Opus Clip",
+          href: "https://opus.pro/?via=ella",
+          logo: "/os/img/opus-clip.png"
+        },
+        {
+          name: "Captions",
+          group: "video",
+          type: "AI captions",
+          description: "Adds AI captions to video. Use it at the editing stage, alongside the clips you want to use.",
+          cta: "Visit website",
+          href: "https://www.captions.ai",
+          logo: "/os/img/captions.png"
+        },
+        {
+          name: "Stanley",
+          group: "writing",
+          type: "AI head of content",
+          description: "A content calendar, help with LinkedIn writing and email drafts, plus a brain where you can build in your skills. Use it to plan and draft content.",
+          cta: "Try Stanley",
+          href: "https://x.getstanley.ai/r/mz4y9g",
+          logo: "/os/img/stanley.png"
+        },
+        {
+          name: "Granola",
+          group: "notes",
+          type: "AI note taker",
+          description: "Captures the conversation, so you can bring the useful notes into your content workflow. Use it before content planning, when the ideas are in a call.",
+          cta: "Try Granola",
+          href: "https://join.granola.ai/t/zcp5ejgifv",
+          logo: "/os/img/granola.png"
+        },
+        {
+          name: "Fireflies",
+          group: "notes",
+          type: "AI note taker",
+          description: "Meeting transcripts, summaries and action items. Use it to capture calls so you have source material to work from.",
+          cta: "Visit website",
+          href: "https://fireflies.ai",
+          logo: "/os/img/fireflies.png"
+        },
+        {
+          name: "Fathom",
+          group: "notes",
+          type: "AI note taker",
+          description: "Meeting transcripts, summaries and action items. Use it to capture calls and find the useful parts afterwards.",
+          cta: "Visit website",
+          href: "https://www.fathom.ai/",
+          logo: "/os/img/fathom.png"
+        },
+        {
+          name: "Notion",
+          group: "workspace",
+          type: "Workspace",
+          description: "The home for the hub, skills, prompts, resources and content pipeline. Keep the workflow and the work in one place so you can find them again.",
+          cta: "Visit website",
+          href: "https://www.notion.com",
+          logo: "/os/img/notion.png"
+        },
+        {
+          name: "Canva",
+          group: "workspace",
+          type: "Design",
+          description: "A design tool for social posts, videos and presentations. Use it to turn your content into visual assets.",
+          cta: "Visit website",
+          href: "https://www.canva.com",
+          logo: "/os/img/canva.png"
+        },
+        {
+          name: "Wispr Flow",
+          group: "writing",
+          type: "Voice to text",
+          description: "Turns speech into text and cleans up filler words, punctuation and spoken corrections. Talk through ideas, prompts and first drafts instead of typing them.",
+          cta: "Try Wispr Flow",
+          href: "https://ref.wisprflow.ai/ella-cook-vt27",
+          logo: "/os/img/wispr-flow.png"
+        },
+        {
           name: "Content OS",
           type: "Notion template",
           description: "Your content system in Notion. Duplicate it, then add your voice, offers, and proof.",
@@ -642,9 +789,9 @@
         },
         {
           name: "Superhuman Accelerator",
-          type: "Live programme",
-          description: "A four-week live programme for building useful AI systems around your business.",
-          cta: "See the programme",
+          type: "Live program",
+          description: "A four-week live program for building useful AI systems around your business.",
+          cta: "See the program",
           href: "#accelerator",
           icon: "files"
         }
@@ -741,7 +888,7 @@
         {
           name: "Employee Advocacy",
           category: "Engage and grow",
-          description: "Set up a simple LinkedIn advocacy programme for your team.",
+          description: "Set up a simple LinkedIn advocacy program for your team.",
           outcome: "Help marketing and sales show up with a more consistent voice.",
           file: "/downloads/linkedin-employee-advocacy.zip",
           prompt: "Help me get the team posting and launch advocacy properly. We are [number] people, the goal is [reach, pipeline, recruiting or thought leadership], and right now [everyone is silent, some are active, or output is inconsistent]. [paste your brand guideline constraints here]"
@@ -776,17 +923,6 @@
         "In Claude, open Customize → Skills, click Add and choose “Upload a skill”, then select the ZIP.",
         "Check code execution is on: Settings → Capabilities.",
         "Start a new chat and use “Copy the prompt” from the skill’s card."
-      ],
-      events: [
-        { iso: "2026-10-26", date: "Mon 26 Oct", time: "12pm ET", title: "Open Business Surgery", description: "Bring the work that needs a practical answer." },
-        { iso: "2026-10-30", date: "Fri 30 Oct", time: "12pm ET", title: "Training Your Agent", description: "Turn your context into something your AI can use." },
-        { iso: "2026-11-02", date: "Mon 2 Nov", time: "12pm ET", title: "Your AI Operating System", description: "Connect the pieces that keep your business moving." },
-        { iso: "2026-11-06", date: "Fri 6 Nov", time: "12pm ET", title: "Expert Q&A", description: "Bring your questions and leave with clear next steps." },
-        { iso: "2026-11-09", date: "Mon 9 Nov", time: "12pm ET", title: "Storytelling for GTM", description: "Find the stories that move a buyer, not just an audience." },
-        { iso: "2026-11-13", date: "Fri 13 Nov", time: "12pm ET", title: "The AI Content Machine + Q&A", description: "Build the system that keeps your content shipping." },
-        { iso: "2026-11-16", date: "Mon 16 Nov", time: "12pm ET", title: "Unfair AI Advantage", description: "The moves most of your market has not made yet." },
-        { iso: "2026-11-18", date: "Wed 18 Nov", time: "12pm ET", title: "Networking Session", description: "Meet the other founders building alongside you." },
-        { iso: "2026-11-20", date: "Fri 20 Nov", time: "12pm ET", title: "Q&A Exited Founder", description: "Ask someone who has already sold the business." }
       ],
       prompts: [
         {
@@ -904,21 +1040,57 @@
       }
     }
 
+    /** Tool groups shown as dropdowns in "Start here", in this order. */
+    const TOOL_GROUPS = [
+      { id: "video", title: "Video", summary: (n) => `${n} tools for turning recordings into clips and captions.` },
+      { id: "writing", title: "Planning and writing", summary: (n) => `${n} tools for planning content and getting first drafts down.` },
+      { id: "notes", title: "AI note takers", summary: (n) => `${n} options for capturing your calls. Pick one, you do not need all three.` },
+      { id: "workspace", title: "Workspace and design", summary: (n) => `${n} tools for keeping your work in one place and turning it into visuals.` }
+    ];
+
     function renderResources() {
-      const grid = document.getElementById("resourceGrid");
+      const root = document.getElementById("resourceGrid");
+      const gridFor = {};
+      TOOL_GROUPS.forEach((group) => {
+        const count = HUB.resources.filter((item) => item.group === group.id).length;
+        if (!count) return;
+        const grid = el("div", { class: "cards" });
+        gridFor[group.id] = grid;
+        root.append(el("details", { class: "skill-drop" }, [
+          el("summary", {}, [
+            el("div", {}, [
+              el("h3", { text: group.title }),
+              el("p", { text: group.summary(count) })
+            ]),
+            el("span", { class: "chev", "aria-hidden": "true" })
+          ]),
+          grid
+        ]));
+      });
+      const hubGrid = el("div", { class: "cards" });
+      root.append(el("div", { class: "hub-row" }, [
+        el("div", { class: "skill-group-head" }, [
+          el("h3", { text: "In the hub" }),
+          el("p", { text: "Your Content OS, the skills, and the program." })
+        ]),
+        hubGrid
+      ]));
       HUB.resources.forEach((item) => {
+        const grid = gridFor[item.group] || hubGrid;
         const url = item.action === "notion" ? (HUB.notionUrl || "").trim() : item.href;
         const cta = el("a", {
           class: "btn small",
           href: url || "#duplicate",
           text: item.cta
         });
-        if (item.action === "notion" && url) {
+        if (url && /^https?:\/\//.test(url)) {
           cta.target = "_blank";
           cta.rel = "noopener noreferrer";
         }
         grid.append(el("article", { class: "card" }, [
-          icon(item.icon),
+          item.logo
+            ? el("img", { class: "logo", src: item.logo, alt: item.name + " logo", width: "42", height: "42", loading: "lazy" })
+            : icon(item.icon),
           el("div", { class: "type", text: item.type }),
           el("h3", { text: item.name }),
           el("p", { text: item.description }),
@@ -974,7 +1146,7 @@
     }
 
     function renderSkills() {
-      const grid = document.getElementById("skillGrid");
+      const root = document.getElementById("skillGrid");
       const groups = [
         ["Plan and position", "Set the direction before you start posting."],
         ["Write and improve", "Shape a good idea into a post that sounds like you."],
@@ -982,13 +1154,37 @@
         ["Storytelling", "Find the stories you already tell, and keep them."],
         ["Content prompts", "Short jobs that turn one idea into something you can post."]
       ];
+      // Each skill section is its own dropdown. LinkedIn keeps its three
+      // groups together; add a new entry here as the library grows.
+      const sections = [
+        { title: "LinkedIn skills", blurb: "for planning, writing and engaging on LinkedIn.", groups: ["Plan and position", "Write and improve", "Engage and grow"] },
+        { title: "Storytelling", blurb: "to find the stories you already tell, and keep them.", groups: ["Storytelling"] },
+        { title: "Content prompts", blurb: "for short jobs that turn one idea into something you can post.", groups: ["Content prompts"] }
+      ];
+      const gridFor = {};
+      sections.forEach((section) => {
+        const count = HUB.skills.filter((skill) => section.groups.includes(skill.category)).length;
+        const grid = el("div", { class: "skill-stack" });
+        section.groups.forEach((name) => { gridFor[name] = { grid, showHead: section.groups.length > 1 }; });
+        root.append(el("details", { class: "skill-drop" }, [
+          el("summary", {}, [
+            el("div", {}, [
+              el("h3", { text: section.title }),
+              el("p", { text: `${count} ${count === 1 ? "skill" : "skills"} ${section.blurb}` })
+            ]),
+            el("span", { class: "chev", "aria-hidden": "true" })
+          ]),
+          grid
+        ]));
+      });
       groups.forEach(([name, description]) => {
+        const { grid, showHead } = gridFor[name];
         const cards = el("div", { class: "cards" });
         const group = el("div", { class: "skill-group" }, [
-          el("div", { class: "skill-group-head" }, [
+          showHead ? el("div", { class: "skill-group-head" }, [
             el("h3", { text: name }),
             el("p", { text: description })
-          ]),
+          ]) : null,
           cards
         ]);
         grid.append(group);
@@ -1059,34 +1255,6 @@
       });
     }
 
-    /** Today as an ISO date string in the reader's own timezone. */
-    function todayIso() {
-      const now = new Date();
-      const month = String(now.getMonth() + 1).padStart(2, "0");
-      const day = String(now.getDate()).padStart(2, "0");
-      return `${now.getFullYear()}-${month}-${day}`;
-    }
-
-    function renderEvents() {
-      const grid = document.getElementById("eventGrid");
-      const today = todayIso();
-      const upcoming = HUB.events.filter((event) => !event.iso || event.iso >= today);
-      if (!upcoming.length) {
-        grid.append(el("p", { class: "pending", text: "The next dates are being confirmed." }));
-        return;
-      }
-      upcoming.forEach((event) => {
-        const when = event.time ? `${event.date} · ${event.time}` : event.date;
-        grid.append(el("article", { class: "card event-card" }, [
-          el("div", { class: "event-date" }, [
-            el("time", { datetime: event.iso, text: when })
-          ]),
-          el("h3", { text: event.title }),
-          el("p", { text: event.description })
-        ]));
-      });
-    }
-
     function renderDrops() {
       const grid = document.getElementById("dropGrid");
       HUB.drops.forEach((item) => {
@@ -1114,8 +1282,37 @@
     renderSkills();
     renderSteps();
     renderPrompts();
-    renderEvents();
     renderDrops();
+
+    /** Mobile menu: the links from the bar in a full-screen list below 800px. */
+    (function () {
+      const nav = document.querySelector(".nav");
+      const links = document.getElementById("navlinks");
+      const button = document.getElementById("navToggle");
+      if (!nav || !links || !button) return;
+      const setMenu = (open) => {
+        links.classList.toggle("open", open);
+        nav.classList.toggle("menu-open", open);
+        button.setAttribute("aria-expanded", open ? "true" : "false");
+        button.setAttribute("aria-label", open ? "Close menu" : "Open menu");
+        button.innerHTML = open ? "&times;" : "&#9776;";
+      };
+      button.addEventListener("click", () => setMenu(!links.classList.contains("open")));
+      links.addEventListener("click", (event) => { if (event.target.closest("a")) setMenu(false); });
+      document.addEventListener("keydown", (event) => {
+        if (event.key === "Escape" && links.classList.contains("open")) { setMenu(false); button.focus(); }
+      });
+    })();
+
+    /** Shows the "Back to top" button once the reader has scrolled past the hero. */
+    (function () {
+      const button = document.getElementById("toTop");
+      const hero = document.getElementById("top");
+      if (!button || !hero) return;
+      const update = () => button.classList.toggle("show", hero.getBoundingClientRect().bottom < 0);
+      window.addEventListener("scroll", update, { passive: true });
+      update();
+    })();
   </script>
 </body>
 </html>
