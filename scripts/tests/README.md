@@ -1,16 +1,20 @@
-# Tests — /sh-apply application form + worker Notion mapping
+# Tests — /sh-apply application form, worker mapping, Time Rich Members
 
-Two suites, no framework. Plain Node, one file each, run in a couple of seconds.
+Three suites, no framework. Plain Node, one file each, run in a couple of seconds.
 
 ```bash
 cd scripts/tests
 npm install     # once — pulls jsdom
-npm test        # both suites
+npm test        # all three suites
 ```
 
-Or one at a time: `npm run test:worker` / `npm run test:form`.
+Or one at a time: `npm run test:worker` / `npm run test:form` / `npm run test:members`.
 
 Exit code is non-zero if anything fails, so this drops into CI as-is.
+
+The two jsdom suites need Node 22.12 or newer (jsdom loads an ES module with
+`require()`). On an older Node 22 run them as
+`node --experimental-require-module form.test.mjs`.
 
 ## `worker.test.mjs`
 
@@ -51,6 +55,26 @@ It also pins the behaviour of the routes this change did *not* touch —
 `/waitlist`, `/coaching`, `/qualify`, `/accelerator`, the legacy `/superhuman`
 payload, and CORS — so a future edit to the worker can't quietly break them.
 
+Time Rich Members has its own block, with one fake standing in for Notion,
+Supabase REST and Storage, Google Drive and Slack. Notion's replies use the real
+response shape, and a `PATCH` reply carries what is already stored on the row,
+so the suite can prove a profile is built from **Notion's stored properties, not
+the request body**. It covers:
+
+- **Sync:** only active `buyer` and `second_seat` members are listed (team,
+  ambassadors, inactive and unknown emails are skipped); a Supabase outage never
+  changes the form's response or logs an answer.
+- **Photos:** success, Drive's HTML sign-in page, oversize (declared and found
+  while reading), bad links and every link shape; Slack is told once and the
+  link is never logged. The re-download rule on `photo_source_url`: unchanged
+  and `ok` keeps the photo, a new link or a `failed`/`missing` status tries again.
+- **Backfill** (`/portal-directory-sync`): secret required, identical 403s,
+  every page of the database read, safe to run twice.
+- **Read endpoint** (`/portal-directory`): 403 for buyers until
+  `directory_enabled` is a JSON `true`, 200 for team; sorted profiles, signed
+  photo URLs, no `email` or `photo_source_url`, https links only, byte-identical
+  403s for every refusal, and CORS for timerich.ai only.
+
 ## `form.test.mjs`
 
 Loads [`sh-apply/index.html`](../../sh-apply/index.html) into jsdom and actually
@@ -84,3 +108,25 @@ Two things it deliberately can't cover, because jsdom has no CDN and no layout:
   real browser.
 - **Anything visual.** Transitions, tap-target sizes, and whether the question
   clears the mobile keyboard are all eyeball checks.
+
+## `members.test.mjs`
+
+Loads [`portal/members.html`](../../portal/members.html) into jsdom with a fake
+Worker and uses it the way a member would.
+
+- **Grid:** one card per profile in the Worker's order; name, hook line, then
+  title and company; initials on sage when there is no photo, the URL is not
+  https, or the image fails to load; typed markup stays text.
+- **Search:** name, company and superpower only, case-insensitive, with a
+  no-match line.
+- **Pop-up:** fields in the brief's order, LinkedIn as the primary button and
+  the rest as icon links, no form; focus moves in, Tab is trapped, Esc, the close
+  button or a click outside closes it and focus returns to the card.
+- **States:** 403 shows "opens soon", an empty list shows the brief's empty
+  state, a server error asks for a refresh.
+- **Menu link:** the other portal pages are loaded with the real
+  `portal-access.js`; their hidden Members link appears only on a 200 from the
+  directory, a definite answer is cached for ten minutes, and sign out clears it.
+
+Like the form suite it has no layout, so the grid sizes and the pop-up's look
+are eyeball checks.
