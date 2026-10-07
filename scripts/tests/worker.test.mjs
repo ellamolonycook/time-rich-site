@@ -549,6 +549,11 @@ const mem = {
   uploads: [],
   deleted: [],
   slack: [],
+  codes: {},          // passcode -> portal role, for portal_get
+  enabled: undefined, // directory_enabled value, undefined = no row
+  listedColumns: [],
+  signRequests: [],
+  signFails: false,
   calls: [],
   logs: [],
 };
@@ -584,6 +589,19 @@ const memFetch = async (url, init = {}) => {
       const wanted = decodeURIComponent(url.split('email=ilike.')[1] || '').toLowerCase();
       return ok(mem.members.filter((m) => m.active && m.email.toLowerCase() === wanted));
     }
+    if (url.includes('/rpc/portal_get')) {
+      const role = mem.codes[String(body && body.p_code).trim().toUpperCase()];
+      return ok(role ? { ok: true, member: { first_name: 'X', role }, weeks: [], sessions: [] } : { ok: false });
+    }
+    if (url.includes('/portal_settings?') && method === 'GET') {
+      return ok(mem.enabled === undefined ? [] : [{ value: mem.enabled }]);
+    }
+    if (url.includes('/portal_directory?select=') && method === 'GET' && !url.includes('email=eq.')) {
+      // The read endpoint's list: return only the columns it asked for.
+      const columns = url.split('select=')[1].split('&')[0].split(',');
+      mem.listedColumns = columns;
+      return ok(Object.values(mem.directory).map((r) => Object.fromEntries(columns.map((c) => [c, r[c] ?? null]))));
+    }
     if (url.includes('/portal_directory?select=') && method === 'GET') {
       const wanted = decodeURIComponent(url.split('email=eq.')[1] || '');
       const row = mem.directory[wanted];
@@ -595,6 +613,11 @@ const memFetch = async (url, init = {}) => {
       mem.directory[body.email] = { ...(mem.directory[body.email] || {}), ...rest, _prefer: init.headers.Prefer };
       return new Response(null, { status: 201 });
     }
+  }
+  if (url === 'https://sb.test/storage/v1/object/sign/portal-directory') {
+    mem.signRequests.push(body);
+    if (mem.signFails) return new Response('nope', { status: 500 });
+    return ok(body.paths.map((path) => ({ path, signedURL: '/object/sign/portal-directory/' + path + '?token=t', error: null })));
   }
   if (url.startsWith('https://sb.test/storage/v1/object/portal-directory/')) {
     const path = url.split('/portal-directory/')[1];
@@ -629,6 +652,11 @@ function resetMembers() {
   mem.uploads = [];
   mem.deleted = [];
   mem.slack = [];
+  mem.codes = {};
+  mem.enabled = undefined;
+  mem.listedColumns = [];
+  mem.signRequests = [];
+  mem.signFails = false;
   mem.calls = [];
   mem.logs = [];
 }
@@ -947,6 +975,117 @@ console.log('\nTime Rich Members — backfill');
   const again = await (await backfill('sync-secret')).json();
   const after = JSON.stringify(mem.directory, (k, v) => (k === 'updated_at' ? undefined : v));
   check('running it twice leaves the same rows', again.listed === 2 && before === after);
+}
+
+console.log('\nTime Rich Members — read endpoint');
+{
+  const read = (body, { origin = 'https://timerich.ai', env = memEnv, raw } = {}) =>
+    worker.fetch(new Request('https://w.dev/portal-directory', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', Origin: origin },
+      body: raw !== undefined ? raw : JSON.stringify(body),
+    }), env);
+
+  const seed = () => {
+    resetMembers();
+    mem.codes = { 'BUYER-CODE1': 'buyer', 'SEAT0-CODE2': 'second_seat', 'TEAM0-CODE3': 'team' };
+    mem.directory = {
+      'zoe@example.com': {
+        email: 'zoe@example.com', name: 'Zoe Zhang', hook_line: 'Ops nerd', title: 'COO', company: 'Zed',
+        company_does: 'Runs things.', who_they_serve: 'Teams.', superpower: 'Calm.',
+        linkedin: 'https://www.linkedin.com/in/zoe', instagram: 'javascript:alert(1)',
+        other_links: 'https://zoe.dev\nhttp://insecure.example\n\nnot a link',
+        photo_path: 'zoe.jpg', photo_status: 'ok', photo_source_url: 'https://drive.google.com/file/d/ZOESECRETLINK/view', role: 'buyer',
+      },
+      'ada@example.com': {
+        email: 'ada@example.com', name: 'ada lovelace', hook_line: 'First programmer', title: 'Founder', company: 'Analytical Co',
+        linkedin: 'https://www.linkedin.com/in/ada', photo_path: 'ada.jpg', photo_status: 'failed', role: 'buyer',
+      },
+      'bo@example.com': { email: 'bo@example.com', name: 'Bo Brown', photo_status: 'missing', role: 'second_seat' },
+    };
+  };
+
+  seed();
+  mem.enabled = false;
+  const buyerOff = await read({ code: 'buyer-code1' });
+  const seatOff = await read({ code: 'SEAT0-CODE2' });
+  const teamOff = await read({ code: 'team0-code3' });
+  check('switched off: a buyer gets 403', buyerOff.status === 403);
+  check('switched off: a second seat gets 403', seatOff.status === 403);
+  check('switched off: team still gets 200 for QA', teamOff.status === 200);
+
+  seed();
+  const noRow = await read({ code: 'buyer-code1' });
+  check('no directory_enabled row at all counts as off', noRow.status === 403);
+
+  seed();
+  mem.enabled = 'true';
+  check('only a real JSON true switches it on (not the string "true")', (await read({ code: 'buyer-code1' })).status === 403);
+
+  seed();
+  mem.enabled = true;
+  const on = await read({ code: 'buyer-code1' });
+  const text = await on.clone().text();
+  const { profiles } = await on.json();
+  check('switched on: a buyer gets 200', on.status === 200);
+  check('profiles are sorted by name, ignoring case', profiles.map((p) => p.name).join('|') === 'ada lovelace|Bo Brown|Zoe Zhang', profiles.map((p) => p.name));
+  check('no email anywhere in the response', !/@example\.com/.test(text) && profiles.every((p) => !('email' in p)), text);
+  check('photo_source_url is never selected or returned',
+    !mem.listedColumns.includes('photo_source_url') && !mem.listedColumns.includes('email') &&
+    !text.includes('ZOESECRETLINK') && !text.includes('photo_source_url'), mem.listedColumns);
+  check('photo_path and photo_status stay server side', profiles.every((p) => !('photo_path' in p) && !('photo_status' in p)));
+
+  const zoe = profiles.find((p) => p.name === 'Zoe Zhang');
+  const ada = profiles.find((p) => p.name === 'ada lovelace');
+  const bo = profiles.find((p) => p.name === 'Bo Brown');
+  check('a stored photo comes back as an absolute signed URL',
+    zoe.photo_url === 'https://sb.test/storage/v1/object/sign/portal-directory/zoe.jpg?token=t', zoe.photo_url);
+  check('failed and missing photos come back as null (initials)', ada.photo_url === null && bo.photo_url === null);
+  check('only ok photos are signed, in one request, for one hour',
+    mem.signRequests.length === 1 && JSON.stringify(mem.signRequests[0].paths) === '["zoe.jpg"]' && mem.signRequests[0].expiresIn === 3600, mem.signRequests);
+  check('profile fields come through in full',
+    zoe.hook_line === 'Ops nerd' && zoe.title === 'COO' && zoe.company === 'Zed' && zoe.company_does === 'Runs things.' &&
+    zoe.who_they_serve === 'Teams.' && zoe.superpower === 'Calm.' && zoe.linkedin === 'https://www.linkedin.com/in/zoe', zoe);
+  check('a non-https link is dropped, never passed to the page', zoe.instagram === null);
+  check('other links become a list of https URLs only', JSON.stringify(zoe.other_links) === '["https://zoe.dev"]', zoe.other_links);
+  check('empty fields come back as empty strings, not null', bo.hook_line === '' && bo.company === '' && bo.linkedin === null);
+  check('CORS answers timerich.ai only', on.headers.get('Access-Control-Allow-Origin') === 'https://timerich.ai');
+  const elsewhere = await read({ code: 'buyer-code1' }, { origin: 'https://evil.example' });
+  check('another origin gets no CORS allow header', elsewhere.headers.get('Access-Control-Allow-Origin') === null);
+
+  seed();
+  mem.enabled = true;
+  mem.signFails = true;
+  const unsigned = await read({ code: 'buyer-code1' });
+  const unsignedProfiles = (await unsigned.json()).profiles;
+  check('if signing fails the page still loads, with initials', unsigned.status === 200 && unsignedProfiles.every((p) => p.photo_url === null));
+
+  // Every refusal is the same 403, byte for byte.
+  seed();
+  mem.enabled = false;
+  const refusals = [
+    await read({ code: 'buyer-code1' }),                                  // switched off
+    await read({ code: 'WRONG-CODE0' }),                                  // unknown code
+    await read({ code: '' }),                                             // empty code
+    await read({}),                                                       // no code
+    await read(null, { raw: '{not json' }),                               // bad JSON
+    await read({ code: 'buyer-code1' }, { env: { ...memEnv, SUPABASE_URL: '' } }), // not configured
+  ];
+  const refusalBodies = await Promise.all(refusals.map((r) => r.text()));
+  check('every refusal is a 403', refusals.every((r) => r.status === 403), refusals.map((r) => r.status));
+  check('and every 403 body is byte-identical', refusalBodies.every((b) => b === refusalBodies[0]), refusalBodies);
+
+  seed();
+  mem.enabled = true;
+  mem.supabaseUp = false;
+  const down = await read({ code: 'buyer-code1' });
+  check('a Supabase outage is the same 403, never a stack or detail', down.status === 403 && (await down.text()) === refusalBodies[0]);
+
+  const preflight = await worker.fetch(new Request('https://w.dev/portal-directory', {
+    method: 'OPTIONS', headers: { Origin: 'https://timerich.ai' },
+  }), memEnv);
+  check('the browser preflight is answered for timerich.ai',
+    preflight.status === 204 && preflight.headers.get('Access-Control-Allow-Origin') === 'https://timerich.ai');
 }
 
 globalThis.fetch = baseFetch;

@@ -22,8 +22,9 @@ export default {
 
     // This one route answers its own preflight, because it is locked to a
     // single origin rather than the Worker-wide ALLOWED_ORIGIN list.
+    // Same for Time Rich Members, which the portal calls from timerich.ai only.
     if (request.method === "OPTIONS" &&
-        new URL(request.url).pathname.replace(/\/+$/, "").endsWith("/portal-download")) {
+        /\/portal-(download|directory)$/.test(new URL(request.url).pathname.replace(/\/+$/, ""))) {
       return new Response(null, { status: 204, headers: portalDownloadCors(request) });
     }
 
@@ -65,6 +66,12 @@ export default {
     // portal_directory.
     if (path.endsWith("/portal-directory-sync")) {
       return handleDirectoryBackfill(request, env, cors);
+    }
+
+    // Route: Time Rich Members read (POST /portal-directory). The portal page
+    // sends the member's passcode and gets the profiles back.
+    if (path.endsWith("/portal-directory")) {
+      return handlePortalDirectory(request, env);
     }
 
     // Route: ThriveCart purchase webhook (handles order.success, order.subscription_payment, order.refund)
@@ -2637,6 +2644,129 @@ function queueDirectorySync(env, ctx, page) {
     console.error("[members] directory sync failed:", String(err && err.message));
   });
   if (ctx && typeof ctx.waitUntil === "function") ctx.waitUntil(work);
+}
+
+// ---------------------------------------------------------------------------
+// POST /portal-directory  body: { code }
+//
+// The read side of Time Rich Members. The passcode is checked with
+// portal_get() exactly as /portal-download does, so the rule for who is a
+// member cannot drift. Until the directory_enabled switch is on, only team
+// gets through, so the page can be QA'd before launch without a code release.
+//
+// Every refusal is the same flat 403: a wrong code, a switched-off directory
+// and a Supabase error all look identical from outside. Email and
+// photo_source_url are never selected, so they cannot leak into a response.
+// ---------------------------------------------------------------------------
+const DIRECTORY_PHOTO_URL_TTL_SECONDS = 3600; // 1 hour
+const DIRECTORY_PUBLIC_COLUMNS =
+  "name,hook_line,title,company,company_does,who_they_serve,superpower,linkedin,instagram,other_links,photo_path,photo_status";
+
+async function handlePortalDirectory(request, env) {
+  const cors = portalDownloadCors(request);
+  const deny = () => json({ error: "Forbidden" }, 403, cors);
+
+  const sb = supabaseService(env);
+  if (!sb) return deny();
+
+  let body;
+  try { body = await request.json(); } catch { return deny(); }
+  const code = typeof body?.code === "string" ? body.code.trim() : "";
+  if (!code) return deny();
+
+  let member;
+  try {
+    const res = await fetch(`${sb.base}/rest/v1/rpc/portal_get`, {
+      method: "POST",
+      headers: sb.headers,
+      body: JSON.stringify({ p_code: code }),
+    });
+    if (!res.ok) return deny();
+    const payload = await res.json();
+    if (!payload || payload.ok !== true) return deny();
+    member = payload.member || {};
+  } catch { return deny(); }
+
+  if (member.role !== "team") {
+    try {
+      if (!(await directoryEnabled(sb))) return deny();
+    } catch { return deny(); }
+  }
+
+  let rows;
+  try {
+    const res = await fetch(`${sb.base}/rest/v1/portal_directory?select=${DIRECTORY_PUBLIC_COLUMNS}`, { headers: sb.headers });
+    if (!res.ok) return deny();
+    rows = await res.json();
+  } catch { return deny(); }
+  if (!Array.isArray(rows)) return deny();
+
+  const photoUrls = await signDirectoryPhotos(sb, rows);
+
+  const profiles = rows
+    .map((row) => ({
+      name: row.name || "",
+      hook_line: row.hook_line || "",
+      title: row.title || "",
+      company: row.company || "",
+      company_does: row.company_does || "",
+      who_they_serve: row.who_they_serve || "",
+      superpower: row.superpower || "",
+      linkedin: httpsLink(row.linkedin),
+      instagram: httpsLink(row.instagram),
+      other_links: String(row.other_links || "").split(/\r?\n/).map(httpsLink).filter(Boolean),
+      photo_url: (row.photo_status === "ok" && photoUrls.get(row.photo_path)) || null,
+    }))
+    .filter((profile) => profile.name)
+    .sort((a, b) => a.name.localeCompare(b.name, "en", { sensitivity: "base" }));
+
+  return json({ profiles }, 200, cors);
+}
+
+// True only when the switch is literally on; a missing row means off.
+async function directoryEnabled(sb) {
+  const res = await fetch(`${sb.base}/rest/v1/portal_settings?select=value&key=eq.directory_enabled`, { headers: sb.headers });
+  if (!res.ok) throw new Error(`portal_settings lookup returned ${res.status}`);
+  const rows = await res.json();
+  return Array.isArray(rows) && rows.length > 0 && rows[0].value === true;
+}
+
+// One-hour signed URLs for every stored photo, in a single Storage call.
+// A signing failure costs the photos, not the page: those cards show initials.
+async function signDirectoryPhotos(sb, rows) {
+  const urls = new Map();
+  const paths = rows
+    .filter((row) => row && row.photo_status === "ok" && typeof row.photo_path === "string" && row.photo_path)
+    .map((row) => row.photo_path);
+  if (!paths.length) return urls;
+
+  try {
+    const res = await fetch(`${sb.base}/storage/v1/object/sign/${DIRECTORY_BUCKET}`, {
+      method: "POST",
+      headers: sb.headers,
+      body: JSON.stringify({ expiresIn: DIRECTORY_PHOTO_URL_TTL_SECONDS, paths }),
+    });
+    if (!res.ok) return urls;
+    const signed = await res.json();
+    for (const item of Array.isArray(signed) ? signed : []) {
+      const path = item && (item.signedURL || item.signedUrl);
+      if (item && !item.error && typeof path === "string" && path) {
+        urls.set(item.path, `${sb.base}/storage/v1${path.startsWith("/") ? "" : "/"}${path}`);
+      }
+    }
+  } catch { /* initials instead of photos */ }
+  return urls;
+}
+
+// The link if it is a well-formed https URL, otherwise null.
+function httpsLink(value) {
+  const text = String(value == null ? "" : value).trim();
+  if (!text) return null;
+  try {
+    return new URL(text).protocol === "https:" ? text : null;
+  } catch {
+    return null;
+  }
 }
 
 // Constant-time comparison of two secrets of any length: both are hashed
