@@ -120,6 +120,86 @@ console.log('\nTime Rich Members page — search');
     page.visibleNames().length === 4 && page.status.hidden);
 }
 
+console.log('\nTime Rich Members page — profile pop-up');
+{
+  const FULL = {
+    name: 'Ella Molony Cook', hook_line: "4x founder · 1 exit · Let's get into good trouble",
+    title: 'Founder and CEO', company: 'Time Rich',
+    company_does: 'An AI education platform and founder community.',
+    who_they_serve: 'Founders, operators and creators.',
+    superpower: 'Connector + systems + delegation.',
+    linkedin: 'https://www.linkedin.com/in/ellamolonycook/', instagram: 'https://www.instagram.com/timerichtalk',
+    other_links: ['https://timerichclub.com', 'javascript:alert(1)'],
+    photo_url: 'https://sb.test/storage/v1/object/sign/portal-directory/ella.jpg?token=t',
+  };
+  const page = await open({ reply: { status: 200, body: { profiles: [FULL, PROFILES[1]] } } });
+  const { doc, dom } = page;
+  const key = (k, extra = {}) => doc.dispatchEvent(new dom.window.KeyboardEvent('keydown', { key: k, bubbles: true, ...extra }));
+
+  check('no pop-up before a click', !doc.getElementById('member-modal') || doc.getElementById('member-modal').hidden);
+  const card = page.cards()[0];
+  card.focus();
+  card.click();
+  const modal = doc.getElementById('member-modal');
+  const panel = modal && modal.querySelector('[role="dialog"]');
+  check('clicking a card opens a pop-up over the grid (not a new page)',
+    modal && !modal.hidden && dom.window.location.pathname === '/portal/members.html');
+  check('it lives on <body>, above the portal header', modal && modal.parentNode === doc.body);
+  check('it is a labelled modal dialog',
+    panel && panel.getAttribute('aria-modal') === 'true' && doc.getElementById(panel.getAttribute('aria-labelledby'))?.textContent === 'Ella Molony Cook');
+
+  const order = [...panel.querySelectorAll('img.member-photo, .member-initials, .member-profile-name, .member-profile-hook, .member-profile-meta, .member-profile-section h3, .member-profile-links')]
+    .map((n) => n.classList.contains('member-photo') || n.classList.contains('member-initials') ? 'photo'
+      : n.classList.contains('member-profile-name') ? 'name'
+      : n.classList.contains('member-profile-hook') ? 'hook'
+      : n.classList.contains('member-profile-meta') ? 'title+company'
+      : n.classList.contains('member-profile-links') ? 'links'
+      : n.textContent);
+  check('fields follow the brief: photo, name, hook, title and company, what the company does, who they serve, superpower, links',
+    order.join(' > ') === 'photo > name > hook > title+company > What Time Rich does > Who they serve > Superpower > links', order);
+  check('title and company read as one line', panel.querySelector('.member-profile-meta').textContent === 'Founder and CEO, Time Rich');
+
+  const linkedin = panel.querySelector('a.member-linkedin');
+  check('LinkedIn is the primary button and opens in a new tab safely',
+    linkedin && linkedin.href === FULL.linkedin && linkedin.textContent.trim() === 'LinkedIn' &&
+    linkedin.target === '_blank' && linkedin.rel === 'noopener noreferrer');
+  const icons = [...panel.querySelectorAll('a.member-icon-link')];
+  check('Instagram and other links are small icon links with readable labels',
+    icons.length === 2 && icons[0].href === FULL.instagram && icons[0].getAttribute('aria-label') === 'Ella Molony Cook on Instagram' &&
+    icons[1].getAttribute('aria-label') === 'timerichclub.com', icons.map((a) => a.getAttribute('aria-label')));
+  check('a non-https link is never turned into a link', !panel.querySelector('a[href^="javascript:"]'));
+  check('no contact form and no message box', !panel.querySelector('form, textarea, input'));
+
+  const close = panel.querySelector('.member-modal-close');
+  check('focus moves into the pop-up, on the close button', doc.activeElement === close);
+  const focusables = [...panel.querySelectorAll('a[href], button')];
+  focusables[focusables.length - 1].focus();
+  key('Tab');
+  check('Tab from the last link wraps back to the first control (focus trapped)', doc.activeElement === focusables[0]);
+  key('Tab', { shiftKey: true });
+  check('Shift+Tab from the first control wraps to the last', doc.activeElement === focusables[focusables.length - 1]);
+  page.search.focus();
+  check('focus that lands behind the pop-up is pulled back in', panel.contains(doc.activeElement));
+
+  key('Escape');
+  check('Esc closes it', modal.hidden === true);
+  check('and focus returns to the card that opened it', doc.activeElement === card);
+
+  page.cards()[1].click();
+  check('a profile with no photo shows initials, and no empty sections or links',
+    !modal.hidden && panel.querySelector('.member-initials')?.textContent === 'C' &&
+    panel.querySelectorAll('.member-profile-section').length === 1 && !panel.querySelector('.member-profile-links'),
+    panel.querySelectorAll('.member-profile-section').length);
+  check('opening another profile replaces the content, never stacks it',
+    panel.querySelectorAll('.member-profile-name').length === 1 && panel.querySelector('.member-profile-name').textContent === 'Cher');
+  modal.querySelector('.member-modal-backdrop').click();
+  check('clicking outside the panel closes it', modal.hidden === true);
+  page.cards()[0].click();
+  close.click();
+  check('the close button closes it', modal.hidden === true);
+  check('no script errors while using the pop-up', page.errors.length === 0, page.errors);
+}
+
 console.log('\nTime Rich Members page — states');
 {
   const closed = await open({ reply: { status: 403, body: { error: 'Forbidden' } } });

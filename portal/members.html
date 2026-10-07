@@ -846,6 +846,93 @@
         .member-hook { font-size: 12.5px; }
       }
       .members-note { margin: 0; font-size: 14px; line-height: 1.6; color: #4E5840; }
+
+      /* Profile pop-up. Appended to <body> by the script so it sits above the
+         portal header, which has its own very high z-index. */
+      .member-modal { position: fixed; inset: 0; z-index: 10050; display: grid; place-items: center; padding: 16px; }
+      .member-modal[hidden] { display: none; }
+      .member-modal-backdrop { position: absolute; inset: 0; background: rgba(44, 52, 34, 0.45); backdrop-filter: blur(4px); -webkit-backdrop-filter: blur(4px); }
+      .member-modal-panel {
+        position: relative;
+        width: min(560px, 100%);
+        max-height: calc(100dvh - 32px);
+        overflow-y: auto;
+        padding: 28px;
+        color: #2C3422;
+        background: #FFFDFA;
+        border-radius: 24px;
+        box-shadow: 0 40px 80px -30px rgba(44, 52, 34, 0.55);
+        outline: none;
+      }
+      .member-modal-close {
+        position: absolute;
+        top: 14px;
+        right: 14px;
+        display: grid;
+        place-items: center;
+        width: 40px;
+        height: 40px;
+        border: 0;
+        border-radius: 999px;
+        background: transparent;
+        color: #2C3422;
+        cursor: pointer;
+      }
+      .member-modal-close:hover { background: rgba(44, 52, 34, 0.07); }
+      .member-modal-close:focus-visible,
+      .member-modal-panel a:focus-visible { outline: 2px solid #2C3422; outline-offset: 2px; }
+      .member-modal-close svg { width: 18px; height: 18px; }
+
+      .member-profile-top { display: flex; gap: 18px; align-items: center; padding-right: 36px; }
+      .member-profile-top .member-photo,
+      .member-profile-top .member-initials { width: 112px; flex: none; border-radius: 18px; font-size: 38px; }
+      .member-profile-name { margin: 0; font-family: 'Space Grotesk', sans-serif; font-weight: 700; font-size: 24px; line-height: 1.2; letter-spacing: -0.01em; }
+      .member-profile-hook { margin: 6px 0 0; font-size: 15px; line-height: 1.45; }
+      .member-profile-meta { margin: 8px 0 0; font-family: 'JetBrains Mono', monospace; font-size: 12px; color: #6B735F; }
+      .member-profile-section { margin-top: 22px; }
+      .member-profile-section h3 {
+        margin: 0 0 6px;
+        font-family: 'JetBrains Mono', monospace;
+        font-size: 11px;
+        font-weight: 600;
+        letter-spacing: 0.12em;
+        text-transform: uppercase;
+        color: #6B735F;
+      }
+      .member-profile-section p { margin: 0; font-size: 15px; line-height: 1.6; white-space: pre-line; }
+      .member-profile-links { display: flex; flex-wrap: wrap; align-items: center; gap: 10px; margin-top: 26px; }
+      .member-linkedin {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        min-height: 44px;
+        padding: 0 20px;
+        border-radius: 999px;
+        background: #2C3422;
+        color: #FFFDFA;
+        font-weight: 600;
+        font-size: 14px;
+        text-decoration: none;
+      }
+      .member-linkedin:hover { background: #424B36; }
+      .member-linkedin svg { width: 16px; height: 16px; fill: currentColor; }
+      .member-icon-link {
+        display: grid;
+        place-items: center;
+        width: 44px;
+        height: 44px;
+        border-radius: 999px;
+        border: 1px solid rgba(44, 52, 34, 0.14);
+        color: #2C3422;
+      }
+      .member-icon-link:hover { background: #CCEEA0; border-color: #CCEEA0; }
+      .member-icon-link svg { width: 18px; height: 18px; }
+      @media (max-width: 479px) {
+        .member-modal-panel { padding: 22px 18px; border-radius: 20px; }
+        .member-profile-top { flex-direction: column; align-items: flex-start; }
+        .member-profile-top .member-photo,
+        .member-profile-top .member-initials { width: 96px; }
+      }
     </style>
 
     <header class="space-y-3">
@@ -1110,6 +1197,7 @@
         var button = el('button', 'member-card');
         button.type = 'button';
         button.setAttribute('data-member-index', String(index));
+        button.setAttribute('aria-haspopup', 'dialog');
         button.appendChild(photo(profile));
         button.appendChild(el('span', 'member-name', str(profile.name)));
         if (str(profile.hook_line)) button.appendChild(el('span', 'member-hook', str(profile.hook_line)));
@@ -1154,6 +1242,162 @@
         setStatus(profiles.length && !shown ? MSG.noMatch : '');
       }
 
+      /* ---- profile pop-up ------------------------------------------------ */
+
+      // Static markup only; no member text ever goes through innerHTML.
+      var ICONS = {
+        close: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path stroke-linecap="round" d="M6 6l12 12M18 6L6 18"/></svg>',
+        linkedin: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20.45 20.45h-3.56v-5.57c0-1.33-.02-3.04-1.85-3.04-1.85 0-2.14 1.45-2.14 2.94v5.67H9.34V9h3.42v1.56h.05c.48-.9 1.64-1.85 3.37-1.85 3.6 0 4.27 2.37 4.27 5.46v6.28zM5.34 7.43a2.06 2.06 0 110-4.13 2.06 2.06 0 010 4.13zM7.12 20.45H3.56V9h3.56v11.45zM22.22 0H1.77C.79 0 0 .77 0 1.72v20.56C0 23.23.79 24 1.77 24h20.45c.98 0 1.78-.77 1.78-1.72V1.72C24 .77 23.2 0 22.22 0z"/></svg>',
+        instagram: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r="1" fill="currentColor" stroke="none"/></svg>',
+        link: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M13.19 8.69a4.5 4.5 0 011.24 7.24l-4.5 4.5a4.5 4.5 0 01-6.36-6.36l1.76-1.76m13.35-.62l1.76-1.76a4.5 4.5 0 00-6.36-6.36l-4.5 4.5a4.5 4.5 0 001.24 7.24"/></svg>'
+      };
+
+      var modal = null;
+      var panel = null;
+      var closeButton = null;
+      var content = null;
+      var returnFocus = null;
+
+      function outLink(href, className, label, icon) {
+        var a = el('a', className);
+        a.href = href;
+        a.target = '_blank';
+        a.rel = 'noopener noreferrer';
+        a.setAttribute('aria-label', label);
+        if (icon) a.insertAdjacentHTML('afterbegin', ICONS[icon]);
+        return a;
+      }
+
+      function hostOf(href) {
+        try { return new URL(href).hostname.replace(/^www\./, ''); } catch (e) { return href; }
+      }
+
+      function buildModal() {
+        modal = el('div', 'member-modal');
+        modal.id = 'member-modal';
+        modal.hidden = true;
+
+        var backdrop = el('div', 'member-modal-backdrop');
+        backdrop.addEventListener('click', closeProfile);
+
+        panel = el('div', 'member-modal-panel');
+        panel.setAttribute('role', 'dialog');
+        panel.setAttribute('aria-modal', 'true');
+        panel.setAttribute('aria-labelledby', 'member-modal-name');
+        panel.tabIndex = -1;
+
+        closeButton = el('button', 'member-modal-close');
+        closeButton.type = 'button';
+        closeButton.setAttribute('aria-label', 'Close profile');
+        closeButton.insertAdjacentHTML('afterbegin', ICONS.close);
+        closeButton.addEventListener('click', closeProfile);
+
+        content = el('div');
+        panel.appendChild(closeButton);
+        panel.appendChild(content);
+        modal.appendChild(backdrop);
+        modal.appendChild(panel);
+        // On <body>, so it sits above the portal header.
+        document.body.appendChild(modal);
+      }
+
+      function section(heading, text) {
+        if (!str(text)) return null;
+        var block = el('section', 'member-profile-section');
+        block.appendChild(el('h3', '', heading));
+        block.appendChild(el('p', '', str(text)));
+        return block;
+      }
+
+      // Order as the brief: photo, name, hook line, title and company, what
+      // the company does, who they serve, superpower, links.
+      function openProfile(index) {
+        var profile = profiles[index];
+        if (!profile) return;
+        if (!modal) buildModal();
+        content.textContent = '';
+
+        var top = el('div', 'member-profile-top');
+        top.appendChild(photo(profile));
+        var who = el('div');
+        var name = el('h2', 'member-profile-name', str(profile.name));
+        name.id = 'member-modal-name';
+        who.appendChild(name);
+        if (str(profile.hook_line)) who.appendChild(el('p', 'member-profile-hook', str(profile.hook_line)));
+        if (meta(profile)) who.appendChild(el('p', 'member-profile-meta', meta(profile)));
+        top.appendChild(who);
+        content.appendChild(top);
+
+        var company = str(profile.company);
+        [
+          section(company ? 'What ' + company + ' does' : 'What their company does', profile.company_does),
+          section('Who they serve', profile.who_they_serve),
+          section('Superpower', profile.superpower)
+        ].forEach(function (block) { if (block) content.appendChild(block); });
+
+        // LinkedIn is the primary button; everything else is a small icon.
+        var links = el('div', 'member-profile-links');
+        var linkedin = safeHttps(profile.linkedin);
+        if (linkedin) {
+          var primary = outLink(linkedin, 'member-linkedin', str(profile.name) + ' on LinkedIn', 'linkedin');
+          primary.appendChild(document.createTextNode('LinkedIn'));
+          links.appendChild(primary);
+        }
+        var instagram = safeHttps(profile.instagram);
+        if (instagram) links.appendChild(outLink(instagram, 'member-icon-link', str(profile.name) + ' on Instagram', 'instagram'));
+        (Array.isArray(profile.other_links) ? profile.other_links : []).forEach(function (raw) {
+          var href = safeHttps(raw);
+          if (href) links.appendChild(outLink(href, 'member-icon-link', hostOf(href), 'link'));
+        });
+        if (links.children.length) content.appendChild(links);
+
+        returnFocus = document.activeElement;
+        modal.hidden = false;
+        panel.scrollTop = 0;
+        closeButton.focus();
+      }
+
+      function closeProfile() {
+        if (!modal || modal.hidden) return;
+        modal.hidden = true;
+        if (returnFocus && typeof returnFocus.focus === 'function') returnFocus.focus();
+        returnFocus = null;
+      }
+
+      function focusable() {
+        return Array.prototype.filter.call(
+          panel.querySelectorAll('a[href], button:not([disabled])'),
+          function (node) { return !node.hidden; }
+        );
+      }
+
+      // Esc closes; Tab and Shift+Tab stay inside the profile while it is open.
+      document.addEventListener('keydown', function (event) {
+        if (!modal || modal.hidden) return;
+        if (event.key === 'Escape') {
+          event.preventDefault();
+          closeProfile();
+          return;
+        }
+        if (event.key !== 'Tab') return;
+        var items = focusable();
+        if (!items.length) { event.preventDefault(); return; }
+        var first = items[0];
+        var last = items[items.length - 1];
+        if (event.shiftKey && (document.activeElement === first || !panel.contains(document.activeElement))) {
+          event.preventDefault();
+          last.focus();
+        } else if (!event.shiftKey && (document.activeElement === last || !panel.contains(document.activeElement))) {
+          event.preventDefault();
+          first.focus();
+        }
+      });
+
+      // Focus that lands outside (a click on the page behind) is pulled back.
+      document.addEventListener('focusin', function (event) {
+        if (modal && !modal.hidden && !modal.contains(event.target)) closeButton.focus();
+      });
+
       function load() {
         var cfg = window.TR_PORTAL_CONFIG;
         var endpoint = cfg && typeof cfg.directoryUrl === 'string' ? cfg.directoryUrl.trim() : '';
@@ -1181,6 +1425,10 @@
         search = document.getElementById('members-search');
         if (!grid || !status || !search) return;
         search.addEventListener('input', applySearch);
+        grid.addEventListener('click', function (event) {
+          var cardButton = event.target.closest('.member-card');
+          if (cardButton) openProfile(Number(cardButton.getAttribute('data-member-index')));
+        });
         setStatus(MSG.loading);
         load();
       });
