@@ -978,29 +978,18 @@ Core Rules:
 
   <script>
     // === SMOOTH PAGE TRANSITIONS ===
-    // Internal .html links fade the page out before navigating. The fade is
-    // decoration; the navigation is the job, so every path below ends in a
-    // navigation even when the animation never runs or is cut short.
-    (function () {
-      var FADE_MS = 280;
-
-      var reduced = false;
-      try {
-        reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-      } catch (e) { /* no matchMedia: treat as no preference */ }
-
-      // Coming back via the Back button can restore this page from the bfcache
-      // with the fade still applied, which shows a blank screen.
-      //
-      // Only this script's own fade is undone. Every portal page sets its own
-      // entrance transform inline on <body>, so clearing that unconditionally
-      // would kill the page's open animation on a normal load.
-      var LEAVING = 'data-trp-leaving';
-      window.addEventListener('pageshow', function () {
-        if (!document.body.hasAttribute(LEAVING)) return;
-        document.body.removeAttribute(LEAVING);
-        document.body.style.opacity = '';
-        document.body.style.transform = '';
+    // Intercept all internal nav links for smooth exit
+    document.addEventListener('DOMContentLoaded', () => {
+      document.querySelectorAll('a[href]').forEach(link => {
+        const href = link.getAttribute('href');
+        if (href && !href.startsWith('http') && !href.startsWith('#') && !href.startsWith('mailto') && href.endsWith('.html')) {
+          link.addEventListener('click', (e) => {
+            e.preventDefault();
+            document.body.style.opacity = '0';
+            document.body.style.transform = 'scale(0.98)';
+            setTimeout(() => { window.location.href = href; }, window.innerWidth < 768 ? 120 : 280);
+          });
+        } origin/main
       });
 
       document.addEventListener('DOMContentLoaded', function () {
@@ -1049,6 +1038,111 @@ Core Rules:
         });
       });
     })();
+  </script>
+
+
+  <!-- === GLOBAL SEARCH LOGIC === -->
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      const searchInputs = document.querySelectorAll('input[placeholder="Search courses..."]');
+      if (searchInputs.length === 0) return;
+      
+      const searchIndex = [
+        { title: "Dashboard", url: "dashboard.html", desc: "Your progress and overview", keywords: "home start overview progress" },
+        { title: "Curriculum", url: "curriculum.html", desc: "All weeks and modules", keywords: "modules weeks course lessons" },
+        { title: "Resources", url: "resources.html", desc: "AI Prompts & Tools", keywords: "prompts tools library downloads assets" },
+        { title: "Live Sessions", url: "sessions.html", desc: "Upcoming calls and recordings", keywords: "zoom recordings calls events calendar" },
+        { title: "Week 1: Open Business Surgery", url: "lesson.html", desc: "Training Your Agent", keywords: "week 1 monday training your agent" },
+        { title: "Week 2: Your AI Operating System", url: "lesson.html", desc: "Expert Q&A", keywords: "week 2 expert q&a" },
+        { title: "Week 3: The AI Content Machine", url: "lesson.html", desc: "Storytelling for GTM", keywords: "week 3 storytelling for gtm" },
+        { title: "Week 4: Unfair AI Advantage", url: "lesson.html", desc: "Taylor Offer, last call", keywords: "week 4 taylor offer" }
+      ];
+
+      searchInputs.forEach(searchInput => {
+        // Create results container if it doesn't exist next to this input
+        const wrapper = searchInput.parentElement;
+        wrapper.style.position = 'relative'; // Ensure relative parent
+        
+        const resultsBox = document.createElement('div');
+        resultsBox.className = "absolute top-full right-0 sm:right-auto sm:left-0 mt-4 w-[280px] sm:w-[320px] premium-dropdown rounded-[1.2rem] p-2 flex flex-col gap-1 opacity-0 pointer-events-none translate-y-[-10px] transition-all duration-300 ease-out z-[9999] max-h-[60vh] overflow-y-auto hidden";
+        wrapper.appendChild(resultsBox);
+
+        // Keep dropdown open when clicking inside it
+        resultsBox.addEventListener('mousedown', (e) => {
+          e.preventDefault(); // Prevents input from losing focus
+        });
+
+        const performSearch = (query) => {
+          while (resultsBox.firstChild) resultsBox.removeChild(resultsBox.firstChild);
+          query = query.toLowerCase().trim();
+          
+          if (!query) {
+            resultsBox.classList.add('opacity-0', 'pointer-events-none', 'translate-y-[-10px]');
+            resultsBox.classList.add('hidden');
+            return;
+          }
+
+          resultsBox.classList.remove('hidden');
+          // Trigger reflow for animation
+          void resultsBox.offsetWidth;
+          resultsBox.classList.remove('opacity-0', 'pointer-events-none', 'translate-y-[-10px]');
+          
+          const results = searchIndex.filter(item => 
+            item.title.toLowerCase().includes(query) || 
+            item.keywords.includes(query) || 
+            item.desc.toLowerCase().includes(query)
+          );
+
+          if (results.length === 0) {
+            const noResults = document.createElement('div');
+            noResults.className = "px-4 py-3 text-xs text-brand-mid italic";
+            noResults.textContent = `No results found for "${query}"`;
+            resultsBox.appendChild(noResults);
+            return;
+          }
+
+          results.forEach(item => {
+            const a = document.createElement('a');
+            a.href = item.url;
+            a.className = "flex flex-col px-4 py-2.5 rounded-xl hover:bg-black/5 transition-colors group";
+            // Built as nodes, not markup, so no value is ever reinterpreted as HTML.
+            const sTitle = document.createElement('span');
+            sTitle.className = "text-xs font-bold text-brand-deep group-hover:text-[#4d8a1e] transition-colors";
+            sTitle.textContent = item.title;
+            const sDesc = document.createElement('span');
+            sDesc.className = "text-[10px] text-brand-mid mt-0.5";
+            sDesc.textContent = item.desc;
+            a.appendChild(sTitle);
+            a.appendChild(sDesc);
+            // Add smooth exit on click
+            a.addEventListener('click', (e) => {
+              if (item.url !== '#') {
+                e.preventDefault();
+                document.body.style.opacity = '0';
+                document.body.style.transform = 'scale(0.98)';
+                setTimeout(() => { window.location.href = item.url; }, window.innerWidth < 768 ? 120 : 280);
+              }
+            });
+            resultsBox.appendChild(a);
+          });
+        };
+
+        searchInput.addEventListener('input', (e) => performSearch(e.target.value));
+        
+        searchInput.addEventListener('focus', (e) => {
+          if (e.target.value.trim()) performSearch(e.target.value);
+        });
+
+        searchInput.addEventListener('blur', () => {
+          resultsBox.classList.add('opacity-0', 'pointer-events-none', 'translate-y-[-10px]');
+          setTimeout(() => {
+            if(resultsBox.classList.contains('opacity-0')) {
+                resultsBox.classList.add('hidden');
+            }
+          }, 300);
+        });
+      });
+    });
   </script>
 
 </body>
