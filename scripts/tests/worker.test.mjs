@@ -152,7 +152,7 @@ console.log('\n/superhuman — junk and edge values');
 
   await post('/superhuman', { ...FULL, website: '' });
   const normal = pageBody().properties;
-  check('a LinkedIn answer does not touch Website', !('Website' in normal) && normal.LinkedIn.url.includes('linkedin.com'));
+  check('a LinkedIn answer does not touch Website', !('Website' in normal) && new URL(normal.LinkedIn.url).origin === 'https://www.linkedin.com');
 
   await post('/superhuman', { ...FULL, linkedin: '', website: '' });
   const neither = pageBody().properties;
@@ -295,7 +295,7 @@ const calFetch = async (url, init) => {
     if (notion.down) return new Response('service unavailable', { status: 503 });
     return new Response(JSON.stringify({ id: 'page-sh-1' }), { status: 200 });
   }
-  if (u.includes('slack.com/api/chat.postMessage')) {
+  if (new URL(u).origin === 'https://slack.com' && new URL(u).pathname === '/api/chat.postMessage') {
     if (slack.down) return new Response(JSON.stringify({ ok: false, error: 'channel_not_found' }), { status: 200 });
     slack.posts.push(JSON.parse(init.body));
     return new Response(JSON.stringify({ ok: true, ts: '1725000000.0001' }), { status: 200 });
@@ -381,7 +381,7 @@ console.log('\n/cal-webhook — BOOKING_CREATED with a matching application');
   const t = slackText();
   check('posts to Slack', slack.posts.length === 1);
   check('to the configured channel', slack.posts[0].channel === 'C0TESTING');
-  check('with the bot token', calls.find((c) => c.url.includes('slack.com')).init.headers.Authorization === 'Bearer xoxb-test');
+  check('with the bot token', calls.find((c) => new URL(c.url).origin === 'https://slack.com').init.headers.Authorization === 'Bearer xoxb-test');
   check('names the attendee', t.includes('Jordan Reyes'), t);
   check('shows the email', t.includes('jordan@example.com'));
   check('shows New York time', t.includes('New York — Thu, Sep 10, 2:00 PM EDT'), t);
@@ -529,7 +529,7 @@ console.log('\nPortal members: ThriveCart buyer and /onboard +1 upserts');
   const pFetch = async (url, init) => {
     url = String(url);
     calls.push({ url, init });
-    if (url.startsWith(SB_URL)) {
+    if (new URL(url).origin === new URL(SB_URL).origin) {
       if (sbDown) throw new Error('network down');
       sb.push({ url, headers: init.headers, body: JSON.parse(init.body) });
       return new Response(JSON.stringify({ ok: true, id: 'm-1', created: true, passcode_never: 'x' }), { status: 200 });
