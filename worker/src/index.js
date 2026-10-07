@@ -2446,20 +2446,185 @@ async function upsertDirectoryRow(sb, row) {
   if (!res.ok) throw new Error(`portal_directory upsert returned ${res.status}`);
 }
 
+// The photo columns already stored for this member, or null for a new row.
+async function findDirectoryRow(sb, email) {
+  const res = await fetch(
+    `${sb.base}/rest/v1/portal_directory?select=photo_path,photo_status,photo_source_url&email=eq.${encodeURIComponent(email)}`,
+    { headers: sb.headers }
+  );
+  if (!res.ok) throw new Error(`portal_directory lookup returned ${res.status}`);
+  const rows = await res.json();
+  return Array.isArray(rows) && rows.length ? rows[0] : null;
+}
+
 // Copies one Notion questionnaire row into portal_directory.
-// Returns "listed" or "skipped"; throws only when Supabase itself fails.
+// Returns { outcome: "listed" | "skipped", photo }, where photo is "ok",
+// "failed", "missing" or "kept". Throws only when Supabase itself fails.
 async function syncDirectoryProfile(env, properties) {
   const sb = supabaseService(env);
   if (!sb) throw new Error("Supabase is not configured");
 
   const email = normKey(calProp(properties && properties["Email"]));
-  if (!email) return "skipped";
+  if (!email) return { outcome: "skipped" };
 
   const member = await findListedMember(sb, email);
-  if (!member) return "skipped";
+  if (!member) return { outcome: "skipped" };
 
-  await upsertDirectoryRow(sb, directoryRowFromNotion(email, member.role, properties));
-  return "listed";
+  const row = directoryRowFromNotion(email, member.role, properties);
+  const existing = await findDirectoryRow(sb, email);
+  const photo = await syncDirectoryPhoto(env, sb, row, existing, calProp(properties["Photo Link"]).trim());
+
+  await upsertDirectoryRow(sb, row);
+  return { outcome: "listed", photo };
+}
+
+// ---------------------------------------------------------------------------
+// Photos: a Google Drive link in the questionnaire becomes a private image in
+// the "portal-directory" bucket, served later only as a signed URL.
+//
+// The download is retried only when it can change something: a new link, or
+// the same link after a failed or missing attempt (someone who fixed their
+// sharing setting but kept the link). Otherwise the stored photo is kept and
+// Drive is not called at all.
+//
+// The link is never logged, and neither is an error object, because either
+// could carry it. Failures are reported to the team as one Slack line.
+// ---------------------------------------------------------------------------
+const DIRECTORY_BUCKET = "portal-directory";
+const DIRECTORY_PHOTO_MAX_BYTES = 5 * 1024 * 1024;
+const DIRECTORY_PHOTO_TYPES = { "image/jpeg": "jpg", "image/png": "png", "image/webp": "webp" };
+
+// Sets the photo columns on `row` and returns what happened.
+async function syncDirectoryPhoto(env, sb, row, existing, link) {
+  if (!link) {
+    // Notion keeps an earlier link when a resubmission leaves it empty, so no
+    // link here means the member has never given one.
+    if (!existing || existing.photo_status !== "ok") row.photo_status = "missing";
+    return existing && existing.photo_status === "ok" ? "kept" : "missing";
+  }
+
+  const unchanged = existing && existing.photo_source_url === link && existing.photo_status === "ok";
+  if (unchanged) return "kept";
+
+  const image = await downloadDrivePhoto(link);
+  if (!image) {
+    // Keep any earlier photo_path and photo_source_url: the next attempt
+    // compares against the last link that actually worked.
+    row.photo_status = "failed";
+    await notifyPhotoFailed(env, row.name);
+    return "failed";
+  }
+
+  const path = `${await sha256Hex(row.email)}.${image.ext}`;
+  const uploaded = await fetch(`${sb.base}/storage/v1/object/${DIRECTORY_BUCKET}/${path}`, {
+    method: "POST",
+    headers: { apikey: sb.headers.apikey, Authorization: sb.headers.Authorization, "Content-Type": image.type, "x-upsert": "true" },
+    body: image.bytes,
+  });
+  if (!uploaded.ok) throw new Error(`photo upload returned ${uploaded.status}`);
+
+  // A new file type leaves the old object behind under the other extension.
+  if (existing && existing.photo_path && existing.photo_path !== path) {
+    await fetch(`${sb.base}/storage/v1/object/${DIRECTORY_BUCKET}/${existing.photo_path}`, {
+      method: "DELETE",
+      headers: { apikey: sb.headers.apikey, Authorization: sb.headers.Authorization },
+    }).catch(() => {});
+  }
+
+  row.photo_path = path;
+  row.photo_status = "ok";
+  row.photo_source_url = link;
+  return "ok";
+}
+
+// The Drive file id from the three link shapes people paste:
+//   https://drive.google.com/file/d/<id>/view?usp=sharing
+//   https://drive.google.com/open?id=<id>
+//   https://drive.google.com/uc?id=<id>&export=download
+function driveFileId(link) {
+  let url;
+  try { url = new URL(link); } catch { return null; }
+  if (url.protocol !== "https:") return null;
+  if (!/^(drive|docs)\.google\.com$/.test(url.hostname)) return null;
+
+  const id = /^\/file\/d\/([^/]+)/.test(url.pathname)
+    ? url.pathname.match(/^\/file\/d\/([^/]+)/)[1]
+    : (/^\/(open|uc)$/.test(url.pathname) ? url.searchParams.get("id") : null);
+  return id && /^[A-Za-z0-9_-]{10,}$/.test(id) ? id : null;
+}
+
+// Downloads a publicly shared Drive file. Returns { bytes, type, ext } only
+// for a JPEG, PNG or WebP of at most 5 MB; anything else (a bad link, Drive's
+// HTML sign-in page for a file that is not shared, a huge file) is null.
+async function downloadDrivePhoto(link) {
+  const id = driveFileId(link);
+  if (!id) return null;
+
+  let res;
+  try {
+    res = await fetch(`https://drive.google.com/uc?export=download&id=${encodeURIComponent(id)}`, { redirect: "follow" });
+  } catch {
+    return null;
+  }
+  const type = String(res.headers.get("Content-Type") || "").split(";")[0].trim().toLowerCase();
+  const ext = DIRECTORY_PHOTO_TYPES[type];
+  const declared = Number(res.headers.get("Content-Length"));
+  if (!res.ok || !ext || (declared && declared > DIRECTORY_PHOTO_MAX_BYTES)) {
+    try { await res.body?.cancel(); } catch { /* nothing to free */ }
+    return null;
+  }
+
+  const bytes = await readAtMost(res, DIRECTORY_PHOTO_MAX_BYTES);
+  return bytes && bytes.byteLength ? { bytes, type, ext } : null;
+}
+
+// Reads a response body, giving up (null) as soon as it passes `max` bytes,
+// so a file that lies about its size is never held in memory whole.
+async function readAtMost(res, max) {
+  if (!res.body) return null;
+  const reader = res.body.getReader();
+  const chunks = [];
+  let size = 0;
+  try {
+    for (;;) {
+      const { done, value } = await reader.read();
+      if (done) break;
+      size += value.byteLength;
+      if (size > max) {
+        await reader.cancel().catch(() => {});
+        return null;
+      }
+      chunks.push(value);
+    }
+  } catch {
+    return null;
+  }
+  const out = new Uint8Array(size);
+  let offset = 0;
+  for (const chunk of chunks) { out.set(chunk, offset); offset += chunk.byteLength; }
+  return out;
+}
+
+async function sha256Hex(text) {
+  const digest = await crypto.subtle.digest("SHA-256", new TextEncoder().encode(String(text)));
+  return [...new Uint8Array(digest)].map((b) => b.toString(16).padStart(2, "0")).join("");
+}
+
+// One line to the questionnaire Slack channel. Never the link itself.
+async function notifyPhotoFailed(env, name) {
+  const webhook = env && env.SLACK_QUESTIONNAIRE_WEBHOOK_URL;
+  if (!webhook) return;
+  const who = slackEscape(String(name || "").trim() || "a member");
+  try {
+    const res = await fetch(webhook, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ text: `Photo link failed for ${who}. Ask them to set sharing to Anyone with the link.` }),
+    });
+    if (!res.ok) console.error("[members] photo slack webhook returned", res.status);
+  } catch {
+    console.error("[members] photo slack webhook request failed");
+  }
 }
 
 // Called after the questionnaire is safely in Notion. `page` is Notion's reply
@@ -2507,7 +2672,7 @@ async function handleDirectoryBackfill(request, env, cors) {
     return json({ ok: false, error: "The directory sync is not configured" }, 503, cors);
   }
 
-  const counts = { processed: 0, listed: 0, skipped: 0, failed: 0 };
+  const counts = { processed: 0, listed: 0, skipped: 0, failed: 0, photo_failed: 0 };
   let cursor = null;
   do {
     const res = await fetch(`https://api.notion.com/v1/databases/${dbId}/query`, {
@@ -2521,8 +2686,9 @@ async function handleDirectoryBackfill(request, env, cors) {
     for (const row of data.results || []) {
       counts.processed++;
       try {
-        const outcome = await syncDirectoryProfile(env, row.properties || {});
-        counts[outcome]++;
+        const result = await syncDirectoryProfile(env, row.properties || {});
+        counts[result.outcome]++;
+        if (result.photo === "failed") counts.photo_failed++;
       } catch (err) {
         counts.failed++;
         console.error("[members] backfill row failed:", String(err && err.message));

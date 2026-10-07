@@ -1,6 +1,6 @@
 // Worker mapping tests: mock Notion's API, POST payloads, assert what we'd write.
 import worker from '../../worker/src/index.js';
-import { createHmac } from 'node:crypto';
+import { createHmac, createHash } from 'node:crypto';
 
 const env = {
   NOTION_TOKEN: 'secret_test',
@@ -544,15 +544,24 @@ const mem = {
   notionSaveOk: true,
   supabaseUp: true,
   backfillPages: [],  // pages of Notion rows the backfill reads
+  drive: {},          // Drive files by id: { type, bytes, declared?, status? }
+  driveHits: [],
+  uploads: [],
+  deleted: [],
+  slack: [],
   calls: [],
   logs: [],
 };
+
+const ADA_PHOTO_ID = 'AdaPhotoFile_0123456789';
+const jpeg = (bytes = 40000) => ({ type: 'image/jpeg', bytes, declared: bytes });
 
 const memFetch = async (url, init = {}) => {
   url = String(url);
   mem.calls.push({ url, init });
   const method = init.method || 'GET';
-  const body = init.body ? JSON.parse(init.body) : null;
+  // Photo uploads send raw image bytes; only text bodies are JSON.
+  const body = typeof init.body === 'string' ? JSON.parse(init.body) : null;
   const ok = (data, status = 200) => new Response(JSON.stringify(data), { status });
 
   if (url.startsWith('https://api.notion.com/v1/databases/db-shq/query')) {
@@ -575,10 +584,35 @@ const memFetch = async (url, init = {}) => {
       const wanted = decodeURIComponent(url.split('email=ilike.')[1] || '').toLowerCase();
       return ok(mem.members.filter((m) => m.active && m.email.toLowerCase() === wanted));
     }
+    if (url.includes('/portal_directory?select=') && method === 'GET') {
+      const wanted = decodeURIComponent(url.split('email=eq.')[1] || '');
+      const row = mem.directory[wanted];
+      return ok(row ? [{ photo_path: row.photo_path ?? null, photo_status: row.photo_status ?? 'missing', photo_source_url: row.photo_source_url ?? null }] : []);
+    }
     if (url.includes('/portal_directory?on_conflict=email') && method === 'POST') {
-      mem.directory[body.email] = { ...(mem.directory[body.email] || {}), ...body, _prefer: init.headers.Prefer };
+      // Merge-duplicates only updates the columns sent, like PostgREST.
+      const { _prefer, ...rest } = body;
+      mem.directory[body.email] = { ...(mem.directory[body.email] || {}), ...rest, _prefer: init.headers.Prefer };
       return new Response(null, { status: 201 });
     }
+  }
+  if (url.startsWith('https://sb.test/storage/v1/object/portal-directory/')) {
+    const path = url.split('/portal-directory/')[1];
+    if (method === 'DELETE') { mem.deleted.push(path); return ok({}); }
+    mem.uploads.push({ path, type: init.headers['Content-Type'], upsert: init.headers['x-upsert'], size: init.body.byteLength });
+    return ok({ Key: 'portal-directory/' + path });
+  }
+  if (url.startsWith('https://drive.google.com/uc?export=download&id=')) {
+    const id = decodeURIComponent(url.split('id=')[1]);
+    mem.driveHits.push(id);
+    const file = mem.drive[id] || { type: 'text/html; charset=utf-8', bytes: 3000 }; // Drive's sign-in page
+    const headers = { 'Content-Type': file.type };
+    if (file.declared !== undefined) headers['Content-Length'] = String(file.declared);
+    return new Response(new Uint8Array(file.bytes), { status: file.status || 200, headers });
+  }
+  if (url === 'https://hooks.slack.test/questionnaire') {
+    mem.slack.push(body.text);
+    return ok({});
   }
   return ok({});
 };
@@ -590,6 +624,11 @@ function resetMembers() {
   mem.notionSaveOk = true;
   mem.supabaseUp = true;
   mem.backfillPages = [];
+  mem.drive = { [ADA_PHOTO_ID]: jpeg() };
+  mem.driveHits = [];
+  mem.uploads = [];
+  mem.deleted = [];
+  mem.slack = [];
   mem.calls = [];
   mem.logs = [];
 }
@@ -638,7 +677,7 @@ const ADA = {
   company_does: 'We build engines that compute.',
   who_you_serve: 'Founders who think in systems.',
   bio: '4x founder, first programmer',
-  photo_link: 'https://drive.google.com/file/d/abc123/view',
+  photo_link: 'https://drive.google.com/file/d/' + ADA_PHOTO_ID + '/view?usp=sharing',
   superpower: 'I turn vague ideas into running systems.',
 };
 
@@ -746,6 +785,125 @@ console.log('\nTime Rich Members — questionnaire sync');
     res.status === 200 && !mem.calls.some((c) => c.url.startsWith('https://sb.test/')));
 }
 
+console.log('\nTime Rich Members — photos');
+{
+  const photoEnv = { ...memEnv, SLACK_QUESTIONNAIRE_WEBHOOK_URL: 'https://hooks.slack.test/questionnaire' };
+  const adaPath = createHash('sha256').update('ada@example.com').digest('hex') + '.jpg';
+  const photoAlerts = () => mem.slack.filter((t) => t.startsWith('Photo link failed'));
+  const linkLeaked = () => mem.logs.some((l) => l.includes('drive.google.com') || l.includes('AdaPhotoFile') || l.includes('NewPhoto'));
+  const listAda = () => { mem.members = [{ email: 'ada@example.com', role: 'buyer', active: true }]; };
+
+  // 1. A working, publicly shared JPEG.
+  resetMembers(); listAda();
+  await submitQuestionnaire(ADA, photoEnv);
+  let row = mem.directory['ada@example.com'];
+  check('photo success: stored as <sha256(email)>.jpg, status ok',
+    row.photo_status === 'ok' && row.photo_path === adaPath, row);
+  check('photo success: uploaded once with its image type and upsert on',
+    mem.uploads.length === 1 && mem.uploads[0].path === adaPath && mem.uploads[0].type === 'image/jpeg' && mem.uploads[0].upsert === 'true', mem.uploads);
+  check('photo success: the link is remembered in photo_source_url', row.photo_source_url === ADA.photo_link);
+  check('photo success: no Slack alert', photoAlerts().length === 0);
+
+  // 2. Drive answers with its HTML sign-in page (file not shared publicly).
+  resetMembers(); listAda();
+  mem.drive = {};
+  await submitQuestionnaire(ADA, photoEnv);
+  row = mem.directory['ada@example.com'];
+  check('HTML response: status failed, nothing uploaded', row.photo_status === 'failed' && mem.uploads.length === 0, row);
+  check('HTML response: Slack told exactly once, by name',
+    photoAlerts().length === 1 &&
+    photoAlerts()[0] === 'Photo link failed for Ada Lovelace. Ask them to set sharing to Anyone with the link.', mem.slack);
+  check('HTML response: the link is not saved as the last good one', !row.photo_source_url);
+  check('HTML response: the link is never logged', !linkLeaked(), mem.logs);
+
+  // 3. Too big, whether the size is declared up front or only found while reading.
+  resetMembers(); listAda();
+  mem.drive = { [ADA_PHOTO_ID]: jpeg(6 * 1024 * 1024) };
+  await submitQuestionnaire(ADA, photoEnv);
+  check('oversize (Content-Length): failed, nothing uploaded, Slack once',
+    mem.directory['ada@example.com'].photo_status === 'failed' && mem.uploads.length === 0 && photoAlerts().length === 1);
+  resetMembers(); listAda();
+  mem.drive = { [ADA_PHOTO_ID]: { type: 'image/png', bytes: 5 * 1024 * 1024 + 1 } };
+  await submitQuestionnaire(ADA, photoEnv);
+  check('oversize (no Content-Length, found while reading): failed, nothing uploaded',
+    mem.directory['ada@example.com'].photo_status === 'failed' && mem.uploads.length === 0);
+
+  // 4. Not a Drive link at all, or a Drive link with no file id.
+  // (Anything that is not an https link is already dropped by the questionnaire
+  // before it reaches Notion, so it arrives here as "no link".)
+  for (const bad of ['https://example.com/me.jpg', 'https://drive.google.com/drive/folders/abc']) {
+    resetMembers(); listAda();
+    await submitQuestionnaire({ ...ADA, photo_link: bad }, photoEnv);
+    const r = mem.directory['ada@example.com'];
+    check('bad link "' + bad + '": failed without calling Drive, Slack once',
+      r && r.photo_status === 'failed' && mem.driveHits.length === 0 && photoAlerts().length === 1, { r, hits: mem.driveHits });
+  }
+
+  // 5. Other image types and the other two Drive link shapes.
+  resetMembers(); listAda();
+  mem.drive = { [ADA_PHOTO_ID]: { type: 'image/webp', bytes: 2000 } };
+  await submitQuestionnaire({ ...ADA, photo_link: 'https://drive.google.com/open?id=' + ADA_PHOTO_ID }, photoEnv);
+  check('open?id= links work, and WebP is stored as .webp',
+    mem.directory['ada@example.com'].photo_path.endsWith('.webp') && mem.driveHits[0] === ADA_PHOTO_ID);
+  resetMembers(); listAda();
+  await submitQuestionnaire({ ...ADA, photo_link: 'https://drive.google.com/uc?id=' + ADA_PHOTO_ID + '&export=download' }, photoEnv);
+  check('uc?id= links work', mem.directory['ada@example.com'].photo_status === 'ok' && mem.driveHits[0] === ADA_PHOTO_ID);
+  resetMembers(); listAda();
+  mem.drive = { [ADA_PHOTO_ID]: { type: 'image/gif', bytes: 2000 } };
+  await submitQuestionnaire(ADA, photoEnv);
+  check('an image type outside JPEG, PNG and WebP is refused', mem.directory['ada@example.com'].photo_status === 'failed');
+
+  // 6. When to download again (photo_source_url).
+  resetMembers(); listAda();
+  await submitQuestionnaire(ADA, photoEnv);
+  mem.driveHits = []; mem.uploads = [];
+  await submitQuestionnaire(ADA, photoEnv);
+  check('same link, last download ok: Drive is not called again, photo kept',
+    mem.driveHits.length === 0 && mem.uploads.length === 0 && mem.directory['ada@example.com'].photo_status === 'ok');
+
+  const NEW_ID = 'NewPhotoFile_9876543210';
+  mem.drive[NEW_ID] = { type: 'image/png', bytes: 3000 };
+  await submitQuestionnaire({ ...ADA, photo_link: 'https://drive.google.com/file/d/' + NEW_ID + '/view' }, photoEnv);
+  row = mem.directory['ada@example.com'];
+  check('changed link: downloaded again and the new link remembered',
+    mem.driveHits.includes(NEW_ID) && row.photo_source_url.includes(NEW_ID) && row.photo_path.endsWith('.png'), row);
+  check('changed file type: the old .jpg is removed from storage', mem.deleted.includes(adaPath), mem.deleted);
+
+  resetMembers(); listAda();
+  mem.drive = {};                                   // not shared yet
+  await submitQuestionnaire(ADA, photoEnv);
+  check('first try fails while sharing is off', mem.directory['ada@example.com'].photo_status === 'failed');
+  mem.drive = { [ADA_PHOTO_ID]: jpeg() };           // they fix sharing, same link
+  mem.driveHits = [];
+  await submitQuestionnaire(ADA, photoEnv);
+  row = mem.directory['ada@example.com'];
+  check('same link after a failure: tried again and now ok',
+    mem.driveHits.length === 1 && row.photo_status === 'ok' && row.photo_source_url === ADA.photo_link, row);
+
+  resetMembers(); listAda();
+  mem.directory['ada@example.com'] = { email: 'ada@example.com', photo_status: 'missing', photo_source_url: ADA.photo_link };
+  await submitQuestionnaire(ADA, photoEnv);
+  check('same link while status is missing: tried again',
+    mem.driveHits.length === 1 && mem.directory['ada@example.com'].photo_status === 'ok');
+
+  resetMembers(); listAda();
+  await submitQuestionnaire(ADA, photoEnv);
+  const good = { ...mem.directory['ada@example.com'] };
+  mem.drive = {};
+  await submitQuestionnaire({ ...ADA, photo_link: 'https://drive.google.com/file/d/' + NEW_ID + '/view' }, photoEnv);
+  row = mem.directory['ada@example.com'];
+  check('a new link that fails keeps the last good path and link for the next comparison',
+    row.photo_status === 'failed' && row.photo_path === good.photo_path && row.photo_source_url === good.photo_source_url, row);
+
+  // 7. No link at all.
+  resetMembers(); listAda();
+  await submitQuestionnaire({ ...ADA, photo_link: '' }, photoEnv);
+  check('no link: status missing, Drive not called, no Slack',
+    mem.directory['ada@example.com'].photo_status === 'missing' && mem.driveHits.length === 0 && photoAlerts().length === 0);
+
+  check('across every photo case, no link was ever logged', !linkLeaked(), mem.logs);
+}
+
 console.log('\nTime Rich Members — backfill');
 {
   const row = (name, email) => ({
@@ -779,6 +937,7 @@ console.log('\nTime Rich Members — backfill');
   const counts = await res.json();
   check('the right secret runs it', res.status === 200 && counts.ok === true, counts);
   check('it reads every page of the questionnaire', counts.processed === 4, counts);
+  check('rows with no photo link count as missing, not as photo failures', counts.photo_failed === 0, counts);
   check('buyers and second seats are listed, team and non-members skipped',
     counts.listed === 2 && counts.skipped === 2 && counts.failed === 0 &&
     Boolean(mem.directory['ada@example.com']) && Boolean(mem.directory['sam@example.com']) &&
