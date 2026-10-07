@@ -76,10 +76,12 @@ $do$;
 --    writes or returns a passcode: a new row gets the column default
 --    (portal_new_passcode()) and an existing row keeps the code it has.
 --
---    Role rule: buyer and team outrank second_seat. A second_seat upsert
---    on a row that is already a buyer or team leaves its role AND its
---    order_id alone (that person is attached to their own order). A buyer
---    upsert on a second_seat row upgrades it.
+--    Role rule: a team row is never changed by this function, whatever
+--    the incoming role: its role AND its order_id stay as they are.
+--    Otherwise buyer outranks second_seat. A second_seat upsert on a row
+--    that is already a buyer leaves its role and order_id alone (that
+--    person is attached to their own order). A buyer upsert on a
+--    second_seat row upgrades it.
 --
 --    active is never changed here, so a member switched off by hand stays
 --    off.
@@ -117,12 +119,16 @@ begin
   on conflict (email) do update
      set full_name = coalesce(excluded.full_name, m.full_name),
          role      = case
-                       when excluded.role = 'second_seat' and m.role in ('buyer', 'team')
+                       when m.role = 'team'
+                         then m.role
+                       when excluded.role = 'second_seat' and m.role = 'buyer'
                          then m.role
                        else excluded.role
                      end,
          order_id  = case
-                       when excluded.role = 'second_seat' and m.role in ('buyer', 'team')
+                       when m.role = 'team'
+                         then m.order_id
+                       when excluded.role = 'second_seat' and m.role = 'buyer'
                          then m.order_id
                        else coalesce(excluded.order_id, m.order_id)
                      end

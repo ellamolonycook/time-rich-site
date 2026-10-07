@@ -1,14 +1,14 @@
-# Tests — /sh-apply application form + worker Notion mapping
+# Tests — /sh-apply application form + worker Notion mapping + portal members
 
-Two suites, no framework. Plain Node, one file each, run in a couple of seconds.
+Three suites, no framework. Plain Node, one file each, run in a couple of seconds.
 
 ```bash
 cd scripts/tests
-npm install     # once — pulls jsdom
-npm test        # both suites
+npm install     # once — pulls jsdom and PGlite
+npm test        # all suites
 ```
 
-Or one at a time: `npm run test:worker` / `npm run test:form`.
+Or one at a time: `npm run test:worker` / `npm run test:form` / `npm run test:portal`.
 
 Exit code is non-zero if anything fails, so this drops into CI as-is.
 
@@ -84,3 +84,15 @@ Two things it deliberately can't cover, because jsdom has no CDN and no layout:
   real browser.
 - **Anything visual.** Transitions, tap-target sizes, and whether the question
   clears the mobile keyboard are all eyeball checks.
+
+## `portal-member.test.mjs`
+
+Runs [`supabase/portal_schema.sql`](../../supabase/portal_schema.sql) and the
+`portal_upsert_member` migration in [PGlite](https://pglite.dev) (Postgres
+compiled to WASM, in-process, no server), then calls the real function and
+asserts on the rows it leaves.
+
+Covers the role rules: a `team` row is never changed, whatever role comes in
+(role and `order_id` both kept); a `second_seat` upsert never downgrades a
+`buyer`; a `buyer` upsert upgrades a `second_seat`; emails are normalised; the
+passcode is never touched; and an inactive member is never switched back on.
