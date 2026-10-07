@@ -472,6 +472,7 @@
        index.html, because this page has no login form of its own. -->
   <script src="portal-config.js" defer></script>
   <script src="portal-access.js" defer></script>
+  <script src="portal-live.js"></script>
 </head>
 
 
@@ -753,11 +754,11 @@
                 </div>
               </div>
               <div class="w-full md:w-auto flex flex-col lg:flex-row gap-3 shrink-0">
-                <button type="button" disabled title="Coming soon" class="w-full md:w-auto px-6 py-3 bg-brand-deep text-white text-xs font-bold rounded-xl shadow-md cursor-not-allowed opacity-50 flex items-center justify-center gap-2">
-                  Join via Zoom <span class="px-1.5 py-0.5 rounded bg-white/20 text-[9px] font-bold whitespace-nowrap">Coming soon</span>
+                <button type="button" class="w-full md:w-auto px-6 py-3 bg-brand-deep text-white text-xs font-bold rounded-xl shadow-md cursor-not-allowed opacity-50 flex items-center justify-center gap-2">
+                  Join via Zoom
                 </button>
-                <button type="button" disabled title="Coming soon" class="w-full md:w-auto px-4 py-3 bg-brand-sagelt/60 text-brand-deep/50 text-xs font-semibold rounded-xl cursor-not-allowed flex items-center justify-center gap-2">
-                  Add to Calendar <span class="px-1.5 py-0.5 rounded bg-brand-green/10 text-[9px] font-bold whitespace-nowrap">Coming soon</span>
+                <button type="button" class="w-full md:w-auto px-4 py-3 bg-brand-sagelt/60 text-brand-deep/50 text-xs font-semibold rounded-xl cursor-not-allowed flex items-center justify-center gap-2">
+                  Add to Calendar
                 </button>
               </div>
             </div>
@@ -1160,129 +1161,134 @@
   <script>
     /* Live sessions, drawn from portal_get into this page's own markup.
        The nine rows in the HTML above are the pre-data view; as soon as the
-       payload arrives they are replaced with the same design, wired up. */
+       payload arrives they are replaced with the same design, wired up.
+
+       Built with createElement and textContent throughout. Nothing from the
+       API reaches innerHTML, which is the rule portal-access.js sets out. */
     (function () {
+      var L = window.TRLive;
+      if (!L) return;
+
       var CAL_URL = 'https://cal.ae/z0j4nlqbgt6b';
 
-      function esc(value) {
-        var d = document.createElement('div');
-        d.textContent = (value == null) ? '' : String(value);
-        return d.innerHTML;
+      var NEXT_ROW = 'relative group flex flex-col md:flex-row items-start md:items-center justify-between gap-6 ' +
+                     'p-6 lg:p-8 rounded-[1.5rem] glass-card border border-brand-deep/30 ' +
+                     'shadow-[0_32px_64px_-16px_rgba(90,105,75,0.3)] md:-translate-y-1 transition-all z-10 ring-4 ring-brand-deep/5';
+      var ROW      = 'group flex flex-col md:flex-row items-start md:items-center justify-between gap-6 ' +
+                     'p-6 lg:p-8 rounded-[1.5rem] glass-card transition-all opacity-80 hover:opacity-100';
+      var BTN_JOIN = 'w-full md:w-auto px-6 py-3 bg-brand-deep text-white text-xs font-bold rounded-xl shadow-md ' +
+                     'hover:bg-brand-green transition-colors flex items-center justify-center gap-2';
+      var BTN_SOFT = 'w-full md:w-auto px-4 py-3 bg-brand-sagelt/60 text-brand-deep text-xs font-semibold rounded-xl ' +
+                     'hover:bg-brand-sagelt transition-colors flex items-center justify-center gap-2';
+
+      var CAMERA_D = 'M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 ' +
+                     '00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z';
+
+      // Built node by node so the file has no innerHTML at all. The path data
+      // is a constant written here in the source, never anything from the API.
+      function cameraIcon() {
+        var svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+        svg.setAttribute('class', 'w-5 h-5');
+        svg.setAttribute('fill', 'none');
+        svg.setAttribute('stroke', 'currentColor');
+        svg.setAttribute('stroke-width', '1.5');
+        svg.setAttribute('viewBox', '0 0 24 24');
+        var path = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+        path.setAttribute('stroke-linecap', 'round');
+        path.setAttribute('stroke-linejoin', 'round');
+        path.setAttribute('d', CAMERA_D);
+        svg.appendChild(path);
+        return svg;
       }
 
-      // Same rule the library uses: absolute https only, or no link at all.
-      function safeUrl(value) {
-        try {
-          var u = new URL(String(value));
-          return u.protocol === 'https:' ? u.href : '';
-        } catch (e) { return ''; }
-      }
-
-      // The viewer's own time zone, named so nobody has to convert from ET.
-      function when(iso) {
-        if (!iso) return '';
-        var d = new Date(iso);
-        if (isNaN(d.getTime())) return '';
-        var day = d.toLocaleDateString(undefined, { weekday: 'long', day: 'numeric', month: 'long' });
-        var time = d.toLocaleTimeString(undefined, { hour: 'numeric', minute: '2-digit' });
-        var zone = '';
-        try {
-          var parts = new Intl.DateTimeFormat(undefined, { timeZoneName: 'short' }).formatToParts(d);
-          for (var i = 0; i < parts.length; i++) {
-            if (parts[i].type === 'timeZoneName') { zone = parts[i].value; break; }
-          }
-        } catch (e) { /* older browser: date and time without the zone */ }
-        return day + ' &middot; ' + time + (zone ? ' ' + zone : '');
+      function dot(className) {
+        return L.el('span', className);
       }
 
       function actions(session) {
-        var join = safeUrl(session && session.join_url);
-        var rec  = safeUrl(session && session.recording_url);
-        var out  = '';
+        var box = L.el('div', 'w-full md:w-auto flex flex-col lg:flex-row gap-3 shrink-0');
 
-        if (join) {
-          out += '<a href="' + esc(join) + '" target="_blank" rel="noopener noreferrer" ' +
-                 'class="w-full md:w-auto px-6 py-3 bg-brand-deep text-white text-xs font-bold rounded-xl ' +
-                 'shadow-md hover:bg-brand-green transition-colors flex items-center justify-center gap-2">' +
-                 'Join via Zoom</a>';
-        }
-        if (rec) {
-          out += '<a href="' + esc(rec) + '" target="_blank" rel="noopener noreferrer" ' +
-                 'class="w-full md:w-auto px-4 py-3 bg-brand-sagelt/60 text-brand-deep text-xs font-semibold ' +
-                 'rounded-xl hover:bg-brand-sagelt transition-colors flex items-center justify-center gap-2">' +
-                 'Watch recording</a>';
-        }
-        out += '<a href="' + CAL_URL + '" target="_blank" rel="noopener noreferrer" ' +
-               'class="w-full md:w-auto px-4 py-3 bg-brand-sagelt/60 text-brand-deep text-xs font-semibold ' +
-               'rounded-xl hover:bg-brand-sagelt transition-colors flex items-center justify-center gap-2">' +
-               'Add to Calendar</a>';
+        var join = L.linkTo(session.join_url, 'Join via Zoom', BTN_JOIN);
+        if (join) box.appendChild(join);
 
-        return '<div class="w-full md:w-auto flex flex-col lg:flex-row gap-3 shrink-0">' + out + '</div>';
+        var rec = L.linkTo(session.recording_url, 'Watch recording', BTN_SOFT);
+        if (rec) box.appendChild(rec);
+
+        var cal = L.linkTo(CAL_URL, 'Add to Calendar', BTN_SOFT);
+        if (cal) box.appendChild(cal);
+
+        return box.childNodes.length ? box : null;
       }
 
-      function row(session, index) {
-        var isNext = index === 0;
-        var title = esc((session && session.title) || 'Untitled');
-        var date  = when(session && session.starts_at);
-        var n     = index + 1;
+      function row(session, index, isNext) {
+        var wrap = L.el('div', isNext ? NEXT_ROW : ROW);
 
+        var left = L.el('div', isNext
+          ? 'flex items-start gap-4 sm:gap-6 lg:gap-8 min-w-0'
+          : 'flex items-start gap-4 sm:gap-6 lg:gap-8 min-w-0 opacity-75 group-hover:opacity-100 transition-opacity');
+
+        var badge = L.el('div', isNext
+          ? 'hidden sm:flex w-12 h-12 shrink-0 rounded-full bg-brand-deep text-white items-center justify-center shadow-md'
+          : 'hidden sm:flex w-12 h-12 shrink-0 rounded-full border border-brand-green/15 text-brand-mid/50 items-center justify-center');
+        if (isNext) badge.appendChild(cameraIcon());
+        else badge.appendChild(L.el('span', 'text-xs font-bold', String(index + 1)));
+        left.appendChild(badge);
+
+        var body = L.el('div', 'space-y-2 min-w-0');
+
+        var eyebrowRow = L.el('div', isNext ? 'flex flex-wrap items-center gap-3' : 'flex items-center gap-3');
+        eyebrowRow.appendChild(L.el('span',
+          isNext
+            ? 'text-[10px] font-mono tracking-[0.2em] uppercase text-brand-deep/60 font-bold'
+            : 'text-[10px] font-mono tracking-[0.2em] uppercase text-brand-deep/40 font-bold',
+          'Session ' + (index + 1)));
+
+        var chip = L.el('div', isNext
+          ? 'bg-brand-deep/5 text-brand-deep text-[10px] font-bold px-2 py-0.5 rounded uppercase tracking-wider flex items-center gap-1.5 border border-brand-deep/10'
+          : 'bg-brand-deep/5 text-brand-mid/80 text-[9px] font-bold px-2 py-0.5 rounded uppercase tracking-[0.1em] flex items-center gap-1.5 border border-brand-deep/5');
         if (isNext) {
-          return '' +
-            '<div class="relative group flex flex-col md:flex-row items-start md:items-center justify-between gap-6 p-6 lg:p-8 rounded-[1.5rem] glass-card border border-brand-deep/30 shadow-[0_32px_64px_-16px_rgba(90,105,75,0.3)] md:-translate-y-1 transition-all z-10 ring-4 ring-brand-deep/5">' +
-              '<div class="flex items-start gap-4 sm:gap-6 lg:gap-8 min-w-0">' +
-                '<div class="hidden sm:flex w-12 h-12 shrink-0 rounded-full bg-brand-deep text-white items-center justify-center shadow-md">' +
-                  '<svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z"></path></svg>' +
-                '</div>' +
-                '<div class="space-y-2 min-w-0">' +
-                  '<div class="flex flex-wrap items-center gap-3">' +
-                    '<span class="text-[10px] font-mono tracking-[0.2em] uppercase text-brand-deep/60 font-bold">Session ' + n + '</span>' +
-                    '<div class="bg-brand-deep/5 text-brand-deep text-[10px] font-bold px-2 py-0.5 rounded uppercase tracking-wider flex items-center gap-1.5 border border-brand-deep/10"><span class="relative flex h-1.5 w-1.5">' +
-                    '<span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-75"></span>' +
-                    '<span class="relative inline-flex rounded-full h-1.5 w-1.5 bg-green-500 shadow-[0_0_8px_rgba(34,197,94,0.8)]"></span>' +
-                    '</span>Up Next</div>' +
-                  '</div>' +
-                  '<h3 class="text-lg sm:text-xl font-bold text-brand-deep">' + title + '</h3>' +
-                  (date ? '<p class="text-sm text-brand-mid font-medium">' + date + '</p>' : '') +
-                '</div>' +
-              '</div>' +
-              actions(session) +
-            '</div>';
+          var ping = L.el('span', 'relative flex h-1.5 w-1.5');
+          ping.appendChild(dot('animate-ping absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-75'));
+          ping.appendChild(dot('relative inline-flex rounded-full h-1.5 w-1.5 bg-green-500 shadow-[0_0_8px_rgba(34,197,94,0.8)]'));
+          chip.appendChild(ping);
+          chip.appendChild(document.createTextNode('Up Next'));
+        } else {
+          chip.appendChild(dot('w-1.5 h-1.5 rounded-full bg-orange-400 shadow-[0_0_6px_rgba(251,146,60,0.6)]'));
+          chip.appendChild(document.createTextNode('Upcoming'));
+        }
+        eyebrowRow.appendChild(chip);
+        body.appendChild(eyebrowRow);
+
+        body.appendChild(L.el('h3',
+          isNext ? 'text-lg sm:text-xl font-bold text-brand-deep' : 'text-lg font-bold text-brand-deep/80',
+          L.str(session.title) || 'Session'));
+
+        var when = L.etDateTime(session.starts_at);
+        if (when) {
+          body.appendChild(L.el('p',
+            isNext ? 'text-sm text-brand-mid font-medium' : 'text-sm text-brand-mid/80', when));
         }
 
-        return '' +
-          '<div class="group flex flex-col md:flex-row items-start md:items-center justify-between gap-6 p-6 lg:p-8 rounded-[1.5rem] glass-card transition-all opacity-80 hover:opacity-100">' +
-            '<div class="flex items-start gap-4 sm:gap-6 lg:gap-8 min-w-0 opacity-75 group-hover:opacity-100 transition-opacity">' +
-              '<div class="hidden sm:flex w-12 h-12 shrink-0 rounded-full border border-brand-green/15 text-brand-mid/50 items-center justify-center">' +
-                '<span class="text-xs font-bold">' + n + '</span>' +
-              '</div>' +
-              '<div class="space-y-2 min-w-0">' +
-                '<div class="flex items-center gap-3">' +
-                  '<span class="text-[10px] font-mono tracking-[0.2em] uppercase text-brand-deep/40 font-bold">Session ' + n + '</span>' +
-                  '<div class="bg-brand-deep/5 text-brand-mid/80 text-[9px] font-bold px-2 py-0.5 rounded uppercase tracking-[0.1em] flex items-center gap-1.5 border border-brand-deep/5">' +
-                  '<span class="w-1.5 h-1.5 rounded-full bg-orange-400 shadow-[0_0_6px_rgba(251,146,60,0.6)]"></span>Upcoming' +
-                  '</div>' +
-                '</div>' +
-                '<h3 class="text-lg font-bold text-brand-deep/80">' + title + '</h3>' +
-                (date ? '<p class="text-sm text-brand-mid/80">' + date + '</p>' : '') +
-              '</div>' +
-            '</div>' +
-            actions(session) +
-          '</div>';
+        left.appendChild(body);
+        wrap.appendChild(left);
+
+        var act = actions(session);
+        if (act) wrap.appendChild(act);
+        return wrap;
       }
 
       document.addEventListener('trportal:data', function (event) {
         var list = document.getElementById('trSessionList');
         var data = event && event.detail;
-        var sessions = (data && Array.isArray(data.sessions)) ? data.sessions.slice() : [];
+        var sessions = L.sessions(data);
         if (!list || !sessions.length) return;   // keep the static rows
 
-        sessions.sort(function (a, b) {
-          return new Date((a && a.starts_at) || 0) - new Date((b && b.starts_at) || 0);
-        });
+        var next = L.nextSession(data);
 
-        var html = '';
-        sessions.forEach(function (s, i) { html += row(s, i); });
-        list.innerHTML = html;
+        L.clear(list);
+        sessions.forEach(function (session, i) {
+          list.appendChild(row(session, i, next != null && session === next));
+        });
       });
     })();
   </script>

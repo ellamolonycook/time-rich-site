@@ -472,6 +472,7 @@
        index.html, because this page has no login form of its own. -->
   <script src="portal-config.js" defer></script>
   <script src="portal-access.js" defer></script>
+  <script src="portal-live.js"></script>
 </head>
 
 
@@ -789,7 +790,8 @@
             </div>
 
 
-          <div class="space-y-16" style="content-visibility: auto; contain-intrinsic-size: auto 2000px;">
+          <div data-curriculum-live class="space-y-16" hidden></div>
+          <div data-curriculum-static class="space-y-16" style="content-visibility: auto; contain-intrinsic-size: auto 2000px;">
             
             <!-- Week 1 -->
             <section class="space-y-6 relative">
@@ -1235,6 +1237,106 @@
             setTimeout(go, FADE_MS + 1200);
           });
         });
+      });
+    })();
+  </script>
+
+
+  <script>
+    /* Curriculum, drawn from portal_get. Weeks come from `weeks` in id order,
+       with each week's sessions grouped under it by week_id. The static markup
+       above stays as the fallback and is hidden as soon as real weeks land. */
+    (function () {
+      var L = window.TRLive;
+      if (!L) return;
+
+      var HEAD   = 'flex items-center gap-4 mb-8';
+      var LABEL  = 'text-[11px] font-bold tracking-[0.15em] uppercase text-brand-deep pr-1';
+      var RULE   = 'h-px flex-1 bg-brand-green/10';
+      var CARD   = 'glass-card rounded-[1.5rem] p-8 flex flex-col';
+      var LOCKED = 'glass-card rounded-[1.5rem] p-8 flex flex-col opacity-60';
+      var TITLE  = 'text-xl font-bold text-brand-deep mb-2';
+      var SUMMARY= 'text-sm text-brand-mid leading-relaxed';
+      var META   = 'text-sm text-brand-mid leading-relaxed mb-8';
+      var CHIP   = 'inline-flex items-center gap-1.5 px-2 py-0.5 rounded text-[10px] font-bold ' +
+                   'uppercase tracking-wider bg-brand-deep/5 text-brand-mid border border-brand-deep/5';
+
+      function weekBlock(data, week) {
+        var wrap = L.el('div', '');
+
+        // Week 0 is the "Start here" block and keeps its own title.
+        var head = L.el('div', HEAD);
+        var label = L.num(week.id) === 0 ? 'Start here' : 'Week ' + L.num(week.id);
+        head.appendChild(L.el('h2', LABEL, label));
+        head.appendChild(L.el('div', RULE));
+        if (week.unlocked !== true) {
+          var when = L.etDate(week.release_at);
+          head.appendChild(L.el('span', CHIP, when ? 'Opens ' + when : 'Locked'));
+        }
+        wrap.appendChild(head);
+
+        var body = L.el('div', 'grid grid-cols-1 md:grid-cols-2 gap-6');
+
+        if (week.unlocked !== true) {
+          var shut = L.el('div', LOCKED);
+          shut.appendChild(L.el('h3', TITLE, L.str(week.title) || label));
+          var opens = L.etDate(week.release_at);
+          shut.appendChild(L.el('p', SUMMARY, opens ? 'Opens ' + opens : 'Opens soon'));
+          body.appendChild(shut);
+          wrap.appendChild(body);
+          return wrap;
+        }
+
+        // Unlocked: the week itself, then its sessions.
+        var card = L.el('div', CARD);
+        card.appendChild(L.el('h3', TITLE, L.str(week.title) || label));
+        if (L.str(week.summary)) card.appendChild(L.el('p', SUMMARY, L.str(week.summary)));
+        var list = L.items(week);
+        if (list.length) {
+          var ul = L.el('ul', 'mt-5 space-y-2');
+          list.forEach(function (item) {
+            var li = L.el('li', 'text-sm text-brand-mid flex gap-2');
+            li.appendChild(L.el('span', 'text-brand-deep/40', '·'));
+            li.appendChild(L.el('span', '', L.str(item.title) || 'Untitled'));
+            ul.appendChild(li);
+          });
+          card.appendChild(ul);
+        }
+        body.appendChild(card);
+
+        L.sessionsForWeek(data, week.id).forEach(function (session) {
+          var s = L.el('div', CARD);
+          s.appendChild(L.el('h3', TITLE, L.str(session.title) || 'Session'));
+          var when = L.etDateTime(session.starts_at);
+          if (when) s.appendChild(L.el('p', META, when));
+          var actions = L.el('div', 'flex flex-wrap gap-3 mt-auto');
+          var rec = L.linkTo(session.recording_url, 'Watch recording',
+            'inline-flex items-center px-4 py-2 rounded-full text-xs font-semibold bg-brand-sagelt/60 text-brand-deep hover:bg-brand-sagelt transition-colors');
+          var join = L.linkTo(session.join_url, 'Join via Zoom',
+            'inline-flex items-center px-4 py-2 rounded-full text-xs font-bold bg-brand-deep text-white hover:bg-brand-green transition-colors');
+          if (join) actions.appendChild(join);
+          if (rec) actions.appendChild(rec);
+          if (actions.childNodes.length) s.appendChild(actions);
+          body.appendChild(s);
+        });
+
+        wrap.appendChild(body);
+        return wrap;
+      }
+
+      document.addEventListener('trportal:data', function (event) {
+        var data = event && event.detail;
+        var live = document.querySelector('[data-curriculum-live]');
+        var statik = document.querySelector('[data-curriculum-static]');
+        if (!live) return;
+
+        var list = L.weeks(data);
+        if (!list.length) return;          // no weeks: leave the static fallback up
+
+        L.clear(live);
+        list.forEach(function (week) { live.appendChild(weekBlock(data, week)); });
+        L.show(live, true);
+        L.show(statik, false);
       });
     })();
   </script>

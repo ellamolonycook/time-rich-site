@@ -368,3 +368,7 @@ html[data-trp-gate]:not([data-tr-portal="in"]) body > *:not(script):not(style) {
 @media (prefers-reduced-motion: reduce) {
   .trp-btn { transition: none; }
 }
+
+/* The live-data blocks hide themselves with the hidden attribute. Tailwind's
+   display utilities would otherwise win, so make hidden mean hidden. */
+[hidden] { display: none !important; }
