@@ -801,7 +801,7 @@ console.log('\nTime Rich Members — questionnaire sync');
   check('Supabase down: the questionnaire still saves and answers 200', res.status === 200);
   check('the failure is logged without any answer or link in it',
     mem.logs.some((l) => l.includes('[members] directory sync failed')) &&
-    !mem.logs.some((l) => l.includes('drive.google.com') || l.includes('Ada') || l.includes('linkedin')), mem.logs);
+    !mem.logs.some((l) => l.includes(ADA.photo_link) || l.includes(ADA_PHOTO_ID) || l.includes('Ada') || l.includes('linkedin')), mem.logs);
 }
 
 {
@@ -818,7 +818,9 @@ console.log('\nTime Rich Members — photos');
   const photoEnv = { ...memEnv, SLACK_QUESTIONNAIRE_WEBHOOK_URL: 'https://hooks.slack.test/questionnaire' };
   const adaPath = createHash('sha256').update('ada@example.com').digest('hex') + '.jpg';
   const photoAlerts = () => mem.slack.filter((t) => t.startsWith('Photo link failed'));
-  const linkLeaked = () => mem.logs.some((l) => l.includes('drive.google.com') || l.includes('AdaPhotoFile') || l.includes('NewPhoto'));
+  // Any piece of a Drive link: the file ids used here, or the URL parts every link shape has.
+  const linkLeaked = () => mem.logs.some((l) =>
+    ['/file/d/', 'open?id=', 'export=download', 'AdaPhotoFile', 'NewPhoto'].some((piece) => l.includes(piece)));
   const listAda = () => { mem.members = [{ email: 'ada@example.com', role: 'buyer', active: true }]; };
 
   // 1. A working, publicly shared JPEG.

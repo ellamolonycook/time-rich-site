@@ -220,7 +220,6 @@ console.log('\nTime Rich Members page — states');
 
 console.log('\nTime Rich Members page — copy');
 {
-  const text = HTML.replace(/<script[\s\S]*?<\/script>|<style[\s\S]*?<\/style>/g, '');
   const page = await open();
   check('title is "Time Rich Members"', page.doc.querySelector('main h1').textContent.trim() === 'Time Rich Members');
   check('intro line from the brief', page.doc.querySelector('main header p').textContent.trim() === 'Your cohort. Find the right person and make the ask.');
@@ -228,7 +227,7 @@ console.log('\nTime Rich Members page — copy');
     .split('<main')[1].split('</main>')[0] + HTML.split('Time Rich Members: the cohort directory.')[1].split('</script>')[0];
   check('no em dashes or exclamation marks in the page copy', !/—/.test(ownCopy) && !/[A-Za-z]!/.test(ownCopy.replace(/!==|!=|!\w|\(!/g, '')));
   check('Members is marked as the current page in the nav', page.doc.querySelector('nav a[href="members.html"][aria-current="page"]') !== null);
-  check('no stray merge text carried over from the shell', !text.includes('origin/main'));
+  check('no stray merge text carried over from the shell', !HTML.includes('origin/main'));
 }
 
 // ---------------------------------------------------------------------------
