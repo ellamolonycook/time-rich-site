@@ -1208,16 +1208,33 @@
       function actions(session) {
         var box = L.el('div', 'w-full md:w-auto flex flex-col lg:flex-row gap-3 shrink-0');
 
+        var done = L.doneToggle(
+          function () { return L.isSessionMarked(session); },
+          function () { L.toggleSession(session); }
+        );
+        box.appendChild(done);
+
+        function remember() {
+          L.markSession(session);
+          if (done.refresh) done.refresh();
+        }
+
         var join = L.linkTo(session.join_url, 'Join via Zoom', BTN_JOIN);
-        if (join) box.appendChild(join);
+        if (join) {
+          join.addEventListener('click', remember);
+          box.appendChild(join);
+        }
 
         var rec = L.linkTo(session.recording_url, 'Watch recording', BTN_SOFT);
-        if (rec) box.appendChild(rec);
+        if (rec) {
+          rec.addEventListener('click', remember);
+          box.appendChild(rec);
+        }
 
         var cal = L.linkTo(CAL_URL, 'Add to Calendar', BTN_SOFT);
         if (cal) box.appendChild(cal);
 
-        return box.childNodes.length ? box : null;
+        return box;
       }
 
       function row(session, index, isNext) {

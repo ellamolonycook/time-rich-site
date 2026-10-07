@@ -206,6 +206,187 @@
     return null;
   }
 
+  function isSessionPast(session, now) {
+    var at = now || new Date();
+    var start = toDate(session && session.starts_at);
+    if (!start) return false;
+    return start.getTime() + SESSION_MINUTES * 60000 <= at.getTime();
+  }
+
+  // Cohort schedule progress from portal_get: unlocked weeks + sessions that
+  // have already run, over the totals. Same for every member on the schedule.
+  function scheduleProgress(data, now) {
+    var at = now || new Date();
+    var weekList = weeks(data);
+    var sessionList = sessions(data);
+    var weeksDone = 0;
+    var sessionsDone = 0;
+    var i;
+
+    for (i = 0; i < weekList.length; i++) {
+      if (weekList[i] && weekList[i].unlocked === true) weeksDone += 1;
+    }
+    for (i = 0; i < sessionList.length; i++) {
+      if (isSessionPast(sessionList[i], at)) sessionsDone += 1;
+    }
+
+    var weeksTotal = weekList.length;
+    var sessionsTotal = sessionList.length;
+    var total = weeksTotal + sessionsTotal;
+    var done = weeksDone + sessionsDone;
+    var percent = total ? Math.round((done / total) * 100) : 0;
+
+    return {
+      percent: percent,
+      weeksDone: weeksDone,
+      weeksTotal: weeksTotal,
+      sessionsDone: sessionsDone,
+      sessionsTotal: sessionsTotal
+    };
+  }
+
+  /* ---- personal checklist (this browser, per passcode) ---------------- */
+
+  var CODE_KEY = 'tr_portal_code';
+  var PROGRESS_KEY = 'tr_portal_user_progress';
+
+  function readPasscode() {
+    try { return window.localStorage.getItem(CODE_KEY) || ''; }
+    catch (e) { return ''; }
+  }
+
+  function readProgressStore() {
+    try {
+      var raw = window.localStorage.getItem(PROGRESS_KEY);
+      var parsed = raw ? JSON.parse(raw) : {};
+      return parsed && typeof parsed === 'object' ? parsed : {};
+    } catch (e) {
+      return {};
+    }
+  }
+
+  function writeProgressStore(store) {
+    try { window.localStorage.setItem(PROGRESS_KEY, JSON.stringify(store)); }
+    catch (e) { /* private mode: the toggle still flips in memory for this click */ }
+  }
+
+  function progressEntry() {
+    var code = readPasscode();
+    if (!code) return null;
+    var store = readProgressStore();
+    var entry = store[code];
+    if (!entry || typeof entry !== 'object') entry = { items: {}, sessions: {} };
+    if (!entry.items || typeof entry.items !== 'object') entry.items = {};
+    if (!entry.sessions || typeof entry.sessions !== 'object') entry.sessions = {};
+    store[code] = entry;
+    return { store: store, entry: entry };
+  }
+
+  function itemKey(item) {
+    if (!item || item.id == null || item.id === '') return '';
+    return String(item.id);
+  }
+
+  function sessionKey(session) {
+    var when = str(session && session.starts_at);
+    var title = str(session && session.title);
+    if (!when && !title) return '';
+    return when + '\n' + title;
+  }
+
+  function isItemDone(item) {
+    var key = itemKey(item);
+    var bag = progressEntry();
+    return Boolean(key && bag && bag.entry.items[key]);
+  }
+
+  function isSessionMarked(session) {
+    var key = sessionKey(session);
+    var bag = progressEntry();
+    return Boolean(key && bag && bag.entry.sessions[key]);
+  }
+
+  function setMark(mapName, key, value) {
+    if (!key) return false;
+    var bag = progressEntry();
+    if (!bag) return false;
+    if (value) bag.entry[mapName][key] = true;
+    else delete bag.entry[mapName][key];
+    writeProgressStore(bag.store);
+    return Boolean(value);
+  }
+
+  function toggleItem(item) {
+    var key = itemKey(item);
+    return setMark('items', key, !isItemDone(item));
+  }
+
+  function toggleSession(session) {
+    var key = sessionKey(session);
+    return setMark('sessions', key, !isSessionMarked(session));
+  }
+
+  function markSession(session) {
+    return setMark('sessions', sessionKey(session), true);
+  }
+
+  function trackableItems(data) {
+    var out = [];
+    weeks(data).forEach(function (week) {
+      if (!week || week.unlocked !== true) return;
+      items(week).forEach(function (item) {
+        if (itemKey(item)) out.push(item);
+      });
+    });
+    return out;
+  }
+
+  // Personal progress: marked items on unlocked weeks, plus marked sessions,
+  // over everything the member can currently mark.
+  function userProgress(data) {
+    var itemList = trackableItems(data);
+    var sessionList = sessions(data).filter(function (s) { return sessionKey(s); });
+    var done = 0;
+    var i;
+    for (i = 0; i < itemList.length; i++) {
+      if (isItemDone(itemList[i])) done += 1;
+    }
+    for (i = 0; i < sessionList.length; i++) {
+      if (isSessionMarked(sessionList[i])) done += 1;
+    }
+    var total = itemList.length + sessionList.length;
+    return {
+      percent: total ? Math.round((done / total) * 100) : 0,
+      done: done,
+      total: total
+    };
+  }
+
+  var DONE_ON = 'inline-flex items-center px-3 py-1.5 rounded-full text-[11px] font-bold ' +
+                'bg-brand-deep text-white';
+  var DONE_OFF = 'inline-flex items-center px-3 py-1.5 rounded-full text-[11px] font-semibold ' +
+                 'bg-brand-sagelt/60 text-brand-deep hover:bg-brand-sagelt transition-colors';
+
+  // A button whose label follows isDone(). apply() writes the checklist.
+  // btn.refresh() repaints after something else marks the same row.
+  function doneToggle(isDone, apply) {
+    var btn = el('button', DONE_OFF, 'Mark done');
+    btn.type = 'button';
+    function paint() {
+      var on = Boolean(isDone());
+      btn.textContent = on ? 'Done' : 'Mark done';
+      btn.className = on ? DONE_ON : DONE_OFF;
+      btn.setAttribute('aria-pressed', on ? 'true' : 'false');
+    }
+    btn.addEventListener('click', function () {
+      apply();
+      paint();
+    });
+    btn.refresh = paint;
+    paint();
+    return btn;
+  }
+
   // The most recent past session that actually has a recording.
   function latestRecording(data, now) {
     var at = now || new Date();
@@ -257,6 +438,17 @@
     items: items,
     latestUnlockedWeek: latestUnlockedWeek,
     nextSession: nextSession,
+    isSessionPast: isSessionPast,
+    scheduleProgress: scheduleProgress,
+    itemKey: itemKey,
+    sessionKey: sessionKey,
+    isItemDone: isItemDone,
+    isSessionMarked: isSessionMarked,
+    toggleItem: toggleItem,
+    toggleSession: toggleSession,
+    markSession: markSession,
+    userProgress: userProgress,
+    doneToggle: doneToggle,
     latestRecording: latestRecording,
     sessionsForWeek: sessionsForWeek,
     findLinkItem: findLinkItem,

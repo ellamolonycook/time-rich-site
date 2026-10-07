@@ -1293,11 +1293,19 @@
         if (L.str(week.summary)) card.appendChild(L.el('p', SUMMARY, L.str(week.summary)));
         var list = L.items(week);
         if (list.length) {
-          var ul = L.el('ul', 'mt-5 space-y-2');
+          var ul = L.el('ul', 'mt-5 space-y-3');
           list.forEach(function (item) {
-            var li = L.el('li', 'text-sm text-brand-mid flex gap-2');
-            li.appendChild(L.el('span', 'text-brand-deep/40', '·'));
-            li.appendChild(L.el('span', '', L.str(item.title) || 'Untitled'));
+            var li = L.el('li', 'text-sm text-brand-mid flex items-center justify-between gap-3');
+            var label = L.el('span', 'flex gap-2 min-w-0');
+            label.appendChild(L.el('span', 'text-brand-deep/40', '·'));
+            label.appendChild(L.el('span', '', L.str(item.title) || 'Untitled'));
+            li.appendChild(label);
+            if (L.itemKey(item)) {
+              li.appendChild(L.doneToggle(
+                function () { return L.isItemDone(item); },
+                function () { L.toggleItem(item); }
+              ));
+            }
             ul.appendChild(li);
           });
           card.appendChild(ul);
@@ -1310,13 +1318,28 @@
           var when = L.etDateTime(session.starts_at);
           if (when) s.appendChild(L.el('p', META, when));
           var actions = L.el('div', 'flex flex-wrap gap-3 mt-auto');
+          var done = L.doneToggle(
+            function () { return L.isSessionMarked(session); },
+            function () { L.toggleSession(session); }
+          );
+          actions.appendChild(done);
           var rec = L.linkTo(session.recording_url, 'Watch recording',
             'inline-flex items-center px-4 py-2 rounded-full text-xs font-semibold bg-brand-sagelt/60 text-brand-deep hover:bg-brand-sagelt transition-colors');
           var join = L.linkTo(session.join_url, 'Join via Zoom',
             'inline-flex items-center px-4 py-2 rounded-full text-xs font-bold bg-brand-deep text-white hover:bg-brand-green transition-colors');
-          if (join) actions.appendChild(join);
-          if (rec) actions.appendChild(rec);
-          if (actions.childNodes.length) s.appendChild(actions);
+          function remember() {
+            L.markSession(session);
+            if (done.refresh) done.refresh();
+          }
+          if (join) {
+            join.addEventListener('click', remember);
+            actions.appendChild(join);
+          }
+          if (rec) {
+            rec.addEventListener('click', remember);
+            actions.appendChild(rec);
+          }
+          s.appendChild(actions);
           body.appendChild(s);
         });
 
