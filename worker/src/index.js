@@ -1546,6 +1546,7 @@ async function handleThriveCartWebhook(request, env, cors, ctx) {
     keys: Object.keys(body).slice(0, 40),
     eventRaw: body.event ?? body.type ?? null,
     eventResolved: String(body.event || body.type || "order.success").toLowerCase(),
+    modeRaw: body.mode ?? null,
     hasSecretInBody: Boolean(body.thrivecart_secret || body.secret),
     hasSecretInHeader: Boolean(request.headers.get("x-thrivecart-secret")),
   }));
@@ -1599,6 +1600,18 @@ async function handleThriveCartWebhook(request, env, cors, ctx) {
     orderTotal: orderTotal || null,
     orderAmountWritten: orderAmount || null,
   }));
+
+  // Portal access for the buyer. Only a live, paid order counts: ThriveCart
+  // sends test-mode purchases to this same webhook with mode "test", and a
+  // payload that does not say "live" at all is treated as a test too.
+  const isLive = String(body.mode || "").trim().toLowerCase() === "live";
+  if (!isRefund && isLive && email) {
+    const portalWork = upsertPortalMember(env, { email, fullName, role: "buyer", orderId }, "[TC]");
+    if (ctx && typeof ctx.waitUntil === "function") ctx.waitUntil(portalWork);
+    else await portalWork;
+  } else if (!isRefund) {
+    console.log("[TC] portal: SKIPPED -", !isLive ? "not a live order" : "no email on the order");
+  }
 
   const dbId = env.NOTION_SUPERHUMAN_COHORT1_DATABASE_ID;
 
@@ -1770,6 +1783,20 @@ async function handleOnboardSubmit(data, env, cors, ctx) {
     return json({ ok: false, error: "Could not verify the order" }, 502, cors);
   }
   if (!paidOrder) return json({ ok: false, error: "A paid order is required" }, 403, cors);
+
+  // Portal access for the +1, on the buyer's order. Skipped when the buyer
+  // named themselves, so a buyer row is never touched from this form.
+  const buyerEmail = normKey(calProp(paidOrder.properties?.["Email"]) || email);
+  if (choice === "named" && EMAIL_RE.test(attendeeEmail) && normKey(attendeeEmail) !== buyerEmail) {
+    const portalWork = upsertPortalMember(env, {
+      email: attendeeEmail,
+      fullName: `${attendeeFirstName} ${attendeeLastName}`,
+      role: "second_seat",
+      orderId: calProp(paidOrder.properties?.["Order ID"]),
+    }, "[onboard]");
+    if (ctx && typeof ctx.waitUntil === "function") ctx.waitUntil(portalWork);
+    else await portalWork;
+  }
 
   {
     const notionWork = (async () => {
@@ -2405,6 +2432,54 @@ async function findPaidRow(env, dbId, property, value) {
     }));
   }
   return paid || null;
+}
+
+// ---------------------------------------------------------------------------
+// Portal members (Supabase)
+//
+// Adds or updates one row in portal_members through portal_upsert_member(),
+// which only service_role can execute. Email is the key, so a repeat order or
+// a resubmitted form updates the existing row instead of adding another. The
+// function never reads or returns a passcode, and nothing here logs the key,
+// the email or the response body.
+//
+// Never throws: a Supabase outage must not change what ThriveCart or the
+// onboarding page get back.
+// ---------------------------------------------------------------------------
+const EMAIL_RE = /^[^@\s]+@[^@\s]+\.[^@\s]+$/;
+
+async function upsertPortalMember(env, { email, fullName, role, orderId }, tag) {
+  if (!env.SUPABASE_URL || !env.SUPABASE_SERVICE_ROLE_KEY) {
+    console.log(tag, "portal: SKIPPED - Supabase is not configured on the worker");
+    return;
+  }
+  const cleanEmail = normKey(email);
+  if (!EMAIL_RE.test(cleanEmail)) {
+    console.log(tag, "portal: SKIPPED - not a valid email");
+    return;
+  }
+
+  const key = env.SUPABASE_SERVICE_ROLE_KEY;
+  const headers = { apikey: key, "Content-Type": "application/json" };
+  // A legacy service_role key is a JWT and goes in Authorization too; the
+  // newer sb_secret_ keys are not JWTs and only belong in apikey.
+  if (key.startsWith("eyJ")) headers.Authorization = `Bearer ${key}`;
+
+  try {
+    const res = await fetch(`${env.SUPABASE_URL.replace(/\/+$/, "")}/rest/v1/rpc/portal_upsert_member`, {
+      method: "POST",
+      headers,
+      body: JSON.stringify({
+        p_email: cleanEmail,
+        p_full_name: clip(String(fullName || "").trim(), 200),
+        p_role: role,
+        p_order_id: clip(String(orderId || "").trim(), 100),
+      }),
+    });
+    console.log(tag, "portal: upsert", role, "status", res.status);
+  } catch (err) {
+    console.error(tag, "portal: upsert failed", err && err.message ? err.message : "unknown error");
+  }
 }
 
 async function findPaidCohortOrder(env, dbId, trackingId, email) {
