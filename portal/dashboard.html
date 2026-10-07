@@ -3,6 +3,10 @@
 <head>
   <meta charset="utf-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <!-- Google tag (gtag.js) -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-CTZLQ4R388"></script>
+  <script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','G-CTZLQ4R388');</script>
+
   <title>Time Rich. — AI Education Portal</title>
   <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
   <link rel="preconnect" href="https://fonts.googleapis.com"/>
@@ -417,14 +421,6 @@
         inset 0 0 24px rgba(255, 255, 255, 0.2);
       transition: all 0.5s cubic-bezier(0.16, 1, 0.3, 1);
     }
-    .glass-card:hover {
-      background: linear-gradient(135deg, rgba(255, 255, 255, 0.85) 0%, rgba(250, 255, 245, 0.5) 100%);
-      box-shadow: 
-        0 32px 64px -16px rgba(90, 105, 75, 0.3),
-        inset 0 1px 0 rgba(255, 255, 255, 1),
-        inset 0 0 24px rgba(255, 255, 255, 0.3);
-      transform: translateY(-4px);
-    }
     .premium-nav {
       background: linear-gradient(to bottom, rgba(255, 255, 255, 0.75) 0%, rgba(250, 255, 245, 0.4) 100%) !important;
       backdrop-filter: blur(48px) saturate(1.2) !important;
@@ -490,9 +486,9 @@
   <div id="mobile-menu" class="fixed top-0 left-0 bottom-0 w-[85%] max-w-[320px] bg-[#E8ECE0] border-r border-white/40 shadow-2xl z-[101] -translate-x-full transition-transform duration-500 flex flex-col" style="transition-timing-function: cubic-bezier(0.16, 1, 0.3, 1);">
     <div class="flex-1 overflow-y-auto p-6 pt-24 flex flex-col justify-between">
       <nav class="space-y-2">
-        <a href="index.html" class="flex items-center gap-3 px-4 py-2.5 rounded-[14px] text-xs font-semibold text-brand-deep nav-active backdrop-blur-xl transition-all duration-300">
+        <a href="dashboard.html" class="flex items-center gap-3 px-4 py-2.5 rounded-[14px] text-xs font-semibold text-brand-deep nav-active backdrop-blur-xl transition-all duration-300">
           <svg class="w-4 h-4 text-brand-deep" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"></path></svg>
-          Home
+          Dashboard
         </a>
         <a href="curriculum.html" class="flex items-center gap-3 px-4 py-2 text-xs font-medium text-brand-deep nav-item border border-transparent rounded-[14px] transition-all duration-300">
           <svg class="w-4 h-4 text-brand-mid" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"></path></svg>
@@ -532,13 +528,17 @@
           <div class="flex items-baseline text-[17px] sm:text-[22px] font-bold tracking-tighter text-brand-deep" style="font-family: 'Space Grotesk', sans-serif; font-weight: 700;">
             Time Rich<span class="bg-gradient-to-br from-[#748c2f] via-[#596C24] to-[#354015] bg-clip-text text-transparent drop-shadow-sm">.</span>
           </div>
-          <div class="w-px h-5 bg-brand-deep/15"></div>
-          <div class="text-[8px] sm:text-[12px] font-montserrat tracking-[0.15em] sm:tracking-[0.25em] uppercase bg-gradient-to-br from-[#748c2f] via-[#596C24] to-[#354015] bg-clip-text text-transparent drop-shadow-sm font-semibold mt-0.5">
-            PORTAL
-          </div>
         </a>
 
     </div>
+
+    <!-- Desktop Nav -->
+    <nav class="hidden lg:flex items-center gap-1 xl:gap-2 absolute left-1/2 -translate-x-1/2">
+        <a href="dashboard.html" class="px-3 py-1.5 rounded-full text-xs font-semibold text-brand-deep nav-active border border-white/40">Dashboard</a>
+        <a href="curriculum.html" class="px-3 py-1.5 rounded-full text-xs font-medium text-brand-mid hover:text-brand-deep transition-colors">Curriculum</a>
+        <a href="sessions.html" class="px-3 py-1.5 rounded-full text-xs font-medium text-brand-mid hover:text-brand-deep transition-colors">Live Sessions</a>
+        <a href="resources.html" class="px-3 py-1.5 rounded-full text-xs font-medium text-brand-mid hover:text-brand-deep transition-colors">Resources</a>
+    </nav>
 
     <!-- Right Actions -->
     <div class="flex items-center gap-3 sm:gap-6">
@@ -652,7 +652,7 @@
         inset 0 0 24px rgba(255, 255, 255, 0.3);
     }
   </style>
-<aside id="desktop-sidebar" class="hidden lg:flex w-[17rem] transition-all duration-500 ease-[cubic-bezier(0.16,1,0.3,1)] flex-shrink-0 flex-col justify-between pt-8 pb-16 px-6 mt-0 ml-0 mb-6 h-[calc(100vh-1.5rem)] rounded-none rounded-br-[2.5rem] bg-white/50 backdrop-blur-md border-r border-b border-white/20 z-20 shadow-[0_20px_40px_rgba(0,0,0,0.08)]">
+<aside id="desktop-sidebar" class="hidden w-[17rem] transition-all duration-500 ease-[cubic-bezier(0.16,1,0.3,1)] flex-shrink-0 flex-col justify-between pt-8 pb-16 px-6 mt-0 ml-0 mb-6 h-[calc(100vh-1.5rem)] rounded-none rounded-br-[2.5rem] bg-white/50 backdrop-blur-md border-r border-b border-white/20 z-20 shadow-[0_20px_40px_rgba(0,0,0,0.08)]">
         <div class="flex items-center justify-end px-2 mb-4 shrink-0">
           <button id="sidebar-toggle" class="p-2 rounded-xl text-brand-mid hover:text-brand-deep hover:bg-white/20 transition-all duration-300" title="Toggle Sidebar">
             <svg class="w-5 h-5 sidebar-toggle-icon transition-transform duration-500" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24">
@@ -778,13 +778,13 @@
           <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mt-16">
             
             <!-- Next Session -->
-            <div class="p-8 rounded-[2.25rem] glass-card flex flex-col cursor-pointer group h-full relative overflow-hidden">
+            <div class="p-8 rounded-[2.25rem] glass-card flex flex-col h-full relative overflow-hidden">
               <div class="text-[11px] font-montserrat tracking-[0.16em] uppercase bg-gradient-to-br from-[#748c2f] via-[#596C24] to-[#354015] bg-clip-text text-transparent drop-shadow-sm font-semibold mb-6">Next Session</div>
               <div class="flex items-center gap-3 mb-4">
                 <div class="bg-brand-deep/5 text-brand-deep text-[10px] font-bold px-2.5 py-1 rounded-md uppercase tracking-wider flex items-center gap-1.5"><span class="w-1.5 h-1.5 rounded-full bg-red-500 shadow-[0_0_4px_rgba(239,68,68,0.8)] animate-pulse"></span>Live Call</div>
                 <div class="text-sm text-brand-mid font-medium">Thursday, 2:00 PM</div>
               </div>
-              <h3 class="text-2xl font-bold text-brand-deep mb-3 group-hover:text-brand-mid transition-colors">Weekly Group Q&A</h3>
+              <h3 class="text-2xl font-bold text-brand-deep mb-3 transition-colors">Weekly Group Q&A</h3>
               <p class="text-sm text-brand-mid leading-relaxed mb-8 flex-1">Bring your questions on Phase 1 implementation. We'll be reviewing agent personas live.</p>
               <div class="flex items-center gap-3 mt-auto">
                 <button class="px-4 py-2 sm:px-6 sm:py-3 text-[11px] sm:text-xs font-semibold rounded-full whitespace-nowrap bg-gradient-to-b from-brand-green to-brand-deep text-brand-offwhite border border-white/10 shadow-[0_8px_16px_rgba(0,0,0,0.2),inset_0_1px_0_rgba(255,255,255,0.1)] hover:from-brand-mid hover:to-brand-green hover:shadow-[0_12px_24px_rgba(0,0,0,0.3),inset_0_1px_0_rgba(255,255,255,0.15)] hover:-translate-y-0.5 transition-all duration-300 flex items-center gap-2"><svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z" /></svg>
@@ -797,9 +797,9 @@
             </div>
 
             <!-- Current Phase -->
-            <div class="p-8 rounded-[2.25rem] glass-card flex flex-col cursor-pointer group h-full relative overflow-hidden">
+            <div class="p-8 rounded-[2.25rem] glass-card flex flex-col h-full relative overflow-hidden">
               <div class="text-[11px] font-montserrat tracking-[0.16em] uppercase bg-gradient-to-br from-[#748c2f] via-[#596C24] to-[#354015] bg-clip-text text-transparent drop-shadow-sm font-semibold mb-6">Current Phase</div>
-              <h3 class="text-2xl font-bold text-brand-deep mb-3 group-hover:text-brand-mid transition-colors mt-2">Foundations & Strategy</h3>
+              <h3 class="text-2xl font-bold text-brand-deep mb-3 transition-colors mt-2">Foundations & Strategy</h3>
               <p class="text-sm text-brand-mid leading-relaxed mb-8 flex-1">You are currently learning how to build the foundational strategy for your custom AI agents.</p>
               
               <div class="mt-auto">
@@ -814,9 +814,9 @@
             </div>
 
             <!-- Resources -->
-            <div class="p-8 rounded-[2.25rem] glass-card flex flex-col cursor-pointer group h-full relative overflow-hidden" onclick="window.location.href='resources.html'">
+            <div class="p-8 rounded-[2.25rem] glass-card flex flex-col h-full relative overflow-hidden" onclick="window.location.href='resources.html'">
               <div class="text-[11px] font-montserrat tracking-[0.16em] uppercase bg-gradient-to-br from-[#748c2f] via-[#596C24] to-[#354015] bg-clip-text text-transparent drop-shadow-sm font-semibold mb-6">Resources</div>
-              <h3 class="text-2xl font-bold text-brand-deep mb-3 group-hover:text-brand-mid transition-colors mt-2">Prompt Library & Templates</h3>
+              <h3 class="text-2xl font-bold text-brand-deep mb-3 transition-colors mt-2">Prompt Library & Templates</h3>
               <p class="text-sm text-brand-mid leading-relaxed mb-8 flex-1">Access the exact prompts, system architectures, and standard operating procedures (SOPs) we use to build autonomous agents.</p>
               
               <div class="flex items-center gap-3 mt-auto">
@@ -828,9 +828,9 @@
             </div>
 
             <!-- Community -->
-            <div class="p-8 rounded-[2.25rem] glass-card flex flex-col cursor-pointer group h-full relative overflow-hidden">
+            <div class="p-8 rounded-[2.25rem] glass-card flex flex-col h-full relative overflow-hidden">
               <div class="text-[11px] font-montserrat tracking-[0.16em] uppercase bg-gradient-to-br from-[#748c2f] via-[#596C24] to-[#354015] bg-clip-text text-transparent drop-shadow-sm font-semibold mb-6">Community</div>
-              <h3 class="text-2xl font-bold text-brand-deep mb-3 group-hover:text-brand-mid transition-colors mt-2">Builder's Network</h3>
+              <h3 class="text-2xl font-bold text-brand-deep mb-3 transition-colors mt-2">Builder's Network</h3>
               <p class="text-sm text-brand-mid leading-relaxed mb-8 flex-1">Connect with other founders in the accelerator. Share your recent wins, ask questions, and troubleshoot workflows together.</p>
               
               <div class="flex items-center gap-3 mt-auto">
@@ -842,9 +842,9 @@
             </div>
 
             <!-- Support -->
-            <div class="p-8 rounded-[2.25rem] glass-card flex flex-col cursor-pointer group h-full relative overflow-hidden">
+            <div class="p-8 rounded-[2.25rem] glass-card flex flex-col h-full relative overflow-hidden">
               <div class="text-[11px] font-montserrat tracking-[0.16em] uppercase bg-gradient-to-br from-[#748c2f] via-[#596C24] to-[#354015] bg-clip-text text-transparent drop-shadow-sm font-semibold mb-6">Support</div>
-              <h3 class="text-2xl font-bold text-brand-deep mb-3 group-hover:text-brand-mid transition-colors mt-2">Priority Help Desk</h3>
+              <h3 class="text-2xl font-bold text-brand-deep mb-3 transition-colors mt-2">Priority Help Desk</h3>
               <p class="text-sm text-brand-mid leading-relaxed mb-8 flex-1">Stuck on a tricky zap or agent persona? Get 1-on-1 assistance directly from our automation experts.</p>
               
               <div class="flex items-center gap-3 mt-auto">
@@ -856,9 +856,9 @@
             </div>
 
             <!-- Settings -->
-            <div class="p-8 rounded-[2.25rem] glass-card flex flex-col cursor-pointer group h-full relative overflow-hidden">
+            <div class="p-8 rounded-[2.25rem] glass-card flex flex-col h-full relative overflow-hidden">
               <div class="text-[11px] font-montserrat tracking-[0.16em] uppercase bg-gradient-to-br from-[#748c2f] via-[#596C24] to-[#354015] bg-clip-text text-transparent drop-shadow-sm font-semibold mb-6">Account</div>
-              <h3 class="text-2xl font-bold text-brand-deep mb-3 group-hover:text-brand-mid transition-colors mt-2">Settings & Billing</h3>
+              <h3 class="text-2xl font-bold text-brand-deep mb-3 transition-colors mt-2">Settings & Billing</h3>
               <p class="text-sm text-brand-mid leading-relaxed mb-8 flex-1">Manage your Time Rich portal profile, connected accounts, and accelerator subscription details.</p>
               
               <div class="flex items-center gap-3 mt-auto">
@@ -944,12 +944,12 @@
           </div>
 
           <div class="relative shrink-0 w-[17rem] h-[13.5rem] rounded-[1.75rem] overflow-hidden group cursor-pointer shadow-md shadow-black/5 hover:-translate-y-1 transition-transform duration-500 snap-center">
-              <img loading="lazy" src="assets/vika-victoria.jpg" class="absolute inset-0 w-full h-full object-cover scale-110 group-hover:scale-[1.15] transition-transform duration-700 object-[50%_10%]" alt="Vika Victoria">
+              <img loading="lazy" src="assets/vika-victoria.jpg" class="absolute inset-0 w-full h-full object-cover scale-110 group-hover:scale-[1.15] transition-transform duration-700 object-[50%_10%]" alt="Vika Victoria"> origin/main
               <div class="absolute inset-0 bg-gradient-to-t from-black/90 via-black/20 to-transparent opacity-80 group-hover:opacity-100 transition-opacity duration-500 snap-center"></div>
               
               <div class="absolute bottom-0 left-0 right-0 p-5 flex flex-col gap-1 z-10 transform translate-y-2 group-hover:translate-y-0 transition-transform duration-500 snap-center">
               <div class="text-[8px] font-montserrat font-bold text-white/70 group-hover:text-white transition-colors duration-300 uppercase tracking-[0.2em]">9 NOV</div>
-              <h3 class="text-white/70 group-hover:text-white transition-colors duration-300 text-[13px] font-semibold leading-snug tracking-wide">ViKa Victoria, Storytelling</h3>
+              <h3 class="text-white/70 group-hover:text-white transition-colors duration-300 text-[13px] font-semibold leading-snug tracking-wide">ViKA Victoria, Storytelling</h3>
               </div>
               
               <div class="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-500 z-10">
@@ -1059,12 +1059,12 @@
           </div>
 
           <div class="relative shrink-0 w-[17rem] h-[13.5rem] rounded-[1.75rem] overflow-hidden group cursor-pointer shadow-md shadow-black/5 hover:-translate-y-1 transition-transform duration-500 snap-center">
-              <img loading="lazy" src="assets/vika-victoria.jpg" class="absolute inset-0 w-full h-full object-cover scale-110 group-hover:scale-[1.15] transition-transform duration-700 object-[50%_10%]" alt="Vika Victoria">
+              <img loading="lazy" src="assets/vika-victoria.jpg" class="absolute inset-0 w-full h-full object-cover scale-110 group-hover:scale-[1.15] transition-transform duration-700 object-[50%_10%]" alt="Vika Victoria"> origin/main
               <div class="absolute inset-0 bg-gradient-to-t from-black/90 via-black/20 to-transparent opacity-80 group-hover:opacity-100 transition-opacity duration-500 snap-center"></div>
               
               <div class="absolute bottom-0 left-0 right-0 p-5 flex flex-col gap-1 z-10 transform translate-y-2 group-hover:translate-y-0 transition-transform duration-500 snap-center">
               <div class="text-[8px] font-montserrat font-bold text-white/70 group-hover:text-white transition-colors duration-300 uppercase tracking-[0.2em]">9 NOV</div>
-              <h3 class="text-white/70 group-hover:text-white transition-colors duration-300 text-[13px] font-semibold leading-snug tracking-wide">ViKa Victoria, Storytelling</h3>
+              <h3 class="text-white/70 group-hover:text-white transition-colors duration-300 text-[13px] font-semibold leading-snug tracking-wide">ViKA Victoria, Storytelling</h3>
               </div>
               
               <div class="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-500 z-10">
@@ -1286,7 +1286,7 @@
             document.body.style.transform = 'scale(0.98)';
             setTimeout(() => { window.location.href = href; }, window.innerWidth < 768 ? 120 : 280);
           });
-        }
+        } origin/main
       });
 
       document.addEventListener('DOMContentLoaded', function () {
