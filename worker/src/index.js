@@ -60,6 +60,13 @@ export default {
       return handlePortalDownload(request, env);
     }
 
+    // Route: Time Rich Members backfill (POST /portal-directory-sync). Team
+    // only, behind DIRECTORY_SYNC_SECRET; copies every questionnaire row into
+    // portal_directory.
+    if (path.endsWith("/portal-directory-sync")) {
+      return handleDirectoryBackfill(request, env, cors);
+    }
+
     // Route: ThriveCart purchase webhook (handles order.success, order.subscription_payment, order.refund)
     if (path.endsWith("/thrivecart-webhook")) {
       return handleThriveCartWebhook(request, env, cors, ctx);
@@ -2214,6 +2221,11 @@ async function handleSuperhumanQuestionnaire(data, env, cors, ctx) {
     pageUrl: page && typeof page.url === "string" ? page.url : "",
   });
 
+  // Time Rich Members: copy the saved profile into portal_directory. Built
+  // from the properties Notion stored (the reply to the write), not from this
+  // request body, and off the response path like Slack.
+  queueDirectorySync(env, ctx, page);
+
   // The sheet is a mirror of a write that already succeeded, so it stays
   // fire-and-forget like the rest of them.
   const sheetUrl = env.GOOGLE_SHEET_ORDERS_URL || env.GOOGLE_SHEET_WEBHOOK_URL;
@@ -2357,4 +2369,167 @@ async function findPaidCohortOrder(env, dbId, trackingId, email) {
   }
   if (email) return findPaidRow(env, dbId, "Email", email);
   return null;
+}
+
+// ---------------------------------------------------------------------------
+// Time Rich Members: the portal member directory
+//
+// portal_directory (Supabase) holds one profile per accelerator member, built
+// from their Superhuman questionnaire row in Notion. Members never type
+// anything twice: every saved questionnaire is copied across, and sending the
+// form again is how a member edits their profile.
+//
+// Only buyers and second seats with an active portal_members row are listed.
+// Team, ambassadors and anyone without portal access are skipped. Everything
+// here runs with the service role key and never on the response path of the
+// questionnaire, so a Supabase outage cannot turn a saved form into an error.
+// ---------------------------------------------------------------------------
+
+const DIRECTORY_LISTED_ROLES = ["buyer", "second_seat"];
+
+// portal_directory column <- Notion column, in the order a profile reads.
+const DIRECTORY_FIELDS = [
+  ["name", "Name"],
+  ["hook_line", "Bio"],
+  ["title", "Title"],
+  ["company", "Company"],
+  ["company_does", "What the Company Does"],
+  ["who_they_serve", "Who They Serve"],
+  ["superpower", "Superpower"],
+  ["linkedin", "LinkedIn"],
+  ["instagram", "Instagram"],
+  ["other_links", "Other Links"],
+];
+
+// Base URL and service-role headers for Supabase REST and Storage, or null
+// when the Worker is not configured for the portal.
+function supabaseService(env) {
+  if (!env.SUPABASE_URL || !env.SUPABASE_SERVICE_ROLE_KEY) return null;
+  const key = env.SUPABASE_SERVICE_ROLE_KEY;
+  return {
+    base: env.SUPABASE_URL.replace(/\/+$/, ""),
+    headers: { apikey: key, Authorization: `Bearer ${key}`, "Content-Type": "application/json" },
+  };
+}
+
+// The member's portal_members row, if they are listed in the directory.
+// portal_members.email is not guaranteed lowercase, so this matches case
+// insensitively and then checks the address exactly, the same
+// filter-then-check shape as findRowByEmail.
+async function findListedMember(sb, email) {
+  const res = await fetch(
+    `${sb.base}/rest/v1/portal_members?select=email,role&active=is.true&email=ilike.${encodeURIComponent(email)}`,
+    { headers: sb.headers }
+  );
+  if (!res.ok) throw new Error(`portal_members lookup returned ${res.status}`);
+  const rows = await res.json();
+  const member = (Array.isArray(rows) ? rows : []).find((row) => normKey(row.email) === email);
+  return member && DIRECTORY_LISTED_ROLES.includes(member.role) ? member : null;
+}
+
+// One portal_directory row from a Notion questionnaire row. An empty Notion
+// cell becomes null, never "".
+function directoryRowFromNotion(email, role, properties) {
+  const row = { email, role, updated_at: new Date().toISOString() };
+  for (const [column, prop] of DIRECTORY_FIELDS) {
+    row[column] = calProp(properties[prop]) || null;
+  }
+  return row;
+}
+
+async function upsertDirectoryRow(sb, row) {
+  const res = await fetch(`${sb.base}/rest/v1/portal_directory?on_conflict=email`, {
+    method: "POST",
+    headers: { ...sb.headers, Prefer: "resolution=merge-duplicates,return=minimal" },
+    body: JSON.stringify(row),
+  });
+  if (!res.ok) throw new Error(`portal_directory upsert returned ${res.status}`);
+}
+
+// Copies one Notion questionnaire row into portal_directory.
+// Returns "listed" or "skipped"; throws only when Supabase itself fails.
+async function syncDirectoryProfile(env, properties) {
+  const sb = supabaseService(env);
+  if (!sb) throw new Error("Supabase is not configured");
+
+  const email = normKey(calProp(properties && properties["Email"]));
+  if (!email) return "skipped";
+
+  const member = await findListedMember(sb, email);
+  if (!member) return "skipped";
+
+  await upsertDirectoryRow(sb, directoryRowFromNotion(email, member.role, properties));
+  return "listed";
+}
+
+// Called after the questionnaire is safely in Notion. `page` is Notion's reply
+// to the create or update, which carries every stored property, so a partial
+// resubmission still produces a complete profile.
+function queueDirectorySync(env, ctx, page) {
+  if (!page || !page.properties || !supabaseService(env)) return;
+  const work = syncDirectoryProfile(env, page.properties).catch((err) => {
+    // Our own messages only: never the payload, a link or an error object.
+    console.error("[members] directory sync failed:", String(err && err.message));
+  });
+  if (ctx && typeof ctx.waitUntil === "function") ctx.waitUntil(work);
+}
+
+// Constant-time comparison of two secrets of any length: both are hashed
+// first, so the loop always runs over 32 bytes whatever was sent.
+async function secretsMatch(given, expected) {
+  const enc = new TextEncoder();
+  const [a, b] = await Promise.all([
+    crypto.subtle.digest("SHA-256", enc.encode(String(given))),
+    crypto.subtle.digest("SHA-256", enc.encode(String(expected))),
+  ]);
+  const x = new Uint8Array(a);
+  const y = new Uint8Array(b);
+  let diff = 0;
+  for (let i = 0; i < x.length; i++) diff |= x[i] ^ y[i];
+  return diff === 0;
+}
+
+// POST /portal-directory-sync  (Authorization: Bearer <DIRECTORY_SYNC_SECRET>)
+//
+// Backfill: runs the same sync over every row of the Superhuman Questionnaire
+// database, for members who answered before the directory existed. Safe to
+// run any number of times; each row ends in the same state.
+async function handleDirectoryBackfill(request, env, cors) {
+  const deny = () => json({ error: "Forbidden" }, 403, cors);
+  if (!env.DIRECTORY_SYNC_SECRET) return deny();
+
+  const header = request.headers.get("Authorization") || "";
+  const given = header.startsWith("Bearer ") ? header.slice(7).trim() : "";
+  if (!given || !(await secretsMatch(given, env.DIRECTORY_SYNC_SECRET))) return deny();
+
+  const dbId = env.NOTION_SUPERHUMAN_QUESTIONNAIRE_DATABASE_ID;
+  if (!env.NOTION_TOKEN || !dbId || !supabaseService(env)) {
+    return json({ ok: false, error: "The directory sync is not configured" }, 503, cors);
+  }
+
+  const counts = { processed: 0, listed: 0, skipped: 0, failed: 0 };
+  let cursor = null;
+  do {
+    const res = await fetch(`https://api.notion.com/v1/databases/${dbId}/query`, {
+      method: "POST",
+      headers: { ...authHeaders(env), "Content-Type": "application/json" },
+      body: JSON.stringify(cursor ? { page_size: 100, start_cursor: cursor } : { page_size: 100 }),
+    });
+    if (!res.ok) return json({ ok: false, error: "Could not read the questionnaire", ...counts }, 502, cors);
+
+    const data = await res.json();
+    for (const row of data.results || []) {
+      counts.processed++;
+      try {
+        const outcome = await syncDirectoryProfile(env, row.properties || {});
+        counts[outcome]++;
+      } catch (err) {
+        counts.failed++;
+        console.error("[members] backfill row failed:", String(err && err.message));
+      }
+    }
+    cursor = data.has_more && data.next_cursor ? data.next_cursor : null;
+  } while (cursor);
+
+  return json({ ok: true, ...counts }, 200, cors);
 }

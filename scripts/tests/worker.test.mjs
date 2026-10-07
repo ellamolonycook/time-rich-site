@@ -504,5 +504,293 @@ console.log('\nThe other routes still work after all of that');
     unknown.status === 200 && pageBody().parent.database_id === 'db-main');
 }
 
+// ---------------------------------------------------------------------------
+// Time Rich Members: the questionnaire -> portal_directory sync and the backfill.
+//
+// One fake stands in for Notion and Supabase. Notion's replies use the real
+// response shape (typed properties with plain_text), and a PATCH reply carries
+// everything already stored on the row, so these tests can tell a profile
+// built from Notion's stored properties apart from one built from the body.
+// ---------------------------------------------------------------------------
+const memEnv = {
+  NOTION_TOKEN: 'secret_test',
+  NOTION_SUPERHUMAN_QUESTIONNAIRE_DATABASE_ID: 'db-shq',
+  SUPABASE_URL: 'https://sb.test/',
+  SUPABASE_SERVICE_ROLE_KEY: 'service-key',
+  DIRECTORY_SYNC_SECRET: 'sync-secret',
+  ALLOWED_ORIGIN: 'https://timerich.ai',
+};
+
+// Request-shaped Notion properties -> response-shaped (what Notion stores).
+function asStored(props) {
+  const out = {};
+  for (const [name, p] of Object.entries(props || {})) {
+    const runs = (arr) => (arr || []).map((t) => ({ plain_text: t.text.content, text: t.text }));
+    if (p.title) out[name] = { type: 'title', title: runs(p.title) };
+    else if (p.rich_text) out[name] = { type: 'rich_text', rich_text: runs(p.rich_text) };
+    else if ('email' in p) out[name] = { type: 'email', email: p.email };
+    else if ('url' in p) out[name] = { type: 'url', url: p.url };
+    else if (p.select) out[name] = { type: 'select', select: p.select };
+    else if (p.multi_select) out[name] = { type: 'multi_select', multi_select: p.multi_select };
+    else if (p.date) out[name] = { type: 'date', date: p.date };
+  }
+  return out;
+}
+
+const mem = {
+  members: [],        // portal_members rows: { email, role, active }
+  directory: {},      // portal_directory rows by email
+  stored: null,       // the questionnaire row already in Notion, if any
+  notionSaveOk: true,
+  supabaseUp: true,
+  backfillPages: [],  // pages of Notion rows the backfill reads
+  calls: [],
+  logs: [],
+};
+
+const memFetch = async (url, init = {}) => {
+  url = String(url);
+  mem.calls.push({ url, init });
+  const method = init.method || 'GET';
+  const body = init.body ? JSON.parse(init.body) : null;
+  const ok = (data, status = 200) => new Response(JSON.stringify(data), { status });
+
+  if (url.startsWith('https://api.notion.com/v1/databases/db-shq/query')) {
+    if (body && body.filter) return ok({ results: mem.stored ? [mem.stored] : [] }); // findRowByEmail
+    const index = body && body.start_cursor ? Number(body.start_cursor) : 0;          // backfill paging
+    const results = mem.backfillPages[index] || [];
+    const more = index + 1 < mem.backfillPages.length;
+    return ok({ results, has_more: more, next_cursor: more ? String(index + 1) : null });
+  }
+  if (url.startsWith('https://api.notion.com/v1/pages')) {
+    if (!mem.notionSaveOk) return new Response('{"message":"bad"}', { status: 400 });
+    const merged = method === 'PATCH'
+      ? { ...mem.stored.properties, ...asStored(body.properties) }
+      : asStored(body.properties);
+    return ok({ id: 'page-shq', url: 'https://notion.so/page-shq', properties: merged });
+  }
+  if (url.startsWith('https://sb.test/rest/v1/')) {
+    if (!mem.supabaseUp) return new Response('down', { status: 503 });
+    if (url.includes('/portal_members?')) {
+      const wanted = decodeURIComponent(url.split('email=ilike.')[1] || '').toLowerCase();
+      return ok(mem.members.filter((m) => m.active && m.email.toLowerCase() === wanted));
+    }
+    if (url.includes('/portal_directory?on_conflict=email') && method === 'POST') {
+      mem.directory[body.email] = { ...(mem.directory[body.email] || {}), ...body, _prefer: init.headers.Prefer };
+      return new Response(null, { status: 201 });
+    }
+  }
+  return ok({});
+};
+
+function resetMembers() {
+  mem.members = [];
+  mem.directory = {};
+  mem.stored = null;
+  mem.notionSaveOk = true;
+  mem.supabaseUp = true;
+  mem.backfillPages = [];
+  mem.calls = [];
+  mem.logs = [];
+}
+
+// Every console line the Worker writes while these run, so tests can prove
+// what is never logged.
+const realError = console.error;
+const realLog = console.log;
+function captureLogs(on) {
+  if (on) {
+    console.error = (...a) => mem.logs.push(a.map(String).join(' '));
+  } else {
+    console.error = realError;
+    console.log = realLog;
+  }
+}
+
+async function submitQuestionnaire(body, env = memEnv) {
+  const pending = [];
+  captureLogs(true);
+  const res = await worker.fetch(new Request('https://w.dev/superhuman-questionnaire', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json', Origin: 'https://timerich.ai' },
+    body: JSON.stringify(body),
+  }), env, { waitUntil: (p) => pending.push(p) });
+  await Promise.all(pending);
+  captureLogs(false);
+  return res;
+}
+
+function backfill(token, env = memEnv) {
+  const headers = { 'Content-Type': 'application/json' };
+  if (token !== undefined) headers.Authorization = 'Bearer ' + token;
+  return worker.fetch(new Request('https://w.dev/portal-directory-sync', { method: 'POST', headers, body: '{}' }), env);
+}
+
+const ADA = {
+  name: 'Ada Lovelace',
+  email: 'Ada@Example.com ',
+  role: 'Buyer',
+  linkedin: 'https://www.linkedin.com/in/ada',
+  instagram: 'https://www.instagram.com/ada',
+  other_links: 'https://ada.dev\nhttps://youtube.com/@ada',
+  job_title: 'Founder',
+  company: 'Analytical Co',
+  company_does: 'We build engines that compute.',
+  who_you_serve: 'Founders who think in systems.',
+  bio: '4x founder, first programmer',
+  photo_link: 'https://drive.google.com/file/d/abc123/view',
+  superpower: 'I turn vague ideas into running systems.',
+};
+
+globalThis.fetch = memFetch;
+
+console.log('\nTime Rich Members — questionnaire sync');
+{
+  resetMembers();
+  mem.members = [{ email: 'ada@example.com', role: 'buyer', active: true }];
+  const res = await submitQuestionnaire(ADA);
+  const row = mem.directory['ada@example.com'];
+  check('the form still answers 200', res.status === 200);
+  check('a buyer with portal access gets a directory row, keyed by lowercased email', Boolean(row), Object.keys(mem.directory));
+  check('Bio becomes hook_line', row && row.hook_line === '4x founder, first programmer', row);
+  check('Title, Company and the profile answers map across',
+    row && row.title === 'Founder' && row.company === 'Analytical Co' &&
+    row.company_does === 'We build engines that compute.' &&
+    row.who_they_serve === 'Founders who think in systems.' &&
+    row.superpower === 'I turn vague ideas into running systems.', row);
+  check('links map across, other links keep one per line',
+    row && row.linkedin === 'https://www.linkedin.com/in/ada' && row.instagram === 'https://www.instagram.com/ada' &&
+    row.other_links === 'https://ada.dev\nhttps://youtube.com/@ada', row);
+  check('name and role are recorded', row && row.name === 'Ada Lovelace' && row.role === 'buyer', row);
+  check('the write is an upsert on email', row && /resolution=merge-duplicates/.test(row._prefer), row && row._prefer);
+  const notionAt = mem.calls.findIndex((c) => c.url.startsWith('https://api.notion.com/v1/pages'));
+  const supabaseAt = mem.calls.findIndex((c) => c.url.startsWith('https://sb.test/'));
+  check('Supabase is only touched after Notion saved', notionAt > -1 && supabaseAt > notionAt, { notionAt, supabaseAt });
+  check('the service role key is what Supabase sees',
+    mem.calls.filter((c) => c.url.startsWith('https://sb.test/')).every((c) => c.init.headers.apikey === 'service-key'));
+}
+
+{
+  resetMembers();
+  mem.members = [{ email: 'sam@example.com', role: 'second_seat', active: true }];
+  await submitQuestionnaire({ ...ADA, name: 'Sam', email: 'sam@example.com', role: '+1' });
+  check('a second seat is listed too', mem.directory['sam@example.com']?.role === 'second_seat');
+}
+
+{
+  resetMembers();
+  const res = await submitQuestionnaire({ ...ADA, email: 'stranger@example.com' });
+  check('no portal_members row: skipped, form still 200', res.status === 200 && Object.keys(mem.directory).length === 0);
+}
+
+{
+  resetMembers();
+  mem.members = [{ email: 'kenneth@example.com', role: 'team', active: true }];
+  await submitQuestionnaire({ ...ADA, email: 'kenneth@example.com', role: 'Ambassador' });
+  check('team is never listed', Object.keys(mem.directory).length === 0);
+}
+
+{
+  resetMembers();
+  mem.members = [{ email: 'ada@example.com', role: 'buyer', active: false }];
+  await submitQuestionnaire(ADA);
+  check('an inactive member is not listed', Object.keys(mem.directory).length === 0);
+}
+
+{
+  resetMembers();
+  mem.members = [{ email: 'ada@example.com', role: 'buyer', active: true }];
+  mem.stored = {
+    id: 'page-shq',
+    properties: asStored({
+      Name: { title: [{ text: { content: 'Ada Lovelace' } }] },
+      Email: { email: 'ada@example.com' },
+      Company: { rich_text: [{ text: { content: 'Stored Co' } }] },
+      Superpower: { rich_text: [{ text: { content: 'Stored superpower' } }] },
+    }),
+  };
+  // A second pass that leaves Company and Superpower empty: the form keeps
+  // them in Notion, so the profile must keep them too.
+  await submitQuestionnaire({ ...ADA, company: '', superpower: '', bio: 'New hook line' });
+  const row = mem.directory['ada@example.com'];
+  check('the profile is built from what Notion stored, not the request body',
+    row && row.company === 'Stored Co' && row.superpower === 'Stored superpower' && row.hook_line === 'New hook line', row);
+}
+
+{
+  resetMembers();
+  mem.members = [{ email: 'ada@example.com', role: 'buyer', active: true }];
+  mem.notionSaveOk = false;
+  const res = await submitQuestionnaire(ADA);
+  check('Notion save fails: no sync, form reports the failure',
+    res.status === 502 && !mem.calls.some((c) => c.url.startsWith('https://sb.test/')));
+}
+
+{
+  resetMembers();
+  mem.members = [{ email: 'ada@example.com', role: 'buyer', active: true }];
+  mem.supabaseUp = false;
+  const res = await submitQuestionnaire(ADA);
+  check('Supabase down: the questionnaire still saves and answers 200', res.status === 200);
+  check('the failure is logged without any answer or link in it',
+    mem.logs.some((l) => l.includes('[members] directory sync failed')) &&
+    !mem.logs.some((l) => l.includes('drive.google.com') || l.includes('Ada') || l.includes('linkedin')), mem.logs);
+}
+
+{
+  resetMembers();
+  mem.members = [{ email: 'ada@example.com', role: 'buyer', active: true }];
+  const { SUPABASE_URL, SUPABASE_SERVICE_ROLE_KEY, ...noSupabase } = memEnv;
+  const res = await submitQuestionnaire(ADA, noSupabase);
+  check('without Supabase configured the sync is skipped quietly',
+    res.status === 200 && !mem.calls.some((c) => c.url.startsWith('https://sb.test/')));
+}
+
+console.log('\nTime Rich Members — backfill');
+{
+  const row = (name, email) => ({
+    properties: asStored({
+      Name: { title: [{ text: { content: name } }] },
+      Email: { email },
+      Bio: { rich_text: [{ text: { content: name + ' hook' } }] },
+    }),
+  });
+  resetMembers();
+  mem.members = [
+    { email: 'ada@example.com', role: 'buyer', active: true },
+    { email: 'sam@example.com', role: 'second_seat', active: true },
+    { email: 'kenneth@example.com', role: 'team', active: true },
+  ];
+  mem.backfillPages = [
+    [row('Ada', 'ada@example.com'), row('Kenneth', 'kenneth@example.com')],
+    [row('Sam', 'Sam@Example.com'), row('Amb', 'amb@example.com')],
+  ];
+
+  const missing = await backfill(undefined);
+  const wrong = await backfill('not-the-secret');
+  const unset = await backfill('sync-secret', { ...memEnv, DIRECTORY_SYNC_SECRET: '' });
+  const bodies = [await missing.text(), await wrong.text(), await unset.text()];
+  check('no token, a wrong token, or no secret configured: all 403',
+    missing.status === 403 && wrong.status === 403 && unset.status === 403);
+  check('and the three refusals are byte-identical', bodies.every((b) => b === bodies[0]), bodies);
+  check('nothing is synced on a refusal', Object.keys(mem.directory).length === 0);
+
+  const res = await backfill('sync-secret');
+  const counts = await res.json();
+  check('the right secret runs it', res.status === 200 && counts.ok === true, counts);
+  check('it reads every page of the questionnaire', counts.processed === 4, counts);
+  check('buyers and second seats are listed, team and non-members skipped',
+    counts.listed === 2 && counts.skipped === 2 && counts.failed === 0 &&
+    Boolean(mem.directory['ada@example.com']) && Boolean(mem.directory['sam@example.com']) &&
+    !mem.directory['kenneth@example.com'] && !mem.directory['amb@example.com'], counts);
+
+  const before = JSON.stringify(mem.directory, (k, v) => (k === 'updated_at' ? undefined : v));
+  const again = await (await backfill('sync-secret')).json();
+  const after = JSON.stringify(mem.directory, (k, v) => (k === 'updated_at' ? undefined : v));
+  check('running it twice leaves the same rows', again.listed === 2 && before === after);
+}
+
+globalThis.fetch = baseFetch;
+
 console.log('\n' + pass + ' passed, ' + fail + ' failed');
 process.exit(fail ? 1 : 0);
