@@ -1094,7 +1094,10 @@ Core Rules:
           );
 
           if (results.length === 0) {
-            resultsBox.innerHTML = `<div class="px-4 py-3 text-xs text-brand-mid italic">No results found for "${query}"</div>`;
+            const noResults = document.createElement('div');
+            noResults.className = "px-4 py-3 text-xs text-brand-mid italic";
+            noResults.textContent = `No results found for "${query}"`;
+            resultsBox.appendChild(noResults);
             return;
           }
 
