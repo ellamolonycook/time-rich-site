@@ -1940,6 +1940,95 @@ async function handleOnboardQuestionnaire(data, env, cors, ctx) {
 }
 
 // ---------------------------------------------------------------------------
+// Slack ping for a saved Superhuman questionnaire.
+//
+// Reads the values back out of the Notion `properties` object rather than the
+// raw form body, so the message always says what was actually stored: a select
+// the form sent but Notion would not accept never reaches Slack.
+//
+// SLACK_QUESTIONNAIRE_WEBHOOK_URL is a secret. It is never logged, and no
+// failure here is ever surfaced to the person who filled the form.
+// ---------------------------------------------------------------------------
+
+// Slack mrkdwn needs exactly these three escaped, and nothing else.
+function slackEscape(value) {
+  return String(value == null ? "" : value)
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;");
+}
+
+// Pull a readable value back out of a Notion property payload.
+function notionPropText(properties, name) {
+  const prop = properties && properties[name];
+  if (!prop) return "";
+  if (prop.select && prop.select.name) return String(prop.select.name);
+  if (typeof prop.url === "string") return prop.url;
+  if (Array.isArray(prop.rich_text) && prop.rich_text.length) {
+    return String((prop.rich_text[0].text && prop.rich_text[0].text.content) || "");
+  }
+  if (Array.isArray(prop.title) && prop.title.length) {
+    return String((prop.title[0].text && prop.title[0].text.content) || "");
+  }
+  return "";
+}
+
+function questionnaireSlackText(fields) {
+  const props = fields.properties || {};
+  const lines = [];
+
+  // Same shape either way, so an update is still readable at a glance.
+  const label = fields.updated ? "Updated questionnaire" : "New questionnaire";
+  lines.push(
+    `*${label}: ${slackEscape(fields.name)}*` +
+    (fields.role ? ` (${slackEscape(fields.role)})` : "")
+  );
+
+  // Title, Company · Email - any empty part simply drops out.
+  const title = notionPropText(props, "Title");
+  const company = notionPropText(props, "Company");
+  const who = [title, company].filter(Boolean).map(slackEscape).join(", ");
+  const identity = [who, fields.email ? slackEscape(fields.email) : ""].filter(Boolean).join(" · ");
+  if (identity) lines.push(identity);
+
+  const facts = [
+    ["Build priority", notionPropText(props, "Q Build Priority")],
+    ["Revenue", notionPropText(props, "Q Revenue")],
+    ["Team", notionPropText(props, "Q Team Size")],
+  ]
+    .filter(([, value]) => value)
+    .map(([label, value]) => `${label}: ${slackEscape(value)}`)
+    .join(" · ");
+  if (facts) lines.push(facts);
+
+  const linkedin = notionPropText(props, "LinkedIn");
+  if (linkedin) lines.push(`LinkedIn: ${slackEscape(linkedin)}`);
+
+  if (fields.pageUrl) lines.push(`<${slackEscape(fields.pageUrl)}|Open in Notion>`);
+
+  return lines.join("\n");
+}
+
+function notifySlackQuestionnaire(env, ctx, fields) {
+  const webhook = env && env.SLACK_QUESTIONNAIRE_WEBHOOK_URL;
+  if (!webhook) return;                       // not configured: skip, silently
+
+  const work = fetch(webhook, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ text: questionnaireSlackText(fields), mrkdwn: true }),
+  }).then(
+    (res) => {
+      // Status only. The URL is a secret and never goes near a log line.
+      if (!res.ok) console.error("[SHQ] slack webhook returned", res.status);
+    },
+    () => { console.error("[SHQ] slack webhook request failed"); }
+  );
+
+  if (ctx && typeof ctx.waitUntil === "function") ctx.waitUntil(work);
+}
+
+// ---------------------------------------------------------------------------
 // Superhuman questionnaire (POST /superhuman-questionnaire)
 //
 // The same twenty questions /onboard-questionnaire takes, on a page of their
@@ -2085,6 +2174,7 @@ async function handleSuperhumanQuestionnaire(data, env, cors, ctx) {
   // page holds the answers in sessionStorage until this comes back ok, so a
   // fire-and-forget failure here would quietly lose someone's typing.
   let saved = false;
+  let page = null;              // the created or patched row, for the Slack link
   try {
     const res = existing
       ? await fetch(`https://api.notion.com/v1/pages/${existing.id}`, {
@@ -2098,6 +2188,9 @@ async function handleSuperhumanQuestionnaire(data, env, cors, ctx) {
           body: JSON.stringify({ parent: { database_id: dbId }, properties }),
         });
     saved = res.ok;
+    if (res.ok) {
+      try { page = await res.json(); } catch { /* the row saved; only the link is lost */ }
+    }
     if (!res.ok) {
       // A missing column or select option comes back as a 400, and the body is
       // the only thing that says which one.
@@ -2108,6 +2201,18 @@ async function handleSuperhumanQuestionnaire(data, env, cors, ctx) {
   }
 
   if (!saved) return json({ ok: false, error: "Could not save the questionnaire" }, 502, cors);
+
+  // Slack is told only after the row is safely in Notion, and never gets in
+  // the way: waitUntil keeps it off the response path, so an outage at Slack
+  // cannot turn a saved questionnaire into an error for the person filling it.
+  notifySlackQuestionnaire(env, ctx, {
+    updated: Boolean(existing),
+    name,
+    role,
+    email,
+    properties,
+    pageUrl: page && typeof page.url === "string" ? page.url : "",
+  });
 
   // The sheet is a mirror of a write that already succeeded, so it stays
   // fire-and-forget like the rest of them.
