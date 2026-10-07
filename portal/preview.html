@@ -3,8 +3,48 @@
 <head>
   <meta charset="utf-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <!-- Google tag (gtag.js) -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-CTZLQ4R388"></script>
+  <script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','G-CTZLQ4R388');</script>
+
   <meta name="robots" content="noindex, nofollow"/>
   <title>Portal preview — Time Rich</title>
+
+  <!-- portal-access.js renders the week and session markup with Tailwind
+       utility classes, the same as every other portal page. Without this the
+       injected content is unstyled: the SVG icons have no w-/h- size and fill
+       their container, and links fall back to the browser default blue.
+       The forms plugin is left off here, unlike the other portal pages: this
+       is the only page with a .trp-input, and the plugin's [type='text']
+       rules would override its radius, padding and colours. -->
+  <script src="https://cdn.tailwindcss.com?plugins=container-queries"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            brand: {
+              cream: '#FFFCEB',
+              offwhite: '#FFFDFB',
+              sage: '#DCDEBF',
+              sagelt: '#E9EAD5',
+              green: '#424B36',
+              deep: '#333A28',
+              mid: '#4E5840',
+              lime: '#CCEEA0',
+              olive: '#67762E'
+            }
+          },
+          fontFamily: {
+            sans: ['"Inter"', 'sans-serif'],
+            display: ['"Space Grotesk"', 'sans-serif'],
+            serif: ['"Newsreader"', 'serif'],
+            mono: ['"JetBrains Mono"', 'monospace'],
+          }
+        }
+      }
+    }
+  </script>
 
   <link rel="preconnect" href="https://fonts.googleapis.com"/>
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin=""/>
