@@ -289,6 +289,64 @@
   
   /* ---- items --------------------------------------------------------- */
 
+  /* ---- gated skill downloads ---------------------------------------- */
+
+  // A skill item's url is a file name in a private bucket, not a link. The
+  // bytes come back only as a short-lived signed URL, and only after the
+  // Worker has re-checked the code and the week's release date.
+  function requestSkillUrl(itemId) {
+    var cfg = window.TR_PORTAL_CONFIG;
+    var endpoint = (cfg && typeof cfg.downloadUrl === 'string') ? cfg.downloadUrl.trim() : '';
+    var code = readCode();
+    if (!endpoint || !code) return Promise.resolve({ ok: false });
+
+    return fetch(endpoint, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ code: code, item_id: itemId })
+    }).then(function (response) {
+      if (!response.ok) return { ok: false };          // 403 carries no detail
+      return response.json().then(function (data) {
+        var signed = safeUrl(data && data.url);
+        return signed ? { ok: true, url: signed.href } : { ok: false };
+      }, function () { return { ok: false }; });
+    }, function () { return { ok: false }; });
+  }
+
+  function skillButton(item) {
+    var button = el('button', 'inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-brand-deep ' +
+                              'text-white text-xs font-bold shadow-sm hover:bg-brand-green ' +
+                              'transition-colors disabled:opacity-60', 'Download skill');
+    button.type = 'button';
+    button.insertAdjacentHTML('afterbegin',
+      '<svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">' +
+      '<path stroke-linecap="round" stroke-linejoin="round" d="M12 4v11m0 0l-4-4m4 4l4-4M5 19h14">' +
+      '</path></svg>');
+
+    button.addEventListener('click', function (event) {
+      event.preventDefault();
+      if (button.disabled) return;
+      var label = button.textContent;
+      button.disabled = true;
+      button.textContent = 'Preparing…';
+
+      requestSkillUrl(item && item.id).then(function (result) {
+        button.disabled = false;
+        if (result.ok) {
+          button.textContent = label;
+          window.open(result.url, '_blank', 'noopener,noreferrer');
+          return;
+        }
+        // Locked, expired or simply not available: one flat message, the
+        // same one the server gives for every refusal.
+        button.textContent = 'Not available';
+        setTimeout(function () { button.textContent = label; }, 2500);
+      });
+    });
+
+    return button;
+  }
+
   function itemCard(item) {
     var url = safeUrl(item && item.url);
     var isLink = (item && item.kind === 'link') && url;
@@ -332,13 +390,20 @@
        a.href = url.href;
        a.target = '_blank';
        bottom.appendChild(a);
+    } else if (kind === 'skill') {
+       bottom.appendChild(el('span', 'text-xs text-brand-mid font-medium', 'Superhuman skill'));
     } else {
        bottom.appendChild(el('span', 'text-xs text-brand-mid font-medium', 'Content'));
     }
 
-    var iconWrapper = el('div', 'w-8 h-8 rounded-full border border-brand-green/15 flex items-center justify-center group-hover:bg-brand-deep group-hover:border-brand-deep group-hover:text-white text-brand-deep transition-all duration-300');
-    iconWrapper.innerHTML = '<svg class="w-4 h-4 transform group-hover:translate-x-0.5 transition-transform" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7"></path></svg>';
-    bottom.appendChild(iconWrapper);
+    if (kind === 'skill') {
+       // The download button stands in for the chevron on a skill card.
+       bottom.appendChild(skillButton(item));
+    } else {
+       var iconWrapper = el('div', 'w-8 h-8 rounded-full border border-brand-green/15 flex items-center justify-center group-hover:bg-brand-deep group-hover:border-brand-deep group-hover:text-white text-brand-deep transition-all duration-300');
+       iconWrapper.innerHTML = '<svg class="w-4 h-4 transform group-hover:translate-x-0.5 transition-transform" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7"></path></svg>';
+       bottom.appendChild(iconWrapper);
+    }
 
     card.appendChild(bottom);
     return card;
@@ -516,6 +581,13 @@
 
     renderWeeks(document.querySelector('[data-portal-weeks]'), data);
     renderSessions(document.querySelector('[data-portal-sessions]'), data);
+
+    // A page whose design does not match the generic markup above can listen
+    // for this and render the payload itself. Fired before the gate opens, so
+    // whatever it draws is in place by the time the page becomes visible.
+    try {
+      document.dispatchEvent(new CustomEvent('trportal:data', { detail: data }));
+    } catch (e) { /* no CustomEvent: the generic rendering above still ran */ }
 
     setState('in');
   }

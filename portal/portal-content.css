@@ -44,6 +44,19 @@
 [data-tr-portal="out"]     .trp-when-out     { display: block; }
 [data-tr-portal="loading"] .trp-when-loading { display: block; }
 
+/* ---- whole-page gate ---------------------------------------------------
+ * Pages with no login form of their own (dashboard, curriculum, sessions,
+ * resources, lesson) opt in with data-trp-gate on <html>. Everything in the
+ * body stays hidden until portal-access.js has checked the code, so member
+ * content cannot flash. Nothing is given a display value here: once the
+ * check passes the rule stops matching and each element goes back to the
+ * display its own classes set, so the page's layout is untouched.
+ * --------------------------------------------------------------------- */
+
+html[data-trp-gate]:not([data-tr-portal="in"]) body > *:not(script):not(style) {
+  display: none !important;
+}
+
 /* ---- layout ----------------------------------------------------------- */
 
 .trp-wrap {
