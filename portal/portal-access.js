@@ -720,6 +720,9 @@
     hasCode: hasCode,
     renderWeeks: renderWeeks,
     renderSessions: renderSessions,
+    // resources.html renders its own skill library and reuses this button, so
+    // the gated-download flow lives in exactly one place.
+    skillButton: skillButton,
     messages: MSG
   };
 
