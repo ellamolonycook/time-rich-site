@@ -236,7 +236,7 @@ export default {
     // column on that database is plain text, and its names are the questions
     // themselves, so the mapping table is the contract with the page.
     if (path.endsWith("/strategy")) {
-      return handleStrategy(data, env, cors);
+      return handleStrategy(data, env, cors, ctx);
     }
 
     // Route: AI Revenue Accelerator application -> its own Notion database.
@@ -866,7 +866,55 @@ const STRATEGY_QUESTIONS = [
   ["q18", "18. What should we know that did not come up on the call?"],
 ];
 
-async function handleStrategy(d, env, cors) {
+// ---------------------------------------------------------------------------
+// Slack ping for a saved strategy intake.
+//
+// Posts with the bot token to SLACK_STRATEGY_CHANNEL_ID. Both are secrets:
+// neither is logged, and a failure is never surfaced to the person who filled
+// the form. Fire-and-forget through ctx.waitUntil, after the Notion row exists.
+// ---------------------------------------------------------------------------
+
+const STRATEGY_WIN_CHARS = 200;
+
+function strategySlackText(fields) {
+  const esc = slackEscape;
+  const lines = [];
+
+  lines.push(
+    `*New strategy intake: ${esc(fields.name)}*` +
+    (fields.role ? ` (${esc(fields.role)})` : "")
+  );
+  if (fields.email) lines.push(esc(fields.email));
+
+  const win = String(fields.win30 == null ? "" : fields.win30).trim();
+  if (win) lines.push(`Win in 30 days: ${esc(clip(win, STRATEGY_WIN_CHARS))}`);
+
+  const budget = String(fields.budget == null ? "" : fields.budget).trim();
+  if (budget) lines.push(`Budget (monthly): ${esc(budget)}`);
+
+  if (fields.pageUrl) lines.push(`<${esc(fields.pageUrl)}|Open in Notion>`);
+
+  return lines.join("\n");
+}
+
+function notifySlackStrategy(env, ctx, fields) {
+  const channel = env && env.SLACK_STRATEGY_CHANNEL_ID;
+  if (!env || !env.SLACK_BOT_TOKEN || !channel) return;   // not configured: skip
+
+  const work = postSlackMessage(env, undefined, strategySlackText(fields), channel)
+    .then(
+      () => {},
+      () => {
+        // A fixed string only. The error carries the Slack response and the
+        // token lives one object away, so neither goes near a log line.
+        console.error("[STRATEGY] slack post failed");
+      }
+    );
+
+  if (ctx && typeof ctx.waitUntil === "function") ctx.waitUntil(work);
+}
+
+async function handleStrategy(d, env, cors, ctx) {
   const dbId = env.NOTION_STRATEGY_DATABASE_ID;
   if (!env.NOTION_TOKEN || !dbId) {
     return json({ ok: false, error: "Strategy form not configured" }, 500, cors);
@@ -907,6 +955,19 @@ async function handleStrategy(d, env, cors) {
       body: JSON.stringify({ parent: { database_id: dbId }, properties }),
     });
     if (!res.ok) return json({ ok: false, error: "Notion create failed", detail: await res.text() }, 502, cors);
+
+    // The row is saved. Only now is Slack told, and only through waitUntil, so
+    // a Slack outage can never turn a saved intake into an error for the form.
+    let page = null;
+    try { page = await res.json(); } catch { /* saved; only the link is lost */ }
+    notifySlackStrategy(env, ctx, {
+      name: name,
+      email: email,
+      role: d.role,
+      win30: d.q03,
+      budget: d.q14,
+      pageUrl: page && typeof page.url === "string" ? page.url : "",
+    });
     return json({ ok: true }, 200, cors);
   } catch (err) {
     return json({ ok: false, error: "Unexpected error", detail: String(err) }, 500, cors);
