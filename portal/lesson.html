@@ -1073,7 +1073,7 @@ Core Rules:
         });
 
         const performSearch = (query) => {
-          resultsBox.innerHTML = ''; // Clear
+          while (resultsBox.firstChild) resultsBox.removeChild(resultsBox.firstChild);
           query = query.toLowerCase().trim();
           
           if (!query) {
@@ -1105,10 +1105,15 @@ Core Rules:
             const a = document.createElement('a');
             a.href = item.url;
             a.className = "flex flex-col px-4 py-2.5 rounded-xl hover:bg-black/5 transition-colors group";
-            a.innerHTML = `
-              <span class="text-xs font-bold text-brand-deep group-hover:text-[#4d8a1e] transition-colors">${item.title}</span>
-              <span class="text-[10px] text-brand-mid mt-0.5">${item.desc}</span>
-            `;
+            // Built as nodes, not markup, so no value is ever reinterpreted as HTML.
+            const sTitle = document.createElement('span');
+            sTitle.className = "text-xs font-bold text-brand-deep group-hover:text-[#4d8a1e] transition-colors";
+            sTitle.textContent = item.title;
+            const sDesc = document.createElement('span');
+            sDesc.className = "text-[10px] text-brand-mid mt-0.5";
+            sDesc.textContent = item.desc;
+            a.appendChild(sTitle);
+            a.appendChild(sDesc);
             // Add smooth exit on click
             a.addEventListener('click', (e) => {
               if (item.url !== '#') {
