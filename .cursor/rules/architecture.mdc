@@ -1,0 +1,19 @@
+---
+alwaysApply: true
+description: Core design principles for maintainable, testable code
+---
+
+
+
+
+# Architecture
+
+- Prefer the simplest solution that works; optimize only when asked
+- One module / function = one reason to change (SRP)
+- Depend on interfaces/abstractions, not concrete internals
+- Keep business logic free of framework/UI/DB details
+- Inject dependencies so units are easy to mock and test
+- Prefer pure functions; treat hard-to-test code as a design smell
+- Extract shared utilities only when a real pattern repeats (high fan-in)---
+alwaysApply: true
+---
