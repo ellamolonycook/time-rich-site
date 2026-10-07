@@ -231,5 +231,85 @@ console.log('\nTime Rich Members page — copy');
   check('no stray merge text carried over from the shell', !text.includes('origin/main'));
 }
 
+// ---------------------------------------------------------------------------
+// The hidden "Members" link on the other portal pages, driven by the real
+// portal/portal-access.js.
+// ---------------------------------------------------------------------------
+const ACCESS_JS = readFileSync(new URL('../../portal/portal-access.js', import.meta.url), 'utf8');
+const PAGES = ['dashboard', 'curriculum', 'sessions', 'resources', 'lesson'];
+
+async function openPortalPage(name, { directoryStatus = 200, cache, directoryThrows = false } = {}) {
+  const html = readFileSync(new URL(`../../portal/${name}.html`, import.meta.url), 'utf8');
+  const calls = [];
+  const dom = new JSDOM(html, {
+    url: `https://timerich.ai/portal/${name}.html`,
+    runScripts: 'dangerously',
+    pretendToBeVisual: true,
+    virtualConsole: new VirtualConsole(),   // the shells' own scripts are not under test here
+    beforeParse(window) {
+      window.tailwind = {};
+      window.gtag = () => {};
+      window.TR_PORTAL_CONFIG = { directoryUrl: DIRECTORY_URL, url: 'https://sb.test', key: 'anon' };
+      window.localStorage.setItem('tr_portal_code', 'ABCDE-FGHJK');
+      if (cache) window.sessionStorage.setItem('tr_members_link', JSON.stringify(cache));
+      window.fetch = (url, init = {}) => {
+        url = String(url);
+        calls.push(url);
+        if (url.includes('/rpc/portal_get')) {
+          return Promise.resolve(new globalThis.Response(JSON.stringify({ ok: true, member: { first_name: 'Ada', role: 'buyer' }, weeks: [], sessions: [] }), { status: 200 }));
+        }
+        if (url === DIRECTORY_URL) {
+          if (directoryThrows) return Promise.reject(new Error('offline'));
+          return Promise.resolve(new globalThis.Response(JSON.stringify({ profiles: [] }), { status: directoryStatus }));
+        }
+        return Promise.resolve(new globalThis.Response('{}', { status: 200 }));
+      };
+    },
+  });
+  dom.window.eval(ACCESS_JS);
+  for (let i = 0; i < 10; i++) await new Promise((r) => setTimeout(r, 0));
+  const links = [...dom.window.document.querySelectorAll('[data-portal-members-link]')];
+  return { dom, links, calls, directoryCalls: () => calls.filter((u) => u === DIRECTORY_URL).length };
+}
+
+console.log('\nMembers nav link on the other portal pages');
+for (const name of PAGES) {
+  const html = readFileSync(new URL(`../../portal/${name}.html`, import.meta.url), 'utf8');
+  const raw = [...html.matchAll(/<a href="members\.html"([^>]*)>/g)].map((m) => m[1]);
+  check(name + '.html: a Members link in the top nav and the phone menu, both hidden by default',
+    raw.length === 2 && raw.every((attrs) => /data-portal-members-link/.test(attrs) && /\shidden(\s|$)/.test(attrs)), raw);
+}
+{
+  const css = readFileSync(new URL('../../portal/portal-content.css', import.meta.url), 'utf8');
+  check('the shared stylesheet keeps a hidden link hidden even with Tailwind .flex on it',
+    /\[data-portal-members-link\]\[hidden\]\s*\{\s*display:\s*none\s*!important/.test(css));
+
+  const closed = await openPortalPage('dashboard', { directoryStatus: 403 });
+  check('directory 403 (switched off, a buyer): the link stays hidden',
+    closed.links.length === 2 && closed.links.every((a) => a.hidden), closed.links.map((a) => a.hidden));
+  check('the passcode is sent to the directory with POST', closed.directoryCalls() === 1);
+  check('a 403 is remembered for the tab, as "hidden"',
+    JSON.parse(closed.dom.window.sessionStorage.getItem('tr_members_link')).ok === false);
+
+  const open200 = await openPortalPage('curriculum', { directoryStatus: 200 });
+  check('directory 200 (switched on, or team): the link is shown', open200.links.every((a) => !a.hidden));
+
+  const cached = await openPortalPage('sessions', { cache: { ok: true, at: Date.now() } });
+  check('a recent answer is reused: no extra call, link shown', cached.directoryCalls() === 0 && cached.links.every((a) => !a.hidden));
+
+  const stale = await openPortalPage('lesson', { cache: { ok: true, at: Date.now() - 11 * 60 * 1000 }, directoryStatus: 403 });
+  check('an answer older than ten minutes is asked again', stale.directoryCalls() === 1 && stale.links.every((a) => a.hidden));
+
+  const down = await openPortalPage('resources', { directoryStatus: 500 });
+  check('Worker error: link hidden and nothing remembered, so the next page asks again',
+    down.links.every((a) => a.hidden) && down.dom.window.sessionStorage.getItem('tr_members_link') === null);
+
+  const offline = await openPortalPage('dashboard', { directoryThrows: true });
+  check('network failure: link hidden', offline.links.every((a) => a.hidden));
+
+  open200.dom.window.TRPortal.signOut();
+  check('signing out forgets the remembered answer', open200.dom.window.sessionStorage.getItem('tr_members_link') === null);
+}
+
 console.log('\n' + pass + ' passed, ' + fail + ' failed');
 process.exit(fail ? 1 : 0);
