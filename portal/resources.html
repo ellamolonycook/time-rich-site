@@ -1,11 +1,19 @@
 <!DOCTYPE html>
-<html lang="en" class="scroll-smooth">
+<html lang="en" class="scroll-smooth" data-trp-gate>
 <head>
   <meta charset="utf-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <!-- Google tag (gtag.js) -->
   <script async src="https://www.googletagmanager.com/gtag/js?id=G-CTZLQ4R388"></script>
-  <script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','G-CTZLQ4R388');</script>
+  <script>
+    window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}
+    // Consent Mode v2. Region-specific default first, then the global fallback,
+    // which is the order Google's docs specify: the narrower region wins.
+    gtag('consent','default',{ad_storage:'denied',ad_user_data:'denied',ad_personalization:'denied',analytics_storage:'denied',region:['AT','BE','BG','HR','CY','CZ','DK','EE','FI','FR','DE','GR','HU','IS','IE','IT','LV','LI','LT','LU','MT','NL','NO','PL','PT','RO','SK','SI','ES','SE','GB','CH']});
+    gtag('consent','default',{ad_storage:'denied',ad_user_data:'denied',ad_personalization:'denied',analytics_storage:'granted'});
+    gtag('js',new Date());
+    gtag('config','G-CTZLQ4R388');
+  </script>
 
   <title>Time Rich. — AI Education Portal</title>
   <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
@@ -493,6 +501,11 @@
         inset 0 0 24px rgba(255, 255, 255, 0.3);
     }
   </style>
+  <!-- The passcode gate. Config first, then the library; both deferred so
+       the DOM is ready when the script mounts. No valid code redirects to
+       index.html, because this page has no login form of its own. -->
+  <script src="portal-config.js" defer></script>
+  <script src="portal-access.js" defer></script>
 </head>
 
 
@@ -543,6 +556,10 @@
           <svg class="w-4 h-4 text-brand-mid" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1"></path></svg>
           Back home
         </a>
+        <button type="button" data-portal-signout class="w-full flex items-center gap-3 px-4 py-2 text-xs font-medium text-brand-deep nav-item border border-transparent rounded-[14px] transition-all duration-300">
+          <svg class="w-4 h-4 text-brand-mid" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"></path></svg>
+          Sign out
+        </button>
       </div>
     </div>
   </div>
@@ -576,6 +593,7 @@
 
     <!-- Right Actions -->
     <div class="flex items-center gap-3 sm:gap-6">
+      <button type="button" data-portal-signout class="hidden lg:inline-flex px-3 py-1.5 rounded-full text-xs font-medium text-brand-mid hover:text-brand-deep transition-colors">Sign out</button>
       <div class="relative flex items-center group">
         <input type="text" placeholder="Search courses..." class="w-8 focus:w-[110px] sm:focus:w-48 lg:focus:w-64 bg-transparent focus:bg-transparent text-xs text-brand-deep placeholder-transparent focus:placeholder-brand-mid/60 border-0 border-b border-transparent focus:border-brand-deep/30 ring-0 focus:ring-0 pl-6 pr-4 py-2 cursor-pointer focus:cursor-text transition-all duration-300 ease-out outline-none" />
         <svg class="w-4 h-4 text-brand-mid/80 absolute left-0 pointer-events-none group-focus-within:text-brand-deep transition-colors" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
@@ -724,6 +742,7 @@
             <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1"></path></svg>
             <span class="sidebar-text ml-3 transition-all duration-500 ease-[cubic-bezier(0.16,1,0.3,1)] whitespace-nowrap overflow-hidden opacity-100 max-w-[150px]">Back home</span>
           </a>
+          <span data-portal-name hidden></span>
       </div>
     </aside>
 
