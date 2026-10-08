@@ -516,6 +516,10 @@
           <svg class="w-4 h-4 text-brand-mid" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"></path></svg>
           Resources
         </a>
+        <a href="members.html" data-portal-members-link hidden class="flex items-center gap-3 px-4 py-2 text-xs font-medium text-brand-deep nav-item border border-transparent rounded-[14px] transition-all duration-300">
+          <svg class="w-4 h-4 text-brand-mid" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"></path></svg>
+          Members
+        </a>
       </nav>
       <div class="mt-8 border-t border-white/20 pt-8 space-y-2">
         
@@ -556,6 +560,7 @@
         <a href="curriculum.html" class="px-3 py-1.5 rounded-full text-xs font-semibold text-brand-deep nav-active border border-white/40">Curriculum</a>
         <a href="sessions.html" class="px-3 py-1.5 rounded-full text-xs font-medium text-brand-mid hover:text-brand-deep transition-colors">Live Sessions</a>
         <a href="resources.html" class="px-3 py-1.5 rounded-full text-xs font-medium text-brand-mid hover:text-brand-deep transition-colors">Resources</a>
+        <a href="members.html" data-portal-members-link hidden class="px-3 py-1.5 rounded-full text-xs font-medium text-brand-mid hover:text-brand-deep transition-colors">Members</a>
     </nav>
 
     <!-- Right Actions -->
@@ -1242,6 +1247,110 @@
   </script>
 
 
+  <!-- === GLOBAL SEARCH LOGIC === -->
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      const searchInputs = document.querySelectorAll('input[placeholder="Search courses..."]');
+      if (searchInputs.length === 0) return;
+      
+      const searchIndex = [
+        { title: "Dashboard", url: "dashboard.html", desc: "Your progress and overview", keywords: "home start overview progress" },
+        { title: "Curriculum", url: "curriculum.html", desc: "All weeks and modules", keywords: "modules weeks course lessons" },
+        { title: "Resources", url: "resources.html", desc: "AI Prompts & Tools", keywords: "prompts tools library downloads assets" },
+        { title: "Live Sessions", url: "sessions.html", desc: "Upcoming calls and recordings", keywords: "zoom recordings calls events calendar" },
+        { title: "Week 1: Open Business Surgery", url: "lesson.html", desc: "Training Your Agent", keywords: "week 1 monday training your agent" },
+        { title: "Week 2: Your AI Operating System", url: "lesson.html", desc: "Expert Q&A", keywords: "week 2 expert q&a" },
+        { title: "Week 3: The AI Content Machine", url: "lesson.html", desc: "Storytelling for GTM", keywords: "week 3 storytelling for gtm" },
+        { title: "Week 4: Unfair AI Advantage", url: "lesson.html", desc: "Taylor Offer, last call", keywords: "week 4 taylor offer" }
+      ];
+
+      searchInputs.forEach(searchInput => {
+        // Create results container if it doesn't exist next to this input
+        const wrapper = searchInput.parentElement;
+        wrapper.style.position = 'relative'; // Ensure relative parent
+        
+        const resultsBox = document.createElement('div');
+        resultsBox.className = "absolute top-full right-0 sm:right-auto sm:left-0 mt-4 w-[280px] sm:w-[320px] premium-dropdown rounded-[1.2rem] p-2 flex flex-col gap-1 opacity-0 pointer-events-none translate-y-[-10px] transition-all duration-300 ease-out z-[9999] max-h-[60vh] overflow-y-auto hidden";
+        wrapper.appendChild(resultsBox);
+
+        // Keep dropdown open when clicking inside it
+        resultsBox.addEventListener('mousedown', (e) => {
+          e.preventDefault(); // Prevents input from losing focus
+        });
+
+        const performSearch = (query) => {
+          while (resultsBox.firstChild) resultsBox.removeChild(resultsBox.firstChild);
+          query = query.toLowerCase().trim();
+          
+          if (!query) {
+            resultsBox.classList.add('opacity-0', 'pointer-events-none', 'translate-y-[-10px]');
+            resultsBox.classList.add('hidden');
+            return;
+          }
+
+          resultsBox.classList.remove('hidden');
+          // Trigger reflow for animation
+          void resultsBox.offsetWidth;
+          resultsBox.classList.remove('opacity-0', 'pointer-events-none', 'translate-y-[-10px]');
+          
+          const results = searchIndex.filter(item => 
+            item.title.toLowerCase().includes(query) || 
+            item.keywords.includes(query) || 
+            item.desc.toLowerCase().includes(query)
+          );
+
+          if (results.length === 0) {
+            const noResults = document.createElement('div');
+            noResults.className = "px-4 py-3 text-xs text-brand-mid italic";
+            noResults.textContent = `No results found for "${query}"`;
+            resultsBox.appendChild(noResults);
+            return;
+          }
+
+          results.forEach(item => {
+            const a = document.createElement('a');
+            a.href = item.url;
+            a.className = "flex flex-col px-4 py-2.5 rounded-xl hover:bg-black/5 transition-colors group";
+            // Built as nodes, not markup, so no value is ever reinterpreted as HTML.
+            const sTitle = document.createElement('span');
+            sTitle.className = "text-xs font-bold text-brand-deep group-hover:text-[#4d8a1e] transition-colors";
+            sTitle.textContent = item.title;
+            const sDesc = document.createElement('span');
+            sDesc.className = "text-[10px] text-brand-mid mt-0.5";
+            sDesc.textContent = item.desc;
+            a.appendChild(sTitle);
+            a.appendChild(sDesc);
+            // Add smooth exit on click
+            a.addEventListener('click', (e) => {
+              if (item.url !== '#') {
+                e.preventDefault();
+                document.body.style.opacity = '0';
+                document.body.style.transform = 'scale(0.98)';
+                setTimeout(() => { window.location.href = item.url; }, window.innerWidth < 768 ? 120 : 280);
+              }
+            });
+            resultsBox.appendChild(a);
+          });
+        };
+
+        searchInput.addEventListener('input', (e) => performSearch(e.target.value));
+        
+        searchInput.addEventListener('focus', (e) => {
+          if (e.target.value.trim()) performSearch(e.target.value);
+        });
+
+        searchInput.addEventListener('blur', () => {
+          resultsBox.classList.add('opacity-0', 'pointer-events-none', 'translate-y-[-10px]');
+          setTimeout(() => {
+            if(resultsBox.classList.contains('opacity-0')) {
+                resultsBox.classList.add('hidden');
+            }
+          }, 300);
+        });
+      });
+    });
+  </script>
+
   <script>
     /* Curriculum, drawn from portal_get. Weeks come from `weeks` in id order,
        with each week's sessions grouped under it by week_id. The static markup
@@ -1293,11 +1402,19 @@
         if (L.str(week.summary)) card.appendChild(L.el('p', SUMMARY, L.str(week.summary)));
         var list = L.items(week);
         if (list.length) {
-          var ul = L.el('ul', 'mt-5 space-y-2');
+          var ul = L.el('ul', 'mt-5 space-y-3');
           list.forEach(function (item) {
-            var li = L.el('li', 'text-sm text-brand-mid flex gap-2');
-            li.appendChild(L.el('span', 'text-brand-deep/40', '·'));
-            li.appendChild(L.el('span', '', L.str(item.title) || 'Untitled'));
+            var li = L.el('li', 'text-sm text-brand-mid flex items-center justify-between gap-3');
+            var label = L.el('span', 'flex gap-2 min-w-0');
+            label.appendChild(L.el('span', 'text-brand-deep/40', '·'));
+            label.appendChild(L.el('span', '', L.str(item.title) || 'Untitled'));
+            li.appendChild(label);
+            if (L.itemKey(item)) {
+              li.appendChild(L.doneToggle(
+                function () { return L.isItemDone(item); },
+                function () { L.toggleItem(item); }
+              ));
+            }
             ul.appendChild(li);
           });
           card.appendChild(ul);
@@ -1310,13 +1427,30 @@
           var when = L.etDateTime(session.starts_at);
           if (when) s.appendChild(L.el('p', META, when));
           var actions = L.el('div', 'flex flex-wrap gap-3 mt-auto');
+          var done = L.doneToggle(
+            function () { return L.isSessionMarked(session); },
+            function () { L.toggleSession(session); }
+          );
+          actions.appendChild(done);
           var rec = L.linkTo(session.recording_url, 'Watch recording',
             'inline-flex items-center px-4 py-2 rounded-full text-xs font-semibold bg-brand-sagelt/60 text-brand-deep hover:bg-brand-sagelt transition-colors');
           var join = L.linkTo(session.join_url, 'Join via Zoom',
             'inline-flex items-center px-4 py-2 rounded-full text-xs font-bold bg-brand-deep text-white hover:bg-brand-green transition-colors');
-          if (join) actions.appendChild(join);
-          if (rec) actions.appendChild(rec);
-          if (actions.childNodes.length) s.appendChild(actions);
+          function remember() {
+            L.markSession(session);
+            if (done.refresh) done.refresh();
+          }
+          // Same rule as the sessions page: the Join link only appears once the
+          // session's Eastern calendar day has begun.
+          if (join && L.isSessionUnlocked(session)) {
+            join.addEventListener('click', remember);
+            actions.appendChild(join);
+          }
+          if (rec) {
+            rec.addEventListener('click', remember);
+            actions.appendChild(rec);
+          }
+          s.appendChild(actions);
           body.appendChild(s);
         });
 

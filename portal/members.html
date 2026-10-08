@@ -15,7 +15,7 @@
     gtag('config','G-CTZLQ4R388');
   </script>
 
-  <title>Time Rich. — AI Education Portal</title>
+  <title>Time Rich Members | Time Rich Portal</title>
   <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
   <link rel="preconnect" href="https://fonts.googleapis.com"/>
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin=""/>
@@ -418,7 +418,41 @@
   </style>
 
   <style>
-    .glass-card {
+    
+      /* Animated Premium Shimmer Hues */
+      .shimmer-card {
+        position: relative;
+        overflow: hidden;
+      }
+      .shimmer-card > *:not(.absolute) {
+        position: relative;
+        z-index: 10;
+      }
+      .shimmer-card::before {
+        content: "";
+        position: absolute;
+        top: -50%;
+        left: -50%;
+        width: 200%;
+        height: 200%;
+        opacity: 0;
+        transition: opacity 0.7s ease, transform 1.2s ease;
+        transform: scale(0.8) translate(-10%, -10%);
+        pointer-events: none;
+        z-index: 1;
+      }
+      .shimmer-card:hover::before {
+        opacity: 1;
+        transform: scale(1.5) translate(15%, 15%);
+      }
+      .shimmer-green::before {
+        background: radial-gradient(circle at center, rgba(255, 255, 255, 0.8) 0%, rgba(130, 160, 90, 0.25) 30%, transparent 60%);
+      }
+      .shimmer-blue::before {
+        background: radial-gradient(circle at center, rgba(255, 255, 255, 0.8) 0%, rgba(59, 130, 246, 0.15) 30%, transparent 60%);
+      }
+
+      .glass-card {
       background: linear-gradient(135deg, rgba(255, 255, 255, 0.75) 0%, rgba(245, 250, 240, 0.4) 100%);
       backdrop-filter: blur(48px) saturate(1.2);
       -webkit-backdrop-filter: blur(48px) saturate(1.2);
@@ -473,7 +507,6 @@
   <script src="portal-config.js" defer></script>
   <script src="portal-access.js" defer></script>
   <script src="portal-live.js"></script>
-  <script src="portal-progress.js" defer></script>
 </head>
 
 
@@ -501,8 +534,8 @@
   <div id="mobile-menu" class="fixed top-0 left-0 bottom-0 w-[85%] max-w-[320px] bg-[#E8ECE0] border-r border-white/40 shadow-2xl z-[101] -translate-x-full transition-transform duration-500 flex flex-col" style="transition-timing-function: cubic-bezier(0.16, 1, 0.3, 1);">
     <div class="flex-1 overflow-y-auto p-6 pt-24 flex flex-col justify-between">
       <nav class="space-y-2">
-        <a href="dashboard.html" class="flex items-center gap-3 px-4 py-2.5 rounded-[14px] text-xs font-semibold text-brand-deep nav-active backdrop-blur-xl transition-all duration-300">
-          <svg class="w-4 h-4 text-brand-deep" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"></path></svg>
+        <a href="dashboard.html" class="flex items-center gap-3 px-4 py-2 text-xs font-medium text-brand-deep nav-item border border-transparent rounded-[14px] transition-all duration-300">
+          <svg class="w-4 h-4 text-brand-mid" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"></path></svg>
           Dashboard
         </a>
         <a href="curriculum.html" class="flex items-center gap-3 px-4 py-2 text-xs font-medium text-brand-deep nav-item border border-transparent rounded-[14px] transition-all duration-300">
@@ -517,7 +550,7 @@
           <svg class="w-4 h-4 text-brand-mid" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"></path></svg>
           Resources
         </a>
-        <a href="members.html" data-portal-members-link hidden class="flex items-center gap-3 px-4 py-2 text-xs font-medium text-brand-deep nav-item border border-transparent rounded-[14px] transition-all duration-300">
+        <a href="members.html" aria-current="page" class="flex items-center gap-3 px-4 py-2 text-xs font-medium text-brand-deep nav-item border border-transparent rounded-[14px] transition-all duration-300">
           <svg class="w-4 h-4 text-brand-mid" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"></path></svg>
           Members
         </a>
@@ -549,7 +582,7 @@
       <!-- Logo -->
       <a class="group flex items-center gap-1.5 sm:gap-4 focus:outline-none rounded shrink-0 whitespace-nowrap" href="index.html">
           <div class="flex items-baseline text-[17px] sm:text-[22px] font-bold tracking-tighter text-brand-deep" style="font-family: 'Space Grotesk', sans-serif; font-weight: 700;">
-            Time Rich<span class="bg-gradient-to-br from-[#748c2f] via-[#596C24] to-[#354015] bg-clip-text text-transparent drop-shadow-sm">.</span>
+            Time Rich<span class="text-[#596C24]">.</span>
           </div>
         </a>
 
@@ -557,11 +590,11 @@
 
     <!-- Desktop Nav -->
     <nav class="hidden lg:flex items-center gap-1 xl:gap-2 absolute left-1/2 -translate-x-1/2">
-        <a href="dashboard.html" class="px-3 py-1.5 rounded-full text-xs font-semibold text-brand-deep nav-active border border-white/40">Dashboard</a>
+        <a href="dashboard.html" class="px-3 py-1.5 rounded-full text-xs font-medium text-brand-mid hover:text-brand-deep transition-colors">Dashboard</a>
         <a href="curriculum.html" class="px-3 py-1.5 rounded-full text-xs font-medium text-brand-mid hover:text-brand-deep transition-colors">Curriculum</a>
         <a href="sessions.html" class="px-3 py-1.5 rounded-full text-xs font-medium text-brand-mid hover:text-brand-deep transition-colors">Live Sessions</a>
         <a href="resources.html" class="px-3 py-1.5 rounded-full text-xs font-medium text-brand-mid hover:text-brand-deep transition-colors">Resources</a>
-        <a href="members.html" data-portal-members-link hidden class="px-3 py-1.5 rounded-full text-xs font-medium text-brand-mid hover:text-brand-deep transition-colors">Members</a>
+        <a href="members.html" aria-current="page" class="px-3 py-1.5 rounded-full text-xs font-semibold text-brand-deep nav-active border border-white/40">Members</a>
     </nav>
 
     <!-- Right Actions -->
@@ -590,7 +623,7 @@
               <div class="flex flex-col gap-1">
                 <span class="text-sm font-semibold text-brand-deep leading-tight">Phase 1 Curriculum Unlocked</span>
                 <span class="text-[11px] font-medium text-brand-mid/80">Your agent strategy modules are now available.</span>
-                <span class="text-[10px] font-semibold bg-gradient-to-br from-[#748c2f] via-[#596C24] to-[#354015] bg-clip-text text-transparent drop-shadow-sm mt-1">2 hours ago</span>
+                <span class="text-[10px] font-semibold text-[#596C24] mt-1">2 hours ago</span>
               </div>
               <div class="w-2 h-2 rounded-full bg-[#1a1a1a] shrink-0 mt-1"></div>
             </a>
@@ -690,7 +723,7 @@
 
         <div class="flex-1 flex flex-col justify-center">
           <nav class="space-y-2">
-          <a href="dashboard.html" class="group flex items-center px-4 py-2.5 rounded-[14px] text-xs font-semibold text-brand-deep nav-active backdrop-blur-xl border border-white/40 shadow-sm transition-all duration-300">
+          <a href="dashboard.html" class="group flex items-center px-4 py-2.5 rounded-[14px] text-xs font-semibold text-brand-mid hover:text-brand-deep nav-item border border-transparent transition-all duration-300 hover:translate-x-1">
             <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1"></path></svg>
             <span class="sidebar-text ml-3 transition-all duration-500 ease-[cubic-bezier(0.16,1,0.3,1)] whitespace-nowrap overflow-hidden opacity-100 max-w-[150px]">Dashboard</span>
           </a>
@@ -702,7 +735,7 @@
             <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z"></path></svg>
             <span class="sidebar-text ml-3 transition-all duration-500 ease-[cubic-bezier(0.16,1,0.3,1)] whitespace-nowrap overflow-hidden opacity-100 max-w-[150px]">Live Sessions</span>
           </a>
-          <a href="resources.html" class="group flex items-center px-4 py-2.5 rounded-[14px] text-xs font-semibold text-brand-mid hover:text-brand-deep nav-item border border-transparent transition-all duration-300 hover:translate-x-1">
+          <a href="resources.html" class="group flex items-center px-4 py-2.5 rounded-[14px] text-xs font-semibold text-brand-deep nav-active backdrop-blur-xl border border-white/40 shadow-sm transition-all duration-300">
             <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"></path></svg>
             <span class="sidebar-text ml-3 transition-all duration-500 ease-[cubic-bezier(0.16,1,0.3,1)] whitespace-nowrap overflow-hidden opacity-100 max-w-[150px]">Resources</span>
           </a>
@@ -721,102 +754,207 @@
 
     <!-- CENTER SCROLLABLE CONTENT -->
     <main class="flex-1 overflow-y-auto custom-scroll relative bg-transparent main-grid">
-
-      <div class="relative z-10 px-6 sm:px-8 py-8 lg:py-12 max-w-[1200px] mx-auto transition-all duration-500 ease-[cubic-bezier(0.16,1,0.3,1)]">
-        
-        <!-- FULL WIDTH COLUMN -->
-        <div class="w-full space-y-16">
+        <div class="relative z-10 px-3 sm:px-6 lg:px-12 py-8 lg:py-12 flex justify-center w-full">
+          <div class="w-full space-y-16 max-w-[1200px]">
           
-          <!-- HERO SECTION -->
-          <section class="flex flex-col lg:flex-row gap-8 lg:gap-12 items-center pt-4">
-            <div class="space-y-6 z-20 flex-1">
-              <h1 class="text-3xl sm:text-4xl lg:text-[40px] font-montserrat tracking-[0.05em] uppercase bg-gradient-to-br from-[#748c2f] via-[#596C24] to-[#354015] bg-clip-text text-transparent drop-shadow-sm font-bold leading-[1.1]">
-                  SUPERHUMAN ACCELERATOR
-                </h1>
-              <p class="text-[15px] sm:text-base text-brand-mid leading-relaxed max-w-md">
-                Welcome back<span data-portal-name-wrap hidden>, <span data-portal-name></span></span>. Here is where things stand.
-              </p>
-              <div class="flex items-center gap-4 pt-2">
-                <a href="#featured-courses" class="inline-flex items-center justify-center gap-2 px-5 py-2.5 sm:px-8 sm:py-3.5 rounded-full text-xs sm:text-sm font-semibold whitespace-nowrap bg-gradient-to-b from-brand-green to-brand-deep text-brand-offwhite border border-white/10 shadow-[0_8px_16px_rgba(0,0,0,0.2),inset_0_1px_0_rgba(255,255,255,0.1)] hover:from-brand-mid hover:to-brand-green hover:shadow-[0_12px_24px_rgba(0,0,0,0.3),inset_0_1px_0_rgba(255,255,255,0.15)] hover:-translate-y-0.5 transition-all duration-300">
-                  Resume Curriculum <span class="font-mono text-brand-sagelt text-[10px]">&rarr;</span>
-                </a>
-              </div>
-            </div>
-            
-            <!-- Graphic / Abstract Glow -->
-            <div id="magnet-area" class="relative h-[22rem] flex-none w-full md:w-[28rem] flex items-center justify-center z-10 cursor-pointer md:ml-auto mt-8 md:mt-0" style="perspective: 1000px;">
-              <div class="absolute inset-0 glow-orb opacity-100 blur-2xl pointer-events-none"></div>
-              <!-- Floating Glass Panel -->
-              <div class="animate-float z-10 relative w-full h-full flex items-center justify-center pointer-events-none">
-                <div id="magnet-card" class="group relative w-full max-w-[24rem] sm:max-w-[26rem] h-[16rem] sm:h-[18rem] bg-white/40 backdrop-blur-md border border-white/60 rounded-[2.25rem] shadow-2xl shadow-brand-deep/10 flex flex-col p-6 overflow-hidden pointer-events-auto" style="transition: transform 0.8s cubic-bezier(0.16, 1, 0.3, 1);">
-                  <video id="promo-video" loop muted playsinline poster="../accelerator/accelerator-promo-poster.jpg" class="absolute inset-0 w-full h-full object-cover opacity-100 z-0">
-    <source src="assets/accelerator-promo.mp4" type="video/mp4">
-    </video>
+    <style>
+      /* Time Rich Members. Brand: deep green #2C3422, page #FFFDFA, one
+         pastel accent #CCEEA0, sage #DCDEBF for photo placeholders.
+         Nothing on the page competes with the faces. */
+      .members-search {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        max-width: 440px;
+        padding: 11px 18px;
+        background: #FFFDFA;
+        border: 1px solid rgba(44, 52, 34, 0.14);
+        border-radius: 999px;
+        transition: box-shadow 0.2s ease, border-color 0.2s ease;
+      }
+      .members-search:focus-within { border-color: #2C3422; box-shadow: 0 0 0 4px #CCEEA0; }
+      .members-search svg { width: 16px; height: 16px; color: #4E5840; flex: none; }
+      .members-search input {
+        flex: 1;
+        min-width: 0;
+        padding: 0 !important;
+        border: 0 !important;
+        box-shadow: none !important;
+        outline: none;
+        background: transparent;
+        color: #2C3422;
+        font-size: 14px;
+      }
+      .members-search input::placeholder { color: #6B735F; }
+      .members-search input::-webkit-search-cancel-button { cursor: pointer; }
+
+      .members-grid {
+        list-style: none;
+        margin: 0;
+        padding: 0;
+        display: grid;
+        gap: 20px;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+      @media (min-width: 640px)  { .members-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
+      @media (min-width: 1024px) { .members-grid { grid-template-columns: repeat(4, minmax(0, 1fr)); } }
+      @media (max-width: 639px)  { .members-grid { gap: 12px; } }
+
+      .member-card {
+        display: flex;
+        flex-direction: column;
+        width: 100%;
+        height: 100%;
+        padding: 10px 10px 16px;
+        text-align: left;
+        font: inherit;
+        color: #2C3422;
+        background: #FFFDFA;
+        border: 1px solid rgba(44, 52, 34, 0.08);
+        border-radius: 20px;
+        cursor: pointer;
+        transition: transform 0.2s ease, box-shadow 0.2s ease;
+      }
+      .member-card:hover { transform: translateY(-2px); box-shadow: 0 18px 36px -20px rgba(44, 52, 34, 0.4); }
+      .member-card:focus-visible { outline: 2px solid #2C3422; outline-offset: 3px; }
+
+      /* Square crop in CSS only; faces sit a little above centre. */
+      .member-photo,
+      .member-initials {
+        display: block;
+        width: 100%;
+        aspect-ratio: 1;
+        border-radius: 14px;
+        background: #DCDEBF;
+      }
+      .member-photo { object-fit: cover; object-position: center 30%; }
+      .member-initials {
+        display: grid;
+        place-items: center;
+        font-family: 'Space Grotesk', sans-serif;
+        font-weight: 700;
+        font-size: clamp(26px, 5vw, 46px);
+        letter-spacing: -0.02em;
+        color: #2C3422;
+      }
+      .member-name { margin: 14px 4px 0; font-family: 'Space Grotesk', sans-serif; font-weight: 700; font-size: 16px; line-height: 1.25; }
+      .member-hook { margin: 4px 4px 0; font-size: 13.5px; line-height: 1.4; color: #2C3422; }
+      .member-meta { margin: 8px 4px 0; font-family: 'JetBrains Mono', monospace; font-size: 11px; line-height: 1.45; color: #6B735F; }
+      @media (max-width: 639px) {
+        .member-card { padding: 8px 8px 12px; border-radius: 16px; }
+        .member-name { font-size: 14.5px; margin-top: 10px; }
+        .member-hook { font-size: 12.5px; }
+      }
+      .members-note { margin: 0; font-size: 14px; line-height: 1.6; color: #4E5840; }
+
+      /* Profile pop-up. Appended to <body> by the script so it sits above the
+         portal header, which has its own very high z-index. */
+      .member-modal { position: fixed; inset: 0; z-index: 10050; display: grid; place-items: center; padding: 16px; }
+      .member-modal[hidden] { display: none; }
+      .member-modal-backdrop { position: absolute; inset: 0; background: rgba(44, 52, 34, 0.45); backdrop-filter: blur(4px); -webkit-backdrop-filter: blur(4px); }
+      .member-modal-panel {
+        position: relative;
+        width: min(560px, 100%);
+        max-height: calc(100dvh - 32px);
+        overflow-y: auto;
+        padding: 28px;
+        color: #2C3422;
+        background: #FFFDFA;
+        border-radius: 24px;
+        box-shadow: 0 40px 80px -30px rgba(44, 52, 34, 0.55);
+        outline: none;
+      }
+      .member-modal-close {
+        position: absolute;
+        top: 14px;
+        right: 14px;
+        display: grid;
+        place-items: center;
+        width: 40px;
+        height: 40px;
+        border: 0;
+        border-radius: 999px;
+        background: transparent;
+        color: #2C3422;
+        cursor: pointer;
+      }
+      .member-modal-close:hover { background: rgba(44, 52, 34, 0.07); }
+      .member-modal-close:focus-visible,
+      .member-modal-panel a:focus-visible { outline: 2px solid #2C3422; outline-offset: 2px; }
+      .member-modal-close svg { width: 18px; height: 18px; }
+
+      .member-profile-top { display: flex; gap: 18px; align-items: center; padding-right: 36px; }
+      .member-profile-top .member-photo,
+      .member-profile-top .member-initials { width: 112px; flex: none; border-radius: 18px; font-size: 38px; }
+      .member-profile-name { margin: 0; font-family: 'Space Grotesk', sans-serif; font-weight: 700; font-size: 24px; line-height: 1.2; letter-spacing: -0.01em; }
+      .member-profile-hook { margin: 6px 0 0; font-size: 15px; line-height: 1.45; }
+      .member-profile-meta { margin: 8px 0 0; font-family: 'JetBrains Mono', monospace; font-size: 12px; color: #6B735F; }
+      .member-profile-section { margin-top: 22px; }
+      .member-profile-section h3 {
+        margin: 0 0 6px;
+        font-family: 'JetBrains Mono', monospace;
+        font-size: 11px;
+        font-weight: 600;
+        letter-spacing: 0.12em;
+        text-transform: uppercase;
+        color: #6B735F;
+      }
+      .member-profile-section p { margin: 0; font-size: 15px; line-height: 1.6; white-space: pre-line; }
+      .member-profile-links { display: flex; flex-wrap: wrap; align-items: center; gap: 10px; margin-top: 26px; }
+      .member-linkedin {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        min-height: 44px;
+        padding: 0 20px;
+        border-radius: 999px;
+        background: #2C3422;
+        color: #FFFDFA;
+        font-weight: 600;
+        font-size: 14px;
+        text-decoration: none;
+      }
+      .member-linkedin:hover { background: #424B36; }
+      .member-linkedin svg { width: 16px; height: 16px; fill: currentColor; }
+      .member-icon-link {
+        display: grid;
+        place-items: center;
+        width: 44px;
+        height: 44px;
+        border-radius: 999px;
+        border: 1px solid rgba(44, 52, 34, 0.14);
+        color: #2C3422;
+      }
+      .member-icon-link:hover { background: #CCEEA0; border-color: #CCEEA0; }
+      .member-icon-link svg { width: 18px; height: 18px; }
+      @media (max-width: 479px) {
+        .member-modal-panel { padding: 22px 18px; border-radius: 20px; }
+        .member-profile-top { flex-direction: column; align-items: flex-start; }
+        .member-profile-top .member-photo,
+        .member-profile-top .member-initials { width: 96px; }
+      }
+    </style>
+
+    <header class="space-y-3">
+      <h1 class="text-4xl lg:text-[42px] font-display font-bold tracking-tight text-brand-deep">Time Rich Members</h1>
+      <p class="text-sm text-brand-mid leading-relaxed">Your cohort. Find the right person and make the ask.</p>
+    </header>
+
+    <section class="mt-8 space-y-8" aria-label="Members">
+      <label class="members-search" for="members-search">
+        <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
+        <span class="sr-only">Search members</span>
+        <input id="members-search" type="search" autocomplete="off" spellcheck="false"
+               placeholder="Search by name, company or superpower" disabled />
+      </label>
+
+      <p id="members-status" class="members-note" role="status" aria-live="polite">Loading your cohort&hellip;</p>
+      <ul id="members-grid" class="members-grid" hidden></ul>
+    </section>
+</div>
+      </div>
     
-    
-    <div class="absolute inset-0 z-[9999] flex items-center justify-center pointer-events-none" style="transform: translateZ(10px);">
-    <button id="promo-play-btn" class="w-12 h-12 rounded-full bg-black/50 hover:bg-black/70 backdrop-blur-md text-white flex items-center justify-center transition-all hover:scale-110 shadow-lg cursor-pointer pointer-events-auto" aria-label="Toggle Play">
-    <svg id="icon-play" class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z" /></svg>
-    <svg id="icon-pause" class="w-6 h-6 hidden" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M10 9v6m4-6v6" /></svg>
-    </button>
-    </div>
-  <!-- Video Controls -->
-    <div class="absolute bottom-6 left-6 z-[9999] flex gap-2" style="transform: translateZ(10px);">
-    <button id="promo-mute-btn" class="w-8 h-8 rounded-full bg-black/50 hover:bg-black/70 backdrop-blur-md text-white flex items-center justify-center transition-all hover:scale-110 shadow-lg cursor-pointer pointer-events-auto" aria-label="Toggle Mute">
-    <svg id="icon-muted" class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M5.586 15H4a1 1 0 01-1-1v-4a1 1 0 011-1h1.586l4.707-4.707C10.923 3.663 12 4.109 12 5v14c0 .891-1.077 1.337-1.707.707L5.586 15z" /><path stroke-linecap="round" stroke-linejoin="round" d="M17 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2" /></svg>
-    <svg id="icon-unmuted" class="w-4 h-4 hidden" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M15.536 8.464a5 5 0 010 7.072m2.828-9.9a9 9 0 010 12.728M5.586 15H4a1 1 0 01-1-1v-4a1 1 0 011-1h1.586l4.707-4.707C10.923 3.663 12 4.109 12 5v14c0 .891-1.077 1.337-1.707.707L5.586 15z" /></svg>
-    </button>
-    </div>
-
-<!-- Video Controls -->
-
-    <!-- Clean video card without text/lines -->
-                </div>
-                  
-                <!-- Smaller floating element -->
-                <div class="absolute z-20 -top-6 -right-4 sm:-right-6 w-28 glass-card rounded-xl shadow-[0_10px_30px_-10px_rgba(0,0,0,0.15)] p-3.5 animate-float-alt space-y-2 text-[9.5px] font-mono font-semibold pointer-events-none border-0">
-                  <div class="flex items-center gap-2 text-brand-mid/70 line-through decoration-brand-mid/30">
-    <svg class="w-3 h-3 text-brand-green flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="3.5"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7" /></svg>
-    Goal
-                  </div>
-                  <div class="flex items-center gap-2 text-brand-mid/70 line-through decoration-brand-mid/30">
-    <svg class="w-3 h-3 text-brand-green flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="3.5"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7" /></svg>
-    Actions
-                  </div>
-                  <div class="flex items-center gap-2 text-brand-mid/70 line-through decoration-brand-mid/30">
-    <svg class="w-3 h-3 text-brand-green flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="3.5"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7" /></svg>
-    Content
-                  </div>
-                  <div class="flex items-center gap-2 text-brand-deep">
-    <div class="w-3 h-3 rounded-full border-[1.5px] border-brand-green/40 flex-shrink-0"></div>
-    Next
-                  </div>
-                </div>
-              </div>
-            </div>
-          </section>
-
-          <!-- Everything below is drawn from portal_get. A block with no data
-               hides itself rather than showing a placeholder. -->
-
-          <!-- Progress. Angel's work renders into this slot. -->
-          <div data-portal-progress hidden></div>
-
-          <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mt-16">
-
-            <!-- Next session, or the latest recording once the last one has run -->
-            <div data-dash-next class="glass-card rounded-[1.75rem] p-8 flex flex-col" hidden></div>
-
-            <!-- The newest week the member can open -->
-            <div data-dash-week class="glass-card rounded-[1.75rem] p-8 flex flex-col" hidden></div>
-
-          </div>
-
-          <!-- Quick links. Each one is left out when the payload has no match. -->
-          <div data-dash-links class="mt-10" hidden></div>
-
-          </div> <!-- CLOSE Full Width Column -->
-        </div> <!-- CLOSE max-w-[1200px] -->
+        </div>
       </main> <!-- CLOSE main -->
     </div> <!-- CLOSE h-screen container -->
 
@@ -977,6 +1115,325 @@
         }
     });
   </script>
+  <script>
+    /* Time Rich Members: the cohort directory.
+       Profiles come from the Worker route in portal-config.js (directoryUrl),
+       which re-checks the passcode and the launch switch on every call.
+       Everything a member typed is drawn with textContent, and only https
+       links are ever used, so no answer can become markup on this page. */
+    (function () {
+      'use strict';
+
+      var STORAGE_KEY = 'tr_portal_code';
+      var MSG = {
+        loading: 'Loading your cohort…',
+        empty: 'Profiles appear here as members complete their questionnaire.',
+        noMatch: 'No one matches that search yet. Try a name, a company or a superpower.',
+        closed: 'Time Rich Members opens soon. Your cohort will be here once it does.',
+        error: 'Members could not load right now. Please refresh in a minute.'
+      };
+
+      var profiles = [];
+      var grid, status, search;
+
+      function el(tag, className, text) {
+        var node = document.createElement(tag);
+        if (className) node.className = className;
+        if (text) node.textContent = text;
+        return node;
+      }
+
+      function str(value) {
+        return typeof value === 'string' ? value.trim() : '';
+      }
+
+      function safeHttps(value) {
+        try {
+          var url = new URL(str(value));
+          return url.protocol === 'https:' ? url.href : null;
+        } catch (e) {
+          return null;
+        }
+      }
+
+      // "Ada Lovelace" -> "AL", "Cher" -> "C".
+      function initials(name) {
+        var parts = str(name).split(/\s+/).filter(Boolean);
+        if (!parts.length) return '?';
+        var first = parts[0].charAt(0);
+        var last = parts.length > 1 ? parts[parts.length - 1].charAt(0) : '';
+        return (first + last).toUpperCase();
+      }
+
+      function initialsTile(profile) {
+        var tile = el('span', 'member-initials', initials(profile.name));
+        tile.setAttribute('aria-hidden', 'true');
+        return tile;
+      }
+
+      // The photo, or initials on sage when there is none or it fails to load
+      // (a signed URL that has expired after the page sat open for an hour).
+      function photo(profile) {
+        var src = safeHttps(profile.photo_url);
+        if (!src) return initialsTile(profile);
+        var img = el('img', 'member-photo');
+        img.setAttribute('alt', '');
+        img.setAttribute('loading', 'lazy');
+        img.setAttribute('decoding', 'async');
+        img.setAttribute('referrerpolicy', 'no-referrer');
+        img.addEventListener('error', function () {
+          if (img.parentNode) img.parentNode.replaceChild(initialsTile(profile), img);
+        });
+        img.src = src;
+        return img;
+      }
+
+      function meta(profile) {
+        return [str(profile.title), str(profile.company)].filter(Boolean).join(', ');
+      }
+
+      function card(profile, index) {
+        var item = el('li');
+        var button = el('button', 'member-card');
+        button.type = 'button';
+        button.setAttribute('data-member-index', String(index));
+        button.setAttribute('aria-haspopup', 'dialog');
+        button.appendChild(photo(profile));
+        button.appendChild(el('span', 'member-name', str(profile.name)));
+        if (str(profile.hook_line)) button.appendChild(el('span', 'member-hook', str(profile.hook_line)));
+        if (meta(profile)) button.appendChild(el('span', 'member-meta', meta(profile)));
+        item.appendChild(button);
+        return item;
+      }
+
+      function setStatus(text) {
+        status.textContent = text || '';
+        status.hidden = !text;
+      }
+
+      function render(list) {
+        profiles = Array.isArray(list) ? list.filter(function (p) { return p && str(p.name); }) : [];
+        grid.textContent = '';
+        if (!profiles.length) {
+          grid.hidden = true;
+          setStatus(MSG.empty);
+          return;
+        }
+        profiles.forEach(function (profile, index) { grid.appendChild(card(profile, index)); });
+        grid.hidden = false;
+        search.disabled = false;
+        setStatus('');
+        applySearch();
+      }
+
+      // Client-side, on name, company and superpower only.
+      function haystack(profile) {
+        return [profile.name, profile.company, profile.superpower].map(str).join(' ').toLowerCase();
+      }
+
+      function applySearch() {
+        var query = str(search.value).toLowerCase();
+        var shown = 0;
+        Array.prototype.forEach.call(grid.children, function (item, index) {
+          var hit = !query || haystack(profiles[index]).indexOf(query) !== -1;
+          item.hidden = !hit;
+          if (hit) shown++;
+        });
+        setStatus(profiles.length && !shown ? MSG.noMatch : '');
+      }
+
+      /* ---- profile pop-up ------------------------------------------------ */
+
+      // Static markup only; no member text ever goes through innerHTML.
+      var ICONS = {
+        close: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path stroke-linecap="round" d="M6 6l12 12M18 6L6 18"/></svg>',
+        linkedin: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20.45 20.45h-3.56v-5.57c0-1.33-.02-3.04-1.85-3.04-1.85 0-2.14 1.45-2.14 2.94v5.67H9.34V9h3.42v1.56h.05c.48-.9 1.64-1.85 3.37-1.85 3.6 0 4.27 2.37 4.27 5.46v6.28zM5.34 7.43a2.06 2.06 0 110-4.13 2.06 2.06 0 010 4.13zM7.12 20.45H3.56V9h3.56v11.45zM22.22 0H1.77C.79 0 0 .77 0 1.72v20.56C0 23.23.79 24 1.77 24h20.45c.98 0 1.78-.77 1.78-1.72V1.72C24 .77 23.2 0 22.22 0z"/></svg>',
+        instagram: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r="1" fill="currentColor" stroke="none"/></svg>',
+        link: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M13.19 8.69a4.5 4.5 0 011.24 7.24l-4.5 4.5a4.5 4.5 0 01-6.36-6.36l1.76-1.76m13.35-.62l1.76-1.76a4.5 4.5 0 00-6.36-6.36l-4.5 4.5a4.5 4.5 0 001.24 7.24"/></svg>'
+      };
+
+      var modal = null;
+      var panel = null;
+      var closeButton = null;
+      var content = null;
+      var returnFocus = null;
+
+      function outLink(href, className, label, icon) {
+        var a = el('a', className);
+        a.href = href;
+        a.target = '_blank';
+        a.rel = 'noopener noreferrer';
+        a.setAttribute('aria-label', label);
+        if (icon) a.insertAdjacentHTML('afterbegin', ICONS[icon]);
+        return a;
+      }
+
+      function hostOf(href) {
+        try { return new URL(href).hostname.replace(/^www\./, ''); } catch (e) { return href; }
+      }
+
+      function buildModal() {
+        modal = el('div', 'member-modal');
+        modal.id = 'member-modal';
+        modal.hidden = true;
+
+        var backdrop = el('div', 'member-modal-backdrop');
+        backdrop.addEventListener('click', closeProfile);
+
+        panel = el('div', 'member-modal-panel');
+        panel.setAttribute('role', 'dialog');
+        panel.setAttribute('aria-modal', 'true');
+        panel.setAttribute('aria-labelledby', 'member-modal-name');
+        panel.tabIndex = -1;
+
+        closeButton = el('button', 'member-modal-close');
+        closeButton.type = 'button';
+        closeButton.setAttribute('aria-label', 'Close profile');
+        closeButton.insertAdjacentHTML('afterbegin', ICONS.close);
+        closeButton.addEventListener('click', closeProfile);
+
+        content = el('div');
+        panel.appendChild(closeButton);
+        panel.appendChild(content);
+        modal.appendChild(backdrop);
+        modal.appendChild(panel);
+        // On <body>, so it sits above the portal header.
+        document.body.appendChild(modal);
+      }
+
+      function section(heading, text) {
+        if (!str(text)) return null;
+        var block = el('section', 'member-profile-section');
+        block.appendChild(el('h3', '', heading));
+        block.appendChild(el('p', '', str(text)));
+        return block;
+      }
+
+      // Order as the brief: photo, name, hook line, title and company, what
+      // the company does, who they serve, superpower, links.
+      function openProfile(index) {
+        var profile = profiles[index];
+        if (!profile) return;
+        if (!modal) buildModal();
+        content.textContent = '';
+
+        var top = el('div', 'member-profile-top');
+        top.appendChild(photo(profile));
+        var who = el('div');
+        var name = el('h2', 'member-profile-name', str(profile.name));
+        name.id = 'member-modal-name';
+        who.appendChild(name);
+        if (str(profile.hook_line)) who.appendChild(el('p', 'member-profile-hook', str(profile.hook_line)));
+        if (meta(profile)) who.appendChild(el('p', 'member-profile-meta', meta(profile)));
+        top.appendChild(who);
+        content.appendChild(top);
+
+        var company = str(profile.company);
+        [
+          section(company ? 'What ' + company + ' does' : 'What their company does', profile.company_does),
+          section('Who they serve', profile.who_they_serve),
+          section('Superpower', profile.superpower)
+        ].forEach(function (block) { if (block) content.appendChild(block); });
+
+        // LinkedIn is the primary button; everything else is a small icon.
+        var links = el('div', 'member-profile-links');
+        var linkedin = safeHttps(profile.linkedin);
+        if (linkedin) {
+          var primary = outLink(linkedin, 'member-linkedin', str(profile.name) + ' on LinkedIn', 'linkedin');
+          primary.appendChild(document.createTextNode('LinkedIn'));
+          links.appendChild(primary);
+        }
+        var instagram = safeHttps(profile.instagram);
+        if (instagram) links.appendChild(outLink(instagram, 'member-icon-link', str(profile.name) + ' on Instagram', 'instagram'));
+        (Array.isArray(profile.other_links) ? profile.other_links : []).forEach(function (raw) {
+          var href = safeHttps(raw);
+          if (href) links.appendChild(outLink(href, 'member-icon-link', hostOf(href), 'link'));
+        });
+        if (links.children.length) content.appendChild(links);
+
+        returnFocus = document.activeElement;
+        modal.hidden = false;
+        panel.scrollTop = 0;
+        closeButton.focus();
+      }
+
+      function closeProfile() {
+        if (!modal || modal.hidden) return;
+        modal.hidden = true;
+        if (returnFocus && typeof returnFocus.focus === 'function') returnFocus.focus();
+        returnFocus = null;
+      }
+
+      function focusable() {
+        return Array.prototype.filter.call(
+          panel.querySelectorAll('a[href], button:not([disabled])'),
+          function (node) { return !node.hidden; }
+        );
+      }
+
+      // Esc closes; Tab and Shift+Tab stay inside the profile while it is open.
+      document.addEventListener('keydown', function (event) {
+        if (!modal || modal.hidden) return;
+        if (event.key === 'Escape') {
+          event.preventDefault();
+          closeProfile();
+          return;
+        }
+        if (event.key !== 'Tab') return;
+        var items = focusable();
+        if (!items.length) { event.preventDefault(); return; }
+        var first = items[0];
+        var last = items[items.length - 1];
+        if (event.shiftKey && (document.activeElement === first || !panel.contains(document.activeElement))) {
+          event.preventDefault();
+          last.focus();
+        } else if (!event.shiftKey && (document.activeElement === last || !panel.contains(document.activeElement))) {
+          event.preventDefault();
+          first.focus();
+        }
+      });
+
+      // Focus that lands outside (a click on the page behind) is pulled back.
+      document.addEventListener('focusin', function (event) {
+        if (modal && !modal.hidden && !modal.contains(event.target)) closeButton.focus();
+      });
+
+      function load() {
+        var cfg = window.TR_PORTAL_CONFIG;
+        var endpoint = cfg && typeof cfg.directoryUrl === 'string' ? cfg.directoryUrl.trim() : '';
+        var code = null;
+        try { code = window.localStorage.getItem(STORAGE_KEY); } catch (e) { code = null; }
+        // No code: portal-access.js sends the visitor to the sign-in page.
+        if (!endpoint || !code) return;
+
+        window.fetch(endpoint, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ code: code })
+        }).then(function (response) {
+          if (response.status === 403) { setStatus(MSG.closed); return null; }
+          if (!response.ok) throw new Error('directory ' + response.status);
+          return response.json().then(function (data) { render(data && data.profiles); });
+        }).catch(function () {
+          setStatus(MSG.error);
+        });
+      }
+
+      document.addEventListener('DOMContentLoaded', function () {
+        grid = document.getElementById('members-grid');
+        status = document.getElementById('members-status');
+        search = document.getElementById('members-search');
+        if (!grid || !status || !search) return;
+        search.addEventListener('input', applySearch);
+        grid.addEventListener('click', function (event) {
+          var cardButton = event.target.closest('.member-card');
+          if (cardButton) openProfile(Number(cardButton.getAttribute('data-member-index')));
+        });
+        setStatus(MSG.loading);
+        load();
+      });
+    })();
+  </script>
 
   <script>
     // === SMOOTH PAGE TRANSITIONS ===
@@ -1108,7 +1565,7 @@
 
           if (results.length === 0) {
             const noResults = document.createElement('div');
-            noResults.className = "px-4 py-3 text-xs text-brand-mid italic";
+            noResults.className = 'px-4 py-3 text-xs text-brand-mid italic';
             noResults.textContent = `No results found for "${query}"`;
             resultsBox.appendChild(noResults);
             return;
@@ -1156,142 +1613,6 @@
         });
       });
     });
-  </script>
-
-  <script>
-    /* Dashboard, drawn from portal_get. Every block hides itself when the
-       data it needs is not there, so a member never meets a placeholder. */
-    (function () {
-      var L = window.TRLive;
-      if (!L) return;
-
-      var CARD_H3 = 'text-2xl font-bold text-brand-deep mb-3';
-      var EYEBROW = 'text-[10px] font-mono tracking-[0.2em] uppercase text-brand-deep/60 font-bold';
-      var META    = 'text-sm text-brand-mid font-medium';
-      var BODY    = 'text-sm text-brand-mid leading-relaxed';
-      var BTN     = 'inline-flex items-center justify-center gap-2 px-5 py-2.5 rounded-full text-xs font-bold ' +
-                    'bg-brand-deep text-white hover:bg-brand-green transition-colors';
-      var BTN2    = 'inline-flex items-center justify-center gap-2 px-5 py-2.5 rounded-full text-xs font-semibold ' +
-                    'bg-brand-sagelt/60 text-brand-deep hover:bg-brand-sagelt transition-colors';
-
-      function renderNext(root, data) {
-        L.clear(root);
-        var next = L.nextSession(data);
-
-        if (next) {
-          root.appendChild(L.el('div', EYEBROW, 'Next session'));
-          root.appendChild(L.el('h3', CARD_H3, L.str(next.title) || 'Session'));
-          var when = L.etDateTime(next.starts_at);
-          if (when) root.appendChild(L.el('p', META, when));
-
-          var actions = L.el('div', 'flex flex-wrap gap-3 mt-auto pt-6');
-          var join = L.linkTo(next.join_url, 'Join via Zoom', BTN);
-          if (join) actions.appendChild(join);
-          var cal = L.calendarLink(next, 'Add to calendar', BTN2);
-          if (cal) actions.appendChild(cal);
-          if (actions.childNodes.length) root.appendChild(actions);
-
-          L.show(root, true);
-          return;
-        }
-
-        // Past the last session: offer the most recent recording instead.
-        var rec = L.latestRecording(data);
-        if (rec) {
-          root.appendChild(L.el('div', EYEBROW, 'Latest recording'));
-          root.appendChild(L.el('h3', CARD_H3, L.str(rec.title) || 'Session'));
-          var recWhen = L.etDateTime(rec.starts_at);
-          if (recWhen) root.appendChild(L.el('p', META, recWhen));
-          var watch = L.linkTo(rec.recording_url, 'Watch recording', BTN);
-          if (watch) {
-            var box = L.el('div', 'mt-auto pt-6');
-            box.appendChild(watch);
-            root.appendChild(box);
-          }
-          L.show(root, true);
-          return;
-        }
-
-        L.show(root, false);
-      }
-
-      function renderWeek(root, data) {
-        L.clear(root);
-        var week = L.latestUnlockedWeek(data);
-        if (!week) { L.show(root, false); return; }
-
-        root.appendChild(L.el('div', EYEBROW, 'This week'));
-        root.appendChild(L.el('h3', CARD_H3, L.str(week.title) || 'This week'));
-        if (L.str(week.summary)) root.appendChild(L.el('p', BODY, L.str(week.summary)));
-
-        var first = L.items(week).slice(0, 3);
-        if (first.length) {
-          var list = L.el('ul', 'mt-5 space-y-2');
-          first.forEach(function (item) {
-            var li = L.el('li', 'text-sm text-brand-mid flex gap-2');
-            li.appendChild(L.el('span', 'text-brand-deep/40', '·'));
-            li.appendChild(L.el('span', '', L.str(item.title) || 'Untitled'));
-            list.appendChild(li);
-          });
-          root.appendChild(list);
-        }
-
-        var go = L.el('a', BTN2 + ' mt-auto self-start', 'Open curriculum');
-        go.href = 'curriculum.html';
-        var wrap = L.el('div', 'mt-auto pt-6');
-        wrap.appendChild(go);
-        root.appendChild(wrap);
-
-        L.show(root, true);
-      }
-
-      function renderLinks(root, data) {
-        L.clear(root);
-
-        var PILL = 'inline-flex items-center gap-2 px-5 py-2.5 rounded-full text-xs font-semibold ' +
-                   'bg-white/50 border border-brand-green/10 text-brand-deep hover:bg-white transition-colors';
-        var row = L.el('div', 'flex flex-wrap gap-3');
-
-        [['Curriculum', 'curriculum.html'],
-         ['Sessions', 'sessions.html'],
-         ['Resources', 'resources.html']].forEach(function (pair) {
-          var a = L.el('a', PILL, pair[0]);
-          a.href = pair[1];
-          row.appendChild(a);
-        });
-
-        // Both of these live as link items on week 0, "Start here". If the
-        // item is not there, the link simply does not appear.
-        [['whatsapp', 'WhatsApp group'],
-         ['questionnaire', 'Questionnaire']].forEach(function (pair) {
-          var item = L.findLinkItem(data, 0, pair[0]);
-          if (!item) return;
-          var a = L.linkTo(item.url, L.str(item.title) || pair[1], PILL);
-          if (a) row.appendChild(a);
-        });
-
-        if (!row.childNodes.length) { L.show(root, false); return; }
-        root.appendChild(L.el('div', EYEBROW + ' mb-4', 'Quick links'));
-        root.appendChild(row);
-        L.show(root, true);
-      }
-
-      document.addEventListener('trportal:data', function (event) {
-        var data = event && event.detail;
-        if (!data) return;
-
-        var nameWrap = document.querySelector('[data-portal-name-wrap]');
-        var name = document.querySelector('[data-portal-name]');
-        L.show(nameWrap, Boolean(name && L.str(name.textContent)));
-
-        var next = document.querySelector('[data-dash-next]');
-        var week = document.querySelector('[data-dash-week]');
-        var links = document.querySelector('[data-dash-links]');
-        if (next) renderNext(next, data);
-        if (week) renderWeek(week, data);
-        if (links) renderLinks(links, data);
-      });
-    })();
   </script>
 
 </body>

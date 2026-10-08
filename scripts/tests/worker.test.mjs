@@ -1,6 +1,6 @@
 // Worker mapping tests: mock Notion's API, POST payloads, assert what we'd write.
 import worker from '../../worker/src/index.js';
-import { createHmac } from 'node:crypto';
+import { createHmac, createHash } from 'node:crypto';
 
 const env = {
   NOTION_TOKEN: 'secret_test',
@@ -152,7 +152,7 @@ console.log('\n/superhuman — junk and edge values');
 
   await post('/superhuman', { ...FULL, website: '' });
   const normal = pageBody().properties;
-  check('a LinkedIn answer does not touch Website', !('Website' in normal) && normal.LinkedIn.url.includes('linkedin.com'));
+  check('a LinkedIn answer does not touch Website', !('Website' in normal) && new URL(normal.LinkedIn.url).origin === 'https://www.linkedin.com');
 
   await post('/superhuman', { ...FULL, linkedin: '', website: '' });
   const neither = pageBody().properties;
@@ -295,7 +295,7 @@ const calFetch = async (url, init) => {
     if (notion.down) return new Response('service unavailable', { status: 503 });
     return new Response(JSON.stringify({ id: 'page-sh-1' }), { status: 200 });
   }
-  if (u.includes('slack.com/api/chat.postMessage')) {
+  if (new URL(u).origin === 'https://slack.com' && new URL(u).pathname === '/api/chat.postMessage') {
     if (slack.down) return new Response(JSON.stringify({ ok: false, error: 'channel_not_found' }), { status: 200 });
     slack.posts.push(JSON.parse(init.body));
     return new Response(JSON.stringify({ ok: true, ts: '1725000000.0001' }), { status: 200 });
@@ -381,7 +381,7 @@ console.log('\n/cal-webhook — BOOKING_CREATED with a matching application');
   const t = slackText();
   check('posts to Slack', slack.posts.length === 1);
   check('to the configured channel', slack.posts[0].channel === 'C0TESTING');
-  check('with the bot token', calls.find((c) => c.url.includes('slack.com')).init.headers.Authorization === 'Bearer xoxb-test');
+  check('with the bot token', calls.find((c) => new URL(c.url).origin === 'https://slack.com').init.headers.Authorization === 'Bearer xoxb-test');
   check('names the attendee', t.includes('Jordan Reyes'), t);
   check('shows the email', t.includes('jordan@example.com'));
   check('shows New York time', t.includes('New York — Thu, Sep 10, 2:00 PM EDT'), t);
@@ -503,6 +503,718 @@ console.log('\nThe other routes still work after all of that');
   check('an unrouted path still falls through to the main database',
     unknown.status === 200 && pageBody().parent.database_id === 'db-main');
 }
+
+console.log('\nPortal members: ThriveCart buyer and /onboard +1 upserts');
+{
+  const SB_URL = 'https://sb.test';
+  const SB_KEY = 'sb_secret_test_key';
+  const pEnv = {
+    ...env,
+    THRIVECART_SECRET: 'tc-secret',
+    NOTION_SUPERHUMAN_COHORT1_DATABASE_ID: 'db-cohort',
+    SUPABASE_URL: SB_URL,
+    SUPABASE_SERVICE_ROLE_KEY: SB_KEY,
+  };
+  const rt = (v) => ({ type: 'rich_text', rich_text: [{ plain_text: v }] });
+  const PAID_ROW = {
+    id: 'page-buyer',
+    properties: {
+      Email: { type: 'email', email: 'Buyer@Example.com' },
+      TrackingID: rt('trk-1'),
+      'Order ID': rt('TC-555'),
+      'Payment Status': { type: 'select', select: { name: 'Paid' } },
+    },
+  };
+  let sb, paidRows, sbDown, logs;
+  const pFetch = async (url, init) => {
+    url = String(url);
+    calls.push({ url, init });
+    if (new URL(url).origin === new URL(SB_URL).origin) {
+      if (sbDown) throw new Error('network down');
+      sb.push({ url, headers: init.headers, body: JSON.parse(init.body) });
+      return new Response(JSON.stringify({ ok: true, id: 'm-1', created: true, passcode_never: 'x' }), { status: 200 });
+    }
+    if (url.includes('/v1/databases/') && url.endsWith('/query')) {
+      return new Response(JSON.stringify({ results: paidRows }), { status: 200 });
+    }
+    return new Response(JSON.stringify({ id: 'page-1' }), { status: 200 });
+  };
+  const origLog = console.log, origErr = console.error;
+  async function run(path, body, opts = {}) {
+    globalThis.fetch = pFetch;
+    calls = []; sb = []; logs = [];
+    paidRows = opts.paidRows ?? [PAID_ROW];
+    sbDown = opts.sbDown === true;
+    const pending = [];
+    console.log = (...a) => logs.push(a.join(' '));
+    console.error = (...a) => logs.push(a.join(' '));
+    try {
+      const res = await worker.fetch(new Request('https://w.dev' + path, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', Origin: 'https://timerich.ai' },
+        body: JSON.stringify(body),
+      }), opts.env || pEnv, { waitUntil: (p) => pending.push(p) });
+      await Promise.all(pending);
+      return res;
+    } finally {
+      console.log = origLog; console.error = origErr;
+    }
+  }
+  const TC = {
+    event: 'order.success', mode: 'live', thrivecart_secret: 'tc-secret',
+    order_id: 'TC-555', order_total: '99700',
+    customer: { email: '  Buyer@Example.com ', first_name: 'Bea', last_name: 'Buyer' },
+    passthrough: { tracking_id: 'trk-1' },
+  };
+
+  // ThriveCart buyer
+  let res = await run('/thrivecart-webhook', TC);
+  check('live paid order: 200', res.status === 200);
+  check('live paid order: one upsert to portal_upsert_member',
+    sb.length === 1 && sb[0].url === SB_URL + '/rest/v1/rpc/portal_upsert_member', sb);
+  check('live paid order: role buyer, order id, email trimmed + lowercased, name',
+    sb[0] && sb[0].body.p_role === 'buyer' && sb[0].body.p_order_id === 'TC-555' &&
+    sb[0].body.p_email === 'buyer@example.com' && sb[0].body.p_full_name === 'Bea Buyer', sb[0] && sb[0].body);
+  check('the request never carries a passcode', sb[0] && !('p_passcode' in sb[0].body) && !('passcode' in sb[0].body));
+  check('sb_secret_ key goes in apikey only, not Authorization',
+    sb[0] && sb[0].headers.apikey === SB_KEY && !('Authorization' in sb[0].headers));
+  check('nothing logged contains the key, the email or the response',
+    !logs.some((l) => l.includes(SB_KEY) || l.includes('passcode_never')) &&
+    !logs.some((l) => l.includes('portal') && l.toLowerCase().includes('buyer@example.com')), logs.filter((l) => l.includes('portal')));
+
+  res = await run('/thrivecart-webhook', { ...TC, mode: 'test' });
+  check('test-mode order: still 200, no upsert', res.status === 200 && sb.length === 0);
+  res = await run('/thrivecart-webhook', { ...TC, mode: undefined });
+  check('order with no mode: treated as test, no upsert', res.status === 200 && sb.length === 0);
+  res = await run('/thrivecart-webhook', { ...TC, event: 'order.refund' });
+  check('refund: no upsert', res.status === 200 && sb.length === 0);
+  res = await run('/thrivecart-webhook', { ...TC, event: 'test' });
+  check('"test" event: ignored, no upsert', res.status === 200 && sb.length === 0);
+  res = await run('/thrivecart-webhook', { ...TC, thrivecart_secret: 'wrong' });
+  check('wrong secret: 401, no upsert', res.status === 401 && sb.length === 0);
+  res = await run('/thrivecart-webhook', { ...TC, thrivecart_secret: undefined });
+  check('missing secret: 401, no upsert', res.status === 401 && sb.length === 0);
+  res = await run('/thrivecart-webhook', TC, { env: { ...pEnv, THRIVECART_SECRET: '' } });
+  check('secret not configured: 503, no upsert', res.status === 503 && sb.length === 0);
+  res = await run('/thrivecart-webhook', TC, { env: { ...pEnv, SUPABASE_URL: '', SUPABASE_SERVICE_ROLE_KEY: '' } });
+  check('Supabase not configured: still 200, no call', res.status === 200 && sb.length === 0);
+  res = await run('/thrivecart-webhook', TC, { sbDown: true });
+  check('Supabase down: ThriveCart still gets 200', res.status === 200);
+  res = await run('/thrivecart-webhook', TC, { env: { ...pEnv, SUPABASE_SERVICE_ROLE_KEY: 'eyJhbGciOi.test.jwt' } });
+  check('legacy JWT service_role key also goes in Authorization',
+    sb[0] && sb[0].headers.Authorization === 'Bearer eyJhbGciOi.test.jwt');
+
+  // /onboard +1
+  const ONB = {
+    trackingId: 'trk-1', email: 'buyer@example.com', choice: 'named',
+    attendeeFirstName: 'Pat', attendeeLastName: 'Plus', attendeeEmail: 'Pat.Plus@Example.com',
+  };
+  res = await run('/onboard', ONB);
+  check('named +1: 200 and one upsert', res.status === 200 && sb.length === 1, sb);
+  check('named +1: role second_seat, buyer order id from the Notion row, email lowercased',
+    sb[0] && sb[0].body.p_role === 'second_seat' && sb[0].body.p_order_id === 'TC-555' &&
+    sb[0].body.p_email === 'pat.plus@example.com' && sb[0].body.p_full_name === 'Pat Plus', sb[0] && sb[0].body);
+  res = await run('/onboard', ONB, { paidRows: [] });
+  check('no paid order: still 403, no upsert', res.status === 403 && sb.length === 0);
+  res = await run('/onboard', { ...ONB, choice: 'unsure' });
+  check('"not sure yet": no upsert', res.status === 200 && sb.length === 0);
+  res = await run('/onboard', { ...ONB, attendeeEmail: 'not-an-email' });
+  check('invalid +1 email: no upsert', res.status === 200 && sb.length === 0);
+  res = await run('/onboard', { ...ONB, attendeeEmail: ' BUYER@example.com' });
+  check('+1 email is the buyer\'s own: no upsert', res.status === 200 && sb.length === 0);
+  res = await run('/onboard', ONB, { sbDown: true });
+  check('Supabase down: /onboard still 200', res.status === 200);
+
+  globalThis.fetch = baseFetch;
+}
+
+// ---------------------------------------------------------------------------
+// Time Rich Members: the questionnaire -> portal_directory sync and the backfill.
+//
+// One fake stands in for Notion and Supabase. Notion's replies use the real
+// response shape (typed properties with plain_text), and a PATCH reply carries
+// everything already stored on the row, so these tests can tell a profile
+// built from Notion's stored properties apart from one built from the body.
+// ---------------------------------------------------------------------------
+const memEnv = {
+  NOTION_TOKEN: 'secret_test',
+  NOTION_SUPERHUMAN_QUESTIONNAIRE_DATABASE_ID: 'db-shq',
+  SUPABASE_URL: 'https://sb.test/',
+  SUPABASE_SERVICE_ROLE_KEY: 'service-key',
+  DIRECTORY_SYNC_SECRET: 'sync-secret',
+  ALLOWED_ORIGIN: 'https://timerich.ai',
+};
+
+// Request-shaped Notion properties -> response-shaped (what Notion stores).
+function asStored(props) {
+  const out = {};
+  for (const [name, p] of Object.entries(props || {})) {
+    const runs = (arr) => (arr || []).map((t) => ({ plain_text: t.text.content, text: t.text }));
+    if (p.title) out[name] = { type: 'title', title: runs(p.title) };
+    else if (p.rich_text) out[name] = { type: 'rich_text', rich_text: runs(p.rich_text) };
+    else if ('email' in p) out[name] = { type: 'email', email: p.email };
+    else if ('url' in p) out[name] = { type: 'url', url: p.url };
+    else if (p.select) out[name] = { type: 'select', select: p.select };
+    else if (p.multi_select) out[name] = { type: 'multi_select', multi_select: p.multi_select };
+    else if (p.date) out[name] = { type: 'date', date: p.date };
+  }
+  return out;
+}
+
+const mem = {
+  members: [],        // portal_members rows: { email, role, active }
+  directory: {},      // portal_directory rows by email
+  stored: null,       // the questionnaire row already in Notion, if any
+  notionSaveOk: true,
+  supabaseUp: true,
+  backfillPages: [],  // pages of Notion rows the backfill reads
+  drive: {},          // Drive files by id: { type, bytes, declared?, status? }
+  driveHits: [],
+  uploads: [],
+  deleted: [],
+  slack: [],
+  codes: {},          // passcode -> portal role, for portal_get
+  enabled: undefined, // directory_enabled value, undefined = no row
+  listedColumns: [],
+  signRequests: [],
+  signFails: false,
+  calls: [],
+  logs: [],
+};
+
+const ADA_PHOTO_ID = 'AdaPhotoFile_0123456789';
+const jpeg = (bytes = 40000) => ({ type: 'image/jpeg', bytes, declared: bytes });
+
+const memFetch = async (url, init = {}) => {
+  url = String(url);
+  mem.calls.push({ url, init });
+  const method = init.method || 'GET';
+  // Photo uploads send raw image bytes; only text bodies are JSON.
+  const body = typeof init.body === 'string' ? JSON.parse(init.body) : null;
+  const ok = (data, status = 200) => new Response(JSON.stringify(data), { status });
+
+  if (url.startsWith('https://api.notion.com/v1/databases/db-shq/query')) {
+    if (body && body.filter) return ok({ results: mem.stored ? [mem.stored] : [] }); // findRowByEmail
+    const index = body && body.start_cursor ? Number(body.start_cursor) : 0;          // backfill paging
+    const results = mem.backfillPages[index] || [];
+    const more = index + 1 < mem.backfillPages.length;
+    return ok({ results, has_more: more, next_cursor: more ? String(index + 1) : null });
+  }
+  if (url.startsWith('https://api.notion.com/v1/pages')) {
+    if (!mem.notionSaveOk) return new Response('{"message":"bad"}', { status: 400 });
+    const merged = method === 'PATCH'
+      ? { ...mem.stored.properties, ...asStored(body.properties) }
+      : asStored(body.properties);
+    return ok({ id: 'page-shq', url: 'https://notion.so/page-shq', properties: merged });
+  }
+  if (url.startsWith('https://sb.test/rest/v1/')) {
+    if (!mem.supabaseUp) return new Response('down', { status: 503 });
+    if (url.includes('/portal_members?')) {
+      const wanted = decodeURIComponent(url.split('email=ilike.')[1] || '').toLowerCase();
+      return ok(mem.members.filter((m) => m.active && m.email.toLowerCase() === wanted));
+    }
+    if (url.includes('/rpc/portal_get')) {
+      const role = mem.codes[String(body && body.p_code).trim().toUpperCase()];
+      return ok(role ? { ok: true, member: { first_name: 'X', role }, weeks: [], sessions: [] } : { ok: false });
+    }
+    if (url.includes('/portal_settings?') && method === 'GET') {
+      return ok(mem.enabled === undefined ? [] : [{ value: mem.enabled }]);
+    }
+    if (url.includes('/portal_directory?select=') && method === 'GET' && !url.includes('email=eq.')) {
+      // The read endpoint's list: return only the columns it asked for.
+      const columns = url.split('select=')[1].split('&')[0].split(',');
+      mem.listedColumns = columns;
+      return ok(Object.values(mem.directory).map((r) => Object.fromEntries(columns.map((c) => [c, r[c] ?? null]))));
+    }
+    if (url.includes('/portal_directory?select=') && method === 'GET') {
+      const wanted = decodeURIComponent(url.split('email=eq.')[1] || '');
+      const row = mem.directory[wanted];
+      return ok(row ? [{ photo_path: row.photo_path ?? null, photo_status: row.photo_status ?? 'missing', photo_source_url: row.photo_source_url ?? null }] : []);
+    }
+    if (url.includes('/portal_directory?on_conflict=email') && method === 'POST') {
+      // Merge-duplicates only updates the columns sent, like PostgREST.
+      const { _prefer, ...rest } = body;
+      mem.directory[body.email] = { ...(mem.directory[body.email] || {}), ...rest, _prefer: init.headers.Prefer };
+      return new Response(null, { status: 201 });
+    }
+  }
+  if (url === 'https://sb.test/storage/v1/object/sign/portal-directory') {
+    mem.signRequests.push(body);
+    if (mem.signFails) return new Response('nope', { status: 500 });
+    return ok(body.paths.map((path) => ({ path, signedURL: '/object/sign/portal-directory/' + path + '?token=t', error: null })));
+  }
+  if (url.startsWith('https://sb.test/storage/v1/object/portal-directory/')) {
+    const path = url.split('/portal-directory/')[1];
+    if (method === 'DELETE') { mem.deleted.push(path); return ok({}); }
+    mem.uploads.push({ path, type: init.headers['Content-Type'], upsert: init.headers['x-upsert'], size: init.body.byteLength });
+    return ok({ Key: 'portal-directory/' + path });
+  }
+  if (url.startsWith('https://drive.google.com/uc?export=download&id=')) {
+    const id = decodeURIComponent(url.split('id=')[1]);
+    mem.driveHits.push(id);
+    const file = mem.drive[id] || { type: 'text/html; charset=utf-8', bytes: 3000 }; // Drive's sign-in page
+    const headers = { 'Content-Type': file.type };
+    if (file.declared !== undefined) headers['Content-Length'] = String(file.declared);
+    return new Response(new Uint8Array(file.bytes), { status: file.status || 200, headers });
+  }
+  if (url === 'https://hooks.slack.test/questionnaire') {
+    mem.slack.push(body.text);
+    return ok({});
+  }
+  return ok({});
+};
+
+function resetMembers() {
+  mem.members = [];
+  mem.directory = {};
+  mem.stored = null;
+  mem.notionSaveOk = true;
+  mem.supabaseUp = true;
+  mem.backfillPages = [];
+  mem.drive = { [ADA_PHOTO_ID]: jpeg() };
+  mem.driveHits = [];
+  mem.uploads = [];
+  mem.deleted = [];
+  mem.slack = [];
+  mem.codes = {};
+  mem.enabled = undefined;
+  mem.listedColumns = [];
+  mem.signRequests = [];
+  mem.signFails = false;
+  mem.calls = [];
+  mem.logs = [];
+}
+
+// Every console line the Worker writes while these run, so tests can prove
+// what is never logged.
+const realError = console.error;
+const realLog = console.log;
+function captureLogs(on) {
+  if (on) {
+    console.error = (...a) => mem.logs.push(a.map(String).join(' '));
+  } else {
+    console.error = realError;
+    console.log = realLog;
+  }
+}
+
+async function submitQuestionnaire(body, env = memEnv) {
+  const pending = [];
+  captureLogs(true);
+  const res = await worker.fetch(new Request('https://w.dev/superhuman-questionnaire', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json', Origin: 'https://timerich.ai' },
+    body: JSON.stringify(body),
+  }), env, { waitUntil: (p) => pending.push(p) });
+  await Promise.all(pending);
+  captureLogs(false);
+  return res;
+}
+
+function backfill(token, env = memEnv) {
+  const headers = { 'Content-Type': 'application/json' };
+  if (token !== undefined) headers.Authorization = 'Bearer ' + token;
+  return worker.fetch(new Request('https://w.dev/portal-directory-sync', { method: 'POST', headers, body: '{}' }), env);
+}
+
+const ADA = {
+  name: 'Ada Lovelace',
+  email: 'Ada@Example.com ',
+  role: 'Buyer',
+  linkedin: 'https://www.linkedin.com/in/ada',
+  instagram: 'https://www.instagram.com/ada',
+  other_links: 'https://ada.dev\nhttps://youtube.com/@ada',
+  job_title: 'Founder',
+  company: 'Analytical Co',
+  company_does: 'We build engines that compute.',
+  who_you_serve: 'Founders who think in systems.',
+  bio: '4x founder, first programmer',
+  photo_link: 'https://drive.google.com/file/d/' + ADA_PHOTO_ID + '/view?usp=sharing',
+  superpower: 'I turn vague ideas into running systems.',
+};
+
+globalThis.fetch = memFetch;
+
+console.log('\nTime Rich Members — questionnaire sync');
+{
+  resetMembers();
+  mem.members = [{ email: 'ada@example.com', role: 'buyer', active: true }];
+  const res = await submitQuestionnaire(ADA);
+  const row = mem.directory['ada@example.com'];
+  check('the form still answers 200', res.status === 200);
+  check('a buyer with portal access gets a directory row, keyed by lowercased email', Boolean(row), Object.keys(mem.directory));
+  check('Bio becomes hook_line', row && row.hook_line === '4x founder, first programmer', row);
+  check('Title, Company and the profile answers map across',
+    row && row.title === 'Founder' && row.company === 'Analytical Co' &&
+    row.company_does === 'We build engines that compute.' &&
+    row.who_they_serve === 'Founders who think in systems.' &&
+    row.superpower === 'I turn vague ideas into running systems.', row);
+  check('links map across, other links keep one per line',
+    row && row.linkedin === 'https://www.linkedin.com/in/ada' && row.instagram === 'https://www.instagram.com/ada' &&
+    row.other_links === 'https://ada.dev\nhttps://youtube.com/@ada', row);
+  check('name and role are recorded', row && row.name === 'Ada Lovelace' && row.role === 'buyer', row);
+  check('the write is an upsert on email', row && /resolution=merge-duplicates/.test(row._prefer), row && row._prefer);
+  const notionAt = mem.calls.findIndex((c) => c.url.startsWith('https://api.notion.com/v1/pages'));
+  const supabaseAt = mem.calls.findIndex((c) => c.url.startsWith('https://sb.test/'));
+  check('Supabase is only touched after Notion saved', notionAt > -1 && supabaseAt > notionAt, { notionAt, supabaseAt });
+  check('the service role key is what Supabase sees',
+    mem.calls.filter((c) => c.url.startsWith('https://sb.test/')).every((c) => c.init.headers.apikey === 'service-key'));
+}
+
+{
+  resetMembers();
+  mem.members = [{ email: 'sam@example.com', role: 'second_seat', active: true }];
+  await submitQuestionnaire({ ...ADA, name: 'Sam', email: 'sam@example.com', role: '+1' });
+  check('a second seat is listed too', mem.directory['sam@example.com']?.role === 'second_seat');
+}
+
+{
+  resetMembers();
+  const res = await submitQuestionnaire({ ...ADA, email: 'stranger@example.com' });
+  check('no portal_members row: skipped, form still 200', res.status === 200 && Object.keys(mem.directory).length === 0);
+}
+
+{
+  resetMembers();
+  mem.members = [{ email: 'kenneth@example.com', role: 'team', active: true }];
+  await submitQuestionnaire({ ...ADA, email: 'kenneth@example.com', role: 'Ambassador' });
+  check('team is never listed', Object.keys(mem.directory).length === 0);
+}
+
+{
+  resetMembers();
+  mem.members = [{ email: 'ada@example.com', role: 'buyer', active: false }];
+  await submitQuestionnaire(ADA);
+  check('an inactive member is not listed', Object.keys(mem.directory).length === 0);
+}
+
+{
+  resetMembers();
+  mem.members = [{ email: 'ada@example.com', role: 'buyer', active: true }];
+  mem.stored = {
+    id: 'page-shq',
+    properties: asStored({
+      Name: { title: [{ text: { content: 'Ada Lovelace' } }] },
+      Email: { email: 'ada@example.com' },
+      Company: { rich_text: [{ text: { content: 'Stored Co' } }] },
+      Superpower: { rich_text: [{ text: { content: 'Stored superpower' } }] },
+    }),
+  };
+  // A second pass that leaves Company and Superpower empty: the form keeps
+  // them in Notion, so the profile must keep them too.
+  await submitQuestionnaire({ ...ADA, company: '', superpower: '', bio: 'New hook line' });
+  const row = mem.directory['ada@example.com'];
+  check('the profile is built from what Notion stored, not the request body',
+    row && row.company === 'Stored Co' && row.superpower === 'Stored superpower' && row.hook_line === 'New hook line', row);
+}
+
+{
+  resetMembers();
+  mem.members = [{ email: 'ada@example.com', role: 'buyer', active: true }];
+  mem.notionSaveOk = false;
+  const res = await submitQuestionnaire(ADA);
+  check('Notion save fails: no sync, form reports the failure',
+    res.status === 502 && !mem.calls.some((c) => c.url.startsWith('https://sb.test/')));
+}
+
+{
+  resetMembers();
+  mem.members = [{ email: 'ada@example.com', role: 'buyer', active: true }];
+  mem.supabaseUp = false;
+  const res = await submitQuestionnaire(ADA);
+  check('Supabase down: the questionnaire still saves and answers 200', res.status === 200);
+  check('the failure is logged without any answer or link in it',
+    mem.logs.some((l) => l.includes('[members] directory sync failed')) &&
+    !mem.logs.some((l) => l.includes(ADA.photo_link) || l.includes(ADA_PHOTO_ID) || l.includes('Ada') || l.includes('linkedin')), mem.logs);
+}
+
+{
+  resetMembers();
+  mem.members = [{ email: 'ada@example.com', role: 'buyer', active: true }];
+  const { SUPABASE_URL, SUPABASE_SERVICE_ROLE_KEY, ...noSupabase } = memEnv;
+  const res = await submitQuestionnaire(ADA, noSupabase);
+  check('without Supabase configured the sync is skipped quietly',
+    res.status === 200 && !mem.calls.some((c) => c.url.startsWith('https://sb.test/')));
+}
+
+console.log('\nTime Rich Members — photos');
+{
+  const photoEnv = { ...memEnv, SLACK_QUESTIONNAIRE_WEBHOOK_URL: 'https://hooks.slack.test/questionnaire' };
+  const adaPath = createHash('sha256').update('ada@example.com').digest('hex') + '.jpg';
+  const photoAlerts = () => mem.slack.filter((t) => t.startsWith('Photo link failed'));
+  // Any piece of a Drive link: the file ids used here, or the URL parts every link shape has.
+  const linkLeaked = () => mem.logs.some((l) =>
+    ['/file/d/', 'open?id=', 'export=download', 'AdaPhotoFile', 'NewPhoto'].some((piece) => l.includes(piece)));
+  const listAda = () => { mem.members = [{ email: 'ada@example.com', role: 'buyer', active: true }]; };
+
+  // 1. A working, publicly shared JPEG.
+  resetMembers(); listAda();
+  await submitQuestionnaire(ADA, photoEnv);
+  let row = mem.directory['ada@example.com'];
+  check('photo success: stored as <sha256(email)>.jpg, status ok',
+    row.photo_status === 'ok' && row.photo_path === adaPath, row);
+  check('photo success: uploaded once with its image type and upsert on',
+    mem.uploads.length === 1 && mem.uploads[0].path === adaPath && mem.uploads[0].type === 'image/jpeg' && mem.uploads[0].upsert === 'true', mem.uploads);
+  check('photo success: the link is remembered in photo_source_url', row.photo_source_url === ADA.photo_link);
+  check('photo success: no Slack alert', photoAlerts().length === 0);
+
+  // 2. Drive answers with its HTML sign-in page (file not shared publicly).
+  resetMembers(); listAda();
+  mem.drive = {};
+  await submitQuestionnaire(ADA, photoEnv);
+  row = mem.directory['ada@example.com'];
+  check('HTML response: status failed, nothing uploaded', row.photo_status === 'failed' && mem.uploads.length === 0, row);
+  check('HTML response: Slack told exactly once, by name',
+    photoAlerts().length === 1 &&
+    photoAlerts()[0] === 'Photo link failed for Ada Lovelace. Ask them to set sharing to Anyone with the link.', mem.slack);
+  check('HTML response: the link is not saved as the last good one', !row.photo_source_url);
+  check('HTML response: the link is never logged', !linkLeaked(), mem.logs);
+
+  // 3. Too big, whether the size is declared up front or only found while reading.
+  resetMembers(); listAda();
+  mem.drive = { [ADA_PHOTO_ID]: jpeg(6 * 1024 * 1024) };
+  await submitQuestionnaire(ADA, photoEnv);
+  check('oversize (Content-Length): failed, nothing uploaded, Slack once',
+    mem.directory['ada@example.com'].photo_status === 'failed' && mem.uploads.length === 0 && photoAlerts().length === 1);
+  resetMembers(); listAda();
+  mem.drive = { [ADA_PHOTO_ID]: { type: 'image/png', bytes: 5 * 1024 * 1024 + 1 } };
+  await submitQuestionnaire(ADA, photoEnv);
+  check('oversize (no Content-Length, found while reading): failed, nothing uploaded',
+    mem.directory['ada@example.com'].photo_status === 'failed' && mem.uploads.length === 0);
+
+  // 4. Not a Drive link at all, or a Drive link with no file id.
+  // (Anything that is not an https link is already dropped by the questionnaire
+  // before it reaches Notion, so it arrives here as "no link".)
+  for (const bad of ['https://example.com/me.jpg', 'https://drive.google.com/drive/folders/abc']) {
+    resetMembers(); listAda();
+    await submitQuestionnaire({ ...ADA, photo_link: bad }, photoEnv);
+    const r = mem.directory['ada@example.com'];
+    check('bad link "' + bad + '": failed without calling Drive, Slack once',
+      r && r.photo_status === 'failed' && mem.driveHits.length === 0 && photoAlerts().length === 1, { r, hits: mem.driveHits });
+  }
+
+  // 5. Other image types and the other two Drive link shapes.
+  resetMembers(); listAda();
+  mem.drive = { [ADA_PHOTO_ID]: { type: 'image/webp', bytes: 2000 } };
+  await submitQuestionnaire({ ...ADA, photo_link: 'https://drive.google.com/open?id=' + ADA_PHOTO_ID }, photoEnv);
+  check('open?id= links work, and WebP is stored as .webp',
+    mem.directory['ada@example.com'].photo_path.endsWith('.webp') && mem.driveHits[0] === ADA_PHOTO_ID);
+  resetMembers(); listAda();
+  await submitQuestionnaire({ ...ADA, photo_link: 'https://drive.google.com/uc?id=' + ADA_PHOTO_ID + '&export=download' }, photoEnv);
+  check('uc?id= links work', mem.directory['ada@example.com'].photo_status === 'ok' && mem.driveHits[0] === ADA_PHOTO_ID);
+  resetMembers(); listAda();
+  mem.drive = { [ADA_PHOTO_ID]: { type: 'image/gif', bytes: 2000 } };
+  await submitQuestionnaire(ADA, photoEnv);
+  check('an image type outside JPEG, PNG and WebP is refused', mem.directory['ada@example.com'].photo_status === 'failed');
+
+  // 6. When to download again (photo_source_url).
+  resetMembers(); listAda();
+  await submitQuestionnaire(ADA, photoEnv);
+  mem.driveHits = []; mem.uploads = [];
+  await submitQuestionnaire(ADA, photoEnv);
+  check('same link, last download ok: Drive is not called again, photo kept',
+    mem.driveHits.length === 0 && mem.uploads.length === 0 && mem.directory['ada@example.com'].photo_status === 'ok');
+
+  const NEW_ID = 'NewPhotoFile_9876543210';
+  mem.drive[NEW_ID] = { type: 'image/png', bytes: 3000 };
+  await submitQuestionnaire({ ...ADA, photo_link: 'https://drive.google.com/file/d/' + NEW_ID + '/view' }, photoEnv);
+  row = mem.directory['ada@example.com'];
+  check('changed link: downloaded again and the new link remembered',
+    mem.driveHits.includes(NEW_ID) && row.photo_source_url.includes(NEW_ID) && row.photo_path.endsWith('.png'), row);
+  check('changed file type: the old .jpg is removed from storage', mem.deleted.includes(adaPath), mem.deleted);
+
+  resetMembers(); listAda();
+  mem.drive = {};                                   // not shared yet
+  await submitQuestionnaire(ADA, photoEnv);
+  check('first try fails while sharing is off', mem.directory['ada@example.com'].photo_status === 'failed');
+  mem.drive = { [ADA_PHOTO_ID]: jpeg() };           // they fix sharing, same link
+  mem.driveHits = [];
+  await submitQuestionnaire(ADA, photoEnv);
+  row = mem.directory['ada@example.com'];
+  check('same link after a failure: tried again and now ok',
+    mem.driveHits.length === 1 && row.photo_status === 'ok' && row.photo_source_url === ADA.photo_link, row);
+
+  resetMembers(); listAda();
+  mem.directory['ada@example.com'] = { email: 'ada@example.com', photo_status: 'missing', photo_source_url: ADA.photo_link };
+  await submitQuestionnaire(ADA, photoEnv);
+  check('same link while status is missing: tried again',
+    mem.driveHits.length === 1 && mem.directory['ada@example.com'].photo_status === 'ok');
+
+  resetMembers(); listAda();
+  await submitQuestionnaire(ADA, photoEnv);
+  const good = { ...mem.directory['ada@example.com'] };
+  mem.drive = {};
+  await submitQuestionnaire({ ...ADA, photo_link: 'https://drive.google.com/file/d/' + NEW_ID + '/view' }, photoEnv);
+  row = mem.directory['ada@example.com'];
+  check('a new link that fails keeps the last good path and link for the next comparison',
+    row.photo_status === 'failed' && row.photo_path === good.photo_path && row.photo_source_url === good.photo_source_url, row);
+
+  // 7. No link at all.
+  resetMembers(); listAda();
+  await submitQuestionnaire({ ...ADA, photo_link: '' }, photoEnv);
+  check('no link: status missing, Drive not called, no Slack',
+    mem.directory['ada@example.com'].photo_status === 'missing' && mem.driveHits.length === 0 && photoAlerts().length === 0);
+
+  check('across every photo case, no link was ever logged', !linkLeaked(), mem.logs);
+}
+
+console.log('\nTime Rich Members — backfill');
+{
+  const row = (name, email) => ({
+    properties: asStored({
+      Name: { title: [{ text: { content: name } }] },
+      Email: { email },
+      Bio: { rich_text: [{ text: { content: name + ' hook' } }] },
+    }),
+  });
+  resetMembers();
+  mem.members = [
+    { email: 'ada@example.com', role: 'buyer', active: true },
+    { email: 'sam@example.com', role: 'second_seat', active: true },
+    { email: 'kenneth@example.com', role: 'team', active: true },
+  ];
+  mem.backfillPages = [
+    [row('Ada', 'ada@example.com'), row('Kenneth', 'kenneth@example.com')],
+    [row('Sam', 'Sam@Example.com'), row('Amb', 'amb@example.com')],
+  ];
+
+  const missing = await backfill(undefined);
+  const wrong = await backfill('not-the-secret');
+  const unset = await backfill('sync-secret', { ...memEnv, DIRECTORY_SYNC_SECRET: '' });
+  const bodies = [await missing.text(), await wrong.text(), await unset.text()];
+  check('no token, a wrong token, or no secret configured: all 403',
+    missing.status === 403 && wrong.status === 403 && unset.status === 403);
+  check('and the three refusals are byte-identical', bodies.every((b) => b === bodies[0]), bodies);
+  check('nothing is synced on a refusal', Object.keys(mem.directory).length === 0);
+
+  const res = await backfill('sync-secret');
+  const counts = await res.json();
+  check('the right secret runs it', res.status === 200 && counts.ok === true, counts);
+  check('it reads every page of the questionnaire', counts.processed === 4, counts);
+  check('rows with no photo link count as missing, not as photo failures', counts.photo_failed === 0, counts);
+  check('buyers and second seats are listed, team and non-members skipped',
+    counts.listed === 2 && counts.skipped === 2 && counts.failed === 0 &&
+    Boolean(mem.directory['ada@example.com']) && Boolean(mem.directory['sam@example.com']) &&
+    !mem.directory['kenneth@example.com'] && !mem.directory['amb@example.com'], counts);
+
+  const before = JSON.stringify(mem.directory, (k, v) => (k === 'updated_at' ? undefined : v));
+  const again = await (await backfill('sync-secret')).json();
+  const after = JSON.stringify(mem.directory, (k, v) => (k === 'updated_at' ? undefined : v));
+  check('running it twice leaves the same rows', again.listed === 2 && before === after);
+}
+
+console.log('\nTime Rich Members — read endpoint');
+{
+  const read = (body, { origin = 'https://timerich.ai', env = memEnv, raw } = {}) =>
+    worker.fetch(new Request('https://w.dev/portal-directory', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', Origin: origin },
+      body: raw !== undefined ? raw : JSON.stringify(body),
+    }), env);
+
+  const seed = () => {
+    resetMembers();
+    mem.codes = { 'BUYER-CODE1': 'buyer', 'SEAT0-CODE2': 'second_seat', 'TEAM0-CODE3': 'team' };
+    mem.directory = {
+      'zoe@example.com': {
+        email: 'zoe@example.com', name: 'Zoe Zhang', hook_line: 'Ops nerd', title: 'COO', company: 'Zed',
+        company_does: 'Runs things.', who_they_serve: 'Teams.', superpower: 'Calm.',
+        linkedin: 'https://www.linkedin.com/in/zoe', instagram: 'javascript:alert(1)',
+        other_links: 'https://zoe.dev\nhttp://insecure.example\n\nnot a link',
+        photo_path: 'zoe.jpg', photo_status: 'ok', photo_source_url: 'https://drive.google.com/file/d/ZOESECRETLINK/view', role: 'buyer',
+      },
+      'ada@example.com': {
+        email: 'ada@example.com', name: 'ada lovelace', hook_line: 'First programmer', title: 'Founder', company: 'Analytical Co',
+        linkedin: 'https://www.linkedin.com/in/ada', photo_path: 'ada.jpg', photo_status: 'failed', role: 'buyer',
+      },
+      'bo@example.com': { email: 'bo@example.com', name: 'Bo Brown', photo_status: 'missing', role: 'second_seat' },
+    };
+  };
+
+  seed();
+  mem.enabled = false;
+  const buyerOff = await read({ code: 'buyer-code1' });
+  const seatOff = await read({ code: 'SEAT0-CODE2' });
+  const teamOff = await read({ code: 'team0-code3' });
+  check('switched off: a buyer gets 403', buyerOff.status === 403);
+  check('switched off: a second seat gets 403', seatOff.status === 403);
+  check('switched off: team still gets 200 for QA', teamOff.status === 200);
+
+  seed();
+  const noRow = await read({ code: 'buyer-code1' });
+  check('no directory_enabled row at all counts as off', noRow.status === 403);
+
+  seed();
+  mem.enabled = 'true';
+  check('only a real JSON true switches it on (not the string "true")', (await read({ code: 'buyer-code1' })).status === 403);
+
+  seed();
+  mem.enabled = true;
+  const on = await read({ code: 'buyer-code1' });
+  const text = await on.clone().text();
+  const { profiles } = await on.json();
+  check('switched on: a buyer gets 200', on.status === 200);
+  check('profiles are sorted by name, ignoring case', profiles.map((p) => p.name).join('|') === 'ada lovelace|Bo Brown|Zoe Zhang', profiles.map((p) => p.name));
+  check('no email anywhere in the response', !/@example\.com/.test(text) && profiles.every((p) => !('email' in p)), text);
+  check('photo_source_url is never selected or returned',
+    !mem.listedColumns.includes('photo_source_url') && !mem.listedColumns.includes('email') &&
+    !text.includes('ZOESECRETLINK') && !text.includes('photo_source_url'), mem.listedColumns);
+  check('photo_path and photo_status stay server side', profiles.every((p) => !('photo_path' in p) && !('photo_status' in p)));
+
+  const zoe = profiles.find((p) => p.name === 'Zoe Zhang');
+  const ada = profiles.find((p) => p.name === 'ada lovelace');
+  const bo = profiles.find((p) => p.name === 'Bo Brown');
+  check('a stored photo comes back as an absolute signed URL',
+    zoe.photo_url === 'https://sb.test/storage/v1/object/sign/portal-directory/zoe.jpg?token=t', zoe.photo_url);
+  check('failed and missing photos come back as null (initials)', ada.photo_url === null && bo.photo_url === null);
+  check('only ok photos are signed, in one request, for one hour',
+    mem.signRequests.length === 1 && JSON.stringify(mem.signRequests[0].paths) === '["zoe.jpg"]' && mem.signRequests[0].expiresIn === 3600, mem.signRequests);
+  check('profile fields come through in full',
+    zoe.hook_line === 'Ops nerd' && zoe.title === 'COO' && zoe.company === 'Zed' && zoe.company_does === 'Runs things.' &&
+    zoe.who_they_serve === 'Teams.' && zoe.superpower === 'Calm.' && zoe.linkedin === 'https://www.linkedin.com/in/zoe', zoe);
+  check('a non-https link is dropped, never passed to the page', zoe.instagram === null);
+  check('other links become a list of https URLs only', JSON.stringify(zoe.other_links) === '["https://zoe.dev"]', zoe.other_links);
+  check('empty fields come back as empty strings, not null', bo.hook_line === '' && bo.company === '' && bo.linkedin === null);
+  check('CORS answers timerich.ai only', on.headers.get('Access-Control-Allow-Origin') === 'https://timerich.ai');
+  const elsewhere = await read({ code: 'buyer-code1' }, { origin: 'https://evil.example' });
+  check('another origin gets no CORS allow header', elsewhere.headers.get('Access-Control-Allow-Origin') === null);
+
+  seed();
+  mem.enabled = true;
+  mem.signFails = true;
+  const unsigned = await read({ code: 'buyer-code1' });
+  const unsignedProfiles = (await unsigned.json()).profiles;
+  check('if signing fails the page still loads, with initials', unsigned.status === 200 && unsignedProfiles.every((p) => p.photo_url === null));
+
+  // Every refusal is the same 403, byte for byte.
+  seed();
+  mem.enabled = false;
+  const refusals = [
+    await read({ code: 'buyer-code1' }),                                  // switched off
+    await read({ code: 'WRONG-CODE0' }),                                  // unknown code
+    await read({ code: '' }),                                             // empty code
+    await read({}),                                                       // no code
+    await read(null, { raw: '{not json' }),                               // bad JSON
+    await read({ code: 'buyer-code1' }, { env: { ...memEnv, SUPABASE_URL: '' } }), // not configured
+  ];
+  const refusalBodies = await Promise.all(refusals.map((r) => r.text()));
+  check('every refusal is a 403', refusals.every((r) => r.status === 403), refusals.map((r) => r.status));
+  check('and every 403 body is byte-identical', refusalBodies.every((b) => b === refusalBodies[0]), refusalBodies);
+
+  seed();
+  mem.enabled = true;
+  mem.supabaseUp = false;
+  const down = await read({ code: 'buyer-code1' });
+  check('a Supabase outage is the same 403, never a stack or detail', down.status === 403 && (await down.text()) === refusalBodies[0]);
+
+  const preflight = await worker.fetch(new Request('https://w.dev/portal-directory', {
+    method: 'OPTIONS', headers: { Origin: 'https://timerich.ai' },
+  }), memEnv);
+  check('the browser preflight is answered for timerich.ai',
+    preflight.status === 204 && preflight.headers.get('Access-Control-Allow-Origin') === 'https://timerich.ai');
+}
+
+globalThis.fetch = baseFetch;
 
 console.log('\n' + pass + ' passed, ' + fail + ' failed');
 process.exit(fail ? 1 : 0);
