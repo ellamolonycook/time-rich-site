@@ -25,35 +25,8 @@
        The forms plugin is left off here, unlike the other portal pages: this
        is the only page with a .trp-input, and the plugin's [type='text']
        rules would override its radius, padding and colours. -->
-  <script src="https://cdn.tailwindcss.com?plugins=container-queries"></script>
-  <script>
-    tailwind.config = {
-      theme: {
-        extend: {
-          colors: {
-            brand: {
-              cream: '#FFFCEB',
-              offwhite: '#FFFDFB',
-              sage: '#DCDEBF',
-              sagelt: '#E9EAD5',
-              green: '#424B36',
-              deep: '#333A28',
-              mid: '#4E5840',
-              lime: '#CCEEA0',
-              olive: '#67762E'
-            }
-          },
-          fontFamily: {
-            sans: ['"Inter"', 'sans-serif'],
-            display: ['"Space Grotesk"', 'sans-serif'],
-            serif: ['"Newsreader"', 'serif'],
-            mono: ['"JetBrains Mono"', 'monospace'],
-          }
-        }
-      }
-    }
-  </script>
 
+  <link rel="stylesheet" href="portal.css"/>
   <link rel="preconnect" href="https://fonts.googleapis.com"/>
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin=""/>
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Plus+Jakarta+Sans:wght@300;400;500;600;700&family=JetBrains+Mono:wght@300;400;500&display=swap"/>
@@ -264,7 +237,7 @@
     // decoration; the navigation is the job, so every path below ends in a
     // navigation even when the animation never runs or is cut short.
     (function () {
-      var FADE_MS = 280;
+      var FADE_MS = 150;
 
       var reduced = false;
       try {
@@ -323,10 +296,9 @@
             }
 
             setTimeout(go, FADE_MS);
-            // Last resort. transitionend never fires in a backgrounded tab and
-            // timers there are throttled, so this guarantees a click can never
-            // end on a page left sitting faded out.
-            setTimeout(go, FADE_MS + 1200);
+            // A short backstop: transitionend does not fire in a backgrounded
+            // tab, and a click must never end on a page left faded out.
+            setTimeout(go, FADE_MS + 250);
           });
         });
       });

@@ -161,6 +161,113 @@
     return a;
   }
 
+
+  /* ---- add to calendar ------------------------------------------------ */
+
+  // Google and Outlook both want UTC stamps, which is also the only way to be
+  // unambiguous: a session announced as 12pm ET is 16:00Z in October and 17:00Z
+  // once the clocks go back, and both links carry the right instant either way.
+  function utcStamp(d) {
+    return d.toISOString().replace(/[-:]/g, '').replace(/\.\d{3}/, '');
+  }
+
+  function sessionWindow(session) {
+    var start = toDate(session && session.starts_at);
+    if (!start) return null;
+    return { start: start, end: new Date(start.getTime() + SESSION_MINUTES * 60000) };
+  }
+
+  function calendarDetails(session) {
+    var join = safeUrl(session && session.join_url);
+    return join ? 'Join: ' + join.href : '';
+  }
+
+  function googleCalendarUrl(session) {
+    var w = sessionWindow(session);
+    if (!w) return '';
+    var q = 'action=TEMPLATE' +
+            '&text=' + encodeURIComponent(str(session.title) || 'Time Rich session') +
+            '&dates=' + utcStamp(w.start) + '/' + utcStamp(w.end);
+    var details = calendarDetails(session);
+    if (details) q += '&details=' + encodeURIComponent(details);
+    return 'https://calendar.google.com/calendar/render?' + q;
+  }
+
+  function outlookCalendarUrl(session) {
+    var w = sessionWindow(session);
+    if (!w) return '';
+    var q = 'path=' + encodeURIComponent('/calendar/action/compose') +
+            '&rru=addevent' +
+            '&subject=' + encodeURIComponent(str(session.title) || 'Time Rich session') +
+            '&startdt=' + encodeURIComponent(w.start.toISOString()) +
+            '&enddt=' + encodeURIComponent(w.end.toISOString());
+    var details = calendarDetails(session);
+    if (details) q += '&body=' + encodeURIComponent(details);
+    return 'https://outlook.live.com/calendar/0/deeplink/compose?' + q;
+  }
+
+  // A small menu: Google, Outlook, and the .ics for Apple and everything else.
+  // Built with createElement, keyboard reachable, and Esc closes it.
+  function calendarMenu(session, triggerClass, itemClass) {
+    var wrap = el('div', 'relative inline-flex');
+
+    var trigger = el('button', triggerClass, 'Add to Calendar');
+    trigger.type = 'button';
+    trigger.setAttribute('aria-haspopup', 'true');
+    trigger.setAttribute('aria-expanded', 'false');
+
+    var menu = el('div',
+      'absolute right-0 bottom-full mb-2 z-50 min-w-[11rem] rounded-xl border border-brand-green/15 ' +
+      'bg-white shadow-lg p-1 flex flex-col');
+    menu.setAttribute('role', 'menu');
+    menu.hidden = true;
+
+    function close(focusBack) {
+      menu.hidden = true;
+      trigger.setAttribute('aria-expanded', 'false');
+      if (focusBack) trigger.focus();
+    }
+    function open() {
+      menu.hidden = false;
+      trigger.setAttribute('aria-expanded', 'true');
+      var first = menu.querySelector('a');
+      if (first) first.focus();
+    }
+
+    function addLink(href, text, download) {
+      if (!href) return;
+      var a = el('a', itemClass, text);
+      a.href = href;
+      a.setAttribute('role', 'menuitem');
+      if (download) a.setAttribute('download', download);
+      else { a.target = '_blank'; a.rel = 'noopener noreferrer'; }
+      a.addEventListener('click', function () { close(false); });
+      menu.appendChild(a);
+    }
+
+    addLink(googleCalendarUrl(session), 'Google Calendar');
+    addLink(outlookCalendarUrl(session), 'Outlook');
+    var ics = icsBlobUrl(session);
+    if (ics) addLink(ics, 'Apple or other', (str(session.title) || 'session').replace(/[^\w -]+/g, '') + '.ics');
+
+    if (!menu.childNodes.length) return null;      // no date, so no menu
+
+    trigger.addEventListener('click', function () {
+      if (menu.hidden) open(); else close(false);
+    });
+    wrap.addEventListener('keydown', function (e) {
+      if (e.key === 'Escape' && !menu.hidden) { e.stopPropagation(); close(true); }
+    });
+    // Clicking anywhere else puts it away.
+    document.addEventListener('click', function (e) {
+      if (!menu.hidden && !wrap.contains(e.target)) close(false);
+    });
+
+    wrap.appendChild(trigger);
+    wrap.appendChild(menu);
+    return wrap;
+  }
+
   /* ---- payload -------------------------------------------------------- */
 
   function weeks(data) {
@@ -431,19 +538,40 @@
     };
   }
 
-  var DONE_ON = 'inline-flex items-center px-3 py-1.5 rounded-full text-[11px] font-bold ' +
-                'bg-brand-deep text-white';
-  var DONE_OFF = 'inline-flex items-center px-3 py-1.5 rounded-full text-[11px] font-semibold ' +
-                 'bg-brand-sagelt/60 text-brand-deep hover:bg-brand-sagelt transition-colors';
+  // Compact and fixed width, so a long item title wraps and the button never
+  // does. shrink-0 keeps it off the wrap line in a flex row.
+  var DONE_BASE = 'inline-flex items-center justify-center gap-1.5 shrink-0 whitespace-nowrap ' +
+                  'min-w-[6.5rem] px-3 py-1.5 rounded-full text-[11px] transition-colors';
+  var DONE_ON = DONE_BASE + ' font-bold bg-brand-deep text-white hover:bg-brand-green';
+  var DONE_OFF = DONE_BASE + ' font-semibold bg-brand-sagelt/60 text-brand-deep hover:bg-brand-sagelt';
+
+  // A small tick, drawn as nodes so nothing is parsed as markup.
+  function tickIcon() {
+    var svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+    svg.setAttribute('class', 'w-3 h-3 shrink-0');
+    svg.setAttribute('viewBox', '0 0 24 24');
+    svg.setAttribute('fill', 'none');
+    svg.setAttribute('stroke', 'currentColor');
+    svg.setAttribute('stroke-width', '3');
+    var path = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+    path.setAttribute('stroke-linecap', 'round');
+    path.setAttribute('stroke-linejoin', 'round');
+    path.setAttribute('d', 'M5 13l4 4L19 7');
+    svg.appendChild(path);
+    return svg;
+  }
 
   // A button whose label follows isDone(). apply() writes the checklist.
   // btn.refresh() repaints after something else marks the same row.
   function doneToggle(isDone, apply) {
-    var btn = el('button', DONE_OFF, 'Mark done');
+    var btn = el('button', DONE_OFF);
     btn.type = 'button';
+    var label = el('span', '', 'Mark done');
+    btn.appendChild(tickIcon());
+    btn.appendChild(label);
     function paint() {
       var on = Boolean(isDone());
-      btn.textContent = on ? 'Done' : 'Mark done';
+      label.textContent = on ? 'Done' : 'Mark done';
       btn.className = on ? DONE_ON : DONE_OFF;
       btn.setAttribute('aria-pressed', on ? 'true' : 'false');
     }
@@ -502,6 +630,9 @@
     etDateTime: etDateTime,
     icsBlobUrl: icsBlobUrl,
     calendarLink: calendarLink,
+    calendarMenu: calendarMenu,
+    googleCalendarUrl: googleCalendarUrl,
+    outlookCalendarUrl: outlookCalendarUrl,
     weeks: weeks,
     sessions: sessions,
     items: items,

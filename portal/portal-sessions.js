@@ -105,7 +105,8 @@
       box.appendChild(disabledButton('Join via Zoom', BTN_JOIN_OFF));
     }
 
-    var cal = L.calendarLink(session, 'Add to Calendar', BTN_SOFT);
+    var cal = L.calendarMenu(session, BTN_SOFT,
+      'px-3 py-2 rounded-lg text-xs text-left text-brand-deep hover:bg-brand-sagelt/50 transition-colors');
     if (cal) box.appendChild(cal);
     else box.appendChild(disabledButton('Add to Calendar', BTN_SOFT_OFF));
 
@@ -198,6 +199,21 @@
     return wrap;
   }
 
+  var ALL_SESSIONS_URL = 'https://cal.ae/z0j4nlqbgt6b';
+
+  // One link that takes the whole cohort schedule, rather than nine separate adds.
+  function addAllLine(count) {
+    var line = L.el('p', 'mt-8 text-sm text-brand-mid');
+    var a = L.el('a',
+      'underline underline-offset-4 hover:text-brand-deep transition-colors',
+      'Add all ' + count + ' sessions to your calendar');
+    a.href = ALL_SESSIONS_URL;
+    a.target = '_blank';
+    a.rel = 'noopener noreferrer';
+    line.appendChild(a);
+    return line;
+  }
+
   function render(listEl, data) {
     var sessions = L.sessions(data);
     if (!listEl || !sessions.length) return;
@@ -214,6 +230,8 @@
         L.isSessionUnlocked(session, now)
       ));
     });
+
+    listEl.appendChild(addAllLine(sessions.length));
   }
 
   document.addEventListener('trportal:data', function (event) {
