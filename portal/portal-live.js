@@ -206,6 +206,47 @@
     return null;
   }
 
+  // YYYY-MM-DD in a given IANA zone (or the browser's local zone when omitted).
+  // Used to decide "has this session's calendar day started for this member?".
+  function dateKey(isoOrDate, timeZone) {
+    var d = isoOrDate instanceof Date ? isoOrDate : toDate(isoOrDate);
+    if (!d) return '';
+    try {
+      var opts = { year: 'numeric', month: '2-digit', day: '2-digit' };
+      if (timeZone) opts.timeZone = timeZone;
+      var parts = new Intl.DateTimeFormat('en-CA', opts).formatToParts(d);
+      var y = '', m = '', day = '';
+      for (var i = 0; i < parts.length; i++) {
+        if (parts[i].type === 'year') y = parts[i].value;
+        else if (parts[i].type === 'month') m = parts[i].value;
+        else if (parts[i].type === 'day') day = parts[i].value;
+      }
+      return y && m && day ? y + '-' + m + '-' + day : '';
+    } catch (e) {
+      return '';
+    }
+  }
+
+  // A session unlocks once the Eastern calendar day of starts_at has begun.
+  // The cohort is scheduled in ET, so every member unlocks at the same
+  // absolute moment (midnight America/New_York), not at their local midnight.
+  // starts_at is timestamptz; dateKey in TZ avoids UTC-day drift.
+  function isSessionUnlocked(session, now) {
+    var at = now || new Date();
+    var start = toDate(session && session.starts_at);
+    if (!start) return false;
+    var todayEt = dateKey(at, TZ);
+    var dayEt = dateKey(start, TZ);
+    return Boolean(todayEt && dayEt && todayEt >= dayEt);
+  }
+
+  function isSessionPast(session, now) {
+    var at = now || new Date();
+    var start = toDate(session && session.starts_at);
+    if (!start) return false;
+    return start.getTime() + SESSION_MINUTES * 60000 <= at.getTime();
+  }
+
   // The most recent past session that actually has a recording.
   function latestRecording(data, now) {
     var at = now || new Date();
@@ -257,6 +298,9 @@
     items: items,
     latestUnlockedWeek: latestUnlockedWeek,
     nextSession: nextSession,
+    dateKey: dateKey,
+    isSessionUnlocked: isSessionUnlocked,
+    isSessionPast: isSessionPast,
     latestRecording: latestRecording,
     sessionsForWeek: sessionsForWeek,
     findLinkItem: findLinkItem,
