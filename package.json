@@ -6,6 +6,6 @@
     "build:css": "tailwindcss -i ./portal/portal-tailwind-src.css -o ./portal/portal.css --minify"
   },
   "devDependencies": {
-    "tailwindcss": "^3.4.17"
+    "tailwindcss": "^4.3.3"
   }
 }
