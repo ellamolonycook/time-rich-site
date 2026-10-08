@@ -21,12 +21,18 @@ module.exports = {
     './portal/portal-sessions.js',
     './portal/portal-progress.js',
     './portal/portal-config.js',
+    './portal/portal-chrome.js',
   ],
   theme: {
     extend: {
       // Lifted verbatim from the old inline tailwind.config block.
       colors: {
         brand: {
+          // From the brand page: the deep green, and the page colour the
+          // portal chrome sits on. The older tokens below stay as they were,
+          // so only the header, footer and sign-in move to these.
+          ink: '#2C3422',
+          page: '#FFFDFA',
           cream: '#FFFCEB',
           offwhite: '#FFFDFB',
           sage: '#DCDEBF',
