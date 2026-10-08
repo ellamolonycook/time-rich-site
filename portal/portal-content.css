@@ -10,6 +10,11 @@
  * on the class names.
  * ===================================================================== */
 
+/* The "Members" nav link stays hidden until portal-access.js reveals it.
+   Needed because Tailwind's .flex on the phone-menu link would otherwise
+   beat the browser's own [hidden] rule. */
+[data-portal-members-link][hidden] { display: none !important; }
+
 :root {
   --trp-cream:    #FFFCEB;
   --trp-offwhite: #FFFDFB;
