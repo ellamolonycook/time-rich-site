@@ -1,8 +1,8 @@
 /* =====================================================================
- * Time Rich portal - dashboard program and personal progress.
+ * Time Rich portal - dashboard programme and personal progress.
  *
  * Listens for `trportal:data` and fills [data-portal-progress].
- * Program is the cohort schedule. You is this passcode's local checklist.
+ * Programme is the cohort schedule. You is this passcode's local checklist.
  * ===================================================================== */
 (function (window, document) {
   'use strict';
@@ -47,7 +47,7 @@
 
     var card = L.el('div', 'glass-card rounded-[1.75rem] p-8 flex flex-col gap-8');
     card.appendChild(meter(
-      'Program',
+      'Programme',
       program.percent,
       'Curriculum · ' + program.weeksDone + ' of ' + program.weeksTotal + ' weeks' +
         '  ·  Live sessions · ' + program.sessionsDone + ' of ' + program.sessionsTotal

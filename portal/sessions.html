@@ -473,6 +473,7 @@
   <script src="portal-config.js" defer></script>
   <script src="portal-access.js" defer></script>
   <script src="portal-live.js"></script>
+  <script src="portal-sessions.js" defer></script>
 </head>
 
 
@@ -516,6 +517,10 @@
           <svg class="w-4 h-4 text-brand-mid" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"></path></svg>
           Resources
         </a>
+        <a href="members.html" data-portal-members-link hidden class="flex items-center gap-3 px-4 py-2 text-xs font-medium text-brand-deep nav-item border border-transparent rounded-[14px] transition-all duration-300">
+          <svg class="w-4 h-4 text-brand-mid" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"></path></svg>
+          Members
+        </a>
       </nav>
       <div class="mt-8 border-t border-white/20 pt-8 space-y-2">
         
@@ -556,6 +561,7 @@
         <a href="curriculum.html" class="px-3 py-1.5 rounded-full text-xs font-medium text-brand-mid hover:text-brand-deep transition-colors">Curriculum</a>
         <a href="sessions.html" class="px-3 py-1.5 rounded-full text-xs font-semibold text-brand-deep nav-active border border-white/40">Live Sessions</a>
         <a href="resources.html" class="px-3 py-1.5 rounded-full text-xs font-medium text-brand-mid hover:text-brand-deep transition-colors">Resources</a>
+        <a href="members.html" data-portal-members-link hidden class="px-3 py-1.5 rounded-full text-xs font-medium text-brand-mid hover:text-brand-deep transition-colors">Members</a>
     </nav>
 
     <!-- Right Actions -->
@@ -1156,159 +1162,111 @@
       });
     })();
   </script>
-
-
+  <!-- === GLOBAL SEARCH LOGIC === -->
   <script>
-    /* Live sessions, drawn from portal_get into this page's own markup.
-       The nine rows in the HTML above are the pre-data view; as soon as the
-       payload arrives they are replaced with the same design, wired up.
+    document.addEventListener('DOMContentLoaded', () => {
+      const searchInputs = document.querySelectorAll('input[placeholder="Search courses..."]');
+      if (searchInputs.length === 0) return;
+      
+      const searchIndex = [
+        { title: "Dashboard", url: "dashboard.html", desc: "Your progress and overview", keywords: "home start overview progress" },
+        { title: "Curriculum", url: "curriculum.html", desc: "All weeks and modules", keywords: "modules weeks course lessons" },
+        { title: "Resources", url: "resources.html", desc: "AI Prompts & Tools", keywords: "prompts tools library downloads assets" },
+        { title: "Live Sessions", url: "sessions.html", desc: "Upcoming calls and recordings", keywords: "zoom recordings calls events calendar" },
+        { title: "Week 1: Open Business Surgery", url: "lesson.html", desc: "Training Your Agent", keywords: "week 1 monday training your agent" },
+        { title: "Week 2: Your AI Operating System", url: "lesson.html", desc: "Expert Q&A", keywords: "week 2 expert q&a" },
+        { title: "Week 3: The AI Content Machine", url: "lesson.html", desc: "Storytelling for GTM", keywords: "week 3 storytelling for gtm" },
+        { title: "Week 4: Unfair AI Advantage", url: "lesson.html", desc: "Taylor Offer, last call", keywords: "week 4 taylor offer" }
+      ];
 
-       Built with createElement and textContent throughout. Nothing from the
-       API reaches innerHTML, which is the rule portal-access.js sets out. */
-    (function () {
-      var L = window.TRLive;
-      if (!L) return;
+      searchInputs.forEach(searchInput => {
+        // Create results container if it doesn't exist next to this input
+        const wrapper = searchInput.parentElement;
+        wrapper.style.position = 'relative'; // Ensure relative parent
+        
+        const resultsBox = document.createElement('div');
+        resultsBox.className = "absolute top-full right-0 sm:right-auto sm:left-0 mt-4 w-[280px] sm:w-[320px] premium-dropdown rounded-[1.2rem] p-2 flex flex-col gap-1 opacity-0 pointer-events-none translate-y-[-10px] transition-all duration-300 ease-out z-[9999] max-h-[60vh] overflow-y-auto hidden";
+        wrapper.appendChild(resultsBox);
 
-      var CAL_URL = 'https://cal.ae/z0j4nlqbgt6b';
+        // Keep dropdown open when clicking inside it
+        resultsBox.addEventListener('mousedown', (e) => {
+          e.preventDefault(); // Prevents input from losing focus
+        });
 
-      var NEXT_ROW = 'relative group flex flex-col md:flex-row items-start md:items-center justify-between gap-6 ' +
-                     'p-6 lg:p-8 rounded-[1.5rem] glass-card border border-brand-deep/30 ' +
-                     'shadow-[0_32px_64px_-16px_rgba(90,105,75,0.3)] md:-translate-y-1 transition-all z-10 ring-4 ring-brand-deep/5';
-      var ROW      = 'group flex flex-col md:flex-row items-start md:items-center justify-between gap-6 ' +
-                     'p-6 lg:p-8 rounded-[1.5rem] glass-card transition-all opacity-80 hover:opacity-100';
-      var BTN_JOIN = 'w-full md:w-auto px-6 py-3 bg-brand-deep text-white text-xs font-bold rounded-xl shadow-md ' +
-                     'hover:bg-brand-green transition-colors flex items-center justify-center gap-2';
-      var BTN_SOFT = 'w-full md:w-auto px-4 py-3 bg-brand-sagelt/60 text-brand-deep text-xs font-semibold rounded-xl ' +
-                     'hover:bg-brand-sagelt transition-colors flex items-center justify-center gap-2';
+        const performSearch = (query) => {
+          while (resultsBox.firstChild) resultsBox.removeChild(resultsBox.firstChild);
+          query = query.toLowerCase().trim();
+          
+          if (!query) {
+            resultsBox.classList.add('opacity-0', 'pointer-events-none', 'translate-y-[-10px]');
+            resultsBox.classList.add('hidden');
+            return;
+          }
 
-      var CAMERA_D = 'M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 ' +
-                     '00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z';
+          resultsBox.classList.remove('hidden');
+          // Trigger reflow for animation
+          void resultsBox.offsetWidth;
+          resultsBox.classList.remove('opacity-0', 'pointer-events-none', 'translate-y-[-10px]');
+          
+          const results = searchIndex.filter(item => 
+            item.title.toLowerCase().includes(query) || 
+            item.keywords.includes(query) || 
+            item.desc.toLowerCase().includes(query)
+          );
 
-      // Built node by node so the file has no innerHTML at all. The path data
-      // is a constant written here in the source, never anything from the API.
-      function cameraIcon() {
-        var svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
-        svg.setAttribute('class', 'w-5 h-5');
-        svg.setAttribute('fill', 'none');
-        svg.setAttribute('stroke', 'currentColor');
-        svg.setAttribute('stroke-width', '1.5');
-        svg.setAttribute('viewBox', '0 0 24 24');
-        var path = document.createElementNS('http://www.w3.org/2000/svg', 'path');
-        path.setAttribute('stroke-linecap', 'round');
-        path.setAttribute('stroke-linejoin', 'round');
-        path.setAttribute('d', CAMERA_D);
-        svg.appendChild(path);
-        return svg;
-      }
+          if (results.length === 0) {
+            const noResults = document.createElement('div');
+            noResults.className = 'px-4 py-3 text-xs text-brand-mid italic';
+            noResults.textContent = `No results found for "${query}"`;
+            resultsBox.appendChild(noResults);
+            return;
+          }
 
-      function dot(className) {
-        return L.el('span', className);
-      }
+          results.forEach(item => {
+            const a = document.createElement('a');
+            a.href = item.url;
+            a.className = "flex flex-col px-4 py-2.5 rounded-xl hover:bg-black/5 transition-colors group";
+            // Built as nodes, not markup, so no value is ever reinterpreted as HTML.
+            const sTitle = document.createElement('span');
+            sTitle.className = "text-xs font-bold text-brand-deep group-hover:text-[#4d8a1e] transition-colors";
+            sTitle.textContent = item.title;
+            const sDesc = document.createElement('span');
+            sDesc.className = "text-[10px] text-brand-mid mt-0.5";
+            sDesc.textContent = item.desc;
+            a.appendChild(sTitle);
+            a.appendChild(sDesc);
+            // Add smooth exit on click
+            a.addEventListener('click', (e) => {
+              if (item.url !== '#') {
+                e.preventDefault();
+                document.body.style.opacity = '0';
+                document.body.style.transform = 'scale(0.98)';
+                setTimeout(() => { window.location.href = item.url; }, window.innerWidth < 768 ? 120 : 280);
+              }
+            });
+            resultsBox.appendChild(a);
+          });
+        };
 
-      function actions(session) {
-        var box = L.el('div', 'w-full md:w-auto flex flex-col lg:flex-row gap-3 shrink-0');
+        searchInput.addEventListener('input', (e) => performSearch(e.target.value));
+        
+        searchInput.addEventListener('focus', (e) => {
+          if (e.target.value.trim()) performSearch(e.target.value);
+        });
 
-        var done = L.doneToggle(
-          function () { return L.isSessionMarked(session); },
-          function () { L.toggleSession(session); }
-        );
-        box.appendChild(done);
-
-        function remember() {
-          L.markSession(session);
-          if (done.refresh) done.refresh();
-        }
-
-        var join = L.linkTo(session.join_url, 'Join via Zoom', BTN_JOIN);
-        if (join) {
-          join.addEventListener('click', remember);
-          box.appendChild(join);
-        }
-
-        var rec = L.linkTo(session.recording_url, 'Watch recording', BTN_SOFT);
-        if (rec) {
-          rec.addEventListener('click', remember);
-          box.appendChild(rec);
-        }
-
-        var cal = L.linkTo(CAL_URL, 'Add to Calendar', BTN_SOFT);
-        if (cal) box.appendChild(cal);
-
-        return box;
-      }
-
-      function row(session, index, isNext) {
-        var wrap = L.el('div', isNext ? NEXT_ROW : ROW);
-
-        var left = L.el('div', isNext
-          ? 'flex items-start gap-4 sm:gap-6 lg:gap-8 min-w-0'
-          : 'flex items-start gap-4 sm:gap-6 lg:gap-8 min-w-0 opacity-75 group-hover:opacity-100 transition-opacity');
-
-        var badge = L.el('div', isNext
-          ? 'hidden sm:flex w-12 h-12 shrink-0 rounded-full bg-brand-deep text-white items-center justify-center shadow-md'
-          : 'hidden sm:flex w-12 h-12 shrink-0 rounded-full border border-brand-green/15 text-brand-mid/50 items-center justify-center');
-        if (isNext) badge.appendChild(cameraIcon());
-        else badge.appendChild(L.el('span', 'text-xs font-bold', String(index + 1)));
-        left.appendChild(badge);
-
-        var body = L.el('div', 'space-y-2 min-w-0');
-
-        var eyebrowRow = L.el('div', isNext ? 'flex flex-wrap items-center gap-3' : 'flex items-center gap-3');
-        eyebrowRow.appendChild(L.el('span',
-          isNext
-            ? 'text-[10px] font-mono tracking-[0.2em] uppercase text-brand-deep/60 font-bold'
-            : 'text-[10px] font-mono tracking-[0.2em] uppercase text-brand-deep/40 font-bold',
-          'Session ' + (index + 1)));
-
-        var chip = L.el('div', isNext
-          ? 'bg-brand-deep/5 text-brand-deep text-[10px] font-bold px-2 py-0.5 rounded uppercase tracking-wider flex items-center gap-1.5 border border-brand-deep/10'
-          : 'bg-brand-deep/5 text-brand-mid/80 text-[9px] font-bold px-2 py-0.5 rounded uppercase tracking-[0.1em] flex items-center gap-1.5 border border-brand-deep/5');
-        if (isNext) {
-          var ping = L.el('span', 'relative flex h-1.5 w-1.5');
-          ping.appendChild(dot('animate-ping absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-75'));
-          ping.appendChild(dot('relative inline-flex rounded-full h-1.5 w-1.5 bg-green-500 shadow-[0_0_8px_rgba(34,197,94,0.8)]'));
-          chip.appendChild(ping);
-          chip.appendChild(document.createTextNode('Up Next'));
-        } else {
-          chip.appendChild(dot('w-1.5 h-1.5 rounded-full bg-orange-400 shadow-[0_0_6px_rgba(251,146,60,0.6)]'));
-          chip.appendChild(document.createTextNode('Upcoming'));
-        }
-        eyebrowRow.appendChild(chip);
-        body.appendChild(eyebrowRow);
-
-        body.appendChild(L.el('h3',
-          isNext ? 'text-lg sm:text-xl font-bold text-brand-deep' : 'text-lg font-bold text-brand-deep/80',
-          L.str(session.title) || 'Session'));
-
-        var when = L.etDateTime(session.starts_at);
-        if (when) {
-          body.appendChild(L.el('p',
-            isNext ? 'text-sm text-brand-mid font-medium' : 'text-sm text-brand-mid/80', when));
-        }
-
-        left.appendChild(body);
-        wrap.appendChild(left);
-
-        var act = actions(session);
-        if (act) wrap.appendChild(act);
-        return wrap;
-      }
-
-      document.addEventListener('trportal:data', function (event) {
-        var list = document.getElementById('trSessionList');
-        var data = event && event.detail;
-        var sessions = L.sessions(data);
-        if (!list || !sessions.length) return;   // keep the static rows
-
-        var next = L.nextSession(data);
-
-        L.clear(list);
-        sessions.forEach(function (session, i) {
-          list.appendChild(row(session, i, next != null && session === next));
+        searchInput.addEventListener('blur', () => {
+          resultsBox.classList.add('opacity-0', 'pointer-events-none', 'translate-y-[-10px]');
+          setTimeout(() => {
+            if(resultsBox.classList.contains('opacity-0')) {
+                resultsBox.classList.add('hidden');
+            }
+          }, 300);
         });
       });
-    })();
+    });
   </script>
+
+
 </body>
 </html>
 
