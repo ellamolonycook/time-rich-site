@@ -20,6 +20,9 @@ time-rich-context.md
 
 # Wrangler local cache/state — machine-specific, never belongs in the repo.
 worker/.wrangler/
+# Local Worker secrets (including Supabase, Resend and admin tokens).
+worker/.dev.vars
+worker/.dev.vars.*
 
 # Node dependencies for scripts/tests — installed locally, never published.
 node_modules/
