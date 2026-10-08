@@ -16,37 +16,10 @@
   </script>
 
   <title>Time Rich. — AI Education Portal</title>
-  <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+  <link rel="stylesheet" href="portal.css"/>
   <link rel="preconnect" href="https://fonts.googleapis.com"/>
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin=""/>
   <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Newsreader:ital,opsz,wght@0,6..72,300;0,6..72,400;0,6..72,500;1,6..72,400&family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet"/>
-  <script>
-    tailwind.config = {
-      theme: {
-        extend: {
-          colors: {
-            brand: {
-              cream: '#FFFCEB',
-              offwhite: '#FFFDFB',
-              sage: '#DCDEBF',
-              sagelt: '#E9EAD5',
-              green: '#424B36',
-              deep: '#333A28',
-              mid: '#4E5840',
-              lime: '#CCEEA0',
-              olive: '#67762E'
-            }
-          },
-          fontFamily: {
-            sans: ['"Inter"', 'sans-serif'],
-            display: ['"Space Grotesk"', 'sans-serif'],
-            serif: ['"Newsreader"', 'serif'],
-            mono: ['"JetBrains Mono"', 'monospace'],
-          }
-        }
-      }
-    }
-  </script>
   <style>
     .custom-scroll::-webkit-scrollbar { width: 4px; }
     .custom-scroll::-webkit-scrollbar-track { background: transparent; }
@@ -478,19 +451,7 @@
 
 
 
-<body class="text-brand-deep font-sans h-screen flex flex-col overflow-hidden selection:bg-brand-lime selection:text-brand-deep opacity-0" style="transform: scale(1.03); transition: opacity 1.2s cubic-bezier(0.4, 0, 0.2, 1), transform 1.5s cubic-bezier(0.16, 1, 0.3, 1); will-change: opacity, transform;">
-<script>
-  // Trigger cinematic reveal on load
-  document.addEventListener("DOMContentLoaded", () => {
-    requestAnimationFrame(() => {
-      requestAnimationFrame(() => {
-        document.body.classList.remove('opacity-0');
-        document.body.classList.add('opacity-100');
-        document.body.style.transform = 'scale(1)';
-      });
-    });
-  });
-</script>
+<body class="text-brand-deep font-sans min-h-screen flex flex-col selection:bg-brand-lime selection:text-brand-deep">
 
   <!-- Noise Texture Overlay -->
   <div class="noise-overlay"></div>
@@ -567,10 +528,6 @@
     <!-- Right Actions -->
     <div class="flex items-center gap-3 sm:gap-6">
       <button type="button" data-portal-signout class="hidden lg:inline-flex px-3 py-1.5 rounded-full text-xs font-medium text-brand-mid hover:text-brand-deep transition-colors">Sign out</button>
-      <div class="relative flex items-center group">
-        <input type="text" placeholder="Search courses..." class="w-8 focus:w-[110px] sm:focus:w-48 lg:focus:w-64 bg-transparent focus:bg-transparent text-xs text-brand-deep placeholder-transparent focus:placeholder-brand-mid/60 border-0 border-b border-transparent focus:border-brand-deep/30 ring-0 focus:ring-0 pl-6 pr-4 py-2 cursor-pointer focus:cursor-text transition-all duration-300 ease-out outline-none" />
-        <svg class="w-4 h-4 text-brand-mid/80 absolute left-0 pointer-events-none group-focus-within:text-brand-deep transition-colors" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
-      </div>
       <div class="relative">
           <button id="notif-btn" class="text-brand-mid hover:text-brand-deep transition-all relative p-2 -mr-2 rounded-full hover:bg-white/10 hover:backdrop-blur-md">
             <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"></path></svg>
@@ -611,7 +568,7 @@
   </header>
 
   <!-- MAIN APP AREA -->
-  <div class="flex-1 flex overflow-hidden">
+  <div class="flex-1 flex">
     
     <!-- LEFT SIDEBAR -->
     
@@ -720,7 +677,7 @@
     </aside>
 
     <!-- CENTER SCROLLABLE CONTENT -->
-    <main class="flex-1 overflow-y-auto custom-scroll relative bg-transparent main-grid">
+    <main class="flex-1 relative bg-transparent main-grid">
 
       <div class="relative z-10 px-6 sm:px-8 py-8 lg:py-12 max-w-[1200px] mx-auto transition-all duration-500 ease-[cubic-bezier(0.16,1,0.3,1)]">
         
@@ -984,7 +941,7 @@
     // decoration; the navigation is the job, so every path below ends in a
     // navigation even when the animation never runs or is cut short.
     (function () {
-      var FADE_MS = 280;
+      var FADE_MS = 150;
 
       var reduced = false;
       try {
@@ -1043,10 +1000,9 @@
             }
 
             setTimeout(go, FADE_MS);
-            // Last resort. transitionend never fires in a backgrounded tab and
-            // timers there are throttled, so this guarantees a click can never
-            // end on a page left sitting faded out.
-            setTimeout(go, FADE_MS + 1200);
+            // A short backstop: transitionend does not fire in a backgrounded
+            // tab, and a click must never end on a page left faded out.
+            setTimeout(go, FADE_MS + 250);
           });
         });
       });
@@ -1054,109 +1010,6 @@
   </script>
 
 
-  <!-- === GLOBAL SEARCH LOGIC === -->
-  <script>
-    document.addEventListener('DOMContentLoaded', () => {
-      const searchInputs = document.querySelectorAll('input[placeholder="Search courses..."]');
-      if (searchInputs.length === 0) return;
-      
-      const searchIndex = [
-        { title: "Dashboard", url: "dashboard.html", desc: "Your progress and overview", keywords: "home start overview progress" },
-        { title: "Curriculum", url: "curriculum.html", desc: "All weeks and modules", keywords: "modules weeks course lessons" },
-        { title: "Resources", url: "resources.html", desc: "AI Prompts & Tools", keywords: "prompts tools library downloads assets" },
-        { title: "Live Sessions", url: "sessions.html", desc: "Upcoming calls and recordings", keywords: "zoom recordings calls events calendar" },
-        { title: "Week 1: Open Business Surgery", url: "lesson.html", desc: "Training Your Agent", keywords: "week 1 monday training your agent" },
-        { title: "Week 2: Your AI Operating System", url: "lesson.html", desc: "Expert Q&A", keywords: "week 2 expert q&a" },
-        { title: "Week 3: The AI Content Machine", url: "lesson.html", desc: "Storytelling for GTM", keywords: "week 3 storytelling for gtm" },
-        { title: "Week 4: Unfair AI Advantage", url: "lesson.html", desc: "Taylor Offer, last call", keywords: "week 4 taylor offer" }
-      ];
-
-      searchInputs.forEach(searchInput => {
-        // Create results container if it doesn't exist next to this input
-        const wrapper = searchInput.parentElement;
-        wrapper.style.position = 'relative'; // Ensure relative parent
-        
-        const resultsBox = document.createElement('div');
-        resultsBox.className = "absolute top-full right-0 sm:right-auto sm:left-0 mt-4 w-[280px] sm:w-[320px] premium-dropdown rounded-[1.2rem] p-2 flex flex-col gap-1 opacity-0 pointer-events-none translate-y-[-10px] transition-all duration-300 ease-out z-[9999] max-h-[60vh] overflow-y-auto hidden";
-        wrapper.appendChild(resultsBox);
-
-        // Keep dropdown open when clicking inside it
-        resultsBox.addEventListener('mousedown', (e) => {
-          e.preventDefault(); // Prevents input from losing focus
-        });
-
-        const performSearch = (query) => {
-          while (resultsBox.firstChild) resultsBox.removeChild(resultsBox.firstChild);
-          query = query.toLowerCase().trim();
-          
-          if (!query) {
-            resultsBox.classList.add('opacity-0', 'pointer-events-none', 'translate-y-[-10px]');
-            resultsBox.classList.add('hidden');
-            return;
-          }
-
-          resultsBox.classList.remove('hidden');
-          // Trigger reflow for animation
-          void resultsBox.offsetWidth;
-          resultsBox.classList.remove('opacity-0', 'pointer-events-none', 'translate-y-[-10px]');
-          
-          const results = searchIndex.filter(item => 
-            item.title.toLowerCase().includes(query) || 
-            item.keywords.includes(query) || 
-            item.desc.toLowerCase().includes(query)
-          );
-
-          if (results.length === 0) {
-            const noResults = document.createElement('div');
-            noResults.className = "px-4 py-3 text-xs text-brand-mid italic";
-            noResults.textContent = `No results found for "${query}"`;
-            resultsBox.appendChild(noResults);
-            return;
-          }
-
-          results.forEach(item => {
-            const a = document.createElement('a');
-            a.href = item.url;
-            a.className = "flex flex-col px-4 py-2.5 rounded-xl hover:bg-black/5 transition-colors group";
-            // Built as nodes, not markup, so no value is ever reinterpreted as HTML.
-            const sTitle = document.createElement('span');
-            sTitle.className = "text-xs font-bold text-brand-deep group-hover:text-[#4d8a1e] transition-colors";
-            sTitle.textContent = item.title;
-            const sDesc = document.createElement('span');
-            sDesc.className = "text-[10px] text-brand-mid mt-0.5";
-            sDesc.textContent = item.desc;
-            a.appendChild(sTitle);
-            a.appendChild(sDesc);
-            // Add smooth exit on click
-            a.addEventListener('click', (e) => {
-              if (item.url !== '#') {
-                e.preventDefault();
-                document.body.style.opacity = '0';
-                document.body.style.transform = 'scale(0.98)';
-                setTimeout(() => { window.location.href = item.url; }, window.innerWidth < 768 ? 120 : 280);
-              }
-            });
-            resultsBox.appendChild(a);
-          });
-        };
-
-        searchInput.addEventListener('input', (e) => performSearch(e.target.value));
-        
-        searchInput.addEventListener('focus', (e) => {
-          if (e.target.value.trim()) performSearch(e.target.value);
-        });
-
-        searchInput.addEventListener('blur', () => {
-          resultsBox.classList.add('opacity-0', 'pointer-events-none', 'translate-y-[-10px]');
-          setTimeout(() => {
-            if(resultsBox.classList.contains('opacity-0')) {
-                resultsBox.classList.add('hidden');
-            }
-          }, 300);
-        });
-      });
-    });
-  </script>
 
   <script>
     /* Dashboard, drawn from portal_get. Every block hides itself when the
@@ -1187,7 +1040,8 @@
           var actions = L.el('div', 'flex flex-wrap gap-3 mt-auto pt-6');
           var join = L.linkTo(next.join_url, 'Join via Zoom', BTN);
           if (join) actions.appendChild(join);
-          var cal = L.calendarLink(next, 'Add to calendar', BTN2);
+          var cal = L.calendarMenu(next, BTN2,
+            'px-3 py-2 rounded-lg text-xs text-left text-brand-deep hover:bg-brand-sagelt/50 transition-colors');
           if (cal) actions.appendChild(cal);
           if (actions.childNodes.length) root.appendChild(actions);
 

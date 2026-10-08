@@ -56,7 +56,7 @@
   var PLACEHOLDER = 'PASTE_';
 
   var MSG = {
-    bad_code:    "That code didn't work. Check it and try again.",
+    bad_code:    "That code isn't right. Try again.",
     unavailable: "The portal is unavailable right now. Please try again in a few minutes."
   };
 

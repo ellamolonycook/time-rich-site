@@ -377,3 +377,44 @@ html[data-trp-gate]:not([data-tr-portal="in"]) body > *:not(script):not(style) {
 /* The live-data blocks hide themselves with the hidden attribute. Tailwind's
    display utilities would otherwise win, so make hidden mean hidden. */
 [hidden] { display: none !important; }
+
+/* ---- entrance ----------------------------------------------------------
+ * A short opacity fade, driven by CSS so the first paint never waits on a
+ * script. The old version set opacity:0 inline and removed it from a
+ * requestAnimationFrame, which meant a slow script left the page blank:
+ * Lighthouse scored it NO_FCP, "the page did not paint any content".
+ * No transform, so there is nothing to rasterise twice.
+ * --------------------------------------------------------------------- */
+@keyframes trp-fade-in { from { opacity: 0; } to { opacity: 1; } }
+
+body { animation: trp-fade-in 180ms ease-out both; }
+
+@media (prefers-reduced-motion: reduce) {
+  body { animation: none; }
+}
+
+/* Heavy backdrop blur is the most expensive thing on these pages. Cap it on
+   desktop and drop it entirely on phones, where it costs the most and shows
+   the least. */
+.glass-card, .glass3d, .premium-dropdown, .premium-nav {
+  -webkit-backdrop-filter: blur(12px);
+  backdrop-filter: blur(12px);
+}
+
+@media (max-width: 767px) {
+  .glass-card, .glass3d, .premium-dropdown, .premium-nav,
+  .glass3d::before {
+    -webkit-backdrop-filter: none !important;
+    backdrop-filter: none !important;
+  }
+}
+
+/* Tailwind's min-h-screen is 100vh, which on a phone counts the browser bar
+   and pushes the last rows out of reach. dvh tracks the bar as it hides, so
+   the page is exactly as tall as the space actually available. The vh line
+   stays first as the fallback for anything without dvh. */
+.min-h-screen { min-height: 100vh; }
+
+@supports (min-height: 100dvh) {
+  .min-h-screen { min-height: 100dvh; }
+}
