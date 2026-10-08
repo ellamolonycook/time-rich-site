@@ -18,6 +18,16 @@ const MAX_OUTPUT_TOKENS = 600; // keeps replies short + cheap
 
 export default {
   async fetch(request, env, ctx) {
+    const url = new URL(request.url);
+    const path = url.pathname.replace(/\/+$/, "");
+
+    // This is an administrator-only endpoint. It deliberately has no CORS
+    // headers: it is triggered manually with a bearer token, not by a page in
+    // a member's browser.
+    if (path.endsWith("/portal-passcode-emails")) {
+      return handlePortalPasscodeEmails(request, env);
+    }
+
     const cors = corsHeaders(request, env);
 
     // This one route answers its own preflight, because it is locked to a
@@ -31,8 +41,6 @@ export default {
     if (request.method === "OPTIONS") {
       return new Response(null, { status: 204, headers: cors });
     }
-    const url = new URL(request.url);
-    const path = url.pathname.replace(/\/+$/, "");
 
     // ThriveCart pings a webhook URL with HEAD before it accepts the setup.
     if (path.endsWith("/thrivecart-webhook") && request.method === "HEAD") {
@@ -1519,6 +1527,306 @@ function json(obj, status, cors) {
     status,
     headers: { ...cors, "Content-Type": "application/json" },
   });
+}
+
+// ---------------------------------------------------------------------------
+// Portal passcode emails (manual administrator action only)
+// ---------------------------------------------------------------------------
+// The endpoint intentionally does not use the normal CORS response headers.
+// Call it with:
+//   POST /portal-passcode-emails
+//   Authorization: Bearer <PORTAL_PASSCODE_ADMIN_TOKEN>
+//   { "mode": "dry_run" }
+// or, after reviewing the dry run:
+//   { "mode": "send", "confirm": "SEND_PORTAL_PASSCODES" }
+// A real email-format test can be sent only to one or two addresses supplied
+// in the request body that also appear in PORTAL_PASSCODE_TEST_RECIPIENTS:
+//   { "mode": "test_send", "test_recipients": ["team@example.com"],
+//     "confirm": "SEND_PORTAL_PASSCODE_TEST" }
+//
+// Required secrets (put only in worker/.dev.vars locally or Wrangler secrets
+// in production): SUPABASE_URL, SUPABASE_SERVICE_ROLE_KEY, RESEND_API_KEY,
+// PORTAL_PASSCODE_ADMIN_TOKEN, PORTAL_PASSCODE_FROM and
+// PORTAL_PASSCODE_REPLY_TO.
+// Buyer sends are blocked unless Gideon explicitly enables
+// PORTAL_PASSCODE_BUYER_SEND_ENABLED after Ella approves the portal.
+
+const PORTAL_PASSCODE_SEND_CONFIRMATION = "SEND_PORTAL_PASSCODES";
+const PORTAL_PASSCODE_TEST_CONFIRMATION = "SEND_PORTAL_PASSCODE_TEST";
+const PORTAL_ADMIN_HEADERS = { "Cache-Control": "no-store" };
+const PORTAL_RECIPIENT_ROLES = new Set(["buyer", "second_seat"]);
+
+async function handlePortalPasscodeEmails(request, env) {
+  if (request.method !== "POST") {
+    return portalAdminJson({ error: "Method not allowed" }, 405);
+  }
+
+  const authorization = request.headers.get("Authorization") || "";
+  const suppliedToken = authorization.startsWith("Bearer ") ? authorization.slice(7) : "";
+  if (!(await portalSecretsEqual(suppliedToken, env.PORTAL_PASSCODE_ADMIN_TOKEN))) {
+    return portalAdminJson({ error: "Unauthorized" }, 401);
+  }
+
+  let input;
+  try {
+    input = await request.json();
+  } catch {
+    return portalAdminJson({ error: "Invalid JSON" }, 400);
+  }
+
+  const mode = String(input && input.mode || "");
+  if (mode !== "dry_run" && mode !== "send" && mode !== "test_send") {
+    return portalAdminJson({ error: "mode must be dry_run, test_send, or send" }, 400);
+  }
+  if (mode === "send" && input.confirm !== PORTAL_PASSCODE_SEND_CONFIRMATION) {
+    return portalAdminJson({ error: "Send requires the explicit confirmation phrase" }, 400);
+  }
+  if (mode === "test_send" && input.confirm !== PORTAL_PASSCODE_TEST_CONFIRMATION) {
+    return portalAdminJson({ error: "Test send requires the explicit confirmation phrase" }, 400);
+  }
+
+  const missing = portalMissingConfig(env, mode);
+  if (missing.length) {
+    // Configuration names are safe operational diagnostics; never log values.
+    console.error("portal-passcodes: missing configuration", missing.join(", "));
+    return portalAdminJson({ error: "Portal passcode email service is not configured" }, 500);
+  }
+
+  if (mode === "test_send") {
+    const testRecipients = portalTestRecipients(input.test_recipients, env.PORTAL_PASSCODE_TEST_RECIPIENTS);
+    if (!testRecipients) {
+      return portalAdminJson({ error: "test_recipients must contain one or two unique valid email addresses" }, 400);
+    }
+    return sendPortalPasscodeTestEmails(testRecipients, env);
+  }
+
+  // Dry runs are always safe, but a real buyer batch has a separate hard
+  // release gate. This value is intentionally not set by code or requests:
+  // Gideon must set it in the production Worker only after Ella confirms the
+  // portal is finished.
+  if (mode === "send" && env.PORTAL_PASSCODE_BUYER_SEND_ENABLED !== "true") {
+    return portalAdminJson({ error: "Buyer passcode sends are disabled pending portal approval" }, 403);
+  }
+
+  let members;
+  try {
+    members = await fetchEligiblePortalMembers(env);
+  } catch (err) {
+    console.error("portal-passcodes: could not read eligible members", String(err));
+    return portalAdminJson({ error: "Could not load eligible portal members" }, 502);
+  }
+
+  const eligible = members.filter((member) => isValidPortalMember(member));
+  const skipped = members.length - eligible.length;
+
+  if (mode === "dry_run") {
+    console.log("portal-passcodes: dry run complete", { eligible: eligible.length, skipped });
+    return portalAdminJson({
+      ok: true,
+      mode: "dry_run",
+      eligible: eligible.length,
+      skipped,
+      // Previews prove the final copy and recipient list without exposing PII
+      // or the credentials that grant portal access.
+      previews: eligible.map((member) => portalEmailPreview(member)),
+    }, 200);
+  }
+
+  let sent = 0;
+  let failed = 0;
+  for (const member of eligible) {
+    try {
+      await sendPortalPasscodeEmail(member, env);
+      const recorded = await recordPasscodeEmailSent(member.id, env);
+      if (!recorded) {
+        // Resend's idempotency key prevents an immediate retry from creating a
+        // second email. Do not expose the member identity in logs.
+        console.error("portal-passcodes: email accepted but sent timestamp was not recorded");
+        failed++;
+        continue;
+      }
+      sent++;
+    } catch (err) {
+      console.error("portal-passcodes: one email was not sent", String(err));
+      failed++;
+    }
+  }
+
+  console.log("portal-passcodes: manual send batch complete", { eligible: eligible.length, sent, failed, skipped });
+  return portalAdminJson({
+    ok: failed === 0,
+    mode: "send",
+    eligible: eligible.length,
+    sent,
+    failed,
+    skipped,
+  }, failed ? 207 : 200);
+}
+
+function portalMissingConfig(env, mode) {
+  const required = ["PORTAL_PASSCODE_ADMIN_TOKEN"];
+  if (mode !== "dry_run") {
+    required.push("RESEND_API_KEY", "PORTAL_PASSCODE_FROM", "PORTAL_PASSCODE_REPLY_TO");
+  }
+  if (mode !== "test_send") required.push("SUPABASE_URL", "SUPABASE_SERVICE_ROLE_KEY");
+  return required
+    .filter((key) => !String(env[key] || "").trim());
+}
+
+async function portalSecretsEqual(supplied, expected) {
+  if (!supplied || !expected) return false;
+  const encoder = new TextEncoder();
+  const [suppliedHash, expectedHash] = await Promise.all([
+    crypto.subtle.digest("SHA-256", encoder.encode(supplied)),
+    crypto.subtle.digest("SHA-256", encoder.encode(expected)),
+  ]);
+  const a = new Uint8Array(suppliedHash);
+  const b = new Uint8Array(expectedHash);
+  let difference = 0;
+  for (let i = 0; i < a.length; i++) difference |= a[i] ^ b[i];
+  return difference === 0;
+}
+
+async function fetchEligiblePortalMembers(env) {
+  const sb = supabaseService(env);
+  if (!sb) throw new Error("Supabase service is not configured");
+  const members = [];
+  const pageSize = 100;
+  for (let offset = 0; ; offset += pageSize) {
+    const query = new URLSearchParams({
+      select: "id,full_name,email,passcode,role",
+      active: "eq.true",
+      // The database filter is the primary guard; isValidPortalMember below
+      // repeats this check so a team account can never be sent a buyer email.
+      role: "in.(buyer,second_seat)",
+      passcode_sent_at: "is.null",
+      email: "not.is.null",
+      order: "id.asc",
+      limit: String(pageSize),
+      offset: String(offset),
+    });
+    const response = await fetch(`${sb.base}/rest/v1/portal_members?${query}`, {
+      headers: sb.headers,
+    });
+    if (!response.ok) throw new Error(`Supabase read failed (${response.status})`);
+    const page = await response.json();
+    if (!Array.isArray(page)) throw new Error("Supabase read returned an invalid response");
+    members.push(...page);
+    if (page.length < pageSize) return members;
+  }
+}
+
+function isValidPortalMember(member) {
+  return member && typeof member.id === "string" && /^[0-9a-f-]{36}$/i.test(member.id)
+    && PORTAL_RECIPIENT_ROLES.has(member.role)
+    && isEmail(member.email) && typeof member.passcode === "string" && member.passcode.trim().length >= 6;
+}
+
+function isEmail(value) {
+  return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(String(value || "").trim());
+}
+
+function portalEmailPreview(member) {
+  const message = buildPortalPasscodeEmail(member, true);
+  return {
+    recipient: maskEmail(member.email),
+    name: member.full_name ? String(member.full_name).trim() : "Member",
+    subject: message.subject,
+    text: message.text,
+  };
+}
+
+function buildPortalPasscodeEmail(member, maskCode) {
+  const name = String(member.full_name || "there").trim() || "there";
+  const passcode = maskCode ? maskPasscode(member.passcode) : String(member.passcode).trim();
+  return {
+    subject: "Your Time Rich portal passcode",
+    text: `Hi ${name},\n\nYour Time Rich portal is ready.\n\nYour passcode: ${passcode}\n\nSign in at https://timerich.ai/portal\n\nQuestions? Reply to this email or write to emc@timerich.ai.\n\nWarmly,\nElla\nFounder, Time Rich`,
+  };
+}
+
+function maskEmail(email) {
+  const [local, domain] = String(email).trim().split("@");
+  return `${local.slice(0, 1)}***@${domain}`;
+}
+
+function maskPasscode(passcode) {
+  const code = String(passcode).trim();
+  return `${code.slice(0, 2)}***${code.slice(-2)}`;
+}
+
+function portalTestRecipients(value, allowedValue) {
+  if (!Array.isArray(value) || value.length < 1 || value.length > 2) return null;
+  const recipients = value.map((email) => String(email || "").trim());
+  if (!recipients.every(isEmail)) return null;
+  const unique = new Set(recipients.map((email) => email.toLowerCase()));
+  if (unique.size !== recipients.length) return null;
+
+  // The test endpoint must not become a general-purpose email sender if its
+  // admin token is exposed. Gideon explicitly configures one or two team
+  // recipients outside the request, then the request may use only those.
+  const allowed = String(allowedValue || "").split(",")
+    .map((email) => email.trim().toLowerCase()).filter(isEmail);
+  if (allowed.length < 1 || allowed.length > 2 || new Set(allowed).size !== allowed.length) return null;
+  return recipients.every((email) => allowed.includes(email.toLowerCase())) ? recipients : null;
+}
+
+async function sendPortalPasscodeTestEmails(recipients, env) {
+  // This intentionally does not read portal_members or use a member's
+  // credentials. It proves the domain, sender and final email layout safely.
+  const testMember = { full_name: "Time Rich team", passcode: "TEST-12345" };
+  let sent = 0;
+  let failed = 0;
+  for (const recipient of recipients) {
+    try {
+      await sendPortalPasscodeEmail(testMember, env, recipient, `portal-passcode-test/${crypto.randomUUID()}`);
+      sent++;
+    } catch (err) {
+      console.error("portal-passcodes: one test email was not sent", String(err));
+      failed++;
+    }
+  }
+  console.log("portal-passcodes: manual test-send complete", { requested: recipients.length, sent, failed });
+  return portalAdminJson({ ok: failed === 0, mode: "test_send", requested: recipients.length, sent, failed }, failed ? 207 : 200);
+}
+
+async function sendPortalPasscodeEmail(member, env, recipient = member.email, idempotencyKey = `portal-passcode/${member.id}`) {
+  const message = buildPortalPasscodeEmail(member, false);
+  const response = await fetch("https://api.resend.com/emails", {
+    method: "POST",
+    headers: {
+      Authorization: `Bearer ${env.RESEND_API_KEY}`,
+      "Content-Type": "application/json",
+      // A retry with the same member still maps to the same Resend email.
+      "Idempotency-Key": idempotencyKey,
+    },
+    body: JSON.stringify({
+      from: env.PORTAL_PASSCODE_FROM,
+      reply_to: env.PORTAL_PASSCODE_REPLY_TO,
+      to: [recipient],
+      subject: message.subject,
+      text: message.text,
+    }),
+  });
+  if (!response.ok) throw new Error(`Resend send failed (${response.status})`);
+}
+
+async function recordPasscodeEmailSent(memberId, env) {
+  const sb = supabaseService(env);
+  if (!sb) throw new Error("Supabase service is not configured");
+  const url = `${sb.base}/rest/v1/portal_members?id=eq.${encodeURIComponent(memberId)}&passcode_sent_at=is.null`;
+  const response = await fetch(url, {
+    method: "PATCH",
+    headers: { ...sb.headers, Prefer: "return=representation" },
+    body: JSON.stringify({ passcode_sent_at: new Date().toISOString() }),
+  });
+  if (!response.ok) throw new Error(`Supabase sent-timestamp update failed (${response.status})`);
+  const updated = await response.json();
+  return Array.isArray(updated) && updated.length === 1;
+}
+
+function portalAdminJson(obj, status) {
+  return json(obj, status, PORTAL_ADMIN_HEADERS);
 }
 
 // ---------------------------------------------------------------------------
