@@ -3,24 +3,21 @@
 <head>
   <meta charset="utf-8"/>
   <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+  <!-- Google tag (gtag.js) -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-CTZLQ4R388"></script>
+  <script>
+    window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}
+    // Consent Mode v2. Region-specific default first, then the global fallback,
+    // which is the order Google's docs specify: the narrower region wins.
+    gtag('consent','default',{ad_storage:'denied',ad_user_data:'denied',ad_personalization:'denied',analytics_storage:'denied',region:['AT','BE','BG','HR','CY','CZ','DK','EE','FI','FR','DE','GR','HU','IS','IE','IT','LV','LI','LT','LU','MT','NL','NO','PL','PT','RO','SK','SI','ES','SE','GB','CH']});
+    gtag('consent','default',{ad_storage:'denied',ad_user_data:'denied',ad_personalization:'denied',analytics_storage:'granted'});
+    gtag('js',new Date());
+    gtag('config','G-CTZLQ4R388');
+  </script>
+
   <title>Time Rich - Portal Access</title>
-  <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
   <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500;600&family=Montserrat:wght@400;500;600;700;800&display=swap" rel="stylesheet"/>
   <script src="https://unpkg.com/lucide@latest"></script>
-  <script>
-    tailwind.config = {
-      theme: {
-        extend: {
-          fontFamily: {
-            sans: ['"Inter"', 'sans-serif'],
-            display: ['"Space Grotesk"', 'sans-serif'],
-            mono: ['"JetBrains Mono"', 'monospace'],
-            montserrat: ['"Montserrat"', 'sans-serif'],
-          }
-        }
-      }
-    }
-  </script>
   <style>
     /* Full-screen organic atmospheric olive/sage background */
             body {
@@ -192,6 +189,7 @@
     }
     
   </style>
+  <link rel="stylesheet" href="portal.css"/>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@600&display=swap" rel="stylesheet">
@@ -203,7 +201,7 @@
 
 
 
-<body class="h-screen overflow-hidden flex items-center justify-center font-sans selection:bg-[#CCEEA0] relative text-[#1a1a1a]">
+<body class="min-h-screen flex items-center justify-center font-sans selection:bg-[#CCEEA0] relative text-[#1a1a1a]">
 
   <!-- Noise Grain Overlay -->
   <div class="noise-overlay"></div>
@@ -265,11 +263,11 @@
                 <div class="absolute top-full left-1/2 -translate-x-1/2 border-[4px] border-transparent border-t-[#252D1C]"></div>
               </div>
             </div>
-            <!-- ViKa Victoria -->
+            <!-- ViKA Victoria -->
             <div class="relative group cursor-pointer hover:z-10 transition-transform duration-300 hover:scale-110">
-              <img loading="lazy" src="assets/vika-victoria-square.jpg" alt="Vika Victoria" class="w-[38px] h-[38px] rounded-full object-cover border-2 border-white/70 shadow-sm"/> origin/main
+              <img loading="lazy" src="assets/vika-victoria-square.jpg" alt="ViKA Victoria" class="w-[38px] h-[38px] rounded-full object-cover border-2 border-white/70 shadow-sm"/>
               <div class="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 w-max px-2.5 py-1 bg-[#252D1C] text-white text-[11px] font-sans font-medium rounded opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none shadow-lg">
-                ViKa Victoria
+                ViKA Victoria
                 <div class="absolute top-full left-1/2 -translate-x-1/2 border-[4px] border-transparent border-t-[#252D1C]"></div>
               </div>
             </div>
@@ -365,6 +363,9 @@
           </button>
         </div>
 
+        <p data-portal-error role="alert" aria-live="polite"
+           class="text-[13px] text-[#8A2B2B] min-h-[1.25rem] mb-4"></p>
+
         <!-- Enter portal row & circular submit button -->
         <div class="flex items-center justify-between mb-12">
           <button
@@ -387,7 +388,7 @@
 
         <!-- Support footnote -->
         <p class="text-[14px] font-display font-medium text-[#5C664C] tracking-wide">
-          Need a code? <a href="mailto:support@timerich.com" class="hover:text-[#252D1C] transition-colors">Email support</a>
+          Need a code? <a href="mailto:support@timerich.ai" class="hover:text-[#252D1C] transition-colors">Email support</a>
         </p>
       </form>
 
@@ -410,33 +411,40 @@
       lucide.createIcons();
     });
 
-    // Form submit handling with smooth feedback and redirection
-    const form = document.getElementById('portal-login-form');
-    form.addEventListener('submit', (e) => {
-      e.preventDefault();
-      const text = document.getElementById('btn-text');
-      const circleBtn = document.getElementById('unlock-btn-circle');
-      
-      text.innerHTML = 'Verifying...';
-      circleBtn.style.pointerEvents = 'none';
-      circleBtn.style.opacity = '0.85';
-      
-      setTimeout(() => {
-        text.innerHTML = 'Access Granted ✓';
-        text.classList.remove('text-[#1A2210]');
-        text.classList.add('text-[#49533B]');
-        circleBtn.classList.remove('bg-[#27301C]');
-        circleBtn.classList.add('bg-[#4D5C35]');
-        
-        setTimeout(() => {
-          document.body.style.transition = 'opacity 0.5s ease';
-          document.body.style.opacity = '0';
-          setTimeout(() => {
-            window.location.href = 'dashboard.html';
-          }, 500);
-        }, 600);
-      }, 700);
-    });
+    // The real check lives in portal-access.js, which owns this form's submit.
+    // Everything here only reflects what that check is doing: the button says
+    // "Checking", a rejected code puts the button back and returns focus to the
+    // field, and a good code moves on to the dashboard.
+    (function () {
+      var form = document.getElementById('portal-login-form');
+      var label = document.getElementById('btn-text');
+      var slot = document.querySelector('[data-portal-error]');
+      var input = form && form.querySelector('input');
+      var idle = label ? label.textContent : 'Enter portal';
+
+      if (form) {
+        form.addEventListener('submit', function () {
+          if (slot) slot.textContent = '';
+          if (label) label.textContent = 'Checking…';
+        });
+      }
+
+      // portal-access.js writes the message into the slot. Watch for it rather
+      // than racing its promise, so there is one source of truth for the result.
+      if (slot && window.MutationObserver) {
+        new MutationObserver(function () {
+          if (!slot.textContent.trim()) return;
+          if (label) label.textContent = idle;
+          if (input) input.focus();
+        }).observe(slot, { childList: true, characterData: true, subtree: true });
+      }
+
+      // A code that checks out lands on the dashboard.
+      document.addEventListener('trportal:data', function () {
+        window.location.replace('dashboard.html');
+      });
+    })();
+
   </script>
 
   <script src="portal-config.js"></script>
@@ -444,18 +452,29 @@
 
   <script>
     // === SMOOTH PAGE TRANSITIONS ===
-    // Intercept all internal nav links for smooth exit
-    document.addEventListener('DOMContentLoaded', () => {
-      document.querySelectorAll('a[href]').forEach(link => {
-        const href = link.getAttribute('href');
-        if (href && !href.startsWith('http') && !href.startsWith('#') && !href.startsWith('mailto') && href.endsWith('.html')) {
-          link.addEventListener('click', (e) => {
-            e.preventDefault();
-            document.body.style.opacity = '0';
-            document.body.style.transform = 'scale(0.98)';
-            setTimeout(() => { window.location.href = href; }, window.innerWidth < 768 ? 120 : 280);
-          });
-        } origin/main
+    // Internal .html links fade the page out before navigating. The fade is
+    // decoration; the navigation is the job, so every path below ends in a
+    // navigation even when the animation never runs or is cut short.
+    (function () {
+      var FADE_MS = 150;
+
+      var reduced = false;
+      try {
+        reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+      } catch (e) { /* no matchMedia: treat as no preference */ }
+
+      // Coming back via the Back button can restore this page from the bfcache
+      // with the fade still applied, which shows a blank screen.
+      //
+      // Only this script's own fade is undone. Every portal page sets its own
+      // entrance transform inline on <body>, so clearing that unconditionally
+      // would kill the page's open animation on a normal load.
+      var LEAVING = 'data-trp-leaving';
+      window.addEventListener('pageshow', function () {
+        if (!document.body.hasAttribute(LEAVING)) return;
+        document.body.removeAttribute(LEAVING);
+        document.body.style.opacity = '';
+        document.body.style.transform = '';
       });
 
       document.addEventListener('DOMContentLoaded', function () {
@@ -496,10 +515,9 @@
             }
 
             setTimeout(go, FADE_MS);
-            // Last resort. transitionend never fires in a backgrounded tab and
-            // timers there are throttled, so this guarantees a click can never
-            // end on a page left sitting faded out.
-            setTimeout(go, FADE_MS + 1200);
+            // A short backstop: transitionend does not fire in a backgrounded
+            // tab, and a click must never end on a page left faded out.
+            setTimeout(go, FADE_MS + 250);
           });
         });
       });

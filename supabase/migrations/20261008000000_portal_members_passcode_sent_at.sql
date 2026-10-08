@@ -6,3 +6,5 @@ alter table public.portal_members
 
 comment on column public.portal_members.passcode_sent_at is
   'UTC timestamp set by the manual passcode-email Worker after Resend accepts the email.';
+
+grant update (passcode_sent_at) on public.portal_members to service_role;

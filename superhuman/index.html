@@ -4,8 +4,11 @@
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
 <title>Superhuman Questionnaire — Time Rich</title>
-<link rel="icon" type="image/png" href="/rocketship-icon.png" />
-<link rel="apple-touch-icon" href="/rocketship-icon.png" />
+<link rel="icon" href="/favicon.ico" sizes="any" />
+<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32.png" />
+<link rel="icon" type="image/png" sizes="16x16" href="/favicon-16.png" />
+<link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
 <meta name="description" content="The Superhuman Accelerator questionnaire. Your answers shape the curriculum and your hot seat breakout room." />
 <link rel="canonical" href="https://timerich.ai/superhuman/" />
 <meta name="robots" content="noindex, nofollow" />
@@ -381,7 +384,7 @@ var Q_SPEC = [
   {
     key: "bio", type: "short", required: true, maxLength: 80,
     eyebrow: "Your bio",
-    title: "What's your career bio in 5–7 words?",
+    title: "Your hook line: your career bio in 5 to 7 words.",
     help: "The line that hooks people in. Think of it as your bio inside the accelerator.",
     placeholder: "Ex-Google PM turned AI systems builder"
   },
@@ -389,7 +392,7 @@ var Q_SPEC = [
     key: "photo_link", type: "url",
     eyebrow: "Your photo",
     title: "Share a Google Drive link to a high-quality photo of you for the portal.",
-    help: "Set sharing to “Anyone with the link” so we can open it.",
+    help: "Set sharing to “Anyone with the link” so we can open it. Shown to your cohort in Time Rich Members.",
     placeholder: "https://drive.google.com/…"
   },
   {
@@ -516,7 +519,7 @@ var Q_SPEC = [
     title: "Want 1:1 time with either of these? Pick any that apply.",
     options: [
       { value: "Ella Molony Cook", label: "Ella Molony Cook, Business strategy & AI systems" },
-      { value: "ViKa Victoria", label: "ViKa Victoria, Storytelling, public speaking, selling yourself without ick, mastering your pitch" },
+      { value: "ViKa Victoria", label: "ViKA Victoria, Storytelling, public speaking, selling yourself without ick, mastering your pitch" },
       // Exclusive: picking this clears the others, and picking any other clears this.
       { value: "Not interested right now", exclusive: true }
     ]

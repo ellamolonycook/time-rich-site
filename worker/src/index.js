@@ -30,6 +30,14 @@ export default {
 
     const cors = corsHeaders(request, env);
 
+    // This one route answers its own preflight, because it is locked to a
+    // single origin rather than the Worker-wide ALLOWED_ORIGIN list.
+    // Same for Time Rich Members, which the portal calls from timerich.ai only.
+    if (request.method === "OPTIONS" &&
+        /\/portal-(download|directory)$/.test(new URL(request.url).pathname.replace(/\/+$/, ""))) {
+      return new Response(null, { status: 204, headers: portalDownloadCors(request) });
+    }
+
     if (request.method === "OPTIONS") {
       return new Response(null, { status: 204, headers: cors });
     }
@@ -54,6 +62,24 @@ export default {
 
     if (request.method !== "POST") {
       return json({ error: "Method not allowed" }, 405, cors);
+    }
+
+    // Route: gated Superhuman skill download (POST /portal-download)
+    if (path.endsWith("/portal-download")) {
+      return handlePortalDownload(request, env);
+    }
+
+    // Route: Time Rich Members backfill (POST /portal-directory-sync). Team
+    // only, behind DIRECTORY_SYNC_SECRET; copies every questionnaire row into
+    // portal_directory.
+    if (path.endsWith("/portal-directory-sync")) {
+      return handleDirectoryBackfill(request, env, cors);
+    }
+
+    // Route: Time Rich Members read (POST /portal-directory). The portal page
+    // sends the member's passcode and gets the profiles back.
+    if (path.endsWith("/portal-directory")) {
+      return handlePortalDirectory(request, env);
     }
 
     // Route: ThriveCart purchase webhook (handles order.success, order.subscription_payment, order.refund)
@@ -232,7 +258,7 @@ export default {
     // column on that database is plain text, and its names are the questions
     // themselves, so the mapping table is the contract with the page.
     if (path.endsWith("/strategy")) {
-      return handleStrategy(data, env, cors);
+      return handleStrategy(data, env, cors, ctx);
     }
 
     // Route: AI Revenue Accelerator application -> its own Notion database.
@@ -862,7 +888,55 @@ const STRATEGY_QUESTIONS = [
   ["q18", "18. What should we know that did not come up on the call?"],
 ];
 
-async function handleStrategy(d, env, cors) {
+// ---------------------------------------------------------------------------
+// Slack ping for a saved strategy intake.
+//
+// Posts with the bot token to SLACK_STRATEGY_CHANNEL_ID. Both are secrets:
+// neither is logged, and a failure is never surfaced to the person who filled
+// the form. Fire-and-forget through ctx.waitUntil, after the Notion row exists.
+// ---------------------------------------------------------------------------
+
+const STRATEGY_WIN_CHARS = 200;
+
+function strategySlackText(fields) {
+  const esc = slackEscape;
+  const lines = [];
+
+  lines.push(
+    `*New strategy intake: ${esc(fields.name)}*` +
+    (fields.role ? ` (${esc(fields.role)})` : "")
+  );
+  if (fields.email) lines.push(esc(fields.email));
+
+  const win = String(fields.win30 == null ? "" : fields.win30).trim();
+  if (win) lines.push(`Win in 30 days: ${esc(clip(win, STRATEGY_WIN_CHARS))}`);
+
+  const budget = String(fields.budget == null ? "" : fields.budget).trim();
+  if (budget) lines.push(`Budget (monthly): ${esc(budget)}`);
+
+  if (fields.pageUrl) lines.push(`<${esc(fields.pageUrl)}|Open in Notion>`);
+
+  return lines.join("\n");
+}
+
+function notifySlackStrategy(env, ctx, fields) {
+  const channel = env && env.SLACK_STRATEGY_CHANNEL_ID;
+  if (!env || !env.SLACK_BOT_TOKEN || !channel) return;   // not configured: skip
+
+  const work = postSlackMessage(env, undefined, strategySlackText(fields), channel)
+    .then(
+      () => {},
+      () => {
+        // A fixed string only. The error carries the Slack response and the
+        // token lives one object away, so neither goes near a log line.
+        console.error("[STRATEGY] slack post failed");
+      }
+    );
+
+  if (ctx && typeof ctx.waitUntil === "function") ctx.waitUntil(work);
+}
+
+async function handleStrategy(d, env, cors, ctx) {
   const dbId = env.NOTION_STRATEGY_DATABASE_ID;
   if (!env.NOTION_TOKEN || !dbId) {
     return json({ ok: false, error: "Strategy form not configured" }, 500, cors);
@@ -903,6 +977,19 @@ async function handleStrategy(d, env, cors) {
       body: JSON.stringify({ parent: { database_id: dbId }, properties }),
     });
     if (!res.ok) return json({ ok: false, error: "Notion create failed", detail: await res.text() }, 502, cors);
+
+    // The row is saved. Only now is Slack told, and only through waitUntil, so
+    // a Slack outage can never turn a saved intake into an error for the form.
+    let page = null;
+    try { page = await res.json(); } catch { /* saved; only the link is lost */ }
+    notifySlackStrategy(env, ctx, {
+      name: name,
+      email: email,
+      role: d.role,
+      win30: d.q03,
+      budget: d.q14,
+      pageUrl: page && typeof page.url === "string" ? page.url : "",
+    });
     return json({ ok: true }, 200, cors);
   } catch (err) {
     return json({ ok: false, error: "Unexpected error", detail: String(err) }, 500, cors);
@@ -1288,6 +1375,105 @@ function calEsc(s) {
   return String(s == null ? "" : s).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
 }
 
+// ---------------------------------------------------------------------------
+// Gated Superhuman skill downloads.
+//
+// POST /portal-download  {code, item_id}  ->  {url}
+//
+// The reply is a Storage signed URL good for five minutes. Everything else
+// is a flat 403 with no detail: a wrong code, a locked week, an unknown or
+// non-skill item and a missing file all look identical from outside, so the
+// endpoint cannot be used to probe what exists.
+//
+// The passcode is never logged, never echoed and never put in a URL.
+// ---------------------------------------------------------------------------
+
+const PORTAL_DOWNLOAD_ORIGIN = "https://timerich.ai";
+const SKILL_BUCKET = "portal-skills";
+const SKILL_URL_TTL_SECONDS = 300; // 5 minutes
+
+// Deliberately not the Worker-wide corsHeaders(): that one honours
+// ALLOWED_ORIGIN, which can be "*". This route answers the portal only.
+function portalDownloadCors(request) {
+  const headers = {
+    "Vary": "Origin",
+    "Access-Control-Allow-Methods": "POST, OPTIONS",
+    "Access-Control-Allow-Headers": "Content-Type",
+  };
+  if ((request.headers.get("Origin") || "") === PORTAL_DOWNLOAD_ORIGIN) {
+    headers["Access-Control-Allow-Origin"] = PORTAL_DOWNLOAD_ORIGIN;
+  }
+  return headers;
+}
+
+async function handlePortalDownload(request, env) {
+  const cors = portalDownloadCors(request);
+  const deny = () => json({ error: "Forbidden" }, 403, cors);
+
+  if (!env.SUPABASE_URL || !env.SUPABASE_SERVICE_ROLE_KEY) return deny();
+
+  let body;
+  try { body = await request.json(); } catch { return deny(); }
+
+  const code = typeof body?.code === "string" ? body.code.trim() : "";
+  const itemId = Number(body?.item_id);
+  if (!code || !Number.isFinite(itemId)) return deny();
+
+  const base = env.SUPABASE_URL.replace(/\/+$/, "");
+  const key = env.SUPABASE_SERVICE_ROLE_KEY;
+  const auth = { apikey: key, Authorization: `Bearer ${key}`, "Content-Type": "application/json" };
+
+  // portal_get() already normalises the passcode, requires portal_members.active,
+  // and returns items ONLY for weeks whose release_at has passed. Reusing it here
+  // means the download rule cannot drift from the rule the portal itself applies.
+  let payload;
+  try {
+    const res = await fetch(`${base}/rest/v1/rpc/portal_get`, {
+      method: "POST",
+      headers: auth,
+      body: JSON.stringify({ p_code: code }),
+    });
+    if (!res.ok) return deny();
+    payload = await res.json();
+  } catch { return deny(); }
+
+  if (!payload || payload.ok !== true) return deny();
+
+  // An item can only be found here if its week is unlocked, because a locked
+  // week comes back with an empty items array.
+  let file = "";
+  const weeks = Array.isArray(payload.weeks) ? payload.weeks : [];
+  for (const week of weeks) {
+    if (!week || week.unlocked !== true || !Array.isArray(week.items)) continue;
+    for (const item of week.items) {
+      if (item && Number(item.id) === itemId && item.kind === "skill") {
+        file = typeof item.url === "string" ? item.url.trim() : "";
+      }
+    }
+  }
+  if (!file) return deny();
+
+  // A bare file name, nothing else: no traversal, no folder, no absolute URL.
+  if (!/^[A-Za-z0-9][A-Za-z0-9._-]*$/.test(file)) return deny();
+
+  let signed;
+  try {
+    const res = await fetch(
+      `${base}/storage/v1/object/sign/${SKILL_BUCKET}/${encodeURIComponent(file)}`,
+      { method: "POST", headers: auth, body: JSON.stringify({ expiresIn: SKILL_URL_TTL_SECONDS }) }
+    );
+    if (!res.ok) return deny();
+    signed = await res.json();
+  } catch { return deny(); }
+
+  // Storage answers with a root-relative path such as
+  // "/object/sign/portal-skills/superhuman.zip?token=...".
+  const path = (signed && (signed.signedURL || signed.signedUrl)) || "";
+  if (typeof path !== "string" || !path) return deny();
+
+  return json({ url: `${base}/storage/v1${path.startsWith("/") ? "" : "/"}${path}` }, 200, cors);
+}
+
 function corsHeaders(request, env) {
   const allowed = (env.ALLOWED_ORIGIN || "*")
     .split(",").map((s) => s.trim()).filter(Boolean);
@@ -1359,7 +1545,7 @@ function json(obj, status, cors) {
 //     "confirm": "SEND_PORTAL_PASSCODE_TEST" }
 //
 // Required secrets (put only in worker/.dev.vars locally or Wrangler secrets
-// in production): SUPABASE_URL, SUPABASE_SECRET_KEY, RESEND_API_KEY,
+// in production): SUPABASE_URL, SUPABASE_SERVICE_ROLE_KEY, RESEND_API_KEY,
 // PORTAL_PASSCODE_ADMIN_TOKEN, PORTAL_PASSCODE_FROM and
 // PORTAL_PASSCODE_REPLY_TO.
 // Buyer sends are blocked unless Gideon explicitly enables
@@ -1482,7 +1668,7 @@ function portalMissingConfig(env, mode) {
   if (mode !== "dry_run") {
     required.push("RESEND_API_KEY", "PORTAL_PASSCODE_FROM", "PORTAL_PASSCODE_REPLY_TO");
   }
-  if (mode !== "test_send") required.push("SUPABASE_URL", "SUPABASE_SECRET_KEY");
+  if (mode !== "test_send") required.push("SUPABASE_URL", "SUPABASE_SERVICE_ROLE_KEY");
   return required
     .filter((key) => !String(env[key] || "").trim());
 }
@@ -1502,6 +1688,8 @@ async function portalSecretsEqual(supplied, expected) {
 }
 
 async function fetchEligiblePortalMembers(env) {
+  const sb = supabaseService(env);
+  if (!sb) throw new Error("Supabase service is not configured");
   const members = [];
   const pageSize = 100;
   for (let offset = 0; ; offset += pageSize) {
@@ -1517,8 +1705,8 @@ async function fetchEligiblePortalMembers(env) {
       limit: String(pageSize),
       offset: String(offset),
     });
-    const response = await fetch(`${String(env.SUPABASE_URL).replace(/\/$/, "")}/rest/v1/portal_members?${query}`, {
-      headers: portalSupabaseHeaders(env),
+    const response = await fetch(`${sb.base}/rest/v1/portal_members?${query}`, {
+      headers: sb.headers,
     });
     if (!response.ok) throw new Error(`Supabase read failed (${response.status})`);
     const page = await response.json();
@@ -1552,10 +1740,8 @@ function buildPortalPasscodeEmail(member, maskCode) {
   const name = String(member.full_name || "there").trim() || "there";
   const passcode = maskCode ? maskPasscode(member.passcode) : String(member.passcode).trim();
   return {
-    // Placeholder copy supplied by Ella should replace this template before a
-    // live send is triggered.
     subject: "Your Time Rich portal passcode",
-    text: `Hi ${name},\n\nYour Time Rich portal is ready.\n\nYour passcode: ${passcode}\n\nUse it to sign in to the portal.\n\n— Time Rich`,
+    text: `Hi ${name},\n\nYour Time Rich portal is ready.\n\nYour passcode: ${passcode}\n\nSign in at https://timerich.ai/portal\n\nQuestions? Reply to this email or write to emc@timerich.ai.\n\nWarmly,\nElla\nFounder, Time Rich`,
   };
 }
 
@@ -1626,22 +1812,17 @@ async function sendPortalPasscodeEmail(member, env, recipient = member.email, id
 }
 
 async function recordPasscodeEmailSent(memberId, env) {
-  const url = `${String(env.SUPABASE_URL).replace(/\/$/, "")}/rest/v1/portal_members?id=eq.${encodeURIComponent(memberId)}&passcode_sent_at=is.null`;
+  const sb = supabaseService(env);
+  if (!sb) throw new Error("Supabase service is not configured");
+  const url = `${sb.base}/rest/v1/portal_members?id=eq.${encodeURIComponent(memberId)}&passcode_sent_at=is.null`;
   const response = await fetch(url, {
     method: "PATCH",
-    headers: { ...portalSupabaseHeaders(env), "Content-Type": "application/json", Prefer: "return=representation" },
+    headers: { ...sb.headers, Prefer: "return=representation" },
     body: JSON.stringify({ passcode_sent_at: new Date().toISOString() }),
   });
   if (!response.ok) throw new Error(`Supabase sent-timestamp update failed (${response.status})`);
   const updated = await response.json();
   return Array.isArray(updated) && updated.length === 1;
-}
-
-function portalSupabaseHeaders(env) {
-  return {
-    apikey: env.SUPABASE_SECRET_KEY,
-    Authorization: `Bearer ${env.SUPABASE_SECRET_KEY}`,
-  };
 }
 
 function portalAdminJson(obj, status) {
@@ -1687,6 +1868,7 @@ async function handleThriveCartWebhook(request, env, cors, ctx) {
     keys: Object.keys(body).slice(0, 40),
     eventRaw: body.event ?? body.type ?? null,
     eventResolved: String(body.event || body.type || "order.success").toLowerCase(),
+    modeRaw: body.mode ?? null,
     hasSecretInBody: Boolean(body.thrivecart_secret || body.secret),
     hasSecretInHeader: Boolean(request.headers.get("x-thrivecart-secret")),
   }));
@@ -1740,6 +1922,18 @@ async function handleThriveCartWebhook(request, env, cors, ctx) {
     orderTotal: orderTotal || null,
     orderAmountWritten: orderAmount || null,
   }));
+
+  // Portal access for the buyer. Only a live, paid order counts: ThriveCart
+  // sends test-mode purchases to this same webhook with mode "test", and a
+  // payload that does not say "live" at all is treated as a test too.
+  const isLive = String(body.mode || "").trim().toLowerCase() === "live";
+  if (!isRefund && isLive && email) {
+    const portalWork = upsertPortalMember(env, { email, fullName, role: "buyer", orderId }, "[TC]");
+    if (ctx && typeof ctx.waitUntil === "function") ctx.waitUntil(portalWork);
+    else await portalWork;
+  } else if (!isRefund) {
+    console.log("[TC] portal: SKIPPED -", !isLive ? "not a live order" : "no email on the order");
+  }
 
   const dbId = env.NOTION_SUPERHUMAN_COHORT1_DATABASE_ID;
 
@@ -1911,6 +2105,20 @@ async function handleOnboardSubmit(data, env, cors, ctx) {
     return json({ ok: false, error: "Could not verify the order" }, 502, cors);
   }
   if (!paidOrder) return json({ ok: false, error: "A paid order is required" }, 403, cors);
+
+  // Portal access for the +1, on the buyer's order. Skipped when the buyer
+  // named themselves, so a buyer row is never touched from this form.
+  const buyerEmail = normKey(calProp(paidOrder.properties?.["Email"]) || email);
+  if (choice === "named" && EMAIL_RE.test(attendeeEmail) && normKey(attendeeEmail) !== buyerEmail) {
+    const portalWork = upsertPortalMember(env, {
+      email: attendeeEmail,
+      fullName: `${attendeeFirstName} ${attendeeLastName}`,
+      role: "second_seat",
+      orderId: calProp(paidOrder.properties?.["Order ID"]),
+    }, "[onboard]");
+    if (ctx && typeof ctx.waitUntil === "function") ctx.waitUntil(portalWork);
+    else await portalWork;
+  }
 
   {
     const notionWork = (async () => {
@@ -2142,6 +2350,95 @@ async function handleOnboardQuestionnaire(data, env, cors, ctx) {
 }
 
 // ---------------------------------------------------------------------------
+// Slack ping for a saved Superhuman questionnaire.
+//
+// Reads the values back out of the Notion `properties` object rather than the
+// raw form body, so the message always says what was actually stored: a select
+// the form sent but Notion would not accept never reaches Slack.
+//
+// SLACK_QUESTIONNAIRE_WEBHOOK_URL is a secret. It is never logged, and no
+// failure here is ever surfaced to the person who filled the form.
+// ---------------------------------------------------------------------------
+
+// Slack mrkdwn needs exactly these three escaped, and nothing else.
+function slackEscape(value) {
+  return String(value == null ? "" : value)
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;");
+}
+
+// Pull a readable value back out of a Notion property payload.
+function notionPropText(properties, name) {
+  const prop = properties && properties[name];
+  if (!prop) return "";
+  if (prop.select && prop.select.name) return String(prop.select.name);
+  if (typeof prop.url === "string") return prop.url;
+  if (Array.isArray(prop.rich_text) && prop.rich_text.length) {
+    return String((prop.rich_text[0].text && prop.rich_text[0].text.content) || "");
+  }
+  if (Array.isArray(prop.title) && prop.title.length) {
+    return String((prop.title[0].text && prop.title[0].text.content) || "");
+  }
+  return "";
+}
+
+function questionnaireSlackText(fields) {
+  const props = fields.properties || {};
+  const lines = [];
+
+  // Same shape either way, so an update is still readable at a glance.
+  const label = fields.updated ? "Updated questionnaire" : "New questionnaire";
+  lines.push(
+    `*${label}: ${slackEscape(fields.name)}*` +
+    (fields.role ? ` (${slackEscape(fields.role)})` : "")
+  );
+
+  // Title, Company · Email - any empty part simply drops out.
+  const title = notionPropText(props, "Title");
+  const company = notionPropText(props, "Company");
+  const who = [title, company].filter(Boolean).map(slackEscape).join(", ");
+  const identity = [who, fields.email ? slackEscape(fields.email) : ""].filter(Boolean).join(" · ");
+  if (identity) lines.push(identity);
+
+  const facts = [
+    ["Build priority", notionPropText(props, "Q Build Priority")],
+    ["Revenue", notionPropText(props, "Q Revenue")],
+    ["Team", notionPropText(props, "Q Team Size")],
+  ]
+    .filter(([, value]) => value)
+    .map(([label, value]) => `${label}: ${slackEscape(value)}`)
+    .join(" · ");
+  if (facts) lines.push(facts);
+
+  const linkedin = notionPropText(props, "LinkedIn");
+  if (linkedin) lines.push(`LinkedIn: ${slackEscape(linkedin)}`);
+
+  if (fields.pageUrl) lines.push(`<${slackEscape(fields.pageUrl)}|Open in Notion>`);
+
+  return lines.join("\n");
+}
+
+function notifySlackQuestionnaire(env, ctx, fields) {
+  const webhook = env && env.SLACK_QUESTIONNAIRE_WEBHOOK_URL;
+  if (!webhook) return;                       // not configured: skip, silently
+
+  const work = fetch(webhook, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ text: questionnaireSlackText(fields), mrkdwn: true }),
+  }).then(
+    (res) => {
+      // Status only. The URL is a secret and never goes near a log line.
+      if (!res.ok) console.error("[SHQ] slack webhook returned", res.status);
+    },
+    () => { console.error("[SHQ] slack webhook request failed"); }
+  );
+
+  if (ctx && typeof ctx.waitUntil === "function") ctx.waitUntil(work);
+}
+
+// ---------------------------------------------------------------------------
 // Superhuman questionnaire (POST /superhuman-questionnaire)
 //
 // The same twenty questions /onboard-questionnaire takes, on a page of their
@@ -2287,6 +2584,7 @@ async function handleSuperhumanQuestionnaire(data, env, cors, ctx) {
   // page holds the answers in sessionStorage until this comes back ok, so a
   // fire-and-forget failure here would quietly lose someone's typing.
   let saved = false;
+  let page = null;              // the created or patched row, for the Slack link
   try {
     const res = existing
       ? await fetch(`https://api.notion.com/v1/pages/${existing.id}`, {
@@ -2300,6 +2598,9 @@ async function handleSuperhumanQuestionnaire(data, env, cors, ctx) {
           body: JSON.stringify({ parent: { database_id: dbId }, properties }),
         });
     saved = res.ok;
+    if (res.ok) {
+      try { page = await res.json(); } catch { /* the row saved; only the link is lost */ }
+    }
     if (!res.ok) {
       // A missing column or select option comes back as a 400, and the body is
       // the only thing that says which one.
@@ -2310,6 +2611,23 @@ async function handleSuperhumanQuestionnaire(data, env, cors, ctx) {
   }
 
   if (!saved) return json({ ok: false, error: "Could not save the questionnaire" }, 502, cors);
+
+  // Slack is told only after the row is safely in Notion, and never gets in
+  // the way: waitUntil keeps it off the response path, so an outage at Slack
+  // cannot turn a saved questionnaire into an error for the person filling it.
+  notifySlackQuestionnaire(env, ctx, {
+    updated: Boolean(existing),
+    name,
+    role,
+    email,
+    properties,
+    pageUrl: page && typeof page.url === "string" ? page.url : "",
+  });
+
+  // Time Rich Members: copy the saved profile into portal_directory. Built
+  // from the properties Notion stored (the reply to the write), not from this
+  // request body, and off the response path like Slack.
+  queueDirectorySync(env, ctx, page);
 
   // The sheet is a mirror of a write that already succeeded, so it stays
   // fire-and-forget like the rest of them.
@@ -2443,6 +2761,54 @@ async function findPaidRow(env, dbId, property, value) {
   return paid || null;
 }
 
+// ---------------------------------------------------------------------------
+// Portal members (Supabase)
+//
+// Adds or updates one row in portal_members through portal_upsert_member(),
+// which only service_role can execute. Email is the key, so a repeat order or
+// a resubmitted form updates the existing row instead of adding another. The
+// function never reads or returns a passcode, and nothing here logs the key,
+// the email or the response body.
+//
+// Never throws: a Supabase outage must not change what ThriveCart or the
+// onboarding page get back.
+// ---------------------------------------------------------------------------
+const EMAIL_RE = /^[^@\s]+@[^@\s]+\.[^@\s]+$/;
+
+async function upsertPortalMember(env, { email, fullName, role, orderId }, tag) {
+  if (!env.SUPABASE_URL || !env.SUPABASE_SERVICE_ROLE_KEY) {
+    console.log(tag, "portal: SKIPPED - Supabase is not configured on the worker");
+    return;
+  }
+  const cleanEmail = normKey(email);
+  if (!EMAIL_RE.test(cleanEmail)) {
+    console.log(tag, "portal: SKIPPED - not a valid email");
+    return;
+  }
+
+  const key = env.SUPABASE_SERVICE_ROLE_KEY;
+  const headers = { apikey: key, "Content-Type": "application/json" };
+  // A legacy service_role key is a JWT and goes in Authorization too; the
+  // newer sb_secret_ keys are not JWTs and only belong in apikey.
+  if (key.startsWith("eyJ")) headers.Authorization = `Bearer ${key}`;
+
+  try {
+    const res = await fetch(`${env.SUPABASE_URL.replace(/\/+$/, "")}/rest/v1/rpc/portal_upsert_member`, {
+      method: "POST",
+      headers,
+      body: JSON.stringify({
+        p_email: cleanEmail,
+        p_full_name: clip(String(fullName || "").trim(), 200),
+        p_role: role,
+        p_order_id: clip(String(orderId || "").trim(), 100),
+      }),
+    });
+    console.log(tag, "portal: upsert", role, "status", res.status);
+  } catch (err) {
+    console.error(tag, "portal: upsert failed", err && err.message ? err.message : "unknown error");
+  }
+}
+
 async function findPaidCohortOrder(env, dbId, trackingId, email) {
   // Tracking id first, since it names the order exactly. A tracking id that
   // does not line up with the row, from an old link or a capture written
@@ -2454,4 +2820,456 @@ async function findPaidCohortOrder(env, dbId, trackingId, email) {
   }
   if (email) return findPaidRow(env, dbId, "Email", email);
   return null;
+}
+
+// ---------------------------------------------------------------------------
+// Time Rich Members: the portal member directory
+//
+// portal_directory (Supabase) holds one profile per accelerator member, built
+// from their Superhuman questionnaire row in Notion. Members never type
+// anything twice: every saved questionnaire is copied across, and sending the
+// form again is how a member edits their profile.
+//
+// Only buyers and second seats with an active portal_members row are listed.
+// Team, ambassadors and anyone without portal access are skipped. Everything
+// here runs with the service role key and never on the response path of the
+// questionnaire, so a Supabase outage cannot turn a saved form into an error.
+// ---------------------------------------------------------------------------
+
+const DIRECTORY_LISTED_ROLES = ["buyer", "second_seat"];
+
+// portal_directory column <- Notion column, in the order a profile reads.
+const DIRECTORY_FIELDS = [
+  ["name", "Name"],
+  ["hook_line", "Bio"],
+  ["title", "Title"],
+  ["company", "Company"],
+  ["company_does", "What the Company Does"],
+  ["who_they_serve", "Who They Serve"],
+  ["superpower", "Superpower"],
+  ["linkedin", "LinkedIn"],
+  ["instagram", "Instagram"],
+  ["other_links", "Other Links"],
+];
+
+// Base URL and service-role headers for Supabase REST and Storage, or null
+// when the Worker is not configured for the portal.
+function supabaseService(env) {
+  if (!env.SUPABASE_URL || !env.SUPABASE_SERVICE_ROLE_KEY) return null;
+  const key = env.SUPABASE_SERVICE_ROLE_KEY;
+  return {
+    base: env.SUPABASE_URL.replace(/\/+$/, ""),
+    headers: { apikey: key, Authorization: `Bearer ${key}`, "Content-Type": "application/json" },
+  };
+}
+
+// The member's portal_members row, if they are listed in the directory.
+// portal_members.email is not guaranteed lowercase, so this matches case
+// insensitively and then checks the address exactly, the same
+// filter-then-check shape as findRowByEmail.
+async function findListedMember(sb, email) {
+  const res = await fetch(
+    `${sb.base}/rest/v1/portal_members?select=email,role&active=is.true&email=ilike.${encodeURIComponent(email)}`,
+    { headers: sb.headers }
+  );
+  if (!res.ok) throw new Error(`portal_members lookup returned ${res.status}`);
+  const rows = await res.json();
+  const member = (Array.isArray(rows) ? rows : []).find((row) => normKey(row.email) === email);
+  return member && DIRECTORY_LISTED_ROLES.includes(member.role) ? member : null;
+}
+
+// One portal_directory row from a Notion questionnaire row. An empty Notion
+// cell becomes null, never "".
+function directoryRowFromNotion(email, role, properties) {
+  const row = { email, role, updated_at: new Date().toISOString() };
+  for (const [column, prop] of DIRECTORY_FIELDS) {
+    row[column] = calProp(properties[prop]) || null;
+  }
+  return row;
+}
+
+async function upsertDirectoryRow(sb, row) {
+  const res = await fetch(`${sb.base}/rest/v1/portal_directory?on_conflict=email`, {
+    method: "POST",
+    headers: { ...sb.headers, Prefer: "resolution=merge-duplicates,return=minimal" },
+    body: JSON.stringify(row),
+  });
+  if (!res.ok) throw new Error(`portal_directory upsert returned ${res.status}`);
+}
+
+// The photo columns already stored for this member, or null for a new row.
+async function findDirectoryRow(sb, email) {
+  const res = await fetch(
+    `${sb.base}/rest/v1/portal_directory?select=photo_path,photo_status,photo_source_url&email=eq.${encodeURIComponent(email)}`,
+    { headers: sb.headers }
+  );
+  if (!res.ok) throw new Error(`portal_directory lookup returned ${res.status}`);
+  const rows = await res.json();
+  return Array.isArray(rows) && rows.length ? rows[0] : null;
+}
+
+// Copies one Notion questionnaire row into portal_directory.
+// Returns { outcome: "listed" | "skipped", photo }, where photo is "ok",
+// "failed", "missing" or "kept". Throws only when Supabase itself fails.
+async function syncDirectoryProfile(env, properties) {
+  const sb = supabaseService(env);
+  if (!sb) throw new Error("Supabase is not configured");
+
+  const email = normKey(calProp(properties && properties["Email"]));
+  if (!email) return { outcome: "skipped" };
+
+  const member = await findListedMember(sb, email);
+  if (!member) return { outcome: "skipped" };
+
+  const row = directoryRowFromNotion(email, member.role, properties);
+  const existing = await findDirectoryRow(sb, email);
+  const photo = await syncDirectoryPhoto(env, sb, row, existing, calProp(properties["Photo Link"]).trim());
+
+  await upsertDirectoryRow(sb, row);
+  return { outcome: "listed", photo };
+}
+
+// ---------------------------------------------------------------------------
+// Photos: a Google Drive link in the questionnaire becomes a private image in
+// the "portal-directory" bucket, served later only as a signed URL.
+//
+// The download is retried only when it can change something: a new link, or
+// the same link after a failed or missing attempt (someone who fixed their
+// sharing setting but kept the link). Otherwise the stored photo is kept and
+// Drive is not called at all.
+//
+// The link is never logged, and neither is an error object, because either
+// could carry it. Failures are reported to the team as one Slack line.
+// ---------------------------------------------------------------------------
+const DIRECTORY_BUCKET = "portal-directory";
+const DIRECTORY_PHOTO_MAX_BYTES = 5 * 1024 * 1024;
+const DIRECTORY_PHOTO_TYPES = { "image/jpeg": "jpg", "image/png": "png", "image/webp": "webp" };
+
+// Sets the photo columns on `row` and returns what happened.
+async function syncDirectoryPhoto(env, sb, row, existing, link) {
+  if (!link) {
+    // Notion keeps an earlier link when a resubmission leaves it empty, so no
+    // link here means the member has never given one.
+    if (!existing || existing.photo_status !== "ok") row.photo_status = "missing";
+    return existing && existing.photo_status === "ok" ? "kept" : "missing";
+  }
+
+  const unchanged = existing && existing.photo_source_url === link && existing.photo_status === "ok";
+  if (unchanged) return "kept";
+
+  const image = await downloadDrivePhoto(link);
+  if (!image) {
+    // Keep any earlier photo_path and photo_source_url: the next attempt
+    // compares against the last link that actually worked.
+    row.photo_status = "failed";
+    await notifyPhotoFailed(env, row.name);
+    return "failed";
+  }
+
+  const path = `${await sha256Hex(row.email)}.${image.ext}`;
+  const uploaded = await fetch(`${sb.base}/storage/v1/object/${DIRECTORY_BUCKET}/${path}`, {
+    method: "POST",
+    headers: { apikey: sb.headers.apikey, Authorization: sb.headers.Authorization, "Content-Type": image.type, "x-upsert": "true" },
+    body: image.bytes,
+  });
+  if (!uploaded.ok) throw new Error(`photo upload returned ${uploaded.status}`);
+
+  // A new file type leaves the old object behind under the other extension.
+  if (existing && existing.photo_path && existing.photo_path !== path) {
+    await fetch(`${sb.base}/storage/v1/object/${DIRECTORY_BUCKET}/${existing.photo_path}`, {
+      method: "DELETE",
+      headers: { apikey: sb.headers.apikey, Authorization: sb.headers.Authorization },
+    }).catch(() => {});
+  }
+
+  row.photo_path = path;
+  row.photo_status = "ok";
+  row.photo_source_url = link;
+  return "ok";
+}
+
+// The Drive file id from the three link shapes people paste:
+//   https://drive.google.com/file/d/<id>/view?usp=sharing
+//   https://drive.google.com/open?id=<id>
+//   https://drive.google.com/uc?id=<id>&export=download
+function driveFileId(link) {
+  let url;
+  try { url = new URL(link); } catch { return null; }
+  if (url.protocol !== "https:") return null;
+  if (!/^(drive|docs)\.google\.com$/.test(url.hostname)) return null;
+
+  const id = /^\/file\/d\/([^/]+)/.test(url.pathname)
+    ? url.pathname.match(/^\/file\/d\/([^/]+)/)[1]
+    : (/^\/(open|uc)$/.test(url.pathname) ? url.searchParams.get("id") : null);
+  return id && /^[A-Za-z0-9_-]{10,}$/.test(id) ? id : null;
+}
+
+// Downloads a publicly shared Drive file. Returns { bytes, type, ext } only
+// for a JPEG, PNG or WebP of at most 5 MB; anything else (a bad link, Drive's
+// HTML sign-in page for a file that is not shared, a huge file) is null.
+async function downloadDrivePhoto(link) {
+  const id = driveFileId(link);
+  if (!id) return null;
+
+  let res;
+  try {
+    res = await fetch(`https://drive.google.com/uc?export=download&id=${encodeURIComponent(id)}`, { redirect: "follow" });
+  } catch {
+    return null;
+  }
+  const type = String(res.headers.get("Content-Type") || "").split(";")[0].trim().toLowerCase();
+  const ext = DIRECTORY_PHOTO_TYPES[type];
+  const declared = Number(res.headers.get("Content-Length"));
+  if (!res.ok || !ext || (declared && declared > DIRECTORY_PHOTO_MAX_BYTES)) {
+    try { await res.body?.cancel(); } catch { /* nothing to free */ }
+    return null;
+  }
+
+  const bytes = await readAtMost(res, DIRECTORY_PHOTO_MAX_BYTES);
+  return bytes && bytes.byteLength ? { bytes, type, ext } : null;
+}
+
+// Reads a response body, giving up (null) as soon as it passes `max` bytes,
+// so a file that lies about its size is never held in memory whole.
+async function readAtMost(res, max) {
+  if (!res.body) return null;
+  const reader = res.body.getReader();
+  const chunks = [];
+  let size = 0;
+  try {
+    for (;;) {
+      const { done, value } = await reader.read();
+      if (done) break;
+      size += value.byteLength;
+      if (size > max) {
+        await reader.cancel().catch(() => {});
+        return null;
+      }
+      chunks.push(value);
+    }
+  } catch {
+    return null;
+  }
+  const out = new Uint8Array(size);
+  let offset = 0;
+  for (const chunk of chunks) { out.set(chunk, offset); offset += chunk.byteLength; }
+  return out;
+}
+
+async function sha256Hex(text) {
+  const digest = await crypto.subtle.digest("SHA-256", new TextEncoder().encode(String(text)));
+  return [...new Uint8Array(digest)].map((b) => b.toString(16).padStart(2, "0")).join("");
+}
+
+// One line to the questionnaire Slack channel. Never the link itself.
+async function notifyPhotoFailed(env, name) {
+  const webhook = env && env.SLACK_QUESTIONNAIRE_WEBHOOK_URL;
+  if (!webhook) return;
+  const who = slackEscape(String(name || "").trim() || "a member");
+  try {
+    const res = await fetch(webhook, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ text: `Photo link failed for ${who}. Ask them to set sharing to Anyone with the link.` }),
+    });
+    if (!res.ok) console.error("[members] photo slack webhook returned", res.status);
+  } catch {
+    console.error("[members] photo slack webhook request failed");
+  }
+}
+
+// Called after the questionnaire is safely in Notion. `page` is Notion's reply
+// to the create or update, which carries every stored property, so a partial
+// resubmission still produces a complete profile.
+function queueDirectorySync(env, ctx, page) {
+  if (!page || !page.properties || !supabaseService(env)) return;
+  const work = syncDirectoryProfile(env, page.properties).catch((err) => {
+    // Our own messages only: never the payload, a link or an error object.
+    console.error("[members] directory sync failed:", String(err && err.message));
+  });
+  if (ctx && typeof ctx.waitUntil === "function") ctx.waitUntil(work);
+}
+
+// ---------------------------------------------------------------------------
+// POST /portal-directory  body: { code }
+//
+// The read side of Time Rich Members. The passcode is checked with
+// portal_get() exactly as /portal-download does, so the rule for who is a
+// member cannot drift. Until the directory_enabled switch is on, only team
+// gets through, so the page can be QA'd before launch without a code release.
+//
+// Every refusal is the same flat 403: a wrong code, a switched-off directory
+// and a Supabase error all look identical from outside. Email and
+// photo_source_url are never selected, so they cannot leak into a response.
+// ---------------------------------------------------------------------------
+const DIRECTORY_PHOTO_URL_TTL_SECONDS = 3600; // 1 hour
+const DIRECTORY_PUBLIC_COLUMNS =
+  "name,hook_line,title,company,company_does,who_they_serve,superpower,linkedin,instagram,other_links,photo_path,photo_status";
+
+async function handlePortalDirectory(request, env) {
+  const cors = portalDownloadCors(request);
+  const deny = () => json({ error: "Forbidden" }, 403, cors);
+
+  const sb = supabaseService(env);
+  if (!sb) return deny();
+
+  let body;
+  try { body = await request.json(); } catch { return deny(); }
+  const code = typeof body?.code === "string" ? body.code.trim() : "";
+  if (!code) return deny();
+
+  let member;
+  try {
+    const res = await fetch(`${sb.base}/rest/v1/rpc/portal_get`, {
+      method: "POST",
+      headers: sb.headers,
+      body: JSON.stringify({ p_code: code }),
+    });
+    if (!res.ok) return deny();
+    const payload = await res.json();
+    if (!payload || payload.ok !== true) return deny();
+    member = payload.member || {};
+  } catch { return deny(); }
+
+  if (member.role !== "team") {
+    try {
+      if (!(await directoryEnabled(sb))) return deny();
+    } catch { return deny(); }
+  }
+
+  let rows;
+  try {
+    const res = await fetch(`${sb.base}/rest/v1/portal_directory?select=${DIRECTORY_PUBLIC_COLUMNS}`, { headers: sb.headers });
+    if (!res.ok) return deny();
+    rows = await res.json();
+  } catch { return deny(); }
+  if (!Array.isArray(rows)) return deny();
+
+  const photoUrls = await signDirectoryPhotos(sb, rows);
+
+  const profiles = rows
+    .map((row) => ({
+      name: row.name || "",
+      hook_line: row.hook_line || "",
+      title: row.title || "",
+      company: row.company || "",
+      company_does: row.company_does || "",
+      who_they_serve: row.who_they_serve || "",
+      superpower: row.superpower || "",
+      linkedin: httpsLink(row.linkedin),
+      instagram: httpsLink(row.instagram),
+      other_links: String(row.other_links || "").split(/\r?\n/).map(httpsLink).filter(Boolean),
+      photo_url: (row.photo_status === "ok" && photoUrls.get(row.photo_path)) || null,
+    }))
+    .filter((profile) => profile.name)
+    .sort((a, b) => a.name.localeCompare(b.name, "en", { sensitivity: "base" }));
+
+  return json({ profiles }, 200, cors);
+}
+
+// True only when the switch is literally on; a missing row means off.
+async function directoryEnabled(sb) {
+  const res = await fetch(`${sb.base}/rest/v1/portal_settings?select=value&key=eq.directory_enabled`, { headers: sb.headers });
+  if (!res.ok) throw new Error(`portal_settings lookup returned ${res.status}`);
+  const rows = await res.json();
+  return Array.isArray(rows) && rows.length > 0 && rows[0].value === true;
+}
+
+// One-hour signed URLs for every stored photo, in a single Storage call.
+// A signing failure costs the photos, not the page: those cards show initials.
+async function signDirectoryPhotos(sb, rows) {
+  const urls = new Map();
+  const paths = rows
+    .filter((row) => row && row.photo_status === "ok" && typeof row.photo_path === "string" && row.photo_path)
+    .map((row) => row.photo_path);
+  if (!paths.length) return urls;
+
+  try {
+    const res = await fetch(`${sb.base}/storage/v1/object/sign/${DIRECTORY_BUCKET}`, {
+      method: "POST",
+      headers: sb.headers,
+      body: JSON.stringify({ expiresIn: DIRECTORY_PHOTO_URL_TTL_SECONDS, paths }),
+    });
+    if (!res.ok) return urls;
+    const signed = await res.json();
+    for (const item of Array.isArray(signed) ? signed : []) {
+      const path = item && (item.signedURL || item.signedUrl);
+      if (item && !item.error && typeof path === "string" && path) {
+        urls.set(item.path, `${sb.base}/storage/v1${path.startsWith("/") ? "" : "/"}${path}`);
+      }
+    }
+  } catch { /* initials instead of photos */ }
+  return urls;
+}
+
+// The link if it is a well-formed https URL, otherwise null.
+function httpsLink(value) {
+  const text = String(value == null ? "" : value).trim();
+  if (!text) return null;
+  try {
+    return new URL(text).protocol === "https:" ? text : null;
+  } catch {
+    return null;
+  }
+}
+
+// Constant-time comparison of two secrets of any length: both are hashed
+// first, so the loop always runs over 32 bytes whatever was sent.
+async function secretsMatch(given, expected) {
+  const enc = new TextEncoder();
+  const [a, b] = await Promise.all([
+    crypto.subtle.digest("SHA-256", enc.encode(String(given))),
+    crypto.subtle.digest("SHA-256", enc.encode(String(expected))),
+  ]);
+  const x = new Uint8Array(a);
+  const y = new Uint8Array(b);
+  let diff = 0;
+  for (let i = 0; i < x.length; i++) diff |= x[i] ^ y[i];
+  return diff === 0;
+}
+
+// POST /portal-directory-sync  (Authorization: Bearer <DIRECTORY_SYNC_SECRET>)
+//
+// Backfill: runs the same sync over every row of the Superhuman Questionnaire
+// database, for members who answered before the directory existed. Safe to
+// run any number of times; each row ends in the same state.
+async function handleDirectoryBackfill(request, env, cors) {
+  const deny = () => json({ error: "Forbidden" }, 403, cors);
+  if (!env.DIRECTORY_SYNC_SECRET) return deny();
+
+  const header = request.headers.get("Authorization") || "";
+  const given = header.startsWith("Bearer ") ? header.slice(7).trim() : "";
+  if (!given || !(await secretsMatch(given, env.DIRECTORY_SYNC_SECRET))) return deny();
+
+  const dbId = env.NOTION_SUPERHUMAN_QUESTIONNAIRE_DATABASE_ID;
+  if (!env.NOTION_TOKEN || !dbId || !supabaseService(env)) {
+    return json({ ok: false, error: "The directory sync is not configured" }, 503, cors);
+  }
+
+  const counts = { processed: 0, listed: 0, skipped: 0, failed: 0, photo_failed: 0 };
+  let cursor = null;
+  do {
+    const res = await fetch(`https://api.notion.com/v1/databases/${dbId}/query`, {
+      method: "POST",
+      headers: { ...authHeaders(env), "Content-Type": "application/json" },
+      body: JSON.stringify(cursor ? { page_size: 100, start_cursor: cursor } : { page_size: 100 }),
+    });
+    if (!res.ok) return json({ ok: false, error: "Could not read the questionnaire", ...counts }, 502, cors);
+
+    const data = await res.json();
+    for (const row of data.results || []) {
+      counts.processed++;
+      try {
+        const result = await syncDirectoryProfile(env, row.properties || {});
+        counts[result.outcome]++;
+        if (result.photo === "failed") counts.photo_failed++;
+      } catch (err) {
+        counts.failed++;
+        console.error("[members] backfill row failed:", String(err && err.message));
+      }
+    }
+    cursor = data.has_more && data.next_cursor ? data.next_cursor : null;
+  } while (cursor);
+
+  return json({ ok: true, ...counts }, 200, cors);
 }

@@ -22,6 +22,8 @@
  *     [data-portal-login]    a form; its input value is passed to signIn
  *     [data-portal-signout]  a button; signs out and reloads
  *     [data-portal-name]     gets the member's first name
+ *     [data-portal-members-link]  hidden "Members" nav link; shown when
+ *                            POST /portal-directory answers 200
  *     [data-portal-weeks]    gets the week cards
  *     [data-portal-sessions] gets the session rows
  *   If any of name/weeks/sessions are present it calls load() to fill them.
@@ -54,7 +56,7 @@
   var PLACEHOLDER = 'PASTE_';
 
   var MSG = {
-    bad_code:    "That code didn't work. Check it and try again.",
+    bad_code:    "That code isn't right. Try again.",
     unavailable: "The portal is unavailable right now. Please try again in a few minutes."
   };
 
@@ -153,6 +155,67 @@
 
   function signOut() {
     clearCode();
+    clearMembersLinkCache();
+  }
+
+  /* ---- Time Rich Members nav link ------------------------------------- */
+  //
+  // Every portal page carries a hidden "Members" link marked
+  // [data-portal-members-link]. It is shown only when POST /portal-directory
+  // answers 200 for this member: the directory is switched on, or they are
+  // team. A 403 keeps it hidden. Anything else (network, Worker down) also
+  // keeps it hidden but is not remembered, so the next page tries again.
+  //
+  // A definite answer is kept for this tab for ten minutes, so moving between
+  // portal pages does not refetch the directory every time.
+
+  var MEMBERS_LINK_CACHE = 'tr_members_link';
+  var MEMBERS_LINK_TTL_MS = 10 * 60 * 1000;
+
+  function readMembersLinkCache() {
+    try {
+      var cached = JSON.parse(window.sessionStorage.getItem(MEMBERS_LINK_CACHE) || 'null');
+      if (cached && typeof cached.ok === 'boolean' && Date.now() - cached.at < MEMBERS_LINK_TTL_MS) return cached.ok;
+    } catch (e) { /* storage off or unreadable: ask the Worker */ }
+    return null;
+  }
+
+  function writeMembersLinkCache(ok) {
+    try { window.sessionStorage.setItem(MEMBERS_LINK_CACHE, JSON.stringify({ ok: ok, at: Date.now() })); }
+    catch (e) { /* storage off: just ask again next page */ }
+  }
+
+  function clearMembersLinkCache() {
+    try { window.sessionStorage.removeItem(MEMBERS_LINK_CACHE); }
+    catch (e) { /* nothing stored */ }
+  }
+
+  function revealMembersLink() {
+    var links = document.querySelectorAll('[data-portal-members-link]');
+    if (!links.length) return;
+
+    var show = function (ok) {
+      for (var i = 0; i < links.length; i++) links[i].hidden = !ok;
+    };
+
+    var cached = readMembersLinkCache();
+    if (cached !== null) { show(cached); return; }
+
+    var cfg = window.TR_PORTAL_CONFIG;
+    var endpoint = (cfg && typeof cfg.directoryUrl === 'string') ? cfg.directoryUrl.trim() : '';
+    var code = readCode();
+    if (!endpoint || !code) return;
+
+    fetch(endpoint, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ code: code })
+    }).then(function (response) {
+      if (response.status === 200 || response.status === 403) {
+        writeMembersLinkCache(response.status === 200);
+      }
+      show(response.status === 200);
+    }, function () { show(false); });
   }
 
   /* ---- small DOM helpers ------------------------------------------- */
@@ -289,6 +352,64 @@
   
   /* ---- items --------------------------------------------------------- */
 
+  /* ---- gated skill downloads ---------------------------------------- */
+
+  // A skill item's url is a file name in a private bucket, not a link. The
+  // bytes come back only as a short-lived signed URL, and only after the
+  // Worker has re-checked the code and the week's release date.
+  function requestSkillUrl(itemId) {
+    var cfg = window.TR_PORTAL_CONFIG;
+    var endpoint = (cfg && typeof cfg.downloadUrl === 'string') ? cfg.downloadUrl.trim() : '';
+    var code = readCode();
+    if (!endpoint || !code) return Promise.resolve({ ok: false });
+
+    return fetch(endpoint, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ code: code, item_id: itemId })
+    }).then(function (response) {
+      if (!response.ok) return { ok: false };          // 403 carries no detail
+      return response.json().then(function (data) {
+        var signed = safeUrl(data && data.url);
+        return signed ? { ok: true, url: signed.href } : { ok: false };
+      }, function () { return { ok: false }; });
+    }, function () { return { ok: false }; });
+  }
+
+  function skillButton(item) {
+    var button = el('button', 'inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-brand-deep ' +
+                              'text-white text-xs font-bold shadow-sm hover:bg-brand-green ' +
+                              'transition-colors disabled:opacity-60', 'Download skill');
+    button.type = 'button';
+    button.insertAdjacentHTML('afterbegin',
+      '<svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">' +
+      '<path stroke-linecap="round" stroke-linejoin="round" d="M12 4v11m0 0l-4-4m4 4l4-4M5 19h14">' +
+      '</path></svg>');
+
+    button.addEventListener('click', function (event) {
+      event.preventDefault();
+      if (button.disabled) return;
+      var label = button.textContent;
+      button.disabled = true;
+      button.textContent = 'Preparing…';
+
+      requestSkillUrl(item && item.id).then(function (result) {
+        button.disabled = false;
+        if (result.ok) {
+          button.textContent = label;
+          window.open(result.url, '_blank', 'noopener,noreferrer');
+          return;
+        }
+        // Locked, expired or simply not available: one flat message, the
+        // same one the server gives for every refusal.
+        button.textContent = 'Not available';
+        setTimeout(function () { button.textContent = label; }, 2500);
+      });
+    });
+
+    return button;
+  }
+
   function itemCard(item) {
     var url = safeUrl(item && item.url);
     var isLink = (item && item.kind === 'link') && url;
@@ -332,13 +453,20 @@
        a.href = url.href;
        a.target = '_blank';
        bottom.appendChild(a);
+    } else if (kind === 'skill') {
+       bottom.appendChild(el('span', 'text-xs text-brand-mid font-medium', 'Superhuman skill'));
     } else {
        bottom.appendChild(el('span', 'text-xs text-brand-mid font-medium', 'Content'));
     }
 
-    var iconWrapper = el('div', 'w-8 h-8 rounded-full border border-brand-green/15 flex items-center justify-center group-hover:bg-brand-deep group-hover:border-brand-deep group-hover:text-white text-brand-deep transition-all duration-300');
-    iconWrapper.innerHTML = '<svg class="w-4 h-4 transform group-hover:translate-x-0.5 transition-transform" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7"></path></svg>';
-    bottom.appendChild(iconWrapper);
+    if (kind === 'skill') {
+       // The download button stands in for the chevron on a skill card.
+       bottom.appendChild(skillButton(item));
+    } else {
+       var iconWrapper = el('div', 'w-8 h-8 rounded-full border border-brand-green/15 flex items-center justify-center group-hover:bg-brand-deep group-hover:border-brand-deep group-hover:text-white text-brand-deep transition-all duration-300');
+       iconWrapper.innerHTML = '<svg class="w-4 h-4 transform group-hover:translate-x-0.5 transition-transform" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7"></path></svg>';
+       bottom.appendChild(iconWrapper);
+    }
 
     card.appendChild(bottom);
     return card;
@@ -517,6 +645,16 @@
     renderWeeks(document.querySelector('[data-portal-weeks]'), data);
     renderSessions(document.querySelector('[data-portal-sessions]'), data);
 
+    // A page whose design does not match the generic markup above can listen
+    // for this and render the payload itself. Fired before the gate opens, so
+    // whatever it draws is in place by the time the page becomes visible.
+    try {
+      document.dispatchEvent(new CustomEvent('trportal:data', { detail: data }));
+    } catch (e) { /* no CustomEvent: the generic rendering above still ran */ }
+
+    // Off the critical path: the page opens now, the link appears if allowed.
+    revealMembersLink();
+
     setState('in');
   }
 
@@ -648,6 +786,10 @@
     hasCode: hasCode,
     renderWeeks: renderWeeks,
     renderSessions: renderSessions,
+    // resources.html renders its own skill library and reuses this button, so
+    // the gated-download flow lives in exactly one place.
+    skillButton: skillButton,
+    revealMembersLink: revealMembersLink,
     messages: MSG
   };
 

@@ -1,0 +1,1473 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth" data-trp-gate>
+<head>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <!-- Google tag (gtag.js) -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-CTZLQ4R388"></script>
+  <script>
+    window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}
+    // Consent Mode v2. Region-specific default first, then the global fallback,
+    // which is the order Google's docs specify: the narrower region wins.
+    gtag('consent','default',{ad_storage:'denied',ad_user_data:'denied',ad_personalization:'denied',analytics_storage:'denied',region:['AT','BE','BG','HR','CY','CZ','DK','EE','FI','FR','DE','GR','HU','IS','IE','IT','LV','LI','LT','LU','MT','NL','NO','PL','PT','RO','SK','SI','ES','SE','GB','CH']});
+    gtag('consent','default',{ad_storage:'denied',ad_user_data:'denied',ad_personalization:'denied',analytics_storage:'granted'});
+    gtag('js',new Date());
+    gtag('config','G-CTZLQ4R388');
+  </script>
+
+  <title>Time Rich Members | Time Rich Portal</title>
+  <link rel="stylesheet" href="portal.css"/>
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin=""/>
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Newsreader:ital,opsz,wght@0,6..72,300;0,6..72,400;0,6..72,500;1,6..72,400&family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet"/>
+  <style>
+    .custom-scroll::-webkit-scrollbar { width: 4px; }
+    .custom-scroll::-webkit-scrollbar-track { background: transparent; }
+    .custom-scroll::-webkit-scrollbar-thumb { background: rgba(66,75,54,0.15); border-radius: 4px; }
+    
+    .grid-bg {
+      background-image: linear-gradient(rgba(66,75,54,.08) 1px, transparent 1px), linear-gradient(90deg, rgba(66,75,54,.08) 1px, transparent 1px);
+      background-size: 52px 52px;
+      background-position: left top;
+    }
+    
+    .glow-orb {
+      background: radial-gradient(circle, rgba(230,230,230,0.6) 0%, rgba(230,230,230,0) 70%);
+    }
+  
+    @keyframes float {
+      0%, 100% { transform: translateY(0) rotate(-5deg); }
+      50% { transform: translateY(-8px) rotate(-3deg); }
+    }
+    @keyframes float-alt {
+      0%, 100% { transform: translateY(0) rotate(4deg); }
+      50% { transform: translateY(6px) rotate(5deg); }
+    }
+    .animate-float { animation: float 6s ease-in-out infinite; }
+    .animate-float-alt { animation: float-alt 7s ease-in-out infinite; }
+    
+    /* Smooth card hover lift */
+    .card-lift { transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.3s cubic-bezier(0.16, 1, 0.3, 1), border-color 0.3s ease; }
+    .card-lift:hover { transform: translateY(-4px); box-shadow: 0 12px 24px -10px rgba(66,75,54,0.15); border-color: rgba(66,75,54,0.3); }
+
+    h1, h2, h3, h4, h5, h6 { font-family: "Space Grotesk", sans-serif; letter-spacing: -0.022em; }
+
+    /* Full-screen organic atmospheric olive/sage background */
+    body {
+          background-color: #D5DCD0;
+          background-image:
+            radial-gradient(circle at 10% 10%, rgba(250, 253, 245, 0.95) 0%, transparent 70%),
+            radial-gradient(circle at 90% 90%, rgba(170, 185, 165, 0.5) 0%, transparent 80%),
+            radial-gradient(circle at 50% 60%, rgba(195, 210, 185, 0.6) 0%, transparent 70%);
+          min-height: 100vh;
+      }
+
+    .main-grid {
+      background-image:
+        linear-gradient(rgba(0, 0, 0, 0.04) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(0, 0, 0, 0.04) 1px, transparent 1px);
+      background-size: 40px 40px;
+      background-position: top left;
+    }
+
+    /* Ultra-premium frosted glass card embedded into background */
+    
+    .noise-overlay {
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      z-index: 1;
+      opacity: 0.11;
+      mix-blend-mode: multiply;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 250 250' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
+    }
+
+      .font-montserrat { font-family: 'Montserrat', sans-serif !important; }
+  
+.glass3d { 
+  --filter-glass3d: blur(15px) brightness(0.66) saturate(2); 
+  --color-glass3d: rgba(186, 198, 163, 0.98); 
+  --noise-glass3d: url("https://www.transparenttextures.com/patterns/egg-shell.png"); 
+
+  position: relative; 
+  box-shadow:  
+    0 0 0.75px hsl(205 20% 10% / 0.2), 
+    0.7px 0.8px 1.2px -0.4px hsl(205 20% 10% / 0.1), 
+    1.3px 1.5px 2.2px -0.8px hsl(205 20% 10% / 0.1), 
+    2.3px 2.6px 3.9px -1.2px hsl(205 20% 10% / 0.1), 
+    3.9px 4.4px 6.6px -1.7px hsl(205 20% 10% / 0.1), 
+    6.5px 7.2px 10.9px -2.1px hsl(205 20% 10% / 0.1), 
+    8px 9px 14px -2.5px hsl(205 20% 10% / 0.2); 
+}
+
+.glass3d::before { 
+  content: ""; 
+  position: absolute; 
+  inset: 0; 
+  pointer-events: none; 
+  border-radius: inherit; 
+  overflow: hidden; 
+  z-index: -1; /* Keep it below content */
+  
+  -webkit-backdrop-filter: var(--filter-glass3d); 
+  backdrop-filter: var(--filter-glass3d); 
+  background-color: var(--color-glass3d); 
+  background-image: var(--noise-glass3d); 
+  background-size: 100px; 
+  background-repeat: repeat; 
+}
+
+.glass3d::after { 
+  content: ""; 
+  position: absolute; 
+  inset: 0; 
+  pointer-events: none; 
+  border-radius: inherit; 
+  overflow: hidden; 
+  z-index: 5; 
+  
+  box-shadow: 
+    inset 2px 2px 1px -3px hsl(205 20% 90% / 0.8), 
+    inset 4px 4px 2px -6px hsl(205 20% 90% / 0.3), 
+    inset 1.5px 1.5px 1.5px -0.75px hsl(205 20% 90% / 0.15), 
+    inset 1.5px 1.5px 0.25px hsl(205 20% 90% / 0.03), 
+    inset 0 0 0.25px 0.5px hsl(205 20% 90% / 0.03); 
+}
+
+.glass3d > * { 
+  position: relative; 
+  z-index: 6; 
+}
+
+
+    .nav-noise {
+        background-color: transparent !important;
+        background-image: 
+            linear-gradient(135deg, rgba(51, 58, 40, 0.98) 0%, rgba(30, 35, 24, 0.98) 100%),
+            url("data:image/svg+xml,%3Csvg viewBox='0 0 250 250' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='1.2' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)' opacity='0.25'/%3E%3C/svg%3E");
+        background-blend-mode: normal, normal;
+        border-color: rgba(255, 255, 255, 0.08) !important;
+    }
+
+    .premium-dropdown {
+      background: linear-gradient(135deg, rgba(255, 255, 255, 0.98) 0%, rgba(250, 255, 245, 0.85) 100%);
+      backdrop-filter: blur(64px) saturate(1.5);
+      -webkit-backdrop-filter: blur(64px) saturate(1.5);
+      border: 1px solid rgba(255, 255, 255, 0.8);
+      box-shadow: 
+        0 32px 64px -12px rgba(90, 105, 75, 0.25),
+        0 8px 24px rgba(90, 105, 75, 0.1),
+        inset 0 1px 0 rgba(255, 255, 255, 1),
+        inset 0 0 24px rgba(255, 255, 255, 0.3);
+    }
+  
+    /* === SMOOTH PORTAL TRANSITIONS === */
+    html { scroll-behavior: smooth; }
+    
+    /* Smooth all interactive elements */
+    a, button, [role="button"] {
+      transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+    
+    /* Smooth focus states */
+    *:focus-visible {
+      outline: 2px solid rgba(89, 108, 36, 0.4);
+      outline-offset: 2px;
+      transition: outline 0.2s ease;
+    }
+    
+    /* Smooth image loading */
+    img {
+      transition: opacity 0.4s ease;
+    }
+    
+    /* Accordion smooth expand/collapse */
+    .accordion-content {
+      max-height: 0;
+      overflow: hidden;
+      transition: max-height 0.5s cubic-bezier(0.16, 1, 0.3, 1), 
+                  opacity 0.4s ease, 
+                  padding 0.4s ease;
+      opacity: 0;
+    }
+    .accordion-content.open {
+      opacity: 1;
+    }
+    
+  
+    /* Smooth press feedback on cards */
+    .glass-card:active {
+      transform: translateY(-1px) scale(0.995);
+      transition: transform 0.15s ease;
+    }
+    
+  
+    /* === MOBILE PERFORMANCE === */
+    @media (max-width: 768px) {
+      /* Reduce blur intensity on mobile for performance */
+      .glass-card,
+      .premium-dropdown {
+        -webkit-backdrop-filter: blur(16px) !important;
+        backdrop-filter: blur(16px) !important;
+      }
+      .glass3d::before {
+        -webkit-backdrop-filter: blur(8px) brightness(0.8) !important;
+        backdrop-filter: blur(8px) brightness(0.8) !important;
+      }
+      /* Disable noise overlay on mobile */
+      .noise-overlay {
+        display: none !important;
+      }
+      /* Disable shimmer hover on touch devices */
+      .shimmer-card::before {
+        display: none !important;
+      }
+      /* Reduce box-shadow complexity */
+      .glass3d {
+        box-shadow: 0 2px 8px rgba(0,0,0,0.1) !important;
+      }
+      /* Reduce floating animations */
+      .animate-float, .animate-float-alt {
+        animation: none !important;
+      }
+      /* Faster page transitions on mobile */
+      body {
+        transition: opacity 0.4s ease, transform 0.4s ease !important;
+      }
+      /* Disable grid lines on mobile for performance */
+      .main-grid {
+        background-image: none !important;
+      }
+    }
+    
+    /* Respect reduced motion preferences */
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+      }
+    }
+    
+    /* Touch device optimizations */
+    @media (hover: none) {
+      .card-lift:hover {
+        transform: none;
+        box-shadow: none;
+      }
+      .shimmer-card::before {
+        display: none;
+      }
+    }
+    
+  </style>
+  <link rel="stylesheet" href="portal-content.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@600&display=swap" rel="stylesheet">
+
+  
+
+<style>
+  @keyframes marquee {
+    0% { transform: translateX(0); }
+    100% { transform: translateX(-50%); }
+  }
+  .animate-marquee {
+    animation: marquee 100s linear infinite;
+    width: max-content;
+  }
+  .animate-marquee:hover {
+    animation-play-state: paused;
+  }
+
+.glass3d { 
+  --filter-glass3d: blur(15px) brightness(0.66) saturate(2); 
+  --color-glass3d: rgba(186, 198, 163, 0.98); 
+  --noise-glass3d: url("https://www.transparenttextures.com/patterns/egg-shell.png"); 
+
+  position: relative; 
+  box-shadow:  
+    0 0 0.75px hsl(205 20% 10% / 0.2), 
+    0.7px 0.8px 1.2px -0.4px hsl(205 20% 10% / 0.1), 
+    1.3px 1.5px 2.2px -0.8px hsl(205 20% 10% / 0.1), 
+    2.3px 2.6px 3.9px -1.2px hsl(205 20% 10% / 0.1), 
+    3.9px 4.4px 6.6px -1.7px hsl(205 20% 10% / 0.1), 
+    6.5px 7.2px 10.9px -2.1px hsl(205 20% 10% / 0.1), 
+    8px 9px 14px -2.5px hsl(205 20% 10% / 0.2); 
+}
+
+.glass3d::before { 
+  content: ""; 
+  position: absolute; 
+  inset: 0; 
+  pointer-events: none; 
+  border-radius: inherit; 
+  overflow: hidden; 
+  z-index: -1; /* Keep it below content */
+  
+  -webkit-backdrop-filter: var(--filter-glass3d); 
+  backdrop-filter: var(--filter-glass3d); 
+  background-color: var(--color-glass3d); 
+  background-image: var(--noise-glass3d); 
+  background-size: 100px; 
+  background-repeat: repeat; 
+}
+
+.glass3d::after { 
+  content: ""; 
+  position: absolute; 
+  inset: 0; 
+  pointer-events: none; 
+  border-radius: inherit; 
+  overflow: hidden; 
+  z-index: 5; 
+  
+  box-shadow: 
+    inset 2px 2px 1px -3px hsl(205 20% 90% / 0.8), 
+    inset 4px 4px 2px -6px hsl(205 20% 90% / 0.3), 
+    inset 1.5px 1.5px 1.5px -0.75px hsl(205 20% 90% / 0.15), 
+    inset 1.5px 1.5px 0.25px hsl(205 20% 90% / 0.03), 
+    inset 0 0 0.25px 0.5px hsl(205 20% 90% / 0.03); 
+}
+
+.glass3d > * { 
+  position: relative; 
+  z-index: 6; 
+}
+
+    /* Premium Marquee Mask */
+    .expert-marquee-mask {
+      mask-image: linear-gradient(to right, transparent 0%, rgba(0,0,0,0.1) 20px, rgba(0,0,0,0.4) 60px, black 120px, black calc(100% - 60px), transparent 100%);
+      -webkit-mask-image: linear-gradient(to right, transparent 0%, rgba(0,0,0,0.1) 20px, rgba(0,0,0,0.4) 60px, black 120px, black calc(100% - 60px), transparent 100%);
+    }
+    @media (min-width: 1024px) {
+      .expert-marquee-mask {
+        mask-image: linear-gradient(to right, transparent 0%, rgba(0,0,0,0.1) 60px, rgba(0,0,0,0.4) 140px, black 280px, black calc(100% - 200px), transparent 100%);
+        -webkit-mask-image: linear-gradient(to right, transparent 0%, rgba(0,0,0,0.1) 60px, rgba(0,0,0,0.4) 140px, black 280px, black calc(100% - 200px), transparent 100%);
+      }
+    }
+    
+    /* Touch Swipable Marquee on Mobile */
+    @media (max-width: 1023px) {
+      .animate-marquee {
+        animation: none !important;
+        width: 100% !important;
+        overflow-x: auto !important;
+        overflow-y: hidden !important;
+        -webkit-overflow-scrolling: touch !important;
+        scroll-snap-type: x mandatory;
+        scrollbar-width: none;
+        -ms-overflow-style: none;
+      }
+      .animate-marquee::-webkit-scrollbar {
+        display: none;
+      }
+      .animate-marquee > div > div {
+        scroll-snap-align: center;
+      }
+    }
+
+    .nav-noise {
+        background-color: transparent !important;
+        background-image: 
+            linear-gradient(135deg, rgba(51, 58, 40, 0.98) 0%, rgba(30, 35, 24, 0.98) 100%),
+            url("data:image/svg+xml,%3Csvg viewBox='0 0 250 250' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='1.2' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)' opacity='0.25'/%3E%3C/svg%3E");
+        background-blend-mode: normal, normal;
+        border-color: rgba(255, 255, 255, 0.08) !important;
+    }
+
+    .premium-dropdown {
+      background: linear-gradient(135deg, rgba(255, 255, 255, 0.98) 0%, rgba(250, 255, 245, 0.85) 100%);
+      backdrop-filter: blur(64px) saturate(1.5);
+      -webkit-backdrop-filter: blur(64px) saturate(1.5);
+      border: 1px solid rgba(255, 255, 255, 0.8);
+      box-shadow: 
+        0 32px 64px -12px rgba(90, 105, 75, 0.25),
+        0 8px 24px rgba(90, 105, 75, 0.1),
+        inset 0 1px 0 rgba(255, 255, 255, 1),
+        inset 0 0 24px rgba(255, 255, 255, 0.3);
+    }
+  </style>
+
+  <style>
+    
+      /* Animated Premium Shimmer Hues */
+      .shimmer-card {
+        position: relative;
+        overflow: hidden;
+      }
+      .shimmer-card > *:not(.absolute) {
+        position: relative;
+        z-index: 10;
+      }
+      .shimmer-card::before {
+        content: "";
+        position: absolute;
+        top: -50%;
+        left: -50%;
+        width: 200%;
+        height: 200%;
+        opacity: 0;
+        transition: opacity 0.7s ease, transform 1.2s ease;
+        transform: scale(0.8) translate(-10%, -10%);
+        pointer-events: none;
+        z-index: 1;
+      }
+      .shimmer-card:hover::before {
+        opacity: 1;
+        transform: scale(1.5) translate(15%, 15%);
+      }
+      .shimmer-green::before {
+        background: radial-gradient(circle at center, rgba(255, 255, 255, 0.8) 0%, rgba(130, 160, 90, 0.25) 30%, transparent 60%);
+      }
+      .shimmer-blue::before {
+        background: radial-gradient(circle at center, rgba(255, 255, 255, 0.8) 0%, rgba(59, 130, 246, 0.15) 30%, transparent 60%);
+      }
+
+      .glass-card {
+      background: linear-gradient(135deg, rgba(255, 255, 255, 0.75) 0%, rgba(245, 250, 240, 0.4) 100%);
+      backdrop-filter: blur(48px) saturate(1.2);
+      -webkit-backdrop-filter: blur(48px) saturate(1.2);
+      border: 1px solid rgba(255, 255, 255, 0.5);
+      box-shadow: 
+        0 24px 48px -12px rgba(90, 105, 75, 0.25),
+        inset 0 1px 0 rgba(255, 255, 255, 0.8),
+        inset 0 0 24px rgba(255, 255, 255, 0.2);
+      transition: all 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+    .premium-nav {
+      background: linear-gradient(to bottom, rgba(255, 255, 255, 0.75) 0%, rgba(250, 255, 245, 0.4) 100%) !important;
+      backdrop-filter: blur(48px) saturate(1.2) !important;
+      -webkit-backdrop-filter: blur(48px) saturate(1.2) !important;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.5) !important;
+      box-shadow: 
+        0 12px 32px -8px rgba(90, 105, 75, 0.15),
+        inset 0 -1px 0 rgba(255, 255, 255, 0.4) !important;
+    }
+    .premium-nav.scrolled {
+      background: linear-gradient(to bottom, rgba(255, 255, 255, 0.9) 0%, rgba(250, 255, 245, 0.6) 100%) !important;
+      box-shadow: 
+        0 20px 40px -10px rgba(90, 105, 75, 0.25) !important;
+    }
+    .nav-active {
+      background: linear-gradient(135deg, rgba(255, 255, 255, 0.8) 0%, rgba(245, 250, 240, 0.4) 100%) !important;
+      border: 1px solid rgba(255, 255, 255, 0.6) !important;
+      box-shadow: 
+        0 8px 16px -4px rgba(90, 105, 75, 0.2),
+        inset 0 1px 0 rgba(255, 255, 255, 0.8) !important;
+    }
+    .nav-item:hover {
+      background: linear-gradient(135deg, rgba(255, 255, 255, 0.4) 0%, rgba(245, 250, 240, 0.1) 100%) !important;
+      border-color: rgba(255, 255, 255, 0.3) !important;
+    }
+  
+    .premium-dropdown {
+      background: linear-gradient(135deg, rgba(255, 255, 255, 0.98) 0%, rgba(250, 255, 245, 0.85) 100%);
+      backdrop-filter: blur(64px) saturate(1.5);
+      -webkit-backdrop-filter: blur(64px) saturate(1.5);
+      border: 1px solid rgba(255, 255, 255, 0.8);
+      box-shadow: 
+        0 32px 64px -12px rgba(90, 105, 75, 0.25),
+        0 8px 24px rgba(90, 105, 75, 0.1),
+        inset 0 1px 0 rgba(255, 255, 255, 1),
+        inset 0 0 24px rgba(255, 255, 255, 0.3);
+    }
+  </style>
+  <!-- The passcode gate. Config first, then the library; both deferred so
+       the DOM is ready when the script mounts. No valid code redirects to
+       index.html, because this page has no login form of its own. -->
+  <script src="portal-config.js" defer></script>
+  <script src="portal-access.js" defer></script>
+  <script src="portal-live.js"></script>
+</head>
+
+
+
+<body class="text-brand-deep font-sans min-h-screen flex flex-col selection:bg-brand-lime selection:text-brand-deep">
+
+  <!-- Noise Texture Overlay -->
+  <div class="noise-overlay"></div>
+
+  <!-- MOBILE MENU OVERLAY -->
+  <div id="mobile-menu-overlay" class="fixed inset-0 bg-brand-deep/20 backdrop-blur-sm z-[100] opacity-0 pointer-events-none transition-opacity duration-500 snap-center"></div>
+  
+  <div id="mobile-menu" class="fixed top-0 left-0 bottom-0 w-[85%] max-w-[320px] bg-[#E8ECE0] border-r border-white/40 shadow-2xl z-[101] -translate-x-full transition-transform duration-500 flex flex-col" style="transition-timing-function: cubic-bezier(0.16, 1, 0.3, 1);">
+    <div class="flex-1 overflow-y-auto p-6 pt-24 flex flex-col justify-between">
+      <nav class="space-y-2">
+        <a href="dashboard.html" class="flex items-center gap-3 px-4 py-2 text-xs font-medium text-brand-deep nav-item border border-transparent rounded-[14px] transition-all duration-300">
+          <svg class="w-4 h-4 text-brand-mid" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"></path></svg>
+          Dashboard
+        </a>
+        <a href="curriculum.html" class="flex items-center gap-3 px-4 py-2 text-xs font-medium text-brand-deep nav-item border border-transparent rounded-[14px] transition-all duration-300">
+          <svg class="w-4 h-4 text-brand-mid" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"></path></svg>
+          Curriculum
+        </a>
+        <a href="sessions.html" class="flex items-center gap-3 px-4 py-2 text-xs font-medium text-brand-deep nav-item border border-transparent rounded-[14px] transition-all duration-300">
+          <svg class="w-4 h-4 text-brand-mid" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z"></path></svg>
+          Live Sessions
+        </a>
+        <a href="resources.html" class="flex items-center gap-3 px-4 py-2 text-xs font-medium text-brand-deep nav-item border border-transparent rounded-[14px] transition-all duration-300">
+          <svg class="w-4 h-4 text-brand-mid" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"></path></svg>
+          Resources
+        </a>
+        <a href="members.html" aria-current="page" class="flex items-center gap-3 px-4 py-2 text-xs font-medium text-brand-deep nav-item border border-transparent rounded-[14px] transition-all duration-300">
+          <svg class="w-4 h-4 text-brand-mid" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"></path></svg>
+          Members
+        </a>
+      </nav>
+      <div class="mt-8 border-t border-white/20 pt-8 space-y-2">
+        
+        <a href="index.html" class="flex items-center gap-3 px-4 py-2 text-xs font-medium text-brand-deep nav-item border border-transparent rounded-[14px] transition-all duration-300">
+          <svg class="w-4 h-4 text-brand-mid" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1"></path></svg>
+          Back home
+        </a>
+        <button type="button" data-portal-signout class="w-full flex items-center gap-3 px-4 py-2 text-xs font-medium text-brand-deep nav-item border border-transparent rounded-[14px] transition-all duration-300">
+          <svg class="w-4 h-4 text-brand-mid" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"></path></svg>
+          Sign out
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- TOP NAVBAR -->
+  <header id="top-nav" class="h-16 transition-all duration-500 ease-out flex items-center justify-between px-3 sm:px-6 lg:px-12 shrink-0 premium-nav z-[9999] relative">
+    <div class="flex items-center gap-4 sm:gap-12 shrink-0">
+      
+      <!-- Mobile Menu Button -->
+      <button id="mobile-menu-btn" class="lg:hidden flex items-center justify-center w-11 h-11 rounded-xl bg-white/10 shadow-[inset_0_1px_0_rgba(255,255,255,0.2),0_2px_8px_rgba(0,0,0,0.04)] border border-white/20 backdrop-blur-xl hover:bg-brand-deep/15 hover:scale-105 active:scale-95 transition-all cursor-pointer relative" aria-label="Toggle menu">
+        <svg id="hamburger-icon" class="w-5 h-5 text-brand-deep transition-all duration-300" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5"></path></svg>
+          <svg id="close-icon" class="w-5 h-5 text-brand-deep absolute opacity-0 scale-50 transition-all duration-300" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"></path></svg>
+      </button>
+
+      <!-- Logo -->
+      <a class="group flex items-center gap-1.5 sm:gap-4 focus:outline-none rounded shrink-0 whitespace-nowrap" href="index.html">
+          <div class="flex items-baseline text-[17px] sm:text-[22px] font-bold tracking-tighter text-brand-deep" style="font-family: 'Space Grotesk', sans-serif; font-weight: 700;">
+            Time Rich<span class="text-[#596C24]">.</span>
+          </div>
+        </a>
+
+    </div>
+
+    <!-- Desktop Nav -->
+    <nav class="hidden lg:flex items-center gap-1 xl:gap-2 absolute left-1/2 -translate-x-1/2">
+        <a href="dashboard.html" class="px-3 py-1.5 rounded-full text-xs font-medium text-brand-mid hover:text-brand-deep transition-colors">Dashboard</a>
+        <a href="curriculum.html" class="px-3 py-1.5 rounded-full text-xs font-medium text-brand-mid hover:text-brand-deep transition-colors">Curriculum</a>
+        <a href="sessions.html" class="px-3 py-1.5 rounded-full text-xs font-medium text-brand-mid hover:text-brand-deep transition-colors">Live Sessions</a>
+        <a href="resources.html" class="px-3 py-1.5 rounded-full text-xs font-medium text-brand-mid hover:text-brand-deep transition-colors">Resources</a>
+        <a href="members.html" aria-current="page" class="px-3 py-1.5 rounded-full text-xs font-semibold text-brand-deep nav-active border border-white/40">Members</a>
+    </nav>
+
+    <!-- Right Actions -->
+    <div class="flex items-center gap-3 sm:gap-6">
+      <button type="button" data-portal-signout class="hidden lg:inline-flex px-3 py-1.5 rounded-full text-xs font-medium text-brand-mid hover:text-brand-deep transition-colors">Sign out</button>
+      <div class="relative">
+          <button id="notif-btn" class="text-brand-mid hover:text-brand-deep transition-all relative p-2 -mr-2 rounded-full hover:bg-white/10 hover:backdrop-blur-md">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"></path></svg>
+            <span class="absolute top-[6px] right-[6px] w-[6px] h-[6px] rounded-full bg-[#EF4444] shadow-[0_0_8px_#EF4444] ring-1 ring-[#EF4444]/50 animate-pulse"></span>
+          </button>
+          
+          <div id="notif-dropdown" class="premium-dropdown absolute right-0 mt-3 w-[22rem] rounded-[1.5rem] p-2 flex flex-col gap-1 opacity-0 pointer-events-none translate-y-[-10px] transition-all duration-300 ease-out z-[9999] origin-top-right">
+            <div class="px-4 py-3 flex items-center justify-between border-b border-black/5 mb-2">
+              <span class="text-[11px] font-semibold text-brand-deep font-montserrat tracking-[0.15em] uppercase">Notifications</span>
+              <button class="text-[10px] text-brand-mid hover:text-brand-deep transition-colors font-medium">Mark all as read</button>
+            </div>
+            
+            <a href="#" class="flex items-start gap-4 p-3 rounded-xl hover:bg-white/60 transition-all hover:shadow-sm hover:-translate-y-[1px] group">
+              <div class="w-8 h-8 rounded-full bg-[#1a1a1a] text-white flex items-center justify-center shrink-0 shadow-md group-hover:scale-105 transition-transform">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+              </div>
+              <div class="flex flex-col gap-1">
+                <span class="text-sm font-semibold text-brand-deep leading-tight">Phase 1 Curriculum Unlocked</span>
+                <span class="text-[11px] font-medium text-brand-mid/80">Your agent strategy modules are now available.</span>
+                <span class="text-[10px] font-semibold text-[#596C24] mt-1">2 hours ago</span>
+              </div>
+              <div class="w-2 h-2 rounded-full bg-[#1a1a1a] shrink-0 mt-1"></div>
+            </a>
+            
+            <a href="#" class="flex items-start gap-4 p-3 rounded-xl hover:bg-white/60 transition-all hover:shadow-sm hover:-translate-y-[1px] group opacity-70">
+              <div class="w-8 h-8 rounded-full bg-brand-deep/5 text-brand-deep border border-brand-deep/10 flex items-center justify-center shrink-0 group-hover:scale-105 transition-transform">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z"></path></svg>
+              </div>
+              <div class="flex flex-col gap-1">
+                <span class="text-sm font-semibold text-brand-deep leading-tight">Live Session starts in 10 mins</span>
+                <span class="text-[11px] font-medium text-brand-mid/80">Join the weekly group Q&A on Zoom.</span>
+                <span class="text-[10px] font-medium text-brand-mid mt-1">5 hours ago</span>
+              </div>
+            </a>
+          </div>
+        </div>
+    </div>
+  </header>
+
+  <!-- MAIN APP AREA -->
+  <div class="flex-1 flex">
+    
+    <!-- LEFT SIDEBAR -->
+    
+    <style>
+      #desktop-sidebar { will-change: width, transform; }
+    #desktop-sidebar.collapsed {
+        width: 5.5rem !important;
+        padding-left: 0 !important;
+        padding-right: 0 !important;
+        align-items: center !important; /* Force children to center */
+      }
+      #desktop-sidebar { will-change: width, transform; }
+    #desktop-sidebar.collapsed nav, 
+      #desktop-sidebar { will-change: width, transform; }
+    #desktop-sidebar.collapsed .mb-4 {
+        width: 100%;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+      }
+      #desktop-sidebar { will-change: width, transform; }
+    #desktop-sidebar.collapsed .sidebar-text {
+        max-width: 0 !important;
+        opacity: 0 !important;
+        margin-left: 0 !important;
+        padding: 0 !important;
+      }
+      #desktop-sidebar { will-change: width, transform; }
+    #desktop-sidebar.collapsed .sidebar-toggle-icon {
+        transform: rotate(180deg);
+      }
+      /* Center the toggle button container */
+      #desktop-sidebar { will-change: width, transform; }
+    #desktop-sidebar.collapsed .justify-end {
+        justify-content: center !important;
+        padding: 0 !important;
+      }
+      /* Make the link boxes perfect squares and center them */
+      #desktop-sidebar { will-change: width, transform; }
+    #desktop-sidebar.collapsed a {
+        justify-content: center;
+        padding-left: 0 !important;
+        padding-right: 0 !important;
+        width: 3rem !important;
+        height: 3rem !important;
+        margin: 0 auto !important;
+      }
+      #desktop-sidebar { will-change: width, transform; }
+    #desktop-sidebar.collapsed a svg {
+        margin: 0 auto;
+        transform: translateX(-1px); /* micro-adjustment to perfectly center the icon visually */
+      }
+
+    .premium-dropdown {
+      background: linear-gradient(135deg, rgba(255, 255, 255, 0.98) 0%, rgba(250, 255, 245, 0.85) 100%);
+      backdrop-filter: blur(64px) saturate(1.5);
+      -webkit-backdrop-filter: blur(64px) saturate(1.5);
+      border: 1px solid rgba(255, 255, 255, 0.8);
+      box-shadow: 
+        0 32px 64px -12px rgba(90, 105, 75, 0.25),
+        0 8px 24px rgba(90, 105, 75, 0.1),
+        inset 0 1px 0 rgba(255, 255, 255, 1),
+        inset 0 0 24px rgba(255, 255, 255, 0.3);
+    }
+  </style>
+<aside id="desktop-sidebar" class="hidden w-[17rem] transition-all duration-500 ease-[cubic-bezier(0.16,1,0.3,1)] flex-shrink-0 flex-col justify-between pt-8 pb-16 px-6 mt-0 ml-0 mb-6 h-[calc(100vh-1.5rem)] rounded-none rounded-br-[2.5rem] bg-white/50 backdrop-blur-md border-r border-b border-white/20 z-20 shadow-[0_20px_40px_rgba(0,0,0,0.08)]">
+        <div class="flex items-center justify-end px-2 mb-4 shrink-0">
+          <button id="sidebar-toggle" class="p-2 rounded-xl text-brand-mid hover:text-brand-deep hover:bg-white/20 transition-all duration-300" title="Toggle Sidebar">
+            <svg class="w-5 h-5 sidebar-toggle-icon transition-transform duration-500" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25H12"></path>
+            </svg>
+          </button>
+        </div>
+
+        
+
+        <div class="flex-1 flex flex-col justify-center">
+          <nav class="space-y-2">
+          <a href="dashboard.html" class="group flex items-center px-4 py-2.5 rounded-[14px] text-xs font-semibold text-brand-mid hover:text-brand-deep nav-item border border-transparent transition-all duration-300 hover:translate-x-1">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1"></path></svg>
+            <span class="sidebar-text ml-3 transition-all duration-500 ease-[cubic-bezier(0.16,1,0.3,1)] whitespace-nowrap overflow-hidden opacity-100 max-w-[150px]">Dashboard</span>
+          </a>
+          <a href="curriculum.html" class="group flex items-center px-4 py-2.5 rounded-[14px] text-xs font-semibold text-brand-mid hover:text-brand-deep nav-item border border-transparent transition-all duration-300 hover:translate-x-1">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"></path></svg>
+            <span class="sidebar-text ml-3 transition-all duration-500 ease-[cubic-bezier(0.16,1,0.3,1)] whitespace-nowrap overflow-hidden opacity-100 max-w-[150px]">Curriculum</span>
+          </a>
+          <a href="sessions.html" class="group flex items-center px-4 py-2.5 rounded-[14px] text-xs font-semibold text-brand-mid hover:text-brand-deep nav-item border border-transparent transition-all duration-300 hover:translate-x-1">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z"></path></svg>
+            <span class="sidebar-text ml-3 transition-all duration-500 ease-[cubic-bezier(0.16,1,0.3,1)] whitespace-nowrap overflow-hidden opacity-100 max-w-[150px]">Live Sessions</span>
+          </a>
+          <a href="resources.html" class="group flex items-center px-4 py-2.5 rounded-[14px] text-xs font-semibold text-brand-deep nav-active backdrop-blur-xl border border-white/40 shadow-sm transition-all duration-300">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"></path></svg>
+            <span class="sidebar-text ml-3 transition-all duration-500 ease-[cubic-bezier(0.16,1,0.3,1)] whitespace-nowrap overflow-hidden opacity-100 max-w-[150px]">Resources</span>
+          </a>
+        </nav>
+        </div>
+
+        <div class="space-y-6 shrink-0 mt-8">
+        <div class="h-px w-full bg-black/5 my-2"></div>
+          <a href="index.html" class="group flex items-center px-4 py-2.5 rounded-[14px] text-xs font-semibold text-brand-mid hover:text-brand-deep nav-item border border-transparent transition-all duration-300 hover:translate-x-1">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1"></path></svg>
+            <span class="sidebar-text ml-3 transition-all duration-500 ease-[cubic-bezier(0.16,1,0.3,1)] whitespace-nowrap overflow-hidden opacity-100 max-w-[150px]">Back home</span>
+          </a>
+          <span data-portal-name hidden></span>
+      </div>
+    </aside>
+
+    <!-- CENTER SCROLLABLE CONTENT -->
+    <main class="flex-1 relative bg-transparent main-grid">
+        <div class="relative z-10 px-3 sm:px-6 lg:px-12 py-8 lg:py-12 flex justify-center w-full">
+          <div class="w-full space-y-16 max-w-[1200px]">
+          
+    <style>
+      /* Time Rich Members. Brand: deep green #2C3422, page #FFFDFA, one
+         pastel accent #CCEEA0, sage #DCDEBF for photo placeholders.
+         Nothing on the page competes with the faces. */
+      .members-search {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        max-width: 440px;
+        padding: 11px 18px;
+        background: #FFFDFA;
+        border: 1px solid rgba(44, 52, 34, 0.14);
+        border-radius: 999px;
+        transition: box-shadow 0.2s ease, border-color 0.2s ease;
+      }
+      .members-search:focus-within { border-color: #2C3422; box-shadow: 0 0 0 4px #CCEEA0; }
+      .members-search svg { width: 16px; height: 16px; color: #4E5840; flex: none; }
+      .members-search input {
+        flex: 1;
+        min-width: 0;
+        padding: 0 !important;
+        border: 0 !important;
+        box-shadow: none !important;
+        outline: none;
+        background: transparent;
+        color: #2C3422;
+        font-size: 14px;
+      }
+      .members-search input::placeholder { color: #6B735F; }
+      .members-search input::-webkit-search-cancel-button { cursor: pointer; }
+
+      .members-grid {
+        list-style: none;
+        margin: 0;
+        padding: 0;
+        display: grid;
+        gap: 20px;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+      @media (min-width: 640px)  { .members-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
+      @media (min-width: 1024px) { .members-grid { grid-template-columns: repeat(4, minmax(0, 1fr)); } }
+      @media (max-width: 639px)  { .members-grid { gap: 12px; } }
+
+      .member-card {
+        display: flex;
+        flex-direction: column;
+        width: 100%;
+        height: 100%;
+        padding: 10px 10px 16px;
+        text-align: left;
+        font: inherit;
+        color: #2C3422;
+        background: #FFFDFA;
+        border: 1px solid rgba(44, 52, 34, 0.08);
+        border-radius: 20px;
+        cursor: pointer;
+        transition: transform 0.2s ease, box-shadow 0.2s ease;
+      }
+      .member-card:hover { transform: translateY(-2px); box-shadow: 0 18px 36px -20px rgba(44, 52, 34, 0.4); }
+      .member-card:focus-visible { outline: 2px solid #2C3422; outline-offset: 3px; }
+
+      /* Square crop in CSS only; faces sit a little above centre. */
+      .member-photo,
+      .member-initials {
+        display: block;
+        width: 100%;
+        aspect-ratio: 1;
+        border-radius: 14px;
+        background: #DCDEBF;
+      }
+      .member-photo { object-fit: cover; object-position: center 30%; }
+      .member-initials {
+        display: grid;
+        place-items: center;
+        font-family: 'Space Grotesk', sans-serif;
+        font-weight: 700;
+        font-size: clamp(26px, 5vw, 46px);
+        letter-spacing: -0.02em;
+        color: #2C3422;
+      }
+      .member-name { margin: 14px 4px 0; font-family: 'Space Grotesk', sans-serif; font-weight: 700; font-size: 16px; line-height: 1.25; }
+      .member-hook { margin: 4px 4px 0; font-size: 13.5px; line-height: 1.4; color: #2C3422; }
+      .member-meta { margin: 8px 4px 0; font-family: 'JetBrains Mono', monospace; font-size: 11px; line-height: 1.45; color: #6B735F; }
+      @media (max-width: 639px) {
+        .member-card { padding: 8px 8px 12px; border-radius: 16px; }
+        .member-name { font-size: 14.5px; margin-top: 10px; }
+        .member-hook { font-size: 12.5px; }
+      }
+      .members-note { margin: 0; font-size: 14px; line-height: 1.6; color: #4E5840; }
+
+      /* Profile pop-up. Appended to <body> by the script so it sits above the
+         portal header, which has its own very high z-index. */
+      .member-modal { position: fixed; inset: 0; z-index: 10050; display: grid; place-items: center; padding: 16px; }
+      .member-modal[hidden] { display: none; }
+      .member-modal-backdrop { position: absolute; inset: 0; background: rgba(44, 52, 34, 0.45); backdrop-filter: blur(4px); -webkit-backdrop-filter: blur(4px); }
+      .member-modal-panel {
+        position: relative;
+        width: min(560px, 100%);
+        max-height: calc(100dvh - 32px);
+        overflow-y: auto;
+        padding: 28px;
+        color: #2C3422;
+        background: #FFFDFA;
+        border-radius: 24px;
+        box-shadow: 0 40px 80px -30px rgba(44, 52, 34, 0.55);
+        outline: none;
+      }
+      .member-modal-close {
+        position: absolute;
+        top: 14px;
+        right: 14px;
+        display: grid;
+        place-items: center;
+        width: 40px;
+        height: 40px;
+        border: 0;
+        border-radius: 999px;
+        background: transparent;
+        color: #2C3422;
+        cursor: pointer;
+      }
+      .member-modal-close:hover { background: rgba(44, 52, 34, 0.07); }
+      .member-modal-close:focus-visible,
+      .member-modal-panel a:focus-visible { outline: 2px solid #2C3422; outline-offset: 2px; }
+      .member-modal-close svg { width: 18px; height: 18px; }
+
+      .member-profile-top { display: flex; gap: 18px; align-items: center; padding-right: 36px; }
+      .member-profile-top .member-photo,
+      .member-profile-top .member-initials { width: 112px; flex: none; border-radius: 18px; font-size: 38px; }
+      .member-profile-name { margin: 0; font-family: 'Space Grotesk', sans-serif; font-weight: 700; font-size: 24px; line-height: 1.2; letter-spacing: -0.01em; }
+      .member-profile-hook { margin: 6px 0 0; font-size: 15px; line-height: 1.45; }
+      .member-profile-meta { margin: 8px 0 0; font-family: 'JetBrains Mono', monospace; font-size: 12px; color: #6B735F; }
+      .member-profile-section { margin-top: 22px; }
+      .member-profile-section h3 {
+        margin: 0 0 6px;
+        font-family: 'JetBrains Mono', monospace;
+        font-size: 11px;
+        font-weight: 600;
+        letter-spacing: 0.12em;
+        text-transform: uppercase;
+        color: #6B735F;
+      }
+      .member-profile-section p { margin: 0; font-size: 15px; line-height: 1.6; white-space: pre-line; }
+      .member-profile-links { display: flex; flex-wrap: wrap; align-items: center; gap: 10px; margin-top: 26px; }
+      .member-linkedin {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        min-height: 44px;
+        padding: 0 20px;
+        border-radius: 999px;
+        background: #2C3422;
+        color: #FFFDFA;
+        font-weight: 600;
+        font-size: 14px;
+        text-decoration: none;
+      }
+      .member-linkedin:hover { background: #424B36; }
+      .member-linkedin svg { width: 16px; height: 16px; fill: currentColor; }
+      .member-icon-link {
+        display: grid;
+        place-items: center;
+        width: 44px;
+        height: 44px;
+        border-radius: 999px;
+        border: 1px solid rgba(44, 52, 34, 0.14);
+        color: #2C3422;
+      }
+      .member-icon-link:hover { background: #CCEEA0; border-color: #CCEEA0; }
+      .member-icon-link svg { width: 18px; height: 18px; }
+      @media (max-width: 479px) {
+        .member-modal-panel { padding: 22px 18px; border-radius: 20px; }
+        .member-profile-top { flex-direction: column; align-items: flex-start; }
+        .member-profile-top .member-photo,
+        .member-profile-top .member-initials { width: 96px; }
+      }
+    </style>
+
+    <header class="space-y-3">
+      <h1 class="text-4xl lg:text-[42px] font-display font-bold tracking-tight text-brand-deep">Time Rich Members</h1>
+      <p class="text-sm text-brand-mid leading-relaxed">Your cohort. Find the right person and make the ask.</p>
+    </header>
+
+    <section class="mt-8 space-y-8" aria-label="Members">
+      <label class="members-search" for="members-search">
+        <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
+        <span class="sr-only">Search members</span>
+        <input id="members-search" type="search" autocomplete="off" spellcheck="false"
+               placeholder="Search by name, company or superpower" disabled />
+      </label>
+
+      <p id="members-status" class="members-note" role="status" aria-live="polite">Loading your cohort&hellip;</p>
+      <ul id="members-grid" class="members-grid" hidden></ul>
+    </section>
+</div>
+      </div>
+    
+        </div>
+      </main> <!-- CLOSE main -->
+    </div> <!-- CLOSE h-screen container -->
+
+  <script>
+    document.addEventListener("DOMContentLoaded", () => {
+      // 1. Mobile Menu Toggle
+      const btn = document.getElementById("mobile-menu-btn");
+      const closeBtn = document.getElementById("mobile-menu-close");
+      const menu = document.getElementById("mobile-menu");
+      const overlay = document.getElementById("mobile-menu-overlay");
+
+      function openMenu() {
+        if(overlay) {
+          overlay.classList.remove("opacity-0", "pointer-events-none");
+          overlay.classList.add("opacity-100", "pointer-events-auto");
+        }
+        if(menu) {
+          menu.classList.remove("-translate-x-full");
+          menu.classList.add("translate-x-0");
+        }
+      }
+
+      function closeMenu() {
+        if(overlay) {
+          overlay.classList.remove("opacity-100", "pointer-events-auto");
+          overlay.classList.add("opacity-0", "pointer-events-none");
+        }
+        const hamburgerIcon = document.getElementById("hamburger-icon");
+          const closeIcon = document.getElementById("close-icon");
+          if (hamburgerIcon) { hamburgerIcon.classList.remove("opacity-0", "scale-50"); hamburgerIcon.classList.add("opacity-100", "scale-100"); }
+          if (closeIcon) { closeIcon.classList.add("opacity-0", "scale-50"); closeIcon.classList.remove("opacity-100", "scale-100"); }
+          if(menu) {
+          menu.classList.remove("translate-x-0");
+          menu.classList.add("-translate-x-full");
+        }
+      }
+        if(btn) btn.addEventListener("click", (e) => {
+          e.stopPropagation();
+          const hamburgerIcon = document.getElementById("hamburger-icon");
+          const closeIcon = document.getElementById("close-icon");
+          if (menu && menu.classList.contains("-translate-x-full")) {
+            if(overlay) {
+              overlay.classList.remove("opacity-0", "pointer-events-none");
+              overlay.classList.add("opacity-100", "pointer-events-auto");
+            }
+            if(menu) {
+              menu.classList.remove("-translate-x-full");
+              menu.classList.add("translate-x-0");
+            }
+            if (hamburgerIcon) { hamburgerIcon.classList.add("opacity-0", "scale-50"); hamburgerIcon.classList.remove("opacity-100", "scale-100"); }
+            if (closeIcon) { closeIcon.classList.remove("opacity-0", "scale-50"); closeIcon.classList.add("opacity-100", "scale-100"); }
+          } else {
+            if(overlay) {
+              overlay.classList.remove("opacity-100", "pointer-events-auto");
+              overlay.classList.add("opacity-0", "pointer-events-none");
+            }
+            if(menu) {
+              menu.classList.remove("translate-x-0");
+              menu.classList.add("-translate-x-full");
+            }
+            if (hamburgerIcon) { hamburgerIcon.classList.remove("opacity-0", "scale-50"); hamburgerIcon.classList.add("opacity-100", "scale-100"); }
+            if (closeIcon) { closeIcon.classList.add("opacity-0", "scale-50"); closeIcon.classList.remove("opacity-100", "scale-100"); }
+          }
+        });
+
+      if(closeBtn) closeBtn.addEventListener("click", closeMenu);
+      if(overlay) overlay.addEventListener("click", closeMenu);
+
+      // 2. Notification Toggle
+      const notifBtn = document.getElementById('notif-btn');
+      const notifDropdown = document.getElementById('notif-dropdown');
+      
+      if (notifBtn && notifDropdown) {
+        notifBtn.addEventListener('click', (e) => {
+          e.stopPropagation();
+          const isOpen = !notifDropdown.classList.contains('opacity-0');
+          if (isOpen) {
+            notifDropdown.classList.add('opacity-0', 'pointer-events-none', 'translate-y-[-10px]');
+            notifDropdown.classList.remove('opacity-100', 'pointer-events-auto', 'translate-y-0');
+          } else {
+            notifDropdown.classList.remove('opacity-0', 'pointer-events-none', 'translate-y-[-10px]');
+            notifDropdown.classList.add('opacity-100', 'pointer-events-auto', 'translate-y-0');
+          }
+        });
+        
+        // Close when clicking outside
+        document.addEventListener('click', (e) => {
+          if (!notifBtn.contains(e.target) && !notifDropdown.contains(e.target)) {
+            notifDropdown.classList.add('opacity-0', 'pointer-events-none', 'translate-y-[-10px]');
+            notifDropdown.classList.remove('opacity-100', 'pointer-events-auto', 'translate-y-0');
+          }
+        });
+      }
+
+      // 3. Video Controls
+      const video = document.getElementById('promo-video');
+      const playBtn = document.getElementById('promo-play-btn');
+      const muteBtn = document.getElementById('promo-mute-btn');
+      
+      const iconPlay = document.getElementById('icon-play');
+      const iconPause = document.getElementById('icon-pause');
+      const iconMuted = document.getElementById('icon-muted');
+      const iconUnmuted = document.getElementById('icon-unmuted');
+
+      if(playBtn && video) {
+        playBtn.addEventListener('click', (e) => {
+          e.stopPropagation();
+          if (video.paused) {
+            video.play();
+            iconPlay.classList.add('hidden');
+            iconPause.classList.remove('hidden');
+          } else {
+            video.pause();
+            iconPause.classList.add('hidden');
+            iconPlay.classList.remove('hidden');
+          }
+        });
+      }
+
+      if(muteBtn && video) {
+        muteBtn.addEventListener('click', (e) => {
+          e.stopPropagation();
+          if (video.muted) {
+            video.muted = false;
+            iconMuted.classList.add('hidden');
+            iconUnmuted.classList.remove('hidden');
+          } else {
+            video.muted = true;
+            iconUnmuted.classList.add('hidden');
+            iconMuted.classList.remove('hidden');
+          }
+        });
+      }
+    
+        
+        // Sidebar Toggle Logic
+        const sidebar = document.getElementById('desktop-sidebar');
+        const sidebarToggle = document.getElementById('sidebar-toggle');
+        if (sidebar && sidebarToggle) {
+          sidebarToggle.addEventListener('click', () => {
+            sidebar.classList.toggle('collapsed');
+          });
+        }
+
+        // 4. Navbar Scroll Effect
+        const mainScroll = document.querySelector('main.overflow-y-auto');
+        const topNav = document.getElementById('top-nav');
+        if (mainScroll && topNav) {
+          mainScroll.addEventListener('scroll', () => {
+            if (mainScroll.scrollTop > 20) {
+              topNav.classList.remove('h-16');
+              topNav.classList.add('h-[3.25rem]', 'scrolled');
+            } else {
+              topNav.classList.add('h-16');
+              topNav.classList.remove('h-[3.25rem]', 'scrolled');
+            }
+          });
+        }
+    });
+  </script>
+  <script>
+    /* Time Rich Members: the cohort directory.
+       Profiles come from the Worker route in portal-config.js (directoryUrl),
+       which re-checks the passcode and the launch switch on every call.
+       Everything a member typed is drawn with textContent, and only https
+       links are ever used, so no answer can become markup on this page. */
+    (function () {
+      'use strict';
+
+      var STORAGE_KEY = 'tr_portal_code';
+      var MSG = {
+        loading: 'Loading your cohort…',
+        empty: 'Profiles appear here as members complete their questionnaire.',
+        noMatch: 'No one matches that search yet. Try a name, a company or a superpower.',
+        closed: 'Time Rich Members opens soon. Your cohort will be here once it does.',
+        error: 'Members could not load right now. Please refresh in a minute.'
+      };
+
+      var profiles = [];
+      var grid, status, search;
+
+      function el(tag, className, text) {
+        var node = document.createElement(tag);
+        if (className) node.className = className;
+        if (text) node.textContent = text;
+        return node;
+      }
+
+      function str(value) {
+        return typeof value === 'string' ? value.trim() : '';
+      }
+
+      function safeHttps(value) {
+        try {
+          var url = new URL(str(value));
+          return url.protocol === 'https:' ? url.href : null;
+        } catch (e) {
+          return null;
+        }
+      }
+
+      // "Ada Lovelace" -> "AL", "Cher" -> "C".
+      function initials(name) {
+        var parts = str(name).split(/\s+/).filter(Boolean);
+        if (!parts.length) return '?';
+        var first = parts[0].charAt(0);
+        var last = parts.length > 1 ? parts[parts.length - 1].charAt(0) : '';
+        return (first + last).toUpperCase();
+      }
+
+      function initialsTile(profile) {
+        var tile = el('span', 'member-initials', initials(profile.name));
+        tile.setAttribute('aria-hidden', 'true');
+        return tile;
+      }
+
+      // The photo, or initials on sage when there is none or it fails to load
+      // (a signed URL that has expired after the page sat open for an hour).
+      function photo(profile) {
+        var src = safeHttps(profile.photo_url);
+        if (!src) return initialsTile(profile);
+        var img = el('img', 'member-photo');
+        img.setAttribute('alt', '');
+        img.setAttribute('loading', 'lazy');
+        img.setAttribute('decoding', 'async');
+        img.setAttribute('referrerpolicy', 'no-referrer');
+        img.addEventListener('error', function () {
+          if (img.parentNode) img.parentNode.replaceChild(initialsTile(profile), img);
+        });
+        img.src = src;
+        return img;
+      }
+
+      function meta(profile) {
+        return [str(profile.title), str(profile.company)].filter(Boolean).join(', ');
+      }
+
+      function card(profile, index) {
+        var item = el('li');
+        var button = el('button', 'member-card');
+        button.type = 'button';
+        button.setAttribute('data-member-index', String(index));
+        button.setAttribute('aria-haspopup', 'dialog');
+        button.appendChild(photo(profile));
+        button.appendChild(el('span', 'member-name', str(profile.name)));
+        if (str(profile.hook_line)) button.appendChild(el('span', 'member-hook', str(profile.hook_line)));
+        if (meta(profile)) button.appendChild(el('span', 'member-meta', meta(profile)));
+        item.appendChild(button);
+        return item;
+      }
+
+      function setStatus(text) {
+        status.textContent = text || '';
+        status.hidden = !text;
+      }
+
+      function render(list) {
+        profiles = Array.isArray(list) ? list.filter(function (p) { return p && str(p.name); }) : [];
+        grid.textContent = '';
+        if (!profiles.length) {
+          grid.hidden = true;
+          setStatus(MSG.empty);
+          return;
+        }
+        profiles.forEach(function (profile, index) { grid.appendChild(card(profile, index)); });
+        grid.hidden = false;
+        search.disabled = false;
+        setStatus('');
+        applySearch();
+      }
+
+      // Client-side, on name, company and superpower only.
+      function haystack(profile) {
+        return [profile.name, profile.company, profile.superpower].map(str).join(' ').toLowerCase();
+      }
+
+      function applySearch() {
+        var query = str(search.value).toLowerCase();
+        var shown = 0;
+        Array.prototype.forEach.call(grid.children, function (item, index) {
+          var hit = !query || haystack(profiles[index]).indexOf(query) !== -1;
+          item.hidden = !hit;
+          if (hit) shown++;
+        });
+        setStatus(profiles.length && !shown ? MSG.noMatch : '');
+      }
+
+      /* ---- profile pop-up ------------------------------------------------ */
+
+      // Static markup only; no member text ever goes through innerHTML.
+      var ICONS = {
+        close: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path stroke-linecap="round" d="M6 6l12 12M18 6L6 18"/></svg>',
+        linkedin: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20.45 20.45h-3.56v-5.57c0-1.33-.02-3.04-1.85-3.04-1.85 0-2.14 1.45-2.14 2.94v5.67H9.34V9h3.42v1.56h.05c.48-.9 1.64-1.85 3.37-1.85 3.6 0 4.27 2.37 4.27 5.46v6.28zM5.34 7.43a2.06 2.06 0 110-4.13 2.06 2.06 0 010 4.13zM7.12 20.45H3.56V9h3.56v11.45zM22.22 0H1.77C.79 0 0 .77 0 1.72v20.56C0 23.23.79 24 1.77 24h20.45c.98 0 1.78-.77 1.78-1.72V1.72C24 .77 23.2 0 22.22 0z"/></svg>',
+        instagram: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r="1" fill="currentColor" stroke="none"/></svg>',
+        link: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M13.19 8.69a4.5 4.5 0 011.24 7.24l-4.5 4.5a4.5 4.5 0 01-6.36-6.36l1.76-1.76m13.35-.62l1.76-1.76a4.5 4.5 0 00-6.36-6.36l-4.5 4.5a4.5 4.5 0 001.24 7.24"/></svg>'
+      };
+
+      var modal = null;
+      var panel = null;
+      var closeButton = null;
+      var content = null;
+      var returnFocus = null;
+
+      function outLink(href, className, label, icon) {
+        var a = el('a', className);
+        a.href = href;
+        a.target = '_blank';
+        a.rel = 'noopener noreferrer';
+        a.setAttribute('aria-label', label);
+        if (icon) a.insertAdjacentHTML('afterbegin', ICONS[icon]);
+        return a;
+      }
+
+      function hostOf(href) {
+        try { return new URL(href).hostname.replace(/^www\./, ''); } catch (e) { return href; }
+      }
+
+      function buildModal() {
+        modal = el('div', 'member-modal');
+        modal.id = 'member-modal';
+        modal.hidden = true;
+
+        var backdrop = el('div', 'member-modal-backdrop');
+        backdrop.addEventListener('click', closeProfile);
+
+        panel = el('div', 'member-modal-panel');
+        panel.setAttribute('role', 'dialog');
+        panel.setAttribute('aria-modal', 'true');
+        panel.setAttribute('aria-labelledby', 'member-modal-name');
+        panel.tabIndex = -1;
+
+        closeButton = el('button', 'member-modal-close');
+        closeButton.type = 'button';
+        closeButton.setAttribute('aria-label', 'Close profile');
+        closeButton.insertAdjacentHTML('afterbegin', ICONS.close);
+        closeButton.addEventListener('click', closeProfile);
+
+        content = el('div');
+        panel.appendChild(closeButton);
+        panel.appendChild(content);
+        modal.appendChild(backdrop);
+        modal.appendChild(panel);
+        // On <body>, so it sits above the portal header.
+        document.body.appendChild(modal);
+      }
+
+      function section(heading, text) {
+        if (!str(text)) return null;
+        var block = el('section', 'member-profile-section');
+        block.appendChild(el('h3', '', heading));
+        block.appendChild(el('p', '', str(text)));
+        return block;
+      }
+
+      // Order as the brief: photo, name, hook line, title and company, what
+      // the company does, who they serve, superpower, links.
+      function openProfile(index) {
+        var profile = profiles[index];
+        if (!profile) return;
+        if (!modal) buildModal();
+        content.textContent = '';
+
+        var top = el('div', 'member-profile-top');
+        top.appendChild(photo(profile));
+        var who = el('div');
+        var name = el('h2', 'member-profile-name', str(profile.name));
+        name.id = 'member-modal-name';
+        who.appendChild(name);
+        if (str(profile.hook_line)) who.appendChild(el('p', 'member-profile-hook', str(profile.hook_line)));
+        if (meta(profile)) who.appendChild(el('p', 'member-profile-meta', meta(profile)));
+        top.appendChild(who);
+        content.appendChild(top);
+
+        var company = str(profile.company);
+        [
+          section(company ? 'What ' + company + ' does' : 'What their company does', profile.company_does),
+          section('Who they serve', profile.who_they_serve),
+          section('Superpower', profile.superpower)
+        ].forEach(function (block) { if (block) content.appendChild(block); });
+
+        // LinkedIn is the primary button; everything else is a small icon.
+        var links = el('div', 'member-profile-links');
+        var linkedin = safeHttps(profile.linkedin);
+        if (linkedin) {
+          var primary = outLink(linkedin, 'member-linkedin', str(profile.name) + ' on LinkedIn', 'linkedin');
+          primary.appendChild(document.createTextNode('LinkedIn'));
+          links.appendChild(primary);
+        }
+        var instagram = safeHttps(profile.instagram);
+        if (instagram) links.appendChild(outLink(instagram, 'member-icon-link', str(profile.name) + ' on Instagram', 'instagram'));
+        (Array.isArray(profile.other_links) ? profile.other_links : []).forEach(function (raw) {
+          var href = safeHttps(raw);
+          if (href) links.appendChild(outLink(href, 'member-icon-link', hostOf(href), 'link'));
+        });
+        if (links.children.length) content.appendChild(links);
+
+        returnFocus = document.activeElement;
+        modal.hidden = false;
+        panel.scrollTop = 0;
+        closeButton.focus();
+      }
+
+      function closeProfile() {
+        if (!modal || modal.hidden) return;
+        modal.hidden = true;
+        if (returnFocus && typeof returnFocus.focus === 'function') returnFocus.focus();
+        returnFocus = null;
+      }
+
+      function focusable() {
+        return Array.prototype.filter.call(
+          panel.querySelectorAll('a[href], button:not([disabled])'),
+          function (node) { return !node.hidden; }
+        );
+      }
+
+      // Esc closes; Tab and Shift+Tab stay inside the profile while it is open.
+      document.addEventListener('keydown', function (event) {
+        if (!modal || modal.hidden) return;
+        if (event.key === 'Escape') {
+          event.preventDefault();
+          closeProfile();
+          return;
+        }
+        if (event.key !== 'Tab') return;
+        var items = focusable();
+        if (!items.length) { event.preventDefault(); return; }
+        var first = items[0];
+        var last = items[items.length - 1];
+        if (event.shiftKey && (document.activeElement === first || !panel.contains(document.activeElement))) {
+          event.preventDefault();
+          last.focus();
+        } else if (!event.shiftKey && (document.activeElement === last || !panel.contains(document.activeElement))) {
+          event.preventDefault();
+          first.focus();
+        }
+      });
+
+      // Focus that lands outside (a click on the page behind) is pulled back.
+      document.addEventListener('focusin', function (event) {
+        if (modal && !modal.hidden && !modal.contains(event.target)) closeButton.focus();
+      });
+
+      function load() {
+        var cfg = window.TR_PORTAL_CONFIG;
+        var endpoint = cfg && typeof cfg.directoryUrl === 'string' ? cfg.directoryUrl.trim() : '';
+        var code = null;
+        try { code = window.localStorage.getItem(STORAGE_KEY); } catch (e) { code = null; }
+        // No code: portal-access.js sends the visitor to the sign-in page.
+        if (!endpoint || !code) return;
+
+        window.fetch(endpoint, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ code: code })
+        }).then(function (response) {
+          if (response.status === 403) { setStatus(MSG.closed); return null; }
+          if (!response.ok) throw new Error('directory ' + response.status);
+          return response.json().then(function (data) { render(data && data.profiles); });
+        }).catch(function () {
+          setStatus(MSG.error);
+        });
+      }
+
+      document.addEventListener('DOMContentLoaded', function () {
+        grid = document.getElementById('members-grid');
+        status = document.getElementById('members-status');
+        search = document.getElementById('members-search');
+        if (!grid || !status || !search) return;
+        search.addEventListener('input', applySearch);
+        grid.addEventListener('click', function (event) {
+          var cardButton = event.target.closest('.member-card');
+          if (cardButton) openProfile(Number(cardButton.getAttribute('data-member-index')));
+        });
+        setStatus(MSG.loading);
+        load();
+      });
+    })();
+  </script>
+
+  <script>
+    // === SMOOTH PAGE TRANSITIONS ===
+    // Internal .html links fade the page out before navigating. The fade is
+    // decoration; the navigation is the job, so every path below ends in a
+    // navigation even when the animation never runs or is cut short.
+    (function () {
+      var FADE_MS = 150;
+
+      var reduced = false;
+      try {
+        reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+      } catch (e) { /* no matchMedia: treat as no preference */ }
+
+      // Coming back via the Back button can restore this page from the bfcache
+      // with the fade still applied, which shows a blank screen.
+      //
+      // Only this script's own fade is undone. Every portal page sets its own
+      // entrance transform inline on <body>, so clearing that unconditionally
+      // would kill the page's open animation on a normal load.
+      var LEAVING = 'data-trp-leaving';
+      window.addEventListener('pageshow', function () {
+        if (!document.body.hasAttribute(LEAVING)) return;
+        document.body.removeAttribute(LEAVING);
+        document.body.style.opacity = '';
+        document.body.style.transform = '';
+      });
+
+      document.addEventListener('DOMContentLoaded', function () {
+        document.querySelectorAll('a[href]').forEach(function (link) {
+          var href = link.getAttribute('href');
+          if (!href) return;
+          if (href.indexOf('http') === 0 || href.charAt(0) === '#' || href.indexOf('mailto') === 0) return;
+          if (href.slice(-5) !== '.html') return;
+          // A link meant for another tab keeps its default behaviour.
+          if (link.target && link.target !== '_self') return;
+
+          link.addEventListener('click', function (e) {
+            // Cmd/Ctrl/Shift/Alt click and middle click open a new tab.
+            // Hijacking those would quietly break them.
+            if (e.button !== 0 || e.metaKey || e.ctrlKey || e.shiftKey || e.altKey) return;
+
+            e.preventDefault();
+
+            // Anyone who asked for less motion simply goes.
+            if (reduced) { window.location.href = href; return; }
+
+            var done = false;
+            function go() {
+              if (done) return;
+              done = true;
+              window.location.href = href;
+            }
+
+            try {
+              document.body.setAttribute(LEAVING, '');
+              document.body.style.opacity = '0';
+              document.body.style.transform = 'scale(0.98)';
+              // Whichever comes first wins.
+              document.body.addEventListener('transitionend', go, { once: true });
+            } catch (err) {
+              go();                 // styling failed, so just navigate
+              return;
+            }
+
+            setTimeout(go, FADE_MS);
+            // A short backstop: transitionend does not fire in a backgrounded
+            // tab, and a click must never end on a page left faded out.
+            setTimeout(go, FADE_MS + 250);
+          });
+        });
+      });
+    })();
+  </script>
+
+
+
+</body>
+</html>
+

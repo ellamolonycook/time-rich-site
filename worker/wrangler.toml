@@ -12,6 +12,10 @@
 #   npx wrangler secret put SLACK_BOT_TOKEN       # xoxb-... with chat:write, for booking alerts
 #   npx wrangler secret put SLACK_CHANNEL_ID      # e.g. C0123ABCD — invite the bot to it first
 #   npx wrangler secret put SLACK_WEBHOOK_URL     # incoming webhook for /qualify submission alerts
+#   npx wrangler secret put SLACK_QUESTIONNAIRE_WEBHOOK_URL  # questionnaire alerts and failed member photos
+#   npx wrangler secret put SUPABASE_URL          # portal project URL, for /portal-download and Time Rich Members
+#   npx wrangler secret put SUPABASE_SERVICE_ROLE_KEY  # service role key, Worker only, never in the browser
+#   npx wrangler secret put DIRECTORY_SYNC_SECRET # guards POST /portal-directory-sync (the Members backfill)
 #
 # After deploy, wrangler prints a URL like:
 #   https://time-rich-forms.<your-subdomain>.workers.dev
@@ -82,3 +86,14 @@ NOTION_SUPERHUMAN_COHORT1_DATABASE_ID = "3e3ca5eb-e557-80ab-9b32-e3c84d74784e"
 # IMPORTANT: connect the SAME Notion integration (NOTION_TOKEN) to this
 # database (••• -> Connections) or writes will 404.
 NOTION_SUPERHUMAN_QUESTIONNAIRE_DATABASE_ID = "a4b3fdd6-c528-47a8-8ff6-ab27924b2862"
+
+# Time Rich Members (portal member directory). No new vars: it uses the
+# questionnaire database above plus SUPABASE_URL, SUPABASE_SERVICE_ROLE_KEY,
+# SLACK_QUESTIONNAIRE_WEBHOOK_URL and DIRECTORY_SYNC_SECRET (secrets, see top).
+#   - Every saved questionnaire is copied into portal_directory, with the photo.
+#   - POST /portal-directory is the read route the portal page calls.
+#   - Backfill once after the migration and deploy:
+#       curl -X POST https://time-rich-forms.timerich.workers.dev/portal-directory-sync \
+#            -H "Authorization: Bearer <DIRECTORY_SYNC_SECRET>"
+#   - Launch (Mon 2 Nov) is a database switch, not a deploy:
+#       update portal_settings set value = 'true' where key = 'directory_enabled';

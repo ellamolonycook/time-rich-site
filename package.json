@@ -1,0 +1,11 @@
+{
+  "name": "time-rich-site",
+  "private": true,
+  "description": "Static site for timerich.ai. The member portal's Tailwind build lives here.",
+  "scripts": {
+    "build:css": "tailwindcss -i ./portal/portal-tailwind-src.css -o ./portal/portal.css --minify"
+  },
+  "devDependencies": {
+    "tailwindcss": "^3.4.17"
+  }
+}

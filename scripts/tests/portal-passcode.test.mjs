@@ -4,7 +4,7 @@ import worker from '../../worker/src/index.js';
 
 const env = {
   SUPABASE_URL: 'https://example.supabase.co',
-  SUPABASE_SECRET_KEY: 'supabase_secret_test',
+  SUPABASE_SERVICE_ROLE_KEY: 'supabase_service_role_test',
   RESEND_API_KEY: 'resend_secret_test',
   PORTAL_PASSCODE_ADMIN_TOKEN: 'admin_token_test',
   PORTAL_PASSCODE_FROM: 'Time Rich <portal@example.com>',
@@ -61,6 +61,7 @@ console.log('\n/portal-passcode-emails — dry run');
   check('does not write passcode_sent_at', !calls.some((call) => call.init.method === 'PATCH'), calls);
   check('does not require Resend configuration', response.status === 200, body);
   check('asks Supabase for buyers and second seats only', calls[0].url.includes('role=in.%28buyer%2Csecond_seat%29'), calls[0]);
+  check('uses the shared Supabase service-role headers', calls[0].init.headers.apikey === env.SUPABASE_SERVICE_ROLE_KEY && calls[0].init.headers.Authorization === `Bearer ${env.SUPABASE_SERVICE_ROLE_KEY}`, calls[0]);
   check('defense in depth excludes team members', body.eligible === 2 && !combined.includes('Team Member'), body);
   check('masks the recipient email', combined.includes('j***@example.com') && !combined.includes('jordan@example.com'), body);
   check('masks the passcode', combined.includes('AB***IJ') && !combined.includes('ABCDE-FGHIJ'), body);
@@ -91,6 +92,9 @@ console.log('\n/portal-passcode-emails — confirmed send');
   check('sends eligible buyers and second seats after confirmation', response.status === 200 && body.sent === 2, body);
   check('uses an idempotency key', resend && resend.init.headers['Idempotency-Key'] === 'portal-passcode/11111111-1111-1111-1111-111111111111', resend);
   check('records sent timestamp after the email call', calls.indexOf(resend) < calls.indexOf(patch), calls);
+  check('records sent timestamp with the shared Supabase service-role headers', patch && patch.init.headers.apikey === env.SUPABASE_SERVICE_ROLE_KEY && patch.init.headers.Authorization === `Bearer ${env.SUPABASE_SERVICE_ROLE_KEY}`, patch);
+  const email = JSON.parse(resend.init.body);
+  check('uses the approved portal link and support contact copy', email.text.includes('https://timerich.ai/portal') && email.text.includes('Questions? Reply to this email or write to emc@timerich.ai.') && email.text.includes('Warmly,\nElla\nFounder, Time Rich') && !email.text.includes('—'), email);
   check('send response does not expose the passcode', !JSON.stringify(body).includes('ABCDE-FGHIJ'), body);
   delete env.PORTAL_PASSCODE_BUYER_SEND_ENABLED;
 }

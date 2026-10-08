@@ -5,8 +5,10 @@ This endpoint is manual only. It has no schedule and does not run on its own.
 ## Before any request
 
 - Keep the Worker secrets in `worker/.dev.vars` locally or Worker secret bindings in production. Never commit them.
+- Use `SUPABASE_SERVICE_ROLE_KEY`; the endpoint uses the shared service-role helper.
 - Run the agreed `passcode_sent_at` migration before a dry run or buyer batch.
 - Do not send buyers until Ella confirms that the portal is ready and Gideon approves the batch.
+- Ella must approve the final buyer-facing email wording before any buyer batch.
 - Use the verified Resend sender address in `PORTAL_PASSCODE_FROM`.
 - Buyer send is hard-blocked until Gideon sets the production Worker secret
   `PORTAL_PASSCODE_BUYER_SEND_ENABLED=true` after Ella's approval. Keep it

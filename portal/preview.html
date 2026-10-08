@@ -3,9 +3,30 @@
 <head>
   <meta charset="utf-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <!-- Google tag (gtag.js) -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-CTZLQ4R388"></script>
+  <script>
+    window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}
+    // Consent Mode v2. Region-specific default first, then the global fallback,
+    // which is the order Google's docs specify: the narrower region wins.
+    gtag('consent','default',{ad_storage:'denied',ad_user_data:'denied',ad_personalization:'denied',analytics_storage:'denied',region:['AT','BE','BG','HR','CY','CZ','DK','EE','FI','FR','DE','GR','HU','IS','IE','IT','LV','LI','LT','LU','MT','NL','NO','PL','PT','RO','SK','SI','ES','SE','GB','CH']});
+    gtag('consent','default',{ad_storage:'denied',ad_user_data:'denied',ad_personalization:'denied',analytics_storage:'granted'});
+    gtag('js',new Date());
+    gtag('config','G-CTZLQ4R388');
+  </script>
+
   <meta name="robots" content="noindex, nofollow"/>
   <title>Portal preview — Time Rich</title>
 
+  <!-- portal-access.js renders the week and session markup with Tailwind
+       utility classes, the same as every other portal page. Without this the
+       injected content is unstyled: the SVG icons have no w-/h- size and fill
+       their container, and links fall back to the browser default blue.
+       The forms plugin is left off here, unlike the other portal pages: this
+       is the only page with a .trp-input, and the plugin's [type='text']
+       rules would override its radius, padding and colours. -->
+
+  <link rel="stylesheet" href="portal.css"/>
   <link rel="preconnect" href="https://fonts.googleapis.com"/>
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin=""/>
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Plus+Jakarta+Sans:wght@300;400;500;600;700&family=JetBrains+Mono:wght@300;400;500&display=swap"/>
@@ -212,18 +233,29 @@
 
   <script>
     // === SMOOTH PAGE TRANSITIONS ===
-    // Intercept all internal nav links for smooth exit
-    document.addEventListener('DOMContentLoaded', () => {
-      document.querySelectorAll('a[href]').forEach(link => {
-        const href = link.getAttribute('href');
-        if (href && !href.startsWith('http') && !href.startsWith('#') && !href.startsWith('mailto') && href.endsWith('.html')) {
-          link.addEventListener('click', (e) => {
-            e.preventDefault();
-            document.body.style.opacity = '0';
-            document.body.style.transform = 'scale(0.98)';
-            setTimeout(() => { window.location.href = href; }, window.innerWidth < 768 ? 120 : 280);
-          });
-        } origin/main
+    // Internal .html links fade the page out before navigating. The fade is
+    // decoration; the navigation is the job, so every path below ends in a
+    // navigation even when the animation never runs or is cut short.
+    (function () {
+      var FADE_MS = 150;
+
+      var reduced = false;
+      try {
+        reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+      } catch (e) { /* no matchMedia: treat as no preference */ }
+
+      // Coming back via the Back button can restore this page from the bfcache
+      // with the fade still applied, which shows a blank screen.
+      //
+      // Only this script's own fade is undone. Every portal page sets its own
+      // entrance transform inline on <body>, so clearing that unconditionally
+      // would kill the page's open animation on a normal load.
+      var LEAVING = 'data-trp-leaving';
+      window.addEventListener('pageshow', function () {
+        if (!document.body.hasAttribute(LEAVING)) return;
+        document.body.removeAttribute(LEAVING);
+        document.body.style.opacity = '';
+        document.body.style.transform = '';
       });
 
       document.addEventListener('DOMContentLoaded', function () {
@@ -264,10 +296,9 @@
             }
 
             setTimeout(go, FADE_MS);
-            // Last resort. transitionend never fires in a backgrounded tab and
-            // timers there are throttled, so this guarantees a click can never
-            // end on a page left sitting faded out.
-            setTimeout(go, FADE_MS + 1200);
+            // A short backstop: transitionend does not fire in a backgrounded
+            // tab, and a click must never end on a page left faded out.
+            setTimeout(go, FADE_MS + 250);
           });
         });
       });
