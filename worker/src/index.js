@@ -22,8 +22,9 @@ export default {
 
     // This one route answers its own preflight, because it is locked to a
     // single origin rather than the Worker-wide ALLOWED_ORIGIN list.
+    // Same for Time Rich Members, which the portal calls from timerich.ai only.
     if (request.method === "OPTIONS" &&
-        new URL(request.url).pathname.replace(/\/+$/, "").endsWith("/portal-download")) {
+        /\/portal-(download|directory)$/.test(new URL(request.url).pathname.replace(/\/+$/, ""))) {
       return new Response(null, { status: 204, headers: portalDownloadCors(request) });
     }
 
@@ -58,6 +59,19 @@ export default {
     // Route: gated Superhuman skill download (POST /portal-download)
     if (path.endsWith("/portal-download")) {
       return handlePortalDownload(request, env);
+    }
+
+    // Route: Time Rich Members backfill (POST /portal-directory-sync). Team
+    // only, behind DIRECTORY_SYNC_SECRET; copies every questionnaire row into
+    // portal_directory.
+    if (path.endsWith("/portal-directory-sync")) {
+      return handleDirectoryBackfill(request, env, cors);
+    }
+
+    // Route: Time Rich Members read (POST /portal-directory). The portal page
+    // sends the member's passcode and gets the profiles back.
+    if (path.endsWith("/portal-directory")) {
+      return handlePortalDirectory(request, env);
     }
 
     // Route: ThriveCart purchase webhook (handles order.success, order.subscription_payment, order.refund)
@@ -2302,6 +2316,11 @@ async function handleSuperhumanQuestionnaire(data, env, cors, ctx) {
     pageUrl: page && typeof page.url === "string" ? page.url : "",
   });
 
+  // Time Rich Members: copy the saved profile into portal_directory. Built
+  // from the properties Notion stored (the reply to the write), not from this
+  // request body, and off the response path like Slack.
+  queueDirectorySync(env, ctx, page);
+
   // The sheet is a mirror of a write that already succeeded, so it stays
   // fire-and-forget like the rest of them.
   const sheetUrl = env.GOOGLE_SHEET_ORDERS_URL || env.GOOGLE_SHEET_WEBHOOK_URL;
@@ -2493,4 +2512,456 @@ async function findPaidCohortOrder(env, dbId, trackingId, email) {
   }
   if (email) return findPaidRow(env, dbId, "Email", email);
   return null;
+}
+
+// ---------------------------------------------------------------------------
+// Time Rich Members: the portal member directory
+//
+// portal_directory (Supabase) holds one profile per accelerator member, built
+// from their Superhuman questionnaire row in Notion. Members never type
+// anything twice: every saved questionnaire is copied across, and sending the
+// form again is how a member edits their profile.
+//
+// Only buyers and second seats with an active portal_members row are listed.
+// Team, ambassadors and anyone without portal access are skipped. Everything
+// here runs with the service role key and never on the response path of the
+// questionnaire, so a Supabase outage cannot turn a saved form into an error.
+// ---------------------------------------------------------------------------
+
+const DIRECTORY_LISTED_ROLES = ["buyer", "second_seat"];
+
+// portal_directory column <- Notion column, in the order a profile reads.
+const DIRECTORY_FIELDS = [
+  ["name", "Name"],
+  ["hook_line", "Bio"],
+  ["title", "Title"],
+  ["company", "Company"],
+  ["company_does", "What the Company Does"],
+  ["who_they_serve", "Who They Serve"],
+  ["superpower", "Superpower"],
+  ["linkedin", "LinkedIn"],
+  ["instagram", "Instagram"],
+  ["other_links", "Other Links"],
+];
+
+// Base URL and service-role headers for Supabase REST and Storage, or null
+// when the Worker is not configured for the portal.
+function supabaseService(env) {
+  if (!env.SUPABASE_URL || !env.SUPABASE_SERVICE_ROLE_KEY) return null;
+  const key = env.SUPABASE_SERVICE_ROLE_KEY;
+  return {
+    base: env.SUPABASE_URL.replace(/\/+$/, ""),
+    headers: { apikey: key, Authorization: `Bearer ${key}`, "Content-Type": "application/json" },
+  };
+}
+
+// The member's portal_members row, if they are listed in the directory.
+// portal_members.email is not guaranteed lowercase, so this matches case
+// insensitively and then checks the address exactly, the same
+// filter-then-check shape as findRowByEmail.
+async function findListedMember(sb, email) {
+  const res = await fetch(
+    `${sb.base}/rest/v1/portal_members?select=email,role&active=is.true&email=ilike.${encodeURIComponent(email)}`,
+    { headers: sb.headers }
+  );
+  if (!res.ok) throw new Error(`portal_members lookup returned ${res.status}`);
+  const rows = await res.json();
+  const member = (Array.isArray(rows) ? rows : []).find((row) => normKey(row.email) === email);
+  return member && DIRECTORY_LISTED_ROLES.includes(member.role) ? member : null;
+}
+
+// One portal_directory row from a Notion questionnaire row. An empty Notion
+// cell becomes null, never "".
+function directoryRowFromNotion(email, role, properties) {
+  const row = { email, role, updated_at: new Date().toISOString() };
+  for (const [column, prop] of DIRECTORY_FIELDS) {
+    row[column] = calProp(properties[prop]) || null;
+  }
+  return row;
+}
+
+async function upsertDirectoryRow(sb, row) {
+  const res = await fetch(`${sb.base}/rest/v1/portal_directory?on_conflict=email`, {
+    method: "POST",
+    headers: { ...sb.headers, Prefer: "resolution=merge-duplicates,return=minimal" },
+    body: JSON.stringify(row),
+  });
+  if (!res.ok) throw new Error(`portal_directory upsert returned ${res.status}`);
+}
+
+// The photo columns already stored for this member, or null for a new row.
+async function findDirectoryRow(sb, email) {
+  const res = await fetch(
+    `${sb.base}/rest/v1/portal_directory?select=photo_path,photo_status,photo_source_url&email=eq.${encodeURIComponent(email)}`,
+    { headers: sb.headers }
+  );
+  if (!res.ok) throw new Error(`portal_directory lookup returned ${res.status}`);
+  const rows = await res.json();
+  return Array.isArray(rows) && rows.length ? rows[0] : null;
+}
+
+// Copies one Notion questionnaire row into portal_directory.
+// Returns { outcome: "listed" | "skipped", photo }, where photo is "ok",
+// "failed", "missing" or "kept". Throws only when Supabase itself fails.
+async function syncDirectoryProfile(env, properties) {
+  const sb = supabaseService(env);
+  if (!sb) throw new Error("Supabase is not configured");
+
+  const email = normKey(calProp(properties && properties["Email"]));
+  if (!email) return { outcome: "skipped" };
+
+  const member = await findListedMember(sb, email);
+  if (!member) return { outcome: "skipped" };
+
+  const row = directoryRowFromNotion(email, member.role, properties);
+  const existing = await findDirectoryRow(sb, email);
+  const photo = await syncDirectoryPhoto(env, sb, row, existing, calProp(properties["Photo Link"]).trim());
+
+  await upsertDirectoryRow(sb, row);
+  return { outcome: "listed", photo };
+}
+
+// ---------------------------------------------------------------------------
+// Photos: a Google Drive link in the questionnaire becomes a private image in
+// the "portal-directory" bucket, served later only as a signed URL.
+//
+// The download is retried only when it can change something: a new link, or
+// the same link after a failed or missing attempt (someone who fixed their
+// sharing setting but kept the link). Otherwise the stored photo is kept and
+// Drive is not called at all.
+//
+// The link is never logged, and neither is an error object, because either
+// could carry it. Failures are reported to the team as one Slack line.
+// ---------------------------------------------------------------------------
+const DIRECTORY_BUCKET = "portal-directory";
+const DIRECTORY_PHOTO_MAX_BYTES = 5 * 1024 * 1024;
+const DIRECTORY_PHOTO_TYPES = { "image/jpeg": "jpg", "image/png": "png", "image/webp": "webp" };
+
+// Sets the photo columns on `row` and returns what happened.
+async function syncDirectoryPhoto(env, sb, row, existing, link) {
+  if (!link) {
+    // Notion keeps an earlier link when a resubmission leaves it empty, so no
+    // link here means the member has never given one.
+    if (!existing || existing.photo_status !== "ok") row.photo_status = "missing";
+    return existing && existing.photo_status === "ok" ? "kept" : "missing";
+  }
+
+  const unchanged = existing && existing.photo_source_url === link && existing.photo_status === "ok";
+  if (unchanged) return "kept";
+
+  const image = await downloadDrivePhoto(link);
+  if (!image) {
+    // Keep any earlier photo_path and photo_source_url: the next attempt
+    // compares against the last link that actually worked.
+    row.photo_status = "failed";
+    await notifyPhotoFailed(env, row.name);
+    return "failed";
+  }
+
+  const path = `${await sha256Hex(row.email)}.${image.ext}`;
+  const uploaded = await fetch(`${sb.base}/storage/v1/object/${DIRECTORY_BUCKET}/${path}`, {
+    method: "POST",
+    headers: { apikey: sb.headers.apikey, Authorization: sb.headers.Authorization, "Content-Type": image.type, "x-upsert": "true" },
+    body: image.bytes,
+  });
+  if (!uploaded.ok) throw new Error(`photo upload returned ${uploaded.status}`);
+
+  // A new file type leaves the old object behind under the other extension.
+  if (existing && existing.photo_path && existing.photo_path !== path) {
+    await fetch(`${sb.base}/storage/v1/object/${DIRECTORY_BUCKET}/${existing.photo_path}`, {
+      method: "DELETE",
+      headers: { apikey: sb.headers.apikey, Authorization: sb.headers.Authorization },
+    }).catch(() => {});
+  }
+
+  row.photo_path = path;
+  row.photo_status = "ok";
+  row.photo_source_url = link;
+  return "ok";
+}
+
+// The Drive file id from the three link shapes people paste:
+//   https://drive.google.com/file/d/<id>/view?usp=sharing
+//   https://drive.google.com/open?id=<id>
+//   https://drive.google.com/uc?id=<id>&export=download
+function driveFileId(link) {
+  let url;
+  try { url = new URL(link); } catch { return null; }
+  if (url.protocol !== "https:") return null;
+  if (!/^(drive|docs)\.google\.com$/.test(url.hostname)) return null;
+
+  const id = /^\/file\/d\/([^/]+)/.test(url.pathname)
+    ? url.pathname.match(/^\/file\/d\/([^/]+)/)[1]
+    : (/^\/(open|uc)$/.test(url.pathname) ? url.searchParams.get("id") : null);
+  return id && /^[A-Za-z0-9_-]{10,}$/.test(id) ? id : null;
+}
+
+// Downloads a publicly shared Drive file. Returns { bytes, type, ext } only
+// for a JPEG, PNG or WebP of at most 5 MB; anything else (a bad link, Drive's
+// HTML sign-in page for a file that is not shared, a huge file) is null.
+async function downloadDrivePhoto(link) {
+  const id = driveFileId(link);
+  if (!id) return null;
+
+  let res;
+  try {
+    res = await fetch(`https://drive.google.com/uc?export=download&id=${encodeURIComponent(id)}`, { redirect: "follow" });
+  } catch {
+    return null;
+  }
+  const type = String(res.headers.get("Content-Type") || "").split(";")[0].trim().toLowerCase();
+  const ext = DIRECTORY_PHOTO_TYPES[type];
+  const declared = Number(res.headers.get("Content-Length"));
+  if (!res.ok || !ext || (declared && declared > DIRECTORY_PHOTO_MAX_BYTES)) {
+    try { await res.body?.cancel(); } catch { /* nothing to free */ }
+    return null;
+  }
+
+  const bytes = await readAtMost(res, DIRECTORY_PHOTO_MAX_BYTES);
+  return bytes && bytes.byteLength ? { bytes, type, ext } : null;
+}
+
+// Reads a response body, giving up (null) as soon as it passes `max` bytes,
+// so a file that lies about its size is never held in memory whole.
+async function readAtMost(res, max) {
+  if (!res.body) return null;
+  const reader = res.body.getReader();
+  const chunks = [];
+  let size = 0;
+  try {
+    for (;;) {
+      const { done, value } = await reader.read();
+      if (done) break;
+      size += value.byteLength;
+      if (size > max) {
+        await reader.cancel().catch(() => {});
+        return null;
+      }
+      chunks.push(value);
+    }
+  } catch {
+    return null;
+  }
+  const out = new Uint8Array(size);
+  let offset = 0;
+  for (const chunk of chunks) { out.set(chunk, offset); offset += chunk.byteLength; }
+  return out;
+}
+
+async function sha256Hex(text) {
+  const digest = await crypto.subtle.digest("SHA-256", new TextEncoder().encode(String(text)));
+  return [...new Uint8Array(digest)].map((b) => b.toString(16).padStart(2, "0")).join("");
+}
+
+// One line to the questionnaire Slack channel. Never the link itself.
+async function notifyPhotoFailed(env, name) {
+  const webhook = env && env.SLACK_QUESTIONNAIRE_WEBHOOK_URL;
+  if (!webhook) return;
+  const who = slackEscape(String(name || "").trim() || "a member");
+  try {
+    const res = await fetch(webhook, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ text: `Photo link failed for ${who}. Ask them to set sharing to Anyone with the link.` }),
+    });
+    if (!res.ok) console.error("[members] photo slack webhook returned", res.status);
+  } catch {
+    console.error("[members] photo slack webhook request failed");
+  }
+}
+
+// Called after the questionnaire is safely in Notion. `page` is Notion's reply
+// to the create or update, which carries every stored property, so a partial
+// resubmission still produces a complete profile.
+function queueDirectorySync(env, ctx, page) {
+  if (!page || !page.properties || !supabaseService(env)) return;
+  const work = syncDirectoryProfile(env, page.properties).catch((err) => {
+    // Our own messages only: never the payload, a link or an error object.
+    console.error("[members] directory sync failed:", String(err && err.message));
+  });
+  if (ctx && typeof ctx.waitUntil === "function") ctx.waitUntil(work);
+}
+
+// ---------------------------------------------------------------------------
+// POST /portal-directory  body: { code }
+//
+// The read side of Time Rich Members. The passcode is checked with
+// portal_get() exactly as /portal-download does, so the rule for who is a
+// member cannot drift. Until the directory_enabled switch is on, only team
+// gets through, so the page can be QA'd before launch without a code release.
+//
+// Every refusal is the same flat 403: a wrong code, a switched-off directory
+// and a Supabase error all look identical from outside. Email and
+// photo_source_url are never selected, so they cannot leak into a response.
+// ---------------------------------------------------------------------------
+const DIRECTORY_PHOTO_URL_TTL_SECONDS = 3600; // 1 hour
+const DIRECTORY_PUBLIC_COLUMNS =
+  "name,hook_line,title,company,company_does,who_they_serve,superpower,linkedin,instagram,other_links,photo_path,photo_status";
+
+async function handlePortalDirectory(request, env) {
+  const cors = portalDownloadCors(request);
+  const deny = () => json({ error: "Forbidden" }, 403, cors);
+
+  const sb = supabaseService(env);
+  if (!sb) return deny();
+
+  let body;
+  try { body = await request.json(); } catch { return deny(); }
+  const code = typeof body?.code === "string" ? body.code.trim() : "";
+  if (!code) return deny();
+
+  let member;
+  try {
+    const res = await fetch(`${sb.base}/rest/v1/rpc/portal_get`, {
+      method: "POST",
+      headers: sb.headers,
+      body: JSON.stringify({ p_code: code }),
+    });
+    if (!res.ok) return deny();
+    const payload = await res.json();
+    if (!payload || payload.ok !== true) return deny();
+    member = payload.member || {};
+  } catch { return deny(); }
+
+  if (member.role !== "team") {
+    try {
+      if (!(await directoryEnabled(sb))) return deny();
+    } catch { return deny(); }
+  }
+
+  let rows;
+  try {
+    const res = await fetch(`${sb.base}/rest/v1/portal_directory?select=${DIRECTORY_PUBLIC_COLUMNS}`, { headers: sb.headers });
+    if (!res.ok) return deny();
+    rows = await res.json();
+  } catch { return deny(); }
+  if (!Array.isArray(rows)) return deny();
+
+  const photoUrls = await signDirectoryPhotos(sb, rows);
+
+  const profiles = rows
+    .map((row) => ({
+      name: row.name || "",
+      hook_line: row.hook_line || "",
+      title: row.title || "",
+      company: row.company || "",
+      company_does: row.company_does || "",
+      who_they_serve: row.who_they_serve || "",
+      superpower: row.superpower || "",
+      linkedin: httpsLink(row.linkedin),
+      instagram: httpsLink(row.instagram),
+      other_links: String(row.other_links || "").split(/\r?\n/).map(httpsLink).filter(Boolean),
+      photo_url: (row.photo_status === "ok" && photoUrls.get(row.photo_path)) || null,
+    }))
+    .filter((profile) => profile.name)
+    .sort((a, b) => a.name.localeCompare(b.name, "en", { sensitivity: "base" }));
+
+  return json({ profiles }, 200, cors);
+}
+
+// True only when the switch is literally on; a missing row means off.
+async function directoryEnabled(sb) {
+  const res = await fetch(`${sb.base}/rest/v1/portal_settings?select=value&key=eq.directory_enabled`, { headers: sb.headers });
+  if (!res.ok) throw new Error(`portal_settings lookup returned ${res.status}`);
+  const rows = await res.json();
+  return Array.isArray(rows) && rows.length > 0 && rows[0].value === true;
+}
+
+// One-hour signed URLs for every stored photo, in a single Storage call.
+// A signing failure costs the photos, not the page: those cards show initials.
+async function signDirectoryPhotos(sb, rows) {
+  const urls = new Map();
+  const paths = rows
+    .filter((row) => row && row.photo_status === "ok" && typeof row.photo_path === "string" && row.photo_path)
+    .map((row) => row.photo_path);
+  if (!paths.length) return urls;
+
+  try {
+    const res = await fetch(`${sb.base}/storage/v1/object/sign/${DIRECTORY_BUCKET}`, {
+      method: "POST",
+      headers: sb.headers,
+      body: JSON.stringify({ expiresIn: DIRECTORY_PHOTO_URL_TTL_SECONDS, paths }),
+    });
+    if (!res.ok) return urls;
+    const signed = await res.json();
+    for (const item of Array.isArray(signed) ? signed : []) {
+      const path = item && (item.signedURL || item.signedUrl);
+      if (item && !item.error && typeof path === "string" && path) {
+        urls.set(item.path, `${sb.base}/storage/v1${path.startsWith("/") ? "" : "/"}${path}`);
+      }
+    }
+  } catch { /* initials instead of photos */ }
+  return urls;
+}
+
+// The link if it is a well-formed https URL, otherwise null.
+function httpsLink(value) {
+  const text = String(value == null ? "" : value).trim();
+  if (!text) return null;
+  try {
+    return new URL(text).protocol === "https:" ? text : null;
+  } catch {
+    return null;
+  }
+}
+
+// Constant-time comparison of two secrets of any length: both are hashed
+// first, so the loop always runs over 32 bytes whatever was sent.
+async function secretsMatch(given, expected) {
+  const enc = new TextEncoder();
+  const [a, b] = await Promise.all([
+    crypto.subtle.digest("SHA-256", enc.encode(String(given))),
+    crypto.subtle.digest("SHA-256", enc.encode(String(expected))),
+  ]);
+  const x = new Uint8Array(a);
+  const y = new Uint8Array(b);
+  let diff = 0;
+  for (let i = 0; i < x.length; i++) diff |= x[i] ^ y[i];
+  return diff === 0;
+}
+
+// POST /portal-directory-sync  (Authorization: Bearer <DIRECTORY_SYNC_SECRET>)
+//
+// Backfill: runs the same sync over every row of the Superhuman Questionnaire
+// database, for members who answered before the directory existed. Safe to
+// run any number of times; each row ends in the same state.
+async function handleDirectoryBackfill(request, env, cors) {
+  const deny = () => json({ error: "Forbidden" }, 403, cors);
+  if (!env.DIRECTORY_SYNC_SECRET) return deny();
+
+  const header = request.headers.get("Authorization") || "";
+  const given = header.startsWith("Bearer ") ? header.slice(7).trim() : "";
+  if (!given || !(await secretsMatch(given, env.DIRECTORY_SYNC_SECRET))) return deny();
+
+  const dbId = env.NOTION_SUPERHUMAN_QUESTIONNAIRE_DATABASE_ID;
+  if (!env.NOTION_TOKEN || !dbId || !supabaseService(env)) {
+    return json({ ok: false, error: "The directory sync is not configured" }, 503, cors);
+  }
+
+  const counts = { processed: 0, listed: 0, skipped: 0, failed: 0, photo_failed: 0 };
+  let cursor = null;
+  do {
+    const res = await fetch(`https://api.notion.com/v1/databases/${dbId}/query`, {
+      method: "POST",
+      headers: { ...authHeaders(env), "Content-Type": "application/json" },
+      body: JSON.stringify(cursor ? { page_size: 100, start_cursor: cursor } : { page_size: 100 }),
+    });
+    if (!res.ok) return json({ ok: false, error: "Could not read the questionnaire", ...counts }, 502, cors);
+
+    const data = await res.json();
+    for (const row of data.results || []) {
+      counts.processed++;
+      try {
+        const result = await syncDirectoryProfile(env, row.properties || {});
+        counts[result.outcome]++;
+        if (result.photo === "failed") counts.photo_failed++;
+      } catch (err) {
+        counts.failed++;
+        console.error("[members] backfill row failed:", String(err && err.message));
+      }
+    }
+    cursor = data.has_more && data.next_cursor ? data.next_cursor : null;
+  } while (cursor);
+
+  return json({ ok: true, ...counts }, 200, cors);
 }
