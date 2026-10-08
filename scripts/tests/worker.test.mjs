@@ -152,7 +152,7 @@ console.log('\n/superhuman — junk and edge values');
 
   await post('/superhuman', { ...FULL, website: '' });
   const normal = pageBody().properties;
-  check('a LinkedIn answer does not touch Website', !('Website' in normal) && normal.LinkedIn.url.includes('linkedin.com'));
+  check('a LinkedIn answer does not touch Website', !('Website' in normal) && new URL(normal.LinkedIn.url).origin === 'https://www.linkedin.com');
 
   await post('/superhuman', { ...FULL, linkedin: '', website: '' });
   const neither = pageBody().properties;
@@ -295,7 +295,7 @@ const calFetch = async (url, init) => {
     if (notion.down) return new Response('service unavailable', { status: 503 });
     return new Response(JSON.stringify({ id: 'page-sh-1' }), { status: 200 });
   }
-  if (u.includes('slack.com/api/chat.postMessage')) {
+  if (new URL(u).origin === 'https://slack.com' && new URL(u).pathname === '/api/chat.postMessage') {
     if (slack.down) return new Response(JSON.stringify({ ok: false, error: 'channel_not_found' }), { status: 200 });
     slack.posts.push(JSON.parse(init.body));
     return new Response(JSON.stringify({ ok: true, ts: '1725000000.0001' }), { status: 200 });
@@ -381,7 +381,7 @@ console.log('\n/cal-webhook — BOOKING_CREATED with a matching application');
   const t = slackText();
   check('posts to Slack', slack.posts.length === 1);
   check('to the configured channel', slack.posts[0].channel === 'C0TESTING');
-  check('with the bot token', calls.find((c) => c.url.includes('slack.com')).init.headers.Authorization === 'Bearer xoxb-test');
+  check('with the bot token', calls.find((c) => new URL(c.url).origin === 'https://slack.com').init.headers.Authorization === 'Bearer xoxb-test');
   check('names the attendee', t.includes('Jordan Reyes'), t);
   check('shows the email', t.includes('jordan@example.com'));
   check('shows New York time', t.includes('New York — Thu, Sep 10, 2:00 PM EDT'), t);
@@ -502,6 +502,130 @@ console.log('\nThe other routes still work after all of that');
   const unknown = await post('/nope', { Name: 'X', Email: 'x@example.com' });
   check('an unrouted path still falls through to the main database',
     unknown.status === 200 && pageBody().parent.database_id === 'db-main');
+}
+
+console.log('\nPortal members: ThriveCart buyer and /onboard +1 upserts');
+{
+  const SB_URL = 'https://sb.test';
+  const SB_KEY = 'sb_secret_test_key';
+  const pEnv = {
+    ...env,
+    THRIVECART_SECRET: 'tc-secret',
+    NOTION_SUPERHUMAN_COHORT1_DATABASE_ID: 'db-cohort',
+    SUPABASE_URL: SB_URL,
+    SUPABASE_SERVICE_ROLE_KEY: SB_KEY,
+  };
+  const rt = (v) => ({ type: 'rich_text', rich_text: [{ plain_text: v }] });
+  const PAID_ROW = {
+    id: 'page-buyer',
+    properties: {
+      Email: { type: 'email', email: 'Buyer@Example.com' },
+      TrackingID: rt('trk-1'),
+      'Order ID': rt('TC-555'),
+      'Payment Status': { type: 'select', select: { name: 'Paid' } },
+    },
+  };
+  let sb, paidRows, sbDown, logs;
+  const pFetch = async (url, init) => {
+    url = String(url);
+    calls.push({ url, init });
+    if (new URL(url).origin === new URL(SB_URL).origin) {
+      if (sbDown) throw new Error('network down');
+      sb.push({ url, headers: init.headers, body: JSON.parse(init.body) });
+      return new Response(JSON.stringify({ ok: true, id: 'm-1', created: true, passcode_never: 'x' }), { status: 200 });
+    }
+    if (url.includes('/v1/databases/') && url.endsWith('/query')) {
+      return new Response(JSON.stringify({ results: paidRows }), { status: 200 });
+    }
+    return new Response(JSON.stringify({ id: 'page-1' }), { status: 200 });
+  };
+  const origLog = console.log, origErr = console.error;
+  async function run(path, body, opts = {}) {
+    globalThis.fetch = pFetch;
+    calls = []; sb = []; logs = [];
+    paidRows = opts.paidRows ?? [PAID_ROW];
+    sbDown = opts.sbDown === true;
+    const pending = [];
+    console.log = (...a) => logs.push(a.join(' '));
+    console.error = (...a) => logs.push(a.join(' '));
+    try {
+      const res = await worker.fetch(new Request('https://w.dev' + path, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', Origin: 'https://timerich.ai' },
+        body: JSON.stringify(body),
+      }), opts.env || pEnv, { waitUntil: (p) => pending.push(p) });
+      await Promise.all(pending);
+      return res;
+    } finally {
+      console.log = origLog; console.error = origErr;
+    }
+  }
+  const TC = {
+    event: 'order.success', mode: 'live', thrivecart_secret: 'tc-secret',
+    order_id: 'TC-555', order_total: '99700',
+    customer: { email: '  Buyer@Example.com ', first_name: 'Bea', last_name: 'Buyer' },
+    passthrough: { tracking_id: 'trk-1' },
+  };
+
+  // ThriveCart buyer
+  let res = await run('/thrivecart-webhook', TC);
+  check('live paid order: 200', res.status === 200);
+  check('live paid order: one upsert to portal_upsert_member',
+    sb.length === 1 && sb[0].url === SB_URL + '/rest/v1/rpc/portal_upsert_member', sb);
+  check('live paid order: role buyer, order id, email trimmed + lowercased, name',
+    sb[0] && sb[0].body.p_role === 'buyer' && sb[0].body.p_order_id === 'TC-555' &&
+    sb[0].body.p_email === 'buyer@example.com' && sb[0].body.p_full_name === 'Bea Buyer', sb[0] && sb[0].body);
+  check('the request never carries a passcode', sb[0] && !('p_passcode' in sb[0].body) && !('passcode' in sb[0].body));
+  check('sb_secret_ key goes in apikey only, not Authorization',
+    sb[0] && sb[0].headers.apikey === SB_KEY && !('Authorization' in sb[0].headers));
+  check('nothing logged contains the key, the email or the response',
+    !logs.some((l) => l.includes(SB_KEY) || l.includes('passcode_never')) &&
+    !logs.some((l) => l.includes('portal') && l.toLowerCase().includes('buyer@example.com')), logs.filter((l) => l.includes('portal')));
+
+  res = await run('/thrivecart-webhook', { ...TC, mode: 'test' });
+  check('test-mode order: still 200, no upsert', res.status === 200 && sb.length === 0);
+  res = await run('/thrivecart-webhook', { ...TC, mode: undefined });
+  check('order with no mode: treated as test, no upsert', res.status === 200 && sb.length === 0);
+  res = await run('/thrivecart-webhook', { ...TC, event: 'order.refund' });
+  check('refund: no upsert', res.status === 200 && sb.length === 0);
+  res = await run('/thrivecart-webhook', { ...TC, event: 'test' });
+  check('"test" event: ignored, no upsert', res.status === 200 && sb.length === 0);
+  res = await run('/thrivecart-webhook', { ...TC, thrivecart_secret: 'wrong' });
+  check('wrong secret: 401, no upsert', res.status === 401 && sb.length === 0);
+  res = await run('/thrivecart-webhook', { ...TC, thrivecart_secret: undefined });
+  check('missing secret: 401, no upsert', res.status === 401 && sb.length === 0);
+  res = await run('/thrivecart-webhook', TC, { env: { ...pEnv, THRIVECART_SECRET: '' } });
+  check('secret not configured: 503, no upsert', res.status === 503 && sb.length === 0);
+  res = await run('/thrivecart-webhook', TC, { env: { ...pEnv, SUPABASE_URL: '', SUPABASE_SERVICE_ROLE_KEY: '' } });
+  check('Supabase not configured: still 200, no call', res.status === 200 && sb.length === 0);
+  res = await run('/thrivecart-webhook', TC, { sbDown: true });
+  check('Supabase down: ThriveCart still gets 200', res.status === 200);
+  res = await run('/thrivecart-webhook', TC, { env: { ...pEnv, SUPABASE_SERVICE_ROLE_KEY: 'eyJhbGciOi.test.jwt' } });
+  check('legacy JWT service_role key also goes in Authorization',
+    sb[0] && sb[0].headers.Authorization === 'Bearer eyJhbGciOi.test.jwt');
+
+  // /onboard +1
+  const ONB = {
+    trackingId: 'trk-1', email: 'buyer@example.com', choice: 'named',
+    attendeeFirstName: 'Pat', attendeeLastName: 'Plus', attendeeEmail: 'Pat.Plus@Example.com',
+  };
+  res = await run('/onboard', ONB);
+  check('named +1: 200 and one upsert', res.status === 200 && sb.length === 1, sb);
+  check('named +1: role second_seat, buyer order id from the Notion row, email lowercased',
+    sb[0] && sb[0].body.p_role === 'second_seat' && sb[0].body.p_order_id === 'TC-555' &&
+    sb[0].body.p_email === 'pat.plus@example.com' && sb[0].body.p_full_name === 'Pat Plus', sb[0] && sb[0].body);
+  res = await run('/onboard', ONB, { paidRows: [] });
+  check('no paid order: still 403, no upsert', res.status === 403 && sb.length === 0);
+  res = await run('/onboard', { ...ONB, choice: 'unsure' });
+  check('"not sure yet": no upsert', res.status === 200 && sb.length === 0);
+  res = await run('/onboard', { ...ONB, attendeeEmail: 'not-an-email' });
+  check('invalid +1 email: no upsert', res.status === 200 && sb.length === 0);
+  res = await run('/onboard', { ...ONB, attendeeEmail: ' BUYER@example.com' });
+  check('+1 email is the buyer\'s own: no upsert', res.status === 200 && sb.length === 0);
+  res = await run('/onboard', ONB, { sbDown: true });
+  check('Supabase down: /onboard still 200', res.status === 200);
+
+  globalThis.fetch = baseFetch;
 }
 
 // ---------------------------------------------------------------------------
