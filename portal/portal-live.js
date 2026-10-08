@@ -206,6 +206,40 @@
     return null;
   }
 
+  // YYYY-MM-DD in a given IANA zone (or the browser's local zone when omitted).
+  // Used to decide "has this session's calendar day started for this member?".
+  function dateKey(isoOrDate, timeZone) {
+    var d = isoOrDate instanceof Date ? isoOrDate : toDate(isoOrDate);
+    if (!d) return '';
+    try {
+      var opts = { year: 'numeric', month: '2-digit', day: '2-digit' };
+      if (timeZone) opts.timeZone = timeZone;
+      var parts = new Intl.DateTimeFormat('en-CA', opts).formatToParts(d);
+      var y = '', m = '', day = '';
+      for (var i = 0; i < parts.length; i++) {
+        if (parts[i].type === 'year') y = parts[i].value;
+        else if (parts[i].type === 'month') m = parts[i].value;
+        else if (parts[i].type === 'day') day = parts[i].value;
+      }
+      return y && m && day ? y + '-' + m + '-' + day : '';
+    } catch (e) {
+      return '';
+    }
+  }
+
+  // A session unlocks once the Eastern calendar day of starts_at has begun.
+  // The cohort is scheduled in ET, so every member unlocks at the same
+  // absolute moment (midnight America/New_York), not at their local midnight.
+  // starts_at is timestamptz; dateKey in TZ avoids UTC-day drift.
+  function isSessionUnlocked(session, now) {
+    var at = now || new Date();
+    var start = toDate(session && session.starts_at);
+    if (!start) return false;
+    var todayEt = dateKey(at, TZ);
+    var dayEt = dateKey(start, TZ);
+    return Boolean(todayEt && dayEt && todayEt >= dayEt);
+  }
+
   function isSessionPast(session, now) {
     var at = now || new Date();
     var start = toDate(session && session.starts_at);
@@ -255,6 +289,30 @@
     catch (e) { return ''; }
   }
 
+  // The passcode must never be a storage key: anything that can read
+  // localStorage could otherwise lift it straight out of the key names.
+  // cyrb53 is a small, fast, non-reversible 53-bit hash. It is not a password
+  // hash and is not meant to be: it only has to stop the code appearing in
+  // the clear, while staying synchronous so a click can read progress without
+  // waiting on crypto.subtle.
+  function cyrb53(text, seed) {
+    var h1 = 0xdeadbeef ^ (seed || 0);
+    var h2 = 0x41c6ce57 ^ (seed || 0);
+    for (var i = 0, ch; i < text.length; i++) {
+      ch = text.charCodeAt(i);
+      h1 = Math.imul(h1 ^ ch, 2654435761);
+      h2 = Math.imul(h2 ^ ch, 1597334677);
+    }
+    h1 = Math.imul(h1 ^ (h1 >>> 16), 2246822507) ^ Math.imul(h2 ^ (h2 >>> 13), 3266489909);
+    h2 = Math.imul(h2 ^ (h2 >>> 16), 2246822507) ^ Math.imul(h1 ^ (h1 >>> 13), 3266489909);
+    return 4294967296 * (2097151 & h2) + (h1 >>> 0);
+  }
+
+  // "p_" + hex, so a stored key is obviously a handle and never a passcode.
+  function progressKeyFor(code) {
+    return 'p_' + cyrb53(String(code), 0).toString(16);
+  }
+
   function readProgressStore() {
     try {
       var raw = window.localStorage.getItem(PROGRESS_KEY);
@@ -274,11 +332,22 @@
     var code = readPasscode();
     if (!code) return null;
     var store = readProgressStore();
-    var entry = store[code];
+    var key = progressKeyFor(code);
+
+    // One-time migration off the old raw-passcode key. The entry moves to the
+    // hashed key, the raw key goes, and the result is saved straight away so
+    // the passcode is gone from storage even if nothing else is touched.
+    if (Object.prototype.hasOwnProperty.call(store, code)) {
+      if (!Object.prototype.hasOwnProperty.call(store, key)) store[key] = store[code];
+      delete store[code];
+      writeProgressStore(store);
+    }
+
+    var entry = store[key];
     if (!entry || typeof entry !== 'object') entry = { items: {}, sessions: {} };
     if (!entry.items || typeof entry.items !== 'object') entry.items = {};
     if (!entry.sessions || typeof entry.sessions !== 'object') entry.sessions = {};
-    store[code] = entry;
+    store[key] = entry;
     return { store: store, entry: entry };
   }
 
@@ -438,6 +507,8 @@
     items: items,
     latestUnlockedWeek: latestUnlockedWeek,
     nextSession: nextSession,
+    dateKey: dateKey,
+    isSessionUnlocked: isSessionUnlocked,
     isSessionPast: isSessionPast,
     scheduleProgress: scheduleProgress,
     itemKey: itemKey,

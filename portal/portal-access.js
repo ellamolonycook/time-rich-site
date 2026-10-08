@@ -22,6 +22,8 @@
  *     [data-portal-login]    a form; its input value is passed to signIn
  *     [data-portal-signout]  a button; signs out and reloads
  *     [data-portal-name]     gets the member's first name
+ *     [data-portal-members-link]  hidden "Members" nav link; shown when
+ *                            POST /portal-directory answers 200
  *     [data-portal-weeks]    gets the week cards
  *     [data-portal-sessions] gets the session rows
  *   If any of name/weeks/sessions are present it calls load() to fill them.
@@ -153,6 +155,67 @@
 
   function signOut() {
     clearCode();
+    clearMembersLinkCache();
+  }
+
+  /* ---- Time Rich Members nav link ------------------------------------- */
+  //
+  // Every portal page carries a hidden "Members" link marked
+  // [data-portal-members-link]. It is shown only when POST /portal-directory
+  // answers 200 for this member: the directory is switched on, or they are
+  // team. A 403 keeps it hidden. Anything else (network, Worker down) also
+  // keeps it hidden but is not remembered, so the next page tries again.
+  //
+  // A definite answer is kept for this tab for ten minutes, so moving between
+  // portal pages does not refetch the directory every time.
+
+  var MEMBERS_LINK_CACHE = 'tr_members_link';
+  var MEMBERS_LINK_TTL_MS = 10 * 60 * 1000;
+
+  function readMembersLinkCache() {
+    try {
+      var cached = JSON.parse(window.sessionStorage.getItem(MEMBERS_LINK_CACHE) || 'null');
+      if (cached && typeof cached.ok === 'boolean' && Date.now() - cached.at < MEMBERS_LINK_TTL_MS) return cached.ok;
+    } catch (e) { /* storage off or unreadable: ask the Worker */ }
+    return null;
+  }
+
+  function writeMembersLinkCache(ok) {
+    try { window.sessionStorage.setItem(MEMBERS_LINK_CACHE, JSON.stringify({ ok: ok, at: Date.now() })); }
+    catch (e) { /* storage off: just ask again next page */ }
+  }
+
+  function clearMembersLinkCache() {
+    try { window.sessionStorage.removeItem(MEMBERS_LINK_CACHE); }
+    catch (e) { /* nothing stored */ }
+  }
+
+  function revealMembersLink() {
+    var links = document.querySelectorAll('[data-portal-members-link]');
+    if (!links.length) return;
+
+    var show = function (ok) {
+      for (var i = 0; i < links.length; i++) links[i].hidden = !ok;
+    };
+
+    var cached = readMembersLinkCache();
+    if (cached !== null) { show(cached); return; }
+
+    var cfg = window.TR_PORTAL_CONFIG;
+    var endpoint = (cfg && typeof cfg.directoryUrl === 'string') ? cfg.directoryUrl.trim() : '';
+    var code = readCode();
+    if (!endpoint || !code) return;
+
+    fetch(endpoint, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ code: code })
+    }).then(function (response) {
+      if (response.status === 200 || response.status === 403) {
+        writeMembersLinkCache(response.status === 200);
+      }
+      show(response.status === 200);
+    }, function () { show(false); });
   }
 
   /* ---- small DOM helpers ------------------------------------------- */
@@ -589,6 +652,9 @@
       document.dispatchEvent(new CustomEvent('trportal:data', { detail: data }));
     } catch (e) { /* no CustomEvent: the generic rendering above still ran */ }
 
+    // Off the critical path: the page opens now, the link appears if allowed.
+    revealMembersLink();
+
     setState('in');
   }
 
@@ -723,6 +789,7 @@
     // resources.html renders its own skill library and reuses this button, so
     // the gated-download flow lives in exactly one place.
     skillButton: skillButton,
+    revealMembersLink: revealMembersLink,
     messages: MSG
   };
 

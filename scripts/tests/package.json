@@ -2,13 +2,16 @@
   "name": "time-rich-tests",
   "private": true,
   "type": "module",
-  "description": "Tests for the /sh-apply application form and the Cloudflare worker's Notion mapping.",
+  "description": "Tests for the /sh-apply application form, the Cloudflare worker's Notion mapping, Time Rich Members, and the portal member SQL.",
   "scripts": {
-    "test": "node worker.test.mjs && node form.test.mjs",
+    "test": "node worker.test.mjs && node form.test.mjs && node members.test.mjs && node portal-member.test.mjs",
     "test:worker": "node worker.test.mjs",
-    "test:form": "node form.test.mjs"
+    "test:form": "node form.test.mjs",
+    "test:members": "node members.test.mjs",
+    "test:portal": "node portal-member.test.mjs"
   },
   "devDependencies": {
+    "@electric-sql/pglite": "^0.5.8",
     "jsdom": "^29.1.1"
   }
 }

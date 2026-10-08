@@ -14,6 +14,9 @@ window.TR_PORTAL_CONFIG = {
   // It re-checks the passcode and the week's release date server side; the
   // browser never sees the Storage bucket or any service key.
   downloadUrl: "https://time-rich-forms.timerich.workers.dev/portal-download",
+  // Worker route behind Time Rich Members. Re-checks the passcode and the
+  // directory_enabled switch, and returns profiles with 1-hour photo URLs.
+  directoryUrl: "https://time-rich-forms.timerich.workers.dev/portal-directory",
   url: "https://hmnqnkchwmxkwchqvxyj.supabase.co",
   key: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImhtbnFua2Nod214a3djaHF2eHlqIiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTA5NTIxNjksImV4cCI6MjEwNjUyODE2OX0.iUwxKM7jb7j0hrJ1CC22aMRcB2l9CsZGwYcmT2ng1Kc"
 };
