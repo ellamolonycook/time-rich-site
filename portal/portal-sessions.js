@@ -69,14 +69,36 @@
     var box = L.el('div', 'w-full md:w-auto flex flex-col lg:flex-row gap-3 shrink-0');
     var past = L.isSessionPast(session);
 
+    // Marking a session done only makes sense once it is open or over, so a
+    // locked row never gets the toggle.
+    var done = null;
+    if (unlocked || past) {
+      done = L.doneToggle(
+        function () { return L.isSessionMarked(session); },
+        function () { return L.toggleSession(session); }
+      );
+      box.appendChild(done);
+    }
+
+    // Joining or watching counts as having been there, so the toggle catches
+    // up on its own rather than asking the member to tick it as well.
+    function markOnUse(link) {
+      if (!link) return link;
+      link.addEventListener('click', function () {
+        L.markSession(session);
+        if (done && typeof done.refresh === 'function') done.refresh();
+      });
+      return link;
+    }
+
     if (past) {
-      var rec = L.linkTo(session.recording_url, 'Watch recording', BTN_SOFT);
+      var rec = markOnUse(L.linkTo(session.recording_url, 'Watch recording', BTN_SOFT));
       if (rec) box.appendChild(rec);
       return box.childNodes.length ? box : null;
     }
 
     if (unlocked) {
-      var join = L.linkTo(session.join_url, 'Join via Zoom', BTN_JOIN);
+      var join = markOnUse(L.linkTo(session.join_url, 'Join via Zoom', BTN_JOIN));
       if (join) box.appendChild(join);
       else box.appendChild(disabledButton('Join via Zoom', BTN_JOIN_OFF));
     } else {
