@@ -648,6 +648,11 @@
     // A page whose design does not match the generic markup above can listen
     // for this and render the payload itself. Fired before the gate opens, so
     // whatever it draws is in place by the time the page becomes visible.
+    // Kept where a late listener can find it. Deferred scripts run one after
+    // another, and microtasks flush in between, so a fetch that resolves
+    // quickly can fire this event before the last of them has registered.
+    try { window.TR_PORTAL_DATA = data; } catch (e) { /* non-writable window */ }
+
     try {
       document.dispatchEvent(new CustomEvent('trportal:data', { detail: data }));
     } catch (e) { /* no CustomEvent: the generic rendering above still ran */ }

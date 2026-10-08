@@ -3,8 +3,10 @@
 <head>
   <meta charset="utf-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <!-- Google tag (gtag.js) -->
-  <script async src="https://www.googletagmanager.com/gtag/js?id=G-CTZLQ4R388"></script>
+  <!-- Google tag (gtag.js). The library is fetched once the page is
+       interactive: it is the heaviest request here and nothing on screen
+       waits on it. The consent defaults below are set first, so the queue
+       it replays on arrival already respects them. -->
   <script>
     window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}
     // Consent Mode v2. Region-specific default first, then the global fallback,
@@ -13,6 +15,30 @@
     gtag('consent','default',{ad_storage:'denied',ad_user_data:'denied',ad_personalization:'denied',analytics_storage:'granted'});
     gtag('js',new Date());
     gtag('config','G-CTZLQ4R388');
+
+    // The library, once the page has loaded and the main thread is free.
+    // requestIdleCallback's own timeout and the setTimeout fallback are both
+    // 2000ms, so it never waits longer than that on a busy page.
+    (function () {
+      var asked = false;
+      function loadGtag() {
+        if (asked) return;
+        asked = true;
+        var s = document.createElement('script');
+        s.async = true;
+        s.src = 'https://www.googletagmanager.com/gtag/js?id=G-CTZLQ4R388';
+        document.head.appendChild(s);
+      }
+      function schedule() {
+        if (typeof window.requestIdleCallback === 'function') {
+          window.requestIdleCallback(loadGtag, { timeout: 2000 });
+        } else {
+          window.setTimeout(loadGtag, 2000);
+        }
+      }
+      if (document.readyState === 'complete') schedule();
+      else window.addEventListener('load', schedule);
+    })();
   </script>
 
   <meta name="robots" content="noindex, nofollow"/>
