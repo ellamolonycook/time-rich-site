@@ -104,6 +104,15 @@ begin
                on public.portal_directory, public.portal_settings
                to service_role';
   end if;
+
+  -- The Worker checks portal_members (active, role) before listing anyone.
+  -- portal_schema.sql gives service_role no table grant there, so without
+  -- this line a fresh setup answers that lookup with a 403. Read only: the
+  -- directory never writes to portal_members.
+  if exists (select 1 from pg_roles where rolname = 'service_role')
+     and to_regclass('public.portal_members') is not null then
+    execute 'grant select on public.portal_members to service_role';
+  end if;
 end
 $do$;
 
