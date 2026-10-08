@@ -1737,7 +1737,7 @@ function portalEmailPreview(member) {
 }
 
 function buildPortalPasscodeEmail(member, maskCode) {
-  const name = String(member.full_name || "there").trim() || "there";
+  const name = String(member.full_name || "").trim().split(/\s+/)[0] || "there";
   const passcode = maskCode ? maskPasscode(member.passcode) : String(member.passcode).trim();
   return {
     subject: "Your Time Rich portal passcode",
@@ -1774,7 +1774,7 @@ function portalTestRecipients(value, allowedValue) {
 async function sendPortalPasscodeTestEmails(recipients, env) {
   // This intentionally does not read portal_members or use a member's
   // credentials. It proves the domain, sender and final email layout safely.
-  const testMember = { full_name: "Time Rich team", passcode: "TEST-12345" };
+  const testMember = { full_name: "Team", passcode: "TEST-12345" };
   let sent = 0;
   let failed = 0;
   for (const recipient of recipients) {
