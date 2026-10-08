@@ -27,11 +27,26 @@ the committed file simply will not have any styling.
 [`tailwind.config.js`](tailwind.config.js) lists the JavaScript as well as the
 HTML. The portal draws most of its interface at runtime, so a class such as
 `bg-brand-deep` or `min-w-[6.5rem]` often exists only inside a string in
-`portal-live.js`, `portal-sessions.js`, `portal-progress.js` or
-`portal-access.js`. Leave one of those files out of `content` and Tailwind
-purges the classes it uses, and that part of the page renders unstyled.
+`portal-live.js`, `portal-sessions.js`, `portal-progress.js`,
+`portal-access.js` or `portal-chrome.js`. Leave one of those files out of
+`content` and Tailwind purges the classes it uses, and that part of the page
+renders unstyled.
 
 If you add another portal script, add it to `content` in the same change.
+
+### The CI check
+
+[`.github/workflows/portal-css.yml`](.github/workflows/portal-css.yml) rebuilds
+the stylesheet on every push and pull request that touches `portal/`, the
+Tailwind config or the package files, and fails if the result differs from the
+committed `portal/portal.css`. That is the safety net for forgetting the build:
+without it a missing class is invisible in review and only shows up as an
+unstyled block on the live site.
+
+It installs with `npm ci`, so the Tailwind version comes from the committed
+`package-lock.json` rather than floating. Keep the lock file in step with
+`package.json`, or the job fails for a reason unrelated to the change in front
+of it.
 
 ## Tests
 

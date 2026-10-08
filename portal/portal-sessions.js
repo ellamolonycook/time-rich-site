@@ -238,4 +238,11 @@
     render(document.getElementById('trSessionList'), event && event.detail);
   });
 
+  // The event may already have fired: this file is deferred, and a fetch that
+  // resolves quickly gets there first. portal-access.js leaves the payload
+  // behind for exactly this case.
+  if (window.TR_PORTAL_DATA) {
+    render(document.getElementById('trSessionList'), window.TR_PORTAL_DATA);
+  }
+
 })(window, document);

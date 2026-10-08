@@ -1,0 +1,62 @@
+name: Portal stylesheet
+
+# portal/portal.css is a build artefact that is committed, because GitHub Pages
+# serves this repo as-is and there is no build step at deploy time. That only
+# works if the committed file matches the sources it came from.
+#
+# This rebuilds it and fails when the result differs from what is committed,
+# which is what happens when someone adds a class in portal/ and forgets to run
+# `npm run build:css`. The symptom otherwise is subtle: the new class is simply
+# absent from the stylesheet, so that part of the page renders unstyled.
+
+on:
+  push:
+    branches: ["**"]
+    paths:
+      - "portal/**"
+      - "tailwind.config.js"
+      - "package.json"
+      - "package-lock.json"
+      - ".github/workflows/portal-css.yml"
+  pull_request:
+    branches: ["**"]
+    paths:
+      - "portal/**"
+      - "tailwind.config.js"
+      - "package.json"
+      - "package-lock.json"
+      - ".github/workflows/portal-css.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+
+      # npm ci, not npm install: it installs exactly what package-lock.json
+      # pins, which is what makes the comparison below mean anything. A floating
+      # Tailwind version could change the output on its own and fail this job
+      # for a reason that has nothing to do with the change under review.
+      - name: Install dependencies
+        run: npm ci --no-audit --no-fund
+
+      - name: Rebuild portal/portal.css
+        run: npm run build:css
+
+      - name: Check the committed stylesheet is up to date
+        run: |
+          if ! git diff --exit-code -- portal/portal.css; then
+            echo "::error file=portal/portal.css::portal/portal.css is out of date. Run 'npm run build:css' and commit the result."
+            exit 1
+          fi
+          echo "portal/portal.css matches its sources."

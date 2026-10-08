@@ -69,4 +69,11 @@
     render(document.querySelector('[data-portal-progress]'), event && event.detail);
   });
 
+  // The event may already have fired: this file is deferred, and a fetch that
+  // resolves quickly gets there first. portal-access.js leaves the payload
+  // behind for exactly this case.
+  if (window.TR_PORTAL_DATA) {
+    render(document.querySelector('[data-portal-progress]'), window.TR_PORTAL_DATA);
+  }
+
 })(window, document);

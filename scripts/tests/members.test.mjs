@@ -81,7 +81,7 @@ console.log('\nTime Rich Members page — loading');
   check('a card shows name, hook line, then title and company',
     ada.querySelector('.member-name').textContent === 'Ada Lovelace' &&
     ada.querySelector('.member-hook').textContent === 'First programmer' &&
-    ada.querySelector('.member-meta').textContent === 'Founder, Analytical Co');
+    ada.querySelector('.member-meta').textContent === 'Founder · Analytical Co');
   check('company alone when there is no title', cher.querySelector('.member-meta').textContent === 'Solo Studio');
   check('cards are buttons, so they work from the keyboard', ada.tagName === 'BUTTON' && ada.type === 'button');
 
@@ -157,7 +157,7 @@ console.log('\nTime Rich Members page — profile pop-up');
       : n.textContent);
   check('fields follow the brief: photo, name, hook, title and company, what the company does, who they serve, superpower, links',
     order.join(' > ') === 'photo > name > hook > title+company > What Time Rich does > Who they serve > Superpower > links', order);
-  check('title and company read as one line', panel.querySelector('.member-profile-meta').textContent === 'Founder and CEO, Time Rich');
+  check('title and company read as one line', panel.querySelector('.member-profile-meta').textContent === 'Founder and CEO · Time Rich');
 
   const linkedin = panel.querySelector('a.member-linkedin');
   check('LinkedIn is the primary button and opens in a new tab safely',
