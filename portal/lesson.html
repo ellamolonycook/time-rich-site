@@ -45,425 +45,14 @@
   <link rel="stylesheet" href="portal.css"/>
   <link rel="preconnect" href="https://fonts.googleapis.com"/>
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin=""/>
-  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Newsreader:ital,opsz,wght@0,6..72,300;0,6..72,400;0,6..72,500;1,6..72,400&family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet"/>
-  <style>
-    .custom-scroll::-webkit-scrollbar { width: 4px; }
-    .custom-scroll::-webkit-scrollbar-track { background: transparent; }
-    .custom-scroll::-webkit-scrollbar-thumb { background: rgba(66,75,54,0.15); border-radius: 4px; }
-    
-    .grid-bg {
-      background-image: linear-gradient(rgba(66,75,54,.08) 1px, transparent 1px), linear-gradient(90deg, rgba(66,75,54,.08) 1px, transparent 1px);
-      background-size: 52px 52px;
-      background-position: left top;
-    }
-    
-    .glow-orb {
-      background: radial-gradient(circle, rgba(230,230,230,0.6) 0%, rgba(230,230,230,0) 70%);
-    }
-  
-    @keyframes float {
-      0%, 100% { transform: translateY(0) rotate(-5deg); }
-      50% { transform: translateY(-8px) rotate(-3deg); }
-    }
-    @keyframes float-alt {
-      0%, 100% { transform: translateY(0) rotate(4deg); }
-      50% { transform: translateY(6px) rotate(5deg); }
-    }
-    .animate-float { animation: float 6s ease-in-out infinite; }
-    .animate-float-alt { animation: float-alt 7s ease-in-out infinite; }
-    
-    /* Smooth card hover lift */
-    .card-lift { transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.3s cubic-bezier(0.16, 1, 0.3, 1), border-color 0.3s ease; }
-    .card-lift:hover { transform: translateY(-4px); box-shadow: 0 12px 24px -10px rgba(66,75,54,0.15); border-color: rgba(66,75,54,0.3); }
-
-    h1, h2, h3, h4, h5, h6 { font-family: "Space Grotesk", sans-serif; letter-spacing: -0.022em; }
-
-    /* Full-screen organic atmospheric olive/sage background */
-    body {
-          background-color: #D5DCD0;
-          background-image:
-            radial-gradient(circle at 10% 10%, rgba(250, 253, 245, 0.95) 0%, transparent 70%),
-            radial-gradient(circle at 90% 90%, rgba(170, 185, 165, 0.5) 0%, transparent 80%),
-            radial-gradient(circle at 50% 60%, rgba(195, 210, 185, 0.6) 0%, transparent 70%);
-          min-height: 100vh;
-      }
-
-    .main-grid {
-      background-image:
-        linear-gradient(rgba(0, 0, 0, 0.04) 1px, transparent 1px),
-        linear-gradient(90deg, rgba(0, 0, 0, 0.04) 1px, transparent 1px);
-      background-size: 40px 40px;
-      background-position: top left;
-    }
-
-    /* Ultra-premium frosted glass card embedded into background */
-    
-    .noise-overlay {
-      position: fixed;
-      inset: 0;
-      pointer-events: none;
-      z-index: 1;
-      opacity: 0.11;
-      mix-blend-mode: multiply;
-      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 250 250' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
-    }
-
-  
-.glass3d { 
-  --filter-glass3d: blur(15px) brightness(0.66) saturate(2); 
-  --color-glass3d: rgba(186, 198, 163, 0.98); 
-  --noise-glass3d: url("https://www.transparenttextures.com/patterns/egg-shell.png"); 
-
-  position: relative; 
-  box-shadow:  
-    0 0 0.75px hsl(205 20% 10% / 0.2), 
-    0.7px 0.8px 1.2px -0.4px hsl(205 20% 10% / 0.1), 
-    1.3px 1.5px 2.2px -0.8px hsl(205 20% 10% / 0.1), 
-    2.3px 2.6px 3.9px -1.2px hsl(205 20% 10% / 0.1), 
-    3.9px 4.4px 6.6px -1.7px hsl(205 20% 10% / 0.1), 
-    6.5px 7.2px 10.9px -2.1px hsl(205 20% 10% / 0.1), 
-    8px 9px 14px -2.5px hsl(205 20% 10% / 0.2); 
-}
-
-.glass3d::before { 
-  content: ""; 
-  position: absolute; 
-  inset: 0; 
-  pointer-events: none; 
-  border-radius: inherit; 
-  overflow: hidden; 
-  z-index: -1; /* Keep it below content */
-  
-  -webkit-backdrop-filter: var(--filter-glass3d); 
-  backdrop-filter: var(--filter-glass3d); 
-  background-color: var(--color-glass3d); 
-  background-image: var(--noise-glass3d); 
-  background-size: 100px; 
-  background-repeat: repeat; 
-}
-
-.glass3d::after { 
-  content: ""; 
-  position: absolute; 
-  inset: 0; 
-  pointer-events: none; 
-  border-radius: inherit; 
-  overflow: hidden; 
-  z-index: 5; 
-  
-  box-shadow: 
-    inset 2px 2px 1px -3px hsl(205 20% 90% / 0.8), 
-    inset 4px 4px 2px -6px hsl(205 20% 90% / 0.3), 
-    inset 1.5px 1.5px 1.5px -0.75px hsl(205 20% 90% / 0.15), 
-    inset 1.5px 1.5px 0.25px hsl(205 20% 90% / 0.03), 
-    inset 0 0 0.25px 0.5px hsl(205 20% 90% / 0.03); 
-}
-
-.glass3d > * { 
-  position: relative; 
-  z-index: 6; 
-}
-
-
-    .nav-noise {
-        background-color: transparent !important;
-        background-image: 
-            linear-gradient(135deg, rgba(51, 58, 40, 0.98) 0%, rgba(30, 35, 24, 0.98) 100%),
-            url("data:image/svg+xml,%3Csvg viewBox='0 0 250 250' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='1.2' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)' opacity='0.25'/%3E%3C/svg%3E");
-        background-blend-mode: normal, normal;
-        border-color: rgba(255, 255, 255, 0.08) !important;
-    }
-
-    .premium-dropdown {
-      background: linear-gradient(135deg, rgba(255, 255, 255, 0.98) 0%, rgba(250, 255, 245, 0.85) 100%);
-      backdrop-filter: blur(64px) saturate(1.5);
-      -webkit-backdrop-filter: blur(64px) saturate(1.5);
-      border: 1px solid rgba(255, 255, 255, 0.8);
-      box-shadow: 
-        0 32px 64px -12px rgba(90, 105, 75, 0.25),
-        0 8px 24px rgba(90, 105, 75, 0.1),
-        inset 0 1px 0 rgba(255, 255, 255, 1),
-        inset 0 0 24px rgba(255, 255, 255, 0.3);
-    }
-  
-    /* === SMOOTH PORTAL TRANSITIONS === */
-    html { scroll-behavior: smooth; }
-    
-    /* Smooth all interactive elements */
-    a, button, [role="button"] {
-      transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
-    }
-    
-    /* Smooth focus states */
-    *:focus-visible {
-      outline: 2px solid rgba(89, 108, 36, 0.4);
-      outline-offset: 2px;
-      transition: outline 0.2s ease;
-    }
-    
-    /* Smooth image loading */
-    img {
-      transition: opacity 0.4s ease;
-    }
-    
-    /* Accordion smooth expand/collapse */
-    .accordion-content {
-      max-height: 0;
-      overflow: hidden;
-      transition: max-height 0.5s cubic-bezier(0.16, 1, 0.3, 1), 
-                  opacity 0.4s ease, 
-                  padding 0.4s ease;
-      opacity: 0;
-    }
-    .accordion-content.open {
-      opacity: 1;
-    }
-    
-  
-    /* Smooth press feedback on cards */
-    .glass-card:active {
-      transform: translateY(-1px) scale(0.995);
-      transition: transform 0.15s ease;
-    }
-    
-  
-    /* === MOBILE PERFORMANCE === */
-    @media (max-width: 768px) {
-      /* Reduce blur intensity on mobile for performance */
-      .glass-card,
-      .premium-dropdown {
-        -webkit-backdrop-filter: blur(16px) !important;
-        backdrop-filter: blur(16px) !important;
-      }
-      .glass3d::before {
-        -webkit-backdrop-filter: blur(8px) brightness(0.8) !important;
-        backdrop-filter: blur(8px) brightness(0.8) !important;
-      }
-      /* Disable noise overlay on mobile */
-      .noise-overlay {
-        display: none !important;
-      }
-      /* Disable shimmer hover on touch devices */
-      .shimmer-card::before {
-        display: none !important;
-      }
-      /* Reduce box-shadow complexity */
-      .glass3d {
-        box-shadow: 0 2px 8px rgba(0,0,0,0.1) !important;
-      }
-      /* Reduce floating animations */
-      .animate-float, .animate-float-alt {
-        animation: none !important;
-      }
-      /* Faster page transitions on mobile */
-      body {
-        transition: opacity 0.4s ease, transform 0.4s ease !important;
-      }
-      /* Disable grid lines on mobile for performance */
-      .main-grid {
-        background-image: none !important;
-      }
-    }
-    
-    /* Respect reduced motion preferences */
-    @media (prefers-reduced-motion: reduce) {
-      *, *::before, *::after {
-        animation-duration: 0.01ms !important;
-        animation-iteration-count: 1 !important;
-        transition-duration: 0.01ms !important;
-      }
-    }
-    
-    /* Touch device optimizations */
-    @media (hover: none) {
-      .card-lift:hover {
-        transform: none;
-        box-shadow: none;
-      }
-      .shimmer-card::before {
-        display: none;
-      }
-    }
-    
-  </style>
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&amp;family=Inter:wght@400;500;600&amp;family=Space+Mono:wght@400;700&amp;display=swap" rel="stylesheet"/>
   <link rel="stylesheet" href="portal-content.css">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 
   
 
-<style>
-  @keyframes marquee {
-    0% { transform: translateX(0); }
-    100% { transform: translateX(-50%); }
-  }
-  .animate-marquee {
-    animation: marquee 100s linear infinite;
-    width: max-content;
-  }
-  .animate-marquee:hover {
-    animation-play-state: paused;
-  }
 
-.glass3d { 
-  --filter-glass3d: blur(15px) brightness(0.66) saturate(2); 
-  --color-glass3d: rgba(186, 198, 163, 0.98); 
-  --noise-glass3d: url("https://www.transparenttextures.com/patterns/egg-shell.png"); 
-
-  position: relative; 
-  box-shadow:  
-    0 0 0.75px hsl(205 20% 10% / 0.2), 
-    0.7px 0.8px 1.2px -0.4px hsl(205 20% 10% / 0.1), 
-    1.3px 1.5px 2.2px -0.8px hsl(205 20% 10% / 0.1), 
-    2.3px 2.6px 3.9px -1.2px hsl(205 20% 10% / 0.1), 
-    3.9px 4.4px 6.6px -1.7px hsl(205 20% 10% / 0.1), 
-    6.5px 7.2px 10.9px -2.1px hsl(205 20% 10% / 0.1), 
-    8px 9px 14px -2.5px hsl(205 20% 10% / 0.2); 
-}
-
-.glass3d::before { 
-  content: ""; 
-  position: absolute; 
-  inset: 0; 
-  pointer-events: none; 
-  border-radius: inherit; 
-  overflow: hidden; 
-  z-index: -1; /* Keep it below content */
-  
-  -webkit-backdrop-filter: var(--filter-glass3d); 
-  backdrop-filter: var(--filter-glass3d); 
-  background-color: var(--color-glass3d); 
-  background-image: var(--noise-glass3d); 
-  background-size: 100px; 
-  background-repeat: repeat; 
-}
-
-.glass3d::after { 
-  content: ""; 
-  position: absolute; 
-  inset: 0; 
-  pointer-events: none; 
-  border-radius: inherit; 
-  overflow: hidden; 
-  z-index: 5; 
-  
-  box-shadow: 
-    inset 2px 2px 1px -3px hsl(205 20% 90% / 0.8), 
-    inset 4px 4px 2px -6px hsl(205 20% 90% / 0.3), 
-    inset 1.5px 1.5px 1.5px -0.75px hsl(205 20% 90% / 0.15), 
-    inset 1.5px 1.5px 0.25px hsl(205 20% 90% / 0.03), 
-    inset 0 0 0.25px 0.5px hsl(205 20% 90% / 0.03); 
-}
-
-.glass3d > * { 
-  position: relative; 
-  z-index: 6; 
-}
-
-    /* Premium Marquee Mask */
-    .expert-marquee-mask {
-      mask-image: linear-gradient(to right, transparent 0%, rgba(0,0,0,0.1) 20px, rgba(0,0,0,0.4) 60px, black 120px, black calc(100% - 60px), transparent 100%);
-      -webkit-mask-image: linear-gradient(to right, transparent 0%, rgba(0,0,0,0.1) 20px, rgba(0,0,0,0.4) 60px, black 120px, black calc(100% - 60px), transparent 100%);
-    }
-    @media (min-width: 1024px) {
-      .expert-marquee-mask {
-        mask-image: linear-gradient(to right, transparent 0%, rgba(0,0,0,0.1) 60px, rgba(0,0,0,0.4) 140px, black 280px, black calc(100% - 200px), transparent 100%);
-        -webkit-mask-image: linear-gradient(to right, transparent 0%, rgba(0,0,0,0.1) 60px, rgba(0,0,0,0.4) 140px, black 280px, black calc(100% - 200px), transparent 100%);
-      }
-    }
-    
-    /* Touch Swipable Marquee on Mobile */
-    @media (max-width: 1023px) {
-      .animate-marquee {
-        animation: none !important;
-        width: 100% !important;
-        overflow-x: auto !important;
-        overflow-y: hidden !important;
-        -webkit-overflow-scrolling: touch !important;
-        scroll-snap-type: x mandatory;
-        scrollbar-width: none;
-        -ms-overflow-style: none;
-      }
-      .animate-marquee::-webkit-scrollbar {
-        display: none;
-      }
-      .animate-marquee > div > div {
-        scroll-snap-align: center;
-      }
-    }
-
-    .nav-noise {
-        background-color: transparent !important;
-        background-image: 
-            linear-gradient(135deg, rgba(51, 58, 40, 0.98) 0%, rgba(30, 35, 24, 0.98) 100%),
-            url("data:image/svg+xml,%3Csvg viewBox='0 0 250 250' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='1.2' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)' opacity='0.25'/%3E%3C/svg%3E");
-        background-blend-mode: normal, normal;
-        border-color: rgba(255, 255, 255, 0.08) !important;
-    }
-
-    .premium-dropdown {
-      background: linear-gradient(135deg, rgba(255, 255, 255, 0.98) 0%, rgba(250, 255, 245, 0.85) 100%);
-      backdrop-filter: blur(64px) saturate(1.5);
-      -webkit-backdrop-filter: blur(64px) saturate(1.5);
-      border: 1px solid rgba(255, 255, 255, 0.8);
-      box-shadow: 
-        0 32px 64px -12px rgba(90, 105, 75, 0.25),
-        0 8px 24px rgba(90, 105, 75, 0.1),
-        inset 0 1px 0 rgba(255, 255, 255, 1),
-        inset 0 0 24px rgba(255, 255, 255, 0.3);
-    }
-  </style>
-
-  <style>
-    .glass-card {
-      background: linear-gradient(135deg, rgba(255, 255, 255, 0.75) 0%, rgba(245, 250, 240, 0.4) 100%);
-      backdrop-filter: blur(48px) saturate(1.2);
-      -webkit-backdrop-filter: blur(48px) saturate(1.2);
-      border: 1px solid rgba(255, 255, 255, 0.5);
-      box-shadow: 
-        0 24px 48px -12px rgba(90, 105, 75, 0.25),
-        inset 0 1px 0 rgba(255, 255, 255, 0.8),
-        inset 0 0 24px rgba(255, 255, 255, 0.2);
-      transition: all 0.5s cubic-bezier(0.16, 1, 0.3, 1);
-    }
-    .premium-nav {
-      background: linear-gradient(to bottom, rgba(255, 255, 255, 0.75) 0%, rgba(250, 255, 245, 0.4) 100%) !important;
-      backdrop-filter: blur(48px) saturate(1.2) !important;
-      -webkit-backdrop-filter: blur(48px) saturate(1.2) !important;
-      border-bottom: 1px solid rgba(255, 255, 255, 0.5) !important;
-      box-shadow: 
-        0 12px 32px -8px rgba(90, 105, 75, 0.15),
-        inset 0 -1px 0 rgba(255, 255, 255, 0.4) !important;
-    }
-    .premium-nav.scrolled {
-      background: linear-gradient(to bottom, rgba(255, 255, 255, 0.9) 0%, rgba(250, 255, 245, 0.6) 100%) !important;
-      box-shadow: 
-        0 20px 40px -10px rgba(90, 105, 75, 0.25) !important;
-    }
-    .nav-active {
-      background: linear-gradient(135deg, rgba(255, 255, 255, 0.8) 0%, rgba(245, 250, 240, 0.4) 100%) !important;
-      border: 1px solid rgba(255, 255, 255, 0.6) !important;
-      box-shadow: 
-        0 8px 16px -4px rgba(90, 105, 75, 0.2),
-        inset 0 1px 0 rgba(255, 255, 255, 0.8) !important;
-    }
-    .nav-item:hover {
-      background: linear-gradient(135deg, rgba(255, 255, 255, 0.4) 0%, rgba(245, 250, 240, 0.1) 100%) !important;
-      border-color: rgba(255, 255, 255, 0.3) !important;
-    }
-  
-    .premium-dropdown {
-      background: linear-gradient(135deg, rgba(255, 255, 255, 0.98) 0%, rgba(250, 255, 245, 0.85) 100%);
-      backdrop-filter: blur(64px) saturate(1.5);
-      -webkit-backdrop-filter: blur(64px) saturate(1.5);
-      border: 1px solid rgba(255, 255, 255, 0.8);
-      box-shadow: 
-        0 32px 64px -12px rgba(90, 105, 75, 0.25),
-        0 8px 24px rgba(90, 105, 75, 0.1),
-        inset 0 1px 0 rgba(255, 255, 255, 1),
-        inset 0 0 24px rgba(255, 255, 255, 0.3);
-    }
-  </style>
   <!-- The passcode gate. Config first, then the library; both deferred so
        the DOM is ready when the script mounts. No valid code redirects to
        index.html, because this page has no login form of its own. -->
@@ -478,7 +67,6 @@
 <body class="text-brand-deep font-sans min-h-screen flex flex-col selection:bg-brand-lime selection:text-brand-deep">
 
   <!-- Noise Texture Overlay -->
-  <div class="noise-overlay"></div>
 
   <!-- MOBILE MENU -->
   <div id="mobile-menu-overlay" class="fixed inset-0 bg-brand-ink/25 z-[100] opacity-0 pointer-events-none transition-opacity duration-300 lg:hidden"></div>
@@ -493,8 +81,8 @@
           <svg class="w-4 h-4 text-brand-ink/50 shrink-0" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"></path></svg>
           Dashboard
         </a>
-        <a href="curriculum.html" aria-current="page" class="flex items-center gap-3 px-4 py-2.5 rounded-[14px] text-sm font-semibold text-brand-ink bg-brand-ink/[0.07]">
-          <svg class="w-4 h-4 text-brand-ink shrink-0" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"></path></svg>
+        <a href="curriculum.html" aria-current="page" class="flex items-center gap-3 px-4 py-2.5 rounded-[14px] text-sm font-semibold bg-brand-deep text-brand-bg">
+          <svg class="w-4 h-4 shrink-0" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"></path></svg>
           Curriculum
         </a>
         <a href="sessions.html" class="flex items-center gap-3 px-4 py-2.5 rounded-[14px] text-sm font-medium text-brand-ink/70 hover:text-brand-ink hover:bg-brand-ink/5 transition-colors">
@@ -517,7 +105,7 @@
   </div>
 
   <!-- TOP NAVBAR -->
-  <header id="top-nav" class="h-16 flex items-center justify-between gap-3 px-4 sm:px-6 lg:px-10 shrink-0 relative z-50 bg-brand-page/90 backdrop-blur-sm border-b border-brand-ink/10">
+  <header id="top-nav" class="trp-header h-14 sm:h-16 flex items-center justify-between gap-3 px-4 sm:px-6 lg:px-10 shrink-0 sticky top-0 z-50">
 
     <div class="flex items-center gap-2 shrink-0">
       <button id="mobile-menu-btn" type="button" aria-expanded="false" aria-controls="mobile-menu" aria-label="Menu" class="lg:hidden flex items-center justify-center w-10 h-10 -ml-2 rounded-full text-brand-ink hover:bg-brand-ink/5 transition-colors">
@@ -531,7 +119,7 @@
 
     <nav class="hidden lg:flex items-center gap-1 absolute left-1/2 -translate-x-1/2" aria-label="Portal">
         <a href="dashboard.html" class="px-3 py-1.5 rounded-full text-xs font-medium text-brand-ink/60 hover:text-brand-ink hover:bg-brand-ink/5 transition-colors">Dashboard</a>
-        <a href="curriculum.html" aria-current="page" class="px-3 py-1.5 rounded-full text-xs font-semibold text-brand-ink bg-brand-ink/[0.07]">Curriculum</a>
+        <a href="curriculum.html" aria-current="page" class="px-3 py-1.5 rounded-full text-xs font-semibold bg-brand-deep text-brand-bg">Curriculum</a>
         <a href="sessions.html" class="px-3 py-1.5 rounded-full text-xs font-medium text-brand-ink/60 hover:text-brand-ink hover:bg-brand-ink/5 transition-colors">Live Sessions</a>
         <a href="resources.html" class="px-3 py-1.5 rounded-full text-xs font-medium text-brand-ink/60 hover:text-brand-ink hover:bg-brand-ink/5 transition-colors">Resources</a>
         <a href="members.html" data-portal-members-link hidden class="px-3 py-1.5 rounded-full text-xs font-medium text-brand-ink/60 hover:text-brand-ink hover:bg-brand-ink/5 transition-colors">Members</a>
@@ -540,7 +128,7 @@
     <div class="flex items-center gap-2 sm:gap-4 shrink-0">
       <!-- Filled in by portal-chrome.js, and only while a session is live or
            about to start. Stays hidden the rest of the time. -->
-      <a data-portal-join hidden class="inline-flex items-center px-3.5 py-1.5 rounded-full bg-brand-ink text-brand-page text-[11px] font-mono font-medium tracking-[0.06em] whitespace-nowrap hover:bg-brand-ink/90 transition-colors"></a>
+      <a data-portal-join hidden class="hidden lg:inline-flex items-center px-3.5 py-1.5 rounded-full bg-brand-ink text-brand-page text-[11px] font-mono font-medium tracking-[0.06em] whitespace-nowrap hover:bg-brand-ink/90 transition-colors"></a>
 
       <span data-portal-name class="hidden sm:inline text-xs font-medium text-brand-ink/70 whitespace-nowrap"></span>
 
@@ -553,95 +141,39 @@
     
     <!-- LEFT SIDEBAR -->
     
-    <style>
-      #desktop-sidebar { will-change: width, transform; }
-    #desktop-sidebar.collapsed {
-        width: 5.5rem !important;
-        padding-left: 0 !important;
-        padding-right: 0 !important;
-        align-items: center !important; /* Force children to center */
-      }
-      #desktop-sidebar { will-change: width, transform; }
-    #desktop-sidebar.collapsed nav, 
-      #desktop-sidebar { will-change: width, transform; }
-    #desktop-sidebar.collapsed .mb-4 {
-        width: 100%;
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-      }
-      #desktop-sidebar { will-change: width, transform; }
-    #desktop-sidebar.collapsed .sidebar-text {
-        max-width: 0 !important;
-        opacity: 0 !important;
-        margin-left: 0 !important;
-        padding: 0 !important;
-      }
-      #desktop-sidebar { will-change: width, transform; }
-    #desktop-sidebar.collapsed .sidebar-toggle-icon {
-        transform: rotate(180deg);
-      }
-      /* Center the toggle button container */
-      #desktop-sidebar { will-change: width, transform; }
-    #desktop-sidebar.collapsed .justify-end {
-        justify-content: center !important;
-        padding: 0 !important;
-      }
-      /* Make the link boxes perfect squares and center them */
-      #desktop-sidebar { will-change: width, transform; }
-    #desktop-sidebar.collapsed a {
-        justify-content: center;
-        padding-left: 0 !important;
-        padding-right: 0 !important;
-        width: 3rem !important;
-        height: 3rem !important;
-        margin: 0 auto !important;
-      }
-      #desktop-sidebar { will-change: width, transform; }
-    #desktop-sidebar.collapsed a svg {
-        margin: 0 auto;
-        transform: translateX(-1px); /* micro-adjustment to perfectly center the icon visually */
-      }
-
-    .premium-dropdown {
-      background: linear-gradient(135deg, rgba(255, 255, 255, 0.98) 0%, rgba(250, 255, 245, 0.85) 100%);
-      backdrop-filter: blur(64px) saturate(1.5);
-      -webkit-backdrop-filter: blur(64px) saturate(1.5);
-      border: 1px solid rgba(255, 255, 255, 0.8);
-      box-shadow: 
-        0 32px 64px -12px rgba(90, 105, 75, 0.25),
-        0 8px 24px rgba(90, 105, 75, 0.1),
-        inset 0 1px 0 rgba(255, 255, 255, 1),
-        inset 0 0 24px rgba(255, 255, 255, 0.3);
-    }
-  </style>
     <!-- CENTER SCROLLABLE CONTENT -->
-    <main class="flex-1 relative bg-transparent main-grid">
-        <div class="relative z-10 px-6 sm:px-8 py-8 lg:py-12 max-w-[900px] mx-auto transition-all duration-500 ease-[cubic-bezier(0.16,1,0.3,1)]">
+    <main class="flex-1 relative bg-transparent">
+        <div class="relative z-10 px-6 sm:px-8 py-8 lg:py-12 max-w-[900px] mx-auto transition-all duration-150 ease-[cubic-bezier(0.16,1,0.3,1)]">
           
+          <!-- The way back out of a lesson, before anything else on the page. -->
+          <a href="curriculum.html" class="trp-back mb-6">
+            <svg class="w-4 h-4 shrink-0" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M15 19l-7-7 7-7"></path></svg>
+            Back to Curriculum
+          </a>
+
           <!-- BREADCRUMBS -->
-          <nav class="flex items-center gap-2 text-[11px] sm:text-xs font-semibold text-brand-mid/80 mb-8 font-display uppercase tracking-[0.1em]">
+          <nav class="flex items-center gap-2 text-[11px] sm:text-xs font-semibold text-brand-mid/80 mb-8 trp-tag" aria-label="Breadcrumb">
             <a href="curriculum.html" class="hover:text-brand-deep transition-colors">Curriculum</a>
             <span class="text-brand-mid/40">/</span>
             <span class="text-brand-deep">Module 1</span>
             <span class="text-brand-mid/40">/</span>
-            <span class="bg-gradient-to-br from-[#748c2f] via-[#596C24] to-[#354015] bg-clip-text text-transparent">Drafting Personas</span>
+            <span class="text-brand-deep">Drafting Personas</span>
           </nav>
 
           <!-- HERO HEADER -->
           <header class="mb-12">
-            <h1 class="text-3xl sm:text-4xl lg:text-[42px] font-display font-bold tracking-tight text-brand-deep leading-[1.1] mb-6">
+            <h1 class="trp-title">
               Drafting your first AI Agent Personas
             </h1>
-            <p class="text-lg text-brand-mid leading-relaxed max-w-2xl">
+            <p class="trp-lede">
               Learn how to define clear boundaries, knowledge bases, and interaction styles to prevent your AI agents from hallucinating or going off-script.
             </p>
           </header>
 
           <!-- LOOM VIDEO EMBED (Placeholder) -->
-          <div class="w-full aspect-video rounded-3xl overflow-hidden glass-card border border-brand-deep/10 shadow-xl mb-16 relative group cursor-pointer">
+          <div class="w-full aspect-video overflow-hidden glass-card border border-brand-deep/10 mb-16 relative group cursor-pointer">
             <div class="absolute inset-0 bg-brand-deep/5 flex flex-col items-center justify-center">
-              <div class="w-16 h-16 rounded-full bg-white/90 shadow-lg flex items-center justify-center text-brand-deep group-hover:scale-110 transition-transform duration-300">
+              <div class="w-16 h-16 rounded-full bg-white/90 flex items-center justify-center text-brand-deep group-hover:scale-110 transition-transform duration-150">
                 <svg class="w-6 h-6 ml-1" fill="currentColor" viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
               </div>
               <span class="mt-4 text-sm font-semibold text-brand-deep/60 tracking-wider uppercase font-display">Loom Video Embed</span>
@@ -657,7 +189,7 @@
             </p>
 
             <!-- CLICKABLE PROMPT BOX -->
-            <div class="my-10 bg-white/60 backdrop-blur-sm border border-brand-deep/10 rounded-2xl overflow-hidden shadow-sm">
+            <div class="my-10 bg-white/60 border border-brand-deep/10 rounded-2xl overflow-hidden">
               <div class="flex items-center justify-between px-5 py-3 border-b border-brand-deep/5 bg-brand-deep/[0.02]">
                 <div class="flex items-center gap-2">
                   <svg class="w-4 h-4 text-[#596C24]" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M8 9l3 3-3 3m5 0h3M5 20h14a2 2 0 002-2V6a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>
@@ -683,8 +215,8 @@ Core Rules:
 
             <!-- SCREENSHOT PLACEHOLDER -->
             <figure class="my-12">
-              <div class="w-full bg-brand-deep/5 rounded-2xl border border-brand-deep/10 overflow-hidden shadow-sm flex items-center justify-center p-2">
-                 <div class="w-full h-[300px] bg-white rounded-xl shadow-sm border border-black/5 flex flex-col items-center justify-center text-brand-mid/40">
+              <div class="w-full bg-brand-deep/5 rounded-2xl border border-brand-deep/10 overflow-hidden flex items-center justify-center p-2">
+                 <div class="w-full h-[300px] bg-white rounded-xl border border-black/5 flex flex-col items-center justify-center text-brand-mid/40">
     <svg class="w-10 h-10 mb-2" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>
     <span class="text-sm font-semibold">Screenshot: Uploading documents</span>
                  </div>
@@ -711,7 +243,7 @@ Core Rules:
                 <div class="text-[10px] font-display font-bold text-brand-mid uppercase tracking-wider mb-1">Next Lesson</div>
                 <div class="text-sm font-semibold text-brand-deep group-hover:text-[#596C24] transition-colors">Connecting Zapier</div>
               </div>
-              <div class="w-10 h-10 rounded-full bg-brand-deep text-white shadow-md flex items-center justify-center group-hover:bg-[#596C24] group-hover:translate-x-1 transition-all">
+              <div class="w-10 h-10 rounded-full bg-brand-deep text-white flex items-center justify-center group-hover:bg-[#596C24] group-hover:translate-x-1 transition-all">
                 <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7"></path></svg>
               </div>
             </a>
@@ -721,7 +253,7 @@ Core Rules:
 </main> <!-- CLOSE main -->
     </div> <!-- CLOSE h-screen container -->
 
-  <footer class="shrink-0 px-4 sm:px-6 lg:px-10 py-5 border-t border-brand-ink/10 text-[11px] text-brand-ink/50">
+  <footer class="shrink-0 px-4 sm:px-6 lg:px-10 py-5 border-t border-brand-ink/10 text-[11px] text-brand-ink/70">
     <p class="flex flex-wrap items-center justify-center gap-x-2 gap-y-1 text-center">
       <span>Need help? <a href="mailto:emc@timerich.ai" class="hover:text-brand-ink transition-colors">emc@timerich.ai</a></span>
       <span aria-hidden="true" class="text-brand-ink/25">&middot;</span>

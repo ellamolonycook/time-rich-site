@@ -45,459 +45,14 @@
   <link rel="stylesheet" href="portal.css"/>
   <link rel="preconnect" href="https://fonts.googleapis.com"/>
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin=""/>
-  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Newsreader:ital,opsz,wght@0,6..72,300;0,6..72,400;0,6..72,500;1,6..72,400&family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet"/>
-  <style>
-    .custom-scroll::-webkit-scrollbar { width: 4px; }
-    .custom-scroll::-webkit-scrollbar-track { background: transparent; }
-    .custom-scroll::-webkit-scrollbar-thumb { background: rgba(66,75,54,0.15); border-radius: 4px; }
-    
-    .grid-bg {
-      background-image: linear-gradient(rgba(66,75,54,.08) 1px, transparent 1px), linear-gradient(90deg, rgba(66,75,54,.08) 1px, transparent 1px);
-      background-size: 52px 52px;
-      background-position: left top;
-    }
-    
-    .glow-orb {
-      background: radial-gradient(circle, rgba(230,230,230,0.6) 0%, rgba(230,230,230,0) 70%);
-    }
-  
-    @keyframes float {
-      0%, 100% { transform: translateY(0) rotate(-5deg); }
-      50% { transform: translateY(-8px) rotate(-3deg); }
-    }
-    @keyframes float-alt {
-      0%, 100% { transform: translateY(0) rotate(4deg); }
-      50% { transform: translateY(6px) rotate(5deg); }
-    }
-    .animate-float { animation: float 6s ease-in-out infinite; }
-    .animate-float-alt { animation: float-alt 7s ease-in-out infinite; }
-    
-    /* Smooth card hover lift */
-    .card-lift { transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.3s cubic-bezier(0.16, 1, 0.3, 1), border-color 0.3s ease; }
-    .card-lift:hover { transform: translateY(-4px); box-shadow: 0 12px 24px -10px rgba(66,75,54,0.15); border-color: rgba(66,75,54,0.3); }
-
-    h1, h2, h3, h4, h5, h6 { font-family: "Space Grotesk", sans-serif; letter-spacing: -0.022em; }
-
-    /* Full-screen organic atmospheric olive/sage background */
-    body {
-          background-color: #D5DCD0;
-          background-image:
-            radial-gradient(circle at 10% 10%, rgba(250, 253, 245, 0.95) 0%, transparent 70%),
-            radial-gradient(circle at 90% 90%, rgba(170, 185, 165, 0.5) 0%, transparent 80%),
-            radial-gradient(circle at 50% 60%, rgba(195, 210, 185, 0.6) 0%, transparent 70%);
-          min-height: 100vh;
-      }
-
-    .main-grid {
-      background-image:
-        linear-gradient(rgba(0, 0, 0, 0.04) 1px, transparent 1px),
-        linear-gradient(90deg, rgba(0, 0, 0, 0.04) 1px, transparent 1px);
-      background-size: 40px 40px;
-      background-position: top left;
-    }
-
-    /* Ultra-premium frosted glass card embedded into background */
-    
-    .noise-overlay {
-      position: fixed;
-      inset: 0;
-      pointer-events: none;
-      z-index: 1;
-      opacity: 0.11;
-      mix-blend-mode: multiply;
-      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 250 250' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
-    }
-
-  
-.glass3d { 
-  --filter-glass3d: blur(15px) brightness(0.66) saturate(2); 
-  --color-glass3d: rgba(186, 198, 163, 0.98); 
-  --noise-glass3d: url("https://www.transparenttextures.com/patterns/egg-shell.png"); 
-
-  position: relative; 
-  box-shadow:  
-    0 0 0.75px hsl(205 20% 10% / 0.2), 
-    0.7px 0.8px 1.2px -0.4px hsl(205 20% 10% / 0.1), 
-    1.3px 1.5px 2.2px -0.8px hsl(205 20% 10% / 0.1), 
-    2.3px 2.6px 3.9px -1.2px hsl(205 20% 10% / 0.1), 
-    3.9px 4.4px 6.6px -1.7px hsl(205 20% 10% / 0.1), 
-    6.5px 7.2px 10.9px -2.1px hsl(205 20% 10% / 0.1), 
-    8px 9px 14px -2.5px hsl(205 20% 10% / 0.2); 
-}
-
-.glass3d::before { 
-  content: ""; 
-  position: absolute; 
-  inset: 0; 
-  pointer-events: none; 
-  border-radius: inherit; 
-  overflow: hidden; 
-  z-index: -1; /* Keep it below content */
-  
-  -webkit-backdrop-filter: var(--filter-glass3d); 
-  backdrop-filter: var(--filter-glass3d); 
-  background-color: var(--color-glass3d); 
-  background-image: var(--noise-glass3d); 
-  background-size: 100px; 
-  background-repeat: repeat; 
-}
-
-.glass3d::after { 
-  content: ""; 
-  position: absolute; 
-  inset: 0; 
-  pointer-events: none; 
-  border-radius: inherit; 
-  overflow: hidden; 
-  z-index: 5; 
-  
-  box-shadow: 
-    inset 2px 2px 1px -3px hsl(205 20% 90% / 0.8), 
-    inset 4px 4px 2px -6px hsl(205 20% 90% / 0.3), 
-    inset 1.5px 1.5px 1.5px -0.75px hsl(205 20% 90% / 0.15), 
-    inset 1.5px 1.5px 0.25px hsl(205 20% 90% / 0.03), 
-    inset 0 0 0.25px 0.5px hsl(205 20% 90% / 0.03); 
-}
-
-.glass3d > * { 
-  position: relative; 
-  z-index: 6; 
-}
-
-
-    .nav-noise {
-        background-color: transparent !important;
-        background-image: 
-            linear-gradient(135deg, rgba(51, 58, 40, 0.98) 0%, rgba(30, 35, 24, 0.98) 100%),
-            url("data:image/svg+xml,%3Csvg viewBox='0 0 250 250' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='1.2' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)' opacity='0.25'/%3E%3C/svg%3E");
-        background-blend-mode: normal, normal;
-        border-color: rgba(255, 255, 255, 0.08) !important;
-    }
-
-    .premium-dropdown {
-      background: linear-gradient(135deg, rgba(255, 255, 255, 0.98) 0%, rgba(250, 255, 245, 0.85) 100%);
-      backdrop-filter: blur(64px) saturate(1.5);
-      -webkit-backdrop-filter: blur(64px) saturate(1.5);
-      border: 1px solid rgba(255, 255, 255, 0.8);
-      box-shadow: 
-        0 32px 64px -12px rgba(90, 105, 75, 0.25),
-        0 8px 24px rgba(90, 105, 75, 0.1),
-        inset 0 1px 0 rgba(255, 255, 255, 1),
-        inset 0 0 24px rgba(255, 255, 255, 0.3);
-    }
-  
-    /* === SMOOTH PORTAL TRANSITIONS === */
-    html { scroll-behavior: smooth; }
-    
-    /* Smooth all interactive elements */
-    a, button, [role="button"] {
-      transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
-    }
-    
-    /* Smooth focus states */
-    *:focus-visible {
-      outline: 2px solid rgba(89, 108, 36, 0.4);
-      outline-offset: 2px;
-      transition: outline 0.2s ease;
-    }
-    
-    /* Smooth image loading */
-    img {
-      transition: opacity 0.4s ease;
-    }
-    
-    /* Accordion smooth expand/collapse */
-    .accordion-content {
-      max-height: 0;
-      overflow: hidden;
-      transition: max-height 0.5s cubic-bezier(0.16, 1, 0.3, 1), 
-                  opacity 0.4s ease, 
-                  padding 0.4s ease;
-      opacity: 0;
-    }
-    .accordion-content.open {
-      opacity: 1;
-    }
-    
-  
-    /* Smooth press feedback on cards */
-    .glass-card:active {
-      transform: translateY(-1px) scale(0.995);
-      transition: transform 0.15s ease;
-    }
-    
-  
-    /* === MOBILE PERFORMANCE === */
-    @media (max-width: 768px) {
-      /* Reduce blur intensity on mobile for performance */
-      .glass-card,
-      .premium-dropdown {
-        -webkit-backdrop-filter: blur(16px) !important;
-        backdrop-filter: blur(16px) !important;
-      }
-      .glass3d::before {
-        -webkit-backdrop-filter: blur(8px) brightness(0.8) !important;
-        backdrop-filter: blur(8px) brightness(0.8) !important;
-      }
-      /* Disable noise overlay on mobile */
-      .noise-overlay {
-        display: none !important;
-      }
-      /* Disable shimmer hover on touch devices */
-      .shimmer-card::before {
-        display: none !important;
-      }
-      /* Reduce box-shadow complexity */
-      .glass3d {
-        box-shadow: 0 2px 8px rgba(0,0,0,0.1) !important;
-      }
-      /* Reduce floating animations */
-      .animate-float, .animate-float-alt {
-        animation: none !important;
-      }
-      /* Faster page transitions on mobile */
-      body {
-        transition: opacity 0.4s ease, transform 0.4s ease !important;
-      }
-      /* Disable grid lines on mobile for performance */
-      .main-grid {
-        background-image: none !important;
-      }
-    }
-    
-    /* Respect reduced motion preferences */
-    @media (prefers-reduced-motion: reduce) {
-      *, *::before, *::after {
-        animation-duration: 0.01ms !important;
-        animation-iteration-count: 1 !important;
-        transition-duration: 0.01ms !important;
-      }
-    }
-    
-    /* Touch device optimizations */
-    @media (hover: none) {
-      .card-lift:hover {
-        transform: none;
-        box-shadow: none;
-      }
-      .shimmer-card::before {
-        display: none;
-      }
-    }
-    
-  </style>
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&amp;family=Inter:wght@400;500;600&amp;family=Space+Mono:wght@400;700&amp;display=swap" rel="stylesheet"/>
   <link rel="stylesheet" href="portal-content.css">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 
   
 
-<style>
-  @keyframes marquee {
-    0% { transform: translateX(0); }
-    100% { transform: translateX(-50%); }
-  }
-  .animate-marquee {
-    animation: marquee 100s linear infinite;
-    width: max-content;
-  }
-  .animate-marquee:hover {
-    animation-play-state: paused;
-  }
 
-.glass3d { 
-  --filter-glass3d: blur(15px) brightness(0.66) saturate(2); 
-  --color-glass3d: rgba(186, 198, 163, 0.98); 
-  --noise-glass3d: url("https://www.transparenttextures.com/patterns/egg-shell.png"); 
-
-  position: relative; 
-  box-shadow:  
-    0 0 0.75px hsl(205 20% 10% / 0.2), 
-    0.7px 0.8px 1.2px -0.4px hsl(205 20% 10% / 0.1), 
-    1.3px 1.5px 2.2px -0.8px hsl(205 20% 10% / 0.1), 
-    2.3px 2.6px 3.9px -1.2px hsl(205 20% 10% / 0.1), 
-    3.9px 4.4px 6.6px -1.7px hsl(205 20% 10% / 0.1), 
-    6.5px 7.2px 10.9px -2.1px hsl(205 20% 10% / 0.1), 
-    8px 9px 14px -2.5px hsl(205 20% 10% / 0.2); 
-}
-
-.glass3d::before { 
-  content: ""; 
-  position: absolute; 
-  inset: 0; 
-  pointer-events: none; 
-  border-radius: inherit; 
-  overflow: hidden; 
-  z-index: -1; /* Keep it below content */
-  
-  -webkit-backdrop-filter: var(--filter-glass3d); 
-  backdrop-filter: var(--filter-glass3d); 
-  background-color: var(--color-glass3d); 
-  background-image: var(--noise-glass3d); 
-  background-size: 100px; 
-  background-repeat: repeat; 
-}
-
-.glass3d::after { 
-  content: ""; 
-  position: absolute; 
-  inset: 0; 
-  pointer-events: none; 
-  border-radius: inherit; 
-  overflow: hidden; 
-  z-index: 5; 
-  
-  box-shadow: 
-    inset 2px 2px 1px -3px hsl(205 20% 90% / 0.8), 
-    inset 4px 4px 2px -6px hsl(205 20% 90% / 0.3), 
-    inset 1.5px 1.5px 1.5px -0.75px hsl(205 20% 90% / 0.15), 
-    inset 1.5px 1.5px 0.25px hsl(205 20% 90% / 0.03), 
-    inset 0 0 0.25px 0.5px hsl(205 20% 90% / 0.03); 
-}
-
-.glass3d > * { 
-  position: relative; 
-  z-index: 6; 
-}
-
-    /* Premium Marquee Mask */
-    .expert-marquee-mask {
-      mask-image: linear-gradient(to right, transparent 0%, rgba(0,0,0,0.1) 20px, rgba(0,0,0,0.4) 60px, black 120px, black calc(100% - 60px), transparent 100%);
-      -webkit-mask-image: linear-gradient(to right, transparent 0%, rgba(0,0,0,0.1) 20px, rgba(0,0,0,0.4) 60px, black 120px, black calc(100% - 60px), transparent 100%);
-    }
-    @media (min-width: 1024px) {
-      .expert-marquee-mask {
-        mask-image: linear-gradient(to right, transparent 0%, rgba(0,0,0,0.1) 60px, rgba(0,0,0,0.4) 140px, black 280px, black calc(100% - 200px), transparent 100%);
-        -webkit-mask-image: linear-gradient(to right, transparent 0%, rgba(0,0,0,0.1) 60px, rgba(0,0,0,0.4) 140px, black 280px, black calc(100% - 200px), transparent 100%);
-      }
-    }
-    
-    /* Touch Swipable Marquee on Mobile */
-    @media (max-width: 1023px) {
-      .animate-marquee {
-        animation: none !important;
-        width: 100% !important;
-        overflow-x: auto !important;
-        overflow-y: hidden !important;
-        -webkit-overflow-scrolling: touch !important;
-        scroll-snap-type: x mandatory;
-        scrollbar-width: none;
-        -ms-overflow-style: none;
-      }
-      .animate-marquee::-webkit-scrollbar {
-        display: none;
-      }
-      .animate-marquee > div > div {
-        scroll-snap-align: center;
-      }
-    }
-
-    .nav-noise {
-        background-color: transparent !important;
-        background-image: 
-            linear-gradient(135deg, rgba(51, 58, 40, 0.98) 0%, rgba(30, 35, 24, 0.98) 100%),
-            url("data:image/svg+xml,%3Csvg viewBox='0 0 250 250' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='1.2' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)' opacity='0.25'/%3E%3C/svg%3E");
-        background-blend-mode: normal, normal;
-        border-color: rgba(255, 255, 255, 0.08) !important;
-    }
-
-    .premium-dropdown {
-      background: linear-gradient(135deg, rgba(255, 255, 255, 0.98) 0%, rgba(250, 255, 245, 0.85) 100%);
-      backdrop-filter: blur(64px) saturate(1.5);
-      -webkit-backdrop-filter: blur(64px) saturate(1.5);
-      border: 1px solid rgba(255, 255, 255, 0.8);
-      box-shadow: 
-        0 32px 64px -12px rgba(90, 105, 75, 0.25),
-        0 8px 24px rgba(90, 105, 75, 0.1),
-        inset 0 1px 0 rgba(255, 255, 255, 1),
-        inset 0 0 24px rgba(255, 255, 255, 0.3);
-    }
-  </style>
-
-  <style>
-    
-      /* Animated Premium Shimmer Hues */
-      .shimmer-card {
-        position: relative;
-        overflow: hidden;
-      }
-      .shimmer-card > *:not(.absolute) {
-        position: relative;
-        z-index: 10;
-      }
-      .shimmer-card::before {
-        content: "";
-        position: absolute;
-        top: -50%;
-        left: -50%;
-        width: 200%;
-        height: 200%;
-        opacity: 0;
-        transition: opacity 0.7s ease, transform 1.2s ease;
-        transform: scale(0.8) translate(-10%, -10%);
-        pointer-events: none;
-        z-index: 1;
-      }
-      .shimmer-card:hover::before {
-        opacity: 1;
-        transform: scale(1.5) translate(15%, 15%);
-      }
-      .shimmer-green::before {
-        background: radial-gradient(circle at center, rgba(255, 255, 255, 0.8) 0%, rgba(130, 160, 90, 0.25) 30%, transparent 60%);
-      }
-      .shimmer-blue::before {
-        background: radial-gradient(circle at center, rgba(255, 255, 255, 0.8) 0%, rgba(59, 130, 246, 0.15) 30%, transparent 60%);
-      }
-
-      .glass-card {
-      background: linear-gradient(135deg, rgba(255, 255, 255, 0.75) 0%, rgba(245, 250, 240, 0.4) 100%);
-      backdrop-filter: blur(48px) saturate(1.2);
-      -webkit-backdrop-filter: blur(48px) saturate(1.2);
-      border: 1px solid rgba(255, 255, 255, 0.5);
-      box-shadow: 
-        0 24px 48px -12px rgba(90, 105, 75, 0.25),
-        inset 0 1px 0 rgba(255, 255, 255, 0.8),
-        inset 0 0 24px rgba(255, 255, 255, 0.2);
-      transition: all 0.5s cubic-bezier(0.16, 1, 0.3, 1);
-    }
-    .premium-nav {
-      background: linear-gradient(to bottom, rgba(255, 255, 255, 0.75) 0%, rgba(250, 255, 245, 0.4) 100%) !important;
-      backdrop-filter: blur(48px) saturate(1.2) !important;
-      -webkit-backdrop-filter: blur(48px) saturate(1.2) !important;
-      border-bottom: 1px solid rgba(255, 255, 255, 0.5) !important;
-      box-shadow: 
-        0 12px 32px -8px rgba(90, 105, 75, 0.15),
-        inset 0 -1px 0 rgba(255, 255, 255, 0.4) !important;
-    }
-    .premium-nav.scrolled {
-      background: linear-gradient(to bottom, rgba(255, 255, 255, 0.9) 0%, rgba(250, 255, 245, 0.6) 100%) !important;
-      box-shadow: 
-        0 20px 40px -10px rgba(90, 105, 75, 0.25) !important;
-    }
-    .nav-active {
-      background: linear-gradient(135deg, rgba(255, 255, 255, 0.8) 0%, rgba(245, 250, 240, 0.4) 100%) !important;
-      border: 1px solid rgba(255, 255, 255, 0.6) !important;
-      box-shadow: 
-        0 8px 16px -4px rgba(90, 105, 75, 0.2),
-        inset 0 1px 0 rgba(255, 255, 255, 0.8) !important;
-    }
-    .nav-item:hover {
-      background: linear-gradient(135deg, rgba(255, 255, 255, 0.4) 0%, rgba(245, 250, 240, 0.1) 100%) !important;
-      border-color: rgba(255, 255, 255, 0.3) !important;
-    }
-  
-    .premium-dropdown {
-      background: linear-gradient(135deg, rgba(255, 255, 255, 0.98) 0%, rgba(250, 255, 245, 0.85) 100%);
-      backdrop-filter: blur(64px) saturate(1.5);
-      -webkit-backdrop-filter: blur(64px) saturate(1.5);
-      border: 1px solid rgba(255, 255, 255, 0.8);
-      box-shadow: 
-        0 32px 64px -12px rgba(90, 105, 75, 0.25),
-        0 8px 24px rgba(90, 105, 75, 0.1),
-        inset 0 1px 0 rgba(255, 255, 255, 1),
-        inset 0 0 24px rgba(255, 255, 255, 0.3);
-    }
-  </style>
   <!-- The passcode gate. Config first, then the library; both deferred so
        the DOM is ready when the script mounts. No valid code redirects to
        index.html, because this page has no login form of its own. -->
@@ -512,7 +67,6 @@
 <body class="text-brand-deep font-sans min-h-screen flex flex-col selection:bg-brand-lime selection:text-brand-deep">
 
   <!-- Noise Texture Overlay -->
-  <div class="noise-overlay"></div>
 
   <!-- MOBILE MENU -->
   <div id="mobile-menu-overlay" class="fixed inset-0 bg-brand-ink/25 z-[100] opacity-0 pointer-events-none transition-opacity duration-300 lg:hidden"></div>
@@ -539,8 +93,8 @@
           <svg class="w-4 h-4 text-brand-ink/50 shrink-0" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"></path></svg>
           Resources
         </a>
-        <a href="members.html" aria-current="page" class="flex items-center gap-3 px-4 py-2.5 rounded-[14px] text-sm font-semibold text-brand-ink bg-brand-ink/[0.07]">
-          <svg class="w-4 h-4 text-brand-ink shrink-0" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"></path></svg>
+        <a href="members.html" aria-current="page" class="flex items-center gap-3 px-4 py-2.5 rounded-[14px] text-sm font-semibold bg-brand-deep text-brand-bg">
+          <svg class="w-4 h-4 shrink-0" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"></path></svg>
           Members
         </a>
       </nav>
@@ -551,7 +105,7 @@
   </div>
 
   <!-- TOP NAVBAR -->
-  <header id="top-nav" class="h-16 flex items-center justify-between gap-3 px-4 sm:px-6 lg:px-10 shrink-0 relative z-50 bg-brand-page/90 backdrop-blur-sm border-b border-brand-ink/10">
+  <header id="top-nav" class="trp-header h-14 sm:h-16 flex items-center justify-between gap-3 px-4 sm:px-6 lg:px-10 shrink-0 sticky top-0 z-50">
 
     <div class="flex items-center gap-2 shrink-0">
       <button id="mobile-menu-btn" type="button" aria-expanded="false" aria-controls="mobile-menu" aria-label="Menu" class="lg:hidden flex items-center justify-center w-10 h-10 -ml-2 rounded-full text-brand-ink hover:bg-brand-ink/5 transition-colors">
@@ -568,13 +122,13 @@
         <a href="curriculum.html" class="px-3 py-1.5 rounded-full text-xs font-medium text-brand-ink/60 hover:text-brand-ink hover:bg-brand-ink/5 transition-colors">Curriculum</a>
         <a href="sessions.html" class="px-3 py-1.5 rounded-full text-xs font-medium text-brand-ink/60 hover:text-brand-ink hover:bg-brand-ink/5 transition-colors">Live Sessions</a>
         <a href="resources.html" class="px-3 py-1.5 rounded-full text-xs font-medium text-brand-ink/60 hover:text-brand-ink hover:bg-brand-ink/5 transition-colors">Resources</a>
-        <a href="members.html" aria-current="page" class="px-3 py-1.5 rounded-full text-xs font-semibold text-brand-ink bg-brand-ink/[0.07]">Members</a>
+        <a href="members.html" aria-current="page" class="px-3 py-1.5 rounded-full text-xs font-semibold bg-brand-deep text-brand-bg">Members</a>
     </nav>
 
     <div class="flex items-center gap-2 sm:gap-4 shrink-0">
       <!-- Filled in by portal-chrome.js, and only while a session is live or
            about to start. Stays hidden the rest of the time. -->
-      <a data-portal-join hidden class="inline-flex items-center px-3.5 py-1.5 rounded-full bg-brand-ink text-brand-page text-[11px] font-mono font-medium tracking-[0.06em] whitespace-nowrap hover:bg-brand-ink/90 transition-colors"></a>
+      <a data-portal-join hidden class="hidden lg:inline-flex items-center px-3.5 py-1.5 rounded-full bg-brand-ink text-brand-page text-[11px] font-mono font-medium tracking-[0.06em] whitespace-nowrap hover:bg-brand-ink/90 transition-colors"></a>
 
       <span data-portal-name class="hidden sm:inline text-xs font-medium text-brand-ink/70 whitespace-nowrap"></span>
 
@@ -587,70 +141,8 @@
     
     <!-- LEFT SIDEBAR -->
     
-    <style>
-      #desktop-sidebar { will-change: width, transform; }
-    #desktop-sidebar.collapsed {
-        width: 5.5rem !important;
-        padding-left: 0 !important;
-        padding-right: 0 !important;
-        align-items: center !important; /* Force children to center */
-      }
-      #desktop-sidebar { will-change: width, transform; }
-    #desktop-sidebar.collapsed nav, 
-      #desktop-sidebar { will-change: width, transform; }
-    #desktop-sidebar.collapsed .mb-4 {
-        width: 100%;
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-      }
-      #desktop-sidebar { will-change: width, transform; }
-    #desktop-sidebar.collapsed .sidebar-text {
-        max-width: 0 !important;
-        opacity: 0 !important;
-        margin-left: 0 !important;
-        padding: 0 !important;
-      }
-      #desktop-sidebar { will-change: width, transform; }
-    #desktop-sidebar.collapsed .sidebar-toggle-icon {
-        transform: rotate(180deg);
-      }
-      /* Center the toggle button container */
-      #desktop-sidebar { will-change: width, transform; }
-    #desktop-sidebar.collapsed .justify-end {
-        justify-content: center !important;
-        padding: 0 !important;
-      }
-      /* Make the link boxes perfect squares and center them */
-      #desktop-sidebar { will-change: width, transform; }
-    #desktop-sidebar.collapsed a {
-        justify-content: center;
-        padding-left: 0 !important;
-        padding-right: 0 !important;
-        width: 3rem !important;
-        height: 3rem !important;
-        margin: 0 auto !important;
-      }
-      #desktop-sidebar { will-change: width, transform; }
-    #desktop-sidebar.collapsed a svg {
-        margin: 0 auto;
-        transform: translateX(-1px); /* micro-adjustment to perfectly center the icon visually */
-      }
-
-    .premium-dropdown {
-      background: linear-gradient(135deg, rgba(255, 255, 255, 0.98) 0%, rgba(250, 255, 245, 0.85) 100%);
-      backdrop-filter: blur(64px) saturate(1.5);
-      -webkit-backdrop-filter: blur(64px) saturate(1.5);
-      border: 1px solid rgba(255, 255, 255, 0.8);
-      box-shadow: 
-        0 32px 64px -12px rgba(90, 105, 75, 0.25),
-        0 8px 24px rgba(90, 105, 75, 0.1),
-        inset 0 1px 0 rgba(255, 255, 255, 1),
-        inset 0 0 24px rgba(255, 255, 255, 0.3);
-    }
-  </style>
     <!-- CENTER SCROLLABLE CONTENT -->
-    <main class="flex-1 relative bg-transparent main-grid">
+    <main class="flex-1 relative bg-transparent">
         <div class="relative z-10 px-3 sm:px-6 lg:px-12 py-8 lg:py-12 flex justify-center w-full">
           <div class="w-full space-y-16 max-w-[1200px]">
           
@@ -667,7 +159,7 @@
         background: #FFFDFA;
         border: 1px solid rgba(44, 52, 34, 0.14);
         border-radius: 999px;
-        transition: box-shadow 0.2s ease, border-color 0.2s ease;
+        transition: box-shadow 0.15s ease, border-color 0.15s ease;
       }
       .members-search:focus-within { border-color: #2C3422; box-shadow: 0 0 0 4px #CCEEA0; }
       .members-search svg { width: 16px; height: 16px; color: #4E5840; flex: none; }
@@ -750,7 +242,7 @@
         line-clamp: 2;
         overflow: hidden;
       }
-      .member-meta { margin: 8px 4px 0; font-family: 'JetBrains Mono', monospace; font-size: 11px; line-height: 1.45; color: #6B735F; }
+      .member-meta { margin: 8px 4px 0; font-family: 'Space Mono', ui-monospace, monospace; font-size: 11px; line-height: 1.45; color: #6B735F; }
       @media (max-width: 639px) {
         .member-card { padding: 10px 10px 16px; border-radius: 16px; }
         .member-name { font-size: 14.5px; margin-top: 12px; }
@@ -762,7 +254,7 @@
          portal header, which has its own very high z-index. */
       .member-modal { position: fixed; inset: 0; z-index: 10050; display: grid; place-items: center; padding: 16px; }
       .member-modal[hidden] { display: none; }
-      .member-modal-backdrop { position: absolute; inset: 0; background: rgba(44, 52, 34, 0.45); backdrop-filter: blur(4px); -webkit-backdrop-filter: blur(4px); }
+      .member-modal-backdrop { position: absolute; inset: 0; background: rgba(44, 52, 34, 0.55); }
       .member-modal-panel {
         position: relative;
         width: min(560px, 100%);
@@ -772,7 +264,7 @@
         color: #2C3422;
         background: #FFFDFA;
         border-radius: 24px;
-        box-shadow: 0 40px 80px -30px rgba(44, 52, 34, 0.55);
+        border: 1px solid rgba(66, 75, 54, .20);
         outline: none;
       }
       .member-modal-close {
@@ -799,11 +291,11 @@
       .member-profile-top .member-initials { width: 112px; flex: none; border-radius: 18px; font-size: 38px; }
       .member-profile-name { margin: 0; font-family: 'Space Grotesk', sans-serif; font-weight: 700; font-size: 24px; line-height: 1.2; letter-spacing: -0.01em; }
       .member-profile-hook { margin: 6px 0 0; font-size: 15px; line-height: 1.45; }
-      .member-profile-meta { margin: 8px 0 0; font-family: 'JetBrains Mono', monospace; font-size: 12px; color: #6B735F; }
+      .member-profile-meta { margin: 8px 0 0; font-family: 'Space Mono', ui-monospace, monospace; font-size: 12px; color: #6B735F; }
       .member-profile-section { margin-top: 22px; }
       .member-profile-section h3 {
         margin: 0 0 6px;
-        font-family: 'JetBrains Mono', monospace;
+        font-family: 'Space Mono', ui-monospace, monospace;
         font-size: 11px;
         font-weight: 600;
         letter-spacing: 0.12em;
@@ -847,8 +339,9 @@
     </style>
 
     <header class="space-y-3">
-      <h1 class="text-4xl lg:text-[42px] font-display font-bold tracking-tight text-brand-deep">Time Rich Members</h1>
-      <p class="text-sm text-brand-mid leading-relaxed">Your cohort. Find the right person and make the ask.</p>
+      <span class="trp-kicker">Directory</span>
+      <h1 class="trp-title">Time Rich Members</h1>
+      <p class="trp-lede">Your cohort. Find the right person and make the ask.</p>
     </header>
 
     <section class="mt-8 space-y-8" aria-label="Members">
@@ -869,7 +362,7 @@
       </main> <!-- CLOSE main -->
     </div> <!-- CLOSE h-screen container -->
 
-  <footer class="shrink-0 px-4 sm:px-6 lg:px-10 py-5 border-t border-brand-ink/10 text-[11px] text-brand-ink/50">
+  <footer class="shrink-0 px-4 sm:px-6 lg:px-10 py-5 border-t border-brand-ink/10 text-[11px] text-brand-ink/70">
     <p class="flex flex-wrap items-center justify-center gap-x-2 gap-y-1 text-center">
       <span>Need help? <a href="mailto:emc@timerich.ai" class="hover:text-brand-ink transition-colors">emc@timerich.ai</a></span>
       <span aria-hidden="true" class="text-brand-ink/25">&middot;</span>

@@ -55,21 +55,21 @@
   <link rel="stylesheet" href="portal.css"/>
   <link rel="preconnect" href="https://fonts.googleapis.com"/>
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin=""/>
-  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Plus+Jakarta+Sans:wght@300;400;500;600;700&family=JetBrains+Mono:wght@300;400;500&display=swap"/>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&amp;family=Inter:wght@400;500;600&amp;family=Space+Mono:wght@400;700&amp;display=swap"/>
 
   <link rel="stylesheet" href="portal-content.css"/>
 
   <style>
     /* Page chrome only. Everything inside the portal sections is styled
        by portal-content.css. */
-    html, body { margin: 0; background: #FFFCEB; }
-    body { font-family: "Plus Jakarta Sans", ui-sans-serif, system-ui, sans-serif; }
+    html, body { margin: 0; }
+    body { font-family: "Inter", ui-sans-serif, system-ui, sans-serif; }
     .pv-note {
       max-width: 48rem;
       margin: 0 auto;
       padding: 0.75rem 1rem;
       border-bottom: 1px solid rgba(66, 75, 54, 0.12);
-      font-family: "JetBrains Mono", ui-monospace, monospace;
+      font-family: "Space Mono", ui-monospace, monospace;
       font-size: 0.625rem;
       letter-spacing: 0.12em;
       text-transform: uppercase;
@@ -84,105 +84,19 @@
       margin-bottom: 1.5rem;
     }
   
-    /* === SMOOTH PORTAL TRANSITIONS === */
-    html { scroll-behavior: smooth; }
-    
-    /* Smooth all interactive elements */
-    a, button, [role="button"] {
-      transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
-    }
-    
-    /* Smooth focus states */
-    *:focus-visible {
-      outline: 2px solid rgba(89, 108, 36, 0.4);
-      outline-offset: 2px;
-      transition: outline 0.2s ease;
-    }
-    
-    /* Smooth image loading */
-    img {
-      transition: opacity 0.4s ease;
-    }
-    
-    /* Accordion smooth expand/collapse */
-    .accordion-content {
-      max-height: 0;
-      overflow: hidden;
-      transition: max-height 0.5s cubic-bezier(0.16, 1, 0.3, 1), 
-                  opacity 0.4s ease, 
-                  padding 0.4s ease;
-      opacity: 0;
-    }
-    .accordion-content.open {
-      opacity: 1;
-    }
-    
-  
-    /* Smooth press feedback on cards */
-    .glass-card:active {
-      transform: translateY(-1px) scale(0.995);
-      transition: transform 0.15s ease;
-    }
-    
-  
-    /* === MOBILE PERFORMANCE === */
-    @media (max-width: 768px) {
-      /* Reduce blur intensity on mobile for performance */
-      .glass-card,
-      .premium-dropdown {
-        -webkit-backdrop-filter: blur(16px) !important;
-        backdrop-filter: blur(16px) !important;
-      }
-      .glass3d::before {
-        -webkit-backdrop-filter: blur(8px) brightness(0.8) !important;
-        backdrop-filter: blur(8px) brightness(0.8) !important;
-      }
-      /* Disable noise overlay on mobile */
-      .noise-overlay {
-        display: none !important;
-      }
-      /* Disable shimmer hover on touch devices */
-      .shimmer-card::before {
-        display: none !important;
-      }
-      /* Reduce box-shadow complexity */
-      .glass3d {
-        box-shadow: 0 2px 8px rgba(0,0,0,0.1) !important;
-      }
-      /* Reduce floating animations */
-      .animate-float, .animate-float-alt {
-        animation: none !important;
-      }
-      /* Faster page transitions on mobile */
-      body {
-        transition: opacity 0.4s ease, transform 0.4s ease !important;
-      }
-      /* Disable grid lines on mobile for performance */
-      .main-grid {
-        background-image: none !important;
-      }
-    }
-    
-    /* Respect reduced motion preferences */
+    /* Hover and focus only, at the portal's 150ms. The blur, shadow and
+       float rules that used to live here are gone with the effects they
+       targeted. */
+    a, button, [role="button"] { transition: color .15s ease, background-color .15s ease, border-color .15s ease; }
+    *:focus-visible { outline: 2px solid #424B36; outline-offset: 2px; }
+
     @media (prefers-reduced-motion: reduce) {
       *, *::before, *::after {
-        animation-duration: 0.01ms !important;
+        animation-duration: .01ms !important;
         animation-iteration-count: 1 !important;
-        transition-duration: 0.01ms !important;
+        transition-duration: .01ms !important;
       }
     }
-    
-    /* Touch device optimizations */
-    @media (hover: none) {
-      .card-lift:hover {
-        transform: none;
-        box-shadow: none;
-      }
-      .shimmer-card::before {
-        display: none;
-      }
-    }
-    
   </style>
 
   <!-- Config first, then the library. Both are deferred so the DOM is
@@ -209,12 +123,12 @@
     <!-- Shown when there is no valid code. -->
     <div class="trp-when-out">
       <form class="trp-login" data-portal-login novalidate>
-        <p class="trp-eyebrow">Accelerator portal</p>
+        <p class="trp-kicker">Accelerator portal</p>
         <h1 class="trp-h1">Enter your code</h1>
 
         <!-- The input deliberately has no name attribute, so even a stray
              native submit could never put the passcode in the URL. -->
-        <label class="trp-label" for="tr-code">Access code</label>
+        <label class="trp-tag" for="tr-code">Access code</label>
         <input class="trp-input"
                id="tr-code"
                type="text"
@@ -241,13 +155,13 @@
       </div>
 
       <section class="trp-section">
-        <p class="trp-eyebrow">Your weeks</p>
+        <p class="trp-kicker">Your weeks</p>
         <h2 class="trp-h2">Course content</h2>
         <div data-portal-weeks></div>
       </section>
 
       <section class="trp-section">
-        <p class="trp-eyebrow">Live calls</p>
+        <p class="trp-kicker">Live calls</p>
         <h2 class="trp-h2">Sessions</h2>
         <div data-portal-sessions></div>
       </section>

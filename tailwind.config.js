@@ -33,6 +33,10 @@ module.exports = {
           // so only the header, footer and sign-in move to these.
           ink: '#2C3422',
           page: '#FFFDFA',
+          // The accelerator page's --bg. The portal sits on the same ground,
+          // so this is the one place the page colour is written down; the
+          // rule that applies it lives in portal-tailwind-src.css.
+          bg: '#FFFDFB',
           cream: '#FFFCEB',
           offwhite: '#FFFDFB',
           sage: '#DCDEBF',
@@ -44,11 +48,14 @@ module.exports = {
           olive: '#67762E',
         },
       },
+      // Three faces, the same three the accelerator page uses: Space Grotesk
+      // for headings, Inter for body, Space Mono for small labels. Newsreader
+      // was decorative and is gone; `serif` is left out so a stray font-serif
+      // falls back rather than silently loading a fourth face.
       fontFamily: {
-        sans: ['"Inter"', 'sans-serif'],
-        display: ['"Space Grotesk"', 'sans-serif'],
-        serif: ['"Newsreader"', 'serif'],
-        mono: ['"JetBrains Mono"', 'monospace'],
+        sans: ['"Inter"', '-apple-system', 'BlinkMacSystemFont', 'sans-serif'],
+        display: ['"Space Grotesk"', 'system-ui', 'sans-serif'],
+        mono: ['"Space Mono"', 'ui-monospace', 'SFMono-Regular', 'Menlo', 'monospace'],
       },
     },
   },

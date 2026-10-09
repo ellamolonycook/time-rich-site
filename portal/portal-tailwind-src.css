@@ -1,3 +1,460 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+/* ===========================================================================
+   The portal's shared style.
+   ---------------------------------------------------------------------------
+   This file is the one place portal-wide styling is written down. Every page
+   under portal/ loads the compiled portal.css, and each page keeps only the
+   CSS that is unique to it.
+
+   The values here are the accelerator page's. That page is the front of the
+   same product, so the portal uses its ground, its panel colour, its border,
+   its radius and its type. Where a value is copied, the accelerator's own name
+   for it is in the comment.
+
+   Run `npm run build:css` after editing. The CI job rebuilds and fails on a
+   difference, so the committed portal.css always matches this file.
+   =========================================================================== */
+
+@layer base {
+  :root {
+    /* Lifted from :root in accelerator/index.html. */
+    --trp-bg: theme('colors.brand.bg');        /* --bg       #FFFDFB */
+    --trp-panel: #D8D9B9;                      /* --panel    the card fill */
+    --trp-rule: rgba(66, 75, 54, .20);         /* --line     the card border */
+    --trp-rule-2: rgba(66, 75, 54, .42);       /* .tier:hover border */
+    --trp-text: #424B36;                       /* --text     body copy */
+    --trp-muted: #5B6449;                      /* --muted */
+    --trp-dim: #7E8768;                        /* --dim */
+    --trp-ink: #333A28;                       /* --green-deep  headings */
+    --trp-accent: #67762E;                       /* --lime     small labels */
+
+    /* Three faces, the same three the accelerator uses. */
+    --trp-face: 'Space Grotesk', system-ui, -apple-system, 'Segoe UI', sans-serif;
+    --trp-body: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    --trp-label: 'Space Mono', ui-monospace, SFMono-Regular, Menlo, monospace;
+
+    /* One motion budget. Hover and focus only; nothing here loops. */
+    --trp-t: .15s;
+  }
+
+  /* The ground. accelerator/index.html sets `--bg` on :root and paints the
+     body with it, with no texture, grain or gradient over it: the only
+     patterned layer on that page is .hero-gridbg, scoped inside the hero.
+     Portal pages must not set a body background of their own. */
+  body {
+    background: var(--trp-bg);
+    min-height: 100vh;
+    color: var(--trp-text);
+    font-family: var(--trp-body);
+    font-size: 16px;
+    line-height: 1.6;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  h1, h2, h3, h4, h5, h6 {
+    font-family: var(--trp-face);
+    font-weight: 600;
+    letter-spacing: -.022em;
+    color: var(--trp-ink);
+  }
+
+  /* Visible focus everywhere, in the brand green. */
+  a:focus-visible,
+  button:focus-visible,
+  input:focus-visible,
+  summary:focus-visible,
+  [tabindex]:focus-visible {
+    outline: 2px solid var(--trp-text);
+    outline-offset: 2px;
+    border-radius: 6px;
+  }
+
+  ::selection { background: var(--trp-panel); color: var(--trp-ink); }
+}
+
+@layer components {
+  /* -- the card ----------------------------------------------------------
+     .tier from accelerator/index.html: a flat sage panel with a hairline, no
+     shadow at rest, and a small lift on hover. The portal's cards were
+     frosted glass with a 48px backdrop blur, an inner highlight and a
+     24px drop shadow; this is the same shape with none of that.
+     The accelerator's own transition is .16s; this uses the portal's .15s
+     budget so every hover on the page moves at one speed. */
+  .glass-card {
+    background: var(--trp-panel);
+    border: 1px solid var(--trp-rule);
+    border-radius: 14px;
+    transition: transform var(--trp-t) ease,
+                border-color var(--trp-t) ease,
+                box-shadow var(--trp-t) ease;
+  }
+  .glass-card:hover {
+    transform: translateY(-3px);
+    border-color: var(--trp-rule-2);
+    box-shadow: 0 14px 34px -20px rgba(66, 75, 54, .45);
+  }
+
+  /* A card that is only a surface, never a target, does not move. */
+  .glass-card.is-static:hover {
+    transform: none;
+    border-color: var(--trp-rule);
+    box-shadow: none;
+  }
+
+  /* -- page header -------------------------------------------------------
+     Every page opens the same way: a small label, the page title, and one
+     line saying what the page is for. */
+  .trp-kicker {
+    font-family: var(--trp-label);
+    font-size: 11px;
+    letter-spacing: .16em;
+    text-transform: uppercase;
+    color: var(--trp-accent);
+    display: block;
+    margin-bottom: 14px;
+  }
+  .trp-title {
+    font-size: clamp(28px, 3.4vw, 40px);
+    line-height: 1.08;
+    margin: 0;
+  }
+  .trp-lede {
+    margin-top: 12px;
+    max-width: 60ch;
+    font-size: 16px;
+    line-height: 1.6;
+    color: var(--trp-muted);
+  }
+
+  /* A small mono label, the accelerator's .t-tag voice. */
+  .trp-tag {
+    font-family: var(--trp-label);
+    font-size: 11px;
+    letter-spacing: .14em;
+    text-transform: uppercase;
+    color: var(--trp-muted);
+  }
+
+  /* -- the header --------------------------------------------------------
+     Pinned to the top, 56px on a phone and 64px above that. A solid page
+     colour and one hairline: no blur and no shadow, so nothing shifts or
+     smears as the page moves under it. */
+  .trp-header {
+    background: var(--trp-bg);
+    border-bottom: 1px solid var(--trp-rule);
+  }
+
+  /* -- navigation --------------------------------------------------------
+     The page you are on is filled and dark; everything else is quiet until
+     hovered. Both the header nav and the mobile menu use these. */
+  .trp-nav-link {
+    transition: background-color var(--trp-t) ease, color var(--trp-t) ease;
+  }
+  .trp-nav-link[aria-current='page'] {
+    background: var(--trp-ink);
+    color: var(--trp-bg);
+  }
+  .trp-nav-link[aria-current='page']:hover {
+    background: var(--trp-ink);
+  }
+
+  /* -- dashboard progress -------------------------------------------------
+     One strip, not a pair of meters: the label and the count on one line, a
+     single thin bar for the part the member controls, then the plain counts
+     underneath. No percentages; "1 of 5 weeks" is the fact and "7%" was only
+     a derived number that made week one read as failure. */
+  .trp-progress { padding: 20px 24px 18px; }
+  .trp-progress-top {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 16px;
+  }
+  .trp-progress-count {
+    margin: 0;
+    font-family: var(--trp-label);
+    font-size: 12px;
+    letter-spacing: .06em;
+    color: var(--trp-ink);
+  }
+  .trp-progress-track {
+    margin-top: 12px;
+    height: 4px;
+    border-radius: 99px;
+    background: rgba(66, 75, 54, .18);
+    overflow: hidden;
+  }
+  .trp-progress-fill {
+    height: 100%;
+    border-radius: 99px;
+    background: var(--trp-ink);
+    transition: width var(--trp-t) ease;
+  }
+  .trp-progress-line {
+    margin: 12px 0 0;
+    font-size: 14px;
+    line-height: 1.5;
+    color: var(--trp-text);
+  }
+  .trp-progress-note {
+    margin: 4px 0 0;
+    font-size: 12px;
+    color: var(--trp-dim);
+  }
+
+  /* -- the sessions schedule ---------------------------------------------
+     A card for the next session, then one card per week holding slim rows.
+     No card inside a card: the rows are separated by a hairline, nothing
+     more. Rows sit between 56 and 64px on desktop so the whole schedule
+     reads in one screen. */
+  .trp-next { display: flex; flex-direction: column; padding: 28px 28px 24px; }
+  .trp-next-title { margin: 10px 0 0; font-size: clamp(21px, 2.4vw, 28px); line-height: 1.15; }
+  .trp-next-when {
+    margin: 8px 0 0;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 10px;
+    font-family: var(--trp-label);
+    font-size: 12px;
+    letter-spacing: .08em;
+    text-transform: uppercase;
+    color: var(--trp-muted);
+  }
+  .trp-next-acts { margin-top: 22px; display: flex; flex-wrap: wrap; align-items: center; gap: 12px; }
+
+  /* Two up on a wide screen, as on the accelerator page, so the whole
+     schedule sits in about one screen under the next-session card. */
+  /* The whole schedule in one add. Quiet, but a real target. */
+  .trp-addall {
+    margin-top: 14px;
+    display: inline-flex;
+    align-items: center;
+    gap: 9px;
+    padding: 10px 18px;
+    border: 1px solid var(--trp-rule-2);
+    border-radius: 99px;
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--trp-ink);
+    transition: background-color var(--trp-t) ease, border-color var(--trp-t) ease;
+  }
+  .trp-addall:hover { background: var(--trp-panel); border-color: var(--trp-ink); }
+
+  .trp-wkcards { list-style: none; margin: 16px 0 0; padding: 0; display: grid; gap: 16px; }
+  @media (min-width: 1024px) {
+    .trp-wkcards { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  }
+  .trp-wkcard { display: flex; flex-direction: column; padding: 22px 28px 10px; }
+  /* block, not the flex it would otherwise inherit from the card */
+  .trp-wkcard-head { display: block; padding-bottom: 14px; border-bottom: 1px solid var(--trp-rule); }
+  .trp-wkcard-theme { margin: 6px 0 0; font-size: 19px; line-height: 1.2; }
+
+  /* The curriculum uses the same rows. A week's materials carry the word
+     "Material" where a session carries its date, so the two columns line up
+     down the card. */
+  .trp-wkcard-sub { margin: 8px 0 0; font-size: 14px; line-height: 1.5; color: var(--trp-muted); }
+  .trp-wkcard-locked {
+    margin: 0;
+    padding: 18px 0 20px;
+    font-family: var(--trp-label);
+    font-size: 11px;
+    letter-spacing: .08em;
+    text-transform: uppercase;
+    color: var(--trp-muted);
+  }
+  .trp-wkcard.is-locked { opacity: .7; }
+  .trp-srow.is-empty,
+  .trp-srow.is-item .trp-sdate { color: var(--trp-dim); }
+  .trp-srow.is-empty { display: block; font-size: 14px; padding: 18px 0; }
+  .trp-slink { text-decoration: underline; text-underline-offset: 3px; text-decoration-color: var(--trp-rule-2); }
+  .trp-slink:hover { text-decoration-color: var(--trp-ink); }
+  /* keeps a row without a tick aligned with the ones that have one */
+  .trp-tick-gap { grid-area: tick; width: 22px; height: 22px; }
+
+  /* -- a resource row ------------------------------------------------------
+     A skill or a link: its name, one line about it, and the action. There is
+     no third column of constants here. The sessions row spends 158px on a
+     date, which earns its place; "SKILL" under a heading that already says
+     Skill library does not, and taking it out is what lets a name like
+     compass-superhuman sit on one line instead of breaking in half. */
+  .trp-rrows { list-style: none; margin: 0; padding: 0; }
+  .trp-rrow {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto;
+    align-items: start;
+    gap: 16px 20px;
+    min-height: 56px;
+    padding: 14px 0;
+  }
+  .trp-rrow + .trp-rrow { border-top: 1px solid var(--trp-rule); }
+  .trp-rbody { min-width: 0; }
+  .trp-rname {
+    margin: 0;
+    font-size: 15.5px;
+    line-height: 1.35;
+    color: var(--trp-ink);
+    overflow-wrap: anywhere;
+  }
+  /* two lines is a description; more than that belongs on the skill itself */
+  .trp-rsub {
+    margin: 3px 0 0;
+    font-size: 13.5px;
+    line-height: 1.45;
+    color: var(--trp-muted);
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 2;
+    line-clamp: 2;
+    overflow: hidden;
+  }
+  .trp-ract { display: inline-flex; align-self: center; }
+
+  @media (max-width: 640px) {
+    /* the action drops under the text and takes the row's width */
+    .trp-rrow { grid-template-columns: minmax(0, 1fr); gap: 10px; padding: 16px 0; }
+    .trp-ract { align-self: stretch; }
+    .trp-ract > * { width: 100%; }
+  }
+
+  /* A heading for a section inside a page, below the page title. */
+  .trp-section-title { font-size: 21px; line-height: 1.2; margin: 0; }
+
+  .trp-srows { list-style: none; margin: 0; padding: 0; }
+  .trp-srow {
+    display: grid;
+    grid-template-columns: 158px minmax(0, 1fr) auto auto;
+    grid-template-areas: 'date title action tick';
+    align-items: center;
+    gap: 0 18px;
+    min-height: 56px;
+    padding: 8px 0;
+  }
+  .trp-srow + .trp-srow { border-top: 1px solid var(--trp-rule); }
+
+  .trp-sdate {
+    grid-area: date;
+    font-family: var(--trp-label);
+    font-size: 11px;
+    letter-spacing: .08em;
+    text-transform: uppercase;
+    color: var(--trp-muted);
+    line-height: 1.4;
+  }
+  .trp-stitle {
+    grid-area: title;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 8px;
+    font-size: 15.5px;
+    line-height: 1.35;
+    color: var(--trp-ink);
+  }
+  .trp-sact { grid-area: action; justify-self: end; display: inline-flex; }
+
+  /* A session that has run reads back at 60%. Its action keeps full weight,
+     because a recording is still something to click. */
+  .trp-srow.is-past .trp-sdate,
+  .trp-srow.is-past .trp-stitle { opacity: .6; }
+
+  /* The one session that is extra rather than core. */
+  .trp-pill {
+    display: inline-block;
+    font-family: var(--trp-label);
+    font-size: 9px;
+    font-weight: 700;
+    letter-spacing: .12em;
+    text-transform: uppercase;
+    padding: 2px 7px;
+    border-radius: 99px;
+    background: var(--trp-bg);
+    color: var(--trp-accent);
+    border: 1px solid rgba(103, 118, 46, .35);
+    white-space: nowrap;
+  }
+
+  /* Attended. A tick box, not a worded pill. */
+  .trp-tick {
+    grid-area: tick;
+    justify-self: end;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 22px;
+    height: 22px;
+    flex: none;
+    border: 1px solid var(--trp-rule-2);
+    border-radius: 6px;
+    color: transparent;
+    background: transparent;
+    transition: color var(--trp-t) ease, background-color var(--trp-t) ease, border-color var(--trp-t) ease;
+  }
+  .trp-tick:hover { border-color: var(--trp-ink); color: var(--trp-rule-2); }
+  .trp-tick.is-on { background: var(--trp-ink); border-color: var(--trp-ink); color: var(--trp-bg); }
+
+  /* The calendar trigger is an icon on a row, so it needs to stay square. */
+  .trp-cal { padding-left: .55rem; padding-right: .55rem; }
+
+  @media (max-width: 640px) {
+    /* Each row stacks: the date line (with its tick), the title, then the
+       action across the full width. */
+    .trp-next { padding: 22px 20px 20px; }
+    /* Join takes the full width; Add to calendar and the tick share the
+       row under it rather than leaving the tick stranded on its own. */
+    .trp-next-acts > a,
+    .trp-next-acts > button { flex: 1 1 100%; }
+    .trp-next-acts > div { flex: 1 1 auto; }
+    .trp-next-acts > div > button { width: 100%; }
+    .trp-next-acts > .trp-tick { flex: 0 0 auto; }
+    .trp-wkcard { padding: 20px 20px 8px; }
+    .trp-srow {
+      grid-template-columns: minmax(0, 1fr) auto;
+      grid-template-areas: 'date tick' 'title title' 'action action';
+      gap: 6px 12px;
+      padding: 14px 0;
+      min-height: 0;
+    }
+    .trp-sact { justify-self: stretch; margin-top: 6px; }
+    .trp-sact > * { width: 100%; }
+    .trp-stitle { font-size: 16px; }
+  }
+
+  /* -- back link ---------------------------------------------------------- */
+  .trp-back {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 14px;
+    color: var(--trp-muted);
+    transition: color var(--trp-t) ease;
+  }
+  .trp-back:hover { color: var(--trp-ink); }
+}
+
+@layer utilities {
+  /* Nothing in the portal loops, pulses or floats. These stubs keep any
+     stray class from a page that has not been swept from doing anything. */
+  .animate-float,
+  .animate-float-alt,
+  .animate-marquee,
+  .animate-pulse,
+  .shimmer-card::before,
+  .glow-orb { animation: none !important; }
+  .glow-orb { display: none !important; }
+}
+
+/* Anyone who asked for less motion gets none of it, including the card lift
+   and the mobile menu slide. */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: .01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: .01ms !important;
+    scroll-behavior: auto !important;
+  }
+  .glass-card:hover { transform: none; }
+}
