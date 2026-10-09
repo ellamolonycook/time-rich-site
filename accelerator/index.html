@@ -11,17 +11,17 @@
   src="https://www.facebook.com/tr?id=1790181495468842&amp;ev=PageView&amp;noscript=1" /></noscript>
 <title>Superhuman Accelerator | Time Rich</title>
 <meta name="theme-color" content="#FFFDFB" />
-<meta name="description" content="Four weeks to build the AI operating system that runs your business. 9 live sessions, one trained agent running. Cohort starts Mon 26 Oct." />
+<meta name="description" content="Four weeks to build the AI operating system that runs your business. 9 live sessions plus a bonus, one trained agent running. Cohort starts Mon 26 Oct." />
 <link rel="canonical" href="https://timerich.ai/accelerator/" />
 <meta property="og:type" content="website" />
 <meta property="og:site_name" content="Time Rich" />
 <meta property="og:title" content="Superhuman Accelerator | Time Rich" />
-<meta property="og:description" content="Four weeks to build the AI operating system that runs your business. 9 live sessions, one trained agent running. Cohort starts Mon 26 Oct." />
+<meta property="og:description" content="Four weeks to build the AI operating system that runs your business. 9 live sessions plus a bonus, one trained agent running. Cohort starts Mon 26 Oct." />
 <meta property="og:url" content="https://timerich.ai/accelerator/" />
 <meta property="og:image" content="https://timerich.ai/revenue/img/rev-01.jpg" />
 <meta name="twitter:card" content="summary_large_image" />
 <meta name="twitter:title" content="Superhuman Accelerator | Time Rich" />
-<meta name="twitter:description" content="Four weeks to build the AI operating system that runs your business. 9 live sessions, one trained agent running. Cohort starts Mon 26 Oct." />
+<meta name="twitter:description" content="Four weeks to build the AI operating system that runs your business. 9 live sessions plus a bonus, one trained agent running. Cohort starts Mon 26 Oct." />
 <meta name="twitter:image" content="https://timerich.ai/revenue/img/rev-01.jpg" />
 
 <style id="fonts">
@@ -968,74 +968,40 @@ html{scroll-padding-top:110px}
 }
 
 /* ---- 9. the 4 weeks ---------------------------------------------------
-   One row per week: number, Monday, a connector, Friday, chevron. The row is
-   a button; the panel below it animates open with grid-template-rows. */
+   Four cards in a 2x2 grid, one per week: a mono "Week 01" label, the week's
+   theme as the heading, then its sessions as rows of mono date + title.
+   Nothing here opens or closes; the panels this replaced were empty. */
 .s-weeks h2{font-size:clamp(26px,3.4vw,40px);margin-bottom:var(--space-head)}
-.wk-cols{display:grid;grid-template-columns:52px minmax(0,1fr) 56px minmax(0,1fr) 40px;gap:0 18px;
-  font-family:var(--monolbl);font-size:10.5px;letter-spacing:.14em;text-transform:uppercase;color:var(--ink2);padding:0 20px 10px}
-.wk-cols span:nth-child(3){grid-column:4}
-.wk-list{border-top:1px solid var(--hair)}
-.wk-row{border-bottom:1px solid var(--hair)}
-.wk-row:last-child{border-bottom:0}
-.wk-h{margin:0;font:inherit;letter-spacing:0}
-.wk-btn{display:grid;grid-template-columns:52px minmax(0,1fr) 56px minmax(0,1fr) 40px;align-items:center;gap:0 18px;
-  width:100%;padding:24px 20px;background:none;border:0;text-align:left;cursor:pointer;color:var(--ink);font:inherit;
-  transition:background .18s ease}
-/* a week that runs three sessions: one extra connector + session column */
-.wk-btn.wk-3up{grid-template-columns:52px minmax(0,1fr) 56px minmax(0,1fr) 56px minmax(0,1fr) 40px}
-.wk-btn:hover{background:var(--tint)}
-.wk-btn:focus-visible{outline:2px solid var(--tr);outline-offset:-2px}
-.wk-n{font-family:'DM Serif Display',Georgia,serif;font-size:26px;line-height:1;color:var(--ink2);transition:color .25s ease}
-.wk-btn:hover .wk-n{color:var(--tr)}
-.wk-day{display:none}
-.wk-sess{display:flex;flex-wrap:wrap;align-items:baseline;font-size:17px;line-height:1.45;font-weight:500;letter-spacing:-.01em}
-.wk-when::after{content:" · "}
-.wk-link{position:relative;height:1px;background:var(--hair);overflow:visible}
-.wk-link::before{content:"";position:absolute;inset:0 100% 0 0;background:var(--tr);transition:inset .5s cubic-bezier(.32,.72,0,1)}
-.wk-link::after{content:"";position:absolute;left:0;top:-3px;width:7px;height:7px;border-radius:50%;background:#D8D9B9;border:1px solid rgba(103,118,46,.45);
-  transition:left .5s cubic-bezier(.32,.72,0,1),transform .3s ease}
-.wk-btn:hover .wk-link::before,.wk-btn:focus-visible .wk-link::before{inset:0}
-.wk-btn:hover .wk-link::after,.wk-btn:focus-visible .wk-link::after{left:calc(100% - 7px);transform:scale(1.25)}
-.wk-chev{justify-self:end;display:flex;color:var(--ink2);transition:transform .3s cubic-bezier(.32,.72,0,1)}
-.wk-row.is-static .wk-chev{display:none}
-.wk-row.is-static .wk-btn{cursor:default}
-.wk-row.is-static .wk-btn:disabled{opacity:1;color:var(--ink)}
-.wk-row.open .wk-chev{transform:rotate(180deg)}
-.wk-panel{display:grid;grid-template-rows:0fr;transition:grid-template-rows .4s cubic-bezier(.32,.72,0,1)}
-.wk-panel-in{overflow:hidden;min-height:0;visibility:hidden;padding:0 20px}
-.wk-row.open .wk-panel{grid-template-rows:1fr}
-.wk-row.open .wk-panel-in{visibility:visible;padding-bottom:22px}
+.s-weeks .wk-grid{list-style:none;margin:0;padding:0;
+  display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:20px}
+.s-weeks .wk-card{display:flex;flex-direction:column;min-width:0;
+  padding:26px 28px;border:1px solid var(--hair);border-radius:16px;background:transparent}
+.s-weeks .wk-label{font-family:var(--monolbl);font-size:10.5px;letter-spacing:.14em;
+  text-transform:uppercase;color:var(--ink2);margin:0}
+.s-weeks .wk-theme{margin:10px 0 0;font-size:21px;line-height:1.2;letter-spacing:-.02em;color:var(--ink)}
+.s-weeks .wk-items{list-style:none;margin:20px 0 0;padding:18px 0 0;border-top:1px solid var(--hair)}
+.s-weeks .wk-item{display:grid;grid-template-columns:86px minmax(0,1fr);column-gap:16px;align-items:baseline;
+  padding:9px 0}
+.s-weeks .wk-item+.wk-item{border-top:1px solid var(--hair)}
+.s-weeks .wk-date{font-family:var(--monolbl);font-size:11px;letter-spacing:.08em;text-transform:uppercase;
+  color:var(--ink2);line-height:1.5;white-space:nowrap}
+.s-weeks .wk-title{font-size:16.5px;font-weight:500;line-height:1.4;letter-spacing:-.01em;color:var(--ink)}
+/* the one session that is extra rather than core */
+.s-weeks .wk-pill{display:inline-block;margin-left:8px;vertical-align:1px;
+  font-family:var(--monolbl);font-size:9px;letter-spacing:.12em;text-transform:uppercase;font-weight:700;
+  padding:2px 7px;border-radius:99px;background:var(--lime-dim);color:var(--lime);
+  border:1px solid rgba(103,118,46,.35);white-space:nowrap}
 .s-weeks .wk-foot{margin-top:var(--space-head);font-size:15px}   /* .v2 p sets margin:0, so this needs two classes to win */
 .s-weeks .act{margin-top:var(--space-act)}
-@media (prefers-reduced-motion:reduce){.wk-panel,.wk-chev,.wk-link::before,.wk-link::after{transition:none}}
 @media (max-width:820px){
-  /* phone: week number as a header, sessions as a full-width vertical timeline */
-  .wk-cols{display:none}
-  .wk-btn{display:grid;grid-template-columns:1fr 28px;grid-template-areas:"n chev" "s1 s1" "s2 s2";
-    gap:14px 0;padding:26px 0;align-items:start;background:transparent}
-  .wk-row.is-static .wk-btn{grid-template-columns:1fr;grid-template-areas:"n" "s1" "s2"}
-  .wk-btn.wk-3up{grid-template-areas:"n chev" "s1 s1" "s2 s2" "s3 s3"}
-  .wk-row.is-static .wk-btn.wk-3up{grid-template-columns:1fr;grid-template-areas:"n" "s1" "s2" "s3"}
-  .wk-btn:hover{background:transparent}
-  .wk-n{grid-area:n;display:flex;align-items:baseline;gap:10px;font-size:40px;line-height:1;margin:0;color:var(--ink2)}
-  .wk-n::before{content:"Week";font-family:var(--monolbl);font-size:11px;letter-spacing:.14em;text-transform:uppercase;
-    color:var(--ink2);position:relative;top:-10px}
-  .wk-btn:hover .wk-n{color:var(--tr)}
-  .wk-sess{display:grid;grid-template-columns:34px minmax(0,1fr);column-gap:12px;row-gap:2px;
-    align-items:start;padding:0 0 0 2px;font-size:inherit;font-weight:inherit;letter-spacing:0;position:relative}
-  .wk-sess:nth-child(2){grid-area:s1}
-  .wk-sess:nth-child(4){grid-area:s2}
-  .wk-3up .wk-sess:nth-child(6){grid-area:s3}
-  .wk-day{display:block;grid-row:1 / span 2;font-family:var(--monolbl);font-size:10px;letter-spacing:.12em;text-transform:uppercase;
-    color:var(--ink2);line-height:1.2;padding-top:3px}
-  .wk-when{grid-column:2;font-family:var(--monolbl);font-size:11px;letter-spacing:.08em;text-transform:uppercase;
-    color:var(--ink2);font-weight:400;line-height:1.3}
-  .wk-when::after{content:none}
-  .wk-what{grid-column:2;font-size:17px;font-weight:500;letter-spacing:-.02em;line-height:1.35;color:var(--ink)}
-  .wk-link{display:none}
-  .wk-chev{grid-area:chev;justify-self:end;align-self:start;margin-top:10px}
-  .wk-panel-in{padding:0}
-  .wk-row.open .wk-panel-in{padding-bottom:18px}
+  /* phone: one card per row, and the date sits above its title so a long
+     title never has to share a narrow column */
+  .s-weeks .wk-grid{grid-template-columns:minmax(0,1fr);gap:14px}
+  .s-weeks .wk-card{padding:22px 20px;border-radius:14px}
+  .s-weeks .wk-theme{font-size:19px}
+  .s-weeks .wk-item{grid-template-columns:minmax(0,1fr);row-gap:3px;padding:11px 0}
+  .s-weeks .wk-date{line-height:1.3}
+  .s-weeks .wk-title{font-size:16px}
 }
 
 /* ---- 15. before you join ----
@@ -1533,110 +1499,78 @@ html{scroll-padding-top:110px}
 <section class="v2 s-weeks" id="weeks">
   <div class="wrap">
     <h2>The 4 weeks</h2>
-    <div class="wk-cols" aria-hidden="true">
-      <span>Week</span><span>Sessions</span>
-    </div>
-    <div class="wk-list">
-      <div class="wk-row">
-        <h3 class="wk-h">
-          <button class="wk-btn" type="button" id="wk01-btn" aria-expanded="false" aria-controls="wk01-panel">
-            <span class="wk-n">01</span>
-            <span class="wk-sess"><span class="wk-day">Mon</span><span class="wk-when">26 Oct</span><span class="wk-what">Open Business Surgery</span></span>
-            <span class="wk-link" aria-hidden="true"></span>
-            <span class="wk-sess"><span class="wk-day">Fri</span><span class="wk-when">30 Oct</span><span class="wk-what">Training Your Agent</span></span>
-            <span class="wk-chev" aria-hidden="true">
-              <svg viewBox="0 0 20 20" width="20" height="20"><path d="M5 8l5 5 5-5" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
-            </span>
-          </button>
-        </h3>
-        <div class="wk-panel" id="wk01-panel" role="region" aria-labelledby="wk01-btn">
-          <div class="wk-panel-in">
-            <!-- WEEK 01 DETAILS -->
-          </div>
-        </div>
-      </div>
-      <div class="wk-row">
-        <h3 class="wk-h">
-          <button class="wk-btn" type="button" id="wk02-btn" aria-expanded="false" aria-controls="wk02-panel">
-            <span class="wk-n">02</span>
-            <span class="wk-sess"><span class="wk-day">Mon</span><span class="wk-when">2 Nov</span><span class="wk-what">Your AI Operating System</span></span>
-            <span class="wk-link" aria-hidden="true"></span>
-            <span class="wk-sess"><span class="wk-day">Fri</span><span class="wk-when">6 Nov</span><span class="wk-what">Expert Q&amp;A</span></span>
-            <span class="wk-chev" aria-hidden="true">
-              <svg viewBox="0 0 20 20" width="20" height="20"><path d="M5 8l5 5 5-5" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
-            </span>
-          </button>
-        </h3>
-        <div class="wk-panel" id="wk02-panel" role="region" aria-labelledby="wk02-btn">
-          <div class="wk-panel-in">
-            <!-- WEEK 02 DETAILS -->
-          </div>
-        </div>
-      </div>
-      <div class="wk-row">
-        <h3 class="wk-h">
-          <button class="wk-btn" type="button" id="wk03-btn" aria-expanded="false" aria-controls="wk03-panel">
-            <span class="wk-n">03</span>
-            <span class="wk-sess"><span class="wk-day">Mon</span><span class="wk-when">9 Nov</span><span class="wk-what">Storytelling for GTM</span></span>
-            <span class="wk-link" aria-hidden="true"></span>
-            <span class="wk-sess"><span class="wk-day">Fri</span><span class="wk-when">13 Nov</span><span class="wk-what">The AI Content Machine + Q&amp;A</span></span>
-            <span class="wk-chev" aria-hidden="true">
-              <svg viewBox="0 0 20 20" width="20" height="20"><path d="M5 8l5 5 5-5" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
-            </span>
-          </button>
-        </h3>
-        <div class="wk-panel" id="wk03-panel" role="region" aria-labelledby="wk03-btn">
-          <div class="wk-panel-in">
-            <!-- WEEK 03 DETAILS -->
-          </div>
-        </div>
-      </div>
-      <div class="wk-row">
-        <h3 class="wk-h">
-          <button class="wk-btn wk-3up" type="button" id="wk04-btn" aria-expanded="false" aria-controls="wk04-panel">
-            <span class="wk-n">04</span>
-            <span class="wk-sess"><span class="wk-day">Mon</span><span class="wk-when">16 Nov</span><span class="wk-what">Unfair AI Advantage</span></span>
-            <span class="wk-link" aria-hidden="true"></span>
-            <span class="wk-sess"><span class="wk-day">Wed</span><span class="wk-when">18 Nov</span><span class="wk-what">Networking Session</span></span>
-            <span class="wk-link" aria-hidden="true"></span>
-            <span class="wk-sess"><span class="wk-day">Fri</span><span class="wk-when">20 Nov</span><span class="wk-what">Q&amp;A Exited Founder</span></span>
-            <span class="wk-chev" aria-hidden="true">
-              <svg viewBox="0 0 20 20" width="20" height="20"><path d="M5 8l5 5 5-5" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
-            </span>
-          </button>
-        </h3>
-        <div class="wk-panel" id="wk04-panel" role="region" aria-labelledby="wk04-btn">
-          <div class="wk-panel-in">
-            <!-- WEEK 04 DETAILS -->
-          </div>
-        </div>
-      </div>
-    </div>
+    <ol class="wk-grid">
+      <li class="wk-card">
+        <p class="wk-label">Week 01</p>
+        <h3 class="wk-theme">Open Business Surgery</h3>
+        <ul class="wk-items">
+          <li class="wk-item">
+            <span class="wk-date">Mon 26 Oct</span>
+            <span class="wk-title">Open Business Surgery</span>
+          </li>
+          <li class="wk-item">
+            <span class="wk-date">Wed 28 Oct</span>
+            <span class="wk-title">Multi-LLM &amp; Setting Your Harness<span class="wk-pill">Bonus</span></span>
+          </li>
+          <li class="wk-item">
+            <span class="wk-date">Fri 30 Oct</span>
+            <span class="wk-title">Training Your Agent</span>
+          </li>
+        </ul>
+      </li>
+      <li class="wk-card">
+        <p class="wk-label">Week 02</p>
+        <h3 class="wk-theme">Your AI Operating System</h3>
+        <ul class="wk-items">
+          <li class="wk-item">
+            <span class="wk-date">Mon 2 Nov</span>
+            <span class="wk-title">Your AI Operating System</span>
+          </li>
+          <li class="wk-item">
+            <span class="wk-date">Fri 6 Nov</span>
+            <span class="wk-title">Expert Q&amp;A</span>
+          </li>
+        </ul>
+      </li>
+      <li class="wk-card">
+        <p class="wk-label">Week 03</p>
+        <h3 class="wk-theme">Storytelling for GTM</h3>
+        <ul class="wk-items">
+          <li class="wk-item">
+            <span class="wk-date">Mon 9 Nov</span>
+            <span class="wk-title">Storytelling for GTM</span>
+          </li>
+          <li class="wk-item">
+            <span class="wk-date">Fri 13 Nov</span>
+            <span class="wk-title">The AI Content Machine + Q&amp;A</span>
+          </li>
+        </ul>
+      </li>
+      <li class="wk-card">
+        <p class="wk-label">Week 04</p>
+        <h3 class="wk-theme">Unfair AI Advantage</h3>
+        <ul class="wk-items">
+          <li class="wk-item">
+            <span class="wk-date">Mon 16 Nov</span>
+            <span class="wk-title">Unfair AI Advantage</span>
+          </li>
+          <li class="wk-item">
+            <span class="wk-date">Wed 18 Nov</span>
+            <span class="wk-title">Networking Session</span>
+          </li>
+          <li class="wk-item">
+            <span class="wk-date">Fri 20 Nov</span>
+            <span class="wk-title">Q&amp;A Exited Founder</span>
+          </li>
+        </ul>
+      </li>
+    </ol>
     <p class="wk-foot">All sessions 12pm ET.</p>
     <div class="act">
       <a class="cta cta-lg" href="/join/" onclick="openJoinModal(event); track('join_weeks')">Join the cohort &middot; $997 &middot; 2 seats</a>
       <p class="cta-note">Early bird ends Monday 19 October. Payment plan available.</p>
     </div>
   </div>
-  <script>
-  // Week rows. A row is only expandable once its panel actually has content,
-  // so the empty ones render as plain rows instead of chevrons that open
-  // nothing. When Ella's details land in the panels, the toggles come back on
-  // their own - no markup change needed.
-  (function(){
-    var rows = document.querySelectorAll('.s-weeks .wk-row'); if (!rows.length) return;
-    rows.forEach(function(row){
-      var btn = row.querySelector('.wk-btn'), panel = row.querySelector('.wk-panel-in');
-      var hasDetail = panel && panel.textContent.trim().length > 0;
-      if (!hasDetail) { row.classList.add('is-static'); btn.removeAttribute('aria-expanded'); btn.removeAttribute('aria-controls'); btn.disabled = true; return; }
-      btn.addEventListener('click', function(){
-        var open = btn.getAttribute('aria-expanded') === 'true';
-        btn.setAttribute('aria-expanded', open ? 'false' : 'true');
-        row.classList.toggle('open', !open);
-      });
-    });
-  })();
-  </script>
 </section>
 
 <!-- ============================== 5. QUOTE ============================== -->
@@ -1664,7 +1598,7 @@ html{scroll-padding-top:110px}
     <div class="cards">
       <div class="card" tabindex="0" role="button" aria-expanded="false">
         <h3>The Accelerator</h3>
-        <p class="tease">9 live sessions, all hands on.</p>
+        <p class="tease">9 live sessions plus a bonus, all hands on.</p>
         <span class="plus" aria-hidden="true"></span>
         <div class="more"><p>We break every build down step by step until you can run it yourself. Then the expert Q&amp;A rooms, where you ask your question to venture backed founders, creators and investors building in the arena.</p></div>
       </div>
@@ -2126,7 +2060,7 @@ html{scroll-padding-top:110px}
     <div class="inner">
       <span class="lbl">Cohort starts Monday 26 October</span>
       <h2 class="final-line">One part of your business, running on AI.</h2>
-      <p class="final-meta">4 weeks &middot; 9 sessions &middot; 2 seats for the price of 1</p>
+      <p class="final-meta">4 weeks &middot; 9 sessions + bonus &middot; 2 seats for the price of 1</p>
       <div class="act">
         <a class="cta cta-lg" href="/join/" onclick="openJoinModal(event); track('join_final')">Join the cohort &middot; $997 &middot; 2 seats</a>
         <p class="cta-note">Early bird ends Monday 19 October. $1,297 after. Payment plan available.</p>
