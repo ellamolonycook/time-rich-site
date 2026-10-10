@@ -674,6 +674,7 @@ const mem = {
   deleted: [],
   slack: [],
   codes: {},          // passcode -> portal role, for portal_get
+  tokens: {},         // session token -> portal role, for portal_get_by_token
   enabled: undefined, // directory_enabled value, undefined = no row
   listedColumns: [],
   signRequests: [],
@@ -712,6 +713,12 @@ const memFetch = async (url, init = {}) => {
     if (url.includes('/portal_members?')) {
       const wanted = decodeURIComponent(url.split('email=ilike.')[1] || '').toLowerCase();
       return ok(mem.members.filter((m) => m.active && m.email.toLowerCase() === wanted));
+    }
+    if (url.includes('/rpc/portal_get_by_token')) {
+      // Session tokens are seeded the same way passcodes are, so a test can
+      // exercise either door into the same member.
+      const role = mem.tokens[String(body && body.p_token).trim()];
+      return ok(role ? { ok: true, member: { first_name: 'X', role }, weeks: [], sessions: [] } : { ok: false });
     }
     if (url.includes('/rpc/portal_get')) {
       const role = mem.codes[String(body && body.p_code).trim().toUpperCase()];
@@ -777,6 +784,7 @@ function resetMembers() {
   mem.deleted = [];
   mem.slack = [];
   mem.codes = {};
+  mem.tokens = {};
   mem.enabled = undefined;
   mem.listedColumns = [];
   mem.signRequests = [];
@@ -1212,6 +1220,44 @@ console.log('\nTime Rich Members — read endpoint');
   }), memEnv);
   check('the browser preflight is answered for timerich.ai',
     preflight.status === 204 && preflight.headers.get('Access-Control-Allow-Origin') === 'https://timerich.ai');
+}
+
+console.log('\nThe gated portal routes now take a session token');
+{
+  const read = (body) =>
+    worker.fetch(new Request('https://w.dev/portal-directory', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', Origin: 'https://timerich.ai' },
+      body: JSON.stringify(body),
+    }), memEnv);
+
+  const download = (body) =>
+    worker.fetch(new Request('https://w.dev/portal-download', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', Origin: 'https://timerich.ai' },
+      body: JSON.stringify(body),
+    }), memEnv);
+
+  resetMembers();
+  mem.enabled = true;
+  mem.tokens = { 'tok-live': 'buyer' };
+  mem.codes = { 'BUYER-CODE1': 'buyer' };
+  mem.directory = {};
+
+  check('Members accepts a session token', (await read({ token: 'tok-live' })).status === 200);
+  check('Members refuses a token it does not know', (await read({ token: 'tok-nope' })).status === 403);
+  check('Members refuses a request with neither token nor code', (await read({})).status === 403);
+
+  // The passcode path is kept on purpose: the column is still there, and a
+  // member who has not signed in again should not be locked out.
+  check('Members still accepts a passcode', (await read({ code: 'BUYER-CODE1' })).status === 200);
+
+  check('Download refuses a token it does not know',
+    (await download({ token: 'tok-nope', item_id: 1 })).status === 403);
+  check('Download refuses a request with no credential at all',
+    (await download({ item_id: 1 })).status === 403);
+  check('Download refuses a request with no item',
+    (await download({ token: 'tok-live' })).status === 403);
 }
 
 globalThis.fetch = baseFetch;

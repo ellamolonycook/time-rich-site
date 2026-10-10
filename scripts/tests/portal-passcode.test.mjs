@@ -64,7 +64,11 @@ console.log('\n/portal-passcode-emails — dry run');
   check('uses the shared Supabase service-role headers', calls[0].init.headers.apikey === env.SUPABASE_SERVICE_ROLE_KEY && calls[0].init.headers.Authorization === `Bearer ${env.SUPABASE_SERVICE_ROLE_KEY}`, calls[0]);
   check('defense in depth excludes team members', body.eligible === 2 && !combined.includes('Team Member'), body);
   check('masks the recipient email', combined.includes('j***@example.com') && !combined.includes('jordan@example.com'), body);
-  check('masks the passcode', combined.includes('AB***IJ') && !combined.includes('ABCDE-FGHIJ'), body);
+  // Signing in is the email address now. The email must carry no passcode
+  // at all, and the preview must not show the member's real address.
+  check('carries no passcode', !combined.includes('ABCDE-FGHIJ') && !combined.includes('KLMNO-PQRST') && !/passcode:/i.test(combined), body);
+  check('tells the member to sign in with their email',
+    combined.includes('sign in with this email address') && combined.includes('timerich.ai/portal'), body);
   check('uses no CORS response header', !response.headers.has('Access-Control-Allow-Origin'));
 }
 
@@ -116,7 +120,10 @@ console.log('\n/portal-passcode-emails — restricted real-email test mode');
   const resendCalls = calls.filter((call) => call.url === 'https://api.resend.com/emails');
   const payloads = resendCalls.map((call) => JSON.parse(call.init.body));
   check('sends only the two explicitly supplied test addresses', response.status === 200 && body.sent === 2 && payloads.every((payload) => payload.to[0].startsWith('team-')), payloads);
-  check('uses a synthetic passcode, not a member passcode', payloads.every((payload) => payload.text.includes('TEST-12345') && !payload.text.includes('ABCDE-FGHIJ')), payloads);
+  check('carries no member data and no passcode',
+    payloads.every((payload) => !payload.text.includes('ABCDE-FGHIJ')
+      && !payload.text.includes('jordan@example.com')
+      && !/passcode:/i.test(payload.text)), payloads);
   check('uses the configured reply-to address', payloads.every((payload) => payload.reply_to === 'replies@example.com'), payloads);
   check('does not query or update Supabase in test mode', !calls.some((call) => call.url.includes('/rest/v1/portal_members')), calls);
   check('does not expose test addresses in the response', !JSON.stringify(body).includes('team-one@example.com'), body);

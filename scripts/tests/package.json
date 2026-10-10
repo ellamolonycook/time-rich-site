@@ -4,11 +4,13 @@
   "type": "module",
   "description": "Tests for the /sh-apply application form, the Cloudflare worker's Notion mapping, Time Rich Members, and the portal member SQL.",
   "scripts": {
-    "test": "node worker.test.mjs && node portal-passcode.test.mjs && node form.test.mjs && node members.test.mjs && node portal-member.test.mjs",
+    "test": "node worker.test.mjs && node portal-login.test.mjs && node portal-calendar.test.mjs && node portal-passcode.test.mjs && node form.test.mjs && node members.test.mjs && node portal-member.test.mjs",
     "test:worker": "node worker.test.mjs && node portal-passcode.test.mjs",
     "test:form": "node form.test.mjs",
     "test:members": "node members.test.mjs",
-    "test:portal": "node portal-member.test.mjs"
+    "test:portal": "node portal-member.test.mjs",
+    "test:login": "node portal-login.test.mjs",
+    "test:calendar": "node portal-calendar.test.mjs"
   },
   "devDependencies": {
     "@electric-sql/pglite": "^0.5.8",

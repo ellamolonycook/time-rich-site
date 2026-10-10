@@ -38,8 +38,14 @@ async function open({ reply = { status: 200, body: { profiles: PROFILES } }, cod
     beforeParse(window) {
       window.tailwind = {};
       window.gtag = () => {};
-      window.TR_PORTAL_CONFIG = { directoryUrl: DIRECTORY_URL, url: 'https://sb.test', key: 'anon' };
-      if (code) window.localStorage.setItem('tr_portal_code', code);
+      window.TR_PORTAL_CONFIG = { directoryUrl: DIRECTORY_URL,
+        sessionUrl: 'https://worker.test/portal-session',
+        loginUrl: 'https://worker.test/portal-login',
+        logoutUrl: 'https://worker.test/portal-logout' };
+      // What the portal keeps since sign-in became an email: a session
+      // token and its expiry, not the address and not a passcode.
+      if (code) window.localStorage.setItem('tr_portal_session',
+        JSON.stringify({ token: code, expires_at: new Date(Date.now() + 30 * 864e5).toISOString() }));
       window.fetch = (url, init = {}) => {
         requests.push({ url: String(url), init });
         return Promise.resolve(new window.Response(JSON.stringify(reply.body), { status: reply.status }));
@@ -69,9 +75,9 @@ console.log('\nTime Rich Members page — loading');
 {
   const page = await open();
   const req = page.requests.find((r) => r.url === DIRECTORY_URL);
-  check('asks the Worker once, with POST and the stored passcode',
+  check('asks the Worker once, with POST and the stored session token',
     page.requests.filter((r) => r.url === DIRECTORY_URL).length === 1 && req.init.method === 'POST' &&
-    JSON.parse(req.init.body).code === 'ABCDE-FGHJK', page.requests.map((r) => r.url));
+    JSON.parse(req.init.body).token === 'ABCDE-FGHJK', page.requests.map((r) => r.url));
   check('draws one card per profile, in the order the Worker sent', page.cards().length === 4 &&
     page.visibleNames().join('|') === PROFILES.map((p) => p.name).join('|'), page.visibleNames());
   check('the loading line is gone once cards are shown', page.status.hidden === true && !page.grid.hidden);
@@ -215,7 +221,7 @@ console.log('\nTime Rich Members page — states');
   check('server error: a refresh message, no grid', /could not load/.test(broken.status.textContent) && broken.grid.hidden);
 
   const signedOut = await open({ code: null });
-  check('no passcode stored: the Worker is not called', signedOut.requests.filter((r) => r.url === DIRECTORY_URL).length === 0);
+  check('no session stored: the Worker is not called', signedOut.requests.filter((r) => r.url === DIRECTORY_URL).length === 0);
 }
 
 console.log('\nTime Rich Members page — copy');
@@ -248,13 +254,16 @@ async function openPortalPage(name, { directoryStatus = 200, cache, directoryThr
     beforeParse(window) {
       window.tailwind = {};
       window.gtag = () => {};
-      window.TR_PORTAL_CONFIG = { directoryUrl: DIRECTORY_URL, url: 'https://sb.test', key: 'anon' };
-      window.localStorage.setItem('tr_portal_code', 'ABCDE-FGHJK');
+      window.TR_PORTAL_CONFIG = { directoryUrl: DIRECTORY_URL,
+        sessionUrl: 'https://worker.test/portal-session',
+        loginUrl: 'https://worker.test/portal-login',
+        logoutUrl: 'https://worker.test/portal-logout' };
+      window.localStorage.setItem('tr_portal_session', JSON.stringify({ token: 'tok-ABCDE', expires_at: new Date(Date.now() + 30 * 864e5).toISOString() }));
       if (cache) window.sessionStorage.setItem('tr_members_link', JSON.stringify(cache));
       window.fetch = (url, init = {}) => {
         url = String(url);
         calls.push(url);
-        if (url.includes('/rpc/portal_get')) {
+        if (url.includes('/portal-session') || url.includes('/rpc/portal_get')) {
           return Promise.resolve(new globalThis.Response(JSON.stringify({ ok: true, member: { first_name: 'Ada', role: 'buyer' }, weeks: [], sessions: [] }), { status: 200 }));
         }
         if (url === DIRECTORY_URL) {
@@ -286,7 +295,7 @@ for (const name of PAGES) {
   const closed = await openPortalPage('dashboard', { directoryStatus: 403 });
   check('directory 403 (switched off, a buyer): the link stays hidden',
     closed.links.length === 2 && closed.links.every((a) => a.hidden), closed.links.map((a) => a.hidden));
-  check('the passcode is sent to the directory with POST', closed.directoryCalls() === 1);
+  check('the session token is sent to the directory with POST', closed.directoryCalls() === 1);
   check('a 403 is remembered for the tab, as "hidden"',
     JSON.parse(closed.dom.window.sessionStorage.getItem('tr_members_link')).ok === false);
 

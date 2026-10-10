@@ -34,7 +34,8 @@ export default {
     // single origin rather than the Worker-wide ALLOWED_ORIGIN list.
     // Same for Time Rich Members, which the portal calls from timerich.ai only.
     if (request.method === "OPTIONS" &&
-        /\/portal-(download|directory)$/.test(new URL(request.url).pathname.replace(/\/+$/, ""))) {
+        /\/portal-(download|directory|login|session|logout)$/
+          .test(new URL(request.url).pathname.replace(/\/+$/, ""))) {
       return new Response(null, { status: 204, headers: portalDownloadCors(request) });
     }
 
@@ -62,6 +63,23 @@ export default {
 
     if (request.method !== "POST") {
       return json({ error: "Method not allowed" }, 405, cors);
+    }
+
+    // Route: portal sign-in (POST /portal-login). Email in, session token
+    // out. Rate limited per IP, which is why it lives here rather than
+    // being an RPC the browser calls straight from the page.
+    if (path.endsWith("/portal-login")) {
+      return handlePortalLogin(request, env);
+    }
+
+    // Route: read the portal with a session token (POST /portal-session).
+    if (path.endsWith("/portal-session")) {
+      return handlePortalSession(request, env);
+    }
+
+    // Route: forget one browser's session (POST /portal-logout).
+    if (path.endsWith("/portal-logout")) {
+      return handlePortalLogout(request, env);
     }
 
     // Route: gated Superhuman skill download (POST /portal-download)
@@ -1406,6 +1424,186 @@ function portalDownloadCors(request) {
   return headers;
 }
 
+/* ---- portal sign-in --------------------------------------------------
+ *
+ * A member types their email address and nothing else. If it matches an
+ * active portal_members row, Supabase mints a 30 day session token and
+ * the browser keeps that, not the address.
+ *
+ * The answer for an unknown address and for a deactivated member is the
+ * same 404 with the same wording, so this cannot be used to find out who
+ * has access.
+ *
+ * SECURITY NOTE, recorded here because it is a deliberate trade-off and
+ * not an oversight: an email address is not a secret. Anyone who knows a
+ * member's address can sign in as them. If that becomes a problem, mail a
+ * one-time link to the address and only call portal_login when the link
+ * is opened; nothing else here has to change.
+ */
+const PORTAL_LOGIN_WINDOW_SECONDS = 10 * 60;   // 10 minutes
+const PORTAL_LOGIN_MAX_ATTEMPTS = 10;          // per IP, per window
+const PORTAL_LOGIN_NOT_FOUND =
+  "We couldn't find that email. Use the email you joined with, or contact emc@timerich.ai.";
+
+function portalLoginIp(request) {
+  return request.headers.get("CF-Connecting-IP")
+      || request.headers.get("X-Forwarded-For")
+      || "unknown";
+}
+
+/* A counter per IP per window, in KV.
+ *
+ * Returns true when the caller is over the limit. If PORTAL_LOGIN_RL is not
+ * bound the attempt is allowed: a missing namespace must not lock every
+ * member out. See worker/wrangler.toml for the binding, which has to exist
+ * for this limit to do anything at all.
+ */
+async function portalLoginRateLimited(request, env) {
+  const kv = env.PORTAL_LOGIN_RL;
+  if (!kv || typeof kv.get !== "function") return false;
+
+  const window = Math.floor(Date.now() / 1000 / PORTAL_LOGIN_WINDOW_SECONDS);
+  const key = `portal-login:${portalLoginIp(request)}:${window}`;
+
+  let count = 0;
+  try {
+    count = Number(await kv.get(key)) || 0;
+  } catch {
+    return false;                       // KV unreadable: do not lock anyone out
+  }
+  if (count >= PORTAL_LOGIN_MAX_ATTEMPTS) return true;
+
+  try {
+    // The TTL is the window plus a minute, so the key clears itself.
+    await kv.put(key, String(count + 1), { expirationTtl: PORTAL_LOGIN_WINDOW_SECONDS + 60 });
+  } catch {
+    /* the attempt still goes through; it just is not counted */
+  }
+  return false;
+}
+
+async function handlePortalLogin(request, env) {
+  const cors = portalDownloadCors(request);
+
+  const sb = supabaseService(env);
+  if (!sb) return json({ ok: false, error: "unavailable" }, 503, cors);
+
+  if (await portalLoginRateLimited(request, env)) {
+    return json(
+      { ok: false, error: "rate_limited", message: "Too many attempts. Try again in a few minutes." },
+      429,
+      cors
+    );
+  }
+
+  let body;
+  try { body = await request.json(); } catch { body = null; }
+
+  // Trimmed and lowercased here as well as in Postgres, so a malformed
+  // address never reaches the database.
+  const email = String(body?.email ?? "").trim().toLowerCase();
+  if (!isEmail(email)) {
+    return json({ ok: false, error: "not_found", message: PORTAL_LOGIN_NOT_FOUND }, 404, cors);
+  }
+
+  let payload;
+  try {
+    const res = await fetch(`${sb.base}/rest/v1/rpc/portal_login`, {
+      method: "POST",
+      headers: sb.headers,
+      body: JSON.stringify({ p_email: email }),
+    });
+    if (!res.ok) return json({ ok: false, error: "unavailable" }, 503, cors);
+    payload = await res.json();
+  } catch {
+    return json({ ok: false, error: "unavailable" }, 503, cors);
+  }
+
+  // An unknown address and an inactive member answer identically.
+  if (!payload || payload.ok !== true || typeof payload.token !== "string" || !payload.token) {
+    return json({ ok: false, error: "not_found", message: PORTAL_LOGIN_NOT_FOUND }, 404, cors);
+  }
+
+  return json(payload, 200, cors);
+}
+
+/* The portal's own pages call this on every load with the token they were
+ * given at sign-in. Same payload portal_get returns. */
+async function handlePortalSession(request, env) {
+  const cors = portalDownloadCors(request);
+
+  const sb = supabaseService(env);
+  if (!sb) return json({ ok: false, error: "unavailable" }, 503, cors);
+
+  let body;
+  try { body = await request.json(); } catch { body = null; }
+  const token = String(body?.token ?? "").trim();
+  if (!token) return json({ ok: false }, 401, cors);
+
+  let payload;
+  try {
+    const res = await fetch(`${sb.base}/rest/v1/rpc/portal_get_by_token`, {
+      method: "POST",
+      headers: sb.headers,
+      body: JSON.stringify({ p_token: token }),
+    });
+    if (!res.ok) return json({ ok: false, error: "unavailable" }, 503, cors);
+    payload = await res.json();
+  } catch {
+    return json({ ok: false, error: "unavailable" }, 503, cors);
+  }
+
+  if (!payload || payload.ok !== true) return json({ ok: false }, 401, cors);
+  return json(payload, 200, cors);
+}
+
+async function handlePortalLogout(request, env) {
+  const cors = portalDownloadCors(request);
+
+  const sb = supabaseService(env);
+  // Signing out must always look like it worked, even with no database.
+  if (!sb) return json({ ok: true }, 200, cors);
+
+  let body;
+  try { body = await request.json(); } catch { body = null; }
+  const token = String(body?.token ?? "").trim();
+  if (!token) return json({ ok: true }, 200, cors);
+
+  try {
+    await fetch(`${sb.base}/rest/v1/rpc/portal_logout`, {
+      method: "POST",
+      headers: sb.headers,
+      body: JSON.stringify({ p_token: token }),
+    });
+  } catch {
+    /* the browser forgets the token regardless */
+  }
+  return json({ ok: true }, 200, cors);
+}
+
+/* Both gated portal routes used to take the passcode. They now take the
+ * session token, and fall back to a passcode so anything still holding one
+ * keeps working. Returns the member payload, or null. */
+async function portalPayloadFromBody(sb, body) {
+  const token = String(body?.token ?? "").trim();
+  const code = String(body?.code ?? "").trim();
+
+  const call = async (fn, args) => {
+    const res = await fetch(`${sb.base}/rest/v1/rpc/${fn}`, {
+      method: "POST",
+      headers: sb.headers,
+      body: JSON.stringify(args),
+    });
+    if (!res.ok) return null;
+    const payload = await res.json();
+    return payload && payload.ok === true ? payload : null;
+  };
+
+  if (token) return call("portal_get_by_token", { p_token: token });
+  if (code) return call("portal_get", { p_code: code });
+  return null;
+}
+
 async function handlePortalDownload(request, env) {
   const cors = portalDownloadCors(request);
   const deny = () => json({ error: "Forbidden" }, 403, cors);
@@ -1415,29 +1613,22 @@ async function handlePortalDownload(request, env) {
   let body;
   try { body = await request.json(); } catch { return deny(); }
 
-  const code = typeof body?.code === "string" ? body.code.trim() : "";
   const itemId = Number(body?.item_id);
-  if (!code || !Number.isFinite(itemId)) return deny();
+  if (!Number.isFinite(itemId)) return deny();
 
   const base = env.SUPABASE_URL.replace(/\/+$/, "");
   const key = env.SUPABASE_SERVICE_ROLE_KEY;
   const auth = { apikey: key, Authorization: `Bearer ${key}`, "Content-Type": "application/json" };
 
-  // portal_get() already normalises the passcode, requires portal_members.active,
-  // and returns items ONLY for weeks whose release_at has passed. Reusing it here
-  // means the download rule cannot drift from the rule the portal itself applies.
+  // The portal's own read requires portal_members.active and returns items
+  // ONLY for weeks whose release_at has passed. Reusing it here means the
+  // download rule cannot drift from the rule the portal itself applies.
   let payload;
   try {
-    const res = await fetch(`${base}/rest/v1/rpc/portal_get`, {
-      method: "POST",
-      headers: auth,
-      body: JSON.stringify({ p_code: code }),
-    });
-    if (!res.ok) return deny();
-    payload = await res.json();
+    payload = await portalPayloadFromBody({ base, headers: auth }, body);
   } catch { return deny(); }
 
-  if (!payload || payload.ok !== true) return deny();
+  if (!payload) return deny();
 
   // An item can only be found here if its week is unlocked, because a locked
   // week comes back with an empty items array.
@@ -1736,12 +1927,23 @@ function portalEmailPreview(member) {
   };
 }
 
+// Signing in is the email address itself now, so this email no longer
+// carries a passcode. The maskCode argument is kept because the preview
+// mode still passes it; there is simply nothing secret left to mask.
 function buildPortalPasscodeEmail(member, maskCode) {
   const name = String(member.full_name || "").trim().split(/\s+/)[0] || "there";
-  const passcode = maskCode ? maskPasscode(member.passcode) : String(member.passcode).trim();
+  // The dry-run preview goes back to an administrator over HTTP, so the
+  // address is masked there the way the recipient field already is. The
+  // email that actually reaches the member carries it in full, because
+  // that address is now the thing they sign in with.
+  const raw = String(member.email || "").trim();
+  const address = raw && maskCode ? maskEmail(raw) : raw;
+  const line = address
+    ? `Go to https://timerich.ai/portal and sign in with this email address: ${address}`
+    : "Go to https://timerich.ai/portal and sign in with this email address.";
   return {
-    subject: "Your Time Rich portal passcode",
-    text: `Hi ${name},\n\nYour Time Rich portal is ready.\n\nYour passcode: ${passcode}\n\nSign in at https://timerich.ai/portal\n\nQuestions? Reply to this email or write to emc@timerich.ai.\n\nWarmly,\nElla\nFounder, Time Rich`,
+    subject: "Your Time Rich portal is ready",
+    text: `Hi ${name},\n\nYour Time Rich portal is ready.\n\n${line}\n\nThere is no passcode to remember.\n\nQuestions? Reply to this email or write to emc@timerich.ai.\n\nWarmly,\nElla\nFounder, Time Rich`,
   };
 }
 
@@ -3115,19 +3317,11 @@ async function handlePortalDirectory(request, env) {
 
   let body;
   try { body = await request.json(); } catch { return deny(); }
-  const code = typeof body?.code === "string" ? body.code.trim() : "";
-  if (!code) return deny();
 
   let member;
   try {
-    const res = await fetch(`${sb.base}/rest/v1/rpc/portal_get`, {
-      method: "POST",
-      headers: sb.headers,
-      body: JSON.stringify({ p_code: code }),
-    });
-    if (!res.ok) return deny();
-    const payload = await res.json();
-    if (!payload || payload.ok !== true) return deny();
+    const payload = await portalPayloadFromBody(sb, body);
+    if (!payload) return deny();
     member = payload.member || {};
   } catch { return deny(); }
 

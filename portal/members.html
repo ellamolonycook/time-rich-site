@@ -53,7 +53,7 @@
   
 
 
-  <!-- The passcode gate. Config first, then the library; both deferred so
+  <!-- The session gate. Config first, then the library; both deferred so
        the DOM is ready when the script mounts. No valid code redirects to
        index.html, because this page has no login form of its own. -->
   <script src="portal-config.js" defer></script>
@@ -423,13 +423,13 @@
   <script>
     /* Time Rich Members: the cohort directory.
        Profiles come from the Worker route in portal-config.js (directoryUrl),
-       which re-checks the passcode and the launch switch on every call.
+       which re-checks the session and the launch switch on every call.
        Everything a member typed is drawn with textContent, and only https
        links are ever used, so no answer can become markup on this page. */
     (function () {
       'use strict';
 
-      var STORAGE_KEY = 'tr_portal_code';
+      var STORAGE_KEY = 'tr_portal_session';
       var MSG = {
         loading: 'Loading your cohort…',
         empty: 'Profiles appear here as members complete their questionnaire.',
@@ -706,15 +706,19 @@
       function load() {
         var cfg = window.TR_PORTAL_CONFIG;
         var endpoint = cfg && typeof cfg.directoryUrl === 'string' ? cfg.directoryUrl.trim() : '';
-        var code = null;
-        try { code = window.localStorage.getItem(STORAGE_KEY); } catch (e) { code = null; }
-        // No code: portal-access.js sends the visitor to the sign-in page.
-        if (!endpoint || !code) return;
+        // The session token portal-access.js stored at sign-in. No session:
+        // portal-access.js sends the visitor to the sign-in page.
+        var token = null;
+        try {
+          var saved = JSON.parse(window.localStorage.getItem(STORAGE_KEY) || 'null');
+          if (saved && typeof saved.token === 'string') token = saved.token;
+        } catch (e) { token = null; }
+        if (!endpoint || !token) return;
 
         window.fetch(endpoint, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ code: code })
+          body: JSON.stringify({ token: token })
         }).then(function (response) {
           if (response.status === 403) { setStatus(MSG.closed); return null; }
           if (!response.ok) throw new Error('directory ' + response.status);

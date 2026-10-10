@@ -1,22 +1,24 @@
 /* Time Rich accelerator portal - connection settings.
  *
- * `key` is the Supabase PUBLISHABLE (anon) key. It is safe in the browser:
- * every table has row level security on with no policies, so the only thing
- * this key can reach is the portal_get() function.
+ * Every call the portal makes now goes to the Worker, not to Supabase
+ * directly. That is what lets the sign-in be rate limited per IP, and it
+ * keeps the member-facing pages away from the database entirely.
  *
- * Never put a service_role or any other secret key in this file.
- *
- * Paste the publishable key over the placeholder below. Until you do,
- * the portal reports itself as unavailable rather than failing oddly.
+ * Nothing in this file is a secret. Never put a service_role key, or any
+ * other secret, in here.
  */
 window.TR_PORTAL_CONFIG = {
+  // Sign in. Email in, 30-day session token out. Rate limited per IP.
+  loginUrl: "https://time-rich-forms.timerich.workers.dev/portal-login",
+  // Read the portal with that token. Called on every page load.
+  sessionUrl: "https://time-rich-forms.timerich.workers.dev/portal-session",
+  // Sign out, so the token stops working on the server too.
+  logoutUrl: "https://time-rich-forms.timerich.workers.dev/portal-logout",
   // Worker route that mints a 5-minute signed URL for a gated skill download.
-  // It re-checks the passcode and the week's release date server side; the
+  // It re-checks the session and the week's release date server side; the
   // browser never sees the Storage bucket or any service key.
   downloadUrl: "https://time-rich-forms.timerich.workers.dev/portal-download",
-  // Worker route behind Time Rich Members. Re-checks the passcode and the
+  // Worker route behind Time Rich Members. Re-checks the session and the
   // directory_enabled switch, and returns profiles with 1-hour photo URLs.
-  directoryUrl: "https://time-rich-forms.timerich.workers.dev/portal-directory",
-  url: "https://hmnqnkchwmxkwchqvxyj.supabase.co",
-  key: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImhtbnFua2Nod214a3djaHF2eHlqIiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTA5NTIxNjksImV4cCI6MjEwNjUyODE2OX0.iUwxKM7jb7j0hrJ1CC22aMRcB2l9CsZGwYcmT2ng1Kc"
+  directoryUrl: "https://time-rich-forms.timerich.workers.dev/portal-directory"
 };

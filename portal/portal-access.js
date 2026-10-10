@@ -1,5 +1,5 @@
 /* =====================================================================
- * Time Rich accelerator portal - passcode access and content rendering.
+ * Time Rich accelerator portal - email access and content rendering.
  *
  * No dependencies, no build step. Plain fetch and vanilla DOM.
  *
@@ -27,8 +27,8 @@
  *     [data-portal-weeks]    gets the week cards
  *     [data-portal-sessions] gets the session rows
  *   If any of name/weeks/sessions are present it calls load() to fill them.
- *   With no valid code it shows [data-portal-login] if the page has one,
- *   and otherwise sends the browser to index.html.
+ *   With no valid session it shows [data-portal-login] if the page has
+ *   one, and otherwise sends the browser to index.html.
  *
  * Gating
  *   The script keeps a state on <html>: data-tr-portal="loading" | "in" | "out".
@@ -37,8 +37,9 @@
  *   has actually loaded without needing any page-specific JavaScript.
  *
  * Safety notes
- *   - The passcode is sent in a POST body only. It is never put in a URL
- *     and never written to the console.
+ *   - The email is sent in a POST body only, once, to sign in. What the
+ *     browser keeps afterwards is the session token, not the address.
+ *     Neither is ever put in a URL or written to the console.
  *   - Nothing from the API is ever passed to innerHTML. Text goes in with
  *     textContent; elements are built with createElement.
  *   - An embed URL is never taken from the API as-is. The host is matched
@@ -50,13 +51,16 @@
 (function (window, document) {
   'use strict';
 
-  var STORAGE_KEY = 'tr_portal_code';
-  var RPC_PATH    = '/rest/v1/rpc/portal_get';
+  /* The session token, and when it stops being any use. Both are kept
+     because a browser that has been shut for a month should ask for the
+     email again rather than send a token the server will refuse. */
+  var STORAGE_KEY = 'tr_portal_session';
+  var LEGACY_KEY  = 'tr_portal_code';          // the old passcode, cleared on sight
   var STATE_ATTR  = 'data-tr-portal';
-  var PLACEHOLDER = 'PASTE_';
 
   var MSG = {
-    bad_code:    "That code isn't right. Try again.",
+    bad_code:    "We couldn't find that email. Use the email you joined with, or contact emc@timerich.ai.",
+    rate_limited: "Too many attempts. Try again in a few minutes.",
     unavailable: "The portal is unavailable right now. Please try again in a few minutes."
   };
 
@@ -74,18 +78,38 @@
 
   /* ---- storage: every call wrapped, private mode must not throw ---- */
 
-  function readCode() {
-    try { return window.localStorage.getItem(STORAGE_KEY) || null; }
-    catch (e) { return null; }
+  function readSession() {
+    try {
+      var raw = window.localStorage.getItem(STORAGE_KEY);
+      if (!raw) return null;
+      var saved = JSON.parse(raw);
+      if (!saved || typeof saved.token !== 'string' || !saved.token) return null;
+      // An expiry that has passed is the same as no session at all.
+      if (saved.expires_at && new Date(saved.expires_at).getTime() <= Date.now()) return null;
+      return saved;
+    } catch (e) { return null; }
   }
 
-  function writeCode(code) {
-    try { window.localStorage.setItem(STORAGE_KEY, code); }
-    catch (e) { /* the session still works, it just will not persist */ }
+  function readCode() {
+    var saved = readSession();
+    return saved ? saved.token : null;
+  }
+
+  function writeSession(token, expiresAt) {
+    try {
+      window.localStorage.setItem(STORAGE_KEY, JSON.stringify({
+        token: token,
+        expires_at: expiresAt || null
+      }));
+    } catch (e) { /* the session still works, it just will not persist */ }
   }
 
   function clearCode() {
     try { window.localStorage.removeItem(STORAGE_KEY); }
+    catch (e) { /* non-fatal */ }
+    // A passcode left over from the old sign-in is no longer used for
+    // anything, so it should not sit in storage either.
+    try { window.localStorage.removeItem(LEGACY_KEY); }
     catch (e) { /* non-fatal */ }
   }
 
@@ -95,49 +119,50 @@
 
   /* ---- the one API call -------------------------------------------- */
 
-  function getConfig() {
-    var c = window.TR_PORTAL_CONFIG;
-    if (!c) return null;
-    if (typeof c.url !== 'string' || typeof c.key !== 'string') return null;
-    if (!c.url || !c.key) return null;
-    if (c.key.indexOf(PLACEHOLDER) === 0) return null;   // key not pasted yet
-    return c;
+
+  /* Both calls go to the Worker rather than straight to Supabase. The
+     login one has to, because that is where the per-IP rate limit lives,
+     and the session one follows it so there is a single door. */
+  function portalEndpoint(name) {
+    var cfg = window.TR_PORTAL_CONFIG;
+    var url = cfg && typeof cfg[name] === 'string' ? cfg[name].trim() : '';
+    return url || null;
   }
 
-  function callRpc(code) {
-    var cfg = getConfig();
-    if (!cfg) return Promise.resolve({ ok: false, reason: 'unavailable' });
-
-    var endpoint = cfg.url.replace(/\/+$/, '') + RPC_PATH;
-
-    return fetch(endpoint, {
+  function post(url, payload) {
+    return fetch(url, {
       method: 'POST',
-      headers: {
-        'apikey': cfg.key,
-        'Authorization': 'Bearer ' + cfg.key,
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify({ p_code: code })
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(payload)
     }).then(function (response) {
-      if (!response.ok) return { ok: false, reason: 'unavailable' };
       return response.json().then(function (data) {
-        if (!data || data.ok !== true) return { ok: false, reason: 'bad_code' };
-        return { ok: true, data: data };
+        return { status: response.status, data: data };
       }, function () {
-        return { ok: false, reason: 'unavailable' };
+        return { status: response.status, data: null };
       });
     }, function () {
-      return { ok: false, reason: 'unavailable' };
+      return { status: 0, data: null };
     });
   }
 
-  function signIn(code) {
-    var trimmed = (typeof code === 'string') ? code.trim() : '';
+  /* Email in. On success the token and its expiry are kept; the address
+     itself is not stored anywhere. */
+  function signIn(email) {
+    var trimmed = (typeof email === 'string') ? email.trim().toLowerCase() : '';
     if (!trimmed) return Promise.resolve({ ok: false, reason: 'bad_code' });
 
-    return callRpc(trimmed).then(function (result) {
-      if (result.ok) writeCode(trimmed);
-      return result;
+    var endpoint = portalEndpoint('loginUrl');
+    if (!endpoint) return Promise.resolve({ ok: false, reason: 'unavailable' });
+
+    return post(endpoint, { email: trimmed }).then(function (result) {
+      var data = result.data;
+      if (result.status === 429) return { ok: false, reason: 'rate_limited' };
+      if (result.status === 404) return { ok: false, reason: 'bad_code' };
+      if (result.status !== 200 || !data || data.ok !== true || !data.token) {
+        return { ok: false, reason: 'unavailable' };
+      }
+      writeSession(data.token, data.expires_at);
+      return { ok: true, data: data };
     });
   }
 
@@ -145,15 +170,27 @@
     var stored = readCode();
     if (!stored) return Promise.resolve({ ok: false, reason: 'bad_code' });
 
-    return callRpc(stored).then(function (result) {
-      // Only forget the code when it was actually rejected. A network
-      // blip should not sign somebody out.
-      if (!result.ok && result.reason === 'bad_code') clearCode();
-      return result;
+    var endpoint = portalEndpoint('sessionUrl');
+    if (!endpoint) return Promise.resolve({ ok: false, reason: 'unavailable' });
+
+    return post(endpoint, { token: stored }).then(function (result) {
+      var data = result.data;
+      // Only forget the session when the server actually refused it. A
+      // network blip should not sign somebody out.
+      if (result.status === 401) { clearCode(); return { ok: false, reason: 'bad_code' }; }
+      if (result.status !== 200 || !data || data.ok !== true) {
+        return { ok: false, reason: 'unavailable' };
+      }
+      return { ok: true, data: data };
     });
   }
 
   function signOut() {
+    var token = readCode();
+    var endpoint = portalEndpoint('logoutUrl');
+    // Tell the server to forget the token too, so signing out on a shared
+    // machine really does end the session. The browser forgets it either way.
+    if (token && endpoint) { try { post(endpoint, { token: token }); } catch (e) { /* non-fatal */ } }
     clearCode();
     clearMembersLinkCache();
   }
@@ -209,7 +246,7 @@
     fetch(endpoint, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ code: code })
+      body: JSON.stringify({ token: code })
     }).then(function (response) {
       if (response.status === 200 || response.status === 403) {
         writeMembersLinkCache(response.status === 200);
@@ -366,7 +403,7 @@
     return fetch(endpoint, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ code: code, item_id: itemId })
+      body: JSON.stringify({ token: code, item_id: itemId })
     }).then(function (response) {
       if (!response.ok) return { ok: false };          // 403 carries no detail
       return response.json().then(function (data) {
