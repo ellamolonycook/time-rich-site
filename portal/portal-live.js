@@ -409,7 +409,7 @@
   // does. shrink-0 keeps it off the wrap line in a flex row.
   var DONE_BASE = 'inline-flex items-center justify-center gap-1.5 shrink-0 whitespace-nowrap ' +
                   'min-w-[6.5rem] px-3 py-1.5 rounded-full text-[11px] transition-colors';
-  var DONE_ON = DONE_BASE + ' font-bold bg-brand-deep text-white hover:bg-brand-green';
+  var DONE_ON = DONE_BASE + ' font-bold bg-brand-deep text-brand-bg hover:bg-brand-green';
   var DONE_OFF = DONE_BASE + ' font-semibold bg-brand-sagelt/60 text-brand-deep hover:bg-brand-sagelt';
 
   // A small tick, drawn as nodes so nothing is parsed as markup.

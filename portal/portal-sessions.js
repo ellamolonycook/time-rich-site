@@ -34,8 +34,11 @@
 
   var BTN_PRIMARY = 'inline-flex items-center justify-center px-5 py-2.5 rounded-full bg-brand-deep ' +
                     'text-brand-bg text-xs font-semibold transition-colors hover:bg-brand-green';
-  var BTN_PRIMARY_OFF = 'inline-flex items-center justify-center px-5 py-2.5 rounded-full bg-brand-deep/30 ' +
-                        'text-brand-bg text-xs font-semibold cursor-not-allowed';
+  // Disabled. The label has to stay readable in both themes, so it is the
+  // same ink as the page, muted, on a wash of that ink rather than a solid
+  // fill with inverted text.
+  var BTN_PRIMARY_OFF = 'inline-flex items-center justify-center px-5 py-2.5 rounded-full bg-brand-ink/15 ' +
+                        'text-brand-ink/85 text-xs font-semibold cursor-not-allowed';
   var BTN_SECONDARY = 'inline-flex items-center justify-center px-5 py-2.5 rounded-full border ' +
                       'border-brand-deep/25 text-brand-deep text-xs font-semibold transition-colors ' +
                       'hover:border-brand-deep/60';

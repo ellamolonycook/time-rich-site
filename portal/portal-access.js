@@ -415,7 +415,7 @@
 
   function skillButton(item) {
     var button = el('button', 'inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-brand-deep ' +
-                              'text-white text-xs font-bold shadow-sm hover:bg-brand-green ' +
+                              'text-brand-bg text-xs font-bold shadow-sm hover:bg-brand-green ' +
                               'transition-colors disabled:opacity-60', 'Download skill');
     button.type = 'button';
     button.insertAdjacentHTML('afterbegin',
@@ -458,7 +458,7 @@
     var body = str(item && item.body);
     
     // Eyebrow / Phase
-    var eyebrow = el('div', 'text-[10px] font-mono tracking-[0.2em] uppercase text-brand-deep/60 font-bold mb-4');
+    var eyebrow = el('div', 'text-[10px] font-mono tracking-[0.2em] uppercase text-brand-deep/80 font-bold mb-4');
     eyebrow.textContent = 'Module';
     card.appendChild(eyebrow);
 
@@ -500,7 +500,7 @@
        // The download button stands in for the chevron on a skill card.
        bottom.appendChild(skillButton(item));
     } else {
-       var iconWrapper = el('div', 'w-8 h-8 rounded-full border border-brand-green/15 flex items-center justify-center group-hover:bg-brand-deep group-hover:border-brand-deep group-hover:text-white text-brand-deep transition-all duration-300');
+       var iconWrapper = el('div', 'w-8 h-8 rounded-full border border-brand-green/15 flex items-center justify-center group-hover:bg-brand-deep group-hover:border-brand-deep group-hover:text-brand-bg text-brand-deep transition-all duration-300');
        iconWrapper.innerHTML = '<svg class="w-4 h-4 transform group-hover:translate-x-0.5 transition-transform" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7"></path></svg>';
        bottom.appendChild(iconWrapper);
     }
@@ -604,7 +604,7 @@
 
     var contentBox = el('div', 'space-y-2');
     var eyebrowFlex = el('div', 'flex items-center gap-3');
-    var eyebrow = el('span', 'text-[10px] font-mono tracking-[0.2em] uppercase text-brand-deep/60 font-bold');
+    var eyebrow = el('span', 'text-[10px] font-mono tracking-[0.2em] uppercase text-brand-deep/80 font-bold');
     eyebrow.textContent = 'Session ' + (index + 1);
     eyebrowFlex.appendChild(eyebrow);
 
@@ -619,7 +619,7 @@
     
     var when = formatSessionDate(session && session.starts_at);
     if (when) {
-       contentBox.appendChild(el('p', isNext ? 'text-sm text-brand-mid font-medium' : 'text-sm text-brand-mid/80', when));
+       contentBox.appendChild(el('p', isNext ? 'text-sm text-brand-mid font-medium' : 'text-sm text-brand-mid', when));
     }
     leftSide.appendChild(contentBox);
     row.appendChild(leftSide);
