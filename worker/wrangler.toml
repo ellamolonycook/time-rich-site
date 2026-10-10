@@ -36,7 +36,7 @@ compatibility_date = "2024-11-01"
 #
 # Until the id is filled in and deployed, the login route still works but
 # IS NOT RATE LIMITED: the Worker treats a missing binding as "allow".
-# [[kv_namespaces]]
+[[kv_namespaces]]
 binding = "PORTAL_LOGIN_RL"
 id = "a4db5f2916e0496f8851947b5a043e7a"
 
