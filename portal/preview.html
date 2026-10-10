@@ -124,25 +124,25 @@
     <div class="trp-when-out">
       <form class="trp-login" data-portal-login novalidate>
         <p class="trp-kicker">Accelerator portal</p>
-        <h1 class="trp-h1">Enter your code</h1>
+        <h1 class="trp-h1">Sign in</h1>
 
         <!-- The input deliberately has no name attribute, so even a stray
-             native submit could never put the passcode in the URL. -->
-        <label class="trp-tag" for="tr-code">Access code</label>
+             native submit could never put the address in the URL. -->
+        <label class="trp-tag" for="tr-email">Email address</label>
         <input class="trp-input"
-               id="tr-code"
-               type="text"
-               inputmode="text"
-               autocomplete="one-time-code"
-               autocapitalize="characters"
+               id="tr-email"
+               type="email"
+               inputmode="email"
+               autocomplete="email"
+               autocapitalize="off"
                autocorrect="off"
                spellcheck="false"
-               placeholder="XXXXX-XXXXX"/>
+               placeholder="you@example.com"/>
 
-        <button class="trp-btn" type="submit">Unlock</button>
+        <button class="trp-btn" type="submit">Continue</button>
 
         <p class="trp-error" data-portal-error role="alert"></p>
-        <p class="trp-hint">Your code was sent with your order confirmation.</p>
+        <p class="trp-hint">Use the email address you joined with.</p>
       </form>
     </div>
 

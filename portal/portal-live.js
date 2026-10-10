@@ -108,165 +108,32 @@
     }
   }
 
-  /* ---- calendar ------------------------------------------------------- */
 
-  function icsStamp(d) {
-    return d.toISOString().replace(/[-:]/g, '').replace(/\.\d{3}/, '');
+  /* ---- add to calendar ------------------------------------------------
+   *
+   * One link per session, to the Add Event page held in
+   * portal_sessions.addevent_url. The portal used to build an .ics in the
+   * browser and offer a Google/Outlook/Apple menu; that is all gone. When a
+   * session has no addevent_url there is nothing to add, so the caller
+   * leaves the button out rather than showing a dead one.
+   */
+  function addEventUrl(session) {
+    var url = safeUrl(session && session.addevent_url);
+    return url ? url.href : '';
   }
 
-  function icsEscape(value) {
-    return str(value).replace(/([,;\\])/g, '\\$1').replace(/\n/g, '\\n');
-  }
-
-  // A calendar file built in the browser, so no round trip and nothing to
-  // host. Sessions run 75 minutes.
-  function icsBlobUrl(session) {
-    var start = toDate(session && session.starts_at);
-    if (!start) return '';
-    var end = new Date(start.getTime() + SESSION_MINUTES * 60000);
-    var join = safeUrl(session && session.join_url);
-
-    var lines = [
-      'BEGIN:VCALENDAR',
-      'VERSION:2.0',
-      'PRODID:-//Time Rich//Accelerator Portal//EN',
-      'CALSCALE:GREGORIAN',
-      'BEGIN:VEVENT',
-      'UID:' + icsStamp(start) + '-timerich@timerich.ai',
-      'DTSTAMP:' + icsStamp(new Date()),
-      'DTSTART:' + icsStamp(start),
-      'DTEND:' + icsStamp(end),
-      'SUMMARY:' + icsEscape(str(session && session.title) || 'Time Rich session')
-    ];
-    if (join) {
-      lines.push('URL:' + icsEscape(join.href));
-      lines.push('DESCRIPTION:' + icsEscape('Join: ' + join.href));
-    }
-    lines.push('END:VEVENT', 'END:VCALENDAR');
-
-    try {
-      return URL.createObjectURL(new Blob([lines.join('\r\n')], { type: 'text/calendar' }));
-    } catch (e) {
-      return '';
-    }
-  }
-
-  // Returns an <a> that downloads the .ics, or null when there is no date.
+  // Returns an <a> to the Add Event page, or null when the session has none.
   function calendarLink(session, text, className) {
-    var href = icsBlobUrl(session);
+    var href = addEventUrl(session);
     if (!href) return null;
-    var a = el('a', className, text);
+    var a = el('a', className, text || 'Add to calendar');
     a.href = href;
-    a.setAttribute('download', (str(session.title) || 'session').replace(/[^\w -]+/g, '') + '.ics');
+    a.target = '_blank';
+    a.rel = 'noopener noreferrer';
+    a.setAttribute('aria-label', 'Add ' + (str(session.title) || 'this session') + ' to your calendar');
     return a;
   }
 
-
-  /* ---- add to calendar ------------------------------------------------ */
-
-  // Google and Outlook both want UTC stamps, which is also the only way to be
-  // unambiguous: a session announced as 12pm ET is 16:00Z in October and 17:00Z
-  // once the clocks go back, and both links carry the right instant either way.
-  function utcStamp(d) {
-    return d.toISOString().replace(/[-:]/g, '').replace(/\.\d{3}/, '');
-  }
-
-  function sessionWindow(session) {
-    var start = toDate(session && session.starts_at);
-    if (!start) return null;
-    return { start: start, end: new Date(start.getTime() + SESSION_MINUTES * 60000) };
-  }
-
-  function calendarDetails(session) {
-    var join = safeUrl(session && session.join_url);
-    return join ? 'Join: ' + join.href : '';
-  }
-
-  function googleCalendarUrl(session) {
-    var w = sessionWindow(session);
-    if (!w) return '';
-    var q = 'action=TEMPLATE' +
-            '&text=' + encodeURIComponent(str(session.title) || 'Time Rich session') +
-            '&dates=' + utcStamp(w.start) + '/' + utcStamp(w.end);
-    var details = calendarDetails(session);
-    if (details) q += '&details=' + encodeURIComponent(details);
-    return 'https://calendar.google.com/calendar/render?' + q;
-  }
-
-  function outlookCalendarUrl(session) {
-    var w = sessionWindow(session);
-    if (!w) return '';
-    var q = 'path=' + encodeURIComponent('/calendar/action/compose') +
-            '&rru=addevent' +
-            '&subject=' + encodeURIComponent(str(session.title) || 'Time Rich session') +
-            '&startdt=' + encodeURIComponent(w.start.toISOString()) +
-            '&enddt=' + encodeURIComponent(w.end.toISOString());
-    var details = calendarDetails(session);
-    if (details) q += '&body=' + encodeURIComponent(details);
-    return 'https://outlook.live.com/calendar/0/deeplink/compose?' + q;
-  }
-
-  // A small menu: Google, Outlook, and the .ics for Apple and everything else.
-  // Built with createElement, keyboard reachable, and Esc closes it.
-  function calendarMenu(session, triggerClass, itemClass) {
-    var wrap = el('div', 'relative inline-flex');
-
-    var trigger = el('button', triggerClass, 'Add to Calendar');
-    trigger.type = 'button';
-    trigger.setAttribute('aria-haspopup', 'true');
-    trigger.setAttribute('aria-expanded', 'false');
-
-    var menu = el('div',
-      'absolute right-0 bottom-full mb-2 z-50 min-w-[11rem] rounded-xl border border-brand-green/15 ' +
-      'bg-white shadow-lg p-1 flex flex-col');
-    menu.setAttribute('role', 'menu');
-    menu.hidden = true;
-
-    function close(focusBack) {
-      menu.hidden = true;
-      trigger.setAttribute('aria-expanded', 'false');
-      if (focusBack) trigger.focus();
-    }
-    function open() {
-      menu.hidden = false;
-      trigger.setAttribute('aria-expanded', 'true');
-      var first = menu.querySelector('a');
-      if (first) first.focus();
-    }
-
-    function addLink(href, text, download) {
-      if (!href) return;
-      var a = el('a', itemClass, text);
-      a.href = href;
-      a.setAttribute('role', 'menuitem');
-      if (download) a.setAttribute('download', download);
-      else { a.target = '_blank'; a.rel = 'noopener noreferrer'; }
-      a.addEventListener('click', function () { close(false); });
-      menu.appendChild(a);
-    }
-
-    addLink(googleCalendarUrl(session), 'Google Calendar');
-    addLink(outlookCalendarUrl(session), 'Outlook');
-    var ics = icsBlobUrl(session);
-    if (ics) addLink(ics, 'Apple or other', (str(session.title) || 'session').replace(/[^\w -]+/g, '') + '.ics');
-
-    if (!menu.childNodes.length) return null;      // no date, so no menu
-
-    trigger.addEventListener('click', function () {
-      if (menu.hidden) open(); else close(false);
-    });
-    wrap.addEventListener('keydown', function (e) {
-      if (e.key === 'Escape' && !menu.hidden) { e.stopPropagation(); close(true); }
-    });
-    // Clicking anywhere else puts it away.
-    document.addEventListener('click', function (e) {
-      if (!menu.hidden && !wrap.contains(e.target)) close(false);
-    });
-
-    wrap.appendChild(trigger);
-    wrap.appendChild(menu);
-    return wrap;
-  }
 
   /* ---- payload -------------------------------------------------------- */
 
@@ -628,11 +495,8 @@
     etDate: etDate,
     etTime: etTime,
     etDateTime: etDateTime,
-    icsBlobUrl: icsBlobUrl,
+    addEventUrl: addEventUrl,
     calendarLink: calendarLink,
-    calendarMenu: calendarMenu,
-    googleCalendarUrl: googleCalendarUrl,
-    outlookCalendarUrl: outlookCalendarUrl,
     weeks: weeks,
     sessions: sessions,
     items: items,

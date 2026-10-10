@@ -44,7 +44,6 @@
   var ACTION_JOIN = ACTION + ' bg-brand-deep text-brand-bg hover:bg-brand-green';
   var ACTION_SOFT = ACTION + ' border border-brand-deep/25 text-brand-deep hover:border-brand-deep/60';
   var ACTION_DEAD = ACTION + ' text-brand-deep/45 cursor-default';
-  var MENU_ITEM = 'px-3 py-2 rounded-lg text-xs text-left text-brand-deep hover:bg-brand-sagelt/50 transition-colors';
 
   /* ---- small pieces ---------------------------------------------------- */
 
@@ -162,16 +161,13 @@
       return off;
     }
 
-    // Before its day: save the date. Same calendar menu as before, with an
-    // icon trigger instead of a worded button.
-    var cal = L.calendarMenu(session, ACTION_SOFT + ' trp-cal', MENU_ITEM);
+    // Before its day: save the date. One link to the session's Add Event
+    // page. No addevent_url means there is nothing to add, so no button.
+    var cal = L.calendarLink(session, '', ACTION_SOFT + ' trp-cal');
     if (cal) {
-      var trigger = cal.querySelector('button');
-      if (trigger) {
-        L.clear(trigger);
-        trigger.appendChild(calendarIcon());
-        trigger.setAttribute('aria-label', 'Add ' + name + ' to your calendar');
-      }
+      L.clear(cal);
+      cal.appendChild(calendarIcon());
+      cal.setAttribute('aria-label', 'Add ' + name + ' to your calendar');
       return cal;
     }
     return null;
@@ -291,10 +287,9 @@
       acts2.appendChild(off);
     }
 
-    var cal = L.calendarMenu(next, BTN_SECONDARY, MENU_ITEM);
+    var cal = L.calendarLink(next, 'Add to calendar', BTN_SECONDARY);
     if (cal) {
-      var t = cal.querySelector('button');
-      if (t) t.setAttribute('aria-label', 'Add ' + name + ' to your calendar');
+      cal.setAttribute('aria-label', 'Add ' + name + ' to your calendar');
       acts2.appendChild(cal);
     }
 

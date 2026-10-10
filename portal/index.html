@@ -115,31 +115,23 @@
 
       <form id="portal-login-form" class="mt-8" data-portal-login novalidate>
 
-        <label for="password" class="block text-[11px] font-medium uppercase tracking-[0.12em] text-brand-ink/70">
-          Access code
+        <label for="email" class="block text-[11px] font-medium uppercase tracking-[0.12em] text-brand-ink/70">
+          Email address
         </label>
 
         <!-- The input deliberately has no name attribute: without one, even a
-             stray native submit could not put the code in the URL. -->
-        <div class="relative mt-1.5">
+             stray native submit could not put the address in the URL. -->
+        <div class="mt-1.5">
           <input class="trp-code"
-                 id="password"
-                 type="password"
-                 inputmode="text"
-                 autocomplete="one-time-code"
-                 autocapitalize="characters"
+                 id="email"
+                 type="email"
+                 inputmode="email"
+                 autocomplete="email"
+                 autocapitalize="off"
                  autocorrect="off"
                  spellcheck="false"
                  required
-                 placeholder="XXXXX-XXXXX"/>
-          <button type="button"
-                  id="toggle-pw"
-                  aria-label="Show code"
-                  aria-pressed="false"
-                  class="absolute right-0 top-1/2 -translate-y-1/2 flex items-center justify-center w-9 h-9 rounded-full text-brand-ink/45 hover:text-brand-ink hover:bg-brand-ink/5 transition-colors">
-            <span id="eye-show"><svg class="w-[18px] h-[18px]" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M2.036 12.322a1.012 1.012 0 010-.639C3.423 7.51 7.36 4.5 12 4.5c4.638 0 8.573 3.007 9.963 7.178.07.207.07.431 0 .639C20.577 16.49 16.64 19.5 12 19.5c-4.638 0-8.573-3.007-9.963-7.178z"></path><path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path></svg></span>
-            <span id="eye-hide" hidden><svg class="w-[18px] h-[18px]" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M3.98 8.223A10.477 10.477 0 001.934 12C3.226 16.338 7.244 19.5 12 19.5c.993 0 1.953-.138 2.863-.395M6.228 6.228A10.45 10.45 0 0112 4.5c4.756 0 8.773 3.162 10.065 7.498a10.523 10.523 0 01-4.293 5.774M6.228 6.228L3 3m3.228 3.228l3.65 3.65m7.894 7.894L21 21m-3.228-3.228l-3.65-3.65m0 0a3 3 0 10-4.244-4.243"></path></svg></span>
-          </button>
+                 placeholder="you@example.com"/>
         </div>
 
         <p data-portal-error role="alert" aria-live="polite"
@@ -147,13 +139,13 @@
 
         <button type="submit"
                 class="mt-5 w-full rounded-full bg-brand-ink px-6 py-3.5 text-[13px] font-semibold tracking-[0.02em] text-brand-page hover:bg-brand-ink/90 active:scale-[0.99] transition-all">
-          <span id="btn-text">Enter</span>
+          <span id="btn-text">Continue</span>
         </button>
 
       </form>
 
       <p class="mt-7 text-[13px] text-brand-ink/60">
-        Lost your code?
+        Not sure which email?
         <a href="mailto:emc@timerich.ai" class="text-brand-ink underline underline-offset-2 decoration-brand-ink/25 hover:decoration-brand-ink transition-colors">Email emc@timerich.ai</a>
       </p>
 
@@ -162,36 +154,16 @@
   </main>
 
   <script>
-    // Show or hide the code. Both icons are already in the page, so there is
-    // no icon library to download for one button.
-    (function () {
-      var input = document.getElementById('password');
-      var button = document.getElementById('toggle-pw');
-      var show = document.getElementById('eye-show');
-      var hide = document.getElementById('eye-hide');
-      if (!input || !button) return;
-
-      button.addEventListener('click', function () {
-        var hidden = input.type === 'password';
-        input.type = hidden ? 'text' : 'password';
-        button.setAttribute('aria-pressed', hidden ? 'true' : 'false');
-        button.setAttribute('aria-label', hidden ? 'Hide code' : 'Show code');
-        if (show) show.hidden = hidden;
-        if (hide) hide.hidden = !hidden;
-        input.focus();
-      });
-    })();
-
     // The real check lives in portal-access.js, which owns this form's submit.
     // Everything here only reflects what that check is doing: the button says
-    // "Checking", a rejected code puts the button back and returns focus to the
-    // field, and a good code moves on to the dashboard.
+    // "Checking", a rejected address puts the button back and returns focus to
+    // the field, and an address we know moves on to the dashboard.
     (function () {
       var form = document.getElementById('portal-login-form');
       var label = document.getElementById('btn-text');
       var slot = document.querySelector('[data-portal-error]');
       var input = form && form.querySelector('input');
-      var idle = label ? label.textContent : 'Enter portal';
+      var idle = label ? label.textContent : 'Continue';
 
       if (form) {
         form.addEventListener('submit', function () {
@@ -210,7 +182,7 @@
         }).observe(slot, { childList: true, characterData: true, subtree: true });
       }
 
-      // A code that checks out lands on the dashboard.
+      // An address we know lands on the dashboard.
       document.addEventListener('trportal:data', function () {
         window.location.replace('dashboard.html');
       });

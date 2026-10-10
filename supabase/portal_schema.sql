@@ -141,13 +141,30 @@ create table if not exists public.portal_sessions (
   title          text        not null,
   starts_at      timestamptz not null,
   join_url       text,
-  recording_url  text
+  recording_url  text,
+  -- Add Event page for this session. Null or empty hides the portal's
+  -- "Add to calendar" button.
+  addevent_url   text
 );
 
-alter table public.portal_members  enable row level security;
-alter table public.portal_weeks    enable row level security;
-alter table public.portal_items    enable row level security;
-alter table public.portal_sessions enable row level security;
+-- One row per signed-in browser. See portal_login() below.
+create table if not exists public.portal_login_sessions (
+  token       text        primary key,
+  member_id   uuid        not null references public.portal_members(id) on delete cascade,
+  created_at  timestamptz not null default now(),
+  expires_at  timestamptz not null
+);
+
+create index if not exists portal_login_sessions_member_idx
+  on public.portal_login_sessions (member_id);
+create index if not exists portal_login_sessions_expires_idx
+  on public.portal_login_sessions (expires_at);
+
+alter table public.portal_members        enable row level security;
+alter table public.portal_weeks          enable row level security;
+alter table public.portal_items          enable row level security;
+alter table public.portal_sessions       enable row level security;
+alter table public.portal_login_sessions enable row level security;
 
 comment on table public.portal_members is
   'One row per person with portal access. Reachable only through portal_get().';
@@ -228,6 +245,7 @@ create index if not exists portal_sessions_starts_at_idx
 --         "starts_at": "2026-10-26T16:00:00+00:00",
 --         "join_url": null,
 --         "recording_url": null,
+--         "addevent_url": null,
 --         "week_id": 1
 --       }
 --     ]
@@ -321,6 +339,7 @@ begin
                'starts_at',     s.starts_at,
                'join_url',      s.join_url,
                'recording_url', s.recording_url,
+               'addevent_url',  s.addevent_url,
                'week_id',       s.week_id
              )
              order by s.starts_at, s.id
@@ -350,6 +369,29 @@ $fn$;
 
 comment on function public.portal_get(text) is
   'Public entry point. Passcode in, portal payload out. See the comment block above the function body for the JSON shape.';
+
+
+-- ---------------------------------------------------------------------
+-- 3b. Email login
+--     portal_members.passcode is kept exactly as it was and portal_get()
+--     above still works. It is simply no longer what signs a member in.
+--
+--       portal_login(email)        -> 30 day token + the payload
+--       portal_get_by_token(token) -> the payload
+--       portal_logout(token)       -> forgets one browser
+--
+--     Both are service_role only, so the browser cannot reach them and
+--     skip the Worker's per-IP rate limit on the login route.
+--
+--     The full bodies live in
+--     migrations/20261010090000_portal_email_login_and_addevent.sql.
+--     They are not repeated here; run the migrations to get them.
+--
+--     SECURITY NOTE. An email address is not a secret. Anyone who knows a
+--     member's address can sign in as them. The shape here already allows
+--     a stronger version later: mail a one-time link to the address and
+--     mint the token only when that link is opened.
+-- ---------------------------------------------------------------------
 
 
 -- ---------------------------------------------------------------------
