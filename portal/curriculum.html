@@ -51,7 +51,7 @@
     })();
   </script>
 
-  <title>Time Rich. — AI Education Portal</title>
+  <title>Curriculum | Time Rich Portal</title>
   <link rel="stylesheet" href="portal.css"/>
   <link rel="preconnect" href="https://fonts.googleapis.com"/>
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin=""/>
@@ -168,9 +168,9 @@
           
           <header>
               <div class="space-y-4">
-                <span class="trp-kicker">Programme overview</span>
+                <span class="trp-kicker">Program overview</span>
                 <h1 class="trp-title">Curriculum</h1>
-                <p class="trp-lede">Every week of the programme, with the sessions and materials in each.</p>
+                <p class="trp-lede">Every week of the program, with the sessions and materials in each.</p>
               </div>
             </header>
 
@@ -385,7 +385,9 @@
       function itemRow(item) {
         var name = L.str(item.title) || 'Untitled';
         var row = L.el('li', 'trp-srow is-item');
-        row.appendChild(L.el('span', 'trp-sdate', 'Material'));
+        // The date column used to print "Material" on every row, which told a
+        // member nothing and read as seven identical labels down the card.
+        row.appendChild(L.el('span', 'trp-sdate'));
 
         var title = L.el('span', 'trp-stitle');
         var link = L.linkTo(item.url, name, 'trp-slink');

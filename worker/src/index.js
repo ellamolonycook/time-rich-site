@@ -3311,9 +3311,13 @@ function queueDirectorySync(env, ctx, page) {
 // member cannot drift. Until the directory_enabled switch is on, only team
 // gets through, so the page can be QA'd before launch without a code release.
 //
+// Only active buyers and second seats are listed. Team accounts and anyone
+// switched off are left out, however the directory row itself is labelled.
+//
 // Every refusal is the same flat 403: a wrong code, a switched-off directory
-// and a Supabase error all look identical from outside. Email and
-// photo_source_url are never selected, so they cannot leak into a response.
+// and a Supabase error all look identical from outside. photo_source_url is
+// never selected. Email is selected only to match a directory row to a live
+// membership, and the response is built key by key without it.
 // ---------------------------------------------------------------------------
 const DIRECTORY_PHOTO_URL_TTL_SECONDS = 3600; // 1 hour
 const DIRECTORY_PUBLIC_COLUMNS =
@@ -3342,13 +3346,31 @@ async function handlePortalDirectory(request, env) {
     } catch { return deny(); }
   }
 
+  // Only buyers and second seats are listed, and only while their membership
+  // is still active. The directory row carries its own role, but a row can
+  // outlive the membership it was synced from, so the live portal_members
+  // table decides. Email is selected here purely to match the two sides and
+  // is dropped before anything is returned.
+  let allowed;
+  try {
+    allowed = await activeDirectoryEmails(sb);
+  } catch { return deny(); }
+  if (!allowed.size) return json({ profiles: [] }, 200, cors);
+
   let rows;
   try {
-    const res = await fetch(`${sb.base}/rest/v1/portal_directory?select=${DIRECTORY_PUBLIC_COLUMNS}`, { headers: sb.headers });
+    // Written out rather than built with URLSearchParams: PostgREST wants the
+    // commas in select= and in.(...) as commas, not percent-encoded.
+    const res = await fetch(
+      `${sb.base}/rest/v1/portal_directory?select=email,${DIRECTORY_PUBLIC_COLUMNS}&role=in.(buyer,second_seat)`,
+      { headers: sb.headers },
+    );
     if (!res.ok) return deny();
     rows = await res.json();
   } catch { return deny(); }
   if (!Array.isArray(rows)) return deny();
+
+  rows = rows.filter((row) => row && allowed.has(String(row.email || "").trim().toLowerCase()));
 
   const photoUrls = await signDirectoryPhotos(sb, rows);
 
@@ -3370,6 +3392,29 @@ async function handlePortalDirectory(request, env) {
     .sort((a, b) => a.name.localeCompare(b.name, "en", { sensitivity: "base" }));
 
   return json({ profiles }, 200, cors);
+}
+
+// The addresses allowed to appear in the directory: active buyers and second
+// seats, nobody else. Paged, because PostgREST caps a plain select.
+async function activeDirectoryEmails(sb) {
+  const emails = new Set();
+  const pageSize = 500;
+  for (let offset = 0; ; offset += pageSize) {
+    const res = await fetch(
+      `${sb.base}/rest/v1/portal_members?select=email&active=eq.true` +
+      `&role=in.(buyer,second_seat)&email=not.is.null&order=email.asc` +
+      `&limit=${pageSize}&offset=${offset}`,
+      { headers: sb.headers },
+    );
+    if (!res.ok) throw new Error(`portal_members lookup returned ${res.status}`);
+    const page = await res.json();
+    if (!Array.isArray(page)) throw new Error("portal_members lookup returned an invalid response");
+    for (const row of page) {
+      const email = String((row && row.email) || "").trim().toLowerCase();
+      if (email) emails.add(email);
+    }
+    if (page.length < pageSize) return emails;
+  }
 }
 
 // True only when the switch is literally on; a missing row means off.

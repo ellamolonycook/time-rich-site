@@ -51,7 +51,7 @@
     })();
   </script>
 
-  <title>Time Rich - Portal Access</title>
+  <title>Sign in | Time Rich Portal</title>
 
   <link rel="stylesheet" href="portal.css"/>
   <link rel="preconnect" href="https://fonts.googleapis.com"/>
@@ -156,8 +156,12 @@
                  placeholder="you@example.com"/>
         </div>
 
+        <!-- Two lines are reserved, not one. The card is centred on the page,
+             so a message that wraps would grow the card and shift everything
+             up by half the extra height. Every message here runs to two lines
+             at the widths members use. -->
         <p data-portal-error role="alert" aria-live="polite"
-           class="mt-3 min-h-[1.25rem] text-[13px] text-brand-error"></p>
+           class="mt-3 min-h-[2.5rem] text-[13px] leading-[1.25rem] text-brand-error"></p>
 
         <button type="submit"
                 class="mt-5 w-full rounded-full bg-brand-ink px-6 py-3.5 text-[13px] font-semibold tracking-[0.02em] text-brand-page hover:bg-brand-ink/90 active:scale-[0.99] transition-all">

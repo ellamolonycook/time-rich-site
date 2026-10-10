@@ -203,27 +203,33 @@
   // team. A 403 keeps it hidden. Anything else (network, Worker down) also
   // keeps it hidden but is not remembered, so the next page tries again.
   //
-  // A definite answer is kept for this tab for ten minutes, so moving between
-  // portal pages does not refetch the directory every time.
+  // A definite answer is kept for ten minutes in localStorage, not
+  // sessionStorage. The top nav is centred, so a fifth link appearing a second
+  // after load pushes the other four sideways. Remembering the answer across
+  // tabs and reloads means a returning member never sees that.
+  //
+  // The first time, when there is nothing remembered, the link keeps its box
+  // while the Worker is asked. See [data-portal-members-link][data-pending] in
+  // portal-content.css.
 
   var MEMBERS_LINK_CACHE = 'tr_members_link';
   var MEMBERS_LINK_TTL_MS = 10 * 60 * 1000;
 
   function readMembersLinkCache() {
     try {
-      var cached = JSON.parse(window.sessionStorage.getItem(MEMBERS_LINK_CACHE) || 'null');
+      var cached = JSON.parse(window.localStorage.getItem(MEMBERS_LINK_CACHE) || 'null');
       if (cached && typeof cached.ok === 'boolean' && Date.now() - cached.at < MEMBERS_LINK_TTL_MS) return cached.ok;
     } catch (e) { /* storage off or unreadable: ask the Worker */ }
     return null;
   }
 
   function writeMembersLinkCache(ok) {
-    try { window.sessionStorage.setItem(MEMBERS_LINK_CACHE, JSON.stringify({ ok: ok, at: Date.now() })); }
+    try { window.localStorage.setItem(MEMBERS_LINK_CACHE, JSON.stringify({ ok: ok, at: Date.now() })); }
     catch (e) { /* storage off: just ask again next page */ }
   }
 
   function clearMembersLinkCache() {
-    try { window.sessionStorage.removeItem(MEMBERS_LINK_CACHE); }
+    try { window.localStorage.removeItem(MEMBERS_LINK_CACHE); }
     catch (e) { /* nothing stored */ }
   }
 
@@ -231,8 +237,20 @@
     var links = document.querySelectorAll('[data-portal-members-link]');
     if (!links.length) return;
 
+    var i;
+
+    // Visible, invisible but still taking up room, or gone entirely.
     var show = function (ok) {
-      for (var i = 0; i < links.length; i++) links[i].hidden = !ok;
+      for (i = 0; i < links.length; i++) {
+        links[i].removeAttribute('data-pending');
+        links[i].hidden = !ok;
+      }
+    };
+    var reserve = function () {
+      for (i = 0; i < links.length; i++) {
+        links[i].hidden = false;
+        links[i].setAttribute('data-pending', '');
+      }
     };
 
     var cached = readMembersLinkCache();
@@ -242,6 +260,8 @@
     var endpoint = (cfg && typeof cfg.directoryUrl === 'string') ? cfg.directoryUrl.trim() : '';
     var code = readCode();
     if (!endpoint || !code) return;
+
+    reserve();
 
     fetch(endpoint, {
       method: 'POST',
@@ -640,14 +660,10 @@
          actions.appendChild(rBtn);
       }
       row.appendChild(actions);
-    } else if (isNext) {
-      // Just a placeholder button so it looks designed
-      var actions = el('div', 'mt-6 md:mt-0 w-full md:w-auto flex flex-col sm:flex-row gap-3');
-      var rBtn = el('button', 'w-full md:w-auto px-4 py-3 bg-brand-sagelt text-brand-deep text-xs font-semibold rounded-xl hover:bg-brand-sage transition-colors flex items-center justify-center');
-      rBtn.textContent = "Link coming soon";
-      actions.appendChild(rBtn);
-      row.appendChild(actions);
     }
+    // A session with no Join link and no recording simply has no buttons. It
+    // used to grow a dead "Link coming soon" button that did nothing when a
+    // member pressed it.
 
     return row;
   }
@@ -730,6 +746,27 @@
     }
   }
 
+  // Signing out and then pressing Back used to bring the whole dashboard
+  // straight back: the page comes from the back-forward cache, so nothing on
+  // it runs again and the member's name, their next session and a live Join
+  // link are all still on screen. On a shared laptop the next person sees it.
+  //
+  // pageshow is the one event that does fire on a restore, so the gate is
+  // asked again there. Only a restored page is touched; a normal load has
+  // already been through the gate on the way in.
+  function guardRestoredPage() {
+    window.addEventListener('pageshow', function (event) {
+      if (!event || !event.persisted) return;
+      if (hasCode()) return;
+      if (document.querySelector('[data-portal-login]')) { setState('out'); return; }
+      // Reload rather than replace. The browser is still finishing the back
+      // navigation at this point, and rewriting the history entry underneath
+      // it lands on a blank page. Reloading re-runs the gate from a settled
+      // state, and the gate does the redirect itself.
+      window.location.reload();
+    });
+  }
+
   function wireSignOut() {
     var buttons = document.querySelectorAll('[data-portal-signout]');
     for (var i = 0; i < buttons.length; i++) {
@@ -778,6 +815,7 @@
   }
 
   function mount() {
+    guardRestoredPage();
     wireSignOut();
     wireLogin();
 

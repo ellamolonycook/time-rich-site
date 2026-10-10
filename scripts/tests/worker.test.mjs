@@ -677,6 +677,7 @@ const mem = {
   tokens: {},         // session token -> portal role, for portal_get_by_token
   enabled: undefined, // directory_enabled value, undefined = no row
   listedColumns: [],
+  allowedQuery: '',
   signRequests: [],
   signFails: false,
   calls: [],
@@ -711,6 +712,16 @@ const memFetch = async (url, init = {}) => {
   if (url.startsWith('https://sb.test/rest/v1/')) {
     if (!mem.supabaseUp) return new Response('down', { status: 503 });
     if (url.includes('/portal_members?')) {
+      // The directory read asks who is allowed to be listed at all:
+      // select=email&active=eq.true&role=in.(buyer,second_seat). Everything
+      // else looks one member up by address.
+      if (url.includes('role=in.')) {
+        const roles = decodeURIComponent(url.split('role=in.')[1].split('&')[0]).replace(/[()]/g, '').split(',');
+        mem.allowedQuery = url;
+        return ok(mem.members
+          .filter((m) => m.active && roles.includes(m.role))
+          .map((m) => ({ email: m.email })));
+      }
       const wanted = decodeURIComponent(url.split('email=ilike.')[1] || '').toLowerCase();
       return ok(mem.members.filter((m) => m.active && m.email.toLowerCase() === wanted));
     }
@@ -787,6 +798,7 @@ function resetMembers() {
   mem.tokens = {};
   mem.enabled = undefined;
   mem.listedColumns = [];
+  mem.allowedQuery = '';
   mem.signRequests = [];
   mem.signFails = false;
   mem.calls = [];
@@ -1137,6 +1149,13 @@ console.log('\nTime Rich Members — read endpoint');
       },
       'bo@example.com': { email: 'bo@example.com', name: 'Bo Brown', photo_status: 'missing', role: 'second_seat' },
     };
+    // A directory row is only listed while the membership behind it is still
+    // a live buyer or second seat, so the two sides are seeded together.
+    mem.members = [
+      { email: 'zoe@example.com', role: 'buyer', active: true },
+      { email: 'ada@example.com', role: 'buyer', active: true },
+      { email: 'bo@example.com', role: 'second_seat', active: true },
+    ];
   };
 
   seed();
@@ -1165,8 +1184,13 @@ console.log('\nTime Rich Members — read endpoint');
   check('profiles are sorted by name, ignoring case', profiles.map((p) => p.name).join('|') === 'ada lovelace|Bo Brown|Zoe Zhang', profiles.map((p) => p.name));
   check('no email anywhere in the response', !/@example\.com/.test(text) && profiles.every((p) => !('email' in p)), text);
   check('photo_source_url is never selected or returned',
-    !mem.listedColumns.includes('photo_source_url') && !mem.listedColumns.includes('email') &&
+    !mem.listedColumns.includes('photo_source_url') &&
     !text.includes('ZOESECRETLINK') && !text.includes('photo_source_url'), mem.listedColumns);
+  // Email is selected now, purely to match a directory row to a live
+  // membership. The check that matters is that it never leaves the Worker,
+  // which the "no email anywhere in the response" case above covers.
+  check('email is selected only to match the two tables',
+    mem.listedColumns.includes('email'), mem.listedColumns);
   check('photo_path and photo_status stay server side', profiles.every((p) => !('photo_path' in p) && !('photo_status' in p)));
 
   const zoe = profiles.find((p) => p.name === 'Zoe Zhang');
@@ -1215,6 +1239,47 @@ console.log('\nTime Rich Members — read endpoint');
   const down = await read({ code: 'buyer-code1' });
   check('a Supabase outage is the same 403, never a stack or detail', down.status === 403 && (await down.text()) === refusalBodies[0]);
 
+  // Only active buyers and second seats are listed. A team account, a
+  // membership that has been switched off, and a directory row with no live
+  // membership behind it are all left out, however the row itself is labelled.
+  seed();
+  mem.enabled = true;
+  await read({ code: 'buyer-code1' });
+  check('the allowed list asks Supabase for active buyers and second seats only',
+    /active=eq\.true/.test(mem.allowedQuery) && /role=in\.\(buyer,second_seat\)/.test(mem.allowedQuery),
+    mem.allowedQuery);
+
+  seed();
+  mem.enabled = true;
+  mem.directory['tam@example.com'] = { email: 'tam@example.com', name: 'Tam Team', role: 'buyer' };
+  mem.members.push({ email: 'tam@example.com', role: 'team', active: true });
+  const noTeam = (await (await read({ code: 'buyer-code1' })).json()).profiles.map((x) => x.name);
+  check('a team account is not listed, whatever its directory row says',
+    !noTeam.includes('Tam Team') && noTeam.length === 3, noTeam);
+
+  seed();
+  mem.enabled = true;
+  mem.members = mem.members.map((m) => (m.email === 'ada@example.com' ? { ...m, active: false } : m));
+  const noInactive = (await (await read({ code: 'buyer-code1' })).json()).profiles.map((x) => x.name);
+  check('a switched-off member drops out of the directory',
+    !noInactive.includes('ada lovelace') && noInactive.length === 2, noInactive);
+
+  seed();
+  mem.enabled = true;
+  mem.directory['ghost@example.com'] = { email: 'ghost@example.com', name: 'Ghost Row', role: 'buyer' };
+  const noGhost = (await (await read({ code: 'buyer-code1' })).json()).profiles.map((x) => x.name);
+  check('a directory row with no membership behind it is not listed',
+    !noGhost.includes('Ghost Row') && noGhost.length === 3, noGhost);
+
+  seed();
+  mem.enabled = true;
+  mem.members = [];
+  const none = await read({ code: 'buyer-code1' });
+  check('nobody eligible is an empty list, not an error',
+    none.status === 200 && (await none.json()).profiles.length === 0);
+
+  seed();
+  mem.enabled = true;
   const preflight = await worker.fetch(new Request('https://w.dev/portal-directory', {
     method: 'OPTIONS', headers: { Origin: 'https://timerich.ai' },
   }), memEnv);

@@ -460,7 +460,7 @@ $do$;
 --       where starts_at = (timestamp '2026-11-09 12:00') at time zone 'America/New_York';
 --      update public.portal_sessions set title = 'The AI Content Machine + Q&A'
 --       where starts_at = (timestamp '2026-11-13 12:00') at time zone 'America/New_York';
---      update public.portal_sessions set title = 'Q&A Exited Founder'
+--      update public.portal_sessions set title = 'Q&A: Exited Founder'
 --       where starts_at = (timestamp '2026-11-20 12:00') at time zone 'America/New_York';
 --
 --    The 18 November row is genuinely new, so it is the one case the insert
@@ -495,7 +495,7 @@ select v.week_id, v.title, v.starts_at
         (timestamp '2026-11-16 12:00') at time zone 'America/New_York'),
     (4, 'Networking Session',
         (timestamp '2026-11-18 12:00') at time zone 'America/New_York'),
-    (4, 'Q&A Exited Founder',
+    (4, 'Q&A: Exited Founder',
         (timestamp '2026-11-20 12:00') at time zone 'America/New_York')
   ) as v(week_id, title, starts_at)
  where not exists (
