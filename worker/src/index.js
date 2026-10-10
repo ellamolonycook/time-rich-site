@@ -1407,6 +1407,15 @@ function calEsc(s) {
 // ---------------------------------------------------------------------------
 
 const PORTAL_DOWNLOAD_ORIGIN = "https://timerich.ai";
+
+// The local dev server, so the portal can be opened from a checkout while
+// working on it. Exactly these two, http only, and only on port 8000: the
+// production origin above is unchanged, and the Worker-wide ALLOWED_ORIGIN
+// list that every other route uses is not touched by any of this.
+const PORTAL_LOCAL_ORIGINS = [
+  "http://localhost:8000",
+  "http://127.0.0.1:8000",
+];
 const SKILL_BUCKET = "portal-skills";
 const SKILL_URL_TTL_SECONDS = 300; // 5 minutes
 
@@ -1418,8 +1427,10 @@ function portalDownloadCors(request) {
     "Access-Control-Allow-Methods": "POST, OPTIONS",
     "Access-Control-Allow-Headers": "Content-Type",
   };
-  if ((request.headers.get("Origin") || "") === PORTAL_DOWNLOAD_ORIGIN) {
-    headers["Access-Control-Allow-Origin"] = PORTAL_DOWNLOAD_ORIGIN;
+  // Echoed back to the one caller that asked, never widened to a wildcard.
+  const origin = request.headers.get("Origin") || "";
+  if (origin === PORTAL_DOWNLOAD_ORIGIN || PORTAL_LOCAL_ORIGINS.includes(origin)) {
+    headers["Access-Control-Allow-Origin"] = origin;
   }
   return headers;
 }

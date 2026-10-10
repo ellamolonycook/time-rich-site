@@ -243,6 +243,55 @@ console.log('\nThe passcode column is kept, and the old path still works');
     typeof worker.fetch === 'function');
 }
 
+console.log('\nCORS on the portal routes: production, plus the local dev server');
+{
+  // Only the portal routes are affected. The Worker-wide ALLOWED_ORIGIN list
+  // that every other route uses is untouched by this.
+  const ask = (origin, path = '/portal-login', method = 'OPTIONS') =>
+    worker.fetch(new Request('https://w.dev' + path, {
+      method,
+      headers: origin
+        ? { Origin: origin, 'Content-Type': 'application/json' }
+        : { 'Content-Type': 'application/json' },
+      body: method === 'POST' ? JSON.stringify({ email: 'ella@example.com' }) : undefined,
+    }), env);
+
+  const allow = async (origin, path, method) =>
+    (await ask(origin, path, method)).headers.get('Access-Control-Allow-Origin');
+
+  check('the live site is still allowed', await allow('https://timerich.ai') === 'https://timerich.ai');
+
+  // the local dev server
+  check('http://localhost:8000 is allowed', await allow('http://localhost:8000') === 'http://localhost:8000');
+  check('http://127.0.0.1:8000 is allowed', await allow('http://127.0.0.1:8000') === 'http://127.0.0.1:8000');
+
+  // other local ports are not: this is the dev server's port, not a blanket
+  check('http://localhost:3000 is refused', await allow('http://localhost:3000') === null);
+  check('http://localhost (no port) is refused', await allow('http://localhost') === null);
+  check('http://127.0.0.1:5173 is refused', await allow('http://127.0.0.1:5173') === null);
+
+  // a host that only looks local must not get through
+  check('http://localhost.example.com:8000 is refused', await allow('http://localhost.example.com:8000') === null);
+  check('http://127.0.0.1.example.com:8000 is refused', await allow('http://127.0.0.1.example.com:8000') === null);
+  check('https://localhost:8000 is refused, http only', await allow('https://localhost:8000') === null);
+  check('an unrelated origin is still refused', await allow('https://evil.example') === null);
+  check('no Origin header gets no CORS header', await allow('') === null);
+
+  // every portal route, not just the login one
+  for (const path of ['/portal-login', '/portal-session', '/portal-logout', '/portal-download', '/portal-directory']) {
+    check(path + ' answers the local preflight',
+      (await ask('http://localhost:8000', path)).status === 204 &&
+      await allow('http://localhost:8000', path) === 'http://localhost:8000');
+  }
+
+  // and a real POST from the dev server carries the header too
+  const posted = await ask('http://localhost:8000', '/portal-login', 'POST');
+  check('a POST from the dev server gets the header as well',
+    posted.headers.get('Access-Control-Allow-Origin') === 'http://localhost:8000',
+    posted.headers.get('Access-Control-Allow-Origin'));
+  check('and still answers normally', posted.status === 200, posted.status);
+}
+
 if (fail) {
   console.error(`\n${fail} portal login test(s) failed.`);
   process.exit(1);
