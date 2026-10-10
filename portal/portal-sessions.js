@@ -21,15 +21,6 @@
   var L = window.TRLive;
   if (!L) return;
 
-  /* The accelerator page's themes, keyed by week. A week with no theme here
-     (week 0, "Start here") falls back to its own title from the payload. */
-  var THEMES = {
-    1: 'Open Business Surgery',
-    2: 'Your AI Operating System',
-    3: 'Storytelling for GTM',
-    4: 'Unfair AI Advantage'
-  };
-
   var ALL_SESSIONS_URL = 'https://cal.ae/z0j4nlqbgt6b';
 
   var BTN_PRIMARY = 'inline-flex items-center justify-center px-5 py-2.5 rounded-full bg-brand-deep ' +
@@ -205,6 +196,15 @@
 
   /* ---- a week card ------------------------------------------------------ */
 
+  // "Week 1: Diagnose and train" -> "Diagnose and train". A title that is only
+  // the prefix, or no title at all, leaves the card with its label alone.
+  function weekName(title, n) {
+    var name = L.str(title).replace(/^\s*week\s*0*\d+\s*[:.–-]\s*/i, '').trim();
+    if (!name) return '';
+    if (name.toLowerCase() === 'week ' + n) return '';
+    return name;
+  }
+
   function weekCard(data, weekId, list) {
     var card = L.el('li', 'glass-card is-static trp-wkcard');
 
@@ -213,14 +213,19 @@
     var label = n === 0 ? 'Start here' : 'Week ' + (n < 10 ? '0' + n : n);
     head.appendChild(L.el('p', 'trp-tag', label));
 
-    var theme = THEMES[n];
-    if (!theme) {
-      var wk = L.weeks(data).filter(function (w) { return L.num(w && w.id) === n; })[0];
-      theme = (wk && L.str(wk.title)) || (n === 0 ? 'Start here' : 'Week ' + n);
-    }
+    // The week's own name, from the payload. It used to come from a map in
+    // this file whose values were the first session title of each week, so
+    // every card said the same words twice: once as the heading and again in
+    // the first row.
+    //
+    // The stored titles read "Week 1: Diagnose and train". The label beside
+    // it already says WEEK 01, so the prefix comes off.
+    var wk = L.weeks(data).filter(function (w) { return L.num(w && w.id) === n; })[0];
+    var theme = weekName(wk && wk.title, n);
+
     // Week 0's label and its title are both "Start here", so showing both
     // just says it twice.
-    if (L.str(theme).toLowerCase() !== label.toLowerCase()) {
+    if (theme && theme.toLowerCase() !== label.toLowerCase()) {
       head.appendChild(L.el('h2', 'trp-wkcard-theme', theme));
     }
     card.appendChild(head);

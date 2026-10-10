@@ -15,6 +15,11 @@
    beat the browser's own [hidden] rule. */
 [data-portal-members-link][hidden] { display: none !important; }
 
+/* The first time, before the Worker has answered, the link keeps its box but
+   paints nothing. The top nav is centred, so a fifth link arriving a second
+   late would otherwise shove the other four sideways. */
+[data-portal-members-link][data-pending] { visibility: hidden !important; }
+
 :root {
   --trp-cream:    #FFFCEB;
   --trp-offwhite: #FFFDFB;
