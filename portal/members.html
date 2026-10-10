@@ -1,6 +1,16 @@
 <!DOCTYPE html>
 <html lang="en" class="scroll-smooth" data-trp-gate>
 <head>
+  <script>
+    // Theme, applied before first paint so there is no flash of the wrong one.
+    // "system" follows the device; the CSS reads this attribute.
+    (function () {
+      var t = 'system';
+      try { t = window.localStorage.getItem('tr_portal_theme') || 'system'; } catch (e) {}
+      if (t !== 'light' && t !== 'dark') t = 'system';
+      document.documentElement.setAttribute('data-theme', t);
+    })();
+  </script>
   <meta charset="utf-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <!-- Google tag (gtag.js). The library is fetched once the page is
@@ -118,10 +128,10 @@
     </div>
 
     <nav class="hidden lg:flex items-center gap-1 absolute left-1/2 -translate-x-1/2" aria-label="Portal">
-        <a href="dashboard.html" class="px-3 py-1.5 rounded-full text-xs font-medium text-brand-ink/60 hover:text-brand-ink hover:bg-brand-ink/5 transition-colors">Dashboard</a>
-        <a href="curriculum.html" class="px-3 py-1.5 rounded-full text-xs font-medium text-brand-ink/60 hover:text-brand-ink hover:bg-brand-ink/5 transition-colors">Curriculum</a>
-        <a href="sessions.html" class="px-3 py-1.5 rounded-full text-xs font-medium text-brand-ink/60 hover:text-brand-ink hover:bg-brand-ink/5 transition-colors">Live Sessions</a>
-        <a href="resources.html" class="px-3 py-1.5 rounded-full text-xs font-medium text-brand-ink/60 hover:text-brand-ink hover:bg-brand-ink/5 transition-colors">Resources</a>
+        <a href="dashboard.html" class="px-3 py-1.5 rounded-full text-xs font-medium text-brand-ink/70 hover:text-brand-ink hover:bg-brand-ink/5 transition-colors">Dashboard</a>
+        <a href="curriculum.html" class="px-3 py-1.5 rounded-full text-xs font-medium text-brand-ink/70 hover:text-brand-ink hover:bg-brand-ink/5 transition-colors">Curriculum</a>
+        <a href="sessions.html" class="px-3 py-1.5 rounded-full text-xs font-medium text-brand-ink/70 hover:text-brand-ink hover:bg-brand-ink/5 transition-colors">Live Sessions</a>
+        <a href="resources.html" class="px-3 py-1.5 rounded-full text-xs font-medium text-brand-ink/70 hover:text-brand-ink hover:bg-brand-ink/5 transition-colors">Resources</a>
         <a href="members.html" aria-current="page" class="px-3 py-1.5 rounded-full text-xs font-semibold bg-brand-deep text-brand-bg">Members</a>
     </nav>
 
@@ -130,9 +140,19 @@
            about to start. Stays hidden the rest of the time. -->
       <a data-portal-join hidden class="hidden lg:inline-flex items-center px-3.5 py-1.5 rounded-full bg-brand-ink text-brand-page text-[11px] font-mono font-medium tracking-[0.06em] whitespace-nowrap hover:bg-brand-ink/90 transition-colors"></a>
 
+      <div class="trp-theme">
+        <label class="sr-only" for="theme-members">Theme</label>
+        <select id="theme-members" data-theme-select>
+          <option value="system">System</option>
+          <option value="light">Light</option>
+          <option value="dark">Dark</option>
+        </select>
+        <svg class="trp-theme-caret" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7"></path></svg>
+      </div>
+
       <span data-portal-name class="hidden sm:inline text-xs font-medium text-brand-ink/70 whitespace-nowrap"></span>
 
-      <button type="button" data-portal-signout class="hidden lg:inline-flex text-xs font-medium text-brand-ink/60 hover:text-brand-ink transition-colors">Sign out</button>
+      <button type="button" data-portal-signout class="hidden lg:inline-flex text-xs font-medium text-brand-ink/70 hover:text-brand-ink transition-colors">Sign out</button>
     </div>
   </header>
 
@@ -147,22 +167,27 @@
           <div class="w-full space-y-16 max-w-[1200px]">
           
     <style>
-      /* Time Rich Members. Brand: deep green #2C3422, page #FFFDFA, one
-         pastel accent #CCEEA0, sage #DCDEBF for photo placeholders.
-         Nothing on the page competes with the faces. */
+      /* Time Rich Members. Brand: deep green, cream page, one pastel accent,
+         sage for photo placeholders. Nothing on the page competes with the
+         faces.
+
+         Every colour here reads the theme tokens rather than a hex, so the
+         page follows System / Light / Dark like the rest of the portal. The
+         two exceptions are deliberate: the modal scrim, which is a shadow in
+         both themes, and the text on the lime accent, which is always light. */
       .members-search {
         display: flex;
         align-items: center;
         gap: 10px;
         max-width: 420px;
         padding: 8px 16px;
-        background: #FFFDFA;
-        border: 1px solid rgba(44, 52, 34, 0.14);
+        background: rgb(var(--c-surface));
+        border: 1px solid var(--trp-rule);
         border-radius: 999px;
         transition: box-shadow 0.15s ease, border-color 0.15s ease;
       }
-      .members-search:focus-within { border-color: #2C3422; box-shadow: 0 0 0 4px #CCEEA0; }
-      .members-search svg { width: 16px; height: 16px; color: #4E5840; flex: none; }
+      .members-search:focus-within { border-color: rgb(var(--c-ink)); box-shadow: 0 0 0 4px rgb(var(--c-lime) / .5); }
+      .members-search svg { width: 16px; height: 16px; color: rgb(var(--c-mid)); flex: none; }
       .members-search input {
         flex: 1;
         min-width: 0;
@@ -171,10 +196,10 @@
         box-shadow: none !important;
         outline: none;
         background: transparent;
-        color: #2C3422;
+        color: rgb(var(--c-ink));
         font-size: 14px;
       }
-      .members-search input::placeholder { color: #6B735F; }
+      .members-search input::placeholder { color: rgb(var(--c-muted)); }
       .members-search input::-webkit-search-cancel-button { cursor: pointer; }
 
       .members-grid {
@@ -197,17 +222,17 @@
         padding: 12px 12px 20px;
         text-align: left;
         font: inherit;
-        color: #2C3422;
-        background: #FFFDFA;
-        border: 1px solid rgba(44, 52, 34, 0.08);
+        color: rgb(var(--c-ink));
+        background: rgb(var(--c-surface));
+        border: 1px solid rgb(var(--c-rule) / .12);
         border-radius: 20px;
         cursor: pointer;
         transition: border-color 0.2s ease;
       }
       /* A hairline in the brand green, rather than a drop shadow: the faces
          are the only thing on this page meant to carry weight. */
-      .member-card:hover { border-color: #2C3422; }
-      .member-card:focus-visible { outline: 2px solid #2C3422; outline-offset: 3px; }
+      .member-card:hover { border-color: rgb(var(--c-ink)); }
+      .member-card:focus-visible { outline: 2px solid rgb(var(--c-ink)); outline-offset: 3px; }
 
       /* Square crop in CSS only; faces sit a little above centre. */
       .member-photo,
@@ -216,7 +241,7 @@
         width: 100%;
         aspect-ratio: 1;
         border-radius: 14px;
-        background: #DCDEBF;
+        background: rgb(var(--c-sage));
       }
       .member-photo { object-fit: cover; object-position: center 30%; }
       .member-initials {
@@ -226,7 +251,7 @@
         font-weight: 700;
         font-size: clamp(26px, 5vw, 46px);
         letter-spacing: -0.02em;
-        color: #2C3422;
+        color: rgb(var(--c-ink));
       }
       .member-name { margin: 16px 4px 0; font-family: 'Space Grotesk', sans-serif; font-weight: 600; font-size: 16px; line-height: 1.25; }
       /* Two lines, then an ellipsis, so one long hook cannot set the height
@@ -235,36 +260,36 @@
         margin: 6px 4px 0;
         font-size: 13.5px;
         line-height: 1.4;
-        color: #2C3422;
+        color: rgb(var(--c-ink));
         display: -webkit-box;
         -webkit-box-orient: vertical;
         -webkit-line-clamp: 2;
         line-clamp: 2;
         overflow: hidden;
       }
-      .member-meta { margin: 8px 4px 0; font-family: 'Space Mono', ui-monospace, monospace; font-size: 11px; line-height: 1.45; color: #6B735F; }
+      .member-meta { margin: 8px 4px 0; font-family: 'Space Mono', ui-monospace, monospace; font-size: 11px; line-height: 1.45; color: rgb(var(--c-muted)); }
       @media (max-width: 639px) {
         .member-card { padding: 10px 10px 16px; border-radius: 16px; }
         .member-name { font-size: 14.5px; margin-top: 12px; }
         .member-hook { font-size: 12.5px; }
       }
-      .members-note { margin: 0; font-size: 14px; line-height: 1.6; color: #4E5840; }
+      .members-note { margin: 0; font-size: 14px; line-height: 1.6; color: rgb(var(--c-mid)); }
 
       /* Profile pop-up. Appended to <body> by the script so it sits above the
          portal header, which has its own very high z-index. */
       .member-modal { position: fixed; inset: 0; z-index: 10050; display: grid; place-items: center; padding: 16px; }
       .member-modal[hidden] { display: none; }
-      .member-modal-backdrop { position: absolute; inset: 0; background: rgba(44, 52, 34, 0.55); }
+      .member-modal-backdrop { position: absolute; inset: 0; background: rgba(16, 20, 12, 0.62); }
       .member-modal-panel {
         position: relative;
         width: min(560px, 100%);
         max-height: calc(100dvh - 32px);
         overflow-y: auto;
         padding: 28px;
-        color: #2C3422;
-        background: #FFFDFA;
+        color: rgb(var(--c-ink));
+        background: rgb(var(--c-surface));
         border-radius: 24px;
-        border: 1px solid rgba(66, 75, 54, .20);
+        border: 1px solid var(--trp-rule);
         outline: none;
       }
       .member-modal-close {
@@ -278,12 +303,12 @@
         border: 0;
         border-radius: 999px;
         background: transparent;
-        color: #2C3422;
+        color: rgb(var(--c-ink));
         cursor: pointer;
       }
-      .member-modal-close:hover { background: rgba(44, 52, 34, 0.07); }
+      .member-modal-close:hover { background: rgb(var(--c-ink) / .08); }
       .member-modal-close:focus-visible,
-      .member-modal-panel a:focus-visible { outline: 2px solid #2C3422; outline-offset: 2px; }
+      .member-modal-panel a:focus-visible { outline: 2px solid rgb(var(--c-ink)); outline-offset: 2px; }
       .member-modal-close svg { width: 18px; height: 18px; }
 
       .member-profile-top { display: flex; gap: 18px; align-items: center; padding-right: 36px; }
@@ -291,7 +316,7 @@
       .member-profile-top .member-initials { width: 112px; flex: none; border-radius: 18px; font-size: 38px; }
       .member-profile-name { margin: 0; font-family: 'Space Grotesk', sans-serif; font-weight: 700; font-size: 24px; line-height: 1.2; letter-spacing: -0.01em; }
       .member-profile-hook { margin: 6px 0 0; font-size: 15px; line-height: 1.45; }
-      .member-profile-meta { margin: 8px 0 0; font-family: 'Space Mono', ui-monospace, monospace; font-size: 12px; color: #6B735F; }
+      .member-profile-meta { margin: 8px 0 0; font-family: 'Space Mono', ui-monospace, monospace; font-size: 12px; color: rgb(var(--c-muted)); }
       .member-profile-section { margin-top: 22px; }
       .member-profile-section h3 {
         margin: 0 0 6px;
@@ -300,7 +325,7 @@
         font-weight: 600;
         letter-spacing: 0.12em;
         text-transform: uppercase;
-        color: #6B735F;
+        color: rgb(var(--c-muted));
       }
       .member-profile-section p { margin: 0; font-size: 15px; line-height: 1.6; white-space: pre-line; }
       .member-profile-links { display: flex; flex-wrap: wrap; align-items: center; gap: 10px; margin-top: 26px; }
@@ -311,13 +336,13 @@
         min-height: 44px;
         padding: 0 20px;
         border-radius: 999px;
-        background: #2C3422;
-        color: #FFFDFA;
+        background: rgb(var(--c-ink));
+        color: rgb(var(--c-bg));
         font-weight: 600;
         font-size: 14px;
         text-decoration: none;
       }
-      .member-linkedin:hover { background: #424B36; }
+      .member-linkedin:hover { background: rgb(var(--c-green)); }
       .member-linkedin svg { width: 16px; height: 16px; fill: currentColor; }
       .member-icon-link {
         display: grid;
@@ -325,10 +350,10 @@
         width: 44px;
         height: 44px;
         border-radius: 999px;
-        border: 1px solid rgba(44, 52, 34, 0.14);
-        color: #2C3422;
+        border: 1px solid var(--trp-rule);
+        color: rgb(var(--c-ink));
       }
-      .member-icon-link:hover { background: #CCEEA0; border-color: #CCEEA0; }
+      .member-icon-link:hover { background: rgb(var(--c-lime)); border-color: rgb(var(--c-lime)); color: #2C3422; }
       .member-icon-link svg { width: 18px; height: 18px; }
       @media (max-width: 479px) {
         .member-modal-panel { padding: 22px 18px; border-radius: 20px; }
@@ -365,14 +390,14 @@
   <footer class="shrink-0 px-4 sm:px-6 lg:px-10 py-5 border-t border-brand-ink/10 text-[11px] text-brand-ink/70">
     <p class="flex flex-wrap items-center justify-center gap-x-2 gap-y-1 text-center">
       <span>Need help? <a href="mailto:emc@timerich.ai" class="hover:text-brand-ink transition-colors">emc@timerich.ai</a></span>
-      <span aria-hidden="true" class="text-brand-ink/25">&middot;</span>
+      <span aria-hidden="true" class="text-brand-ink/70">&middot;</span>
       <!-- Href comes from the week 0 link item; hidden when there is none. -->
       <a data-portal-community hidden class="hover:text-brand-ink transition-colors">WhatsApp community</a>
-      <span data-portal-community hidden aria-hidden="true" class="text-brand-ink/25">&middot;</span>
+      <span data-portal-community hidden aria-hidden="true" class="text-brand-ink/70">&middot;</span>
       <a href="/privacy/" class="hover:text-brand-ink transition-colors">Privacy</a>
-      <span aria-hidden="true" class="text-brand-ink/25">&middot;</span>
+      <span aria-hidden="true" class="text-brand-ink/70">&middot;</span>
       <a href="/terms/" class="hover:text-brand-ink transition-colors">Terms</a>
-      <span aria-hidden="true" class="text-brand-ink/25">&middot;</span>
+      <span aria-hidden="true" class="text-brand-ink/70">&middot;</span>
       <span>&copy; 2026 Time Rich</span>
     </p>
   </footer>
@@ -819,6 +844,28 @@
   </script>
 
 
+
+  <script>
+    // Keeps every theme control on the page in step with what was stored,
+    // and writes the choice back. The attribute itself is set in <head>.
+    (function () {
+      var KEY = 'tr_portal_theme';
+      var selects = document.querySelectorAll('[data-theme-select]');
+      if (!selects.length) return;
+
+      var current = document.documentElement.getAttribute('data-theme') || 'system';
+      Array.prototype.forEach.call(selects, function (sel) {
+        sel.value = current;
+        sel.addEventListener('change', function () {
+          var value = sel.value === 'light' || sel.value === 'dark' ? sel.value : 'system';
+          document.documentElement.setAttribute('data-theme', value);
+          try { window.localStorage.setItem(KEY, value); } catch (e) { /* choice lasts the session */ }
+          // any other control on the page follows
+          Array.prototype.forEach.call(selects, function (other) { other.value = value; });
+        });
+      });
+    })();
+  </script>
 
 </body>
 </html>

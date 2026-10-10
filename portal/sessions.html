@@ -1,6 +1,16 @@
 <!DOCTYPE html>
 <html lang="en" class="scroll-smooth" data-trp-gate>
 <head>
+  <script>
+    // Theme, applied before first paint so there is no flash of the wrong one.
+    // "system" follows the device; the CSS reads this attribute.
+    (function () {
+      var t = 'system';
+      try { t = window.localStorage.getItem('tr_portal_theme') || 'system'; } catch (e) {}
+      if (t !== 'light' && t !== 'dark') t = 'system';
+      document.documentElement.setAttribute('data-theme', t);
+    })();
+  </script>
   <meta charset="utf-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <!-- Google tag (gtag.js). The library is fetched once the page is
@@ -119,11 +129,11 @@
     </div>
 
     <nav class="hidden lg:flex items-center gap-1 absolute left-1/2 -translate-x-1/2" aria-label="Portal">
-        <a href="dashboard.html" class="px-3 py-1.5 rounded-full text-xs font-medium text-brand-ink/60 hover:text-brand-ink hover:bg-brand-ink/5 transition-colors">Dashboard</a>
-        <a href="curriculum.html" class="px-3 py-1.5 rounded-full text-xs font-medium text-brand-ink/60 hover:text-brand-ink hover:bg-brand-ink/5 transition-colors">Curriculum</a>
+        <a href="dashboard.html" class="px-3 py-1.5 rounded-full text-xs font-medium text-brand-ink/70 hover:text-brand-ink hover:bg-brand-ink/5 transition-colors">Dashboard</a>
+        <a href="curriculum.html" class="px-3 py-1.5 rounded-full text-xs font-medium text-brand-ink/70 hover:text-brand-ink hover:bg-brand-ink/5 transition-colors">Curriculum</a>
         <a href="sessions.html" aria-current="page" class="px-3 py-1.5 rounded-full text-xs font-semibold bg-brand-deep text-brand-bg">Live Sessions</a>
-        <a href="resources.html" class="px-3 py-1.5 rounded-full text-xs font-medium text-brand-ink/60 hover:text-brand-ink hover:bg-brand-ink/5 transition-colors">Resources</a>
-        <a href="members.html" data-portal-members-link hidden class="px-3 py-1.5 rounded-full text-xs font-medium text-brand-ink/60 hover:text-brand-ink hover:bg-brand-ink/5 transition-colors">Members</a>
+        <a href="resources.html" class="px-3 py-1.5 rounded-full text-xs font-medium text-brand-ink/70 hover:text-brand-ink hover:bg-brand-ink/5 transition-colors">Resources</a>
+        <a href="members.html" data-portal-members-link hidden class="px-3 py-1.5 rounded-full text-xs font-medium text-brand-ink/70 hover:text-brand-ink hover:bg-brand-ink/5 transition-colors">Members</a>
     </nav>
 
     <div class="flex items-center gap-2 sm:gap-4 shrink-0">
@@ -131,9 +141,19 @@
            about to start. Stays hidden the rest of the time. -->
       <a data-portal-join hidden class="hidden lg:inline-flex items-center px-3.5 py-1.5 rounded-full bg-brand-ink text-brand-page text-[11px] font-mono font-medium tracking-[0.06em] whitespace-nowrap hover:bg-brand-ink/90 transition-colors"></a>
 
+      <div class="trp-theme">
+        <label class="sr-only" for="theme-sessions">Theme</label>
+        <select id="theme-sessions" data-theme-select>
+          <option value="system">System</option>
+          <option value="light">Light</option>
+          <option value="dark">Dark</option>
+        </select>
+        <svg class="trp-theme-caret" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7"></path></svg>
+      </div>
+
       <span data-portal-name class="hidden sm:inline text-xs font-medium text-brand-ink/70 whitespace-nowrap"></span>
 
-      <button type="button" data-portal-signout class="hidden lg:inline-flex text-xs font-medium text-brand-ink/60 hover:text-brand-ink transition-colors">Sign out</button>
+      <button type="button" data-portal-signout class="hidden lg:inline-flex text-xs font-medium text-brand-ink/70 hover:text-brand-ink transition-colors">Sign out</button>
     </div>
   </header>
 
@@ -171,14 +191,14 @@
   <footer class="shrink-0 px-4 sm:px-6 lg:px-10 py-5 border-t border-brand-ink/10 text-[11px] text-brand-ink/70">
     <p class="flex flex-wrap items-center justify-center gap-x-2 gap-y-1 text-center">
       <span>Need help? <a href="mailto:emc@timerich.ai" class="hover:text-brand-ink transition-colors">emc@timerich.ai</a></span>
-      <span aria-hidden="true" class="text-brand-ink/25">&middot;</span>
+      <span aria-hidden="true" class="text-brand-ink/70">&middot;</span>
       <!-- Href comes from the week 0 link item; hidden when there is none. -->
       <a data-portal-community hidden class="hover:text-brand-ink transition-colors">WhatsApp community</a>
-      <span data-portal-community hidden aria-hidden="true" class="text-brand-ink/25">&middot;</span>
+      <span data-portal-community hidden aria-hidden="true" class="text-brand-ink/70">&middot;</span>
       <a href="/privacy/" class="hover:text-brand-ink transition-colors">Privacy</a>
-      <span aria-hidden="true" class="text-brand-ink/25">&middot;</span>
+      <span aria-hidden="true" class="text-brand-ink/70">&middot;</span>
       <a href="/terms/" class="hover:text-brand-ink transition-colors">Terms</a>
-      <span aria-hidden="true" class="text-brand-ink/25">&middot;</span>
+      <span aria-hidden="true" class="text-brand-ink/70">&middot;</span>
       <span>&copy; 2026 Time Rich</span>
     </p>
   </footer>
@@ -301,6 +321,28 @@
     })();
   </script>
 
+
+  <script>
+    // Keeps every theme control on the page in step with what was stored,
+    // and writes the choice back. The attribute itself is set in <head>.
+    (function () {
+      var KEY = 'tr_portal_theme';
+      var selects = document.querySelectorAll('[data-theme-select]');
+      if (!selects.length) return;
+
+      var current = document.documentElement.getAttribute('data-theme') || 'system';
+      Array.prototype.forEach.call(selects, function (sel) {
+        sel.value = current;
+        sel.addEventListener('change', function () {
+          var value = sel.value === 'light' || sel.value === 'dark' ? sel.value : 'system';
+          document.documentElement.setAttribute('data-theme', value);
+          try { window.localStorage.setItem(KEY, value); } catch (e) { /* choice lasts the session */ }
+          // any other control on the page follows
+          Array.prototype.forEach.call(selects, function (other) { other.value = value; });
+        });
+      });
+    })();
+  </script>
 
 </body>
 </html>

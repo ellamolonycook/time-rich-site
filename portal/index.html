@@ -1,6 +1,16 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+  <script>
+    // Theme, applied before first paint so there is no flash of the wrong one.
+    // "system" follows the device; the CSS reads this attribute.
+    (function () {
+      var t = 'system';
+      try { t = window.localStorage.getItem('tr_portal_theme') || 'system'; } catch (e) {}
+      if (t !== 'light' && t !== 'dark') t = 'system';
+      document.documentElement.setAttribute('data-theme', t);
+    })();
+  </script>
   <meta charset="utf-8"/>
   <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
   <!-- Google tag (gtag.js). The library is fetched once the page is
@@ -55,9 +65,9 @@
     html, body { margin: 0; }
     body {
       font-family: "Inter", ui-sans-serif, system-ui, sans-serif;
-      color: #2C3422;
+      color: rgb(var(--c-ink));
     }
-    *:focus-visible { outline: 2px solid #2C3422; outline-offset: 2px; }
+    *:focus-visible { outline: 2px solid rgb(var(--c-ink)); outline-offset: 2px; }
 
     /* One underlined field. The padding on the right keeps a long code from
        running under the eye button. */
@@ -65,24 +75,24 @@
       width: 100%;
       padding: 10px 44px 10px 0;
       border: 0;
-      border-bottom: 1px solid rgba(44, 52, 34, 0.2);
+      border-bottom: 1px solid var(--trp-rule);
       border-radius: 0;
       background: transparent;
-      color: #2C3422;
+      color: rgb(var(--c-ink));
       font-family: "Space Grotesk", sans-serif;
       font-size: 16px;      /* under 16px iOS zooms the page in on focus */
       font-weight: 500;
       letter-spacing: 0.02em;
       transition: border-color 0.15s ease;
     }
-    .trp-code::placeholder { color: #8A9279; font-weight: 400; letter-spacing: 0; }
-    .trp-code:focus { outline: none; border-bottom-color: #2C3422; }
+    .trp-code::placeholder { color: rgb(var(--c-dim)); font-weight: 400; letter-spacing: 0; }
+    .trp-code:focus { outline: none; border-bottom-color: rgb(var(--c-ink)); }
     /* Chrome paints an autofilled field a hard blue. */
     .trp-code:-webkit-autofill,
     .trp-code:-webkit-autofill:hover,
     .trp-code:-webkit-autofill:focus {
-      -webkit-box-shadow: 0 0 0 30px #FFFDFA inset !important;
-      -webkit-text-fill-color: #2C3422 !important;
+      -webkit-box-shadow: 0 0 0 30px rgb(var(--c-surface)) inset !important;
+      -webkit-text-fill-color: rgb(var(--c-ink)) !important;
       transition: background-color 5000s ease-in-out 0s;
     }
 
@@ -96,11 +106,23 @@
 
 </head>
 
-<body class="min-h-screen flex items-center justify-center px-5 py-10">
+<body class="min-h-screen flex items-center justify-center px-5 py-10 relative">
+  <!-- No portal header on this page, so the theme control sits in the corner.
+       Same markup and same wiring as the one in the header elsewhere. -->
+  <div class="trp-theme absolute top-4 right-4 sm:top-6 sm:right-6">
+    <label class="sr-only" for="theme-signin">Theme</label>
+    <select id="theme-signin" data-theme-select>
+      <option value="system">System</option>
+      <option value="light">Light</option>
+      <option value="dark">Dark</option>
+    </select>
+    <svg class="trp-theme-caret" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7"></path></svg>
+  </div>
+
 
   <main class="w-full max-w-[400px]">
 
-    <div class="rounded-[24px] border border-brand-ink/10 bg-white px-6 py-8 sm:px-9 sm:py-10">
+    <div class="rounded-[24px] border border-brand-ink/10 bg-brand-surface px-6 py-8 sm:px-9 sm:py-10">
 
       <a href="/" class="inline-flex items-baseline text-[21px] font-display font-bold tracking-tight text-brand-ink rounded">
         Time Rich<span class="text-brand-olive">.</span>
@@ -135,7 +157,7 @@
         </div>
 
         <p data-portal-error role="alert" aria-live="polite"
-           class="mt-3 min-h-[1.25rem] text-[13px] text-[#8A2B2B]"></p>
+           class="mt-3 min-h-[1.25rem] text-[13px] text-brand-error"></p>
 
         <button type="submit"
                 class="mt-5 w-full rounded-full bg-brand-ink px-6 py-3.5 text-[13px] font-semibold tracking-[0.02em] text-brand-page hover:bg-brand-ink/90 active:scale-[0.99] transition-all">
@@ -144,7 +166,7 @@
 
       </form>
 
-      <p class="mt-7 text-[13px] text-brand-ink/60">
+      <p class="mt-7 text-[13px] text-brand-ink/70">
         Not sure which email?
         <a href="mailto:emc@timerich.ai" class="text-brand-ink underline underline-offset-2 decoration-brand-ink/25 hover:decoration-brand-ink transition-colors">Email emc@timerich.ai</a>
       </p>
@@ -261,6 +283,27 @@
             // tab, and a click must never end on a page left faded out.
             setTimeout(go, FADE_MS + 250);
           });
+        });
+      });
+    })();
+  </script>
+
+  <script>
+    // Keeps every theme control on the page in step with what was stored,
+    // and writes the choice back. The attribute itself is set in <head>.
+    (function () {
+      var KEY = 'tr_portal_theme';
+      var selects = document.querySelectorAll('[data-theme-select]');
+      if (!selects.length) return;
+
+      var current = document.documentElement.getAttribute('data-theme') || 'system';
+      Array.prototype.forEach.call(selects, function (sel) {
+        sel.value = current;
+        sel.addEventListener('change', function () {
+          var value = sel.value === 'light' || sel.value === 'dark' ? sel.value : 'system';
+          document.documentElement.setAttribute('data-theme', value);
+          try { window.localStorage.setItem(KEY, value); } catch (e) { /* choice lasts the session */ }
+          Array.prototype.forEach.call(selects, function (other) { other.value = value; });
         });
       });
     })();

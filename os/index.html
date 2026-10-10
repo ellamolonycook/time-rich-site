@@ -322,6 +322,9 @@
     }
 
     .steps { display: grid; gap: 12px; }
+    /* the two routes under step 3 */
+    .setup-routes { margin-top: 16px; }
+    .step .fine { margin-top: 6px; }
     .step {
       display: grid;
       grid-template-columns: auto 1fr;
@@ -506,6 +509,7 @@
         Time Rich
       </a>
       <nav class="nav-links" id="navlinks" aria-label="On this page">
+        <a href="#setup">Setup</a>
         <a href="#included">Tools</a>
         <a href="#skills">Skills</a>
         <a href="#prompts">Prompts</a>
@@ -534,6 +538,67 @@
         <p class="eyebrow">Time Rich OS</p>
         <h1>Time Rich Content OS</h1>
         <p class="lede">One hub for the skills, prompts, tools and workshops behind your content. Pick what you need, see where it fits, and use it with the way you already work.</p>
+      </div>
+    </section>
+
+    <section id="setup">
+      <div class="wrap">
+        <div class="section-head">
+          <p class="eyebrow">Setup</p>
+          <h2>Set up your AI in three steps</h2>
+          <p class="lede">Do these in order. Once your AI can read your Notion and your notes, everything else on this page works better.</p>
+        </div>
+
+        <div class="steps">
+          <div class="step">
+            <div class="num">1</div>
+            <div>
+              <h3>Connect</h3>
+              <p>Connect Notion and your AI notetaker to your AI, so it can read your own pages and your own meetings. <a href="https://join.granola.ai/t/zcp5ejgifv" target="_blank" rel="noopener">Granola</a> is the one we use.</p>
+              <p class="fine">2 months free. It doesn&rsquo;t record video or join your meetings.</p>
+            </div>
+          </div>
+
+          <div class="step">
+            <div class="num">2</div>
+            <div>
+              <h3>Build</h3>
+              <p>Build each page of your Content Hub, so there is one place your AI can go for the answer. <a href="#duplicate">Start with your content context</a>.</p>
+            </div>
+          </div>
+
+          <div class="step">
+            <div class="num">3</div>
+            <div>
+              <h3>Choose your route</h3>
+              <p>Two ways to run it from here. Pick the one that fits how much you want to set up yourself.</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="cards setup-routes">
+          <div class="card">
+            <img class="logo" src="img/stanley.png" alt="" loading="lazy" width="42" height="42"/>
+            <p class="type">Easy setup</p>
+            <h3>Use Stanley</h3>
+            <p>Use Stanley, your AI Head of Content. Scheduling and your tool brain come already connected. Works by SMS, WhatsApp or web.</p>
+            <div class="cta">
+              <a class="btn" href="https://x.getstanley.ai/r/mz4y9g" target="_blank" rel="noopener">Get Stanley</a>
+            </div>
+          </div>
+
+          <div class="card">
+            <div class="icon" aria-hidden="true">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M14.7 6.3a1 1 0 000 1.4l1.6 1.6a1 1 0 001.4 0l3.77-3.77a6 6 0 01-7.94 7.94l-6.91 6.91a2.12 2.12 0 01-3-3l6.91-6.91a6 6 0 017.94-7.94l-3.76 3.76z"/></svg>
+            </div>
+            <p class="type">Build your own</p>
+            <h3>Set it up yourself</h3>
+            <p>Set up your own AI and keep all your context in one Project, then build your scheduled tasks and workflows there.</p>
+            <div class="cta">
+              <a class="btn ghost" href="#duplicate">Start with your context</a>
+            </div>
+          </div>
+        </div>
       </div>
     </section>
 
@@ -709,7 +774,7 @@
           name: "Stanley",
           group: "writing",
           type: "AI head of content",
-          description: "A content calendar, help with LinkedIn writing and email drafts, plus a brain where you can build in your skills. Use it to plan and draft content.",
+          description: "Your AI Head of Content. Works by SMS, WhatsApp or web.",
           cta: "Try Stanley",
           href: "https://x.getstanley.ai/r/mz4y9g",
           logo: "/os/img/stanley.png"
@@ -718,10 +783,19 @@
           name: "Granola",
           group: "notes",
           type: "AI note taker",
-          description: "Captures the conversation, so you can bring the useful notes into your content workflow. Use it before content planning, when the ideas are in a call.",
+          description: "2 months free. It doesn’t record video or join your meetings.",
           cta: "Try Granola",
           href: "https://join.granola.ai/t/zcp5ejgifv",
           logo: "/os/img/granola.png"
+        },
+        {
+          name: "Boardy",
+          group: "network",
+          type: "AI super connector",
+          description: "Your AI super connector. Works by SMS, WhatsApp or call.",
+          cta: "Try Boardy",
+          href: "https://boardy.ai/links/zTblS",
+          icon: "people"
         },
         {
           name: "Fireflies",
@@ -991,6 +1065,7 @@
     const ICONS = {
       template: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" aria-hidden="true"><rect x="4" y="3" width="16" height="18" rx="2"/><path d="M8 8h8M8 12h8M8 16h5"/></svg>',
       skill: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" aria-hidden="true"><path d="M12 3l1.6 5.2L19 10l-5.4 1.8L12 17l-1.6-5.2L5 10l5.4-1.8L12 3z"/><path d="M18 15l.7 2.1L21 18l-2.3.8L18 21l-.7-2.2L15 18l2.3-.9L18 15z"/></svg>',
+      people: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" aria-hidden="true"><circle cx="9" cy="8" r="3.2"/><path d="M3.5 19.5a5.5 5.5 0 0 1 11 0"/><circle cx="17" cy="9.5" r="2.4"/><path d="M15.4 14.6a4.6 4.6 0 0 1 5.1 4.9"/></svg>',
       files: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" aria-hidden="true"><path d="M4 7.5A1.5 1.5 0 0 1 5.5 6H10l2 2h6.5A1.5 1.5 0 0 1 20 9.5v8A1.5 1.5 0 0 1 18.5 19h-13A1.5 1.5 0 0 1 4 17.5v-10z"/></svg>',
       download: '<svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="M12 4v11"/><path d="M7 11l5 5 5-5"/><path d="M5 19h14"/></svg>'
     };
@@ -1042,7 +1117,8 @@
       { id: "video", title: "Video", summary: (n) => `${n} tools for turning recordings into clips and captions.` },
       { id: "writing", title: "Planning and writing", summary: (n) => `${n} tools for planning content and getting first drafts down.` },
       { id: "notes", title: "AI note takers", summary: (n) => `${n} options for capturing your calls. Pick one, you do not need all three.` },
-      { id: "workspace", title: "Workspace and design", summary: (n) => `${n} tools for keeping your work in one place and turning it into visuals.` }
+      { id: "workspace", title: "Workspace and design", summary: (n) => `${n} tools for keeping your work in one place and turning it into visuals.` },
+      { id: "network", title: "People and introductions", summary: (n) => `${n} way to meet the people worth meeting, without working a room.` }
     ];
 
     function renderResources() {

@@ -1,6 +1,16 @@
 <!DOCTYPE html>
 <html lang="en" class="scroll-smooth" data-trp-gate>
 <head>
+  <script>
+    // Theme, applied before first paint so there is no flash of the wrong one.
+    // "system" follows the device; the CSS reads this attribute.
+    (function () {
+      var t = 'system';
+      try { t = window.localStorage.getItem('tr_portal_theme') || 'system'; } catch (e) {}
+      if (t !== 'light' && t !== 'dark') t = 'system';
+      document.documentElement.setAttribute('data-theme', t);
+    })();
+  </script>
   <meta charset="utf-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <!-- Google tag (gtag.js). The library is fetched once the page is
@@ -120,10 +130,10 @@
 
     <nav class="hidden lg:flex items-center gap-1 absolute left-1/2 -translate-x-1/2" aria-label="Portal">
         <a href="dashboard.html" aria-current="page" class="px-3 py-1.5 rounded-full text-xs font-semibold bg-brand-deep text-brand-bg">Dashboard</a>
-        <a href="curriculum.html" class="px-3 py-1.5 rounded-full text-xs font-medium text-brand-ink/60 hover:text-brand-ink hover:bg-brand-ink/5 transition-colors">Curriculum</a>
-        <a href="sessions.html" class="px-3 py-1.5 rounded-full text-xs font-medium text-brand-ink/60 hover:text-brand-ink hover:bg-brand-ink/5 transition-colors">Live Sessions</a>
-        <a href="resources.html" class="px-3 py-1.5 rounded-full text-xs font-medium text-brand-ink/60 hover:text-brand-ink hover:bg-brand-ink/5 transition-colors">Resources</a>
-        <a href="members.html" data-portal-members-link hidden class="px-3 py-1.5 rounded-full text-xs font-medium text-brand-ink/60 hover:text-brand-ink hover:bg-brand-ink/5 transition-colors">Members</a>
+        <a href="curriculum.html" class="px-3 py-1.5 rounded-full text-xs font-medium text-brand-ink/70 hover:text-brand-ink hover:bg-brand-ink/5 transition-colors">Curriculum</a>
+        <a href="sessions.html" class="px-3 py-1.5 rounded-full text-xs font-medium text-brand-ink/70 hover:text-brand-ink hover:bg-brand-ink/5 transition-colors">Live Sessions</a>
+        <a href="resources.html" class="px-3 py-1.5 rounded-full text-xs font-medium text-brand-ink/70 hover:text-brand-ink hover:bg-brand-ink/5 transition-colors">Resources</a>
+        <a href="members.html" data-portal-members-link hidden class="px-3 py-1.5 rounded-full text-xs font-medium text-brand-ink/70 hover:text-brand-ink hover:bg-brand-ink/5 transition-colors">Members</a>
     </nav>
 
     <div class="flex items-center gap-2 sm:gap-4 shrink-0">
@@ -131,9 +141,19 @@
            about to start. Stays hidden the rest of the time. -->
       <a data-portal-join hidden class="hidden lg:inline-flex items-center px-3.5 py-1.5 rounded-full bg-brand-ink text-brand-page text-[11px] font-mono font-medium tracking-[0.06em] whitespace-nowrap hover:bg-brand-ink/90 transition-colors"></a>
 
+      <div class="trp-theme">
+        <label class="sr-only" for="theme-dashboard">Theme</label>
+        <select id="theme-dashboard" data-theme-select>
+          <option value="system">System</option>
+          <option value="light">Light</option>
+          <option value="dark">Dark</option>
+        </select>
+        <svg class="trp-theme-caret" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7"></path></svg>
+      </div>
+
       <span data-portal-name class="hidden sm:inline text-xs font-medium text-brand-ink/70 whitespace-nowrap"></span>
 
-      <button type="button" data-portal-signout class="hidden lg:inline-flex text-xs font-medium text-brand-ink/60 hover:text-brand-ink transition-colors">Sign out</button>
+      <button type="button" data-portal-signout class="hidden lg:inline-flex text-xs font-medium text-brand-ink/70 hover:text-brand-ink transition-colors">Sign out</button>
     </div>
   </header>
 
@@ -168,21 +188,21 @@
             <div id="magnet-area" class="relative flex-none w-full md:w-[28rem] flex items-center justify-center z-10 cursor-pointer lg:ml-auto mt-8 lg:mt-0" style="perspective: 1000px;">
               <!-- Floating Glass Panel -->
               <div class="z-10 relative w-full flex items-center justify-center pointer-events-none">
-                <div id="magnet-card" class="group relative w-full max-w-[24rem] sm:max-w-[26rem] aspect-video bg-white/40 border border-white/60 rounded-[14px] flex flex-col overflow-hidden pointer-events-auto" style="transition: transform 0.15s ease;">
+                <div id="magnet-card" class="group relative w-full max-w-[24rem] sm:max-w-[26rem] aspect-video bg-brand-surface/40 border border-brand-surface/60 rounded-[14px] flex flex-col overflow-hidden pointer-events-auto" style="transition: transform 0.15s ease;">
                   <video id="promo-video" loop muted playsinline poster="../accelerator/accelerator-promo-poster.jpg" class="absolute inset-0 w-full h-full object-contain opacity-100 z-0">
     <source src="assets/accelerator-promo.mp4" type="video/mp4">
     </video>
     
     
     <div class="absolute inset-0 z-[9999] flex items-center justify-center pointer-events-none" style="transform: translateZ(10px);">
-    <button id="promo-play-btn" class="w-12 h-12 rounded-full bg-black/50 hover:bg-black/70 text-white flex items-center justify-center transition-all hover:scale-110 cursor-pointer pointer-events-auto" aria-label="Toggle Play">
+    <button id="promo-play-btn" class="w-12 h-12 rounded-full bg-black/50 hover:bg-black/70 text-brand-bg flex items-center justify-center transition-all hover:scale-110 cursor-pointer pointer-events-auto" aria-label="Toggle Play">
     <svg id="icon-play" class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z" /></svg>
     <svg id="icon-pause" class="w-6 h-6 hidden" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M10 9v6m4-6v6" /></svg>
     </button>
     </div>
   <!-- Video Controls -->
     <div class="absolute bottom-6 left-6 z-[9999] flex gap-2" style="transform: translateZ(10px);">
-    <button id="promo-mute-btn" class="w-8 h-8 rounded-full bg-black/50 hover:bg-black/70 text-white flex items-center justify-center transition-all hover:scale-110 cursor-pointer pointer-events-auto" aria-label="Toggle Mute">
+    <button id="promo-mute-btn" class="w-8 h-8 rounded-full bg-black/50 hover:bg-black/70 text-brand-bg flex items-center justify-center transition-all hover:scale-110 cursor-pointer pointer-events-auto" aria-label="Toggle Mute">
     <svg id="icon-muted" class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M5.586 15H4a1 1 0 01-1-1v-4a1 1 0 011-1h1.586l4.707-4.707C10.923 3.663 12 4.109 12 5v14c0 .891-1.077 1.337-1.707.707L5.586 15z" /><path stroke-linecap="round" stroke-linejoin="round" d="M17 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2" /></svg>
     <svg id="icon-unmuted" class="w-4 h-4 hidden" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M15.536 8.464a5 5 0 010 7.072m2.828-9.9a9 9 0 010 12.728M5.586 15H4a1 1 0 01-1-1v-4a1 1 0 011-1h1.586l4.707-4.707C10.923 3.663 12 4.109 12 5v14c0 .891-1.077 1.337-1.707.707L5.586 15z" /></svg>
     </button>
@@ -200,6 +220,79 @@
           <!-- THE NEXT ACTION. The first thing under the header: the next
                live session and its Join button. Hidden until there is one. -->
           <div data-dash-next class="glass-card is-static p-8 flex flex-col" hidden></div>
+
+          <!-- CONNECT YOUR NOTION. Two accordions on <details>, so the open
+               and close behaviour, the keyboard handling and in-page search
+               all come from the browser rather than from script. -->
+          <section class="glass-card is-static trp-connect" aria-labelledby="connect-heading">
+            <p class="trp-tag">Setup</p>
+            <h2 id="connect-heading" class="trp-connect-title">Connect your Notion to your AI</h2>
+            <p class="trp-connect-lede">Point your AI at your own pages once, and it stops guessing. Pick the tool you use.</p>
+
+            <details class="trp-acc">
+              <summary class="trp-acc-head">
+                <span class="trp-acc-title">In Claude</span>
+                <svg class="trp-acc-caret" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7"></path></svg>
+              </summary>
+              <div class="trp-acc-body">
+                <ol class="trp-acc-steps">
+                  <li>Open your Business Hub project.</li>
+                  <li>Go to Context.</li>
+                  <li>Choose Add, then Notion.</li>
+                  <li>Search for each page, or paste its link.</li>
+                  <li>Add it.</li>
+                </ol>
+                <!-- The file itself is cropped to the Context dialog. Nothing
+                     here hides any part of it. -->
+                <figure class="trp-acc-figure" data-shot>
+                  <img src="img/claude-notion-context.png"
+                       alt="The Context dialog in Claude, with Notion pages being added."
+                       loading="lazy" decoding="async"
+                       onerror="this.closest('[data-shot]').hidden = true"/>
+                </figure>
+              </div>
+            </details>
+
+            <details class="trp-acc">
+              <summary class="trp-acc-head">
+                <span class="trp-acc-title">In Grok Bot</span>
+                <svg class="trp-acc-caret" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7"></path></svg>
+              </summary>
+              <div class="trp-acc-body">
+                <ol class="trp-acc-steps">
+                  <li>Open Grok Bot.</li>
+                  <li>Paste the prompt below, with your own page links in place of the brackets.</li>
+                  <li>Check it confirms it can open all 8.</li>
+                </ol>
+
+                <div class="trp-copybox">
+                  <div class="trp-copybox-head">
+                    <span class="trp-tag">The prompt</span>
+                    <button type="button" class="trp-copy" data-copy-target="grok-prompt">Copy</button>
+                  </div>
+                  <pre id="grok-prompt" class="trp-copybox-text">Save this as standing context. Read these Notion pages live before any task. They are the source of truth:
+1. Business COMPASS: [paste your link]
+2. Content Hub: [paste your link]
+3. Content Library: [paste your link]
+4. Content Strategy: [paste your link]
+5. Ideas + Story Bank: [paste your link]
+6. Distribution Channels: [paste your link]
+7. Marketing Avenues: [paste your link]
+8. Customer insights: [paste your link]
+Confirm you can open all 8.</pre>
+                </div>
+
+                <figure class="trp-acc-figure" data-shot>
+                  <img src="img/grok-standing-context.png"
+                       alt="Grok Bot confirming it can open all eight Notion pages."
+                       loading="lazy" decoding="async"
+                       onerror="this.closest('[data-shot]').hidden = true"/>
+                </figure>
+              </div>
+            </details>
+
+            <p class="trp-connect-note">Use the links from your own duplicated workbook, not ours.</p>
+          </section>
 
           <!-- Everything below is drawn from portal_get. A block with no data
                hides itself rather than showing a placeholder. -->
@@ -223,14 +316,14 @@
   <footer class="shrink-0 px-4 sm:px-6 lg:px-10 py-5 border-t border-brand-ink/10 text-[11px] text-brand-ink/70">
     <p class="flex flex-wrap items-center justify-center gap-x-2 gap-y-1 text-center">
       <span>Need help? <a href="mailto:emc@timerich.ai" class="hover:text-brand-ink transition-colors">emc@timerich.ai</a></span>
-      <span aria-hidden="true" class="text-brand-ink/25">&middot;</span>
+      <span aria-hidden="true" class="text-brand-ink/70">&middot;</span>
       <!-- Href comes from the week 0 link item; hidden when there is none. -->
       <a data-portal-community hidden class="hover:text-brand-ink transition-colors">WhatsApp community</a>
-      <span data-portal-community hidden aria-hidden="true" class="text-brand-ink/25">&middot;</span>
+      <span data-portal-community hidden aria-hidden="true" class="text-brand-ink/70">&middot;</span>
       <a href="/privacy/" class="hover:text-brand-ink transition-colors">Privacy</a>
-      <span aria-hidden="true" class="text-brand-ink/25">&middot;</span>
+      <span aria-hidden="true" class="text-brand-ink/70">&middot;</span>
       <a href="/terms/" class="hover:text-brand-ink transition-colors">Terms</a>
-      <span aria-hidden="true" class="text-brand-ink/25">&middot;</span>
+      <span aria-hidden="true" class="text-brand-ink/70">&middot;</span>
       <span>&copy; 2026 Time Rich</span>
     </p>
   </footer>
@@ -363,11 +456,11 @@
       if (!L) return;
 
       var CARD_H3 = 'text-2xl font-bold text-brand-deep mb-3';
-      var EYEBROW = 'text-[10px] font-mono tracking-[0.2em] uppercase text-brand-deep/60 font-bold';
+      var EYEBROW = 'text-[10px] font-mono tracking-[0.2em] uppercase text-brand-deep/80 font-bold';
       var META    = 'text-sm text-brand-mid font-medium';
       var BODY    = 'text-sm text-brand-mid leading-relaxed';
       var BTN     = 'inline-flex items-center justify-center gap-2 px-5 py-2.5 rounded-full text-xs font-bold ' +
-                    'bg-brand-deep text-white hover:bg-brand-green transition-colors';
+                    'bg-brand-deep text-brand-bg hover:bg-brand-green transition-colors';
       var BTN2    = 'inline-flex items-center justify-center gap-2 px-5 py-2.5 rounded-full text-xs font-semibold ' +
                     'bg-brand-sagelt/60 text-brand-deep hover:bg-brand-sagelt transition-colors';
 
@@ -457,6 +550,72 @@
         var week = document.querySelector('[data-dash-week]');
         if (next) renderNext(next, data);
         if (week) renderWeek(week, data);
+      });
+    })();
+  </script>
+
+  <script>
+    // Copy the standing-context prompt. Falls back to a selection when the
+    // clipboard API is not there, so the button is never a dead end.
+    (function () {
+      var buttons = document.querySelectorAll('[data-copy-target]');
+      if (!buttons.length) return;
+
+      Array.prototype.forEach.call(buttons, function (btn) {
+        var idle = btn.textContent;
+        var timer = null;
+
+        function say(word) {
+          btn.textContent = word;
+          if (timer) window.clearTimeout(timer);
+          timer = window.setTimeout(function () { btn.textContent = idle; }, 1600);
+        }
+
+        btn.addEventListener('click', function () {
+          var source = document.getElementById(btn.getAttribute('data-copy-target'));
+          if (!source) return;
+          var text = source.textContent;
+
+          if (navigator.clipboard && navigator.clipboard.writeText) {
+            navigator.clipboard.writeText(text).then(function () { say('Copied'); },
+                                                     function () { select(source); say('Press Ctrl+C'); });
+            return;
+          }
+          select(source);
+          say('Press Ctrl+C');
+        });
+      });
+
+      function select(node) {
+        try {
+          var range = document.createRange();
+          range.selectNodeContents(node);
+          var sel = window.getSelection();
+          sel.removeAllRanges();
+          sel.addRange(range);
+        } catch (e) { /* nothing more we can do */ }
+      }
+    })();
+  </script>
+
+  <script>
+    // Keeps every theme control on the page in step with what was stored,
+    // and writes the choice back. The attribute itself is set in <head>.
+    (function () {
+      var KEY = 'tr_portal_theme';
+      var selects = document.querySelectorAll('[data-theme-select]');
+      if (!selects.length) return;
+
+      var current = document.documentElement.getAttribute('data-theme') || 'system';
+      Array.prototype.forEach.call(selects, function (sel) {
+        sel.value = current;
+        sel.addEventListener('change', function () {
+          var value = sel.value === 'light' || sel.value === 'dark' ? sel.value : 'system';
+          document.documentElement.setAttribute('data-theme', value);
+          try { window.localStorage.setItem(KEY, value); } catch (e) { /* choice lasts the session */ }
+          // any other control on the page follows
+          Array.prototype.forEach.call(selects, function (other) { other.value = value; });
+        });
       });
     })();
   </script>

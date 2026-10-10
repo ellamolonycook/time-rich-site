@@ -19,17 +19,59 @@
    =========================================================================== */
 
 @layer base {
+  /* ---- the palette ------------------------------------------------------
+     Two themes from one set of names. Every value is a space-separated RGB
+     triplet so Tailwind's /opacity modifiers keep working: see the `colors`
+     block in tailwind.config.js, which reads these.
+
+     The dark theme is not a filter over the light one. It swaps the two
+     families: what was ink becomes paper and what was paper becomes ink.
+     That is why `bg-brand-deep text-brand-bg`, which is every primary
+     button in the portal, comes out correctly inverted on its own.
+
+     Colours are the brand ones: deep green ground, cream type, lime accent.
+     ---------------------------------------------------------------------- */
   :root {
-    /* Lifted from :root in accelerator/index.html. */
-    --trp-bg: theme('colors.brand.bg');        /* --bg       #FFFDFB */
-    --trp-panel: #D8D9B9;                      /* --panel    the card fill */
-    --trp-rule: rgba(66, 75, 54, .20);         /* --line     the card border */
-    --trp-rule-2: rgba(66, 75, 54, .42);       /* .tier:hover border */
-    --trp-text: #424B36;                       /* --text     body copy */
-    --trp-muted: #5B6449;                      /* --muted */
-    --trp-dim: #7E8768;                        /* --dim */
-    --trp-ink: #333A28;                       /* --green-deep  headings */
-    --trp-accent: #67762E;                       /* --lime     small labels */
+    /* paper */
+    --c-bg: 255 253 251;          /* #FFFDFB  the accelerator's --bg */
+    --c-page: 255 253 250;        /* #FFFDFA */
+    --c-offwhite: 255 253 251;    /* #FFFDFB */
+    --c-cream: 255 252 235;       /* #FFFCEB */
+    --c-surface: 255 255 255;     /* a card raised off the page */
+    /* surfaces */
+    --c-sage: 220 222 191;        /* #DCDEBF */
+    --c-sagelt: 233 234 213;      /* #E9EAD5 */
+    --c-panel: 216 217 185;       /* #D8D9B9  the card fill */
+    /* ink */
+    --c-ink: 44 52 34;            /* #2C3422 */
+    --c-deep: 51 58 40;           /* #333A28 */
+    --c-green: 66 75 54;          /* #424B36 */
+    --c-mid: 78 88 64;            /* #4E5840 */
+    --c-muted: 82 91 66;         /* #525B42  4.94 on the card fill */
+    --c-dim: 87 96 70;           /* #576046  4.61 on the card fill */
+    /* accent */
+    --c-olive: 103 118 46;        /* #67762E */
+    --c-lime: 204 238 160;        /* #CCEEA0 */
+    /* the one warm colour on the page, for a failed sign-in */
+    --c-error: 138 43 43;         /* #8A2B2B */
+    /* the hairline, as its own value because its alpha differs per theme */
+    --c-rule: 66 75 54;
+    --trp-rule-a: .20;
+    --trp-rule-2-a: .42;
+
+    /* ---- named tokens, all derived from the above ---- */
+    --trp-bg: rgb(var(--c-bg));
+    --trp-panel: rgb(var(--c-panel));
+    --trp-rule: rgb(var(--c-rule) / var(--trp-rule-a));
+    --trp-rule-2: rgb(var(--c-rule) / var(--trp-rule-2-a));
+    --trp-text: rgb(var(--c-green));
+    --trp-muted: rgb(var(--c-muted));
+    --trp-dim: rgb(var(--c-dim));
+    --trp-ink: rgb(var(--c-deep));
+    --trp-accent: rgb(var(--c-olive));
+    /* a surface that must stay light in both themes, for screenshots and
+       anything else that ships with a white background of its own */
+    --trp-shot: #FFFDFB;
 
     /* Three faces, the same three the accelerator uses. */
     --trp-face: 'Space Grotesk', system-ui, -apple-system, 'Segoe UI', sans-serif;
@@ -73,6 +115,119 @@
   }
 
   ::selection { background: var(--trp-panel); color: var(--trp-ink); }
+}
+
+/* ---- dark -------------------------------------------------------------
+   Applied two ways, which must stay in step:
+     [data-theme='dark']                      the member chose Dark
+     [data-theme='system'] + prefers dark     the member chose System
+
+   An explicit [data-theme='light'] overrides the media query, so Light
+   really means light even on a device set to dark.
+   --------------------------------------------------------------------- */
+@layer base {
+  :root[data-theme='dark'] {
+    /* paper becomes the deep green ground */
+    --c-bg: 26 32 21;             /* #1A2015 */
+    --c-page: 26 32 21;
+    --c-offwhite: 26 32 21;
+    --c-cream: 34 41 27;          /* #22291B */
+    --c-surface: 44 52 34;        /* #2C3422  raised off the ground */
+    /* surfaces sit above the ground, not below it */
+    --c-sage: 54 64 41;           /* #364029 */
+    --c-sagelt: 70 82 55;         /* #465237  a step above the card, not the same as it */
+    --c-panel: 44 52 34;          /* #2C3422  the card fill */
+    /* ink becomes cream */
+    --c-ink: 244 241 230;         /* #F4F1E6 */
+    --c-deep: 244 241 230;
+    --c-green: 230 228 214;       /* #E6E4D6  body copy */
+    --c-mid: 197 203 178;         /* #C5CBB2 */
+    --c-muted: 186 193 167;       /* #BAC1A7 */
+    --c-dim: 156 165 134;         /* #9CA586 */
+    /* accent is the brand lime, which only works as a light on dark */
+    --c-olive: 204 238 160;       /* #CCEEA0 */
+    --c-lime: 204 238 160;
+    /* a deep red disappears into the green ground, so it lifts */
+    --c-error: 255 169 158;       /* #FFA99E */
+    /* a cream hairline, and a touch stronger so it survives the dark */
+    --c-rule: 244 241 230;
+    --trp-rule-a: .22;
+    --trp-rule-2-a: .42;
+  }
+
+  @media (prefers-color-scheme: dark) {
+    :root[data-theme='system'] {
+      --c-bg: 26 32 21;
+      --c-page: 26 32 21;
+      --c-offwhite: 26 32 21;
+      --c-cream: 34 41 27;
+      --c-surface: 44 52 34;
+      --c-sage: 54 64 41;
+      --c-sagelt: 70 82 55;
+      --c-panel: 44 52 34;
+      --c-ink: 244 241 230;
+      --c-deep: 244 241 230;
+      --c-green: 230 228 214;
+      --c-mid: 197 203 178;
+      --c-muted: 186 193 167;
+      --c-dim: 156 165 134;
+      --c-olive: 204 238 160;
+      --c-lime: 204 238 160;
+      --c-error: 255 169 158;       /* #FFA99E */
+      --c-rule: 244 241 230;
+      --trp-rule-a: .22;
+      --trp-rule-2-a: .42;
+    }
+  }
+
+  /* Tell the browser, so form controls, scrollbars and the caret follow. */
+  :root[data-theme='dark'] { color-scheme: dark; }
+  :root[data-theme='light'] { color-scheme: light; }
+  :root[data-theme='system'] { color-scheme: light dark; }
+}
+
+@layer components {
+  /* ---- the theme control ----------------------------------------------
+     A native <select>: the keyboard behaviour, the open and close and the
+     screen-reader announcement are all the browser's. */
+  .trp-theme { position: relative; display: inline-flex; align-items: center; }
+  .trp-theme select {
+    appearance: none;
+    -webkit-appearance: none;
+    padding: 5px 26px 5px 10px;
+    border: 1px solid var(--trp-rule);
+    border-radius: 99px;
+    background: transparent;
+    color: rgb(var(--c-ink) / .7);
+    font: inherit;
+    font-size: 12px;
+    line-height: 1.2;
+    cursor: pointer;
+    transition: border-color var(--trp-t) ease, color var(--trp-t) ease;
+  }
+  .trp-theme select:hover { color: rgb(var(--c-ink)); border-color: var(--trp-rule-2); }
+  .trp-theme select:focus-visible { outline: 2px solid var(--trp-text); outline-offset: 2px; }
+  /* the options come from the OS, so they need a real background */
+  .trp-theme select option { background: rgb(var(--c-bg)); color: rgb(var(--c-ink)); }
+  .trp-theme-caret {
+    position: absolute;
+    right: 9px;
+    width: 12px;
+    height: 12px;
+    pointer-events: none;
+    color: rgb(var(--c-ink) / .55);
+  }
+
+  /* ---- things that ship with their own light background ---------------
+     A screenshot or a logo with white baked in would float on the dark
+     ground. Give them the light surface back and a hairline, so they read
+     as a pasted-in image rather than a hole. */
+  :root[data-theme='dark'] .trp-acc-figure,
+  :root[data-theme='system'] .trp-acc-figure { background: var(--trp-shot); }
+}
+
+@media (prefers-color-scheme: light) {
+  :root[data-theme='system'] .trp-acc-figure { background: rgb(var(--c-bg)); }
 }
 
 @layer components {
@@ -203,6 +358,112 @@
     margin: 4px 0 0;
     font-size: 12px;
     color: var(--trp-dim);
+  }
+
+  /* -- connect your Notion ------------------------------------------------
+     Two accordions built on <details>, so open and close, the keyboard and
+     in-page search all come from the browser. The marker is removed and
+     replaced with a caret that turns when the panel opens. */
+  .trp-connect { padding: 24px 28px 22px; }
+  .trp-connect-title { margin: 8px 0 0; font-size: clamp(20px, 2.2vw, 26px); line-height: 1.2; }
+  .trp-connect-lede { margin: 8px 0 0; font-size: 15px; line-height: 1.5; color: var(--trp-muted); }
+  .trp-connect-note { margin: 16px 0 0; font-size: 13px; color: var(--trp-dim); }
+
+  .trp-acc { margin-top: 16px; border-top: 1px solid var(--trp-rule); }
+  .trp-acc:first-of-type { margin-top: 20px; }
+
+  .trp-acc-head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    padding: 14px 0;
+    cursor: pointer;
+    list-style: none;
+    font-size: 15.5px;
+    font-weight: 600;
+    color: var(--trp-ink);
+  }
+  /* the default disclosure triangle, in both engines */
+  .trp-acc-head::-webkit-details-marker { display: none; }
+  .trp-acc-head::marker { content: ''; }
+  .trp-acc-head:focus-visible { outline: 2px solid var(--trp-text); outline-offset: 3px; border-radius: 6px; }
+  .trp-acc-caret {
+    width: 18px;
+    height: 18px;
+    flex: none;
+    color: var(--trp-muted);
+    transition: transform var(--trp-t) ease;
+  }
+  .trp-acc[open] .trp-acc-caret { transform: rotate(180deg); }
+
+  .trp-acc-body { padding: 2px 0 20px; }
+  .trp-acc-steps {
+    margin: 0;
+    /* Tailwind's preflight strips list markers, and these steps are an
+       order, so the numbers have to come back. */
+    list-style: decimal;
+    padding-left: 22px;
+    display: grid;
+    gap: 6px;
+    font-size: 15px;
+    line-height: 1.5;
+    color: var(--trp-text);
+  }
+  .trp-acc-steps li::marker { color: var(--trp-muted); font-family: var(--trp-label); font-size: 12px; }
+
+  .trp-acc-figure {
+    margin: 18px 0 0;
+    border: 1px solid var(--trp-rule);
+    border-radius: 12px;
+    overflow: hidden;
+    background: var(--trp-bg);
+  }
+  .trp-acc-figure[hidden] { display: none; }
+  .trp-acc-figure img { display: block; width: 100%; height: auto; }
+
+  /* -- the copy box --------------------------------------------------- */
+  .trp-copybox {
+    margin-top: 18px;
+    border: 1px solid var(--trp-rule);
+    border-radius: 12px;
+    background: var(--trp-bg);
+  }
+  .trp-copybox-head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    padding: 10px 14px;
+    border-bottom: 1px solid var(--trp-rule);
+  }
+  .trp-copy {
+    flex: none;
+    padding: 5px 14px;
+    border: 1px solid var(--trp-rule-2);
+    border-radius: 99px;
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--trp-ink);
+    background: transparent;
+    transition: background-color var(--trp-t) ease, border-color var(--trp-t) ease;
+  }
+  .trp-copy:hover { background: var(--trp-panel); border-color: var(--trp-ink); }
+
+  .trp-copybox-text {
+    margin: 0;
+    padding: 14px;
+    font-family: var(--trp-label);
+    font-size: 12.5px;
+    line-height: 1.6;
+    color: var(--trp-text);
+    white-space: pre-wrap;
+    overflow-wrap: anywhere;
+  }
+
+  @media (max-width: 640px) {
+    .trp-connect { padding: 20px 20px 18px; }
+    .trp-copybox-text { font-size: 12px; padding: 12px; }
   }
 
   /* -- the sessions schedule ---------------------------------------------
