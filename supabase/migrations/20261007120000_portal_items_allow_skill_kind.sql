@@ -53,7 +53,17 @@ comment on column public.portal_items.url is
 -- The download Worker calls portal_get() with the service role key. The grant
 -- is already in place on the live database; this records it so a rebuild from
 -- these migrations ends up in the same state.
-grant execute on function public.portal_get(text) to service_role;
+--
+-- Guarded the same way 20261008120000_portal_directory.sql guards its grant.
+-- service_role is a Supabase role, so an unconditional grant here fails on
+-- plain Postgres and takes a local rebuild from these migrations with it.
+do $do$
+begin
+  if exists (select 1 from pg_roles where rolname = 'service_role') then
+    execute 'grant execute on function public.portal_get(text) to service_role';
+  end if;
+end
+$do$;
 
 commit;
 

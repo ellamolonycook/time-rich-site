@@ -368,6 +368,9 @@
   .trp-connect-title { margin: 8px 0 0; font-size: clamp(20px, 2.2vw, 26px); line-height: 1.2; }
   .trp-connect-lede { margin: 8px 0 0; font-size: 15px; line-height: 1.5; color: var(--trp-muted); }
   .trp-connect-note { margin: 16px 0 0; font-size: 13px; color: var(--trp-dim); }
+  /* A caveat under a set of steps, inside the disclosure rather than under
+     the whole section. */
+  .trp-acc-note { margin: 12px 0 0; font-size: 13px; line-height: 1.55; color: var(--trp-dim); }
 
   .trp-acc { margin-top: 16px; border-top: 1px solid var(--trp-rule); }
   .trp-acc:first-of-type { margin-top: 20px; }
@@ -465,6 +468,144 @@
     .trp-connect { padding: 20px 20px 18px; }
     .trp-copybox-text { font-size: 12px; padding: 12px; }
   }
+
+  /* -- the prompt library ------------------------------------------------
+     One card per skill, in a grid that drops to a single column on a phone.
+     Each card is the name, one line, the phrase to say, and an optional
+     autopilot brief behind a disclosure. Nothing inside a card competes
+     with the phrase, because the phrase is the whole point. */
+  .trp-pcards {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: grid;
+    gap: 20px;
+    grid-template-columns: repeat(auto-fill, minmax(330px, 1fr));
+  }
+  .trp-pcard { display: flex; flex-direction: column; padding: 22px 22px 20px; }
+  .trp-pcard-head {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 12px;
+  }
+  .trp-pcard-name {
+    margin: 0;
+    font-family: var(--trp-display);
+    font-size: 18px;
+    font-weight: 600;
+    line-height: 1.25;
+    color: var(--trp-ink);
+  }
+  /* The download sits with the name, and is simply absent until the pack is
+     in the bucket and the week has opened. */
+  /* The shared button carries a small download icon before its label, so it
+     has to be a flex row or the icon sits on its own line. */
+  .trp-pcard-get {
+    flex: none;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 6px 14px;
+    border: 1px solid var(--trp-rule-2);
+    border-radius: 99px;
+    font-size: 11px;
+    font-weight: 600;
+    white-space: nowrap;
+    color: var(--trp-ink);
+    background: transparent;
+    transition: background-color var(--trp-t) ease, border-color var(--trp-t) ease;
+  }
+  .trp-pcard-get:hover { background: var(--trp-panel); border-color: var(--trp-ink); }
+  .trp-pcard-get:disabled { opacity: .6; cursor: default; }
+  .trp-pcard-get svg { width: 13px; height: 13px; flex: none; }
+  /* Where the button will be once the week opens, so the card keeps its
+     shape on the day it does. Not a button: there is nothing to press. */
+  .trp-pcard-locked {
+    flex: none;
+    padding: 6px 14px;
+    border: 1px dashed var(--trp-rule-2);
+    border-radius: 99px;
+    font-family: var(--trp-label);
+    font-size: 11px;
+    white-space: nowrap;
+    color: var(--trp-muted);
+  }
+  .trp-pcard-one {
+    margin: 10px 0 0;
+    font-size: 14px;
+    line-height: 1.55;
+    color: var(--trp-text);
+  }
+
+  .trp-saybox {
+    margin-top: 16px;
+    border: 1px solid var(--trp-rule);
+    border-radius: 12px;
+    background: var(--trp-bg);
+  }
+  .trp-saybox-head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    padding: 9px 12px;
+    border-bottom: 1px solid var(--trp-rule);
+  }
+  .trp-saybox-text {
+    margin: 0;
+    padding: 12px;
+    font-family: var(--trp-label);
+    font-size: 13px;
+    line-height: 1.5;
+    color: var(--trp-ink);
+    overflow-wrap: anywhere;
+  }
+  /* The disclosure is the last row of the card, so it pins to the bottom and
+     every card in a row lines up whether or not it has one. */
+  .trp-pcard-auto { margin-top: auto; }
+  .trp-pcard-auto .trp-copybox { margin-top: 12px; }
+
+  .trp-guides {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: grid;
+    gap: 10px;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  }
+  .trp-guide-link {
+    display: block;
+    padding: 14px 16px;
+    border: 1px solid var(--trp-rule);
+    border-radius: 12px;
+    font-size: 14px;
+    font-weight: 500;
+    color: var(--trp-ink);
+    text-decoration: none;
+    transition: border-color var(--trp-t) ease, background-color var(--trp-t) ease;
+  }
+  a.trp-guide-link:hover { border-color: var(--trp-ink); background: var(--trp-panel); }
+
+  /* -- the FAQ -----------------------------------------------------------
+     Same disclosure as everywhere else, closed by default, keyboard
+     behaviour the browser's. */
+  .trp-faq { margin-top: 4px; }
+  .trp-faq .trp-acc:first-of-type { margin-top: 0; }
+  .trp-faq-answer {
+    margin: 0;
+    font-size: 14px;
+    line-height: 1.6;
+    color: var(--trp-text);
+  }
+  .trp-faq-answer + .trp-faq-answer { margin-top: 10px; }
+
+  @media (max-width: 640px) {
+    .trp-pcards { grid-template-columns: 1fr; }
+    .trp-pcard { padding: 18px 18px 16px; }
+    .trp-guides { grid-template-columns: 1fr; }
+  }
+
 
   /* -- the sessions schedule ---------------------------------------------
      A card for the next session, then one card per week holding slim rows.
