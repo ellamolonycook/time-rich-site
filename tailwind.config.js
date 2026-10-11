@@ -14,14 +14,13 @@
  * Leave any of those out and the class is purged and the page renders unstyled.
  */
 module.exports = {
+  // A glob, not a list of files. The list was hand maintained, and adding
+  // portal-prompts.js without remembering to add it here silently purged
+  // every class that only appeared in that file. Everything in portal/ is
+  // ours; there is no vendor code in here to sweep up.
   content: [
     './portal/*.html',
-    './portal/portal-access.js',
-    './portal/portal-live.js',
-    './portal/portal-sessions.js',
-    './portal/portal-progress.js',
-    './portal/portal-config.js',
-    './portal/portal-chrome.js',
+    './portal/*.js',
   ],
   theme: {
     extend: {

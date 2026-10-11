@@ -733,8 +733,12 @@
     if (form) { errorSlot(form).textContent = text; return; }
 
     // No login form on this page, so put it where the content would be.
+    // [data-portal-message] is for a page that renders its own content and so
+    // has neither hook: without it the page sits on its loading line forever
+    // with nothing to say. portal/prompts.html is one.
     var target = document.querySelector('[data-portal-weeks]') ||
-                 document.querySelector('[data-portal-sessions]');
+                 document.querySelector('[data-portal-sessions]') ||
+                 document.querySelector('[data-portal-message]');
     if (target) { clear(target); target.appendChild(el('p', 'trp-error', text)); }
   }
 

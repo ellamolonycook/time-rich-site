@@ -52,6 +52,11 @@
   </script>
 
   <title>Resources | Time Rich Portal</title>
+  <meta property="og:image" content="https://timerich.ai/og-time-rich.png" />
+  <meta property="og:image:width" content="1200" />
+  <meta property="og:image:height" content="630" />
+  <meta name="twitter:image" content="https://timerich.ai/og-time-rich.png" />
+  <meta name="twitter:card" content="summary_large_image" />
   <link rel="stylesheet" href="portal.css"/>
   <link rel="preconnect" href="https://fonts.googleapis.com"/>
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin=""/>
@@ -103,6 +108,10 @@
           <svg class="w-4 h-4 shrink-0" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"></path></svg>
           Resources
         </a>
+        <a href="prompts.html" class="flex items-center gap-3 px-4 py-2.5 rounded-[14px] text-sm font-medium text-brand-ink/70 hover:text-brand-ink hover:bg-brand-ink/5 transition-colors">
+          <svg class="w-4 h-4 text-brand-ink/50 shrink-0" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path></svg>
+          Prompts
+        </a>
         <a href="members.html" data-portal-members-link hidden class="flex items-center gap-3 px-4 py-2.5 rounded-[14px] text-sm font-medium text-brand-ink/70 hover:text-brand-ink hover:bg-brand-ink/5 transition-colors">
           <svg class="w-4 h-4 text-brand-ink/50 shrink-0" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"></path></svg>
           Members
@@ -132,6 +141,7 @@
         <a href="curriculum.html" class="px-3 py-1.5 rounded-full text-xs font-medium text-brand-ink/70 hover:text-brand-ink hover:bg-brand-ink/5 transition-colors">Curriculum</a>
         <a href="sessions.html" class="px-3 py-1.5 rounded-full text-xs font-medium text-brand-ink/70 hover:text-brand-ink hover:bg-brand-ink/5 transition-colors">Live Sessions</a>
         <a href="resources.html" aria-current="page" class="px-3 py-1.5 rounded-full text-xs font-semibold bg-brand-deep text-brand-bg">Resources</a>
+        <a href="prompts.html" class="px-3 py-1.5 rounded-full text-xs font-medium text-brand-ink/70 hover:text-brand-ink hover:bg-brand-ink/5 transition-colors">Prompts</a>
         <a href="members.html" data-portal-members-link hidden class="px-3 py-1.5 rounded-full text-xs font-medium text-brand-ink/70 hover:text-brand-ink hover:bg-brand-ink/5 transition-colors">Members</a>
     </nav>
 
@@ -252,6 +262,56 @@
                 </div>
               </div>
             </section>
+          </section>
+
+          <!-- FAQ. Four questions, on <details> so the open and close, the
+               keyboard handling and in-page search are the browser's. -->
+          <section class="mt-10 trp-faq" aria-labelledby="faq-heading">
+            <h2 id="faq-heading" class="trp-section-title">Questions</h2>
+            <p class="text-sm text-brand-mid leading-relaxed mt-2 mb-5">The four we get asked most.</p>
+
+            <details class="trp-acc">
+              <summary class="trp-acc-head">
+                <span class="trp-acc-title">Can I use ChatGPT instead?</span>
+                <svg class="trp-acc-caret" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7"></path></svg>
+              </summary>
+              <div class="trp-acc-body">
+                <p class="trp-faq-answer">Yes for prompts and your Notion context. Skills and scheduled agents run in Claude, which is what the sessions teach.</p>
+              </div>
+            </details>
+
+            <details class="trp-acc">
+              <summary class="trp-acc-head">
+                <span class="trp-acc-title">What if I miss a session?</span>
+                <svg class="trp-acc-caret" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7"></path></svg>
+              </summary>
+              <div class="trp-acc-body">
+                <p class="trp-faq-answer">Nothing is lost. Every session is recorded and the recording appears on the Live Sessions page under that week.</p>
+                <p class="trp-faq-answer">If you know in advance, send your question to the WhatsApp group or to emc@timerich.ai and it gets answered on the call.</p>
+              </div>
+            </details>
+
+            <details class="trp-acc">
+              <summary class="trp-acc-head">
+                <span class="trp-acc-title">Where are the recordings?</span>
+                <svg class="trp-acc-caret" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7"></path></svg>
+              </summary>
+              <div class="trp-acc-body">
+                <p class="trp-faq-answer">On <a href="sessions.html" class="trp-slink">Live Sessions</a>, in the week the session belongs to. A Watch recording button appears on the row once the recording is up, usually within a day.</p>
+                <p class="trp-faq-answer">Recordings stay available for the whole program.</p>
+              </div>
+            </details>
+
+            <details class="trp-acc">
+              <summary class="trp-acc-head">
+                <span class="trp-acc-title">How do I get help?</span>
+                <svg class="trp-acc-caret" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7"></path></svg>
+              </summary>
+              <div class="trp-acc-body">
+                <p class="trp-faq-answer">Quick question, and one the cohort can answer: the WhatsApp group. The link is in Quick links below.</p>
+                <p class="trp-faq-answer">Anything about your account, your access or your billing: email <a href="mailto:emc@timerich.ai" class="trp-slink">emc@timerich.ai</a>.</p>
+              </div>
+            </details>
           </section>
 
           <!-- Links from the payload. Each one is left out when there is no
