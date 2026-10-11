@@ -107,6 +107,28 @@
         transition-duration: 0.01ms !important;
       }
     }
+
+    /* Premium brand gradient for Superhuman Accelerator */
+    .superhuman-gradient {
+      background: linear-gradient(135deg, #7C9848 0%, #596C24 60%, #3F4D18 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+    :root[data-theme='dark'] .superhuman-gradient {
+      background: linear-gradient(135deg, #D8EEB0 0%, #ABCA7C 50%, #76933F 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+    @media (prefers-color-scheme: dark) {
+      :root[data-theme='system'] .superhuman-gradient {
+        background: linear-gradient(135deg, #D8EEB0 0%, #ABCA7C 50%, #76933F 100%);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+      }
+    }
   </style>
 
 </head>
@@ -127,16 +149,18 @@
 
   <main class="w-full max-w-[400px]">
 
-    <div class="rounded-[24px] border border-brand-ink/10 bg-brand-surface px-6 py-8 sm:px-9 sm:py-10">
-
-      <a href="/" class="inline-flex items-baseline text-[21px] font-display font-bold tracking-tight text-brand-ink rounded">
+    <div class="mb-8 pl-3 sm:pl-4">
+      <a href="/" class="inline-flex items-baseline text-[28px] sm:text-[32px] font-display font-bold tracking-tight text-brand-ink rounded hover:opacity-90 transition-opacity">
         Time Rich<span class="text-brand-olive">.</span>
       </a>
-
-      <p class="mt-7 text-[10px] font-mono font-medium uppercase tracking-[0.18em] text-brand-ink/70">
+      <p class="mt-1.5 text-[11px] font-mono font-semibold uppercase tracking-[0.18em] superhuman-gradient">
         Superhuman Accelerator
       </p>
-      <h1 class="mt-2 text-[28px] font-display font-bold tracking-tight text-brand-ink">
+    </div>
+
+    <div class="rounded-[24px] border border-brand-ink/10 bg-brand-surface px-6 py-8 sm:px-9 sm:py-10">
+
+      <h1 class="text-[28px] font-display font-bold tracking-tight text-brand-ink">
         Welcome back
       </h1>
 
@@ -157,8 +181,7 @@
                  autocapitalize="off"
                  autocorrect="off"
                  spellcheck="false"
-                 required
-                 placeholder="you@example.com"/>
+                 required/>
         </div>
 
         <!-- Two lines are reserved, not one. The card is centred on the page,
@@ -176,8 +199,8 @@
       </form>
 
       <p class="mt-7 text-[13px] text-brand-ink/70">
-        Not sure which email?
-        <a href="mailto:emc@timerich.ai" class="text-brand-ink underline underline-offset-2 decoration-brand-ink/25 hover:decoration-brand-ink transition-colors">Email emc@timerich.ai</a>
+        Can't log in?
+        <a href="mailto:emc@timerich.ai" class="text-brand-ink underline underline-offset-2 decoration-brand-ink/25 hover:decoration-brand-ink transition-colors">Contact support</a>
       </p>
 
     </div>
