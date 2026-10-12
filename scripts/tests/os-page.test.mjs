@@ -214,5 +214,58 @@ console.log('\n/os — the mobile menu card');
     !links.classList.contains('open') && document.getElementById('live').classList.contains('is-open'));
 }
 
+console.log('\n/os — the giveaway band');
+{
+  const { document } = load();
+  const band = document.getElementById('giveaway');
+  const hero = document.querySelector('.hero');
+
+  check('the giveaway band is on the page', !!band);
+  check('it sits above the hero',
+    (band.compareDocumentPosition(hero) & 4) !== 0);
+  check('it is the first thing inside main, so it follows the nav',
+    document.getElementById('main').firstElementChild === band);
+  check('it is a full-width band, never inside a dropdown row',
+    !band.closest('.row') && band.parentElement === document.getElementById('main'));
+
+  const img = band.querySelector('img');
+  check('it carries the speaker image', img && /giveaway-accelerator\.png$/.test(img.getAttribute('src')), img && img.getAttribute('src'));
+  check('the image names every speaker in its alt text',
+    img.getAttribute('alt') === 'Superhuman Accelerator speakers: Cien Solon, Taylor Offer, ' +
+      'AJ Yadav, Terry Rice, Ella Cook, Matyas Kolsofszki and ViKa Victoria',
+    img.getAttribute('alt'));
+  check('the image reserves its box, so loading it cannot shove the hero down',
+    img.getAttribute('width') === '1106' && img.getAttribute('height') === '467');
+
+  const primary = band.querySelector('.btn');
+  check('the primary button is the LinkedIn connect, in a new tab',
+    primary.textContent.trim() === 'Connect with Ella' &&
+    primary.getAttribute('href') === 'https://www.linkedin.com/in/ellamolonycook/' &&
+    primary.getAttribute('target') === '_blank' &&
+    /noopener/.test(primary.getAttribute('rel') || ''),
+    primary.getAttribute('href'));
+  check('the LinkedIn URL is the same one the footer uses',
+    primary.getAttribute('href') ===
+      document.querySelector('footer a[href*="linkedin"]').getAttribute('href'));
+
+  const secondary = band.querySelector('.text-link');
+  check('the secondary link points at the Accelerator',
+    secondary.textContent.trim() === 'See the Accelerator' &&
+    secondary.getAttribute('href') === 'https://timerich.ai/accelerator',
+    secondary.getAttribute('href'));
+
+  const steps = Array.from(band.querySelectorAll('.enter li'));
+  check('two entry steps, each opening on a bold verb, with no numbering',
+    steps.length === 2 &&
+    steps.every((li) => li.firstElementChild && li.firstElementChild.tagName === 'STRONG') &&
+    steps.every((li) => !/^\d/.test(li.textContent.trim())),
+    steps.map((li) => li.textContent.trim()));
+
+  check('the hash target is the band itself, so slides can deep-link to it',
+    band.id === 'giveaway' && band.tagName === 'SECTION');
+  check('it is not one of the folded rows, so it never closes',
+    !Array.from(document.querySelectorAll('#rowList > .row')).includes(band));
+}
+
 console.log('\n' + pass + ' passed, ' + fail + ' failed');
 process.exit(fail ? 1 : 0);
