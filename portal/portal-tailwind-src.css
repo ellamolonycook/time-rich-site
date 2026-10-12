@@ -669,11 +669,31 @@
     color: var(--trp-muted);
   }
   .trp-wkcard.is-locked { opacity: .7; }
-  .trp-srow.is-empty,
-  .trp-srow.is-item .trp-sdate { color: var(--trp-dim); }
   .trp-srow.is-empty { display: block; font-size: 14px; padding: 18px 0; }
-  .trp-slink { text-decoration: underline; text-underline-offset: 3px; text-decoration-color: var(--trp-rule-2); }
-  .trp-slink:hover { text-decoration-color: var(--trp-ink); }
+  .trp-srow.is-item {
+    grid-template-columns: minmax(0, 1fr) auto;
+    grid-template-areas: 'title tick';
+    padding: 12px 0;
+  }
+  .trp-srow.is-item .trp-sdate,
+  .trp-srow.is-item .trp-sact:empty {
+    display: none;
+  }
+  .trp-srow.is-item .trp-stitle {
+    font-size: 15px;
+    font-weight: 500;
+    line-height: 1.45;
+  }
+  .trp-slink {
+    text-decoration: underline;
+    text-underline-offset: 3.5px;
+    text-decoration-color: var(--trp-rule-2);
+    transition: color var(--trp-t) ease, text-decoration-color var(--trp-t) ease;
+  }
+  .trp-slink:hover {
+    color: var(--trp-ink);
+    text-decoration-color: var(--trp-ink);
+  }
   /* keeps a row without a tick aligned with the ones that have one */
   .trp-tick-gap { grid-area: tick; width: 22px; height: 22px; }
 
