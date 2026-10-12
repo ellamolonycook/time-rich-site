@@ -2,9 +2,9 @@
   "name": "time-rich-tests",
   "private": true,
   "type": "module",
-  "description": "Tests for the /sh-apply application form, the Cloudflare worker's Notion mapping, Time Rich Members, the portal member SQL and the portal Prompt Library.",
+  "description": "Tests for the /sh-apply application form, the Cloudflare worker's Notion mapping, Time Rich Members, the portal member SQL, the portal Prompt Library and the /os page.",
   "scripts": {
-    "test": "node worker.test.mjs && node portal-login.test.mjs && node portal-calendar.test.mjs && node portal-passcode.test.mjs && node form.test.mjs && node members.test.mjs && node portal-member.test.mjs && node prompts.test.mjs && node portal-skills.test.mjs",
+    "test": "node worker.test.mjs && node portal-login.test.mjs && node portal-calendar.test.mjs && node portal-passcode.test.mjs && node form.test.mjs && node members.test.mjs && node portal-member.test.mjs && node prompts.test.mjs && node portal-skills.test.mjs && node os-page.test.mjs",
     "test:worker": "node worker.test.mjs && node portal-passcode.test.mjs",
     "test:form": "node form.test.mjs",
     "test:members": "node members.test.mjs",
@@ -12,7 +12,8 @@
     "test:login": "node portal-login.test.mjs",
     "test:calendar": "node portal-calendar.test.mjs",
     "test:prompts": "node prompts.test.mjs",
-    "test:skills": "node portal-skills.test.mjs"
+    "test:skills": "node portal-skills.test.mjs",
+    "test:os": "node os-page.test.mjs"
   },
   "devDependencies": {
     "@electric-sql/pglite": "^0.5.8",
