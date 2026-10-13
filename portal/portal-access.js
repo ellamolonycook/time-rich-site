@@ -195,6 +195,21 @@
     clearMembersLinkCache();
   }
 
+  function setProgress(target, done) {
+    var token = readCode();
+    var endpoint = portalEndpoint('progressUrl');
+    var id = target && Number(target.id);
+    var kind = target && target.kind;
+    if (!token || !endpoint || !Number.isSafeInteger(id) || id <= 0 ||
+        (kind !== 'item' && kind !== 'session')) return Promise.resolve(false);
+
+    var payload = { token: token, done: Boolean(done) };
+    payload[kind === 'item' ? 'item_id' : 'session_id'] = id;
+    return post(endpoint, payload).then(function (result) {
+      return result.status === 200 && result.data && result.data.ok === true;
+    });
+  }
+
   /* ---- Time Rich Members nav link ------------------------------------- */
   //
   // Every portal page carries a hidden "Members" link marked
@@ -867,6 +882,7 @@
     signIn: signIn,
     load: load,
     signOut: signOut,
+    setProgress: setProgress,
     hasCode: hasCode,
     renderWeeks: renderWeeks,
     renderSessions: renderSessions,

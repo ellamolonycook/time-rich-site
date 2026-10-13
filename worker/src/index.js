@@ -34,7 +34,7 @@ export default {
     // single origin rather than the Worker-wide ALLOWED_ORIGIN list.
     // Same for Time Rich Members, which the portal calls from timerich.ai only.
     if (request.method === "OPTIONS" &&
-        /\/portal-(download|directory|login|session|logout)$/
+        /\/portal-(download|directory|login|session|logout|progress)$/
           .test(new URL(request.url).pathname.replace(/\/+$/, ""))) {
       return new Response(null, { status: 204, headers: portalDownloadCors(request) });
     }
@@ -80,6 +80,11 @@ export default {
     // Route: forget one browser's session (POST /portal-logout).
     if (path.endsWith("/portal-logout")) {
       return handlePortalLogout(request, env);
+    }
+
+    // Route: save one member's curriculum/session tick (POST /portal-progress).
+    if (path.endsWith("/portal-progress")) {
+      return handlePortalProgress(request, env);
     }
 
     // Route: gated Superhuman skill download (POST /portal-download)
@@ -1453,6 +1458,7 @@ function portalDownloadCors(request) {
  */
 const PORTAL_LOGIN_WINDOW_SECONDS = 10 * 60;   // 10 minutes
 const PORTAL_LOGIN_MAX_ATTEMPTS = 10;          // per IP, per window
+const PORTAL_PROGRESS_MAX_WRITES = 60;         // per IP, per window
 const PORTAL_LOGIN_NOT_FOUND =
   "We couldn't find that email. Use the email you joined with, or contact emc@timerich.ai.";
 
@@ -1470,11 +1476,21 @@ function portalLoginIp(request) {
  * for this limit to do anything at all.
  */
 async function portalLoginRateLimited(request, env) {
+  return portalRateLimited(request, env, "portal-login", PORTAL_LOGIN_MAX_ATTEMPTS);
+}
+
+// Progress uses the same KV namespace as login, but a different key prefix so
+// normal progress use never spends a member's sign-in attempts (or vice versa).
+async function portalProgressRateLimited(request, env) {
+  return portalRateLimited(request, env, "portal-progress", PORTAL_PROGRESS_MAX_WRITES);
+}
+
+async function portalRateLimited(request, env, prefix, maxAttempts) {
   const kv = env.PORTAL_LOGIN_RL;
   if (!kv || typeof kv.get !== "function") return false;
 
   const window = Math.floor(Date.now() / 1000 / PORTAL_LOGIN_WINDOW_SECONDS);
-  const key = `portal-login:${portalLoginIp(request)}:${window}`;
+  const key = `${prefix}:${portalLoginIp(request)}:${window}`;
 
   let count = 0;
   try {
@@ -1482,7 +1498,7 @@ async function portalLoginRateLimited(request, env) {
   } catch {
     return false;                       // KV unreadable: do not lock anyone out
   }
-  if (count >= PORTAL_LOGIN_MAX_ATTEMPTS) return true;
+  if (count >= maxAttempts) return true;
 
   try {
     // The TTL is the window plus a minute, so the key clears itself.
@@ -1589,6 +1605,52 @@ async function handlePortalLogout(request, env) {
   } catch {
     /* the browser forgets the token regardless */
   }
+  return json({ ok: true }, 200, cors);
+}
+
+// Progress is always identified by the signed-in browser token. The browser
+// cannot name another member, and Postgres re-checks that the target content
+// is valid before it writes anything.
+async function handlePortalProgress(request, env) {
+  const cors = portalDownloadCors(request);
+  const sb = supabaseService(env);
+  if (!sb) return json({ ok: false, error: "unavailable" }, 503, cors);
+
+  if (await portalProgressRateLimited(request, env)) {
+    return json({ ok: false, error: "rate_limited" }, 429, cors);
+  }
+
+  let body;
+  try { body = await request.json(); } catch { body = null; }
+  const token = String(body?.token ?? "").trim();
+  const itemId = body?.item_id == null ? null : Number(body.item_id);
+  const sessionId = body?.session_id == null ? null : Number(body.session_id);
+  const done = body?.done;
+
+  const oneTarget = (Number.isSafeInteger(itemId) && itemId > 0 && sessionId === null) ||
+    (Number.isSafeInteger(sessionId) && sessionId > 0 && itemId === null);
+  if (!token || !oneTarget || typeof done !== "boolean") return json({ ok: false }, 400, cors);
+
+  let payload;
+  try {
+    const res = await fetch(`${sb.base}/rest/v1/rpc/portal_set_progress`, {
+      method: "POST",
+      headers: sb.headers,
+      body: JSON.stringify({
+        p_token: token,
+        p_item_id: itemId,
+        p_session_id: sessionId,
+        p_done: done,
+      }),
+    });
+    if (!res.ok) return json({ ok: false, error: "unavailable" }, 503, cors);
+    payload = await res.json();
+  } catch {
+    return json({ ok: false, error: "unavailable" }, 503, cors);
+  }
+
+  // A bad/expired token must look the same as any other refused update.
+  if (!payload || payload.ok !== true) return json({ ok: false }, 401, cors);
   return json({ ok: true }, 200, cors);
 }
 

@@ -92,9 +92,7 @@
 
   /* ---- the attended tick ----------------------------------------------- */
 
-  /* Same store as before (TRLive.isSessionMarked / toggleSession); this is a
-     small square tick rather than a pill, and it exposes refresh() so a Join
-     or Watch click can tick it. */
+  /* A small square tick that reflects the member's saved account progress. */
   function attendedToggle(session) {
     var btn = L.el('button', 'trp-tick');
     btn.type = 'button';
@@ -109,7 +107,7 @@
     }
 
     btn.addEventListener('click', function () {
-      L.toggleSession(session);
+      Promise.resolve(L.toggleSession(session)).then(paint);
       paint();
     });
     paint();
@@ -125,8 +123,9 @@
     function markOnUse(link) {
       if (!link) return link;
       link.addEventListener('click', function () {
-        L.markSession(session);
-        if (tick && typeof tick.refresh === 'function') tick.refresh();
+        Promise.resolve(L.markSession(session)).then(function () {
+          if (tick && typeof tick.refresh === 'function') tick.refresh();
+        });
       });
       return link;
     }
@@ -276,8 +275,9 @@
     function markOnUse(link) {
       if (!link) return link;
       link.addEventListener('click', function () {
-        L.markSession(next);
-        if (tick && typeof tick.refresh === 'function') tick.refresh();
+        Promise.resolve(L.markSession(next)).then(function () {
+          if (tick && typeof tick.refresh === 'function') tick.refresh();
+        });
       });
       return link;
     }

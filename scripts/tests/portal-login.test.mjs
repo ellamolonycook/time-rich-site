@@ -37,10 +37,10 @@ function payloadFor(email) {
     member: { first_name: member.first_name, role: member.role },
     weeks: [],
     sessions: [
-      { title: 'Open Business Surgery', starts_at: '2026-10-26T16:00:00+00:00',
+      { id: 12, title: 'Open Business Surgery', starts_at: '2026-10-26T16:00:00+00:00',
         join_url: 'https://zoom.us/j/1', recording_url: null,
         addevent_url: 'https://addevent.com/e/abc', week_id: 1 },
-      { title: 'Training Your Agent', starts_at: '2026-10-30T16:00:00+00:00',
+      { id: 13, title: 'Training Your Agent', starts_at: '2026-10-30T16:00:00+00:00',
         join_url: null, recording_url: null, addevent_url: null, week_id: 1 },
     ],
   };
@@ -72,6 +72,11 @@ function mockSupabase(url, init) {
   if (url.endsWith('/rpc/portal_logout')) {
     issued.delete(String(body.p_token || '').trim());
     return new Response(JSON.stringify({ ok: true }), { status: 200 });
+  }
+
+  if (url.endsWith('/rpc/portal_set_progress')) {
+    const token = String(body.p_token || '').trim();
+    return new Response(JSON.stringify({ ok: issued.has(token) }), { status: 200 });
   }
 
   if (url.endsWith('/rpc/portal_get')) {
@@ -233,6 +238,48 @@ console.log('\n/portal-logout — the token stops working');
   check('the token is refused afterwards', after.status === 401, after.status);
 }
 
+console.log('\n/portal-progress — saving a member tick');
+{
+  const login = await post('/portal-login', { email: 'ella@example.com' });
+  const { token } = await login.json();
+
+  const saved = await post('/portal-progress', { token, item_id: 42, done: true });
+  check('saves an item tick with 200', saved.status === 200 && (await saved.json()).ok === true);
+  const call = calls.find(c => c.url.endsWith('/rpc/portal_set_progress'));
+  const sent = call && JSON.parse(call.init.body);
+  check('passes only the signed-in token and target item to Postgres',
+    sent && sent.p_token === token && sent.p_item_id === 42 && sent.p_session_id === null && sent.p_done === true,
+    sent);
+
+  const malformed = await post('/portal-progress', { token, item_id: 42, session_id: 12, done: true });
+  check('rejects two targets before reaching Postgres', malformed.status === 400,
+    malformed.status);
+  check('the malformed request did not call the RPC',
+    !calls.some(c => c.url.endsWith('/rpc/portal_set_progress')), calls.map(c => c.url));
+
+  const expired = await post('/portal-progress', { token: 'tok-does-not-exist', session_id: 12, done: true });
+  check('refuses an unknown session token', expired.status === 401, expired.status);
+}
+
+console.log('\n/portal-progress — rate limit, separate from sign-in');
+{
+  const kv = memoryKv();
+  const login = await post('/portal-login', { email: 'ella@example.com' }, { ip: '198.51.100.10', kv });
+  const { token } = await login.json();
+  const statuses = [];
+  for (let i = 0; i < 62; i++) {
+    const res = await post('/portal-progress', { token, item_id: 42, done: i % 2 === 0 },
+      { ip: '198.51.100.10', kv });
+    statuses.push(res.status);
+  }
+  check('the first sixty writes are allowed', statuses.slice(0, 60).every(s => s === 200), statuses);
+  check('the sixty-first write is rate limited', statuses[60] === 429, statuses);
+  check('later writes stay rate limited in that window', statuses[61] === 429, statuses);
+
+  const separateLogin = await post('/portal-login', { email: 'ella@example.com' }, { ip: '198.51.100.10', kv });
+  check('progress writes do not consume sign-in attempts', separateLogin.status === 200, separateLogin.status);
+}
+
 console.log('\nThe passcode column is kept, and the old path still works');
 {
   // portal_get is still granted to anon and still wired here, so a member
@@ -278,7 +325,7 @@ console.log('\nCORS on the portal routes: production, plus the local dev server'
   check('no Origin header gets no CORS header', await allow('') === null);
 
   // every portal route, not just the login one
-  for (const path of ['/portal-login', '/portal-session', '/portal-logout', '/portal-download', '/portal-directory']) {
+  for (const path of ['/portal-login', '/portal-session', '/portal-logout', '/portal-progress', '/portal-download', '/portal-directory']) {
     check(path + ' answers the local preflight',
       (await ask('http://localhost:8000', path)).status === 204 &&
       await allow('http://localhost:8000', path) === 'http://localhost:8000');

@@ -14,6 +14,8 @@ window.TR_PORTAL_CONFIG = {
   sessionUrl: "https://time-rich-forms.timerich.workers.dev/portal-session",
   // Sign out, so the token stops working on the server too.
   logoutUrl: "https://time-rich-forms.timerich.workers.dev/portal-logout",
+  // Save a completion tick to the signed-in member's account.
+  progressUrl: "https://time-rich-forms.timerich.workers.dev/portal-progress",
   // Worker route that mints a 5-minute signed URL for a gated skill download.
   // It re-checks the session and the week's release date server side; the
   // browser never sees the Storage bucket or any service key.
