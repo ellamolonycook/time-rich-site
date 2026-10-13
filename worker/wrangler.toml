@@ -16,6 +16,7 @@
 #   npx wrangler secret put SUPABASE_URL          # portal project URL, for /portal-download and Time Rich Members
 #   npx wrangler secret put SUPABASE_SERVICE_ROLE_KEY  # service role key, Worker only, never in the browser
 #   npx wrangler secret put DIRECTORY_SYNC_SECRET # guards POST /portal-directory-sync (the Members backfill)
+#   npx wrangler secret put SLACK_GRANTS_CHANNEL_ID    # e.g. C0123ABCD — grant application alerts
 #
 # After deploy, wrangler prints a URL like:
 #   https://time-rich-forms.<your-subdomain>.workers.dev
@@ -91,6 +92,16 @@ NOTION_STRATEGY_DATABASE_ID = "294ef745-1052-4e5a-a53f-532eea0b435e"
 # Uses the existing NOTION_TOKEN / TR Site integration.
 NOTION_SUPERHUMAN_COHORT1_DATABASE_ID = "3e3ca5eb-e557-80ab-9b32-e3c84d74784e"
 # Required Worker secrets: THRIVECART_SECRET and WHATSAPP_INVITE_URL.
+
+# Grant applications (POST /ffg and POST /stanley) -> one "Grant Applications"
+# Notion database. The route sets the Grant select ("Female Founder" or
+# "Founders Building in Public"), so the browser cannot choose which grant a
+# submission is filed under.
+# IMPORTANT: connect the SAME Notion integration (NOTION_TOKEN) to this
+# database (••• -> Connections) or writes will 404.
+# Also needs the secret SLACK_GRANTS_CHANNEL_ID (see top), posted to with the
+# existing SLACK_BOT_TOKEN. A failed Slack post never fails the application.
+NOTION_GRANTS_DATABASE_ID = "8b8d014a-a83f-4ec6-b557-68cfbbf0e935"
 
 # Superhuman questionnaire (POST /superhuman-questionnaire) -> its own Notion
 # database. The page at /superhuman/ is open to buyers, second seats and

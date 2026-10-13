@@ -504,6 +504,182 @@ console.log('\nThe other routes still work after all of that');
     unknown.status === 200 && pageBody().parent.database_id === 'db-main');
 }
 
+console.log('\nGrant applications: /ffg and /stanley');
+{
+  const grantEnv = {
+    ...env,
+    NOTION_GRANTS_DATABASE_ID: 'db-grants',
+    SLACK_BOT_TOKEN: 'xoxb-test',
+    SLACK_GRANTS_CHANNEL_ID: 'C-GRANTS',
+  };
+
+  // Its own stub: these tests need to fail Notion and Slack independently,
+  // and to see the Slack post, which runs off the response path.
+  const grant = { notionStatus: 200, slackOk: true, calls: [], logs: [] };
+  const realFetch = globalThis.fetch;
+  const realError = console.error;
+  globalThis.fetch = async (url, init) => {
+    const u = String(url);
+    grant.calls.push({ url: u, init, body: init && typeof init.body === 'string' ? JSON.parse(init.body) : null });
+    if (u.includes('slack.com/api/chat.postMessage')) {
+      return new Response(JSON.stringify(grant.slackOk ? { ok: true } : { ok: false, error: 'channel_not_found' }), { status: 200 });
+    }
+    if (grant.notionStatus !== 200) return new Response('{"message":"bad"}', { status: grant.notionStatus });
+    return new Response(JSON.stringify({ id: 'page-g', url: 'https://notion.so/page-g' }), { status: 200 });
+  };
+
+  async function apply(path, body, opts = {}) {
+    grant.calls = [];
+    grant.logs = [];
+    grant.notionStatus = opts.notionStatus || 200;
+    grant.slackOk = opts.slackOk !== false;
+    const pending = [];
+    console.error = (...a) => grant.logs.push(a.map(String).join(' '));
+    const res = await worker.fetch(new Request('https://w.dev' + path, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', Origin: 'https://timerich.ai' },
+      body: JSON.stringify(body),
+    }), grantEnv, { waitUntil: (p) => pending.push(p) });
+    await Promise.all(pending);
+    console.error = realError;
+    return res;
+  }
+  const notion = () => grant.calls.find((c) => c.url.endsWith('/v1/pages'));
+  const slack = () => grant.calls.find((c) => c.url.includes('chat.postMessage'));
+  const props = () => notion().body.properties;
+
+  const FFG = {
+    form_version: 'ffg-v1',
+    full_name: '  Ada Lovelace  ',
+    email: ' Ada@Example.com ',
+    linkedin: 'linkedin.com/in/ada',
+    woman_founder: 'Yes',
+    company: 'Analytical Co',
+    stage: 'Pre-seed',
+    revenue: 'Under $10k',
+    why: 'Because the engine needs a programmer.',
+    lisbon: 'Yes, I can get there',
+    show_up: 'Every session',
+    entry_steps: ['Followed on LinkedIn', 'Shared the post'],
+    source: 'LinkedIn',
+    _gotcha: '',
+  };
+
+  const STANLEY = {
+    form_version: 'stanley-v1',
+    full_name: 'Grace Hopper',
+    email: 'grace@example.com',
+    linkedin: 'https://www.linkedin.com/in/grace',
+    company: 'Compiler Co',
+    stage: 'Seed',
+    revenue: '$10k-50k',
+    platforms: ['LinkedIn', 'X'],
+    posts: 'Three a week',
+    followers: '12,000',
+    why: 'Building in public already.',
+    show_up: 'Yes',
+    entry_steps: ['Followed Stanley'],
+    share_stanley: 'Happy to',
+    source: 'A friend',
+    _gotcha: '',
+  };
+
+  {
+    const res = await apply('/ffg', FFG);
+    check('a valid ffg application is accepted', res.status === 200);
+    check('it is written to the grants database', notion().body.parent.database_id === 'db-grants');
+    check('the Grant select comes from the route',
+      props().Grant.select.name === 'Female Founder', props().Grant);
+    check('Status is stamped New', props().Status.select.name === 'New');
+    check('the name is the title, trimmed',
+      props().Name.title[0].text.content === 'Ada Lovelace', props().Name);
+    check('the email is trimmed', props().Email.email === 'Ada@Example.com'.trim());
+    check('a bare LinkedIn handle is made into a URL',
+      props().LinkedIn.url === 'https://linkedin.com/in/ada', props().LinkedIn);
+    check('checkbox answers are saved as one comma-separated line',
+      props()['Entry steps'].rich_text[0].text.content === 'Followed on LinkedIn, Shared the post',
+      props()['Entry steps']);
+    check('the ffg-only columns are written',
+      props()['Woman founder'].rich_text[0].text.content === 'Yes' &&
+      props().Lisbon.rich_text[0].text.content === 'Yes, I can get there');
+    check('the stanley-only columns are not',
+      !('Platforms' in props()) && !('Share Stanley' in props()), Object.keys(props()));
+    check('Submitted is never set, because it is a created_time column',
+      !('Submitted' in props()));
+    check('Slack is told, on the grants channel',
+      slack() && slack().body.channel === 'C-GRANTS', slack() && slack().body.channel);
+    check('the Slack message leads with the grant and links the row',
+      /New grant application · Female Founder/.test(slack().body.text) &&
+      /notion\.so\/page-g/.test(JSON.stringify(slack().body.blocks)), slack().body.text);
+  }
+
+  {
+    const res = await apply('/stanley', STANLEY);
+    check('a valid stanley application is accepted', res.status === 200);
+    check('its Grant select is the other one',
+      props().Grant.select.name === 'Founders Building in Public', props().Grant);
+    check('the stanley-only columns are written',
+      props().Platforms.rich_text[0].text.content === 'LinkedIn, X' &&
+      props().Posts.rich_text[0].text.content === 'Three a week' &&
+      props().Followers.rich_text[0].text.content === '12,000' &&
+      props()['Share Stanley'].rich_text[0].text.content === 'Happy to');
+    check('the ffg-only columns are not',
+      !('Woman founder' in props()) && !('Lisbon' in props()), Object.keys(props()));
+    check('a full LinkedIn URL is left alone',
+      props().LinkedIn.url === 'https://www.linkedin.com/in/grace');
+    check('Slack is told for this one too', Boolean(slack()));
+  }
+
+  {
+    const res = await apply('/ffg', { ...FFG, _gotcha: 'bot' });
+    check('a filled honeypot looks like success', res.status === 200);
+    check('and saves nothing, anywhere', !notion() && !slack(), grant.calls.map((c) => c.url));
+  }
+
+  {
+    const res = await apply('/ffg', { ...FFG, email: '' });
+    check('a missing email is a 400', res.status === 400);
+    check('and nothing is written', !notion());
+    const bad = await apply('/stanley', { ...STANLEY, email: 'not-an-email' });
+    check('so is an email that is not one', bad.status === 400 && !notion());
+    const noName = await apply('/ffg', { ...FFG, full_name: '   ' });
+    check('and a blank name is too', noName.status === 400 && !notion());
+  }
+
+  {
+    const res = await apply('/ffg', FFG, { notionStatus: 500 });
+    check('a Notion failure is a 500, so the form can say so', res.status === 500);
+    check('Slack is not told about a row that does not exist', !slack());
+    check('and the failure is logged', grant.logs.some((l) => /notion write failed/.test(l)), grant.logs);
+  }
+
+  {
+    const res = await apply('/ffg', FFG, { slackOk: false });
+    check('a Slack failure still answers success: the row is saved', res.status === 200);
+    check('the row really was written', Boolean(notion()));
+    check('and the Slack failure is logged', grant.logs.some((l) => /slack post failed/.test(l)), grant.logs);
+  }
+
+  {
+    const long = 'x'.repeat(5000);
+    await apply('/ffg', { ...FFG, why: long, company: long });
+    check('a long answer is capped at the Notion rich-text limit',
+      props().Why.rich_text[0].text.content.length === 2000 &&
+      props().Company.rich_text[0].text.content.length === 2000,
+      props().Why.rich_text[0].text.content.length);
+    check('and the row still saves', notion().body.parent.database_id === 'db-grants');
+  }
+
+  {
+    const res = await apply('/ffg', { ...FFG, linkedin: '' });
+    check('an empty LinkedIn is left out, because Notion rejects "" for a url',
+      res.status === 200 && !('LinkedIn' in props()), Object.keys(props()));
+  }
+
+  globalThis.fetch = realFetch;
+  console.error = realError;
+}
+
 console.log('\nPortal members: ThriveCart buyer and /onboard +1 upserts');
 {
   const SB_URL = 'https://sb.test';
