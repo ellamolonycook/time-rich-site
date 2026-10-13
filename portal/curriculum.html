@@ -372,8 +372,7 @@
       }
       function tickIcon() { return svgIcon('M5 13l4 4L19 7', 'w-3.5 h-3.5'); }
 
-      /* The same tick as the Live Sessions page: a small box, not a pill.
-         Reads and writes the store it always did. */
+      /* The same tick as the Live Sessions page: a small box, not a pill. */
       function tick(isDone, toggle, label) {
         var btn = L.el('button', 'trp-tick');
         btn.type = 'button';
@@ -384,7 +383,10 @@
           btn.setAttribute('aria-label', (on ? 'Done: ' : 'Mark done: ') + label);
           btn.classList.toggle('is-on', on);
         }
-        btn.addEventListener('click', function () { toggle(); paint(); });
+        btn.addEventListener('click', function () {
+          Promise.resolve(toggle()).then(paint);
+          paint();
+        });
         paint();
         btn.refresh = paint;
         return btn;
@@ -438,8 +440,9 @@
         function markOnUse(a) {
           if (!a) return a;
           a.addEventListener('click', function () {
-            L.markSession(session);
-            if (mark.refresh) mark.refresh();
+            Promise.resolve(L.markSession(session)).then(function () {
+              if (mark.refresh) mark.refresh();
+            });
           });
           return a;
         }

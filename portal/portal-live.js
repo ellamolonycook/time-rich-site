@@ -253,76 +253,24 @@
     };
   }
 
-  /* ---- personal checklist (this browser, per passcode) ---------------- */
+  /* ---- personal checklist (the signed-in member's account) ------------ */
 
-  var CODE_KEY = 'tr_portal_code';
-  var PROGRESS_KEY = 'tr_portal_user_progress';
+  var progress = { items: {}, sessions: {} };
 
-  function readPasscode() {
-    try { return window.localStorage.getItem(CODE_KEY) || ''; }
-    catch (e) { return ''; }
+  function setProgress(data) {
+    var saved = data && data.progress;
+    progress = { items: {}, sessions: {} };
+    ['items', 'sessions'].forEach(function (type) {
+      var ids = saved && Array.isArray(saved[type]) ? saved[type] : [];
+      ids.forEach(function (id) {
+        if (Number.isSafeInteger(Number(id)) && Number(id) > 0) progress[type][String(id)] = true;
+      });
+    });
   }
 
-  // The passcode must never be a storage key: anything that can read
-  // localStorage could otherwise lift it straight out of the key names.
-  // cyrb53 is a small, fast, non-reversible 53-bit hash. It is not a password
-  // hash and is not meant to be: it only has to stop the code appearing in
-  // the clear, while staying synchronous so a click can read progress without
-  // waiting on crypto.subtle.
-  function cyrb53(text, seed) {
-    var h1 = 0xdeadbeef ^ (seed || 0);
-    var h2 = 0x41c6ce57 ^ (seed || 0);
-    for (var i = 0, ch; i < text.length; i++) {
-      ch = text.charCodeAt(i);
-      h1 = Math.imul(h1 ^ ch, 2654435761);
-      h2 = Math.imul(h2 ^ ch, 1597334677);
-    }
-    h1 = Math.imul(h1 ^ (h1 >>> 16), 2246822507) ^ Math.imul(h2 ^ (h2 >>> 13), 3266489909);
-    h2 = Math.imul(h2 ^ (h2 >>> 16), 2246822507) ^ Math.imul(h1 ^ (h1 >>> 13), 3266489909);
-    return 4294967296 * (2097151 & h2) + (h1 >>> 0);
-  }
-
-  // "p_" + hex, so a stored key is obviously a handle and never a passcode.
-  function progressKeyFor(code) {
-    return 'p_' + cyrb53(String(code), 0).toString(16);
-  }
-
-  function readProgressStore() {
-    try {
-      var raw = window.localStorage.getItem(PROGRESS_KEY);
-      var parsed = raw ? JSON.parse(raw) : {};
-      return parsed && typeof parsed === 'object' ? parsed : {};
-    } catch (e) {
-      return {};
-    }
-  }
-
-  function writeProgressStore(store) {
-    try { window.localStorage.setItem(PROGRESS_KEY, JSON.stringify(store)); }
-    catch (e) { /* private mode: the toggle still flips in memory for this click */ }
-  }
-
-  function progressEntry() {
-    var code = readPasscode();
-    if (!code) return null;
-    var store = readProgressStore();
-    var key = progressKeyFor(code);
-
-    // One-time migration off the old raw-passcode key. The entry moves to the
-    // hashed key, the raw key goes, and the result is saved straight away so
-    // the passcode is gone from storage even if nothing else is touched.
-    if (Object.prototype.hasOwnProperty.call(store, code)) {
-      if (!Object.prototype.hasOwnProperty.call(store, key)) store[key] = store[code];
-      delete store[code];
-      writeProgressStore(store);
-    }
-
-    var entry = store[key];
-    if (!entry || typeof entry !== 'object') entry = { items: {}, sessions: {} };
-    if (!entry.items || typeof entry.items !== 'object') entry.items = {};
-    if (!entry.sessions || typeof entry.sessions !== 'object') entry.sessions = {};
-    store[key] = entry;
-    return { store: store, entry: entry };
+  function announceProgress() {
+    try { document.dispatchEvent(new CustomEvent('trportal:progress')); }
+    catch (e) { /* the next page render still reads the current state */ }
   }
 
   function itemKey(item) {
@@ -331,32 +279,48 @@
   }
 
   function sessionKey(session) {
-    var when = str(session && session.starts_at);
-    var title = str(session && session.title);
-    if (!when && !title) return '';
-    return when + '\n' + title;
+    return itemKey(session);
   }
 
   function isItemDone(item) {
     var key = itemKey(item);
-    var bag = progressEntry();
-    return Boolean(key && bag && bag.entry.items[key]);
+    return Boolean(key && progress.items[key]);
   }
 
   function isSessionMarked(session) {
     var key = sessionKey(session);
-    var bag = progressEntry();
-    return Boolean(key && bag && bag.entry.sessions[key]);
+    return Boolean(key && progress.sessions[key]);
   }
 
   function setMark(mapName, key, value) {
-    if (!key) return false;
-    var bag = progressEntry();
-    if (!bag) return false;
-    if (value) bag.entry[mapName][key] = true;
-    else delete bag.entry[mapName][key];
-    writeProgressStore(bag.store);
-    return Boolean(value);
+    if (!key) return Promise.resolve(false);
+    var wasDone = Boolean(progress[mapName][key]);
+    if (value) progress[mapName][key] = true;
+    else delete progress[mapName][key];
+    announceProgress();
+
+    var api = window.TRPortal;
+    var target = { id: Number(key), kind: mapName === 'items' ? 'item' : 'session' };
+    if (!api || typeof api.setProgress !== 'function') {
+      if (wasDone) progress[mapName][key] = true;
+      else delete progress[mapName][key];
+      announceProgress();
+      return Promise.resolve(false);
+    }
+
+    return api.setProgress(target, value).then(function (saved) {
+      if (!saved) {
+        if (wasDone) progress[mapName][key] = true;
+        else delete progress[mapName][key];
+        announceProgress();
+      }
+      return saved;
+    }, function () {
+      if (wasDone) progress[mapName][key] = true;
+      else delete progress[mapName][key];
+      announceProgress();
+      return false;
+    });
   }
 
   function toggleItem(item) {
@@ -370,6 +334,7 @@
   }
 
   function markSession(session) {
+    if (isSessionMarked(session)) return Promise.resolve(true);
     return setMark('sessions', sessionKey(session), true);
   }
 
@@ -384,8 +349,8 @@
     return out;
   }
 
-  // Personal progress: marked items on unlocked weeks, plus marked sessions,
-  // over everything the member can currently mark.
+  // Personal progress: completed items on unlocked weeks, plus marked
+  // sessions, over everything the member can currently mark.
   function userProgress(data) {
     var itemList = trackableItems(data);
     var sessionList = sessions(data).filter(function (s) { return sessionKey(s); });
@@ -483,6 +448,11 @@
     return null;
   }
 
+  document.addEventListener('trportal:data', function (event) {
+    setProgress(event && event.detail);
+  });
+  if (window.TR_PORTAL_DATA) setProgress(window.TR_PORTAL_DATA);
+
   window.TRLive = {
     el: el,
     clear: clear,
@@ -514,6 +484,7 @@
     toggleSession: toggleSession,
     markSession: markSession,
     userProgress: userProgress,
+    setProgress: setProgress,
     doneToggle: doneToggle,
     latestRecording: latestRecording,
     sessionsForWeek: sessionsForWeek,

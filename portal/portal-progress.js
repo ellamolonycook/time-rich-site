@@ -66,7 +66,7 @@
     if (materialsTotal) parts.push(materialsDone + ' of ' + materialsTotal + ' materials');
     card.appendChild(L.el('p', 'trp-progress-line', parts.join(' · ')));
 
-    card.appendChild(L.el('p', 'trp-progress-note', 'Ticks are saved on this device'));
+    card.appendChild(L.el('p', 'trp-progress-note', 'Ticks are saved to your account'));
 
     root.appendChild(card);
     L.show(root, true);
@@ -74,6 +74,10 @@
 
   document.addEventListener('trportal:data', function (event) {
     render(document.querySelector('[data-portal-progress]'), event && event.detail);
+  });
+
+  document.addEventListener('trportal:progress', function () {
+    render(document.querySelector('[data-portal-progress]'), window.TR_PORTAL_DATA);
   });
 
   // The event may already have fired: this file is deferred, and a fetch that
