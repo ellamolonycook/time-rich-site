@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <link rel="icon" type="image/png" sizes="32x32" href="/rocketship-icon-32.png" />
+  <link rel="apple-touch-icon" sizes="180x180" href="/rocketship-icon-180.png" />
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+<script src="/js/pixel.js"></script>
+<script src="/js/affiliate.js"></script>
+<noscript><img height="1" width="1" style="display:none" alt=""
+  src="https://www.facebook.com/tr?id=1790181495468842&amp;ev=PageView&amp;noscript=1" /></noscript>
+<title>Application received — Female Founder Grant</title>
+<meta property="og:image" content="https://timerich.ai/og-time-rich.png" />
+<meta property="og:image:width" content="1200" />
+<meta property="og:image:height" content="630" />
+<meta name="twitter:image" content="https://timerich.ai/og-time-rich.png" />
+<meta name="twitter:card" content="summary_large_image" />
+<meta name="description" content="Your Female Founder Grant application is in. Winners are announced Friday 23 October." />
+<link rel="canonical" href="https://timerich.ai/ffg/thanks/" />
+<meta name="robots" content="noindex, nofollow" />
+<meta name="theme-color" content="#FFFDFB" />
+
+<link rel="stylesheet" href="/sh-apply/fonts.css" />
+<style>
+:root{
+  --cream:#FFFDFB;
+  --green:#424B36;
+  --green-deep:#333A28;
+  --pop:#D8D9B9;
+  --bg:#FFFDFB;
+  --line:rgba(66,75,54,.20);
+  --line-2:rgba(66,75,54,.34);
+  --text:#424B36;
+  --muted:#5B6449;
+  --dim:#7E8768;
+  --lime:#67762E;
+  --display:'Space Grotesk',system-ui,-apple-system,'Segoe UI',sans-serif;
+  --mono:'Archivo',-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;
+  --body:'Inter',-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;
+}
+*{margin:0;padding:0;box-sizing:border-box}
+html{-webkit-text-size-adjust:100%;text-size-adjust:100%}
+html,body{max-width:100%;overflow-x:clip}
+body{background:var(--bg);color:var(--text);font-family:var(--body);font-size:17px;line-height:1.65;-webkit-font-smoothing:antialiased;min-height:100vh;display:flex;flex-direction:column}
+::selection{background:var(--pop);color:var(--green-deep)}
+h1{font-family:var(--display);font-weight:600;line-height:1.1;letter-spacing:-.03em;color:var(--green-deep);text-wrap:balance;overflow-wrap:break-word}
+a{color:inherit}
+:focus-visible{outline:2px solid var(--green);outline-offset:3px;border-radius:6px}
+.wrap{width:100%;max-width:660px;margin:0 auto;padding:0 20px}
+
+.topbar{border-bottom:1px solid var(--line);background:rgba(255,253,251,.94)}
+.topbar-inner{display:flex;align-items:center;height:58px}
+.brand-word{font-family:var(--display);font-weight:700;letter-spacing:-.02em;font-size:18px;color:var(--text);text-decoration:none;line-height:1}
+.brand-word .wm-dot{color:var(--lime)}
+
+main{flex:1 0 auto;padding:48px 0 96px}
+@media (min-width:700px){ main{padding:72px 0 120px} }
+
+.eyebrow{font-family:var(--mono);font-size:12px;letter-spacing:.18em;text-transform:uppercase;color:var(--lime);margin-bottom:14px;display:block}
+h1{font-size:clamp(30px,6vw,46px);font-weight:700}
+.lead{font-size:18px;color:var(--muted);margin-top:16px;max-width:36em}
+
+.btn{display:inline-flex;align-items:center;justify-content:center;min-height:52px;margin-top:26px;
+  font-family:var(--display);font-weight:500;font-size:16px;text-decoration:none;
+  padding:14px 30px;border-radius:10px;background:transparent;color:var(--muted);border:1px solid var(--line-2);cursor:pointer}
+.btn:hover{border-color:var(--green);color:var(--green-deep)}
+
+.foot{flex:0 0 auto;border-top:1px solid var(--line);padding:22px 0;font-size:13.5px;color:var(--dim)}
+.foot a{text-decoration:none}
+.foot a:hover{color:var(--green-deep)}
+</style>
+</head>
+<body>
+
+<header class="topbar">
+  <div class="wrap topbar-inner">
+    <a class="brand-word" href="https://timerich.ai/">Time Rich<span class="wm-dot">.</span></a>
+  </div>
+</header>
+
+<main>
+  <div class="wrap">
+    <span class="eyebrow">Application received</span>
+    <h1 id="confirmHead" tabindex="-1">You&rsquo;re in.</h1>
+    <p class="lead" id="confirmSub">Your Female Founder Grant application is in. Winners are announced Friday 23 October.</p>
+    <a class="btn" href="/accelerator/">Back to the Accelerator</a>
+  </div>
+</main>
+
+<footer class="foot">
+  <div class="wrap">
+    &copy; 2026 Time Rich &middot; <a href="/privacy">Privacy</a> &middot; <a href="/terms">Terms</a>
+  </div>
+</footer>
+
+<script>
+(function(){
+  'use strict';
+  var first = '';
+  try{ first = sessionStorage.getItem('ffgThanks') || ''; }catch(e){}
+  try{ sessionStorage.removeItem('ffgThanks'); }catch(e){}
+  if (first) {
+    document.getElementById('confirmHead').textContent = 'You’re in, ' + first + '.';
+  }
+  var head = document.getElementById('confirmHead');
+  if (head) { try{ head.focus({ preventScroll:true }); }catch(e){ head.focus(); } }
+})();
+</script>
+</body>
+</html>
