@@ -517,6 +517,18 @@ select v.week_id, v.title, v.starts_at
 -- only convenient moment to read it. To take someone's access away,
 -- set active = false rather than deleting the row.
 --
+-- Adding an ambassador is one call instead, because access has to be
+-- approved rather than claimed. See
+-- migrations/20261013091000_portal_ambassadors.sql, which adds the
+-- 'ambassador' role, the allowlist table and this helper:
+--
+--   select public.add_ambassador('jane@example.com', 'Jane Doe');
+--
+-- That allowlists the address and creates the member row in one step,
+-- in either order: before they fill timerich.ai/superhuman, or after.
+-- Filling the form alone never grants access, because the form is
+-- public and anyone could pick "Ambassador".
+--
 -- Sanity checks:
 --
 --   select public.portal_new_passcode();

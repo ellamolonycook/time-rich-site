@@ -2842,6 +2842,11 @@ async function handleSuperhumanQuestionnaire(data, env, cors, ctx) {
   // request body, and off the response path like Slack.
   queueDirectorySync(env, ctx, page);
 
+  // An ambassador who is already on the allowlist gets portal access here.
+  // Buyers and second seats are untouched: they get their row from the
+  // ThriveCart webhook and the onboarding form, which carry an order.
+  if (role === "Ambassador") queueAmbassadorAccess(env, ctx, { email, fullName: name });
+
   // The sheet is a mirror of a write that already succeeded, so it stays
   // fire-and-forget like the rest of them.
   const sheetUrl = env.GOOGLE_SHEET_ORDERS_URL || env.GOOGLE_SHEET_WEBHOOK_URL;
@@ -3020,6 +3025,48 @@ async function upsertPortalMember(env, { email, fullName, role, orderId }, tag) 
   } catch (err) {
     console.error(tag, "portal: upsert failed", err && err.message ? err.message : "unknown error");
   }
+}
+
+// ---------------------------------------------------------------------------
+// Ambassador portal access
+//
+// Picking "Ambassador" on the public /superhuman form is a request, not a
+// grant: the form is open to anyone, and sign-in is email only, so taking the
+// answer at face value would let anybody into the portal. The answer only
+// counts when the team has already put that address on
+// portal_ambassador_allowlist, which nothing public can write.
+//
+// Silent either way. An address that is not on the list simply gets no member
+// row, and the person filling the form is told nothing about it.
+// ---------------------------------------------------------------------------
+async function ambassadorAllowlisted(env, email) {
+  const sb = supabaseService(env);
+  if (!sb) return false;
+  try {
+    const res = await fetch(`${sb.base}/rest/v1/rpc/portal_ambassador_allowed`, {
+      method: "POST",
+      headers: sb.headers,
+      body: JSON.stringify({ p_email: email }),
+    });
+    if (!res.ok) return false;
+    return (await res.json()) === true;
+  } catch {
+    return false;                       // an outage must never grant access
+  }
+}
+
+// Off the response path, like the Slack post and the directory sync: a
+// Supabase outage cannot turn a saved questionnaire into an error.
+function queueAmbassadorAccess(env, ctx, { email, fullName }) {
+  if (!supabaseService(env) || !EMAIL_RE.test(normKey(email))) return;
+  const work = (async () => {
+    const clean = normKey(email);
+    if (!(await ambassadorAllowlisted(env, clean))) return;
+    await upsertPortalMember(env, { email: clean, fullName, role: "ambassador", orderId: "" }, "[SHQ]");
+  })().catch((err) => {
+    console.error("[SHQ] ambassador access failed:", String(err && err.message));
+  });
+  if (ctx && typeof ctx.waitUntil === "function") ctx.waitUntil(work);
 }
 
 async function findPaidCohortOrder(env, dbId, trackingId, email) {

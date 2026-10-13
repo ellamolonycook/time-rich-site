@@ -257,11 +257,12 @@
 
     var head = L.el('div', 'trp-pcard-head');
     head.appendChild(L.el('h3', 'trp-pcard-name', def.name));
-    // The pack is here, or its week has not opened, or there is no row for it
-    // yet. In that last case the card simply says nothing about downloads.
+    // The pack is here, or its week has not opened, or it has not been built
+    // yet. The third case used to say nothing at all, which read as a bug.
     var get = item ? downloadButton(def, item) : null;
     if (get) head.appendChild(get);
     else if (locked) head.appendChild(lockedLabel(def));
+    else head.appendChild(comingSoonLabel(def));
     li.appendChild(head);
 
     li.appendChild(L.el('p', 'trp-pcard-one', def.one));
@@ -328,6 +329,15 @@
   function lockedLabel(def) {
     var span = L.el('span', 'trp-pcard-locked', 'Download unlocks Week ' + def.week);
     span.setAttribute('aria-label', 'The ' + def.name + ' download unlocks in week ' + def.week);
+    return span;
+  }
+
+  // A pack that has not been built yet: no week to name and no row to download
+  // from. Same slot and same style as the locked label, so the card keeps its
+  // shape and the reader is told why there is no button.
+  function comingSoonLabel(def) {
+    var span = L.el('span', 'trp-pcard-locked', 'Download coming soon');
+    span.setAttribute('aria-label', 'The ' + def.name + ' download is coming soon');
     return span;
   }
 

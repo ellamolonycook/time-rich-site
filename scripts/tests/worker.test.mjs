@@ -725,6 +725,13 @@ const memFetch = async (url, init = {}) => {
       const wanted = decodeURIComponent(url.split('email=ilike.')[1] || '').toLowerCase();
       return ok(mem.members.filter((m) => m.active && m.email.toLowerCase() === wanted));
     }
+    if (url.includes('/rpc/portal_ambassador_allowed')) {
+      return ok(mem.allowlist.includes(String(body && body.p_email).trim().toLowerCase()));
+    }
+    if (url.includes('/rpc/portal_upsert_member')) {
+      mem.upserts.push(body);
+      return ok({ ok: true, id: 'member-1', created: true });
+    }
     if (url.includes('/rpc/portal_get_by_token')) {
       // Session tokens are seeded the same way passcodes are, so a test can
       // exercise either door into the same member.
@@ -796,6 +803,10 @@ function resetMembers() {
   mem.slack = [];
   mem.codes = {};
   mem.tokens = {};
+  // Ambassadors the team has approved, and every portal_upsert_member the
+  // Worker asked for, so a test can prove it asked for none.
+  mem.allowlist = [];
+  mem.upserts = [];
   mem.enabled = undefined;
   mem.listedColumns = [];
   mem.allowedQuery = '';
@@ -906,6 +917,49 @@ console.log('\nTime Rich Members — questionnaire sync');
   mem.members = [{ email: 'ada@example.com', role: 'buyer', active: false }];
   await submitQuestionnaire(ADA);
   check('an inactive member is not listed', Object.keys(mem.directory).length === 0);
+}
+
+console.log('\nAmbassador portal access');
+{
+  // The whole point: /superhuman is public and sign-in is email only, so
+  // picking "Ambassador" cannot be what lets someone in.
+  resetMembers();
+  const res = await submitQuestionnaire({ ...ADA, name: 'Chancer', email: 'chancer@example.com', role: 'Ambassador' });
+  check('the form still saves and answers 200', res.status === 200);
+  check('an ambassador nobody approved gets no member row', mem.upserts.length === 0, mem.upserts);
+
+  resetMembers();
+  mem.allowlist = ['amb@example.com'];
+  await submitQuestionnaire({ ...ADA, name: 'Amba Sador', email: ' AMB@Example.com ', role: 'Ambassador' });
+  check('an approved ambassador gets one', mem.upserts.length === 1, mem.upserts);
+  check('as role ambassador, with the address lowercased',
+    mem.upserts[0] && mem.upserts[0].p_role === 'ambassador' &&
+    mem.upserts[0].p_email === 'amb@example.com', mem.upserts[0]);
+  check('and their name carried over', mem.upserts[0] && mem.upserts[0].p_full_name === 'Amba Sador', mem.upserts[0]);
+  check('with no order id, because an ambassador never bought a seat',
+    mem.upserts[0] && !mem.upserts[0].p_order_id, mem.upserts[0]);
+
+  // A buyer answering the form is handled by the webhook, not by this path.
+  resetMembers();
+  mem.allowlist = ['ada@example.com'];
+  mem.members = [{ email: 'ada@example.com', role: 'buyer', active: true }];
+  await submitQuestionnaire(ADA);
+  check('a Buyer answer never takes the ambassador path, even if allowlisted',
+    mem.upserts.length === 0, mem.upserts);
+
+  // Supabase being down must not change what the person filling in sees.
+  resetMembers();
+  mem.allowlist = ['amb@example.com'];
+  mem.supabaseUp = false;
+  const down = await submitQuestionnaire({ ...ADA, email: 'amb@example.com', role: 'Ambassador' });
+  check('a Supabase outage still saves the form and never grants access',
+    down.status === 200 && mem.upserts.length === 0, mem.upserts);
+
+  resetMembers();
+  mem.allowlist = ['amb@example.com'];
+  await submitQuestionnaire({ ...ADA, email: 'amb@example.com', role: 'Ambassador' });
+  check('nothing about the allowlist is ever logged',
+    !mem.logs.some((line) => /amb@example\.com|allowlist/i.test(line)), mem.logs);
 }
 
 {
