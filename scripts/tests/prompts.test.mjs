@@ -154,8 +154,20 @@ console.log('\nPrompt Library — a pack whose week has not opened');
     page.cards().filter((c) => c.querySelector('.trp-pcard-locked')).length);
   check('a card that already has its pack says nothing about unlocking',
     !label('Build my context') && !label('Lock down my Claude'));
-  check('the card with no row at all says nothing either, rather than guessing',
-    !label('Audit my LinkedIn'));
+  check('the pack that has not been built yet says so, rather than nothing',
+    label('Audit my LinkedIn')?.textContent === 'Download coming soon',
+    label('Audit my LinkedIn')?.textContent);
+  check('and it reads properly out loud',
+    /download is coming soon/i.test(label('Audit my LinkedIn').getAttribute('aria-label')),
+    label('Audit my LinkedIn').getAttribute('aria-label'));
+  check('same style and same slot as the unlock label, so cards keep their shape',
+    label('Audit my LinkedIn').tagName === 'SPAN' &&
+    label('Audit my LinkedIn').className === label('Write a post').className &&
+    label('Audit my LinkedIn').parentElement.className ===
+      label('Write a post').parentElement.className,
+    label('Audit my LinkedIn').className);
+  check('it is never a button, because there is nothing to download yet',
+    !page.cardByName('Audit my LinkedIn').querySelector('.trp-pcard-get'));
   check('the label is not a button, because there is nothing to press',
     label('Write a post').tagName === 'SPAN');
   check('the label reads properly out loud',
@@ -172,8 +184,12 @@ console.log('\nPrompt Library — a pack whose week has not opened');
     ...PAYLOAD,
     weeks: PAYLOAD.weeks.filter((w) => w.id !== 3),
   });
-  check('no label when that week is not in the payload',
-    noWeek3.cards().every((c) => !c.querySelector('.trp-pcard-locked')));
+  check('no unlock date is claimed for a week that is not in the payload',
+    noWeek3.cards().every((c) => {
+      const l = c.querySelector('.trp-pcard-locked');
+      return !l || l.textContent === 'Download coming soon';
+    }),
+    noWeek3.cards().map((c) => c.querySelector('.trp-pcard-locked')?.textContent).filter(Boolean).slice(0, 3));
 
   // And once week 3 opens, the label gives way to the button.
   const open3 = await openPrompts({
