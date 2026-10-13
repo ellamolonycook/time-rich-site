@@ -9,12 +9,12 @@
 <script src="/js/affiliate.js"></script>
 <noscript><img height="1" width="1" style="display:none" alt=""
   src="https://www.facebook.com/tr?id=1790181495468842&amp;ev=PageView&amp;noscript=1" /></noscript>
-<title>Female Founder Grant powered by Time Rich</title>
+<title>Female Founder Grant</title>
 <meta name="description" content="Apply for the Female Founder Grant. It covers a Superhuman Accelerator seat plus a Web Summit Lisbon ticket. Travel is not included. Applications close Thursday 22 October, 11:59pm ET." />
 <link rel="canonical" href="https://timerich.ai/ffg/" />
 <meta name="robots" content="index, follow, max-image-preview:large" />
 <meta name="theme-color" content="#FFFDFB" />
-<meta property="og:title" content="Female Founder Grant powered by Time Rich" />
+<meta property="og:title" content="Female Founder Grant" />
 <meta property="og:description" content="A Superhuman Accelerator seat plus a Web Summit Lisbon ticket. Travel is not included. Applications close Thursday 22 October, 11:59pm ET." />
 <meta property="og:url" content="https://timerich.ai/ffg/" />
 <meta property="og:type" content="website" />
@@ -36,23 +36,23 @@
 }
 :root{
   --cream:#FFFDFB;
-  --sage:#D8D9B9;
-  --sage-lt:#E5E6CF;
-  --green:#424B36;
-  --green-deep:#333A28;
-  --pop:#D8D9B9;
+  --sage:#E4E2F8;
+  --sage-lt:#F3F1FC;
+  --green:#6E64FA;
+  --green-deep:#12121A;
+  --pop:#E4E2F8;
   --bg:#FFFDFB;
-  --panel:#D8D9B9;
-  --panel2:#E5E6CF;
-  --line:rgba(66,75,54,.20);
-  --line-2:rgba(66,75,54,.34);
-  --text:#424B36;
-  --muted:#5B6449;
-  --dim:#7E8768;
-  --lime:#67762E;
+  --panel:#E4E2F8;
+  --panel2:#F3F1FC;
+  --line:rgba(18,18,26,.14);
+  --line-2:rgba(18,18,26,.26);
+  --text:#1A1A22;
+  --muted:#4A4A58;
+  --dim:#6C6C7A;
+  --lime:#6E64FA;
   --red:#A8492F;
-  --display:'Space Grotesk',system-ui,-apple-system,'Segoe UI',sans-serif;
-  --mono:'Archivo',-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;
+  --display:'Inter',-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;
+  --mono:'Inter',-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;
   --body:'Inter',-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;
 }
 *{margin:0;padding:0;box-sizing:border-box}
@@ -60,7 +60,7 @@ html{-webkit-text-size-adjust:100%;text-size-adjust:100%;scrollbar-gutter:stable
 html,body{max-width:100%;overflow-x:clip}
 body{background:var(--bg);color:var(--text);font-family:var(--body);font-size:17px;line-height:1.6;-webkit-font-smoothing:antialiased;min-height:100vh;display:flex;flex-direction:column}
 ::selection{background:var(--pop);color:var(--green-deep)}
-h1,h2{font-family:var(--display);font-weight:600;line-height:1.1;letter-spacing:-.022em;color:var(--green-deep);text-wrap:balance;overflow-wrap:break-word}
+h1,h2{font-family:var(--display);font-weight:700;line-height:1.08;letter-spacing:-.04em;color:var(--green-deep);text-wrap:balance;overflow-wrap:break-word}
 a{color:inherit}
 :focus-visible{outline:2px solid var(--green);outline-offset:3px;border-radius:6px}
 .q-title[tabindex="-1"]:focus,#introHead:focus{outline:none}
@@ -123,7 +123,7 @@ main{flex:1 0 auto;padding:38px 0 96px}
 }
 .q-field textarea{resize:vertical}
 .q-field input::placeholder,.q-field textarea::placeholder{color:var(--dim)}
-.q-field input:focus,.q-field textarea:focus{outline:none;border-color:var(--green);box-shadow:0 0 0 3px rgba(66,75,54,.12)}
+.q-field input:focus,.q-field textarea:focus{outline:none;border-color:var(--green);box-shadow:0 0 0 3px rgba(110,100,250,.22)}
 .q-field input[aria-invalid="true"],.q-field textarea[aria-invalid="true"]{border-color:var(--red)}
 .q-error{display:block;margin-top:10px;min-height:1px;font-size:14.5px;color:var(--red)}
 
@@ -143,15 +143,21 @@ main{flex:1 0 auto;padding:38px 0 96px}
   font-family:var(--display);font-weight:700;font-size:16px;letter-spacing:.01em;text-decoration:none;
   padding:14px 30px;border-radius:10px;background:var(--green);color:var(--cream);border:none;cursor:pointer;
   transition:transform .12s ease,box-shadow .12s ease}
-.btn:hover{transform:translateY(-2px);box-shadow:0 12px 30px -12px rgba(66,75,54,.55)}
+.btn:hover{transform:translateY(-2px);box-shadow:0 12px 30px -12px rgba(110,100,250,.55)}
 .btn:disabled{opacity:.6;cursor:wait;transform:none;box-shadow:none}
 .btn.ghost{background:transparent;color:var(--muted);border:1px solid var(--line-2);font-weight:500}
 .btn.ghost:hover{border-color:var(--green);color:var(--green-deep);box-shadow:none}
 .btn-back{min-height:44px;padding:10px 18px;font-size:15px}
+.program-btn{display:inline-flex;flex-direction:column;align-items:flex-start;justify-content:center;gap:2px;
+  min-height:52px;padding:10px 18px;border-radius:10px;border:1.5px solid var(--green);background:transparent;
+  text-decoration:none;color:var(--green-deep);transition:transform .12s ease,box-shadow .12s ease,background .12s ease}
+.program-btn:hover{transform:translateY(-2px);background:var(--panel2);box-shadow:0 12px 30px -12px rgba(110,100,250,.45)}
+.program-name{font-family:var(--display);font-weight:700;font-size:15px;letter-spacing:-.03em;line-height:1.15}
+.program-go{font-size:13.5px;font-weight:600;color:var(--green);line-height:1.2}
 .hint{font-family:var(--mono);font-size:11.5px;letter-spacing:.08em;text-transform:uppercase;color:var(--dim)}
 @media (max-width:560px){ .hint{display:none} }
 
-.intro h1{font-size:clamp(30px,6.2vw,46px);letter-spacing:-.03em;font-weight:700}
+.intro h1{font-size:clamp(30px,6.2vw,46px);letter-spacing:-.045em;font-weight:700}
 .intro .lead{font-size:18px;color:var(--muted);margin-top:16px;max-width:34em}
 .intro .dates{margin-top:14px;font-size:16px;color:var(--text);max-width:34em}
 .intro .micro{margin-top:26px;font-family:var(--mono);font-size:12.5px;letter-spacing:.02em;color:var(--dim)}
@@ -190,12 +196,16 @@ main{flex:1 0 auto;padding:38px 0 96px}
       <input type="text" name="_gotcha" id="f-gotcha" tabindex="-1" autocomplete="off" aria-hidden="true" style="position:absolute;left:-9999px;width:1px;height:1px;opacity:0;" />
 
       <section class="screen intro" id="s-intro" data-screen="intro">
-        <span class="q-eyebrow">Female Founder Grant</span>
-        <h1 tabindex="-1" id="introHead">Female Founder Grant powered by Time Rich</h1>
+        <span class="q-eyebrow">Powered by Stanley</span>
+        <h1 tabindex="-1" id="introHead">Female Founder Grant</h1>
         <p class="lead">Covers a Superhuman Accelerator seat plus a Web Summit Lisbon ticket. Travel not included.</p>
         <p class="dates">Applications close Thursday 22 October, 11:59pm ET. Winners announced Friday 23 October.</p>
         <div class="q-actions">
           <button type="button" class="btn" id="startBtn">Start my application</button>
+          <a class="program-btn" href="/accelerator/">
+            <span class="program-name">Superhuman Accelerator</span>
+            <span class="program-go">See the Program &rarr;</span>
+          </a>
         </div>
         <p class="micro" id="resumeNote" hidden>You have an application in progress &mdash; starting picks up where you left off.</p>
       </section>
