@@ -7,7 +7,7 @@ const sql = (path) => readFileSync(new URL('../../supabase/' + path, import.meta
 const db = new PGlite({ extensions: { pgcrypto } });
 await db.exec(sql('portal_schema.sql'));
 await db.exec(sql('migrations/20261010090000_portal_email_login_and_addevent.sql'));
-await db.exec(sql('migrations/20261013090000_portal_member_progress.sql'));
+await db.exec(sql('migrations/20261013100000_portal_member_progress.sql'));
 
 let pass = 0, fail = 0;
 function check(name, condition, extra) {
