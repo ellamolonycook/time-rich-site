@@ -276,6 +276,16 @@ export default {
       return handleQualify(data, env, cors, ctx);
     }
 
+    // Route: the two grant application forms (/ffg and /stanley) -> one
+    // "Grant Applications" Notion database. The route picks the Grant value,
+    // so the body cannot choose which grant it is filed under.
+    if (path.endsWith("/ffg")) {
+      return handleGrantApplication(GRANT_FORMS.ffg, data, env, cors, ctx);
+    }
+    if (path.endsWith("/stanley")) {
+      return handleGrantApplication(GRANT_FORMS.stanley, data, env, cors, ctx);
+    }
+
     // Route: strategy intake (/strategy) -> the "Client Intake Form" database.
     // Twenty-one written answers, mapped property-by-property below: every
     // column on that database is plain text, and its names are the questions
@@ -532,6 +542,146 @@ async function handleWaitlist(request, env, cors) {
   } catch (err) {
     return json({ ok: false, error: "Unexpected error", detail: String(err) }, 500, cors);
   }
+}
+
+// ---------------------------------------------------------------------------
+// Grant applications: POST /ffg and POST /stanley
+//
+// Two public forms, one Notion database ("Grant Applications"). The Grant
+// select is what tells them apart, and it is set from the route rather than
+// from the body, so a crafted payload cannot file itself under the other
+// grant.
+//
+// Shaped like the other form handlers here: honeypot first, then the two
+// fields worth refusing on, then a property-by-property mapping. Like them it
+// is not rate limited; the honeypot and the Notion write are the only gates.
+//
+// Every text value is clipped to Notion's 2000-character rich-text limit, so
+// a long answer can never be what fails the write.
+// ---------------------------------------------------------------------------
+const GRANT_FORMS = {
+  ffg: {
+    grant: "Female Founder",
+    // Property name -> payload key, for the columns only this form has.
+    extra: { "Woman founder": "woman_founder", "Lisbon": "lisbon" },
+  },
+  stanley: {
+    grant: "Founders Building in Public",
+    extra: {
+      "Platforms": "platforms",
+      "Posts": "posts",
+      "Followers": "followers",
+      "Share Stanley": "share_stanley",
+    },
+  },
+};
+
+// A checkbox group arrives as an array and is stored as one readable line.
+function grantText(value) {
+  if (Array.isArray(value)) return value.map((v) => String(v == null ? "" : v).trim()).filter(Boolean).join(", ");
+  return String(value == null ? "" : value).trim();
+}
+
+async function handleGrantApplication(form, d, env, cors, ctx) {
+  const dbId = env.NOTION_GRANTS_DATABASE_ID;
+  if (!env.NOTION_TOKEN || !dbId) {
+    return json({ ok: false, error: "Grant applications not configured" }, 500, cors);
+  }
+  if (d && d._gotcha) return json({ ok: true }, 200, cors);      // honeypot: silently accept bots
+
+  const fullName = grantText(d && d.full_name);
+  const email = grantText(d && d.email);
+  if (!fullName) return json({ ok: false, error: "Missing name" }, 400, cors);
+  // Notion's email column tops out at 200 characters, so an address longer
+  // than that is refused here rather than failing the write later.
+  if (!isEmail(email) || email.length > 200) {
+    return json({ ok: false, error: "Invalid email" }, 400, cors);
+  }
+
+  const rich = (value) => {
+    const text = clip(grantText(value), 2000);
+    return text ? [{ text: { content: text } }] : [];
+  };
+
+  const properties = {
+    "Name": { title: [{ text: { content: clip(fullName, 2000) } }] },
+    "Grant": { select: { name: form.grant } },
+    "Status": { select: { name: "New" } },
+    "Email": { email },
+    "Company": { rich_text: rich(d.company) },
+    "Stage": { rich_text: rich(d.stage) },
+    "Revenue": { rich_text: rich(d.revenue) },
+    "Why": { rich_text: rich(d.why) },
+    "Show up": { rich_text: rich(d.show_up) },
+    "Entry steps": { rich_text: rich(d.entry_steps) },
+    "Source": { rich_text: rich(d.source) },
+    "Form version": { rich_text: rich(d.form_version) },
+  };
+  for (const [property, key] of Object.entries(form.extra)) {
+    properties[property] = { rich_text: rich(d[key]) };
+  }
+
+  // Notion rejects "" for a url column, so LinkedIn is only sent when it
+  // looks like a link. Submitted is a created_time property and is never set.
+  const linkedin = grantText(d.linkedin);
+  if (linkedin && /^(https?:\/\/)?[^\s.]+\.[^\s]{2,}$/i.test(linkedin)) {
+    const href = /^https?:\/\//i.test(linkedin) ? linkedin : `https://${linkedin}`;
+    properties["LinkedIn"] = { url: clip(href, 2000) };
+  }
+
+  let page = null;
+  try {
+    const res = await fetch("https://api.notion.com/v1/pages", {
+      method: "POST",
+      headers: { ...authHeaders(env), "Content-Type": "application/json" },
+      body: JSON.stringify({ parent: { database_id: dbId }, properties }),
+    });
+    if (!res.ok) {
+      console.error("[grant] notion write failed:", res.status, await res.text());
+      return json({ ok: false, error: "Could not save the application" }, 500, cors);
+    }
+    try { page = await res.json(); } catch { /* saved; only the Slack link is lost */ }
+  } catch (err) {
+    console.error("[grant] notion write threw:", err && err.message ? err.message : String(err));
+    return json({ ok: false, error: "Could not save the application" }, 500, cors);
+  }
+
+  // The row is safe by here, so Slack never changes what the applicant sees.
+  notifySlackGrant(env, ctx, {
+    grant: form.grant,
+    fullName,
+    company: grantText(d.company),
+    stage: grantText(d.stage),
+    revenue: grantText(d.revenue),
+    linkedin: properties["LinkedIn"] ? properties["LinkedIn"].url : "",
+    pageUrl: page && typeof page.url === "string" ? page.url : "",
+  });
+
+  return json({ ok: true }, 200, cors);
+}
+
+function notifySlackGrant(env, ctx, info) {
+  const lines = [
+    `*New grant application · ${calEsc(info.grant)}*`,
+    `*Name:* ${calEsc(info.fullName) || "—"}`,
+    `*Company:* ${calEsc(info.company) || "—"}`,
+    `*Stage:* ${calEsc(info.stage) || "—"}`,
+    `*Revenue:* ${calEsc(info.revenue) || "—"}`,
+    `*LinkedIn:* ${info.linkedin || "—"}`,
+  ];
+  if (info.pageUrl) lines.push(`<${info.pageUrl}|Open in Notion>`);
+
+  const text = lines.join("\n");
+  const work = postSlackMessage(
+    env,
+    [{ type: "section", text: { type: "mrkdwn", text } }],
+    `New grant application · ${info.grant}`,
+    env.SLACK_GRANTS_CHANNEL_ID
+  ).catch((err) => {
+    // Logged and swallowed: the application is already in Notion.
+    console.error("[grant] slack post failed:", err && err.message ? err.message : String(err));
+  });
+  if (ctx && typeof ctx.waitUntil === "function") ctx.waitUntil(work);
 }
 
 // Super Human Accelerator application (/sh-apply, form_version "sh-apply-v2").

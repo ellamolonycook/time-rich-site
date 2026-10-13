@@ -402,8 +402,10 @@ main{flex:1 0 auto;padding:38px 0 96px}
   window.gtag = window.gtag || function(){};
   function track(name, params){ try{ if(window.gtag) window.gtag('event', name, params||{}); }catch(e){} }
 
-  // FORM_ENDPOINT will be wired here when applications are stored.
-  // var FORM_ENDPOINT = 'https://time-rich-forms.timerich.workers.dev/ffg';
+  // Where the application is saved. The Worker writes it to the "Grant
+  // Applications" Notion database and posts to Slack.
+  var FORM_ENDPOINT = 'https://time-rich-forms.timerich.workers.dev/ffg';
+  var SUBMIT_ERROR = 'Something went wrong. Please try again, or email emc@timerich.ai.';
   var STORE_KEY  = 'ffgApply';
   var THANKS_KEY = 'ffgThanks';
   var THANKS_URL = '/ffg/thanks/';
@@ -878,17 +880,38 @@ main{flex:1 0 auto;padding:38px 0 96px}
     };
 
     var btn = document.getElementById('submitBtn');
+    var idleLabel = btn.textContent;
     submitting = true;
     btn.disabled = true;
     btn.textContent = 'Sending…';
     document.getElementById('e-submit').textContent = '';
 
-    // No network submit yet. FORM_ENDPOINT above is where this payload will POST.
-    track('ffg_submit', { page: 'ffg' });
-    try{ sessionStorage.setItem(THANKS_KEY, firstNameOf(payload.full_name)); }catch(err){}
-    resetFormState();
-    stripHash();
-    window.location.replace(THANKS_URL);
+    // Only a 2xx sends anyone to the thank-you page. Anything else leaves
+    // the answers exactly where they are, so the application can be sent
+    // again without retyping it.
+    function failed(){
+      submitting = false;
+      btn.disabled = false;
+      btn.textContent = idleLabel;
+      document.getElementById('e-submit').textContent = SUBMIT_ERROR;
+    }
+
+    function saved(){
+      track('ffg_submit', { page: 'ffg' });
+      try{ sessionStorage.setItem(THANKS_KEY, firstNameOf(payload.full_name)); }catch(err){}
+      resetFormState();
+      stripHash();
+      window.location.replace(THANKS_URL);
+    }
+
+    fetch(FORM_ENDPOINT, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(payload)
+    }).then(function(res){
+      if (res && res.ok) saved();
+      else failed();
+    }).catch(failed);
   });
 
   function isInAppBrowser(){
