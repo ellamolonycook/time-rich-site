@@ -24,18 +24,18 @@
 <style>
 :root{
   --cream:#FFFDFB;
-  --green:#424B36;
-  --green-deep:#333A28;
-  --pop:#D8D9B9;
+  --green:#6E64FA;
+  --green-deep:#12121A;
+  --pop:#E4E2F8;
   --bg:#FFFDFB;
-  --line:rgba(66,75,54,.20);
-  --line-2:rgba(66,75,54,.34);
-  --text:#424B36;
-  --muted:#5B6449;
-  --dim:#7E8768;
-  --lime:#67762E;
-  --display:'Space Grotesk',system-ui,-apple-system,'Segoe UI',sans-serif;
-  --mono:'Archivo',-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;
+  --line:rgba(18,18,26,.14);
+  --line-2:rgba(18,18,26,.26);
+  --text:#1A1A22;
+  --muted:#4A4A58;
+  --dim:#6C6C7A;
+  --lime:#6E64FA;
+  --display:'Inter',-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;
+  --mono:'Inter',-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;
   --body:'Inter',-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;
 }
 *{margin:0;padding:0;box-sizing:border-box}
@@ -43,15 +43,15 @@ html{-webkit-text-size-adjust:100%;text-size-adjust:100%}
 html,body{max-width:100%;overflow-x:clip}
 body{background:var(--bg);color:var(--text);font-family:var(--body);font-size:17px;line-height:1.65;-webkit-font-smoothing:antialiased;min-height:100vh;display:flex;flex-direction:column}
 ::selection{background:var(--pop);color:var(--green-deep)}
-h1{font-family:var(--display);font-weight:600;line-height:1.1;letter-spacing:-.03em;color:var(--green-deep);text-wrap:balance;overflow-wrap:break-word}
+h1{font-family:var(--display);font-weight:700;line-height:1.08;letter-spacing:-.04em;color:var(--green-deep);text-wrap:balance;overflow-wrap:break-word}
 a{color:inherit}
 :focus-visible{outline:2px solid var(--green);outline-offset:3px;border-radius:6px}
 .wrap{width:100%;max-width:660px;margin:0 auto;padding:0 20px}
 
 .topbar{border-bottom:1px solid var(--line);background:rgba(255,253,251,.94)}
 .topbar-inner{display:flex;align-items:center;height:58px}
-.brand-word{font-family:var(--display);font-weight:700;letter-spacing:-.02em;font-size:18px;color:var(--text);text-decoration:none;line-height:1}
-.brand-word .wm-dot{color:var(--lime)}
+.brand-logo{display:flex;align-items:center;text-decoration:none;line-height:0}
+.brand-logo img{height:38px;width:auto;display:block}
 
 main{flex:1 0 auto;padding:48px 0 96px}
 @media (min-width:700px){ main{padding:72px 0 120px} }
@@ -74,7 +74,7 @@ h1{font-size:clamp(30px,6vw,46px);font-weight:700}
 
 <header class="topbar">
   <div class="wrap topbar-inner">
-    <a class="brand-word" href="https://timerich.ai/">Time Rich<span class="wm-dot">.</span></a>
+    <a class="brand-logo" href="https://timerich.ai/stanley/"><img src="/stanley/stanley-logo.png" alt="Stanley" width="128" height="38" /></a>
   </div>
 </header>
 
