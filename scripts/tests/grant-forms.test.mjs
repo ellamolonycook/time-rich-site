@@ -54,6 +54,13 @@ const FORMS = [
     },
     // Keys only this form sends, which the Worker files in its own columns.
     only: ['woman_founder', 'lisbon'],
+    moreOpens: 'Raise your hand if you',
+    prizes: [
+      '\u{1F39F}️ 1 ticket to Web Summit Lisbon',
+      '\u{1F46F} 2 seats in the 4-week Superhuman Accelerator (bring a founder you believe in)',
+      '✍️ 3 months free of an AI Head of Content - Stanley',
+      '\u{1F34B} 3 months free of an AI tool - LaunchLemonade',
+    ],
   },
   {
     name: 'stanley',
@@ -80,6 +87,12 @@ const FORMS = [
       share_stanley: 'Happy to',
     },
     only: ['platforms', 'posts', 'followers', 'share_stanley'],
+    moreOpens: 'In partnership with Stanley',
+    prizes: [
+      '\u{1F39F}️ 2 seats in the AI Superhuman Accelerator',
+      '\u{1F3E1} 1 year in the Time Rich Club',
+      '✍️ 3 months free of Stanley your AI Head of Content',
+    ],
   },
 ];
 
@@ -221,6 +234,73 @@ console.log('\nBoth grant forms are wired');
     FORMS[0].endpoint !== FORMS[1].endpoint);
   check('both name the same contact address on failure',
     FORMS.every((f) => f.html.includes('email emc@timerich.ai.')));
+}
+
+console.log('\nBoth grant pages — the More information dropdown');
+{
+  for (const form of FORMS) {
+    const page = boot(form);
+    const intro = page.document.getElementById('s-intro');
+    const more = intro.querySelector('details.more');
+    const actions = intro.querySelector('.q-actions');
+
+    check('/' + form.name + ': the dropdown is in the intro screen', Boolean(more));
+    check('/' + form.name + ': it sits before the buttons',
+      (more.compareDocumentPosition(actions) & 4) !== 0);
+    check('/' + form.name + ': and after the dates line',
+      (intro.querySelector('.dates').compareDocumentPosition(more) & 4) !== 0);
+    check('/' + form.name + ': it is closed by default',
+      more.open === false && !more.hasAttribute('open'));
+    check('/' + form.name + ': its summary says More information',
+      more.querySelector('summary').textContent.trim() === 'More information',
+      more.querySelector('summary').textContent.trim());
+
+    // Opening it is native, so this is really a check that nothing on the
+    // page intercepts the toggle.
+    more.open = true;
+    check('/' + form.name + ': it opens', more.open === true);
+    check('/' + form.name + ': the buttons are still there once it is open',
+      Boolean(intro.querySelector('.q-actions #startBtn')));
+    more.open = false;
+    check('/' + form.name + ': and closes again', more.open === false);
+
+    const prizes = Array.from(more.querySelectorAll('.prizes li')).map((li) => li.textContent.trim());
+    check('/' + form.name + ': every prize line is listed, one emoji each',
+      prizes.length === form.prizes.length &&
+      form.prizes.every((line, idx) => prizes[idx] === line),
+      prizes);
+    check('/' + form.name + ': the prize list carries no bullet markers',
+      more.querySelector('.prizes').tagName === 'UL');
+
+    const body = more.querySelector('.more-body').textContent;
+    check('/' + form.name + ': the opening line is the brief\'s',
+      body.includes(form.moreOpens), body.slice(0, 80));
+  }
+}
+
+console.log('\n/ffg — the Fellowship rename and the matching lead');
+{
+  const ffg = FORMS.find((f) => f.name === 'ffg');
+  const thanks = fs.readFileSync(site('ffg/thanks/index.html'), 'utf8');
+
+  check('nothing a visitor reads still says "Female Founder Grant"',
+    !/Female Founder Grant/.test(ffg.html) && !/Female Founder Grant/.test(thanks));
+  check('the title, og:title and h1 all say Fellowship',
+    /<title>Female Founder Fellowship<\/title>/.test(ffg.html) &&
+    /og:title" content="Female Founder Fellowship"/.test(ffg.html) &&
+    /id="introHead">Female Founder Fellowship</.test(ffg.html));
+  check('the thanks page says Fellowship too, in its title and on the page',
+    /Application received . Female Founder Fellowship/.test(thanks) &&
+    /Your Female Founder Fellowship application is in/.test(thanks));
+
+  const LEAD = 'One winner gets a Web Summit Lisbon ticket, 2 Superhuman Accelerator seats and more. Travel not included.';
+  check('the lead no longer promises one seat while the prizes say two',
+    ffg.html.includes('<p class="lead">' + LEAD + '</p>'));
+  check('and the two descriptions were brought in line with it',
+    /name="description" content="Apply for the Female Founder Fellowship\. One winner gets a Web Summit Lisbon ticket, 2 Superhuman Accelerator seats and more\./.test(ffg.html) &&
+    /og:description" content="One winner gets a Web Summit Lisbon ticket, 2 Superhuman Accelerator seats and more\./.test(ffg.html));
+  check('no page still advertises a single Accelerator seat',
+    !/a Superhuman Accelerator seat plus/i.test(ffg.html));
 }
 
 console.log('\n' + pass + ' passed, ' + fail + ' failed');
