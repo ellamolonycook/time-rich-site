@@ -163,6 +163,20 @@ main{flex:1 0 auto;padding:38px 0 96px}
 .intro h1{font-size:clamp(30px,6.2vw,46px);letter-spacing:-.045em;font-weight:700}
 .intro .lead{font-size:18px;color:var(--muted);margin-top:16px;max-width:34em}
 .intro .dates{margin-top:14px;font-size:16px;color:var(--text);max-width:34em}
+.intro .more{margin-top:18px;max-width:34em;border-top:1px solid var(--line);border-bottom:1px solid var(--line)}
+.intro .more>summary{list-style:none;display:flex;align-items:center;gap:12px;min-height:44px;padding:10px 0;
+  cursor:pointer;font-family:var(--mono);font-size:15px;font-weight:600;color:var(--text)}
+.intro .more>summary::-webkit-details-marker{display:none}
+.intro .more>summary:focus-visible{outline:2px solid var(--green);outline-offset:3px;border-radius:6px}
+.intro .more .chev{flex:none;margin-left:auto;width:9px;height:9px;border-right:2px solid var(--lime);
+  border-bottom:2px solid var(--lime);transform:translateY(-2px) rotate(45deg);transition:transform .2s ease}
+.intro .more[open] .chev{transform:translateY(2px) rotate(-135deg)}
+.intro .more-body{padding:2px 0 18px}
+.intro .more-body p{font-size:16.5px;line-height:1.6;color:var(--muted);margin:0 0 14px}
+.intro .more-body p:last-child{margin-bottom:0}
+.intro .prizes{list-style:none;margin:0 0 14px;padding:0;display:grid;gap:8px}
+.intro .prizes li{font-size:16.5px;line-height:1.5;color:var(--text)}
+@media (prefers-reduced-motion:reduce){.intro .more .chev{transition:none}}
 .intro .micro{margin-top:26px;font-family:var(--mono);font-size:12.5px;letter-spacing:.02em;color:var(--dim)}
 
 .summary{margin-top:22px;border:1px solid var(--line);border-radius:12px;background:var(--panel2);padding:18px 20px}
@@ -203,6 +217,19 @@ main{flex:1 0 auto;padding:38px 0 96px}
         <span class="q-eyebrow">Powered by Stanley</span>
         <h1 tabindex="-1" id="introHead">Founders Building in Public Fellowship</h1>
         <p class="dates">Applications close Friday 23 October, 11:59pm ET. Winners announced Saturday 24 October.</p>
+        <details class="more">
+          <summary>More information<span class="chev" aria-hidden="true"></span></summary>
+          <div class="more-body">
+            <p>In partnership with Stanley (an AI tool that's my head of content!), we'd like to present you with an invitation for a fellowship. This is for founders like you that won't quit on their dreams.</p>
+            <p>Here's what's included:</p>
+            <ul class="prizes">
+              <li>🎟️ 2 seats in the AI Superhuman Accelerator</li>
+              <li>🏡 1 year in the Time Rich Club</li>
+              <li>✍️ 3 months free of Stanley your AI Head of Content</li>
+            </ul>
+            <p>Inside the AI Superhuman Accelerator you'll save thousands of hours by learning the latest AI tools to create content, scale your biz, and grow your influence. Built by founders for founders, you'll get world class teachers every week with accountability to ensure you crush it.</p>
+          </div>
+        </details>
         <div class="q-actions">
           <button type="button" class="btn" id="startBtn">Start Application</button>
           <a class="program-btn" href="/accelerator/">
