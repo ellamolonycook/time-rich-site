@@ -293,6 +293,60 @@
     color: var(--trp-muted);
   }
 
+  /* -- the sponsor lockup -------------------------------------------------
+     "Powered by" in the same small mono label as .trp-tag, then the anchor
+     sponsor's logo at 24px. One rule for every place it appears: under the
+     card on the sign-in page, in the footer of every page inside, and beside
+     the Time Rich wordmark in the header once the screen is wide enough.
+
+     Two image files, not one. The wordmark in the logo is black, which
+     disappears on the dark theme, so the dark file carries a cream one. Both
+     sit in the markup and the theme picks between them -- an img's src is not
+     something CSS can swap, and the theme here is an attribute rather than a
+     media query, so <picture> cannot do it either.
+
+     Muted at rest so it never competes with the Time Rich wordmark. */
+  .trp-powered {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    text-decoration: none;
+    line-height: 1;
+  }
+  .trp-powered-label {
+    font-family: var(--trp-label);
+    font-size: 11px;
+    letter-spacing: .14em;
+    text-transform: uppercase;
+    color: var(--trp-muted);
+    white-space: nowrap;
+  }
+  .trp-powered img {
+    display: block;
+    height: 24px;
+    width: auto;
+    opacity: .85;
+    transition: opacity var(--trp-t) ease;
+  }
+  .trp-powered:hover img { opacity: 1; }
+
+  /* The light file is the default; the dark theme swaps in the reversed one. */
+  .trp-powered .trp-powered-rev { display: none; }
+  :root[data-theme='dark'] .trp-powered .trp-powered-pos { display: none; }
+  :root[data-theme='dark'] .trp-powered .trp-powered-rev { display: block; }
+  @media (prefers-color-scheme: dark) {
+    :root[data-theme='system'] .trp-powered .trp-powered-pos { display: none; }
+    :root[data-theme='system'] .trp-powered .trp-powered-rev { display: block; }
+  }
+
+  /* In the header it sits off the wordmark with a hairline between them, and
+     only from 1280px up, where the centred nav leaves room for it. */
+  .trp-powered-head {
+    padding-left: 14px;
+    border-left: 1px solid var(--trp-rule);
+  }
+  .trp-powered-head img { height: 22px; }
+
   /* -- the header --------------------------------------------------------
      Pinned to the top, 56px on a phone and 64px above that. A solid page
      colour and one hairline: no blur and no shadow, so nothing shifts or

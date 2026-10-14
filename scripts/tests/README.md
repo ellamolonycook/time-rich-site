@@ -1,11 +1,11 @@
 # Tests — /sh-apply application form, worker mapping, Time Rich Members, portal members
 
-Four suites, no framework. Plain Node, one file each, run in a couple of seconds.
+Fourteen suites, no framework. Plain Node, one file each, run in a couple of seconds.
 
 ```bash
 cd scripts/tests
 npm install     # once — pulls jsdom and PGlite
-npm test        # all four suites
+npm test        # every suite
 ```
 
 Or one at a time: `npm run test:worker` / `npm run test:form` / `npm run test:members` /
@@ -142,3 +142,28 @@ Worker and uses it the way a member would.
 
 Like the form suite it has no layout, so the grid sizes and the pop-up's look
 are eyeball checks.
+
+## `stanley-logo.test.mjs`
+
+Reads the "Powered by Stanley" lockup out of
+[`accelerator/index.html`](../../accelerator/index.html) and the seven portal
+pages in jsdom, and checks the two PNGs by their headers.
+
+Stanley is the anchor sponsor, so what this pins is that the credit is actually
+on every page that owes them one and is a working one: the referral link on
+every lockup, `target="_blank"` with `rel="noopener sponsored"`, `alt="Stanley"`
+so the credit survives with images off, and `width`/`height` matching the file's
+own 765×203 so the logo cannot shove the page about while it loads. It also
+pins where each lockup sits — hero and closing band on /accelerator, under the
+card on the sign-in page, and footer plus a header copy held back to 1280px on
+the pages inside — and that the style is written once per site rather than once
+per placement.
+
+Two image files, not one: the wordmark is black and disappears on the portal's
+dark theme, so the portal carries a reversed copy beside the normal one and the
+theme picks between them. The suite checks both are present on every themed page
+and that the original `stanley/stanley-logo.png` is left as it was — 765×227,
+no alpha — since that is what the transparent copies are cut from.
+
+No layout here either, so clearance in the header, the knockout's edges and
+whether the lockup reads as muted are eyeball checks.
