@@ -412,9 +412,9 @@ console.log('\nPrompt Library — open in your AI');
 
   const withAi = page.cards().filter((c) => c.querySelector('.trp-ai'));
   check('a card whose pack the member has gets the three buttons',
-    withAi.length === 3 &&
+    withAi.length === 4 &&
     withAi.map((c) => c.querySelector('.trp-pcard-name').textContent).sort().join('|') ===
-      'Break down a hook|Build my context|Write a post',
+      'Break down a hook|Build my context|Lock down my Claude|Write a post',
     withAi.map((c) => c.querySelector('.trp-pcard-name').textContent));
 
   const links = withAi[0].querySelectorAll('.trp-ai');
@@ -444,6 +444,17 @@ console.log('\nPrompt Library — open in your AI');
     [...writer.querySelectorAll('.trp-ai')].map((a) => a.href));
   check('and not one of them carries half a skill',
     [...writer.querySelectorAll('.trp-ai')].every((a) => !a.href.includes('?q=')));
+  // Unlike the LinkedIn packs, this one fits in a query string, so it is
+  // the one skill card that opens the chat already filled in.
+  const sec = page.cardByName('Lock down my Claude');
+  const secText = page.dom.window.TRSkillText['security-superhuman.zip'].trim() +
+    '\n\nSuperhuman: lock down my Claude';
+  check('a short skill rides in the URL instead of the clipboard',
+    [...sec.querySelectorAll('.trp-ai')].every((a) => a.href.includes('?q=')),
+    [...sec.querySelectorAll('.trp-ai')].map((a) => a.href.slice(0, 40)));
+  check('and it arrives whole, instructions then the phrase',
+    decodeURIComponent(sec.querySelector('.trp-ai').href.split('?q=')[1]) === secText);
+
   check('no href on the page runs past the 6000 character ceiling',
     [...page.doc.querySelectorAll('.trp-ai')].every((a) => a.href.length <= 6000),
     Math.max(...[...page.doc.querySelectorAll('.trp-ai')].map((a) => a.href.length)));
@@ -485,18 +496,22 @@ console.log('\nPrompt Library — a locked card stays locked');
 
 console.log('\nPrompt Library — a pack with no instructions to send');
 {
-  // security-superhuman is unlocked for everyone but is not in downloads/,
-  // so there is nothing to hand an AI. A trigger phrase on its own would
-  // quietly do nothing, so the card shows no buttons at all rather than a
-  // button that fails silently.
+  // Every pack a member can unlock is in downloads/ now. The one card left
+  // without instructions is the one whose pack has not been built at all,
+  // and it has no download either, so the two stay in step: no pack, no
+  // button of any kind, rather than a trigger phrase that quietly does
+  // nothing in an AI that has not installed the skill.
   const page = await openPrompts();
-  const security = page.cardByName('Lock down my Claude');
-  check('Lock down my Claude: has its download but no AI buttons, because no pack to read',
-    Boolean(security.querySelector('.trp-pcard-get')) && !security.querySelector('.trp-ai'));
-  // Its neighbour in week 0 does have one now, which is what tells the two
-  // cases apart: the gate is the pack, not the week.
-  check('Build my context, whose pack is in downloads/, does get them',
-    page.cardByName('Build my context').querySelectorAll('.trp-ai').length === 3);
+  const soon = page.cardByName('Audit my LinkedIn');
+  check('the pack that does not exist yet has neither a download nor AI buttons',
+    !soon.querySelector('.trp-pcard-get') && !soon.querySelector('.trp-ai') &&
+    soon.querySelector('.trp-pcard-locked').textContent === 'Download coming soon');
+  check('both week 0 cards now have their three buttons',
+    page.cardByName('Build my context').querySelectorAll('.trp-ai').length === 3 &&
+    page.cardByName('Lock down my Claude').querySelectorAll('.trp-ai').length === 3);
+  check('and the phrase each one sends is its own, after the instructions',
+    page.dom.window.TRSkillText['security-superhuman.zip'].includes('security-superhuman') &&
+    page.dom.window.TRSkillText['compass-superhuman.zip'].includes('compass-superhuman'));
   check('the generated file is the only place that text comes from',
     /TRSkillText/.test(PROMPTS_JS) && !/ROLE\\nYou are a world-class/.test(PROMPTS_JS));
   check('and the page loads it before the renderer that reads it',
@@ -515,15 +530,14 @@ console.log('\nPrompt Library — the generated instructions');
   const page = await openPrompts();
   const text = page.dom.window.TRSkillText;
   const files = Object.keys(text);
-  check('every pack in downloads/ is in it', files.length === 16, files.length);
+  check('every pack in downloads/ is in it', files.length === 17, files.length);
   check('each entry is the pack\u2019s own SKILL.md',
     files.every((f) => /^---\nname: /.test(text[f])), files.filter((f) => !/^---\nname: /.test(text[f])));
-  check('fourteen of the sixteen cards can be opened in an AI',
-    CARD_FILES.filter((f) => text[f]).length === 14,
+  check('fifteen of the sixteen cards can be opened in an AI',
+    CARD_FILES.filter((f) => text[f]).length === 15,
     CARD_FILES.filter((f) => !text[f]));
-  check('and the two that cannot are the packs that are not in downloads/',
-    CARD_FILES.filter((f) => !text[f]).sort().join(', ') ===
-      'audit-linkedin-for-icp-goal.zip, security-superhuman.zip',
+  check('and the only one that cannot is the pack that has not been built',
+    CARD_FILES.filter((f) => !text[f]).join(', ') === 'audit-linkedin-for-icp-goal.zip',
     CARD_FILES.filter((f) => !text[f]));
   check('the file says not to edit it by hand',
     /GENERATED FILE/.test(SKILL_TEXT_JS) && /build-skill-instructions\.mjs/.test(SKILL_TEXT_JS));
