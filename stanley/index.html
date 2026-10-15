@@ -197,10 +197,10 @@ main{flex:1 0 auto;padding:38px 0 96px}
   <div class="wrap topbar-inner">
     <a class="brand-logo" href="https://timerich.ai/stanley/"><img src="/stanley/stanley-logo.png" alt="Stanley" width="128" height="38" /></a>
     <div class="progress" id="progress" hidden>
-      <div class="bar" role="progressbar" id="bar" aria-valuemin="1" aria-valuemax="13" aria-valuenow="1" aria-label="Application progress">
+      <div class="bar" role="progressbar" id="bar" aria-valuemin="1" aria-valuemax="14" aria-valuenow="1" aria-label="Application progress">
         <div class="bar-fill" id="barFill"></div>
       </div>
-      <span class="progress-label" id="progressLabel">1 of 13</span>
+      <span class="progress-label" id="progressLabel">1 of 14</span>
     </div>
   </div>
 </header>
@@ -225,7 +225,7 @@ main{flex:1 0 auto;padding:38px 0 96px}
             <ul class="prizes">
               <li>🎟️ 2 seats in the AI Superhuman Accelerator</li>
               <li>🏡 1 year in the Time Rich Club</li>
-              <li>✍️ 3 months free of Stanley your AI Head of Content</li>
+              <li>✍️ Stanley set up for you by the Stanley team: brain, voice and rituals built with you ($1,000 value)</li>
             </ul>
             <p>Inside the AI Superhuman Accelerator you'll save thousands of hours by learning the latest AI tools to create content, scale your biz, and grow your influence. Built by founders for founders, you'll get world class teachers every week with accountability to ensure you crush it.</p>
           </div>
@@ -349,15 +349,13 @@ main{flex:1 0 auto;padding:38px 0 96px}
         </div>
       </section>
 
-      <section class="screen" id="s-8" data-step="8" data-key="posts" data-select hidden>
+      <section class="screen" id="s-8" data-step="8" data-key="built_for_you" data-select hidden>
         <span class="q-eyebrow">Question 8</span>
-        <h2 class="q-title" id="h-8" tabindex="-1">How many posts do you publish a week, across all platforms?</h2>
+        <h2 class="q-title" id="h-8" tabindex="-1">Would you want this built for you?</h2>
         <div class="q-opts" role="group" aria-labelledby="h-8" aria-describedby="e-8">
-          <button type="button" class="opt" data-value="0"><span class="opt-key">1</span><span>0</span></button>
-          <button type="button" class="opt" data-value="1–2"><span class="opt-key">2</span><span>1&ndash;2</span></button>
-          <button type="button" class="opt" data-value="3–5"><span class="opt-key">3</span><span>3&ndash;5</span></button>
-          <button type="button" class="opt" data-value="6–10"><span class="opt-key">4</span><span>6&ndash;10</span></button>
-          <button type="button" class="opt" data-value="10+"><span class="opt-key">5</span><span>10+</span></button>
+          <button type="button" class="opt" data-value="Yes"><span class="opt-key">1</span><span>Yes</span></button>
+          <button type="button" class="opt" data-value="Maybe"><span class="opt-key">2</span><span>Maybe</span></button>
+          <button type="button" class="opt" data-value="No"><span class="opt-key">3</span><span>No</span></button>
         </div>
         <span class="q-error" id="e-8" aria-live="polite"></span>
         <div class="q-actions">
@@ -365,15 +363,15 @@ main{flex:1 0 auto;padding:38px 0 96px}
         </div>
       </section>
 
-      <section class="screen" id="s-9" data-step="9" data-key="followers" data-select hidden>
+      <section class="screen" id="s-9" data-step="9" data-key="posts" data-select hidden>
         <span class="q-eyebrow">Question 9</span>
-        <h2 class="q-title" id="h-9" tabindex="-1">Combined followers across those platforms?</h2>
+        <h2 class="q-title" id="h-9" tabindex="-1">How many posts do you publish a week, across all platforms?</h2>
         <div class="q-opts" role="group" aria-labelledby="h-9" aria-describedby="e-9">
-          <button type="button" class="opt" data-value="Under 1K"><span class="opt-key">1</span><span>Under 1K</span></button>
-          <button type="button" class="opt" data-value="1K–10K"><span class="opt-key">2</span><span>1K&ndash;10K</span></button>
-          <button type="button" class="opt" data-value="10K–50K"><span class="opt-key">3</span><span>10K&ndash;50K</span></button>
-          <button type="button" class="opt" data-value="50K–100K"><span class="opt-key">4</span><span>50K&ndash;100K</span></button>
-          <button type="button" class="opt" data-value="100K+"><span class="opt-key">5</span><span>100K+</span></button>
+          <button type="button" class="opt" data-value="0"><span class="opt-key">1</span><span>0</span></button>
+          <button type="button" class="opt" data-value="1–2"><span class="opt-key">2</span><span>1&ndash;2</span></button>
+          <button type="button" class="opt" data-value="3–5"><span class="opt-key">3</span><span>3&ndash;5</span></button>
+          <button type="button" class="opt" data-value="6–10"><span class="opt-key">4</span><span>6&ndash;10</span></button>
+          <button type="button" class="opt" data-value="10+"><span class="opt-key">5</span><span>10+</span></button>
         </div>
         <span class="q-error" id="e-9" aria-live="polite"></span>
         <div class="q-actions">
@@ -381,12 +379,28 @@ main{flex:1 0 auto;padding:38px 0 96px}
         </div>
       </section>
 
-      <section class="screen" id="s-10" data-step="10" data-key="why" hidden>
+      <section class="screen" id="s-10" data-step="10" data-key="followers" data-select hidden>
         <span class="q-eyebrow">Question 10</span>
-        <h2 class="q-title" id="h-10" tabindex="-1"><label for="f-why">Why do you want to join the AI Accelerator?</label></h2>
+        <h2 class="q-title" id="h-10" tabindex="-1">Combined followers across those platforms?</h2>
+        <div class="q-opts" role="group" aria-labelledby="h-10" aria-describedby="e-10">
+          <button type="button" class="opt" data-value="Under 1K"><span class="opt-key">1</span><span>Under 1K</span></button>
+          <button type="button" class="opt" data-value="1K–10K"><span class="opt-key">2</span><span>1K&ndash;10K</span></button>
+          <button type="button" class="opt" data-value="10K–50K"><span class="opt-key">3</span><span>10K&ndash;50K</span></button>
+          <button type="button" class="opt" data-value="50K–100K"><span class="opt-key">4</span><span>50K&ndash;100K</span></button>
+          <button type="button" class="opt" data-value="100K+"><span class="opt-key">5</span><span>100K+</span></button>
+        </div>
+        <span class="q-error" id="e-10" aria-live="polite"></span>
+        <div class="q-actions">
+          <button type="button" class="btn ghost btn-back" data-back>Back</button>
+        </div>
+      </section>
+
+      <section class="screen" id="s-11" data-step="11" data-key="why" hidden>
+        <span class="q-eyebrow">Question 11</span>
+        <h2 class="q-title" id="h-11" tabindex="-1"><label for="f-why">Why do you want to join the AI Accelerator?</label></h2>
         <div class="q-field">
-          <textarea id="f-why" name="why" rows="4" enterkeyhint="enter" aria-describedby="e-10"></textarea>
-          <span class="q-error" id="e-10" aria-live="polite"></span>
+          <textarea id="f-why" name="why" rows="4" enterkeyhint="enter" aria-describedby="e-11"></textarea>
+          <span class="q-error" id="e-11" aria-live="polite"></span>
         </div>
         <div class="q-actions">
           <button type="button" class="btn" data-next>Continue</button>
@@ -395,52 +409,52 @@ main{flex:1 0 auto;padding:38px 0 96px}
         </div>
       </section>
 
-      <section class="screen" id="s-11" data-step="11" data-key="show_up" data-select hidden>
-        <span class="q-eyebrow">Question 11</span>
-        <h2 class="q-title" id="h-11" tabindex="-1">I will show up live</h2>
-        <div class="q-opts" role="group" aria-labelledby="h-11" aria-describedby="e-11">
+      <section class="screen" id="s-12" data-step="12" data-key="show_up" data-select hidden>
+        <span class="q-eyebrow">Question 12</span>
+        <h2 class="q-title" id="h-12" tabindex="-1">I will show up live</h2>
+        <div class="q-opts" role="group" aria-labelledby="h-12" aria-describedby="e-12">
           <button type="button" class="opt" data-value="Yes"><span class="opt-key">1</span><span>I will show up live to all sessions, 12pm ET, Mon 26 Oct to Fri 20 Nov</span></button>
         </div>
-        <span class="q-error" id="e-11" aria-live="polite"></span>
+        <span class="q-error" id="e-12" aria-live="polite"></span>
         <div class="q-actions">
           <button type="button" class="btn ghost btn-back" data-back>Back</button>
         </div>
       </section>
 
-      <section class="screen" id="s-12" data-step="12" data-key="entry_steps" data-select data-multi data-require-all hidden>
-        <span class="q-eyebrow">Question 12</span>
-        <h2 class="q-title" id="h-12" tabindex="-1">Entry steps done</h2>
-        <p class="q-help" id="help-12">Check all four.
+      <section class="screen" id="s-13" data-step="13" data-key="entry_steps" data-select data-multi data-require-all hidden>
+        <span class="q-eyebrow">Question 13</span>
+        <h2 class="q-title" id="h-13" tabindex="-1">Entry steps done</h2>
+        <p class="q-help" id="help-13">Check all four.
           <a href="https://timerichclub.com" target="_blank" rel="noopener">Subscribe at timerichclub.com</a>,
           <a href="https://www.linkedin.com/in/ellamolonycook/" target="_blank" rel="noopener">follow Ella Molony Cook</a>,
           and <a href="https://www.linkedin.com/company/timerichclub/" target="_blank" rel="noopener">follow Time Rich</a>.
         </p>
-        <div class="q-opts" role="group" aria-labelledby="h-12" aria-describedby="help-12 e-12">
+        <div class="q-opts" role="group" aria-labelledby="h-13" aria-describedby="help-13 e-13">
           <button type="button" class="opt" data-value="Tagged or sent this to 2 founders"><span class="opt-key">1</span><span>Tagged or sent this to 2 founders</span></button>
           <button type="button" class="opt" data-value="Subscribed to timerichclub.com"><span class="opt-key">2</span><span>Subscribed to timerichclub.com</span></button>
           <button type="button" class="opt" data-value="Followed Ella Molony Cook on LinkedIn"><span class="opt-key">3</span><span>Followed Ella Molony Cook on LinkedIn</span></button>
           <button type="button" class="opt" data-value="Followed Time Rich on LinkedIn"><span class="opt-key">4</span><span>Followed Time Rich on LinkedIn</span></button>
         </div>
-        <span class="q-error" id="e-12" aria-live="polite"></span>
+        <span class="q-error" id="e-13" aria-live="polite"></span>
         <div class="q-actions">
           <button type="button" class="btn" data-next>Continue</button>
           <button type="button" class="btn ghost btn-back" data-back>Back</button>
         </div>
       </section>
 
-      <section class="screen" id="s-13" data-step="13" data-key="share_stanley" data-select hidden>
-        <span class="q-eyebrow">Question 13</span>
-        <h2 class="q-title" id="h-13" tabindex="-1">Share with Stanley</h2>
-        <div class="q-opts" role="group" aria-labelledby="h-13" aria-describedby="e-13">
+      <section class="screen" id="s-14" data-step="14" data-key="share_stanley" data-select hidden>
+        <span class="q-eyebrow">Question 14</span>
+        <h2 class="q-title" id="h-14" tabindex="-1">Share with Stanley</h2>
+        <div class="q-opts" role="group" aria-labelledby="h-14" aria-describedby="e-14">
           <button type="button" class="opt" data-value="Yes"><span class="opt-key">1</span><span>I&rsquo;m happy for Time Rich to share my application with Stanley</span></button>
         </div>
-        <span class="q-error" id="e-13" aria-live="polite"></span>
+        <span class="q-error" id="e-14" aria-live="polite"></span>
         <div class="q-actions">
           <button type="button" class="btn ghost btn-back" data-back>Back</button>
         </div>
       </section>
 
-      <section class="screen" id="s-submit" data-step="13" data-screen="submit" hidden>
+      <section class="screen" id="s-submit" data-step="14" data-screen="submit" hidden>
         <span class="q-eyebrow">Last step</span>
         <h2 class="q-title" id="h-submit" tabindex="-1">That&rsquo;s everything.</h2>
         <p class="q-help">Send it over. Winners are announced Saturday 24 October.</p>
@@ -475,7 +489,7 @@ main{flex:1 0 auto;padding:38px 0 96px}
   var STORE_KEY  = 'stanleyApply';
   var THANKS_KEY = 'stanleyThanks';
   var THANKS_URL = '/stanley/thanks/';
-  var STEPS = 13;
+  var STEPS = 14;
   var SELECT_DELAY = 250;
   var MIN_TEXT = 15;
 
@@ -773,7 +787,8 @@ main{flex:1 0 auto;padding:38px 0 96px}
       if (raw.length < MIN_TEXT) return 'A little more — one or two sentences.';
       return '';
     }
-    if (key === 'stage' || key === 'revenue' || key === 'posts' || key === 'followers') return raw ? '' : 'Pick one.';
+    if (key === 'stage' || key === 'revenue' || key === 'posts' || key === 'followers' ||
+        key === 'built_for_you') return raw ? '' : 'Pick one.';
     if (key === 'platforms') return raw.length ? '' : 'Pick at least one.';
     if (key === 'why') {
       if (!raw) return 'Tell us why you want to join.';
@@ -905,7 +920,8 @@ main{flex:1 0 auto;padding:38px 0 96px}
   var SUMMARY_ROWS = [
     ['Name', 'full_name'], ['Email', 'email'], ['LinkedIn', 'linkedin'],
     ['Stage', 'stage'], ['Revenue', 'revenue'], ['Platforms', 'platforms'],
-    ['Posts a week', 'posts'], ['Followers', 'followers']
+    ['Posts a week', 'posts'], ['Followers', 'followers'],
+    ['Built for you', 'built_for_you']
   ];
   function paintSummary(){
     var dl = document.createElement('dl');
@@ -952,6 +968,7 @@ main{flex:1 0 auto;padding:38px 0 96px}
       stage: answers.stage || '',
       revenue: answers.revenue || '',
       platforms: asList(answers.platforms),
+      built_for_you: answers.built_for_you || '',
       posts: answers.posts || '',
       followers: answers.followers || '',
       why: answers.why || '',

@@ -75,6 +75,11 @@
   <script src="portal-access.js" defer></script>
   <script src="portal-live.js"></script>
   <script src="portal-chrome.js" defer></script>
+  <!-- The instructions inside each skill pack, so "Open in your AI" can hand
+       a whole skill to a member who has not installed it. Generated from the
+       packs themselves by scripts/build-skill-instructions.mjs; deferred, and
+       ordered before the renderer that reads it. -->
+  <script src="skill-instructions.js" defer></script>
   <script src="portal-prompts.js" defer></script>
 </head>
 

@@ -574,6 +574,7 @@ console.log('\nGrant applications: /ffg and /stanley');
     stage: 'Seed',
     revenue: '$10k-50k',
     platforms: ['LinkedIn', 'X'],
+    built_for_you: 'Yes',
     posts: 'Three a week',
     followers: '12,000',
     why: 'Building in public already.',
@@ -582,6 +583,13 @@ console.log('\nGrant applications: /ffg and /stanley');
     share_stanley: 'Happy to',
     source: 'A friend',
     _gotcha: '',
+  };
+
+  // The message body is the Slack block; body.text is only the fallback
+  // notification string, so it holds the heading and nothing else.
+  const grantSlackBody = () => {
+    const post = slack();
+    return post && post.body.blocks && post.body.blocks[0] ? post.body.blocks[0].text.text : '';
   };
 
   {
@@ -603,7 +611,8 @@ console.log('\nGrant applications: /ffg and /stanley');
       props()['Woman founder'].rich_text[0].text.content === 'Yes' &&
       props().Lisbon.rich_text[0].text.content === 'Yes, I can get there');
     check('the stanley-only columns are not',
-      !('Platforms' in props()) && !('Share Stanley' in props()), Object.keys(props()));
+      !('Platforms' in props()) && !('Share Stanley' in props()) &&
+      !('Built for you' in props()), Object.keys(props()));
     check('Submitted is never set, because it is a created_time column',
       !('Submitted' in props()));
     check('Slack is told, on the grants channel',
@@ -623,11 +632,44 @@ console.log('\nGrant applications: /ffg and /stanley');
       props().Posts.rich_text[0].text.content === 'Three a week' &&
       props().Followers.rich_text[0].text.content === '12,000' &&
       props()['Share Stanley'].rich_text[0].text.content === 'Happy to');
+    check('and so is the new built-for-you answer',
+      props()['Built for you'].rich_text[0].text.content === 'Yes',
+      props()['Built for you']);
     check('the ffg-only columns are not',
       !('Woman founder' in props()) && !('Lisbon' in props()), Object.keys(props()));
     check('a full LinkedIn URL is left alone',
       props().LinkedIn.url === 'https://www.linkedin.com/in/grace');
     check('Slack is told for this one too', Boolean(slack()));
+    // A "Yes" here is a lead, so it is in the message rather than only in
+    // Notion where someone has to go and look for it.
+    check('and the message carries the built-for-you answer',
+      /\*Wants it built for them:\* Yes/.test(grantSlackBody()), grantSlackBody());
+  }
+
+  {
+    // The question only exists on /stanley, so the line is absent on the
+    // other form rather than showing up as an empty dash.
+    await apply('/ffg', FFG);
+    check('the ffg message has no built-for-you line',
+      !/built for them/i.test(grantSlackBody()), grantSlackBody());
+
+    // No answer, no line: an older saved application still posts cleanly.
+    const noAnswer = { ...STANLEY };
+    delete noAnswer.built_for_you;
+    const res = await apply('/stanley', noAnswer);
+    check('an application without the answer is still accepted', res.status === 200);
+    check('its column is written empty rather than breaking the row',
+      props()['Built for you'].rich_text.length === 0, props()['Built for you']);
+    check('and Slack simply leaves the line out',
+      !/built for them/i.test(grantSlackBody()), grantSlackBody());
+
+    for (const value of ['Maybe', 'No']) {
+      await apply('/stanley', { ...STANLEY, built_for_you: value });
+      check('a ' + value + ' is carried through to Notion and Slack',
+        props()['Built for you'].rich_text[0].text.content === value &&
+        grantSlackBody().includes('*Wants it built for them:* ' + value),
+        grantSlackBody());
+    }
   }
 
   {

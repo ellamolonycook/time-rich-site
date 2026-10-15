@@ -239,6 +239,140 @@
     return btn;
   }
 
+  /* ---- the prompt template ----------------------------------------------
+     The shape every prompt on this page is written in. It sits at the top of
+     the library as a card of its own, so a member can take the shape away and
+     use it on work that has no skill behind it. */
+
+  var TEMPLATE_INTRO =
+    'Use this shape for any prompt. The second opinion and blind spots are where the value is.';
+
+  var TEMPLATE = [
+    'ROLE',
+    'You are a world-class [expert type] with 20 years doing [specific job] for [type of business].',
+    '',
+    'SECOND OPINION',
+    'Also answer as [opposing expert] who disagrees on [the main tension]. Show both views side by side. Do not blend them.',
+    '',
+    'CONTEXT',
+    'Read my Business COMPASS in Notion first. Extra facts: [numbers, audience, deadline, links].',
+    '',
+    'TASK',
+    '[One sentence: what I need, for whom, by when.]',
+    '',
+    'RED TEAM',
+    'Before answering, list the 3 biggest ways this fails or wastes money.',
+    '',
+    'BLIND SPOTS',
+    'End with 2 things I didn’t ask but should have.',
+    '',
+    'OUTPUT',
+    'Max 7 bullets. Plain words. No flattery. If a fact is missing, write [Needs input]. Never guess.'
+  ].join('\n');
+
+  /* ---- open in your AI ---------------------------------------------------
+     Three outline pills that hand the whole text to an AI in a new tab.
+
+     Short enough to carry in the query string and the chat opens prefilled.
+     Too long and the text goes to the clipboard instead and the AI opens on
+     a blank chat, because a truncated prompt is worse than no prompt: the
+     member would never know which half went missing.
+
+     Each button is a real link, so the browser does the navigating. Nothing
+     here calls window.open, which is what a popup blocker stops and what
+     would break the moment the clipboard write went async before it. */
+
+  var AIS = [
+    { key: 'claude', name: 'Claude', home: 'https://claude.ai/new', q: 'https://claude.ai/new?q=' },
+    { key: 'chatgpt', name: 'ChatGPT', home: 'https://chatgpt.com/', q: 'https://chatgpt.com/?q=' },
+    { key: 'grok', name: 'Grok', home: 'https://grok.com/', q: 'https://grok.com/?q=' }
+  ];
+
+  /* Past this and the query string is dropped. Browsers and the AIs
+     themselves differ on the real ceiling, so this is the brief's number and
+     deliberately well under the lowest of them. */
+  var MAX_URL = 6000;
+
+  /* The site's event tracker: fires to GA4 (gtag) when it is there. */
+  function track(name, params) {
+    try { if (window.gtag) window.gtag('event', name, params || {}); } catch (e) { /* analytics never breaks a click */ }
+  }
+
+  // Where a button points, and whether the text rides along in the URL.
+  function aiHref(ai, text) {
+    var full = ai.q + window.encodeURIComponent(text);
+    return full.length <= MAX_URL ? { href: full, prefilled: true } : { href: ai.home, prefilled: false };
+  }
+
+  /* One polite live region, reused. It is the only thing on this page that
+     has to say something after the tab has already gone, so it is announced
+     rather than drawn inside a card the member is no longer looking at. */
+  var toastNode = null;
+  var toastTimer = null;
+
+  function toast(message) {
+    if (!toastNode) {
+      toastNode = L.el('div', 'trp-toast');
+      toastNode.setAttribute('role', 'status');
+      toastNode.setAttribute('aria-live', 'polite');
+      document.body.appendChild(toastNode);
+    }
+    toastNode.textContent = message;
+    toastNode.setAttribute('data-show', '');
+    if (toastTimer) window.clearTimeout(toastTimer);
+    toastTimer = window.setTimeout(function () {
+      toastNode.removeAttribute('data-show');
+    }, 3600);
+  }
+
+  /* `getText` is a function rather than a string so a card can build its text
+     once, at render, and every button share it. `id` is what the event is
+     filed under: the pack file name for a skill, or the template's own name. */
+  function aiRow(getText, id, what) {
+    var row = L.el('div', 'trp-ai-row');
+    AIS.forEach(function (ai) {
+      var text = getText();
+      var to = aiHref(ai, text);
+      var a = L.el('a', 'trp-ai', 'Open in ' + ai.name);
+      a.href = to.href;
+      a.target = '_blank';
+      a.rel = 'noopener';
+      a.setAttribute('aria-label', 'Open ' + what + ' in ' + ai.name);
+
+      a.addEventListener('click', function () {
+        track('prompt_open_ai', { ai: ai.key, id: id });
+        // The link itself is already taking the reader to a blank chat, so
+        // all that is left is to put the text somewhere they can paste it.
+        if (to.prefilled) return;
+        if (window.navigator.clipboard && window.navigator.clipboard.writeText) {
+          window.navigator.clipboard.writeText(text).then(
+            function () { toast('Copied. Paste it into the chat.'); },
+            function () { toast('Copy it from the card, then paste it into the chat.'); }
+          );
+          return;
+        }
+        toast('Copy it from the card, then paste it into the chat.');
+      });
+
+      row.appendChild(a);
+    });
+    return row;
+  }
+
+  /* What a skill card hands over: the instructions the download contains,
+     then the trigger phrase. The phrase on its own does nothing in an AI that
+     has not installed the pack, which is the whole reason these buttons send
+     the instructions first.
+
+     No instructions, no buttons. A card whose pack is not in downloads/ would
+     otherwise send a line that quietly does nothing. */
+  function skillText(def) {
+    var all = window.TRSkillText;
+    var body = all && typeof all[def.file] === 'string' ? all[def.file].trim() : '';
+    if (!body) return null;
+    return body + '\n\n' + def.say;
+  }
+
   /* ---- one card --------------------------------------------------------- */
 
   function autopilotText(auto) {
@@ -275,6 +409,18 @@
     sayBox.appendChild(sayHead);
     sayBox.appendChild(L.el('p', 'trp-saybox-text', def.say));
     li.appendChild(sayBox);
+
+    /* Open in your AI, under the phrase rather than beside it: three pills
+       and a Copy will not sit on one line in a card this narrow, and the
+       phrase is what the box is for.
+
+       Only on a card whose pack the member can actually have today. A locked
+       card keeps its label and nothing else, so the buttons cannot be used to
+       walk around the week the download opens in. */
+    if (item) {
+      var text = skillText(def);
+      if (text) li.appendChild(aiRow(function () { return text; }, def.file, 'the ' + def.name + ' skill'));
+    }
 
     if (def.auto) {
       var acc = L.el('details', 'trp-acc trp-pcard-auto');
@@ -397,9 +543,34 @@
     return week;
   }
 
+  /* The shape itself, as the first card on the page. It has no pack and no
+     trigger phrase, so it is a card of its own rather than one of the grid:
+     the member copies the shape and fills it in. */
+  function templateCard() {
+    var section = L.el('div', 'glass-card is-static trp-ptemplate');
+
+    var head = L.el('div', 'trp-pcard-head');
+    head.appendChild(L.el('h3', 'trp-pcard-name', 'The prompt template'));
+    section.appendChild(head);
+
+    section.appendChild(L.el('p', 'trp-pcard-one', TEMPLATE_INTRO));
+
+    var box = L.el('div', 'trp-copybox');
+    var boxHead = L.el('div', 'trp-copybox-head');
+    boxHead.appendChild(L.el('span', 'trp-tag', 'The shape'));
+    boxHead.appendChild(copyButton(function () { return TEMPLATE; }, 'Copy the prompt template'));
+    box.appendChild(boxHead);
+    box.appendChild(L.el('pre', 'trp-copybox-text', TEMPLATE));
+    section.appendChild(box);
+
+    section.appendChild(aiRow(function () { return TEMPLATE; }, 'prompt-template', 'the prompt template'));
+    return section;
+  }
+
   function render(root, data) {
     L.clear(root);
     var open = openSkills(data);
+    root.appendChild(templateCard());
     var ul = L.el('ul', 'trp-pcards');
     CARDS.forEach(function (def) {
       var item = open[def.file] || null;
