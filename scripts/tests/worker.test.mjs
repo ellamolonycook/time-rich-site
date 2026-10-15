@@ -1555,6 +1555,162 @@ console.log('\nThe gated portal routes now take a session token');
     (await download({ token: 'tok-live' })).status === 403);
 }
 
+console.log('\nThe /os email gate: POST /os-email');
+{
+  const osEnv = { ...env, RESEND_API_KEY: 're_test' };
+
+  // Its own stub: these tests need to choose what Resend answers, and to read
+  // the contact we would have created.
+  const resend = { status: 200, body: '{"id":"c-1"}', calls: [], logs: [] };
+  const realFetch = globalThis.fetch;
+  const realError = console.error;
+  globalThis.fetch = async (url, init) => {
+    const u = String(url);
+    resend.calls.push({ url: u, init, body: init && typeof init.body === 'string' ? JSON.parse(init.body) : null });
+    if (u.startsWith('https://api.resend.com/')) {
+      return new Response(resend.body, { status: resend.status });
+    }
+    return realFetch(url, init);
+  };
+
+  async function gate(body, opts = {}) {
+    resend.calls = [];
+    resend.logs = [];
+    resend.status = opts.status || 200;
+    resend.body = opts.body === undefined ? '{"id":"c-1"}' : opts.body;
+    console.error = (...a) => resend.logs.push(a.map(String).join(' '));
+    const res = await worker.fetch(new Request('https://w.dev/os-email', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', Origin: 'https://timerich.ai' },
+      body: JSON.stringify(body),
+    }), opts.env || osEnv);
+    console.error = realError;
+    return res;
+  }
+  const contact = () => resend.calls.find((c) => c.url.includes('api.resend.com')).body;
+  const hit = () => resend.calls.find((c) => c.url.includes('api.resend.com'));
+
+  // --- the happy path -------------------------------------------------------
+  {
+    const res = await gate({ email: 'Nina@Example.com', first_name: 'Nina', source: 'os' });
+    check('200 ok', res.status === 200);
+    check('answers { ok: true } and nothing else',
+      JSON.stringify(await res.json()) === '{"ok":true}');
+    check('creates one Resend contact', resend.calls.length === 1, resend.calls.map((c) => c.url));
+    check('posts to the account-wide Contacts API when no audience is set',
+      hit().url === 'https://api.resend.com/contacts', hit().url);
+    check('authorises with the existing RESEND_API_KEY',
+      hit().init.headers.Authorization === 'Bearer re_test');
+    check('sends the email lowercased', contact().email === 'nina@example.com', contact());
+    check('sends first_name', contact().first_name === 'Nina');
+    check('sends unsubscribed: false', contact().unsubscribed === false);
+    check('never sends an email: it only touches the contacts endpoint',
+      !resend.calls.some((c) => c.url.includes('/emails')), resend.calls.map((c) => c.url));
+  }
+
+  // --- the optional audience ------------------------------------------------
+  {
+    await gate({ email: 'nina@example.com', source: 'os' },
+      { env: { ...osEnv, RESEND_OS_AUDIENCE_ID: 'aud-9' } });
+    check('files the contact in RESEND_OS_AUDIENCE_ID when it is set',
+      hit().url === 'https://api.resend.com/audiences/aud-9/contacts', hit().url);
+  }
+
+  // --- an email we already hold --------------------------------------------
+  {
+    const res = await gate({ email: 'nina@example.com', source: 'os' },
+      { status: 409, body: '{"message":"Contact already exists"}' });
+    check('a 409 from Resend is success, not an error', res.status === 200);
+    check('...and still answers { ok: true }', (await res.json()).ok === true);
+  }
+  {
+    const res = await gate({ email: 'nina@example.com', source: 'os' },
+      { status: 422, body: '{"message":"Contact already exists for this audience"}' });
+    check('"already exists" at any status is success too', res.status === 200);
+  }
+
+  // --- a real Resend failure -----------------------------------------------
+  {
+    const res = await gate({ email: 'nina@example.com', source: 'os' },
+      { status: 500, body: '{"message":"internal"}' });
+    check('a genuine Resend failure is a 502', res.status === 502, res.status);
+    check('...and is logged with the status', resend.logs.join(' ').includes('500'), resend.logs);
+  }
+
+  // --- validation -----------------------------------------------------------
+  {
+    const bad = ['', 'nina', 'nina@', '@example.com', 'nina@example', 'ni na@example.com', 'nina@exa mple.com'];
+    let allRejected = true;
+    for (const email of bad) {
+      const res = await gate({ email, source: 'os' });
+      if (res.status !== 400 || resend.calls.length !== 0) allRejected = false;
+    }
+    check('every malformed email is rejected 400, with no Resend call', allRejected, bad);
+
+    const res = await gate({ email: 'n'.repeat(200) + '@example.com', source: 'os' });
+    check('an absurdly long email is rejected', res.status === 400 && resend.calls.length === 0);
+  }
+  {
+    await gate({ email: '  nina@example.com  ', first_name: '  Nina  ', source: 'os' });
+    check('surrounding whitespace is trimmed off both fields',
+      contact().email === 'nina@example.com' && contact().first_name === 'Nina', contact());
+  }
+  {
+    await gate({ email: 'nina@example.com', first_name: '', source: 'os' });
+    check('first_name is left out entirely when it is blank',
+      !('first_name' in contact()), contact());
+  }
+  {
+    const res = await gate({ email: 'bot@example.com', _gotcha: 'x', source: 'os' });
+    check('the honeypot is accepted silently and writes nothing',
+      res.status === 200 && (await res.json()).ok === true && resend.calls.length === 0);
+  }
+  {
+    const res = await worker.fetch(new Request('https://w.dev/os-email', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', Origin: 'https://timerich.ai' },
+      body: 'not json',
+    }), osEnv);
+    check('a body that is not JSON is a 400', res.status === 400);
+  }
+  {
+    const res = await gate({ email: 'nina@example.com', source: 'os' }, { env: env });
+    check('with no RESEND_API_KEY the route says it is not configured', res.status === 500);
+  }
+
+  // --- CORS and origin, the same rules as the other form routes -------------
+  {
+    const res = await gate({ email: 'nina@example.com', source: 'os' });
+    check('echoes the allowed origin back',
+      res.headers.get('Access-Control-Allow-Origin') === 'https://timerich.ai',
+      res.headers.get('Access-Control-Allow-Origin'));
+    check('varies on Origin', res.headers.get('Vary') === 'Origin');
+
+    const other = await worker.fetch(new Request('https://w.dev/os-email', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', Origin: 'https://evil.example' },
+      body: JSON.stringify({ email: 'nina@example.com', source: 'os' }),
+    }), osEnv);
+    check('an origin that is not on the list is not echoed back',
+      other.headers.get('Access-Control-Allow-Origin') === 'https://timerich.ai',
+      other.headers.get('Access-Control-Allow-Origin'));
+
+    const pre = await worker.fetch(new Request('https://w.dev/os-email', {
+      method: 'OPTIONS',
+      headers: { Origin: 'https://timerich.ai' },
+    }), osEnv);
+    check('answers the preflight 204 with POST allowed',
+      pre.status === 204 && /POST/.test(pre.headers.get('Access-Control-Allow-Methods')));
+
+    const get = await worker.fetch(new Request('https://w.dev/os-email', {
+      method: 'GET', headers: { Origin: 'https://timerich.ai' },
+    }), osEnv);
+    check('GET is not allowed', get.status === 405);
+  }
+
+  globalThis.fetch = realFetch;
+}
+
 globalThis.fetch = baseFetch;
 
 console.log('\n' + pass + ' passed, ' + fail + ' failed');

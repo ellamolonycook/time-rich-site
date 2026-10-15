@@ -17,6 +17,7 @@
 #   npx wrangler secret put SUPABASE_SERVICE_ROLE_KEY  # service role key, Worker only, never in the browser
 #   npx wrangler secret put DIRECTORY_SYNC_SECRET # guards POST /portal-directory-sync (the Members backfill)
 #   npx wrangler secret put SLACK_GRANTS_CHANNEL_ID    # e.g. C0123ABCD — grant application alerts
+#   npx wrangler secret put RESEND_API_KEY        # also powers POST /os-email (the /os gate)
 #
 # After deploy, wrangler prints a URL like:
 #   https://time-rich-forms.<your-subdomain>.workers.dev
@@ -121,3 +122,11 @@ NOTION_SUPERHUMAN_QUESTIONNAIRE_DATABASE_ID = "a4b3fdd6-c528-47a8-8ff6-ab27924b2
 #            -H "Authorization: Bearer <DIRECTORY_SYNC_SECRET>"
 #   - Launch (Mon 2 Nov) is a database switch, not a deploy:
 #       update portal_settings set value = 'true' where key = 'directory_enabled';
+
+# The email gate on /os (POST /os-email) -> a Resend contact. It needs only the
+# existing RESEND_API_KEY secret and sends no email.
+#
+# Optional: set RESEND_OS_AUDIENCE_ID to the audience you want these filed in
+# (Resend -> Audiences -> the id in the URL). Leave it unset and the contact is
+# still created on the account, just not filed in an audience.
+# RESEND_OS_AUDIENCE_ID = ""

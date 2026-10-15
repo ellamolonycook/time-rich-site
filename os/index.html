@@ -117,7 +117,7 @@
       border-bottom: 1px solid var(--line);
     }
     .nav-in { min-height: var(--nav-h); display: flex; align-items: center; gap: 18px; }
-    .wordmark {
+    .wordmark, .gate-mark {
       font-family: var(--sans);
       font-weight: 700;
       letter-spacing: -0.02em;
@@ -126,7 +126,7 @@
       color: var(--fg);
       white-space: nowrap;
     }
-    .wordmark .dot { color: var(--lime); margin-left: 1px; }
+    .wordmark .dot, .gate-mark .dot { color: var(--lime); margin-left: 1px; }
     .nav-links { display: flex; gap: 2px; margin-left: auto; }
     .nav-links a {
       text-decoration: none;
@@ -452,6 +452,81 @@
     footer .sep { color: var(--line-2); }
     .disclosure { margin: 12px auto 0; color: var(--muted); font-size: 11.5px; letter-spacing: 0.02em; }
 
+    /* ---------- email gate ---------- */
+    /* A full-screen cream panel over the page, not a replacement for it: the
+       markup underneath is untouched, so links and crawlers see what they
+       always did. The fields are the accelerator's .m-input, token for token,
+       like everything else on this page. */
+    .gate {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      /* Over the nav (40), the mobile menu card (98) and its scrim (97). */
+      z-index: 200;
+      display: flex;
+      height: 100%;
+      height: 100dvh;
+      /* --gate-vh is the visual viewport, set by the script while the mobile
+         keyboard is up, so the button never ends up under the keys. */
+      height: var(--gate-vh, 100dvh);
+      padding: 28px 20px max(40px, env(safe-area-inset-bottom));
+      overflow-y: auto;
+      -webkit-overflow-scrolling: touch;
+      overscroll-behavior: contain;
+      background: var(--void);
+    }
+    /* margin:auto centres the card, and still lets it scroll rather than be
+       clipped when the box is shorter than the card. */
+    .gate-card { width: min(420px, 100%); margin: auto; }
+    .gate-mark { display: inline-block; margin-bottom: 26px; }
+    .gate h1 { font-size: clamp(27px, 7vw, 34px); max-width: 18ch; }
+    .gate-sub { margin: 12px 0 0; color: var(--muted); font-size: 16.5px; }
+    .gate form { margin: 26px 0 0; display: grid; gap: 14px; }
+    .gate-field { display: grid; gap: 7px; }
+    .gate-field label {
+      font-family: var(--mono);
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+      color: var(--mid);
+    }
+    .gate-field .opt { color: var(--muted); }
+    .gate input {
+      width: 100%;
+      /* A 48px target, and 16px text: anything smaller and iOS zooms the page
+         the moment the field takes focus. */
+      min-height: 48px;
+      padding: 12px 16px;
+      border: 1.5px solid var(--line-2);
+      border-radius: 10px;
+      background: var(--void);
+      color: var(--deep-2);
+      font-family: var(--body);
+      font-size: 16px;
+      transition: border-color 0.15s ease, box-shadow 0.15s ease;
+    }
+    .gate input:focus { border-color: var(--fg); box-shadow: 0 0 0 3px rgba(66, 75, 54, 0.12); }
+    /* Clear of the ring above, so the keyboard outline still reads. */
+    .gate input:focus-visible { outline-offset: 5px; }
+    .gate input.invalid { border-color: #A8492F; box-shadow: 0 0 0 3px rgba(168, 73, 47, 0.12); }
+    .gate .btn { width: 100%; margin-top: 4px; }
+    .gate .btn[disabled], .gate .btn[disabled]:hover {
+      opacity: 0.6;
+      cursor: not-allowed;
+      transform: none;
+      box-shadow: none;
+    }
+    /* #A8492F on the cream ground is 5.7:1 — the accelerator's error red. */
+    .gate-error { margin: 0; color: #A8492F; font-size: 13.5px; font-weight: 500; }
+    .gate-note { margin: 2px 0 0; color: var(--muted); font-size: 13px; line-height: 1.5; }
+    /* The honeypot. Its own class rather than .skip, which sits above the
+       real skip link and would be picked up in its place. */
+    .gate-trap { position: absolute; left: -9999px; width: 1px; height: 1px; opacity: 0; }
+    /* The page behind must not scroll while the overlay is up. */
+    html.gate-locked, html.gate-locked body { overflow: hidden; }
+
     [hidden] { display: none !important; }
 
     @media (max-width: 820px) {
@@ -543,6 +618,9 @@
 
     @media (max-width: 560px) {
       body { font-size: 16.5px; }
+      .gate { padding: 22px 18px max(32px, env(safe-area-inset-bottom)); }
+      .gate-mark { margin-bottom: 20px; }
+      .gate form { margin-top: 22px; }
       .nav-in { gap: 8px; }
       /* Shortened padding, not the words, so the label stays on one line. */
       .nav .btn { padding: 9px 11px; font-size: 13px; }
@@ -560,6 +638,223 @@
   </style>
 </head>
 <body>
+  <!-- ============ EMAIL GATE ============ -->
+  <!-- Hidden in the markup and shown only by the script below it, so a reader
+       with no JavaScript - or one whose script threw - gets the page rather
+       than a wall. It sits first in the body so the overlay is up before the
+       content below has painted. -->
+  <div class="gate" id="osGate" role="dialog" aria-modal="true"
+       aria-labelledby="gate-h" aria-describedby="gate-sub" tabindex="-1" hidden>
+    <div class="gate-card">
+      <span class="gate-mark">TIME RICH<span class="dot">.</span></span>
+      <h1 id="gate-h">Get the Time Rich AI OS</h1>
+      <p class="gate-sub" id="gate-sub">Enter your email and it&rsquo;s yours, free.</p>
+      <form id="gateForm" novalidate>
+        <div class="gate-field">
+          <label for="gateName">First name <span class="opt">(optional)</span></label>
+          <input id="gateName" name="first_name" type="text" autocomplete="given-name"
+                 autocapitalize="words" maxlength="80" />
+        </div>
+        <div class="gate-field">
+          <label for="gateEmail">Email</label>
+          <input id="gateEmail" name="email" type="email" inputmode="email"
+                 autocomplete="email" autocapitalize="off" spellcheck="false"
+                 maxlength="200" required aria-describedby="gateError" />
+          <p class="gate-error" id="gateError" role="alert" hidden></p>
+        </div>
+        <!-- Off-screen and out of the tab order: only a bot fills this in.
+             Same guard as the site's other forms. -->
+        <input class="gate-trap" type="text" name="_gotcha" tabindex="-1"
+               autocomplete="off" aria-hidden="true" />
+        <button class="btn" type="submit" id="gateSubmit">Get access</button>
+        <p class="gate-note">We&rsquo;ll send you useful AI stuff. Unsubscribe anytime.</p>
+      </form>
+    </div>
+  </div>
+
+  <script>
+    /**
+     * The email gate. It covers the page rather than replacing it: everything
+     * below is left exactly where it was, so the links, the crawlers and the
+     * page's own script all behave as they did before.
+     *
+     * The rule it never breaks is that a reader is never stuck here. The
+     * overlay is hidden in the markup and only this script raises it, the form
+     * is wired before it goes up, and a slow or failed POST unlocks the page
+     * anyway after five seconds.
+     */
+
+    /** The site's event tracker: fires to GA4 (gtag) when it is there. */
+    function track(name, params) {
+      try { if (window.gtag) window.gtag("event", name, params || {}); } catch (e) {}
+    }
+
+    (function () {
+      const ENDPOINT = "https://time-rich-forms.timerich.workers.dev/os-email";
+      const STORE_KEY = "tr_os_access";
+      /** Nothing holds a reader longer than this, whatever the network does. */
+      const UNLOCK_AFTER = 5000;
+      /** The worker's own test, so the page and the route agree on "valid". */
+      const EMAIL = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+      const gate = document.getElementById("osGate");
+      const form = document.getElementById("gateForm");
+      const nameField = document.getElementById("gateName");
+      const emailField = document.getElementById("gateEmail");
+      const submit = document.getElementById("gateSubmit");
+      const error = document.getElementById("gateError");
+      if (!gate || !form || !emailField || !submit || !error) return;
+
+      /** Storage throws in private Safari and wherever site data is blocked,
+       *  so every touch of it is wrapped and a failure just means "no". */
+      function recall() {
+        try { return !!localStorage.getItem(STORE_KEY); } catch (e) { return false; }
+      }
+      function remember(value) {
+        try { localStorage.setItem(STORE_KEY, value); } catch (e) {}
+      }
+
+      // A reader who has already been through this never sees the overlay.
+      if (recall()) return;
+
+      /** Everything the overlay covers. inert takes it out of reach of the
+       *  pointer, the keyboard and the accessibility tree in one go. */
+      const behind = () => [
+        document.querySelector(".skip"),
+        document.querySelector(".nav"),
+        document.getElementById("main"),
+        document.querySelector("footer"),
+      ].filter(Boolean);
+
+      function showError(message) {
+        error.textContent = message;
+        error.hidden = false;
+        emailField.classList.add("invalid");
+        emailField.setAttribute("aria-invalid", "true");
+      }
+      function clearError() {
+        error.hidden = true;
+        error.textContent = "";
+        emailField.classList.remove("invalid");
+        emailField.removeAttribute("aria-invalid");
+      }
+      emailField.addEventListener("input", () => { if (!error.hidden) clearError(); });
+
+      /** inert is what takes the page below out of reach of the keyboard and
+       *  the accessibility tree. The overlay already covers it for the eye and
+       *  the pointer, which is why this can wait for the parser: none of the
+       *  nodes above exist yet while this script is running. */
+      function setBehindInert(value) {
+        behind().forEach((node) => { node.inert = value; });
+      }
+
+      let unlocked = false;
+      function unlock() {
+        if (unlocked) return;
+        unlocked = true;
+        setBehindInert(false);
+        document.documentElement.classList.remove("gate-locked");
+        // Only the overlay goes. The page's own markup is untouched.
+        gate.remove();
+      }
+
+      let sending = false;
+      form.addEventListener("submit", (event) => {
+        event.preventDefault();
+        if (sending) return;
+
+        const email = emailField.value.trim();
+        if (!EMAIL.test(email)) {
+          showError("Enter a valid email address.");
+          emailField.focus();
+          return;
+        }
+        clearError();
+        sending = true;
+        submit.disabled = true;
+        submit.textContent = "One sec…";
+        track("os_email_submit");
+
+        // Whatever happens next, the page opens. A capture Resend confirmed is
+        // stored as "1"; an unlock we could not confirm is stored as
+        // "unverified", so the reader is not walled a second time and the
+        // reason is still legible in the browser afterwards.
+        let timer = null;
+        let settled = false;
+        const open = (reason) => {
+          if (settled) return;
+          settled = true;
+          clearTimeout(timer);
+          if (reason) console.error("/os email gate: unlocking anyway -", reason);
+          remember(reason ? "unverified" : "1");
+          unlock();
+        };
+        timer = setTimeout(() => open("the request took more than 5s"), UNLOCK_AFTER);
+
+        fetch(ENDPOINT, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            email: email,
+            first_name: nameField ? nameField.value.trim() : "",
+            source: "os",
+          }),
+        }).then((response) => {
+          if (!response.ok) throw new Error("the worker answered " + response.status);
+          open();
+        }).catch((err) => open(String((err && err.message) || err)));
+      });
+
+      // The form is live before the wall goes up, so there is no moment in
+      // which the overlay is showing and the button does nothing.
+      document.documentElement.classList.add("gate-locked");
+      gate.hidden = false;
+      // The dialog, not a field: moving focus here announces the overlay
+      // without popping the mobile keyboard over the heading.
+      gate.focus();
+
+      /**
+       * The mobile keyboard shrinks the visual viewport without touching the
+       * layout viewport, so a 100dvh overlay keeps its full height and the
+       * button lands under the keys. Sizing the overlay to the visual viewport
+       * instead keeps "Get access" on screen.
+       */
+      // ...and the rest of the body, once the parser has produced it.
+      if (document.readyState === "loading") {
+        document.addEventListener("DOMContentLoaded",
+          () => { if (!unlocked) setBehindInert(true); }, { once: true });
+      } else {
+        setBehindInert(true);
+      }
+
+      const viewport = window.visualViewport;
+      if (viewport) {
+        const fit = () => { gate.style.setProperty("--gate-vh", viewport.height + "px"); };
+        fit();
+        viewport.addEventListener("resize", fit);
+      }
+
+      /**
+       * Tab stays inside the overlay. inert already keeps the page behind out
+       * of the tab order; this is what makes the last stop wrap round to the
+       * first instead of walking out into the browser chrome.
+       */
+      gate.addEventListener("keydown", (event) => {
+        if (event.key !== "Tab") return;
+        const stops = [nameField, emailField, submit].filter(Boolean);
+        const first = stops[0];
+        const last = stops[stops.length - 1];
+        if (event.shiftKey && document.activeElement === first) {
+          event.preventDefault();
+          last.focus();
+        } else if (!event.shiftKey && document.activeElement === last) {
+          event.preventDefault();
+          first.focus();
+        }
+      });
+    })();
+  </script>
+
   <a class="skip" href="#main">Skip to content</a>
 
   <header class="nav">
