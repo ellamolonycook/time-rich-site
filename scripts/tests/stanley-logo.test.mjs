@@ -9,6 +9,13 @@
 // Two files, not one. The wordmark is black and vanishes on the portal's dark
 // theme, so the portal carries a reversed copy beside the normal one and the
 // theme picks. /accelerator has no dark theme and carries only the normal one.
+//
+// Inside the portal the credit now appears ONCE per page, in the header. It
+// used to appear twice -- once in the header from 1280px up, and again in
+// every footer -- which meant a desktop member met the same logo twice on
+// one screen. With only one left it can no longer be held back to a desktop
+// width, so the header lockup has to be on at every width; what gives way on
+// a phone is the words "Powered by", which are read out but not drawn.
 import { JSDOM } from 'jsdom';
 import { readFileSync } from 'node:fs';
 
@@ -25,12 +32,12 @@ const DARK = 'brand/partners/stanley-logo-dark.png';
 const PAGES = [
   { path: 'accelerator/index.html', selector: '.powered', spots: 2, themed: false },
   { path: 'portal/index.html', selector: '.trp-powered', spots: 1, themed: true },
-  { path: 'portal/dashboard.html', selector: '.trp-powered', spots: 2, themed: true },
-  { path: 'portal/curriculum.html', selector: '.trp-powered', spots: 2, themed: true },
-  { path: 'portal/sessions.html', selector: '.trp-powered', spots: 2, themed: true },
-  { path: 'portal/prompts.html', selector: '.trp-powered', spots: 2, themed: true },
-  { path: 'portal/resources.html', selector: '.trp-powered', spots: 2, themed: true },
-  { path: 'portal/members.html', selector: '.trp-powered', spots: 2, themed: true },
+  { path: 'portal/dashboard.html', selector: '.trp-powered', spots: 1, themed: true },
+  { path: 'portal/curriculum.html', selector: '.trp-powered', spots: 1, themed: true },
+  { path: 'portal/sessions.html', selector: '.trp-powered', spots: 1, themed: true },
+  { path: 'portal/prompts.html', selector: '.trp-powered', spots: 1, themed: true },
+  { path: 'portal/resources.html', selector: '.trp-powered', spots: 1, themed: true },
+  { path: 'portal/members.html', selector: '.trp-powered', spots: 1, themed: true },
 ];
 
 let pass = 0, fail = 0;
@@ -137,9 +144,12 @@ console.log('\n/portal — where the lockups sit');
 {
   const signin = doc('portal/index.html');
   const lockup = signin.querySelector('.trp-powered');
+  // The card is the portal's shared .glass-card now rather than a one-off
+  // rounded box written on the page, but it is still the card and the
+  // lockup is still directly under it.
   check('the sign-in page has it under the card, inside <main>',
     lockup.closest('main') !== null &&
-    lockup.closest('p').previousElementSibling.className.includes('rounded-'),
+    lockup.closest('p').previousElementSibling.className.includes('glass-card'),
     lockup.closest('p').previousElementSibling.className);
   check('and nothing else follows it on that page',
     lockup.closest('p').nextElementSibling === null);
@@ -150,16 +160,30 @@ console.log('\n/portal — where the lockups sit');
     const inFooter = [...document.querySelectorAll('footer .trp-powered')];
     const inHeader = [...document.querySelectorAll('header#top-nav .trp-powered')];
 
-    check(page.path + ': one in the footer, on every page inside',
-      inFooter.length === 1, inFooter.length);
-    check(page.path + ': one in the header, beside the Time Rich wordmark',
-      inHeader.length === 1 &&
-      inHeader[0].previousElementSibling.textContent.includes('Time Rich'),
-      inHeader.length);
-    check(page.path + ': the header one is held back until 1280px, so a phone ' +
-      'sees the footer and nothing else',
-      /\bhidden\b/.test(inHeader[0].className) &&
-      /\bxl:inline-flex\b/.test(inHeader[0].className),
+    check(page.path + ': one in the header, and that is the only one',
+      inHeader.length === 1 && inFooter.length === 0,
+      { header: inHeader.length, footer: inFooter.length });
+
+    check(page.path + ': the footer is one quiet line with no lockup under it',
+      inFooter.length === 0, inFooter.length);
+
+    // It sits on the right, with the thin divider and the member after it.
+    check(page.path + ': it sits in the right-hand group, before the divider',
+      inHeader[0].nextElementSibling !== null &&
+      inHeader[0].nextElementSibling.className.includes('trp-head-div'),
+      inHeader[0].nextElementSibling && inHeader[0].nextElementSibling.className);
+
+    // The one credit on the page cannot be hidden at any width. What the
+    // phone drops is the wording, which .trp-powered-head clips rather than
+    // removes, so the credit still reads out.
+    check(page.path + ': it is shown at every width, phone included',
+      !/\bhidden\b/.test(inHeader[0].className) &&
+      !/\bxl:inline-flex\b/.test(inHeader[0].className),
+      inHeader[0].className);
+
+    check(page.path + ': and it is marked as the header one, so the phone ' +
+      'step-down in the stylesheet reaches it',
+      /\btrp-powered-head\b/.test(inHeader[0].className),
       inHeader[0].className);
   }
 }
@@ -212,6 +236,14 @@ console.log('\nthe style, written once per site rather than per page');
     /\.trp-powered\{/.test(read('portal/portal.css')));
   check('and the built CSS knows about the dark swap',
     /trp-powered-rev/.test(read('portal/portal.css')));
+
+  // The wording is clipped, not removed, below 640px: a credit that is
+  // display:none would not be read out either.
+  check('the phone step-down clips the wording rather than removing it',
+    /\.trp-powered-head \.trp-powered-label \{[^}]*position: absolute/.test(src) &&
+    !/\.trp-powered-head \.trp-powered-label \{[^}]*display: none/.test(src));
+  check('and the built CSS carries that step-down too',
+    /trp-powered-head \.trp-powered-label\{/.test(read('portal/portal.css')));
 }
 
 console.log('\n' + pass + ' passed, ' + fail + ' failed');

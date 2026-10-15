@@ -416,6 +416,243 @@
     return btn;
   }
 
+  /* ---- icons ----------------------------------------------------------
+   * Drawn as nodes rather than markup, the same rule as everything else
+   * here: nothing from this file ever reaches innerHTML.
+   */
+  function svgPath(d, cls, width) {
+    var ns = 'http://www.w3.org/2000/svg';
+    var svg = document.createElementNS(ns, 'svg');
+    svg.setAttribute('class', cls || '');
+    svg.setAttribute('viewBox', '0 0 24 24');
+    svg.setAttribute('fill', 'none');
+    svg.setAttribute('stroke', 'currentColor');
+    svg.setAttribute('stroke-width', String(width || 2));
+    svg.setAttribute('aria-hidden', 'true');
+    var path = document.createElementNS(ns, 'path');
+    path.setAttribute('stroke-linecap', 'round');
+    path.setAttribute('stroke-linejoin', 'round');
+    path.setAttribute('d', d);
+    svg.appendChild(path);
+    return svg;
+  }
+
+  function checkIcon() { return svgPath('M5 13l4 4L19 7', '', 3); }
+  function lockIcon() {
+    return svgPath('M16 11V7a4 4 0 00-8 0v4m-1 0h10a1 1 0 011 1v7a1 1 0 01-1 1H7a1 1 0 01-1-1v-7a1 1 0 011-1z',
+                   'trp-coming-lock', 1.6);
+  }
+
+
+  /* ---- the checklist card ---------------------------------------------
+   *
+   * One shape for an open section, used twice: the dashboard draws the
+   * section that is open now, and the Curriculum draws every section that
+   * has opened. A week goes in; a white card with a count in its header
+   * and one row per thing to do comes out.
+   *
+   * A row is the 22px circle, the label, and -- where the row has one -- a
+   * date and an action on the right. The circle is the toggle and is the
+   * same control it was before, so a tick still writes to the member's
+   * account and still survives a reload.
+   *
+   * opts.el        'li' when the card is going into a <ul>, else a <div>.
+   * opts.sessions  include the week's live sessions as rows. The Curriculum
+   *                does; the dashboard does not, because the next session
+   *                has a card of its own at the top of that page.
+   */
+  var BONUS_RE = /^bonus:\s*/i;
+
+  function weekLabel(week) {
+    var n = num(week && week.id);
+    return n === 0 ? 'Start here' : 'Week ' + (n < 10 ? '0' + n : n);
+  }
+
+  // The circle. It paints itself, and refresh() repaints it when something
+  // else on the page marks the same row.
+  function checkBox(isDone, toggle, label) {
+    var btn = el('button', 'trp-check-box');
+    btn.type = 'button';
+    btn.appendChild(checkIcon());
+    function paint() {
+      var on = Boolean(isDone());
+      btn.classList.toggle('is-on', on);
+      btn.setAttribute('aria-pressed', on ? 'true' : 'false');
+      btn.setAttribute('aria-label', (on ? 'Done: ' : 'Mark done: ') + label);
+      var row = btn.closest ? btn.closest('.trp-check-row') : null;
+      if (row) row.classList.toggle('is-done', on);
+    }
+    btn.addEventListener('click', function () {
+      Promise.resolve(toggle()).then(paint);
+      paint();
+    });
+    paint();
+    btn.refresh = paint;
+    return btn;
+  }
+
+  function checkItemRow(item) {
+    var name = str(item && item.title) || 'Untitled';
+    var row = el('li', 'trp-check-row');
+
+    if (itemKey(item)) {
+      row.appendChild(checkBox(
+        function () { return isItemDone(item); },
+        function () { return toggleItem(item); },
+        name));
+    } else {
+      // Nothing to tick, but the row still lines up with the ones that do.
+      row.appendChild(el('span', 'trp-check-gap'));
+    }
+
+    var label = el('span', 'trp-check-label');
+    var link = linkTo(item && item.url, name, 'trp-slink');
+    label.appendChild(link || document.createTextNode(name));
+    if (item && item.kind === 'skill') label.appendChild(el('span', 'trp-pill', 'Skill'));
+    row.appendChild(label);
+
+    return row;
+  }
+
+  function checkSessionRow(data, session, now) {
+    var name = str(session && session.title) || 'Session';
+    var bonus = BONUS_RE.test(name);
+    var shown = bonus ? name.replace(BONUS_RE, '') : name;
+    var past = isSessionPast(session, now);
+    var unlocked = isSessionUnlocked(session, now);
+
+    var row = el('li', 'trp-check-row has-act');
+
+    var box = checkBox(
+      function () { return isSessionMarked(session); },
+      function () { return toggleSession(session); },
+      name);
+    row.appendChild(box);
+
+    var label = el('span', 'trp-check-label');
+    label.appendChild(document.createTextNode(shown));
+    if (bonus) label.appendChild(el('span', 'trp-pill', 'Bonus'));
+    var when = etDate(session && session.starts_at);
+    var at = etTime(session && session.starts_at);
+    if (when) {
+      label.appendChild(el('span', 'trp-check-when', at ? when + ' \u00b7 ' + at + ' ET' : when));
+    }
+    row.appendChild(label);
+
+    /* One action, the same rule as the Live Sessions page: Join on the day,
+       the recording afterwards, nothing before. Using either one marks the
+       session, which is what it did before. */
+    var slot = el('span', 'trp-check-act');
+    var act = null;
+    if (past) {
+      act = linkTo(session.recording_url, 'Watch recording', 'trp-btn trp-btn-outline trp-btn-sm');
+      if (act) act.setAttribute('aria-label', 'Watch recording of ' + name);
+    } else if (unlocked) {
+      act = linkTo(session.join_url, 'Join', 'trp-btn trp-btn-primary trp-btn-sm');
+      if (act) act.setAttribute('aria-label', 'Join ' + name);
+    }
+    if (act) {
+      act.addEventListener('click', function () {
+        Promise.resolve(markSession(session)).then(function () {
+          if (box.refresh) box.refresh();
+        });
+      });
+      slot.appendChild(act);
+    }
+    row.appendChild(slot);
+
+    return row;
+  }
+
+  function checklistCard(data, week, opts) {
+    opts = opts || {};
+    var card = el(opts.el === 'li' ? 'li' : 'div', 'glass-card is-static trp-check');
+    var label = weekLabel(week);
+    var title = str(week && week.title) || label;
+
+    var head = el('div', 'trp-check-head');
+    var left = el('div', '');
+    /* The label goes in only when it says something the heading has not.
+       Week 0's label and its title are both "Start here", and printing
+       both just says it twice. */
+    if (title.toLowerCase() !== label.toLowerCase()) {
+      left.appendChild(el('p', 'trp-tag', label));
+    }
+    left.appendChild(el('h2', 'trp-check-heading', title));
+    head.appendChild(left);
+
+    var list = items(week);
+    var sessionList = opts.sessions ? sessionsForWeek(data, week && week.id) : [];
+
+    var done = 0, i;
+    for (i = 0; i < list.length; i++) { if (isItemDone(list[i])) done += 1; }
+    for (i = 0; i < sessionList.length; i++) { if (isSessionMarked(sessionList[i])) done += 1; }
+    var total = list.length + sessionList.length;
+
+    if (total) {
+      head.appendChild(el('p', 'trp-check-count', done + ' of ' + total + ' done'));
+    }
+    card.appendChild(head);
+
+    if (str(week && week.summary)) {
+      card.appendChild(el('p', 'trp-check-sub', str(week.summary)));
+    }
+
+    var ul = el('ul', 'trp-checks');
+    var now = new Date();
+    list.forEach(function (item) { ul.appendChild(checkItemRow(item)); });
+    sessionList.forEach(function (session) { ul.appendChild(checkSessionRow(data, session, now)); });
+    if (!ul.childNodes.length) {
+      ul.appendChild(el('li', 'trp-check-empty', 'Nothing here yet.'));
+    }
+    card.appendChild(ul);
+
+    return card;
+  }
+
+
+  /* ---- coming up ------------------------------------------------------
+   *
+   * Every week that has not opened yet, in one card, one row each. These
+   * used to be full-size week cards with nothing in them, which read as a
+   * column of empty boxes down the Curriculum page. A week leaves this list
+   * and gets a checklist card of its own on the morning it opens, straight
+   * off the same `unlocked` flag -- there is nothing to switch over by hand.
+   */
+  function comingCard(data, opts) {
+    opts = opts || {};
+    var shut = weeks(data).filter(function (w) { return w && w.unlocked !== true; });
+    if (!shut.length) return null;
+
+    var card = el(opts.el === 'li' ? 'li' : 'div', 'glass-card is-static trp-coming');
+    var head = el('div', 'trp-check-head');
+    var left = el('div', '');
+    left.appendChild(el('h2', 'trp-check-heading', 'Coming up'));
+    head.appendChild(left);
+    head.appendChild(el('p', 'trp-check-count', shut.length + (shut.length === 1 ? ' week' : ' weeks')));
+    card.appendChild(head);
+
+    var ul = el('ul', 'trp-coming-rows');
+    shut.forEach(function (week) {
+      var n = num(week.id);
+      var row = el('li', 'trp-coming-row');
+      row.appendChild(el('span', 'trp-coming-n', n === 0 ? 'W00' : 'W' + (n < 10 ? '0' + n : n)));
+      row.appendChild(el('span', 'trp-coming-title', str(week.title) || weekLabel(week)));
+
+      var opens = etDate(week.release_at);
+      var when = el('span', 'trp-coming-when');
+      when.appendChild(document.createTextNode(opens ? 'Opens ' + opens : 'Opens soon'));
+      when.appendChild(lockIcon());
+      row.appendChild(when);
+
+      ul.appendChild(row);
+    });
+    card.appendChild(ul);
+
+    return card;
+  }
+
+
   // The most recent past session that actually has a recording.
   function latestRecording(data, now) {
     var at = now || new Date();
@@ -486,6 +723,10 @@
     userProgress: userProgress,
     setProgress: setProgress,
     doneToggle: doneToggle,
+    checkBox: checkBox,
+    checklistCard: checklistCard,
+    comingCard: comingCard,
+    weekLabel: weekLabel,
     latestRecording: latestRecording,
     sessionsForWeek: sessionsForWeek,
     findLinkItem: findLinkItem,

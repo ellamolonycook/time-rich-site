@@ -23,21 +23,19 @@
 
   var ALL_SESSIONS_URL = 'https://cal.ae/z0j4nlqbgt6b';
 
-  var BTN_PRIMARY = 'inline-flex items-center justify-center px-5 py-2.5 rounded-full bg-brand-deep ' +
-                    'text-brand-bg text-xs font-semibold transition-colors hover:bg-brand-green';
+  /* The shared pill, in its three fills. These used to be hand-written
+     Tailwind strings here and again in three other files, each a slightly
+     different height and weight. Join via Zoom is this page's one pastel
+     action; everything else is the outline. */
+  var BTN_PRIMARY = 'trp-btn trp-btn-pastel';
   // Disabled. The label has to stay readable in both themes, so it is the
   // same ink as the page, muted, on a wash of that ink rather than a solid
   // fill with inverted text.
-  var BTN_PRIMARY_OFF = 'inline-flex items-center justify-center px-5 py-2.5 rounded-full bg-brand-ink/15 ' +
-                        'text-brand-ink/85 text-xs font-semibold cursor-not-allowed';
-  var BTN_SECONDARY = 'inline-flex items-center justify-center px-5 py-2.5 rounded-full border ' +
-                      'border-brand-deep/25 text-brand-deep text-xs font-semibold transition-colors ' +
-                      'hover:border-brand-deep/60';
-  var ACTION = 'trp-saction inline-flex items-center justify-center px-3.5 py-1.5 rounded-full ' +
-               'text-[11px] font-semibold transition-colors';
-  var ACTION_JOIN = ACTION + ' bg-brand-deep text-brand-bg hover:bg-brand-green';
-  var ACTION_SOFT = ACTION + ' border border-brand-deep/25 text-brand-deep hover:border-brand-deep/60';
-  var ACTION_DEAD = ACTION + ' text-brand-deep/45 cursor-default';
+  var BTN_PRIMARY_OFF = 'trp-btn trp-btn-off';
+  var BTN_SECONDARY = 'trp-btn trp-btn-outline';
+  var ACTION_JOIN = 'trp-saction trp-btn trp-btn-primary trp-btn-sm';
+  var ACTION_SOFT = 'trp-saction trp-btn trp-btn-outline trp-btn-sm';
+  var ACTION_DEAD = 'trp-saction trp-btn trp-btn-sm trp-btn-dead';
 
   /* ---- small pieces ---------------------------------------------------- */
 

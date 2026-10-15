@@ -1,6 +1,6 @@
 # Tests — /sh-apply application form, worker mapping, Time Rich Members, portal members
 
-Fourteen suites, no framework. Plain Node, one file each, run in a couple of seconds.
+Fifteen suites, no framework. Plain Node, one file each, run in a couple of seconds.
 
 ```bash
 cd scripts/tests

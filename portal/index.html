@@ -61,7 +61,7 @@
   <link rel="stylesheet" href="portal.css"/>
   <link rel="preconnect" href="https://fonts.googleapis.com"/>
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
-  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&amp;family=Inter:wght@400;500;600&amp;family=Space+Mono:wght@400;700&amp;display=swap" rel="stylesheet"/>
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&amp;display=swap" rel="stylesheet"/>
   <link rel="stylesheet" href="portal-content.css"/>
 
   <style>
@@ -69,7 +69,7 @@
        both cost a lot on a phone and neither is in the brand. */
     html, body { margin: 0; }
     body {
-      font-family: "Inter", ui-sans-serif, system-ui, sans-serif;
+      font-family: var(--trp-body);
       color: rgb(var(--c-ink));
     }
     *:focus-visible { outline: 2px solid rgb(var(--c-ink)); outline-offset: 2px; }
@@ -78,7 +78,8 @@
        running under the eye button. */
     .trp-code {
       width: 100%;
-      padding: 10px 44px 10px 0;
+      min-height: 44px;
+      padding: 12px 44px 12px 0;
       border: 0;
       border-bottom: 1px solid var(--trp-rule);
       border-radius: 0;
@@ -108,27 +109,6 @@
       }
     }
 
-    /* Premium brand gradient for Superhuman Accelerator */
-    .superhuman-gradient {
-      background: linear-gradient(135deg, #7C9848 0%, #596C24 60%, #3F4D18 100%);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-      background-clip: text;
-    }
-    :root[data-theme='dark'] .superhuman-gradient {
-      background: linear-gradient(135deg, #D8EEB0 0%, #ABCA7C 50%, #76933F 100%);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-      background-clip: text;
-    }
-    @media (prefers-color-scheme: dark) {
-      :root[data-theme='system'] .superhuman-gradient {
-        background: linear-gradient(135deg, #D8EEB0 0%, #ABCA7C 50%, #76933F 100%);
-        -webkit-background-clip: text;
-        -webkit-text-fill-color: transparent;
-        background-clip: text;
-      }
-    }
   </style>
 
 </head>
@@ -150,29 +130,25 @@
   <main class="w-full max-w-[400px]">
 
     <div class="mb-8 pl-3 sm:pl-4">
-      <a href="/" class="inline-flex items-baseline text-[28px] sm:text-[32px] font-display font-bold tracking-tight text-brand-ink rounded hover:opacity-90 transition-opacity">
-        Time Rich<span class="text-brand-olive">.</span>
+      <a href="/" class="trp-wordmark text-[30px] sm:text-[34px] rounded hover:opacity-90 transition-opacity">
+        TIME RICH<span class="trp-stop">.</span>
       </a>
-      <p class="mt-1.5 text-[11px] font-mono font-semibold uppercase tracking-[0.18em] superhuman-gradient">
-        Superhuman Accelerator
-      </p>
+      <p class="trp-kicker mt-3">Superhuman Accelerator</p>
     </div>
 
-    <div class="rounded-[24px] border border-brand-ink/10 bg-brand-surface px-6 py-8 sm:px-9 sm:py-10">
+    <div class="glass-card is-static px-6 py-8 sm:px-8 sm:py-9">
 
-      <h1 class="text-[28px] font-display font-bold tracking-tight text-brand-ink">
-        Welcome back
+      <h1 class="text-[30px] sm:text-[34px] font-display font-bold tracking-[-0.03em] leading-[1.05] text-brand-ink">
+        Welcome back<span class="trp-stop">.</span>
       </h1>
 
       <form id="portal-login-form" class="mt-8" data-portal-login novalidate>
 
-        <label for="email" class="block text-[11px] font-medium uppercase tracking-[0.12em] text-brand-ink/70">
-          Email address
-        </label>
+        <label for="email" class="trp-tag block">Email address</label>
 
         <!-- The input deliberately has no name attribute: without one, even a
              stray native submit could not put the address in the URL. -->
-        <div class="mt-1.5">
+        <div class="mt-2">
           <input class="trp-code"
                  id="email"
                  type="email"
@@ -189,16 +165,16 @@
              up by half the extra height. Every message here runs to two lines
              at the widths members use. -->
         <p data-portal-error role="alert" aria-live="polite"
-           class="mt-3 min-h-[2.5rem] text-[13px] leading-[1.25rem] text-brand-error"></p>
+           class="mt-3 min-h-[2.75rem] text-[14px] leading-[1.35rem] text-brand-error"></p>
 
-        <button type="submit"
-                class="mt-5 w-full rounded-full bg-brand-ink px-6 py-3.5 text-[13px] font-semibold tracking-[0.02em] text-brand-page hover:bg-brand-ink/90 active:scale-[0.99] transition-all">
+        <!-- The page's one main action, so it is the pastel fill. -->
+        <button type="submit" class="trp-btn trp-btn-pastel mt-5 w-full active:scale-[0.99]">
           <span id="btn-text">Continue</span>
         </button>
 
       </form>
 
-      <p class="mt-7 text-[13px] text-brand-ink/70">
+      <p class="mt-7 text-[15px] text-brand-ink/70">
         Can't log in?
         <a href="mailto:emc@timerich.ai" class="text-brand-ink underline underline-offset-2 decoration-brand-ink/25 hover:decoration-brand-ink transition-colors">Contact support</a>
       </p>
