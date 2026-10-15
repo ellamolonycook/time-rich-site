@@ -155,6 +155,11 @@ export default {
       return handleWaitlist(request, env, cors);
     }
 
+    // Route: the email gate on /os (POST /os-email) -> a Resend contact.
+    if (path.endsWith("/os-email")) {
+      return handleOsEmail(request, env, cors);
+    }
+
     // Route: Cal.com booking webhook -> Notion (update the application) + Slack.
     // Must run before request.json() below: the HMAC is over the RAW request body.
     if (path.endsWith("/cal-webhook")) {
@@ -540,6 +545,67 @@ async function handleWaitlist(request, env, cors) {
     if (!res.ok) return json({ ok: false, error: "Notion create failed", detail: await res.text() }, 502, cors);
     return json({ ok: true }, 200, cors);
   } catch (err) {
+    return json({ ok: false, error: "Unexpected error", detail: String(err) }, 500, cors);
+  }
+}
+
+// ---------------------------------------------------------------------------
+// The /os email gate: POST /os-email
+// ---------------------------------------------------------------------------
+// The overlay on /os asks for an email before the page unlocks. All this route
+// does is add the person to Resend as a contact. It deliberately sends them
+// nothing: the page is what they came for, and the list is for later.
+//
+// The page unlocks whatever this answers, so a failure here costs a contact,
+// never a reader. That is also why it returns real status codes rather than a
+// blanket ok: the page does not read them, but we want them in the logs.
+async function handleOsEmail(request, env, cors) {
+  if (!env.RESEND_API_KEY) {
+    return json({ ok: false, error: "OS email capture not configured" }, 500, cors);
+  }
+
+  let d;
+  try { d = await request.json(); } catch { return json({ ok: false, error: "Invalid JSON" }, 400, cors); }
+  if (d._gotcha) return json({ ok: true }, 200, cors);           // honeypot: silently accept bots
+
+  const email = String(d.email || "").trim();
+  const firstName = String(d.first_name || "").trim();
+  if (!isEmail(email) || email.length > 200) {
+    return json({ ok: false, error: "Invalid email" }, 400, cors);
+  }
+
+  const contact = { email: email.toLowerCase(), unsubscribed: false };
+  if (firstName) contact.first_name = clip(firstName, 100);
+
+  // Resend has two shapes for this. Without an audience id the contact is
+  // created on the account; with one it is also filed in that audience. Both
+  // take the same body, so the id is the only thing that chooses.
+  const audience = String(env.RESEND_OS_AUDIENCE_ID || "").trim();
+  const endpoint = audience
+    ? `https://api.resend.com/audiences/${encodeURIComponent(audience)}/contacts`
+    : "https://api.resend.com/contacts";
+
+  try {
+    const res = await fetch(endpoint, {
+      method: "POST",
+      headers: {
+        Authorization: `Bearer ${env.RESEND_API_KEY}`,
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(contact),
+    });
+    if (!res.ok) {
+      const detail = await res.text().catch(() => "");
+      // An address we already hold is the ordinary case for a reader whose
+      // localStorage was cleared. That is a success, not an error.
+      if (res.status !== 409 && !/already (exists|registered)|duplicate/i.test(detail)) {
+        console.error("os-email: Resend contact create failed", res.status, clip(detail, 300));
+        return json({ ok: false, error: "Resend contact create failed" }, 502, cors);
+      }
+    }
+    return json({ ok: true }, 200, cors);
+  } catch (err) {
+    console.error("os-email: Resend request threw", String(err));
     return json({ ok: false, error: "Unexpected error", detail: String(err) }, 500, cors);
   }
 }

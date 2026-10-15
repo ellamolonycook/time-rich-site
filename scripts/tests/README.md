@@ -1,6 +1,6 @@
 # Tests — /sh-apply application form, worker mapping, Time Rich Members, portal members
 
-Fourteen suites, no framework. Plain Node, one file each, run in a couple of seconds.
+Fifteen suites, no framework. Plain Node, one file each, run in a couple of seconds.
 
 ```bash
 cd scripts/tests
@@ -51,6 +51,17 @@ being down still leaves the Notion update in place, and neither shows up as an
 error to Cal. The work runs in `ctx.waitUntil()`, so the tests pass a `ctx` and
 await what it collects, exactly as the Workers runtime does after the response
 has already gone back.
+
+`POST /os-email` — the route behind the email gate on /os — has its own block,
+with a fake standing in for Resend. What it pins is the shape of the one call we
+make (the Contacts API, `unsubscribed: false`, the address lowercased, the
+audience endpoint only when `RESEND_OS_AUDIENCE_ID` is set) and, more
+importantly, the two things that must never happen: **we never send the visitor
+an email**, and **an address we already hold is a success, not an error** — a
+`409`, or any status whose body says it already exists, answers `ok: true`. Every
+malformed address is refused `400` before Resend is touched, a genuine Resend
+failure is a logged `502`, and the CORS and origin rules are the other form
+routes'.
 
 It also pins the behaviour of the routes this change did *not* touch —
 `/waitlist`, `/coaching`, `/qualify`, `/accelerator`, the legacy `/superhuman`
@@ -142,6 +153,41 @@ Worker and uses it the way a member would.
 
 Like the form suite it has no layout, so the grid sizes and the pop-up's look
 are eyeball checks.
+
+## `os-gate.test.mjs`
+
+Loads [`os/index.html`](../../os/index.html) into jsdom and drives the email
+gate the way a visitor would, with a fake standing in for the Worker.
+
+The gate exists to collect an email before the page opens, so the rules worth
+pinning are mostly about what happens when that goes wrong. In order of what
+they would cost us:
+
+- **A visitor is never stuck behind it.** A `502`, a thrown request and a
+  request that never comes back all remove the overlay anyway, log the reason to
+  the console, and store the unlock so there is no second wall. The five-second
+  timer is trapped in `beforeParse` and fired by hand, so the suite does not sit
+  there waiting for it.
+- **The page is covered, never removed.** Every row id, `#main`, the footer, the
+  canonical link, the OG tags and both existing tracking scripts are still in
+  the document while the overlay is up, and still there after it goes.
+- **Without JavaScript there is no gate.** The overlay carries `hidden` in the
+  markup itself and only the inline script raises it, so a script that never ran
+  leaves the page readable. That is also why the script defers `inert` to
+  `DOMContentLoaded`: it runs *above* the markup it covers, which does not exist
+  yet.
+- **A returning visitor skips it** on either stored value, and storage that
+  throws on every touch (private Safari, blocked site data) changes nothing.
+
+Past that: the brief's copy word for word, a malformed address refused with no
+request sent and the button left usable, the exact `{ email, first_name, source }`
+body, the one `os_email_submit` event, and the page's own rows and mobile menu
+still working once the gate has gone — including that the menu inerts the *nav*
+wordmark rather than the gate's, which is the trap of putting a second wordmark
+above it in the document.
+
+No layout here either, so the 375px and 1440px views, the 44px targets and
+whether the mobile keyboard clears the button are eyeball checks.
 
 ## `stanley-logo.test.mjs`
 
