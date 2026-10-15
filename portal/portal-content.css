@@ -31,11 +31,15 @@
   --trp-lime:     #CCEEA0;
   --trp-olive:    #67762E;
 
-  --trp-line:     rgba(66, 75, 54, 0.12);
-  --trp-shadow:   0 1px 2px rgba(66, 75, 54, 0.06);
-  --trp-radius:   1.5rem;
+  --trp-line:     rgba(51, 58, 40, 0.12);
+  --trp-shadow:   none;
+  --trp-radius:   20px;
 
-  --trp-sans:    "Plus Jakarta Sans", ui-sans-serif, system-ui, sans-serif;
+  /* The same three faces as portal-tailwind-src.css. Plus Jakarta Sans was
+     never loaded by any page, so every rule below that asked for it has
+     been falling through to the system sans all along; naming it properly
+     is what the brand bible sets anyway. */
+  --trp-sans:    system-ui, -apple-system, "Segoe UI", Roboto, Helvetica, sans-serif;
   --trp-display: "Space Grotesk", var(--trp-sans);
   --trp-mono:    "JetBrains Mono", ui-monospace, SFMono-Regular, Menlo, monospace;
 }
@@ -268,38 +272,11 @@ html[data-trp-gate]:not([data-tr-portal="in"]) body > *:not(script):not(style) {
   gap: 0.5rem;
 }
 
-.trp-btn {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  gap: 0.5rem;
-  padding: 0.5rem 1rem;
-  border: 0;
-  border-radius: 0.75rem;
-  background: var(--trp-deep);
-  color: var(--trp-cream);
-  font-family: var(--trp-sans);
-  font-size: 0.75rem;
-  font-weight: 600;
-  line-height: 1.4;
-  text-decoration: none;
-  cursor: pointer;
-  transition: background-color 0.2s ease;
-}
-
-.trp-btn:hover  { background: var(--trp-green); }
-.trp-btn:focus-visible {
-  outline: 2px solid var(--trp-olive);
-  outline-offset: 2px;
-}
+/* .trp-btn and its fills are defined once, in portal-tailwind-src.css, with
+   the brand's pill shape and a 44px minimum height. The copies that used to
+   sit here were a 12px-radius box at 36px tall, and because this file loads
+   after portal.css they quietly beat the real ones. */
 .trp-btn[disabled] { opacity: 0.5; cursor: not-allowed; }
-
-.trp-btn-quiet {
-  background: transparent;
-  color: var(--trp-mid);
-  border: 1px solid var(--trp-line);
-}
-.trp-btn-quiet:hover { background: var(--trp-sagelt); color: var(--trp-deep); }
 
 /* ---- login form ------------------------------------------------------------------- */
 
@@ -347,7 +324,7 @@ html[data-trp-gate]:not([data-tr-portal="in"]) body > *:not(script):not(style) {
   box-shadow: 0 0 0 3px rgba(103, 118, 46, 0.15);
 }
 
-.trp-login .trp-btn { width: 100%; padding: 0.75rem 1rem; font-size: 0.8125rem; }
+.trp-login .trp-btn { width: 100%; }
 
 .trp-error:empty { display: none; }
 
@@ -398,21 +375,10 @@ body { animation: trp-fade-in 180ms ease-out both; }
   body { animation: none; }
 }
 
-/* Heavy backdrop blur is the most expensive thing on these pages. Cap it on
-   desktop and drop it entirely on phones, where it costs the most and shows
-   the least. */
-.glass-card, .glass3d, .premium-dropdown, .premium-nav {
-  -webkit-backdrop-filter: blur(12px);
-  backdrop-filter: blur(12px);
-}
-
-@media (max-width: 767px) {
-  .glass-card, .glass3d, .premium-dropdown, .premium-nav,
-  .glass3d::before {
-    -webkit-backdrop-filter: none !important;
-    backdrop-filter: none !important;
-  }
-}
+/* The backdrop blur is gone. A card is opaque now -- white, or sage, or the
+   deep green on the dashboard -- so there was nothing behind it left to
+   blur, and the filter was still forcing every card onto a compositing
+   layer of its own on every page. */
 
 /* Tailwind's min-h-screen is 100vh, which on a phone counts the browser bar
    and pushes the last rows out of reach. dvh tracks the bar as it hides, so

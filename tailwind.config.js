@@ -55,14 +55,21 @@ module.exports = {
           error: 'rgb(var(--c-error) / <alpha-value>)',
         },
       },
-      // Three faces, the same three the accelerator page uses: Space Grotesk
-      // for headings, Inter for body, Space Mono for small labels. Newsreader
-      // was decorative and is gone; `serif` is left out so a stray font-serif
-      // falls back rather than silently loading a fourth face.
+      // Three faces, the brand bible's own: Space Grotesk for headings, the
+      // system sans for body copy, JetBrains Mono for small uppercase
+      // labels. `serif` is left out so a stray font-serif falls back rather
+      // than silently loading a fourth face.
+      //
+      // Both of the faces that used to be here are gone. Inter was a
+      // webfont doing the job the system sans does for nothing, and Space
+      // Mono was never the brand's label face -- the bible sets labels in
+      // JetBrains Mono, which now loads from brand/fonts/ rather than from
+      // Google. These names are mirrored by --trp-body and --trp-label in
+      // portal/portal-tailwind-src.css; the two have to stay in step.
       fontFamily: {
-        sans: ['"Inter"', '-apple-system', 'BlinkMacSystemFont', 'sans-serif'],
+        sans: ['system-ui', '-apple-system', '"Segoe UI"', 'Roboto', 'Helvetica', 'sans-serif'],
         display: ['"Space Grotesk"', 'system-ui', 'sans-serif'],
-        mono: ['"Space Mono"', 'ui-monospace', 'SFMono-Regular', 'Menlo', 'monospace'],
+        mono: ['"JetBrains Mono"', 'ui-monospace', 'SFMono-Regular', 'Menlo', 'monospace'],
       },
     },
   },

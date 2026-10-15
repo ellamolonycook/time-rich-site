@@ -44,8 +44,15 @@
 
     var top = L.el('div', 'trp-progress-top');
     top.appendChild(L.el('p', 'trp-tag', 'Your progress'));
-    top.appendChild(L.el('p', 'trp-progress-count', you.done + ' of ' + you.total + ' done'));
     card.appendChild(top);
+
+    /* The count as the card's headline: the number at display size, then
+       "of 18 done" beside it. It used to be a 12px line of mono tucked up
+       in the corner, which is not where the one fact on the card belongs. */
+    var big = L.el('p', 'trp-progress-big');
+    big.appendChild(L.el('span', 'trp-progress-n', String(you.done)));
+    big.appendChild(L.el('span', 'trp-progress-of', 'of ' + you.total + ' done'));
+    card.appendChild(big);
 
     /* One bar, for the member's own ticking. The cohort's calendar is not
        something to fill in, so it does not get a bar. */
@@ -67,6 +74,16 @@
     card.appendChild(L.el('p', 'trp-progress-line', parts.join(' · ')));
 
     card.appendChild(L.el('p', 'trp-progress-note', 'Ticks are saved to your account'));
+
+    /* The way on from this card, which is the whole list rather than the
+       part of it that fits on the dashboard. */
+    var go = L.el('a', 'trp-progress-go');
+    go.href = 'curriculum.html';
+    go.appendChild(document.createTextNode('Resume curriculum '));
+    var arrow = L.el('span', '', '→');
+    arrow.setAttribute('aria-hidden', 'true');
+    go.appendChild(arrow);
+    card.appendChild(go);
 
     root.appendChild(card);
     L.show(root, true);

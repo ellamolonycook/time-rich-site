@@ -227,7 +227,17 @@ console.log('\nTime Rich Members page — states');
 console.log('\nTime Rich Members page — copy');
 {
   const page = await open();
-  check('title is "Time Rich Members"', page.doc.querySelector('main h1').textContent.trim() === 'Time Rich Members');
+  // Every page title now ends in the brand stop, which is a mark rather than
+  // a word: the heading still reads "Time Rich Members", with the stop in a
+  // span of its own so it can take the moss (or, on deep green, the pastel).
+  {
+    const h1 = page.doc.querySelector('main h1');
+    const stop = h1.querySelector('.trp-stop');
+    check('title is "Time Rich Members"',
+      h1.textContent.trim().replace(/\.$/, '') === 'Time Rich Members', h1.textContent.trim());
+    check('and it ends with the brand stop',
+      stop !== null && stop.textContent === '.', stop && stop.textContent);
+  }
   check('intro line from the brief', page.doc.querySelector('main header p').textContent.trim() === 'Your cohort. Find the right person and make the ask.');
   const ownCopy = readFileSync(new URL('../../portal/members.html', import.meta.url), 'utf8')
     .split('<main')[1].split('</main>')[0] + HTML.split('Time Rich Members: the cohort directory.')[1].split('</script>')[0];

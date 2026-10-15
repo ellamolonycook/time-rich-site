@@ -1,6 +1,6 @@
 # Tests — /sh-apply application form, worker mapping, Time Rich Members, portal members
 
-Fifteen suites, no framework. Plain Node, one file each, run in a couple of seconds.
+Sixteen suites, no framework. Plain Node, one file each, run in a couple of seconds.
 
 ```bash
 cd scripts/tests
@@ -189,6 +189,30 @@ above it in the document.
 No layout here either, so the 375px and 1440px views, the 44px targets and
 whether the mobile keyboard clears the button are eyeball checks.
 
+## `portal-footer.test.mjs`
+
+Reads the footer out of the six portal pages inside the gate. The line is
+"© 2026 Time Rich · Privacy · Terms · WhatsApp community · Need help?
+emc@timerich.ai", in a wrapping flex row.
+
+The thing worth pinning is the separators. On a narrow screen the line breaks
+over two, and the "·" after the last item on line one is carried down to the
+head of line two, which reads as "· Need help? …". CSS cannot ask whether an
+element starts a wrapped line, so the rule takes the whole set out below the
+width at which the line fits in one row and opens the gap up instead. Measured
+in a browser: with every item showing, the footer is a single row from 540px;
+the breakpoint is 576px, which leaves room for a font metric or an extra word.
+
+So the suite checks the shape that rule depends on — four separators per page,
+every one of them a `.trp-foot-sep` and no strays, the conditional WhatsApp dot
+still paired with its link under `[hidden]`, the stylesheet hiding the class by
+default and restoring it above a breakpoint that is at least 540px, and the
+built CSS carrying both halves. It also checks no sponsor lockup is left under
+the line.
+
+jsdom does no layout, so the wrap itself is not measured here. If a word is
+ever added to this line, check it in a browser at 540px as well.
+
 ## `stanley-logo.test.mjs`
 
 Reads the "Powered by Stanley" lockup out of
@@ -201,9 +225,17 @@ every lockup, `target="_blank"` with `rel="noopener sponsored"`, `alt="Stanley"`
 so the credit survives with images off, and `width`/`height` matching the file's
 own 765×203 so the logo cannot shove the page about while it loads. It also
 pins where each lockup sits — hero and closing band on /accelerator, under the
-card on the sign-in page, and footer plus a header copy held back to 1280px on
-the pages inside — and that the style is written once per site rather than once
-per placement.
+card on the sign-in page, and exactly one in the header on each of the pages
+inside — and that the style is written once per site rather than once per
+placement.
+
+The pages inside used to carry two: one in every footer, and a second beside
+the wordmark from 1280px up, so a desktop member met the same logo twice on one
+screen. The footer copy is gone. With only one left it can no longer be held
+back to a desktop width, so the suite checks the header lockup is shown at
+every width and that what gives way on a phone is the wording, which the
+stylesheet clips rather than removes — a credit set to `display: none` would
+not be read out either.
 
 Two image files, not one: the wordmark is black and disappears on the portal's
 dark theme, so the portal carries a reversed copy beside the normal one and the

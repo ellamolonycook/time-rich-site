@@ -60,7 +60,7 @@
   <link rel="stylesheet" href="portal.css"/>
   <link rel="preconnect" href="https://fonts.googleapis.com"/>
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin=""/>
-  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&amp;family=Inter:wght@400;500;600&amp;family=Space+Mono:wght@400;700&amp;display=swap" rel="stylesheet"/>
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&amp;display=swap" rel="stylesheet"/>
   <link rel="stylesheet" href="portal-content.css">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -88,75 +88,74 @@
 
   <div id="mobile-menu" class="fixed top-0 left-0 bottom-0 w-[82%] max-w-[300px] bg-brand-page border-r border-brand-ink/10 z-[101] -translate-x-full transition-transform duration-300 ease-out flex flex-col lg:hidden" role="dialog" aria-modal="true" aria-label="Menu">
     <div class="flex-1 overflow-y-auto p-5 pt-6 flex flex-col">
-      <a href="dashboard.html" class="flex items-baseline text-[20px] font-display font-bold tracking-tight text-brand-ink mb-8 px-1">
-        Time Rich<span class="text-brand-olive">.</span>
+      <a href="dashboard.html" class="trp-wordmark text-[22px] mb-8 px-1">
+        TIME RICH<span class="trp-stop">.</span>
       </a>
       <nav class="space-y-1">
-        <a href="dashboard.html" class="flex items-center gap-3 px-4 py-2.5 rounded-[14px] text-sm font-medium text-brand-ink/70 hover:text-brand-ink hover:bg-brand-ink/5 transition-colors">
+        <a href="dashboard.html" class="flex items-center gap-3 px-4 py-3 rounded-[14px] text-sm font-medium text-brand-ink/70 hover:text-brand-ink hover:bg-brand-ink/5 transition-colors">
           <svg class="w-4 h-4 text-brand-ink/50 shrink-0" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"></path></svg>
           Dashboard
         </a>
-        <a href="curriculum.html" class="flex items-center gap-3 px-4 py-2.5 rounded-[14px] text-sm font-medium text-brand-ink/70 hover:text-brand-ink hover:bg-brand-ink/5 transition-colors">
+        <a href="curriculum.html" class="flex items-center gap-3 px-4 py-3 rounded-[14px] text-sm font-medium text-brand-ink/70 hover:text-brand-ink hover:bg-brand-ink/5 transition-colors">
           <svg class="w-4 h-4 text-brand-ink/50 shrink-0" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"></path></svg>
           Curriculum
         </a>
-        <a href="sessions.html" class="flex items-center gap-3 px-4 py-2.5 rounded-[14px] text-sm font-medium text-brand-ink/70 hover:text-brand-ink hover:bg-brand-ink/5 transition-colors">
+        <a href="sessions.html" class="flex items-center gap-3 px-4 py-3 rounded-[14px] text-sm font-medium text-brand-ink/70 hover:text-brand-ink hover:bg-brand-ink/5 transition-colors">
           <svg class="w-4 h-4 text-brand-ink/50 shrink-0" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z"></path></svg>
           Live Sessions
         </a>
-        <a href="resources.html" class="flex items-center gap-3 px-4 py-2.5 rounded-[14px] text-sm font-medium text-brand-ink/70 hover:text-brand-ink hover:bg-brand-ink/5 transition-colors">
+        <a href="resources.html" class="flex items-center gap-3 px-4 py-3 rounded-[14px] text-sm font-medium text-brand-ink/70 hover:text-brand-ink hover:bg-brand-ink/5 transition-colors">
           <svg class="w-4 h-4 text-brand-ink/50 shrink-0" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"></path></svg>
           Resources
         </a>
-        <a href="prompts.html" class="flex items-center gap-3 px-4 py-2.5 rounded-[14px] text-sm font-medium text-brand-ink/70 hover:text-brand-ink hover:bg-brand-ink/5 transition-colors">
+        <a href="prompts.html" class="flex items-center gap-3 px-4 py-3 rounded-[14px] text-sm font-medium text-brand-ink/70 hover:text-brand-ink hover:bg-brand-ink/5 transition-colors">
           <svg class="w-4 h-4 text-brand-ink/50 shrink-0" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path></svg>
           Prompts
         </a>
-        <a href="members.html" aria-current="page" class="flex items-center gap-3 px-4 py-2.5 rounded-[14px] text-sm font-semibold bg-brand-deep text-brand-bg">
+        <a href="members.html" aria-current="page" class="flex items-center gap-3 px-4 py-3 rounded-[14px] text-sm font-semibold bg-brand-deep text-brand-bg">
           <svg class="w-4 h-4 shrink-0" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"></path></svg>
           Members
         </a>
       </nav>
       <div class="mt-auto pt-8 border-t border-brand-ink/10">
-        <button type="button" data-portal-signout class="w-full text-left px-4 py-2.5 rounded-[14px] text-sm font-medium text-brand-ink/70 hover:text-brand-ink hover:bg-brand-ink/5 transition-colors">Sign out</button>
+        <button type="button" data-portal-signout class="w-full text-left px-4 py-3 rounded-[14px] text-sm font-medium text-brand-ink/70 hover:text-brand-ink hover:bg-brand-ink/5 transition-colors">Sign out</button>
       </div>
     </div>
   </div>
 
   <!-- TOP NAVBAR -->
-  <header id="top-nav" class="trp-header h-14 sm:h-16 flex items-center justify-between gap-3 px-4 sm:px-6 lg:px-10 shrink-0 sticky top-0 z-50">
+  <header id="top-nav" class="trp-header h-14 sm:h-16 flex items-center justify-between gap-3 px-4 sm:px-6 lg:px-8 shrink-0 sticky top-0 z-50">
 
-    <div class="flex items-center gap-2 shrink-0">
-      <button id="mobile-menu-btn" type="button" aria-expanded="false" aria-controls="mobile-menu" aria-label="Menu" class="lg:hidden flex items-center justify-center w-10 h-10 -ml-2 rounded-full text-brand-ink hover:bg-brand-ink/5 transition-colors">
+    <!-- Left: the wordmark, then the nav pills beside it. The nav used to be
+         absolutely centred in the header, which left the right-hand side no
+         room for the sponsor credit, the member's name and Sign out all at
+         once. It flows after the wordmark now, which is also the order the
+         design asks for: logo, nav pills, then the right-hand group. -->
+    <div class="flex items-center gap-2 lg:gap-6 min-w-0">
+      <button id="mobile-menu-btn" type="button" aria-expanded="false" aria-controls="mobile-menu" aria-label="Menu" class="lg:hidden flex items-center justify-center w-11 h-11 -ml-2.5 rounded-full text-brand-ink hover:bg-brand-ink/5 transition-colors">
         <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5"></path></svg>
       </button>
 
-      <a href="dashboard.html" class="flex items-baseline text-[18px] sm:text-[21px] font-display font-bold tracking-tight text-brand-ink whitespace-nowrap rounded focus:outline-none focus-visible:ring-2 focus-visible:ring-brand-ink/30">
-        Time Rich<span class="text-brand-olive">.</span>
+      <a href="dashboard.html" class="trp-wordmark text-[17px] sm:text-[20px] whitespace-nowrap rounded focus:outline-none focus-visible:ring-2 focus-visible:ring-brand-ink/30">
+        TIME RICH<span class="trp-stop">.</span>
       </a>
 
-      <!-- Anchor sponsor. Hidden until 1280px: below that the centred nav
-           reaches too far left and the footer lockup is the only one. -->
-      <a class="trp-powered trp-powered-head hidden xl:inline-flex" href="https://x.getstanley.ai/r/mz4y9g" target="_blank" rel="noopener sponsored">
-        <span class="trp-powered-label">Powered by</span>
-        <img class="trp-powered-pos" src="../brand/partners/stanley-logo.png" alt="Stanley" width="765" height="203" loading="lazy" decoding="async"/>
-        <img class="trp-powered-rev" src="../brand/partners/stanley-logo-dark.png" alt="Stanley" width="765" height="203" loading="lazy" decoding="async"/>
-      </a>
+      <nav class="hidden lg:flex items-center gap-0.5" aria-label="Portal">
+        <a href="dashboard.html" class="trp-nav-link px-3.5 py-2 rounded-full text-xs font-medium text-brand-ink/70 hover:text-brand-ink hover:bg-brand-ink/5">Dashboard</a>
+        <a href="curriculum.html" class="trp-nav-link px-3.5 py-2 rounded-full text-xs font-medium text-brand-ink/70 hover:text-brand-ink hover:bg-brand-ink/5">Curriculum</a>
+        <a href="sessions.html" class="trp-nav-link px-3.5 py-2 rounded-full text-xs font-medium text-brand-ink/70 hover:text-brand-ink hover:bg-brand-ink/5">Live Sessions</a>
+        <a href="resources.html" class="trp-nav-link px-3.5 py-2 rounded-full text-xs font-medium text-brand-ink/70 hover:text-brand-ink hover:bg-brand-ink/5">Resources</a>
+        <a href="prompts.html" class="trp-nav-link px-3.5 py-2 rounded-full text-xs font-medium text-brand-ink/70 hover:text-brand-ink hover:bg-brand-ink/5">Prompts</a>
+        <a href="members.html" aria-current="page" class="trp-nav-link px-3.5 py-2 rounded-full text-xs font-semibold">Members</a>
+      </nav>
     </div>
 
-    <nav class="hidden lg:flex items-center gap-1 absolute left-1/2 -translate-x-1/2" aria-label="Portal">
-        <a href="dashboard.html" class="px-3 py-1.5 rounded-full text-xs font-medium text-brand-ink/70 hover:text-brand-ink hover:bg-brand-ink/5 transition-colors">Dashboard</a>
-        <a href="curriculum.html" class="px-3 py-1.5 rounded-full text-xs font-medium text-brand-ink/70 hover:text-brand-ink hover:bg-brand-ink/5 transition-colors">Curriculum</a>
-        <a href="sessions.html" class="px-3 py-1.5 rounded-full text-xs font-medium text-brand-ink/70 hover:text-brand-ink hover:bg-brand-ink/5 transition-colors">Live Sessions</a>
-        <a href="resources.html" class="px-3 py-1.5 rounded-full text-xs font-medium text-brand-ink/70 hover:text-brand-ink hover:bg-brand-ink/5 transition-colors">Resources</a>
-        <a href="prompts.html" class="px-3 py-1.5 rounded-full text-xs font-medium text-brand-ink/70 hover:text-brand-ink hover:bg-brand-ink/5 transition-colors">Prompts</a>
-        <a href="members.html" aria-current="page" class="px-3 py-1.5 rounded-full text-xs font-semibold bg-brand-deep text-brand-bg">Members</a>
-    </nav>
-
-    <div class="flex items-center gap-2 sm:gap-4 shrink-0">
+    <!-- Right: the sponsor credit, a thin divider, the member and Sign out.
+         The theme control keeps its place at the head of the group. -->
+    <div class="flex items-center gap-2 sm:gap-3 shrink-0">
       <!-- Filled in by portal-chrome.js, and only while a session is live or
            about to start. Stays hidden the rest of the time. -->
-      <a data-portal-join hidden class="hidden lg:inline-flex items-center px-3.5 py-1.5 rounded-full bg-brand-ink text-brand-page text-[11px] font-mono font-medium tracking-[0.06em] whitespace-nowrap hover:bg-brand-ink/90 transition-colors"></a>
+      <a data-portal-join hidden class="hidden xl:inline-flex items-center px-3.5 py-1.5 rounded-full bg-brand-ink text-brand-page text-[11px] font-mono font-medium tracking-[0.06em] whitespace-nowrap hover:bg-brand-ink/90 transition-colors"></a>
 
       <div class="trp-theme">
         <label class="sr-only" for="theme-members">Theme</label>
@@ -168,9 +167,22 @@
         <svg class="trp-theme-caret" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7"></path></svg>
       </div>
 
-      <span data-portal-name class="hidden sm:inline text-xs font-medium text-brand-ink/70 whitespace-nowrap"></span>
+      <!-- The anchor sponsor, and the one place it appears on this page now:
+           the second lockup every footer used to carry is gone, so this one
+           is the whole credit and cannot be held back to a desktop width.
+           At phone widths the words are read out but not drawn; see
+           .trp-powered-head in portal-tailwind-src.css. -->
+      <a class="trp-powered trp-powered-head" href="https://x.getstanley.ai/r/mz4y9g" target="_blank" rel="noopener sponsored">
+        <span class="trp-powered-label">Powered by</span>
+        <img class="trp-powered-pos" src="../brand/partners/stanley-logo.png" alt="Stanley" width="765" height="203" loading="lazy" decoding="async"/>
+        <img class="trp-powered-rev" src="../brand/partners/stanley-logo-dark.png" alt="Stanley" width="765" height="203" loading="lazy" decoding="async"/>
+      </a>
 
-      <button type="button" data-portal-signout class="hidden lg:inline-flex text-xs font-medium text-brand-ink/70 hover:text-brand-ink transition-colors">Sign out</button>
+      <span class="trp-head-div hidden md:block" aria-hidden="true"></span>
+
+      <span data-portal-name class="hidden md:inline text-xs font-medium text-brand-ink/70 whitespace-nowrap"></span>
+
+      <button type="button" data-portal-signout class="hidden lg:inline-flex items-center h-11 text-xs font-medium text-brand-ink/70 hover:text-brand-ink transition-colors">Sign out</button>
     </div>
   </header>
 
@@ -198,7 +210,10 @@
         align-items: center;
         gap: 10px;
         max-width: 420px;
-        padding: 8px 16px;
+        /* 44px tall, with the field itself filling it rather than sitting
+           as a 22px line in the middle of it: the whole pill is the target. */
+        min-height: 44px;
+        padding: 0 18px;
         background: rgb(var(--c-surface));
         border: 1px solid var(--trp-rule);
         border-radius: 999px;
@@ -208,6 +223,8 @@
       .members-search svg { width: 16px; height: 16px; color: rgb(var(--c-mid)); flex: none; }
       .members-search input {
         flex: 1;
+        align-self: stretch;
+        min-height: 44px;
         min-width: 0;
         padding: 0 !important;
         border: 0 !important;
@@ -285,7 +302,7 @@
         line-clamp: 2;
         overflow: hidden;
       }
-      .member-meta { margin: 8px 4px 0; font-family: 'Space Mono', ui-monospace, monospace; font-size: 11px; line-height: 1.45; color: rgb(var(--c-muted)); }
+      .member-meta { margin: 8px 4px 0; font-family: var(--trp-label); font-size: 11px; line-height: 1.45; color: rgb(var(--c-muted)); }
       @media (max-width: 639px) {
         .member-card { padding: 10px 10px 16px; border-radius: 16px; }
         .member-name { font-size: 14.5px; margin-top: 12px; }
@@ -334,11 +351,11 @@
       .member-profile-top .member-initials { width: 112px; flex: none; border-radius: 18px; font-size: 38px; }
       .member-profile-name { margin: 0; font-family: 'Space Grotesk', sans-serif; font-weight: 700; font-size: 24px; line-height: 1.2; letter-spacing: -0.01em; }
       .member-profile-hook { margin: 6px 0 0; font-size: 15px; line-height: 1.45; }
-      .member-profile-meta { margin: 8px 0 0; font-family: 'Space Mono', ui-monospace, monospace; font-size: 12px; color: rgb(var(--c-muted)); }
+      .member-profile-meta { margin: 8px 0 0; font-family: var(--trp-label); font-size: 12px; color: rgb(var(--c-muted)); }
       .member-profile-section { margin-top: 22px; }
       .member-profile-section h3 {
         margin: 0 0 6px;
-        font-family: 'Space Mono', ui-monospace, monospace;
+        font-family: var(--trp-label);
         font-size: 11px;
         font-weight: 600;
         letter-spacing: 0.12em;
@@ -383,7 +400,7 @@
 
     <header class="space-y-3">
       <span class="trp-kicker">Directory</span>
-      <h1 class="trp-title">Time Rich Members</h1>
+      <h1 class="trp-title">Time Rich Members<span class="trp-stop">.</span></h1>
       <p class="trp-lede">Your cohort. Find the right person and make the ask.</p>
     </header>
 
@@ -405,73 +422,29 @@
       </main> <!-- CLOSE main -->
     </div> <!-- CLOSE h-screen container -->
 
-  <footer class="shrink-0 px-4 sm:px-6 lg:px-10 py-5 border-t border-brand-ink/10 text-[11px] text-brand-ink/70">
-    <p class="flex flex-wrap items-center justify-center gap-x-2 gap-y-1 text-center">
-      <span>Need help? <a href="mailto:emc@timerich.ai" class="hover:text-brand-ink transition-colors">emc@timerich.ai</a></span>
-      <span aria-hidden="true" class="text-brand-ink/70">&middot;</span>
-      <!-- Href comes from the week 0 link item; hidden when there is none. -->
-      <a data-portal-community hidden class="hover:text-brand-ink transition-colors">WhatsApp community</a>
-      <span data-portal-community hidden aria-hidden="true" class="text-brand-ink/70">&middot;</span>
-      <a href="/privacy/" class="hover:text-brand-ink transition-colors">Privacy</a>
-      <span aria-hidden="true" class="text-brand-ink/70">&middot;</span>
-      <a href="/terms/" class="hover:text-brand-ink transition-colors">Terms</a>
-      <span aria-hidden="true" class="text-brand-ink/70">&middot;</span>
+  <footer class="shrink-0 px-4 sm:px-6 lg:px-8 py-2 border-t border-brand-ink/10 text-[12px] text-brand-ink/70">
+    <!-- One quiet line. The second "Powered by Stanley" lockup that used to
+         sit under this is gone: the credit is in the header now, once per
+         page, which is the rule on every page inside.
+
+         The separators are their own elements so .trp-foot-sep can take all
+         of them out at once on a narrow screen, where the line wraps and a
+         separator would otherwise be left stranded at the head of the second
+         line. See .trp-foot in portal-tailwind-src.css. -->
+    <p class="trp-foot flex flex-wrap items-center justify-center text-center">
       <span>&copy; 2026 Time Rich</span>
-    </p>
-    <!-- Anchor sponsor. Every page inside carries it here; the header shows it
-         too from 1280px up, where there is room beside the wordmark. -->
-    <p class="mt-3 flex justify-center">
-      <a class="trp-powered" href="https://x.getstanley.ai/r/mz4y9g" target="_blank" rel="noopener sponsored">
-        <span class="trp-powered-label">Powered by</span>
-        <img class="trp-powered-pos" src="../brand/partners/stanley-logo.png" alt="Stanley" width="765" height="203" loading="lazy" decoding="async"/>
-        <img class="trp-powered-rev" src="../brand/partners/stanley-logo-dark.png" alt="Stanley" width="765" height="203" loading="lazy" decoding="async"/>
-      </a>
+      <span class="trp-foot-sep" aria-hidden="true">&middot;</span>
+      <a href="/privacy/" class="trp-foot-link">Privacy</a>
+      <span class="trp-foot-sep" aria-hidden="true">&middot;</span>
+      <a href="/terms/" class="trp-foot-link">Terms</a>
+      <!-- Href comes from the week 0 link item; hidden when there is none. -->
+      <span data-portal-community hidden class="trp-foot-sep" aria-hidden="true">&middot;</span>
+      <a data-portal-community hidden class="trp-foot-link">WhatsApp community</a>
+      <span class="trp-foot-sep" aria-hidden="true">&middot;</span>
+      <span>Need help? <a href="mailto:emc@timerich.ai" class="trp-foot-link">emc@timerich.ai</a></span>
     </p>
   </footer>
 
-  <script>
-    document.addEventListener("DOMContentLoaded", () => {
-      // 3. Video Controls
-      const video = document.getElementById('promo-video');
-      const playBtn = document.getElementById('promo-play-btn');
-      const muteBtn = document.getElementById('promo-mute-btn');
-      
-      const iconPlay = document.getElementById('icon-play');
-      const iconPause = document.getElementById('icon-pause');
-      const iconMuted = document.getElementById('icon-muted');
-      const iconUnmuted = document.getElementById('icon-unmuted');
-
-      if(playBtn && video) {
-        playBtn.addEventListener('click', (e) => {
-          e.stopPropagation();
-          if (video.paused) {
-            video.play();
-            iconPlay.classList.add('hidden');
-            iconPause.classList.remove('hidden');
-          } else {
-            video.pause();
-            iconPause.classList.add('hidden');
-            iconPlay.classList.remove('hidden');
-          }
-        });
-      }
-
-      if(muteBtn && video) {
-        muteBtn.addEventListener('click', (e) => {
-          e.stopPropagation();
-          if (video.muted) {
-            video.muted = false;
-            iconMuted.classList.add('hidden');
-            iconUnmuted.classList.remove('hidden');
-          } else {
-            video.muted = true;
-            iconUnmuted.classList.add('hidden');
-            iconMuted.classList.remove('hidden');
-          }
-        });
-      }
-    });
-  </script>
   <script>
     /* Time Rich Members: the cohort directory.
        Profiles come from the Worker route in portal-config.js (directoryUrl),

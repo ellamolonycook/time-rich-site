@@ -449,9 +449,9 @@
   }
 
   function skillButton(item) {
-    var button = el('button', 'inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-brand-deep ' +
-                              'text-brand-bg text-xs font-bold shadow-sm hover:bg-brand-green ' +
-                              'transition-colors disabled:opacity-60', 'Download skill');
+    // The shared pill. It was a 12px-radius box at 36px tall with a shadow,
+    // which is the one button on the site that did not match the rest.
+    var button = el('button', 'trp-btn trp-btn-primary', 'Download skill');
     button.type = 'button';
     button.insertAdjacentHTML('afterbegin',
       '<svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">' +

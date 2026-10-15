@@ -2,6 +2,21 @@
 @tailwind components;
 @tailwind utilities;
 
+/* ---------------------------------------------------------------------------
+   The label face, served from the repo rather than Google Fonts.
+   The brand bible sets small uppercase labels in JetBrains Mono, and the
+   variable file already ships in brand/fonts/. One file covers every weight
+   the portal asks for, so this replaces a third Google Fonts family rather
+   than adding to it.
+   ------------------------------------------------------------------------- */
+@font-face {
+  font-family: 'JetBrains Mono';
+  font-style: normal;
+  font-weight: 100 800;
+  font-display: swap;
+  src: url('../brand/fonts/JetBrainsMono-Variable.ttf') format('truetype-variations');
+}
+
 /* ===========================================================================
    The portal's shared style.
    ---------------------------------------------------------------------------
@@ -41,7 +56,10 @@
     /* surfaces */
     --c-sage: 220 222 191;        /* #DCDEBF */
     --c-sagelt: 233 234 213;      /* #E9EAD5 */
-    --c-panel: 216 217 185;       /* #D8D9B9  the card fill */
+    /* A quiet tint, for a hover and for ::selection. It is no longer the
+       card fill: a card is white with a hairline, and the heavy olive panel
+       that used to be under every section is gone. */
+    --c-panel: 233 234 213;       /* #E9EAD5 */
     /* ink */
     --c-ink: 44 52 34;            /* #2C3422 */
     --c-deep: 51 58 40;           /* #333A28 */
@@ -54,10 +72,13 @@
     --c-lime: 204 238 160;        /* #CCEEA0 */
     /* the one warm colour on the page, for a failed sign-in */
     --c-error: 138 43 43;         /* #8A2B2B */
-    /* the hairline, as its own value because its alpha differs per theme */
-    --c-rule: 66 75 54;
-    --trp-rule-a: .20;
-    --trp-rule-2-a: .42;
+    /* the hairline, as its own value because its alpha differs per theme.
+       The brand hairline on cream is rgba(51,58,40,.12): one hair, not a
+       border. --trp-rule-2 is the same ink at the weight an outline button
+       or a tick box needs to read as a real edge. */
+    --c-rule: 51 58 40;
+    --trp-rule-a: .12;
+    --trp-rule-2-a: .30;
 
     /* ---- named tokens, all derived from the above ---- */
     --trp-bg: rgb(var(--c-bg));
@@ -73,10 +94,13 @@
        anything else that ships with a white background of its own */
     --trp-shot: #FFFDFB;
 
-    /* Three faces, the same three the accelerator uses. */
+    /* Three faces, the brand bible's own: Space Grotesk for headings, the
+       system sans for body copy, JetBrains Mono for small uppercase labels.
+       Inter and Space Mono are both gone, so the portal now asks Google
+       Fonts for one family instead of three. */
     --trp-face: 'Space Grotesk', system-ui, -apple-system, 'Segoe UI', sans-serif;
-    --trp-body: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
-    --trp-label: 'Space Mono', ui-monospace, SFMono-Regular, Menlo, monospace;
+    --trp-body: system-ui, -apple-system, 'Segoe UI', Roboto, Helvetica, sans-serif;
+    --trp-label: 'JetBrains Mono', ui-monospace, SFMono-Regular, Menlo, monospace;
 
     /* One motion budget. Hover and focus only; nothing here loops. */
     --trp-t: .15s;
@@ -136,7 +160,9 @@
     /* surfaces sit above the ground, not below it */
     --c-sage: 54 64 41;           /* #364029 */
     --c-sagelt: 70 82 55;         /* #465237  a step above the card, not the same as it */
-    --c-panel: 44 52 34;          /* #2C3422  the card fill */
+    /* The hover tint, which has to sit above the card rather than equal it,
+       or a hover does nothing on the dark theme. */
+    --c-panel: 70 82 55;          /* #465237 */
     /* ink becomes cream */
     --c-ink: 244 241 230;         /* #F4F1E6 */
     --c-deep: 244 241 230;
@@ -164,7 +190,7 @@
       --c-surface: 44 52 34;
       --c-sage: 54 64 41;
       --c-sagelt: 70 82 55;
-      --c-panel: 44 52 34;
+      --c-panel: 70 82 55;
       --c-ink: 244 241 230;
       --c-deep: 244 241 230;
       --c-green: 230 228 214;
@@ -194,7 +220,8 @@
   .trp-theme select {
     appearance: none;
     -webkit-appearance: none;
-    padding: 5px 26px 5px 10px;
+    min-height: 44px;
+    padding: 10px 28px 10px 14px;
     border: 1px solid var(--trp-rule);
     border-radius: 99px;
     background: transparent;
@@ -211,7 +238,7 @@
   .trp-theme select option { background: rgb(var(--c-bg)); color: rgb(var(--c-ink)); }
   .trp-theme-caret {
     position: absolute;
-    right: 9px;
+    right: 11px;
     width: 12px;
     height: 12px;
     pointer-events: none;
@@ -232,16 +259,18 @@
 
 @layer components {
   /* -- the card ----------------------------------------------------------
-     .tier from accelerator/index.html: a flat sage panel with a hairline, no
-     shadow at rest, and a small lift on hover. The portal's cards were
-     frosted glass with a 48px backdrop blur, an inner highlight and a
-     24px drop shadow; this is the same shape with none of that.
+     White, one hairline, 20px radius. The portal used to put the heavy
+     olive panel (#D8D9B9) under every section, which made each page read
+     as one solid block of sage with headings floating in it. A card is now
+     a sheet of paper lifted off the cream ground, and the two tinted
+     variants below are the exceptions, used once each per page.
+
      The accelerator's own transition is .16s; this uses the portal's .15s
      budget so every hover on the page moves at one speed. */
   .glass-card {
-    background: var(--trp-panel);
+    background: rgb(var(--c-surface));
     border: 1px solid var(--trp-rule);
-    border-radius: 14px;
+    border-radius: 20px;
     transition: transform var(--trp-t) ease,
                 border-color var(--trp-t) ease,
                 box-shadow var(--trp-t) ease;
@@ -249,7 +278,7 @@
   .glass-card:hover {
     transform: translateY(-3px);
     border-color: var(--trp-rule-2);
-    box-shadow: 0 14px 34px -20px rgba(66, 75, 54, .45);
+    box-shadow: 0 14px 34px -20px rgba(51, 58, 40, .38);
   }
 
   /* A card that is only a surface, never a target, does not move. */
@@ -259,39 +288,227 @@
     box-shadow: none;
   }
 
+  /* -- the two tinted cards ----------------------------------------------
+     One quiet sage card per page at most, and on the dashboard one deep
+     green block: the next live session, which is the only thing on the
+     page a member has to act on at a fixed time.
+
+     .is-deep carries its own ink, because every colour inside it inverts:
+     a label is cream at 70%, the brand stop is pastel rather than moss,
+     and the hairline is cream. Those live with the components that use
+     them, keyed off .is-deep. */
+  .glass-card.is-sage {
+    background: rgb(var(--c-sagelt));
+    border-color: rgb(var(--c-rule) / .16);
+  }
+  /* On the dark theme the sage card takes the lower of the two sage values
+     and lifts its two quiet inks a step. --c-sagelt is a hover tint there,
+     a step above the card; used as a fill it put the card's lede at 4.47:1
+     and its footnote at 3.23:1. Both clear 5.9:1 now. */
+  :root[data-theme='dark'] .glass-card.is-sage {
+    background: rgb(var(--c-sage));
+    --trp-muted: rgb(var(--c-mid));
+    --trp-dim: rgb(var(--c-muted));
+  }
+  @media (prefers-color-scheme: dark) {
+    :root[data-theme='system'] .glass-card.is-sage {
+      background: rgb(var(--c-sage));
+      --trp-muted: rgb(var(--c-mid));
+      --trp-dim: rgb(var(--c-muted));
+    }
+  }
+
+  /* The deep green block sets three variables and everything inside it
+     reads those, rather than reading --c-cream directly: the cream tokens
+     flip to a dark green on the dark theme, so a label written as
+     rgb(var(--c-cream)) would come out dark on dark there. */
+  .glass-card.is-deep {
+    background: rgb(var(--c-ink));
+    border-color: rgb(var(--c-ink));
+    --trp-on-deep: #FFFCEB;
+    --trp-on-deep-soft: rgba(255, 252, 235, .72);
+    --trp-on-deep-line: rgba(255, 252, 235, .34);
+    color: var(--trp-on-deep);
+  }
+  /* On the dark theme the ground is already deep green, so the one block
+     that must stand out takes the raised surface and a cream hairline
+     instead of disappearing into the page. */
+  :root[data-theme='dark'] .glass-card.is-deep,
+  :root[data-theme='dark'] .glass-card.is-deep:hover {
+    background: rgb(var(--c-surface));
+    border-color: rgb(var(--c-rule) / .22);
+    --trp-on-deep: rgb(var(--c-ink));
+    --trp-on-deep-soft: rgb(var(--c-mid));
+    --trp-on-deep-line: rgb(var(--c-rule) / .34);
+  }
+  @media (prefers-color-scheme: dark) {
+    :root[data-theme='system'] .glass-card.is-deep,
+    :root[data-theme='system'] .glass-card.is-deep:hover {
+      background: rgb(var(--c-surface));
+      border-color: rgb(var(--c-rule) / .22);
+      --trp-on-deep: rgb(var(--c-ink));
+      --trp-on-deep-soft: rgb(var(--c-mid));
+      --trp-on-deep-line: rgb(var(--c-rule) / .34);
+    }
+  }
+  .glass-card.is-deep h1,
+  .glass-card.is-deep h2,
+  .glass-card.is-deep h3 { color: var(--trp-on-deep); }
+
+  /* -- buttons -----------------------------------------------------------
+     One pill, three fills, 44px minimum height everywhere so every action
+     is a real tap target on a phone.
+
+       .trp-btn-primary   deep green fill, cream text. The default.
+       .trp-btn-pastel    pastel fill, deep green text. The page's ONE main
+                          action, never more than one per page.
+       .trp-btn-outline   a hairline and nothing else.
+
+     Primary is written against --trp-ink / --c-bg, the pair that swaps on
+     the dark theme, so it inverts without a second rule. Pastel is fixed
+     in both themes: #CCEEA0 is a light, and the type on it is always the
+     deep green, which is 10:1 either way. */
+  .trp-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    min-height: 44px;
+    padding: 11px 22px;
+    border: 1px solid transparent;
+    border-radius: 999px;
+    font-family: var(--trp-body);
+    font-size: 14px;
+    font-weight: 600;
+    line-height: 1.3;
+    text-align: center;
+    text-decoration: none;
+    white-space: nowrap;
+    cursor: pointer;
+    transition: background-color var(--trp-t) ease,
+                border-color var(--trp-t) ease,
+                color var(--trp-t) ease;
+  }
+  .trp-btn svg { width: 16px; height: 16px; flex: none; }
+
+  .trp-btn-primary { background: var(--trp-ink); color: rgb(var(--c-bg)); }
+  .trp-btn-primary:hover { background: rgb(var(--c-green)); }
+
+  .trp-btn-pastel { background: rgb(var(--c-lime)); color: #2C3422; }
+  .trp-btn-pastel:hover { background: #BBE389; }
+
+  .trp-btn-outline {
+    background: transparent;
+    border-color: var(--trp-rule-2);
+    color: var(--trp-ink);
+  }
+  .trp-btn-outline:hover { background: var(--trp-panel); border-color: var(--trp-ink); }
+
+  /* Inside the deep green block both read off its own three variables. */
+  .glass-card.is-deep .trp-btn-outline {
+    border-color: var(--trp-on-deep-line);
+    color: var(--trp-on-deep);
+  }
+  .glass-card.is-deep .trp-btn-outline:hover {
+    background: rgba(255, 252, 235, .10);
+    border-color: var(--trp-on-deep);
+  }
+  :root[data-theme='dark'] .glass-card.is-deep .trp-btn-outline:hover,
+  :root[data-theme='system'] .glass-card.is-deep .trp-btn-outline:hover {
+    background: rgb(var(--c-panel));
+  }
+
+  /* A row action: the Join on a session row, the Open on a quick link, the
+     calendar icon. Lighter copy and tighter sides than a card's button, but
+     the same 44px: a row is 52px or more, so there is room for it. */
+  .trp-btn-sm { padding: 10px 16px; font-size: 13px; }
+
+  /* A Join that is there but not yet live, and a recording that has not
+     gone up. Neither is a target, so neither is filled; both keep enough
+     weight to read, which a 45%-opacity label did not. */
+  .trp-btn-off {
+    background: rgb(var(--c-ink) / .12);
+    color: var(--trp-ink);
+    cursor: not-allowed;
+  }
+  .trp-btn-dead {
+    background: transparent;
+    color: var(--trp-muted);
+    cursor: default;
+  }
+
   /* -- page header -------------------------------------------------------
-     Every page opens the same way: a small label, the page title, and one
-     line saying what the page is for. */
+     Every page opens the same way: a small label, the page title ending in
+     the brand stop, and one line saying what the page is for.
+
+     Both labels are the brand bible's: JetBrains Mono, 12px, uppercase,
+     .14em, and moss on cream. 11px was below the size the bible sets and
+     the two labels disagreed with each other on tracking. */
   .trp-kicker {
     font-family: var(--trp-label);
-    font-size: 11px;
-    letter-spacing: .16em;
+    font-size: 12px;
+    font-weight: 500;
+    letter-spacing: .14em;
     text-transform: uppercase;
     color: var(--trp-accent);
     display: block;
     margin-bottom: 14px;
   }
   .trp-title {
-    font-size: clamp(28px, 3.4vw, 40px);
-    line-height: 1.08;
+    font-size: clamp(32px, 4.4vw, 44px);
+    line-height: 1.04;
+    letter-spacing: -.03em;
     margin: 0;
   }
   .trp-lede {
-    margin-top: 12px;
+    margin-top: 14px;
     max-width: 60ch;
     font-size: 16px;
     line-height: 1.6;
     color: var(--trp-muted);
   }
 
-  /* A small mono label, the accelerator's .t-tag voice. */
+  /* -- the wordmark ------------------------------------------------------
+     "TIME RICH" in Space Grotesk Bold with the stop, exactly as the brand
+     bible sets it. The portal was setting it as "Time Rich." in sentence
+     case, which is the one thing the bible says the mark is not. The size
+     comes from the page, because the header and the phone menu want
+     different ones. */
+  .trp-wordmark {
+    display: inline-flex;
+    align-items: baseline;
+    min-height: 44px;
+    align-content: center;
+    flex-wrap: wrap;
+    font-family: var(--trp-face);
+    font-weight: 700;
+    letter-spacing: -.03em;
+    line-height: 1;
+    color: var(--trp-ink);
+    text-decoration: none;
+  }
+
+  /* -- the brand stop ----------------------------------------------------
+     The full stop after a title and in the wordmark. Moss on cream, pastel
+     on the deep green block. The only colour in the mark that moves, which
+     is the rule the brand bible sets. */
+  .trp-stop { color: var(--trp-accent); }
+  .glass-card.is-deep .trp-stop { color: rgb(var(--c-lime)); }
+
+  /* A small mono label, the same voice as .trp-kicker in a quieter colour.
+     On the deep green block it is cream at 70%. */
   .trp-tag {
     font-family: var(--trp-label);
-    font-size: 11px;
+    font-size: 12px;
+    font-weight: 500;
     letter-spacing: .14em;
     text-transform: uppercase;
-    color: var(--trp-muted);
+    color: var(--trp-accent);
   }
+  /* Cream at 70% on the deep green block. Written against the block's own
+     variable rather than --c-cream, which flips to a dark green on the dark
+     theme and would have put a dark label on a dark card. */
+  .glass-card.is-deep .trp-tag { color: var(--trp-on-deep-soft); }
 
   /* -- the sponsor lockup -------------------------------------------------
      "Powered by" in the same small mono label as .trp-tag, then the anchor
@@ -307,11 +524,23 @@
 
      Muted at rest so it never competes with the Time Rich wordmark. */
   .trp-powered {
+    position: relative;
     display: inline-flex;
     align-items: center;
     gap: 8px;
     text-decoration: none;
     line-height: 1;
+  }
+  /* The target, 44px tall, centred on the artwork. The lockup itself stays
+     at the height the design sets; growing it would push the header about. */
+  .trp-powered::before {
+    content: '';
+    position: absolute;
+    top: -12px;
+    right: -6px;
+    bottom: -12px;
+    left: -6px;
+    border-radius: 8px;
   }
   .trp-powered-label {
     font-family: var(--trp-label);
@@ -339,13 +568,43 @@
     :root[data-theme='system'] .trp-powered .trp-powered-rev { display: block; }
   }
 
-  /* In the header it sits off the wordmark with a hairline between them, and
-     only from 1280px up, where the centred nav leaves room for it. */
-  .trp-powered-head {
-    padding-left: 14px;
-    border-left: 1px solid var(--trp-rule);
+  /* The header is the one place the lockup appears now: the second copy in
+     every footer is gone, so this one carries the credit on its own and
+     cannot be held back to a desktop width.
+
+     It sits on the right, before the thin divider and the member's name.
+     At phone widths the words are read out to assistive tech but not drawn
+     -- the header has about 340px to spend and the wordmark, the menu
+     button and the theme control have first claim on it -- so what is left
+     is the Stanley mark itself, which is a wordmark and still reads as the
+     credit. From 640px up the full lockup is back. */
+  .trp-powered-head img { height: 20px; }
+  @media (min-width: 640px) {
+    .trp-powered-head img { height: 22px; }
   }
-  .trp-powered-head img { height: 22px; }
+  @media (max-width: 639px) {
+    .trp-powered-head .trp-powered-label {
+      position: absolute;
+      width: 1px;
+      height: 1px;
+      padding: 0;
+      margin: -1px;
+      overflow: hidden;
+      clip: rect(0, 0, 0, 0);
+      white-space: nowrap;
+      border: 0;
+    }
+  }
+
+  /* -- the header's thin divider ------------------------------------------
+     Between the sponsor credit and the member's own name: two different
+     things, so there is a hair between them rather than a gap and a hope. */
+  .trp-head-div {
+    width: 1px;
+    height: 20px;
+    flex: none;
+    background: var(--trp-rule-2);
+  }
 
   /* -- the header --------------------------------------------------------
      Pinned to the top, 56px on a phone and 64px above that. A solid page
@@ -360,6 +619,9 @@
      The page you are on is filled and dark; everything else is quiet until
      hovered. Both the header nav and the mobile menu use these. */
   .trp-nav-link {
+    display: inline-flex;
+    align-items: center;
+    min-height: 44px;
     transition: background-color var(--trp-t) ease, color var(--trp-t) ease;
   }
   .trp-nav-link[aria-current='page'] {
@@ -370,12 +632,317 @@
     background: var(--trp-ink);
   }
 
+  /* -- the checklist card -------------------------------------------------
+     The shape a member meets on the dashboard and again on the Curriculum:
+     a white card, a count in its header, then one row per thing to do.
+
+     A row is a 22px circle, the label, and an optional SKILL tag. The
+     circle is the toggle. It draws at 22px, which is what the design asks
+     for, and extends its own hit area to 44px with a ::before overlay, so
+     the thing a thumb has to find is a full tap target without the circle
+     growing to match. The row is 52px, which leaves room for that overlay
+     without it reaching into the row above.
+     ---------------------------------------------------------------------- */
+  .trp-check { padding: 28px 30px 22px; }
+  .trp-check-head {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 16px;
+    padding-bottom: 14px;
+    border-bottom: 1px solid var(--trp-rule);
+  }
+  .trp-check-heading { margin: 6px 0 0; font-size: clamp(21px, 2.3vw, 26px); line-height: 1.15; }
+  .trp-check-count {
+    margin: 0;
+    flex: none;
+    font-family: var(--trp-label);
+    font-size: 12px;
+    font-weight: 500;
+    letter-spacing: .08em;
+    color: var(--trp-muted);
+    white-space: nowrap;
+  }
+  .trp-check-sub { margin: 10px 0 0; font-size: 15px; line-height: 1.5; color: var(--trp-muted); }
+
+  .trp-checks { list-style: none; margin: 0; padding: 0; }
+  .trp-check-row {
+    display: grid;
+    grid-template-columns: 22px minmax(0, 1fr);
+    align-items: center;
+    gap: 0 14px;
+    min-height: 52px;
+    padding: 6px 0;
+  }
+  .trp-check-row + .trp-check-row { border-top: 1px solid var(--trp-rule); }
+
+  .trp-check-box {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 22px;
+    height: 22px;
+    flex: none;
+    padding: 0;
+    border: 1.5px solid var(--trp-rule-2);
+    border-radius: 999px;
+    background: transparent;
+    color: transparent;
+    cursor: pointer;
+    transition: background-color var(--trp-t) ease,
+                border-color var(--trp-t) ease,
+                color var(--trp-t) ease;
+  }
+  /* The tap target, 44px, centred on the 22px circle. */
+  .trp-check-box::before {
+    content: '';
+    position: absolute;
+    inset: -11px;
+    border-radius: 999px;
+  }
+  .trp-check-box svg { width: 13px; height: 13px; }
+  .trp-check-box:hover { border-color: var(--trp-ink); }
+  .trp-check-box.is-on {
+    background: var(--trp-ink);
+    border-color: var(--trp-ink);
+    color: rgb(var(--c-bg));
+  }
+  .trp-check-box:focus-visible { outline: 2px solid var(--trp-text); outline-offset: 3px; }
+
+  .trp-check-label {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 6px 10px;
+    min-width: 0;
+    font-size: 16px;
+    line-height: 1.4;
+    color: var(--trp-ink);
+  }
+  /* A row that is done reads back, without going so pale it fails contrast. */
+  .trp-check-row.is-done .trp-check-label { color: var(--trp-muted); }
+
+  /* An item that is a link. It draws on its own line and reaches 44px with
+     an overlay, so the row stays at the 52px the design sets. The overlay
+     is kept narrow sideways so it cannot reach back across the gap and take
+     the circle's target from it. */
+  .trp-check-label .trp-slink { position: relative; }
+  .trp-check-label .trp-slink::before {
+    content: '';
+    position: absolute;
+    inset: -11px -2px;
+  }
+  .trp-check-empty { padding: 18px 0 20px; margin: 0; font-size: 15px; color: var(--trp-muted); }
+
+  /* A row with nothing to tick still lines up with the ones that have a
+     circle, so the labels make a single column down the card. */
+  .trp-check-gap { width: 22px; height: 22px; }
+
+  /* A session row carries its date under the title and its one action on
+     the right: Join on the day, the recording afterwards. */
+  .trp-check-row.has-act { grid-template-columns: 22px minmax(0, 1fr) auto; }
+  .trp-check-when {
+    flex: 1 0 100%;
+    font-family: var(--trp-label);
+    font-size: 11px;
+    letter-spacing: .08em;
+    text-transform: uppercase;
+    color: var(--trp-muted);
+  }
+  .trp-check-act { display: inline-flex; justify-self: end; }
+
+  @media (max-width: 640px) {
+    /* The action drops under the row and takes its width, so a 44px pill
+       never has to squeeze in beside a wrapping title. */
+    .trp-check-row.has-act {
+      grid-template-columns: 22px minmax(0, 1fr);
+      grid-template-areas: 'box label' '. act';
+      padding: 12px 0;
+    }
+    .trp-check-row.has-act > .trp-check-box,
+    .trp-check-row.has-act > .trp-check-gap { grid-area: box; }
+    .trp-check-row.has-act > .trp-check-label { grid-area: label; }
+    .trp-check-act { grid-area: act; justify-self: stretch; margin-top: 10px; }
+    .trp-check-act:empty { display: none; }
+    .trp-check-act > * { width: 100%; }
+  }
+
+  /* -- coming up ----------------------------------------------------------
+     The weeks that have not opened yet. These used to be full week cards
+     with nothing in them: five big empty boxes down the Curriculum page,
+     each saying only "Opens Mon 2 Nov". One card now holds them all, one
+     row each, and a week moves out of here and into a checklist card of
+     its own on the morning it opens.
+     ---------------------------------------------------------------------- */
+  .trp-coming { padding: 26px 28px 20px; }
+  .trp-coming-rows { list-style: none; margin: 0; padding: 0; }
+  .trp-coming-row {
+    display: grid;
+    grid-template-columns: 38px minmax(0, 1fr) auto;
+    grid-template-areas: 'n title when';
+    align-items: center;
+    gap: 2px 14px;
+    min-height: 52px;
+    padding: 8px 0;
+  }
+  .trp-coming-row + .trp-coming-row { border-top: 1px solid var(--trp-rule); }
+  .trp-coming-n {
+    grid-area: n;
+    font-family: var(--trp-label);
+    font-size: 12px;
+    font-weight: 600;
+    letter-spacing: .06em;
+    color: var(--trp-accent);
+  }
+  .trp-coming-title {
+    grid-area: title;
+    min-width: 0;
+    font-size: 15.5px;
+    line-height: 1.35;
+    color: var(--trp-ink);
+    overflow-wrap: anywhere;
+  }
+  .trp-coming-when {
+    grid-area: when;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    justify-self: end;
+    font-family: var(--trp-label);
+    font-size: 11px;
+    letter-spacing: .08em;
+    text-transform: uppercase;
+    color: var(--trp-muted);
+    white-space: nowrap;
+  }
+  .trp-coming-lock { width: 13px; height: 13px; flex: none; color: var(--trp-dim); }
+
+  @media (max-width: 640px) {
+    .trp-check { padding: 22px 20px 18px; }
+    .trp-coming { padding: 20px 20px 16px; }
+    /* The date drops under the title rather than squeezing it to nothing. */
+    .trp-coming-row {
+      grid-template-columns: 38px minmax(0, 1fr);
+      grid-template-areas: 'n title' '. when';
+      padding: 12px 0;
+    }
+    .trp-coming-when { justify-self: start; }
+  }
+
+  /* -- the promo ----------------------------------------------------------
+     At the top of the Live Sessions page. A 16:9 frame inside the card, the
+     play centred on it and the mute in the corner. Both controls are dark
+     discs with a light glyph in either theme: they sit on the film, not on
+     the page, so they take their contrast from the picture rather than from
+     the ground. */
+  .trp-promo { margin: 0; padding: 10px; overflow: hidden; }
+  .trp-promo-frame {
+    position: relative;
+    width: 100%;
+    aspect-ratio: 16 / 9;
+    border-radius: 12px;
+    overflow: hidden;
+    background: rgb(var(--c-ink));
+  }
+  .trp-promo-frame video {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    display: block;
+  }
+  .trp-promo-play,
+  .trp-promo-mute {
+    position: absolute;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border: 0;
+    border-radius: 999px;
+    background: rgba(19, 24, 13, .55);
+    color: #FFFCEB;
+    cursor: pointer;
+    transition: background-color var(--trp-t) ease;
+  }
+  .trp-promo-play:hover,
+  .trp-promo-mute:hover { background: rgba(19, 24, 13, .78); }
+  .trp-promo-play {
+    top: 50%;
+    left: 50%;
+    width: 56px;
+    height: 56px;
+    transform: translate(-50%, -50%);
+  }
+  /* 44px, so the mute is a real target even though its glyph is small. */
+  .trp-promo-mute { left: 14px; bottom: 14px; width: 44px; height: 44px; }
+
+  @supports not (aspect-ratio: 16 / 9) {
+    .trp-promo-frame { height: 0; padding-bottom: 56.25%; }
+  }
+
+  /* -- the Curriculum's two columns ---------------------------------------
+     The open sections on the left, "Coming up" beside them. On a phone the
+     two stack and Coming up falls under the open work, which is the order
+     it is wanted in. */
+  .trp-curriculum { display: grid; gap: 20px; align-items: start; }
+  .trp-curriculum-open { display: grid; gap: 20px; align-content: start; min-width: 0; }
+  .trp-curriculum-side { min-width: 0; }
+  @media (min-width: 1024px) {
+    .trp-curriculum { grid-template-columns: minmax(0, 1.6fr) minmax(0, 1fr); gap: 24px; }
+    /* Nothing is coming up any more, so the open work takes the width. */
+    .trp-curriculum.is-alone { grid-template-columns: minmax(0, 1fr); }
+    /* Coming up follows the page as the open list runs past it. */
+    .trp-curriculum-side { position: sticky; top: 88px; }
+  }
+
+  /* -- the bar in a page header -------------------------------------------
+     The Curriculum carries the member's own count beside its title rather
+     than in a card of its own, because the cards under it are the work. */
+  .trp-headbar { align-self: flex-end; }
+  .trp-headbar[hidden] { display: none; }
+  .trp-headbar-top {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 14px;
+  }
+  .trp-headbar-count {
+    margin: 0;
+    font-family: var(--trp-label);
+    font-size: 12px;
+    font-weight: 500;
+    letter-spacing: .06em;
+    color: var(--trp-ink);
+    white-space: nowrap;
+  }
+
+  /* -- a small aside card -------------------------------------------------
+     "Need a hand?" on the dashboard: a heading, and two links. */
+  .trp-aside { padding: 24px 26px; }
+  .trp-aside-title { margin: 8px 0 0; font-size: 18px; line-height: 1.25; }
+  .trp-aside-links { margin: 14px 0 0; display: grid; gap: 10px; }
+  .trp-aside-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    min-height: 44px;
+    font-size: 15px;
+    color: var(--trp-ink);
+    text-decoration: underline;
+    text-underline-offset: 3.5px;
+    text-decoration-color: var(--trp-rule-2);
+    transition: text-decoration-color var(--trp-t) ease;
+  }
+  .trp-aside-link:hover { text-decoration-color: var(--trp-ink); }
+
   /* -- dashboard progress -------------------------------------------------
      One strip, not a pair of meters: the label and the count on one line, a
      single thin bar for the part the member controls, then the plain counts
      underneath. No percentages; "1 of 5 weeks" is the fact and "7%" was only
      a derived number that made week one read as failure. */
-  .trp-progress { padding: 20px 24px 18px; }
+  .trp-progress { padding: 28px 30px 24px; }
   .trp-progress-top {
     display: flex;
     align-items: baseline;
@@ -386,14 +953,35 @@
     margin: 0;
     font-family: var(--trp-label);
     font-size: 12px;
+    font-weight: 500;
     letter-spacing: .06em;
+    color: var(--trp-muted);
+  }
+  /* The count as the card's own headline: the number at display size with
+     "of 18 done" beside it, rather than a 12px line of mono doing the job
+     of a heading. */
+  .trp-progress-big {
+    margin: 16px 0 0;
+    display: flex;
+    align-items: baseline;
+    gap: 10px;
+    font-family: var(--trp-face);
+    letter-spacing: -.03em;
     color: var(--trp-ink);
   }
+  .trp-progress-n { font-size: clamp(40px, 5vw, 52px); font-weight: 700; line-height: .9; }
+  .trp-progress-of {
+    font-family: var(--trp-body);
+    font-size: 15px;
+    font-weight: 400;
+    letter-spacing: 0;
+    color: var(--trp-muted);
+  }
   .trp-progress-track {
-    margin-top: 12px;
-    height: 4px;
+    margin-top: 18px;
+    height: 6px;
     border-radius: 99px;
-    background: rgba(66, 75, 54, .18);
+    background: rgb(var(--c-rule) / .14);
     overflow: hidden;
   }
   .trp-progress-fill {
@@ -413,13 +1001,38 @@
     font-size: 12px;
     color: var(--trp-dim);
   }
+  /* The way on from the card. A link, not a button: the card already has
+     the one number that matters on it, and the page's one filled action is
+     Join via Zoom next door. */
+  .trp-progress-go {
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+    margin-top: 20px;
+    min-height: 44px;
+    font-size: 15px;
+    font-weight: 600;
+    color: var(--trp-ink);
+    text-decoration: underline;
+    text-underline-offset: 4px;
+    text-decoration-color: var(--trp-rule-2);
+    transition: text-decoration-color var(--trp-t) ease;
+  }
+  .trp-progress-go:hover { text-decoration-color: var(--trp-ink); }
+  /* The card is a column, so the link sits at its foot and the two cards
+     in the row keep the same height whatever is in them. */
+  .trp-progress { display: flex; flex-direction: column; }
+  .trp-progress-go { margin-top: auto; align-self: flex-start; }
 
   /* -- connect your Notion ------------------------------------------------
      Two accordions built on <details>, so open and close, the keyboard and
      in-page search all come from the browser. The marker is removed and
      replaced with a caret that turns when the panel opens. */
-  .trp-connect { padding: 24px 28px 22px; }
-  .trp-connect-title { margin: 8px 0 0; font-size: clamp(20px, 2.2vw, 26px); line-height: 1.2; }
+  .trp-connect { padding: 28px 30px 24px; }
+  /* This card sits in the narrow column on the dashboard, so the heading is
+     sized to fit "Connect your Notion to your AI" in two even lines rather
+     than leaving "AI" stranded on a third. */
+  .trp-connect-title { margin: 0; font-size: clamp(19px, 1.6vw, 21px); line-height: 1.25; }
   .trp-connect-lede { margin: 8px 0 0; font-size: 15px; line-height: 1.5; color: var(--trp-muted); }
   .trp-connect-note { margin: 16px 0 0; font-size: 13px; color: var(--trp-dim); }
   /* A caveat under a set of steps, inside the disclosure rather than under
@@ -428,6 +1041,37 @@
 
   .trp-acc { margin-top: 16px; border-top: 1px solid var(--trp-rule); }
   .trp-acc:first-of-type { margin-top: 20px; }
+
+  /* -- the same disclosure, as a pill -------------------------------------
+     On the dashboard the three tool choices are a short menu, not a list of
+     sections, so each one is drawn as a pill button. The element is still
+     the <details> it was: the open and close, the keyboard handling and
+     in-page search all stay the browser's, and everything inside the panel
+     is untouched. */
+  .trp-acc.is-pill { margin-top: 10px; border-top: 0; }
+  .trp-acc.is-pill:first-of-type { margin-top: 16px; }
+  .trp-acc.is-pill > .trp-acc-head {
+    min-height: 44px;
+    padding: 10px 18px;
+    border: 1px solid var(--trp-rule-2);
+    border-radius: 999px;
+    background: rgb(var(--c-surface));
+    font-size: 15px;
+    transition: border-color var(--trp-t) ease, background-color var(--trp-t) ease;
+  }
+  .trp-acc.is-pill > .trp-acc-head:hover { border-color: var(--trp-ink); }
+  .trp-acc.is-pill[open] > .trp-acc-head {
+    border-color: var(--trp-ink);
+    border-bottom-left-radius: 0;
+    border-bottom-right-radius: 0;
+  }
+  .trp-acc.is-pill .trp-acc-body {
+    padding: 16px 18px 18px;
+    border: 1px solid var(--trp-ink);
+    border-top: 0;
+    border-radius: 0 0 18px 18px;
+    background: rgb(var(--c-surface));
+  }
 
   .trp-acc-head {
     display: flex;
@@ -494,17 +1138,23 @@
     padding: 10px 14px;
     border-bottom: 1px solid var(--trp-rule);
   }
+  /* Copy sits in the head of a box, so it draws at 36px and reaches to 44px
+     with the overlay below, the same rule as the checklist circle. */
   .trp-copy {
+    position: relative;
     flex: none;
-    padding: 5px 14px;
+    min-height: 36px;
+    padding: 7px 16px;
     border: 1px solid var(--trp-rule-2);
     border-radius: 99px;
-    font-size: 12px;
+    font-size: 13px;
     font-weight: 600;
     color: var(--trp-ink);
     background: transparent;
+    cursor: pointer;
     transition: background-color var(--trp-t) ease, border-color var(--trp-t) ease;
   }
+  .trp-copy::before { content: ''; position: absolute; inset: -4px; border-radius: 99px; }
   .trp-copy:hover { background: var(--trp-panel); border-color: var(--trp-ink); }
 
   .trp-copybox-text {
@@ -559,11 +1209,13 @@
     flex: none;
     display: inline-flex;
     align-items: center;
-    gap: 6px;
-    padding: 6px 14px;
+    justify-content: center;
+    gap: 7px;
+    min-height: 44px;
+    padding: 11px 18px;
     border: 1px solid var(--trp-rule-2);
     border-radius: 99px;
-    font-size: 11px;
+    font-size: 13px;
     font-weight: 600;
     white-space: nowrap;
     color: var(--trp-ink);
@@ -575,13 +1227,17 @@
   .trp-pcard-get svg { width: 13px; height: 13px; flex: none; }
   /* Where the button will be once the week opens, so the card keeps its
      shape on the day it does. Not a button: there is nothing to press. */
+  /* Where the button will be once the week opens. Not a button, so it does
+     not take a button's height: it is a note in the label face. */
   .trp-pcard-locked {
     flex: none;
+    align-self: center;
     padding: 6px 14px;
     border: 1px dashed var(--trp-rule-2);
     border-radius: 99px;
     font-family: var(--trp-label);
     font-size: 11px;
+    letter-spacing: .04em;
     white-space: nowrap;
     color: var(--trp-muted);
   }
@@ -629,8 +1285,10 @@
     grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
   }
   .trp-guide-link {
-    display: block;
-    padding: 14px 16px;
+    display: flex;
+    align-items: center;
+    min-height: 52px;
+    padding: 14px 18px;
     border: 1px solid var(--trp-rule);
     border-radius: 12px;
     font-size: 14px;
@@ -640,6 +1298,25 @@
     transition: border-color var(--trp-t) ease, background-color var(--trp-t) ease;
   }
   a.trp-guide-link:hover { border-color: var(--trp-ink); background: var(--trp-panel); }
+
+  /* -- the install steps --------------------------------------------------
+     Seven numbered steps on the Resources page. The number is the shared
+     label rather than a pill with its own border and fill, and the copy sits
+     at the page's 16px floor. */
+  .trp-steps { list-style: none; margin: 0; padding: 0; display: grid; gap: 18px; }
+  .trp-steps > li { display: flex; gap: 16px; }
+  .trp-step {
+    flex: none;
+    width: 26px;
+    padding-top: 2px;
+    font-family: var(--trp-label);
+    font-size: 12px;
+    font-weight: 600;
+    letter-spacing: .06em;
+    color: var(--trp-accent);
+  }
+  .trp-step-title { margin: 0; font-size: 16px; font-weight: 600; color: var(--trp-ink); }
+  .trp-step-body { margin: 3px 0 0; font-size: 15px; line-height: 1.55; color: var(--trp-muted); }
 
   /* -- the FAQ -----------------------------------------------------------
      Same disclosure as everywhere else, closed by default, keyboard
@@ -666,10 +1343,10 @@
      No card inside a card: the rows are separated by a hairline, nothing
      more. Rows sit between 56 and 64px on desktop so the whole schedule
      reads in one screen. */
-  .trp-next { display: flex; flex-direction: column; padding: 28px 28px 24px; }
+  .trp-next { display: flex; flex-direction: column; padding: 28px 30px 26px; height: 100%; }
   .trp-next-title { margin: 10px 0 0; font-size: clamp(21px, 2.4vw, 28px); line-height: 1.15; }
   .trp-next-when {
-    margin: 8px 0 0;
+    margin: 10px 0 0;
     display: flex;
     flex-wrap: wrap;
     align-items: center;
@@ -680,7 +1357,15 @@
     text-transform: uppercase;
     color: var(--trp-muted);
   }
-  .trp-next-acts { margin-top: 22px; display: flex; flex-wrap: wrap; align-items: center; gap: 12px; }
+  .glass-card.is-deep .trp-next-when { color: var(--trp-on-deep-soft); }
+  .trp-next-acts {
+    margin-top: auto;
+    padding-top: 24px;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 12px;
+  }
 
   /* Two up on a wide screen, as on the accelerator page, so the whole
      schedule sits in about one screen under the next-session card. */
@@ -690,10 +1375,11 @@
     display: inline-flex;
     align-items: center;
     gap: 9px;
-    padding: 10px 18px;
+    min-height: 44px;
+    padding: 11px 20px;
     border: 1px solid var(--trp-rule-2);
     border-radius: 99px;
-    font-size: 13px;
+    font-size: 14px;
     font-weight: 500;
     color: var(--trp-ink);
     transition: background-color var(--trp-t) ease, border-color var(--trp-t) ease;
@@ -704,7 +1390,7 @@
   @media (min-width: 1024px) {
     .trp-wkcards { grid-template-columns: repeat(2, minmax(0, 1fr)); }
   }
-  .trp-wkcard { display: flex; flex-direction: column; padding: 22px 28px 10px; }
+  .trp-wkcard { display: flex; flex-direction: column; padding: 28px 30px 14px; }
   /* block, not the flex it would otherwise inherit from the card */
   .trp-wkcard-head { display: block; padding-bottom: 14px; border-bottom: 1px solid var(--trp-rule); }
   .trp-wkcard-theme { margin: 6px 0 0; font-size: 19px; line-height: 1.2; }
@@ -713,16 +1399,10 @@
      "Material" where a session carries its date, so the two columns line up
      down the card. */
   .trp-wkcard-sub { margin: 8px 0 0; font-size: 14px; line-height: 1.5; color: var(--trp-muted); }
-  .trp-wkcard-locked {
-    margin: 0;
-    padding: 18px 0 20px;
-    font-family: var(--trp-label);
-    font-size: 11px;
-    letter-spacing: .08em;
-    text-transform: uppercase;
-    color: var(--trp-muted);
-  }
-  .trp-wkcard.is-locked { opacity: .7; }
+  /* A locked week used to be a full-size card with one line in it, which
+     made a column of empty boxes down the Curriculum and the Resources
+     page. Both pages put every shut week in one .trp-coming card now, so
+     the rules that styled those boxes are gone with them. */
   .trp-srow.is-empty { display: block; font-size: 14px; padding: 18px 0; }
   .trp-srow.is-item {
     grid-template-columns: minmax(0, 1fr) auto;
@@ -841,20 +1521,21 @@
   .trp-pill {
     display: inline-block;
     font-family: var(--trp-label);
-    font-size: 9px;
-    font-weight: 700;
+    font-size: 10px;
+    font-weight: 600;
     letter-spacing: .12em;
     text-transform: uppercase;
-    padding: 2px 7px;
+    padding: 2px 8px;
     border-radius: 99px;
-    background: var(--trp-bg);
+    background: transparent;
     color: var(--trp-accent);
-    border: 1px solid rgba(103, 118, 46, .35);
+    border: 1px solid rgb(var(--c-olive) / .38);
     white-space: nowrap;
   }
 
   /* Attended. A tick box, not a worded pill. */
   .trp-tick {
+    position: relative;
     grid-area: tick;
     justify-self: end;
     display: inline-flex;
@@ -869,6 +1550,9 @@
     background: transparent;
     transition: color var(--trp-t) ease, background-color var(--trp-t) ease, border-color var(--trp-t) ease;
   }
+  /* The target, 44px, centred on the 22px box. The row is 56px, so it has
+     the room without reaching into the row above. */
+  .trp-tick::before { content: ''; position: absolute; inset: -11px; border-radius: 10px; }
   .trp-tick:hover { border-color: var(--trp-ink); color: var(--trp-rule-2); }
   .trp-tick.is-on { background: var(--trp-ink); border-color: var(--trp-ink); color: var(--trp-bg); }
 
@@ -886,7 +1570,7 @@
     .trp-next-acts > div { flex: 1 1 auto; }
     .trp-next-acts > div > button { width: 100%; }
     .trp-next-acts > .trp-tick { flex: 0 0 auto; }
-    .trp-wkcard { padding: 20px 20px 8px; }
+    .trp-wkcard { padding: 22px 20px 10px; }
     .trp-srow {
       grid-template-columns: minmax(0, 1fr) auto;
       grid-template-areas: 'date tick' 'title title' 'action action';
@@ -898,6 +1582,45 @@
     .trp-sact > * { width: 100%; }
     .trp-stitle { font-size: 16px; }
   }
+
+  /* -- the footer line -----------------------------------------------------
+     One quiet line of links. The <p> around them is a wrapping flex row, so
+     each link is a flex item rather than inline text and has to carry its
+     own height; at 19px they were the smallest targets on the page.
+
+     The separators only appear once the line actually fits on one line.
+     Measured, not guessed: with every item showing, the footer is a single
+     row from 540px up. Below that it wraps, and a separator that happened to
+     fall at the wrap would be left stranded at the head of the second line
+     ("· Need help? ..."), which is what this rule is here to prevent. CSS
+     cannot ask whether an element starts a wrapped line, so the whole set
+     goes rather than one of them.
+
+     576px, not 540px, so there is headroom if a font metric differs or the
+     line grows by a word. The gap opens up in exchange, so the items still
+     read as separate things with no dots between them.
+
+     scripts/tests/portal-footer.test.mjs pins the shape of this: every
+     separator is a .trp-foot-sep and nothing else, and this rule hides them
+     under the breakpoint and brings them back over it. jsdom does no layout,
+     so it cannot measure the wrap itself; if a word is ever added to this
+     line, check it in a browser at 540px as well. */
+  .trp-foot { column-gap: 14px; row-gap: 4px; }
+  .trp-foot-sep { display: none; }
+
+  @media (min-width: 576px) {
+    .trp-foot { column-gap: 8px; }
+    .trp-foot-sep { display: inline; }
+  }
+
+  .trp-foot-link {
+    display: inline-flex;
+    align-items: center;
+    min-height: 44px;
+    color: inherit;
+    transition: color var(--trp-t) ease;
+  }
+  .trp-foot-link:hover { color: var(--trp-ink); }
 
   /* -- back link ---------------------------------------------------------- */
   .trp-back {
