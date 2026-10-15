@@ -1241,6 +1241,13 @@
     white-space: nowrap;
     color: var(--trp-muted);
   }
+  /* "Download coming soon" is 171px and will not wrap, which set the grid
+     track's minimum and pushed the whole page sideways on a 320px screen.
+     It is allowed to shrink and wrap below the width where that happens;
+     above it there is room and the label stays on one line as designed. */
+  @media (max-width: 359px) {
+    .trp-pcard-locked { flex: 0 1 auto; white-space: normal; text-align: center; }
+  }
   .trp-pcard-one {
     margin: 10px 0 0;
     font-size: 14px;
@@ -1275,6 +1282,69 @@
      every card in a row lines up whether or not it has one. */
   .trp-pcard-auto { margin-top: auto; }
   .trp-pcard-auto .trp-copybox { margin-top: 12px; }
+
+  /* -- open in your AI ---------------------------------------------------
+     Three outline pills in the same family as Copy and Download: no new
+     colour, nothing filled. They wrap onto a second line on a narrow card
+     rather than squeezing, and each one draws at the full 44px because it
+     has no box head to borrow the extra height from. */
+  .trp-ai-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-top: 12px;
+  }
+  .trp-ai {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 44px;
+    padding: 11px 15px;
+    border: 1px solid var(--trp-rule-2);
+    border-radius: 99px;
+    font-size: 12.5px;
+    font-weight: 600;
+    line-height: 1;
+    white-space: nowrap;
+    text-decoration: none;
+    color: var(--trp-ink);
+    background: transparent;
+    transition: background-color var(--trp-t) ease, border-color var(--trp-t) ease;
+  }
+  .trp-ai:hover { background: var(--trp-panel); border-color: var(--trp-ink); }
+
+  /* The template card sits above the grid, so the gap between them is its
+     own: the grid's own gap only applies between cards inside it. */
+  .trp-ptemplate { padding: 22px 22px 20px; margin-bottom: 20px; }
+  .trp-ptemplate .trp-copybox { margin-top: 16px; }
+
+  /* Said after the tab has already opened, so it is announced and drawn
+     over the page rather than inside a card the reader has left behind.
+     Out of the way of a thumb at the bottom of a phone screen. */
+  .trp-toast {
+    position: fixed;
+    left: 50%;
+    bottom: 24px;
+    z-index: 200;
+    max-width: min(420px, calc(100vw - 32px));
+    padding: 12px 18px;
+    border: 1px solid var(--trp-rule-2);
+    border-radius: 99px;
+    font-size: 13px;
+    font-weight: 500;
+    text-align: center;
+    color: var(--trp-ink);
+    background: var(--trp-bg);
+    box-shadow: 0 8px 28px rgb(0 0 0 / 14%);
+    opacity: 0;
+    transform: translate(-50%, 8px);
+    pointer-events: none;
+    transition: opacity var(--trp-t) ease, transform var(--trp-t) ease;
+  }
+  .trp-toast[data-show] { opacity: 1; transform: translate(-50%, 0); }
+  @media (prefers-reduced-motion: reduce) {
+    .trp-toast { transition: none; }
+  }
 
   .trp-guides {
     list-style: none;
@@ -1334,6 +1404,10 @@
   @media (max-width: 640px) {
     .trp-pcards { grid-template-columns: 1fr; }
     .trp-pcard { padding: 18px 18px 16px; }
+    .trp-ptemplate { padding: 18px 18px 16px; }
+    /* Each pill takes a little under half the row, so three of them land two
+       up and then one, flush to both edges, instead of wrapping ragged. */
+    .trp-ai { flex: 1 1 calc(50% - 4px); padding: 11px 10px; }
     .trp-guides { grid-template-columns: 1fr; }
   }
 
@@ -1474,6 +1548,125 @@
     .trp-rrow { grid-template-columns: minmax(0, 1fr); gap: 10px; padding: 16px 0; }
     .trp-ract { align-self: stretch; }
     .trp-ract > * { width: 100%; }
+  }
+
+
+  /* -- the agent comparison -----------------------------------------------
+     Five personal AI agents against the same five questions, in the first
+     card on the Resources page. This is a real <table> because the thing a
+     member does with it is read down one column -- "Watch out for" above
+     all -- and comparing five cards side by side is exactly what a table
+     is for.
+
+     Below 900px it reflows to one card per agent. 900 rather than the
+     portal's usual 640: five columns of real copy, three of them a
+     sentence or two, are already tight at the width the card has on a
+     tablet, and 900 is where the narrowest of them stops reading as a
+     column of single words.
+
+     Changing `display` on a table element drops the table semantics in
+     both Chrome and Safari, so the markup carries the matching ARIA roles
+     by hand. Without them the desktop view announces as five runs of
+     unrelated text with the column headings orphaned at the top.
+     --------------------------------------------------------------------- */
+  .trp-agents-wrap { margin-top: 26px; }
+  .trp-agents {
+    width: 100%;
+    border-collapse: collapse;
+  }
+  /* The two columns that hold a constant are kept narrow so the three that
+     hold a sentence get the width. The percentages total 100, so the table
+     never asks for more room than the card has and the page cannot gain a
+     sideways scroll from it. */
+  .trp-agents col.trp-ac-name  { width: 11%; }
+  .trp-agents col.trp-ac-maker { width: 10%; }
+  .trp-agents col.trp-ac-where { width: 27%; }
+  .trp-agents col.trp-ac-task  { width: 25%; }
+  .trp-agents col.trp-ac-watch { width: 27%; }
+
+  /* The UA stylesheet centres a th, and it does so at a specificity the
+     table's own text-align cannot reach, so both scopes are set here. */
+  .trp-agents th { text-align: left; }
+
+  .trp-agents thead th {
+    font-family: var(--trp-label);
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: .1em;
+    text-transform: uppercase;
+    color: var(--trp-muted);
+    vertical-align: bottom;
+    padding: 0 18px 10px 0;
+    border-bottom: 1px solid var(--trp-rule-2);
+  }
+  .trp-agents tbody th,
+  .trp-agents tbody td {
+    vertical-align: top;
+    padding: 15px 18px 15px 0;
+    font-size: 14.5px;
+    line-height: 1.5;
+    color: var(--trp-muted);
+    border-top: 1px solid var(--trp-rule);
+  }
+  /* The header's own rule already closes the top of the first row. */
+  .trp-agents tbody tr:first-child th,
+  .trp-agents tbody tr:first-child td { border-top: 0; }
+  .trp-agents tr > :last-child { padding-right: 0; }
+
+  /* The agent's name is the row's handle, so it is set in the heading face
+     at the page's ink rather than the body copy's grey. */
+  .trp-agents .trp-agent-name {
+    font-family: var(--trp-face);
+    font-size: 15.5px;
+    font-weight: 600;
+    letter-spacing: -.015em;
+    color: var(--trp-ink);
+  }
+
+  @media (max-width: 900px) {
+    /* One card per agent. The headings move from the <thead>, which goes,
+       to a label on each cell, drawn from the cell's own data-label so the
+       five column names are still written down once. */
+    .trp-agents,
+    .trp-agents tbody,
+    .trp-agents tr,
+    .trp-agents tbody th,
+    .trp-agents tbody td { display: block; }
+    .trp-agents thead,
+    .trp-agents colgroup { display: none; }
+
+    .trp-agents tr {
+      border: 1px solid var(--trp-rule);
+      border-radius: 14px;
+      padding: 18px;
+    }
+    .trp-agents tr + tr { margin-top: 12px; }
+
+    .trp-agents tbody th,
+    .trp-agents tbody td {
+      padding: 0;
+      border-top: 0;
+    }
+    .trp-agents tbody td { margin-top: 14px; }
+    .trp-agents tbody td::before {
+      content: attr(data-label);
+      display: block;
+      margin-bottom: 4px;
+      font-family: var(--trp-label);
+      font-size: 10px;
+      font-weight: 600;
+      letter-spacing: .1em;
+      text-transform: uppercase;
+      color: var(--trp-dim);
+    }
+
+    /* The name is the card's own heading: it keeps no label above it and
+       takes the hairline that used to separate the rows. */
+    .trp-agents .trp-agent-name {
+      font-size: 17px;
+      padding-bottom: 14px;
+      border-bottom: 1px solid var(--trp-rule);
+    }
   }
 
   /* A heading for a section inside a page, below the page title. */

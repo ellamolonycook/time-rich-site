@@ -302,22 +302,26 @@ console.log('\n/os — the giveaway band');
     !Array.from(document.querySelectorAll('#rowList > .row')).includes(band));
 }
 
-const OLD_SKILL_PROMPTS = [
-  ["Content Planner", "Plan my week on LinkedIn. My audience is [who "],
-  ["Profile Optimizer", "Review my profile and run a full profile audit"],
-  ["Interviewer", "Interview me and build my Story Bank. Ask one "],
-  ["Hook Extractor", "Reverse-engineer the hook formula in this post"],
-  ["Post Writer", "Write me a LinkedIn post about [your topic]. M"],
-  ["Humanizer", "Humanize this draft and scrub the AI tells, th"],
-  ["Repurposer", "Repurpose this for LinkedIn and re-hook it so "],
-  ["Comment Drafter", "Draft me a comment on this post that the autho"],
-  ["Reply Handler", "Sweep the comments on this post and draft a re"],
-  ["Thread Monitor", "Monitor my comments and tell me what threads n"],
-  ["Engager Analytics", "Tell me who engaged with this post and segment"],
-  ["Employee Advocacy", "Help me get the team posting and launch advoca"],
-  ["Story Superhuman", "Mine my calls for stories and build my story b"],
-  ["Social Proof", "Write me social proof lines for this result: f"],
-  ["CTA Writer", "Write CTAs for this post about [your topic]. M"]
+// The seven headings the rewrite put on every prompt, in the order the
+// brief sets. Order is the point: a prompt that red-teams itself after it
+// has already answered is not doing the job.
+const HEADINGS = ['ROLE', 'SECOND OPINION', 'CONTEXT', 'TASK', 'RED TEAM', 'BLIND SPOTS', 'OUTPUT'];
+
+// A heading is a line that is nothing but the heading, so a prompt that
+// merely mentions "red team" in a sentence does not count as having one.
+function headingsOf(text) {
+  return text.split('\n').map((line) => line.trim()).filter((line) => HEADINGS.includes(line));
+}
+
+function hasTheShape(text) {
+  return headingsOf(text).join('|') === HEADINGS.join('|');
+}
+
+const SKILL_PROMPTS = [
+  'Content Planner', 'Profile Optimizer', 'Interviewer', 'Hook Extractor',
+  'Post Writer', 'Humanizer', 'Repurposer', 'Comment Drafter', 'Reply Handler',
+  'Thread Monitor', 'Engager Analytics', 'Employee Advocacy', 'Story Superhuman',
+  'Social Proof', 'CTA Writer'
 ];
 
 console.log('\n/os — the hero, the band and the footer');
@@ -380,33 +384,39 @@ console.log('\n/os — the restored skill prompts');
     button.textContent.trim());
 
   const items = Array.from(panel.querySelectorAll('.skill-prompts > li'));
-  check('one line per skill from the old page', items.length === OLD_SKILL_PROMPTS.length, items.length);
+  check('one line per skill from the old page', items.length === SKILL_PROMPTS.length, items.length);
   check('every line is a skill name plus a copy button',
     items.every((li) =>
       li.querySelector('.skill-prompt-name') &&
       li.querySelector('button[data-copy]') &&
       li.querySelector('button[data-copy]').textContent.trim() === 'Copy prompt'));
 
-  // The master paragraph is on the page already, so the footer every skill
-  // prompt ends with is checked against the page's own copy of it.
+  // Every skill prompt was rewritten into the seven-part shape, so what is
+  // pinned now is the shape rather than the old opening line.
   const footer = document.getElementById('masterPromptParagraph').textContent;
-  const results = OLD_SKILL_PROMPTS.map(([name, opening], index) => {
+  const results = SKILL_PROMPTS.map((name, index) => {
     const li = items[index];
     const source = document.getElementById(li.querySelector('button[data-copy]').getAttribute('data-copy'));
     const text = source ? source.textContent : '';
     return {
       name,
       nameShown: li.querySelector('.skill-prompt-name').textContent.trim() === name,
-      opens: text.startsWith(opening),
-      ends: text.endsWith('\n\n' + footer),
+      shape: hasTheShape(text),
+      headings: headingsOf(text).join('|'),
+      // The rewrite folded the master paragraph's job into RED TEAM and
+      // BLIND SPOTS, so trailing it as well would say it twice.
+      trails: text.endsWith('\n\n' + footer),
+      named: /\[[^\]]+\]/.test(text),
     };
   });
   check('the skills are listed in the old page order',
     results.every((r) => r.nameShown), results.filter((r) => !r.nameShown).map((r) => r.name));
-  check('each copy button carries the prompt for its own skill',
-    results.every((r) => r.opens), results.filter((r) => !r.opens).map((r) => r.name));
-  check('and every prompt still ends with the master paragraph, as it did before',
-    results.every((r) => r.ends), results.filter((r) => !r.ends).map((r) => r.name));
+  check('every skill prompt has all seven headings, in order',
+    results.every((r) => r.shape), results.filter((r) => !r.shape).map((r) => r.name + ': ' + r.headings));
+  check('none of them still trails the master paragraph, which the shape absorbed',
+    results.every((r) => !r.trails), results.filter((r) => r.trails).map((r) => r.name));
+  check('each one still leaves the member-specific bits in square brackets',
+    results.every((r) => r.named), results.filter((r) => !r.named).map((r) => r.name));
 
   check('the prompts are out of the way until asked for',
     items.every((li) => document.getElementById(li.querySelector('button[data-copy]').getAttribute('data-copy')).hidden));
@@ -414,73 +424,32 @@ console.log('\n/os — the restored skill prompts');
     !/\/downloads\//.test(document.body.innerHTML) && !/Download skill/.test(document.body.textContent));
 }
 
-// The two prompts the brief supplies, checked whole rather than by fingerprint:
-// they are the product here, and a silent truncation would not show up anywhere else.
-const NOTETAKER_PROMPT = [
-  "You are my content producer. Read my call notes once and pull out three things in the same pass: who my ideal client is, the stories worth telling and the ideas worth posting.",
-  "",
-  "Sources: my AI notetaker calls (Granola or whichever is connected) from the last 90 days. If no notetaker is connected, ask me to paste 3 to 5 transcripts. Keep client, prospect, coaching, workshop and community calls. Skip team syncs, admin, vendor demos and personal notes. Show me the kept and skipped lists and ask \"Right calls?\" before you start.",
-  "",
-  "Before you start:",
-  "Restate my goal in one line, and tell me if it's the right goal.",
-  "Don't assume. If you need context the calls can't give, ask me one question at a time.",
-  "",
-  "From each call, capture:",
-  "1. Ideal client evidence: who they are, what made them reach out now, every problem they named, what they already tried, their exact words for the problem and the goal, what they only hinted at, their objections, the win that would make them tell a friend, and who wasn't a fit. Cite the call for every line. Label guesses as guesses.",
-  "2. Stories: something that happened, with a person, a moment, some tension and an outcome, that I could tell out loud in 60 seconds. Mine, or a client's with names removed.",
-  "3. Ideas: a question others would ask too, an opinion against common advice, a framework, a stat or result, or a problem in the client's own words.",
-  "",
-  "A finding from 3+ calls with different people is strong. One call is weak.",
-  "",
-  "Never invent. Every detail must come from my calls. Never include client names, company names or confidential numbers. Write \"a founder I work with\" instead.",
-  "",
-  "Give me:",
-  "My ideal client in one line: [role] at [stage] who [trigger] and is stuck on [problem #1]. Then the full profile, with the top 3 problems in their words.",
-  "Then ask me what I want to be known for, the 3 to 5 topics I want to own, and what I will never post about.",
-  "Keep only stories and ideas that hit a top-3 problem, the trigger, an objection or the win, and that a thousand creators aren't already posting. Max 5 stories and 10 ideas.",
-  "Two tables, stories first: Title (a hook, first person, max 12 words) | Priority (High, Medium, Low) | Date | Why it lands with my client. The ideas table adds a Category column.",
-  "The one story to post first, and why.",
-  "",
-  "Put the tables first and skip the intro.",
-  "",
-  "When you finish:",
-  "Rate your work out of 10. Say what would make it a 10, then fix it.",
-  "Push back on me: where is my ideal client different from what I think?",
-  "Tell me what you learned about me that should be saved to my Context page, so you're smarter next time."
-].join('\n');
-const STORY_BANK_PROMPT = [
-  "You are my story producer. Find the real stories I already tell and bank them so I can use them again on stage, in posts and on sales calls.",
-  "",
-  "Look through the last 90 days of my material: call transcripts (Granola or my AI note-taker), voice notes, podcast transcripts, LinkedIn posts and newsletters. Tell me in one line which sources you searched and which weren't available.",
-  "",
-  "Before you start:",
-  "Restate my goal in one line, and tell me if it's the right goal.",
-  "Don't assume. If you need more context, ask me up to 3 questions first.",
-  "",
-  "A story is one specific moment with a before, a turning point and an after. A career summary or an opinion is not a story. Look for moments with a date, place, person or number, lines like \"I'll never forget\" or \"the moment I realised\", stories I tell more than once, and moments where a listener reacted.",
-  "",
-  "Never invent. Every detail must come from my material. If something is missing, leave it blank and ask me.",
-  "",
-  "For each story, give me one table row with these columns:",
-  "Story Name | The Hook (one line, in my words) | Type | Status | Takeaway | Question it answers | Conflict | Resolution | How I fit in | Times told | Audience evidence | Next place to tell it | Source",
-  "",
-  "Types: Badass (I backed myself and it worked), Party (I love telling it), Tough (not ready: a wound, not a scar), Shit to Shift (something bad forced the breakthrough), Core Story (how I got here).",
-  "Status: Banked, Testing, or Needs detail.",
-  "If a story is Tough, mark it \"Hold\" and don't suggest telling it publicly yet.",
-  "Leave out anything confidential about clients, deals or other people, and list it under \"Held back\".",
-  "",
-  "Then give me:",
-  "A table of questions people ask me, each with my go-to story and the takeaway I land.",
-  "For every \"Needs detail\" story, the one question you need me to answer.",
-  "",
-  "Put the table first and skip the intro.",
-  "",
-  "When you finish:",
-  "Rate your work out of 10. Say what would make it a 10, then fix it.",
-  "Push back on me: which stories are weaker than I think, what's missing, what could go wrong if I tell one too early?",
-  "Tell me the one story to tell next, and where.",
-  "Tell me what you learned about me that should be saved to my Context page, so you're smarter next time."
-].join('\n');
+// Both of these were rewritten into the seven-part shape, so they are no
+// longer pinned word for word. What is pinned is the shape, and the parts of
+// the old output specification a member actually works from: a silent loss
+// of the table columns would not show up anywhere else.
+const NOTETAKER_KEEPS = [
+  'Granola',
+  'Show me the kept and skipped lists and ask "Right calls?" before you start.',
+  'My ideal client in one line: [role] at [stage] who [trigger] and is stuck on [problem #1].',
+  'Title (a hook, first person, max 12 words) | Priority (High, Medium, Low) | Date | Why it lands with my client',
+  'Max 5 stories and 10 ideas.',
+  'The one story to post first, and why.',
+  'a founder I work with',
+];
+const STORY_BANK_KEEPS = [
+  'Story Name | The Hook (one line, in my words) | Type | Status | Takeaway | Question it answers | Conflict | Resolution | How I fit in | Times told | Audience evidence | Next place to tell it | Source',
+  'Badass (I backed myself and it worked)',
+  'Shit to Shift (something bad forced the breakthrough)',
+  'Status: Banked, Testing, or Needs detail.',
+  'Held back',
+  'Never invent.',
+];
+const AUDIT_KEEPS = [
+  'Department | Task | How often | Hours per month (estimate) | Evidence (link to email, thread or doc) | Skill, Scheduled task, Both or Cut | Why, in one line | Trigger or schedule',
+  'the top 5 items ranked by hours saved per month',
+  'this is an audit',
+];
 
 console.log('\n/os — the notetaker prompt block');
 {
@@ -506,8 +475,14 @@ console.log('\n/os — the notetaker prompt block');
 
   const copy = block.querySelector('[data-copy]');
   check('a copy button sits above the fold', copy && copy.textContent.trim() === 'Copy the prompt');
-  check('and it copies the prompt word for word',
-    document.getElementById(copy.getAttribute('data-copy')).textContent === NOTETAKER_PROMPT);
+  const notetakerText = document.getElementById(copy.getAttribute('data-copy')).textContent;
+  check('and it copies a prompt in the seven-part shape',
+    hasTheShape(notetakerText), headingsOf(notetakerText).join('|'));
+  check('the rewrite kept the output specification a member works from',
+    NOTETAKER_KEEPS.every((part) => notetakerText.includes(part)),
+    NOTETAKER_KEEPS.filter((part) => !notetakerText.includes(part)));
+  check('and it carries a second opinion, which the old one did not',
+    /SECOND OPINION\nAlso answer as a qualitative researcher/.test(notetakerText));
 
   const fold = block.querySelector('.fold');
   const foldBtn = fold.querySelector('.fold-btn');
@@ -540,13 +515,201 @@ console.log('\n/os — the Story Bank prompt');
     /stories you already tell/.test(item.querySelector('p').textContent));
 
   const copy = item.querySelector('[data-copy]');
-  check('its button copies the prompt word for word',
-    copy.textContent.trim() === 'Copy the prompt' &&
-    document.getElementById(copy.getAttribute('data-copy')).textContent === STORY_BANK_PROMPT);
+  const storyText = document.getElementById(copy.getAttribute('data-copy')).textContent;
+  check('its button copies a prompt in the seven-part shape',
+    copy.textContent.trim() === 'Copy the prompt' && hasTheShape(storyText),
+    headingsOf(storyText).join('|'));
+  check('the rewrite kept the story table and the types',
+    STORY_BANK_KEEPS.every((part) => storyText.includes(part)),
+    STORY_BANK_KEEPS.filter((part) => !storyText.includes(part)));
 
   check('the Prompts row no longer counts its prompts',
     document.getElementById('prompts').querySelector('.row-sub').textContent.trim() === 'Prompts worth saving.',
     document.getElementById('prompts').querySelector('.row-sub').textContent.trim());
+}
+
+
+console.log('\n/os — open in your AI');
+{
+  const { document } = load();
+
+  const AI = { claude: 'https://claude.ai/new', chatgpt: 'https://chatgpt.com/', grok: 'https://grok.com/' };
+  const links = Array.from(document.querySelectorAll('[data-ai]'));
+
+  // Every prompt on the page that has a Copy button has the three buttons
+  // beside it: the fifteen skill prompts, the notetaker, the audit, the
+  // story bank and the master prompt.
+  const copyIds = Array.from(document.querySelectorAll('[data-copy]'))
+    .map((b) => b.getAttribute('data-copy'));
+  const aiIds = [...new Set(links.map((a) => a.getAttribute('data-ai-src')))];
+  check('nineteen prompts carry the buttons', aiIds.length === 19, aiIds.length);
+  check('three buttons for each, one per AI',
+    links.length === aiIds.length * 3 &&
+    aiIds.every((id) => links.filter((a) => a.getAttribute('data-ai-src') === id).length === 3),
+    links.length);
+  check('every one of them points at a prompt that is really on the page',
+    aiIds.every((id) => document.getElementById(id)),
+    aiIds.filter((id) => !document.getElementById(id)));
+  check('and every prompt with a Copy button got them, bar the shortcut copy',
+    copyIds.filter((id) => !aiIds.includes(id)).join(',') === 'masterPromptParagraph',
+    copyIds.filter((id) => !aiIds.includes(id)));
+  check('the three are Claude, ChatGPT and Grok, in that order',
+    aiIds.every((id) => links.filter((a) => a.getAttribute('data-ai-src') === id)
+      .map((a) => a.getAttribute('data-ai')).join('|') === 'claude|chatgpt|grok'));
+
+  check('each opens a new tab and cannot reach back into this one',
+    links.every((a) => a.target === '_blank' && /\bnoopener\b/.test(a.rel)));
+  check('each says which AI it opens, out loud as well as on screen',
+    links.every((a) => /^Open in (Claude|ChatGPT|Grok)$/.test(a.textContent.trim()) &&
+      /^Open this prompt in (Claude|ChatGPT|Grok)$/.test(a.getAttribute('aria-label'))));
+  check('they are the ghost pill, not a new kind of button',
+    links.every((a) => a.classList.contains('btn') && a.classList.contains('ghost')));
+  check('nothing was left pointing at the placeholder href',
+    links.every((a) => a.getAttribute('href') !== '#'),
+    links.filter((a) => a.getAttribute('href') === '#').length);
+
+  // The short path: the whole prompt rides in the query string.
+  const short = links.find((a) => a.getAttribute('data-ai-src') === 'sp-social-proof' &&
+    a.getAttribute('data-ai') === 'claude');
+  const shortText = document.getElementById('sp-social-proof').textContent;
+  check('a short prompt opens the chat with the prompt already in it',
+    short.href === 'https://claude.ai/new?q=' + encodeURIComponent(shortText),
+    short.href.slice(0, 60));
+  check('and the whole prompt is in there, not a truncated copy',
+    decodeURIComponent(short.href.split('?q=')[1]) === shortText);
+
+  // Line breaks and the characters a prompt is full of survive the trip.
+  check('line breaks are encoded, not dropped',
+    short.href.includes('%0A') && shortText.includes('\n'));
+  for (const [name, needle, encoded] of [
+    ['the pipes in a table spec', '|', '%7C'],
+    ['the square brackets round a placeholder', '[', '%5B'],
+    ['the quotes inside a prompt', '"', '%22'],
+  ]) {
+    const withIt = links.find((a) => {
+      const t = document.getElementById(a.getAttribute('data-ai-src')).textContent;
+      return a.getAttribute('data-ai') === 'claude' && t.includes(needle) &&
+        a.href.startsWith('https://claude.ai/new?q=');
+    });
+    check(name + ' survive encoding', Boolean(withIt) && withIt.href.includes(encoded));
+  }
+  const curly = links.find((a) => a.getAttribute('data-ai') === 'grok' &&
+    document.getElementById(a.getAttribute('data-ai-src')).textContent.includes('\u2019') &&
+    a.href.startsWith('https://grok.com/?q='));
+  check('a curly apostrophe survives as UTF-8, not as a mangled byte',
+    Boolean(curly) && curly.href.includes('%E2%80%99'));
+
+  // The long path: nothing is ever cut off, so the text goes to the
+  // clipboard and the AI opens on a blank chat instead.
+  const MAX = 6000;
+  const tooLong = links.filter((a) => {
+    const t = document.getElementById(a.getAttribute('data-ai-src')).textContent;
+    const ai = AI[a.getAttribute('data-ai')];
+    const q = (ai === 'https://claude.ai/new' ? ai + '?q=' : ai + '?q=') + encodeURIComponent(t);
+    return q.length > MAX;
+  });
+  check('every prompt here is short enough to arrive prefilled',
+    tooLong.length === 0, tooLong.map((a) => a.getAttribute('data-ai-src')));
+  check('no href anywhere runs past the ceiling',
+    links.every((a) => a.href.length <= MAX),
+    Math.max(...links.map((a) => a.href.length)));
+  check('the fallback still opens the right AI, just on a blank chat',
+    tooLong.every((a) => Object.values(AI).includes(a.href)));
+
+  // The page says so, rather than leaving the reader with an empty chat.
+  const script = HTML.slice(HTML.indexOf('Open in your AI'));
+  check('and the reader is told the prompt is on the clipboard',
+    /Copied\. Paste it into the chat\./.test(script));
+  check('the click is tracked the way the page tracks everything else',
+    /track\("prompt_open_ai", \{ ai: key, id: id \}\)/.test(script));
+  check('the fallback is a link the browser follows, never window.open',
+    !/window\.open\(/.test(script));
+}
+
+console.log('\n/os — open in your AI, when the prompt is too long for a URL');
+{
+  // Nothing on /os is long enough today, so the fallback is driven with a
+  // prompt that is. A truncated prompt is worse than no prompt, so what is
+  // pinned here is that the text is never cut: the link goes to a blank
+  // chat and the page puts the prompt on the clipboard instead.
+  const LONG = 'ROLE\n' + 'word '.repeat(2000).trim();
+  const html = HTML.replace(
+    /(<pre class="prompt-text sr-prompt" id="sp-social-proof" hidden>)[\s\S]*?(<\/pre>)/,
+    (_m, open, close) => open + LONG + close);
+  check('the stand-in really is too long to carry in a URL',
+    ('https://claude.ai/new?q=' + encodeURIComponent(LONG)).length > 6000);
+
+  const dom = new JSDOM(html, { url: 'https://timerich.ai/os', runScripts: 'dangerously', pretendToBeVisual: true });
+  dom.window.HTMLElement.prototype.scrollIntoView = function () {};
+  const { document } = dom.window;
+
+  const AI = { claude: 'https://claude.ai/new', chatgpt: 'https://chatgpt.com/', grok: 'https://grok.com/' };
+  const fellBack = Array.from(document.querySelectorAll('[data-ai-src="sp-social-proof"]'));
+  check('all three fall back to a blank chat',
+    fellBack.length === 3 && fellBack.every((a) => a.href === AI[a.getAttribute('data-ai')]),
+    fellBack.map((a) => a.href));
+  check('and not one of them carries a half a prompt',
+    fellBack.every((a) => !a.href.includes('?q=')), fellBack.map((a) => a.href));
+
+  // The prompt still reaches the reader, by the other route.
+  let copied = null;
+  dom.window.navigator.clipboard = { writeText: (t) => { copied = t; return Promise.resolve(); } };
+  fellBack[0].click();
+  check('the whole prompt goes to the clipboard instead, uncut',
+    copied === document.getElementById('sp-social-proof').textContent && copied.length > 6000,
+    copied === null ? 'nothing copied' : copied.length);
+
+  // The short prompts on the same page are untouched by any of this.
+  const stillShort = Array.from(document.querySelectorAll('[data-ai-src="sp-cta-writer"]'));
+  check('a short prompt beside it still arrives prefilled',
+    stillShort.every((a) => a.href.includes('?q=')));
+}
+
+console.log('\n/os — the two fixes from the review');
+{
+  const { document } = load();
+
+  // The Context page line, last on every rewritten prompt.
+  const CONTEXT_LINE = 'Last, tell me what you learned about me that should be saved to my Context page.';
+  const rewritten = [...SKILL_PROMPTS.keys()].map((i) => document.querySelectorAll('.skill-prompts [data-copy]')[i])
+    .map((b) => b.getAttribute('data-copy'))
+    .concat(['notetakerPrompt', 'auditPrompt', 'storyBankPrompt']);
+  check('all eighteen rewritten prompts are accounted for', rewritten.length === 18, rewritten.length);
+
+  const missing = rewritten.filter((id) => {
+    const t = document.getElementById(id).textContent.trimEnd();
+    return !t.endsWith(CONTEXT_LINE);
+  });
+  check('every one of them ends on the Context page line', missing.length === 0, missing);
+  check('and it is the last line of OUTPUT, after the never-guess rule',
+    rewritten.every((id) => {
+      const lines = document.getElementById(id).textContent.trimEnd().split('\n');
+      return lines[lines.length - 1] === CONTEXT_LINE &&
+        /Never guess\.$/.test(lines[lines.length - 2]);
+    }));
+  check('the two prompts left alone did not get it',
+    !document.getElementById('masterPrompt').textContent.includes(CONTEXT_LINE) &&
+    !document.getElementById('masterPromptParagraph').textContent.includes(CONTEXT_LINE));
+
+  // The capture block, back in the notetaker's CONTEXT, word for word.
+  const CAPTURE = [
+    'From each call, capture:',
+    "1. Ideal client evidence: who they are, what made them reach out now, every problem they named, what they already tried, their exact words for the problem and the goal, what they only hinted at, their objections, the win that would make them tell a friend, and who wasn't a fit. Cite the call for every line. Label guesses as guesses.",
+    "2. Stories: something that happened, with a person, a moment, some tension and an outcome, that I could tell out loud in 60 seconds. Mine, or a client's with names removed.",
+    "3. Ideas: a question others would ask too, an opinion against common advice, a framework, a stat or result, or a problem in the client's own words.",
+  ].join('\n');
+
+  const notetaker = document.getElementById('notetakerPrompt').textContent;
+  check('the notetaker carries the capture block word for word', notetaker.includes(CAPTURE),
+    notetaker.slice(notetaker.indexOf('From each call'), notetaker.indexOf('From each call') + 80));
+  const context = notetaker.slice(notetaker.indexOf('CONTEXT'), notetaker.indexOf('TASK'));
+  check('and it sits in CONTEXT, not somewhere else in the prompt',
+    context.includes(CAPTURE));
+  check('with the sources above it and the extra facts below it',
+    context.indexOf('Right calls?') < context.indexOf('From each call, capture:') &&
+    context.indexOf('From each call, capture:') < context.indexOf('Extra facts:'));
+  check('the prompt still has all seven headings, in order',
+    hasTheShape(notetaker), headingsOf(notetaker).join('|'));
 }
 
 console.log('\n' + pass + ' passed, ' + fail + ' failed');

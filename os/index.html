@@ -391,6 +391,40 @@
     .skill-prompts li:last-child { border-bottom: 0; }
     .skill-prompt-name { font-family: var(--sans); font-weight: 700; font-size: 16px; color: var(--fg); }
     .skill-prompts .btn { flex: none; }
+    /* Four buttons to a line now, so the name takes the space it needs and
+       the buttons stay grouped at the end instead of being spread apart by
+       space-between the moment they wrap. */
+    .skill-prompts li { justify-content: flex-start; gap: 8px; }
+    .skill-prompt-name { margin-right: auto; }
+
+    /* ---------- open in your AI ---------- */
+    /* The same ghost pill as Copy, a little tighter: three of them follow
+       every Copy button and four on one line would otherwise run wide. */
+    .btn.ghost.ai { padding: 12px 16px; font-size: 13px; }
+    /* Said after the new tab has already opened, so it is announced rather
+       than drawn somewhere the reader is no longer looking. */
+    .ai-toast {
+      position: fixed;
+      left: 50%;
+      bottom: 24px;
+      z-index: 120;
+      max-width: min(420px, calc(100vw - 32px));
+      padding: 12px 18px;
+      border: 1px solid var(--line);
+      border-radius: 999px;
+      font-family: var(--sans);
+      font-size: 14px;
+      text-align: center;
+      color: var(--fg);
+      background: var(--void);
+      box-shadow: 0 10px 30px -10px rgba(0, 0, 0, 0.45);
+      opacity: 0;
+      transform: translate(-50%, 8px);
+      pointer-events: none;
+      transition: opacity 0.2s ease, transform 0.2s ease;
+    }
+    .ai-toast[data-show] { opacity: 1; transform: translate(-50%, 0); }
+    @media (prefers-reduced-motion: reduce) { .ai-toast { transition: none; } }
 
     /* ---------- items (prompts, build it live) ---------- */
     .items { display: grid; gap: 22px; }
@@ -918,6 +952,9 @@
           <p>Paste this into Claude or ChatGPT with your notetaker connected, or paste in 3 to 5 call transcripts. It decides what to pull from every call: who your client is, the stories you tell and the ideas worth posting.</p>
           <div class="btn-row">
             <button class="btn" type="button" data-copy="notetakerPrompt">Copy the prompt</button>
+            <a class="btn ghost small ai" data-ai="claude" data-ai-src="notetakerPrompt" href="#" target="_blank" rel="noopener">Open in Claude</a>
+            <a class="btn ghost small ai" data-ai="chatgpt" data-ai-src="notetakerPrompt" href="#" target="_blank" rel="noopener">Open in ChatGPT</a>
+            <a class="btn ghost small ai" data-ai="grok" data-ai-src="notetakerPrompt" href="#" target="_blank" rel="noopener">Open in Grok</a>
           </div>
           <div class="fold" id="notetaker-fold">
             <button class="fold-btn" type="button" id="notetaker-fold-tab" aria-expanded="false" aria-controls="notetaker-fold-panel">
@@ -925,36 +962,42 @@
               <span class="chev" aria-hidden="true"></span>
             </button>
             <div id="notetaker-fold-panel" role="region" aria-labelledby="notetaker-fold-tab" hidden>
-<pre class="prompt-text" id="notetakerPrompt">You are my content producer. Read my call notes once and pull out three things in the same pass: who my ideal client is, the stories worth telling and the ideas worth posting.
+<pre class="prompt-text" id="notetakerPrompt">ROLE
+You are a world-class content producer with 20 years turning founder interviews into audience-building content for expert-led businesses.
 
-Sources: my AI notetaker calls (Granola or whichever is connected) from the last 90 days. If no notetaker is connected, ask me to paste 3 to 5 transcripts. Keep client, prospect, coaching, workshop and community calls. Skip team syncs, admin, vendor demos and personal notes. Show me the kept and skipped lists and ask "Right calls?" before you start.
+SECOND OPINION
+Also answer as a qualitative researcher who disagrees on how much a single call can prove. Show both views side by side. Do not blend them.
 
-Before you start:
-Restate my goal in one line, and tell me if it's the right goal.
-Don't assume. If you need context the calls can't give, ask me one question at a time.
+CONTEXT
+Read my Business COMPASS in Notion first. Then read my AI notetaker calls (Granola or whichever is connected) from the last 90 days. If no notetaker is connected, ask me to paste 3 to 5 transcripts. Keep client, prospect, coaching, workshop and community calls. Skip team syncs, admin, vendor demos and personal notes. Show me the kept and skipped lists and ask "Right calls?" before you start.
 
 From each call, capture:
 1. Ideal client evidence: who they are, what made them reach out now, every problem they named, what they already tried, their exact words for the problem and the goal, what they only hinted at, their objections, the win that would make them tell a friend, and who wasn't a fit. Cite the call for every line. Label guesses as guesses.
 2. Stories: something that happened, with a person, a moment, some tension and an outcome, that I could tell out loud in 60 seconds. Mine, or a client's with names removed.
 3. Ideas: a question others would ask too, an opinion against common advice, a framework, a stat or result, or a problem in the client's own words.
 
-A finding from 3+ calls with different people is strong. One call is weak.
+Extra facts: [anything the calls cannot tell you].
 
-Never invent. Every detail must come from my calls. Never include client names, company names or confidential numbers. Write "a founder I work with" instead.
+TASK
+In one pass, give me who my ideal client is, the stories worth telling and the ideas worth posting, ready to use this week.
 
-Give me:
+RED TEAM
+Before answering, list the 3 biggest ways this fails or wastes money.
+
+BLIND SPOTS
+End with 2 things I didn’t ask but should have.
+
+OUTPUT
+Put the tables first and skip the intro.
 My ideal client in one line: [role] at [stage] who [trigger] and is stuck on [problem #1]. Then the full profile, with the top 3 problems in their words.
 Then ask me what I want to be known for, the 3 to 5 topics I want to own, and what I will never post about.
-Keep only stories and ideas that hit a top-3 problem, the trigger, an objection or the win, and that a thousand creators aren't already posting. Max 5 stories and 10 ideas.
+Keep only stories and ideas that hit a top-3 problem, the trigger, an objection or the win, and that a thousand creators aren’t already posting. Max 5 stories and 10 ideas.
 Two tables, stories first: Title (a hook, first person, max 12 words) | Priority (High, Medium, Low) | Date | Why it lands with my client. The ideas table adds a Category column.
 The one story to post first, and why.
-
-Put the tables first and skip the intro.
-
-When you finish:
-Rate your work out of 10. Say what would make it a 10, then fix it.
-Push back on me: where is my ideal client different from what I think?
-Tell me what you learned about me that should be saved to my Context page, so you're smarter next time.</pre>
+Cite the call for every line. A finding from 3 or more calls with different people is strong, one call is weak, so say which.
+Never include client names, company names or confidential numbers. Write "a founder I work with" instead.
+Plain words. No flattery. If a fact is missing, write [Needs input]. Never guess.
+Last, tell me what you learned about me that should be saved to my Context page.</pre>
             </div>
           </div>
         </div>
@@ -1091,107 +1134,461 @@ Tell me what you learned about me that should be saved to my Context page, so yo
                       <li>
                         <span class="skill-prompt-name">Content Planner</span>
                         <button class="btn ghost small" type="button" data-copy="sp-content-planner">Copy prompt</button>
-<pre class="prompt-text sr-prompt" id="sp-content-planner" hidden>Plan my week on LinkedIn. My audience is [who you want to reach], my theme this week is [your theme], and I post on [your posting days]. [paste your content pillars or a few past posts here]
+                        <a class="btn ghost small ai" data-ai="claude" data-ai-src="sp-content-planner" href="#" target="_blank" rel="noopener">Open in Claude</a>
+                        <a class="btn ghost small ai" data-ai="chatgpt" data-ai-src="sp-content-planner" href="#" target="_blank" rel="noopener">Open in ChatGPT</a>
+                        <a class="btn ghost small ai" data-ai="grok" data-ai-src="sp-content-planner" href="#" target="_blank" rel="noopener">Open in Grok</a>
+<pre class="prompt-text sr-prompt" id="sp-content-planner" hidden>ROLE
+You are a world-class LinkedIn content strategist with 20 years planning editorial calendars for founder-led B2B businesses.
 
-Before you start: restate my goal in one line and tell me if it's the right goal. Don't assume; if you need more context, ask me up to 3 questions first. When you finish: rate your work out of 10, say what would make it a 10, then fix it. Push back on me: where is my thinking weak, what could go wrong, what am I missing? Tell me the one thing to do next, and what you learned about me that should be saved to my Context page.</pre>
+SECOND OPINION
+Also answer as a demand generation lead who disagrees on whether posting every day beats posting less and going deeper. Show both views side by side. Do not blend them.
+
+CONTEXT
+Read my Business COMPASS in Notion first. My audience is [who you want to reach], my theme this week is [your theme], and I post on [your posting days]. [paste your content pillars or a few past posts here]
+
+TASK
+Plan my next seven days on LinkedIn, with a pillar, a format and a hook for every posting day.
+
+RED TEAM
+Before answering, list the 3 biggest ways this fails or wastes money.
+
+BLIND SPOTS
+End with 2 things I didn’t ask but should have.
+
+OUTPUT
+One row per posting day: Day | Pillar | Format | Hook | Why it lands with [who you want to reach]
+Then the one post to write first, and why. Then any pillar I am leaning on too hard this week.
+Plain words. No flattery. If a fact is missing, write [Needs input]. Never guess.
+Last, tell me what you learned about me that should be saved to my Context page.</pre>
                       </li>
                       <li>
                         <span class="skill-prompt-name">Profile Optimizer</span>
                         <button class="btn ghost small" type="button" data-copy="sp-profile-optimizer">Copy prompt</button>
-<pre class="prompt-text sr-prompt" id="sp-profile-optimizer" hidden>Review my profile and run a full profile audit, then rewrite whatever is failing. My goal is [clients, job seeking or authority]. [paste your LinkedIn profile URL here]
+                        <a class="btn ghost small ai" data-ai="claude" data-ai-src="sp-profile-optimizer" href="#" target="_blank" rel="noopener">Open in Claude</a>
+                        <a class="btn ghost small ai" data-ai="chatgpt" data-ai-src="sp-profile-optimizer" href="#" target="_blank" rel="noopener">Open in ChatGPT</a>
+                        <a class="btn ghost small ai" data-ai="grok" data-ai-src="sp-profile-optimizer" href="#" target="_blank" rel="noopener">Open in Grok</a>
+<pre class="prompt-text sr-prompt" id="sp-profile-optimizer" hidden>ROLE
+You are a world-class LinkedIn profile strategist with 20 years rewriting profiles for founders and consultants who sell expertise.
 
-Before you start: restate my goal in one line and tell me if it's the right goal. Don't assume; if you need more context, ask me up to 3 questions first. When you finish: rate your work out of 10, say what would make it a 10, then fix it. Push back on me: where is my thinking weak, what could go wrong, what am I missing? Tell me the one thing to do next, and what you learned about me that should be saved to my Context page.</pre>
+SECOND OPINION
+Also answer as a recruiter who disagrees on whether a profile should sell or simply be easy to find and easy to trust. Show both views side by side. Do not blend them.
+
+CONTEXT
+Read my Business COMPASS in Notion first. My goal is [clients, job seeking or authority]. [paste your LinkedIn profile URL here]
+
+TASK
+Audit my profile section by section and rewrite whatever is failing against that goal.
+
+RED TEAM
+Before answering, list the 3 biggest ways this fails or wastes money.
+
+BLIND SPOTS
+End with 2 things I didn’t ask but should have.
+
+OUTPUT
+One row per section, covering the headline, About, Featured, Experience, Skills and recommendations: Section | What it says now | What is failing | The rewrite, ready to paste
+Then the three changes to make first, in order.
+Plain words. No flattery. If a fact is missing, write [Needs input]. Never guess.
+Last, tell me what you learned about me that should be saved to my Context page.</pre>
                       </li>
                       <li>
                         <span class="skill-prompt-name">Interviewer</span>
                         <button class="btn ghost small" type="button" data-copy="sp-interviewer">Copy prompt</button>
-<pre class="prompt-text sr-prompt" id="sp-interviewer" hidden>Interview me and build my Story Bank. Ask one question at a time, and press me whenever an answer is too soft for a post to use. [paste anything you have already written, or say you are starting from scratch]
+                        <a class="btn ghost small ai" data-ai="claude" data-ai-src="sp-interviewer" href="#" target="_blank" rel="noopener">Open in Claude</a>
+                        <a class="btn ghost small ai" data-ai="chatgpt" data-ai-src="sp-interviewer" href="#" target="_blank" rel="noopener">Open in ChatGPT</a>
+                        <a class="btn ghost small ai" data-ai="grok" data-ai-src="sp-interviewer" href="#" target="_blank" rel="noopener">Open in Grok</a>
+<pre class="prompt-text sr-prompt" id="sp-interviewer" hidden>ROLE
+You are a world-class interviewer with 20 years drawing usable stories out of founders who think they have none.
 
-Before you start: restate my goal in one line and tell me if it's the right goal. Don't assume; if you need more context, ask me up to 3 questions first. When you finish: rate your work out of 10, say what would make it a 10, then fix it. Push back on me: where is my thinking weak, what could go wrong, what am I missing? Tell me the one thing to do next, and what you learned about me that should be saved to my Context page.</pre>
+SECOND OPINION
+Also answer as a brand editor who disagrees on how much of my personal life belongs in public. Show both views side by side. Do not blend them.
+
+CONTEXT
+Read my Business COMPASS in Notion first. [paste anything you have already written, or say you are starting from scratch]
+
+TASK
+Interview me one question at a time and build my Story Bank out of what I tell you.
+
+RED TEAM
+Before answering, list the 3 biggest ways this fails or wastes money.
+
+BLIND SPOTS
+End with 2 things I didn’t ask but should have.
+
+OUTPUT
+One question at a time. Never more than one. Wait for my answer before the next.
+Press me whenever an answer is too soft for a post to use: ask for the date, the person, the number or the moment it turned.
+After every five answers, show the bank so far: Story | The hook in my words | Conflict | Resolution | Where to use it
+Then stop and ask whether to keep going.
+Plain words. No flattery. If a fact is missing, write [Needs input]. Never guess.
+Last, tell me what you learned about me that should be saved to my Context page.</pre>
                       </li>
                       <li>
                         <span class="skill-prompt-name">Hook Extractor</span>
                         <button class="btn ghost small" type="button" data-copy="sp-hook-extractor">Copy prompt</button>
-<pre class="prompt-text sr-prompt" id="sp-hook-extractor" hidden>Reverse-engineer the hook formula in this post, tell me why it worked, and give me a blank template mapped to [your topic]. [paste the LinkedIn post URL or the post text here]
+                        <a class="btn ghost small ai" data-ai="claude" data-ai-src="sp-hook-extractor" href="#" target="_blank" rel="noopener">Open in Claude</a>
+                        <a class="btn ghost small ai" data-ai="chatgpt" data-ai-src="sp-hook-extractor" href="#" target="_blank" rel="noopener">Open in ChatGPT</a>
+                        <a class="btn ghost small ai" data-ai="grok" data-ai-src="sp-hook-extractor" href="#" target="_blank" rel="noopener">Open in Grok</a>
+<pre class="prompt-text sr-prompt" id="sp-hook-extractor" hidden>ROLE
+You are a world-class direct response copywriter with 20 years reverse-engineering what makes people stop scrolling.
 
-Before you start: restate my goal in one line and tell me if it's the right goal. Don't assume; if you need more context, ask me up to 3 questions first. When you finish: rate your work out of 10, say what would make it a 10, then fix it. Push back on me: where is my thinking weak, what could go wrong, what am I missing? Tell me the one thing to do next, and what you learned about me that should be saved to my Context page.</pre>
+SECOND OPINION
+Also answer as a brand strategist who disagrees on whether a hook that works is worth the credibility it spends. Show both views side by side. Do not blend them.
+
+CONTEXT
+Read my Business COMPASS in Notion first. My topic is [your topic]. [paste the LinkedIn post URL or the post text here]
+
+TASK
+Tell me which hook formula this post used and why it worked, then give me a blank template mapped to my topic.
+
+RED TEAM
+Before answering, list the 3 biggest ways this fails or wastes money.
+
+BLIND SPOTS
+End with 2 things I didn’t ask but should have.
+
+OUTPUT
+Max 7 bullets: the formula’s name, the mechanism underneath it, the line doing the work, why it fits this audience, and where it would fail.
+Then the blank template, and three filled examples for [your topic].
+Plain words. No flattery. If a fact is missing, write [Needs input]. Never guess.
+Last, tell me what you learned about me that should be saved to my Context page.</pre>
                       </li>
                       <li>
                         <span class="skill-prompt-name">Post Writer</span>
                         <button class="btn ghost small" type="button" data-copy="sp-post-writer">Copy prompt</button>
-<pre class="prompt-text sr-prompt" id="sp-post-writer" hidden>Write me a LinkedIn post about [your topic]. My audience is [who you want to reach] and the goal is [comments, reposts, likes or saves]. [paste your rough angle or notes here]
+                        <a class="btn ghost small ai" data-ai="claude" data-ai-src="sp-post-writer" href="#" target="_blank" rel="noopener">Open in Claude</a>
+                        <a class="btn ghost small ai" data-ai="chatgpt" data-ai-src="sp-post-writer" href="#" target="_blank" rel="noopener">Open in ChatGPT</a>
+                        <a class="btn ghost small ai" data-ai="grok" data-ai-src="sp-post-writer" href="#" target="_blank" rel="noopener">Open in Grok</a>
+<pre class="prompt-text sr-prompt" id="sp-post-writer" hidden>ROLE
+You are a world-class LinkedIn ghostwriter with 20 years writing in founders’ own voices for expert-led businesses.
 
-Before you start: restate my goal in one line and tell me if it's the right goal. Don't assume; if you need more context, ask me up to 3 questions first. When you finish: rate your work out of 10, say what would make it a 10, then fix it. Push back on me: where is my thinking weak, what could go wrong, what am I missing? Tell me the one thing to do next, and what you learned about me that should be saved to my Context page.</pre>
+SECOND OPINION
+Also answer as a sales lead who disagrees on whether a post is for reach or for pipeline. Show both views side by side. Do not blend them.
+
+CONTEXT
+Read my Business COMPASS in Notion first. My topic is [your topic], my audience is [who you want to reach] and the goal is [comments, reposts, likes or saves]. [paste your rough angle or notes here]
+
+TASK
+Write me one LinkedIn post my audience would stop for.
+
+RED TEAM
+Before answering, list the 3 biggest ways this fails or wastes money.
+
+BLIND SPOTS
+End with 2 things I didn’t ask but should have.
+
+OUTPUT
+The post first, ready to paste: hook on its own line, under 200 words, no hashtags unless I ask.
+Then, in no more than 4 bullets: the hook formula used, the line to cut if it runs long, and two alternative hooks.
+Never invent a number, a client or a result.
+Plain words. No flattery. If a fact is missing, write [Needs input]. Never guess.
+Last, tell me what you learned about me that should be saved to my Context page.</pre>
                       </li>
                       <li>
                         <span class="skill-prompt-name">Humanizer</span>
                         <button class="btn ghost small" type="button" data-copy="sp-humanizer">Copy prompt</button>
-<pre class="prompt-text sr-prompt" id="sp-humanizer" hidden>Humanize this draft and scrub the AI tells, then audit it before I post. Tell me which tells you found rather than only handing back the rewrite. [paste your draft here]
+                        <a class="btn ghost small ai" data-ai="claude" data-ai-src="sp-humanizer" href="#" target="_blank" rel="noopener">Open in Claude</a>
+                        <a class="btn ghost small ai" data-ai="chatgpt" data-ai-src="sp-humanizer" href="#" target="_blank" rel="noopener">Open in ChatGPT</a>
+                        <a class="btn ghost small ai" data-ai="grok" data-ai-src="sp-humanizer" href="#" target="_blank" rel="noopener">Open in Grok</a>
+<pre class="prompt-text sr-prompt" id="sp-humanizer" hidden>ROLE
+You are a world-class line editor with 20 years taking the machine out of business writing.
 
-Before you start: restate my goal in one line and tell me if it's the right goal. Don't assume; if you need more context, ask me up to 3 questions first. When you finish: rate your work out of 10, say what would make it a 10, then fix it. Push back on me: where is my thinking weak, what could go wrong, what am I missing? Tell me the one thing to do next, and what you learned about me that should be saved to my Context page.</pre>
+SECOND OPINION
+Also answer as a content strategist who disagrees on whether a polished post or a rough one earns more trust. Show both views side by side. Do not blend them.
+
+CONTEXT
+Read my Business COMPASS in Notion first. [paste your draft here]
+
+TASK
+Scrub the AI tells out of this draft and audit it before I post.
+
+RED TEAM
+Before answering, list the 3 biggest ways this fails or wastes money.
+
+BLIND SPOTS
+End with 2 things I didn’t ask but should have.
+
+OUTPUT
+The rewritten post first, ready to paste.
+Then one row per tell you found: Tell | The line | Why it reads as AI | The fix
+Then a score out of 10, and the one change that would raise it most.
+Tell me what you found rather than only handing back the rewrite.
+Plain words. No flattery. If a fact is missing, write [Needs input]. Never guess.
+Last, tell me what you learned about me that should be saved to my Context page.</pre>
                       </li>
                       <li>
                         <span class="skill-prompt-name">Repurposer</span>
                         <button class="btn ghost small" type="button" data-copy="sp-repurposer">Copy prompt</button>
-<pre class="prompt-text sr-prompt" id="sp-repurposer" hidden>Repurpose this for LinkedIn and re-hook it so the hook lands before the fold. The goal is [comments, reposts, likes or saves]. [paste your tweet, thread, blog, newsletter or video script here]
+                        <a class="btn ghost small ai" data-ai="claude" data-ai-src="sp-repurposer" href="#" target="_blank" rel="noopener">Open in Claude</a>
+                        <a class="btn ghost small ai" data-ai="chatgpt" data-ai-src="sp-repurposer" href="#" target="_blank" rel="noopener">Open in ChatGPT</a>
+                        <a class="btn ghost small ai" data-ai="grok" data-ai-src="sp-repurposer" href="#" target="_blank" rel="noopener">Open in Grok</a>
+<pre class="prompt-text sr-prompt" id="sp-repurposer" hidden>ROLE
+You are a world-class content editor with 20 years rebuilding one idea for a dozen different platforms.
 
-Before you start: restate my goal in one line and tell me if it's the right goal. Don't assume; if you need more context, ask me up to 3 questions first. When you finish: rate your work out of 10, say what would make it a 10, then fix it. Push back on me: where is my thinking weak, what could go wrong, what am I missing? Tell me the one thing to do next, and what you learned about me that should be saved to my Context page.</pre>
+SECOND OPINION
+Also answer as an original-first writer who disagrees on whether repurposed work ever beats something written for the platform. Show both views side by side. Do not blend them.
+
+CONTEXT
+Read my Business COMPASS in Notion first. The goal is [comments, reposts, likes or saves]. [paste your tweet, thread, blog, newsletter or video script here]
+
+TASK
+Rebuild this as a native LinkedIn post, re-hooked so the hook lands before the fold.
+
+RED TEAM
+Before answering, list the 3 biggest ways this fails or wastes money.
+
+BLIND SPOTS
+End with 2 things I didn’t ask but should have.
+
+OUTPUT
+The post first, ready to paste, with the fold marked.
+Then, in no more than 4 bullets: what you cut and why, what would not survive the move, and the one idea in the original worth a second post of its own.
+Plain words. No flattery. If a fact is missing, write [Needs input]. Never guess.
+Last, tell me what you learned about me that should be saved to my Context page.</pre>
                       </li>
                       <li>
                         <span class="skill-prompt-name">Comment Drafter</span>
                         <button class="btn ghost small" type="button" data-copy="sp-comment-drafter">Copy prompt</button>
-<pre class="prompt-text sr-prompt" id="sp-comment-drafter" hidden>Draft me a comment on this post that the author would actually want to reply to, and give me two or three variants. [paste the LinkedIn post URL here]
+                        <a class="btn ghost small ai" data-ai="claude" data-ai-src="sp-comment-drafter" href="#" target="_blank" rel="noopener">Open in Claude</a>
+                        <a class="btn ghost small ai" data-ai="chatgpt" data-ai-src="sp-comment-drafter" href="#" target="_blank" rel="noopener">Open in ChatGPT</a>
+                        <a class="btn ghost small ai" data-ai="grok" data-ai-src="sp-comment-drafter" href="#" target="_blank" rel="noopener">Open in Grok</a>
+<pre class="prompt-text sr-prompt" id="sp-comment-drafter" hidden>ROLE
+You are a world-class community builder with 20 years getting founders noticed in other people’s comment sections.
 
-Before you start: restate my goal in one line and tell me if it's the right goal. Don't assume; if you need more context, ask me up to 3 questions first. When you finish: rate your work out of 10, say what would make it a 10, then fix it. Push back on me: where is my thinking weak, what could go wrong, what am I missing? Tell me the one thing to do next, and what you learned about me that should be saved to my Context page.</pre>
+SECOND OPINION
+Also answer as the author of the post, who disagrees on whether my comment adds anything or just borrows their audience. Show both views side by side. Do not blend them.
+
+CONTEXT
+Read my Business COMPASS in Notion first. [paste the LinkedIn post URL here]
+
+TASK
+Draft me a comment the author would actually want to reply to.
+
+RED TEAM
+Before answering, list the 3 biggest ways this fails or wastes money.
+
+BLIND SPOTS
+End with 2 things I didn’t ask but should have.
+
+OUTPUT
+Three variants, labelled by angle: agree and extend, respectfully disagree, add a story. Each under 50 words and ready to paste.
+For each, one line on the reply it is designed to earn.
+Then the one to post, and why.
+Plain words. No flattery. If a fact is missing, write [Needs input]. Never guess.
+Last, tell me what you learned about me that should be saved to my Context page.</pre>
                       </li>
                       <li>
                         <span class="skill-prompt-name">Reply Handler</span>
                         <button class="btn ghost small" type="button" data-copy="sp-reply-handler">Copy prompt</button>
-<pre class="prompt-text sr-prompt" id="sp-reply-handler" hidden>Sweep the comments on this post and draft a reply to every one worth answering. Tell me which ones you filtered out and why. [paste the LinkedIn post URL here]
+                        <a class="btn ghost small ai" data-ai="claude" data-ai-src="sp-reply-handler" href="#" target="_blank" rel="noopener">Open in Claude</a>
+                        <a class="btn ghost small ai" data-ai="chatgpt" data-ai-src="sp-reply-handler" href="#" target="_blank" rel="noopener">Open in ChatGPT</a>
+                        <a class="btn ghost small ai" data-ai="grok" data-ai-src="sp-reply-handler" href="#" target="_blank" rel="noopener">Open in Grok</a>
+<pre class="prompt-text sr-prompt" id="sp-reply-handler" hidden>ROLE
+You are a world-class community manager with 20 years keeping founders’ comment sections alive.
 
-Before you start: restate my goal in one line and tell me if it's the right goal. Don't assume; if you need more context, ask me up to 3 questions first. When you finish: rate your work out of 10, say what would make it a 10, then fix it. Push back on me: where is my thinking weak, what could go wrong, what am I missing? Tell me the one thing to do next, and what you learned about me that should be saved to my Context page.</pre>
+SECOND OPINION
+Also answer as a time-poor founder’s chief of staff who disagrees on how many of these are worth answering at all. Show both views side by side. Do not blend them.
+
+CONTEXT
+Read my Business COMPASS in Notion first. [paste the LinkedIn post URL here]
+
+TASK
+Sweep the comments on this post and draft a reply to every one worth answering.
+
+RED TEAM
+Before answering, list the 3 biggest ways this fails or wastes money.
+
+BLIND SPOTS
+End with 2 things I didn’t ask but should have.
+
+OUTPUT
+One row per comment worth answering: Commenter | What they said | The reply, ready to paste | Why it is worth answering
+Then the ones you filtered out, and the rule you filtered them on.
+Plain words. No flattery. If a fact is missing, write [Needs input]. Never guess.
+Last, tell me what you learned about me that should be saved to my Context page.</pre>
                       </li>
                       <li>
                         <span class="skill-prompt-name">Thread Monitor</span>
                         <button class="btn ghost small" type="button" data-copy="sp-thread-monitor">Copy prompt</button>
-<pre class="prompt-text sr-prompt" id="sp-thread-monitor" hidden>Monitor my comments and tell me what threads need follow-up today. My LinkedIn handle is [your-handle] and the window is [number] hours. [paste any recent comment URLs you have here]
+                        <a class="btn ghost small ai" data-ai="claude" data-ai-src="sp-thread-monitor" href="#" target="_blank" rel="noopener">Open in Claude</a>
+                        <a class="btn ghost small ai" data-ai="chatgpt" data-ai-src="sp-thread-monitor" href="#" target="_blank" rel="noopener">Open in ChatGPT</a>
+                        <a class="btn ghost small ai" data-ai="grok" data-ai-src="sp-thread-monitor" href="#" target="_blank" rel="noopener">Open in Grok</a>
+<pre class="prompt-text sr-prompt" id="sp-thread-monitor" hidden>ROLE
+You are a world-class pipeline manager with 20 years turning conversations into booked calls.
 
-Before you start: restate my goal in one line and tell me if it's the right goal. Don't assume; if you need more context, ask me up to 3 questions first. When you finish: rate your work out of 10, say what would make it a 10, then fix it. Push back on me: where is my thinking weak, what could go wrong, what am I missing? Tell me the one thing to do next, and what you learned about me that should be saved to my Context page.</pre>
+SECOND OPINION
+Also answer as a relationship-first networker who disagrees on how soon a warm thread should be turned into an ask. Show both views side by side. Do not blend them.
+
+CONTEXT
+Read my Business COMPASS in Notion first. My LinkedIn handle is [your-handle] and the window is [number] hours. [paste any recent comment URLs you have here]
+
+TASK
+Tell me which of my threads need follow-up today.
+
+RED TEAM
+Before answering, list the 3 biggest ways this fails or wastes money.
+
+BLIND SPOTS
+End with 2 things I didn’t ask but should have.
+
+OUTPUT
+Max 7 rows, warmest first: Thread | Who | What they said | How warm | What to say next | By when
+Then the one to answer in the next hour, and why that one.
+Plain words. No flattery. If a fact is missing, write [Needs input]. Never guess.
+Last, tell me what you learned about me that should be saved to my Context page.</pre>
                       </li>
                       <li>
                         <span class="skill-prompt-name">Engager Analytics</span>
                         <button class="btn ghost small" type="button" data-copy="sp-engager-analytics">Copy prompt</button>
-<pre class="prompt-text sr-prompt" id="sp-engager-analytics" hidden>Tell me who engaged with this post and segment them by ICP fit, then give me the action list. My ICP is [target titles, company size and industry]. [paste the LinkedIn post URL here]
+                        <a class="btn ghost small ai" data-ai="claude" data-ai-src="sp-engager-analytics" href="#" target="_blank" rel="noopener">Open in Claude</a>
+                        <a class="btn ghost small ai" data-ai="chatgpt" data-ai-src="sp-engager-analytics" href="#" target="_blank" rel="noopener">Open in ChatGPT</a>
+                        <a class="btn ghost small ai" data-ai="grok" data-ai-src="sp-engager-analytics" href="#" target="_blank" rel="noopener">Open in Grok</a>
+<pre class="prompt-text sr-prompt" id="sp-engager-analytics" hidden>ROLE
+You are a world-class revenue operations analyst with 20 years scoring audiences by how likely they are to buy.
 
-Before you start: restate my goal in one line and tell me if it's the right goal. Don't assume; if you need more context, ask me up to 3 questions first. When you finish: rate your work out of 10, say what would make it a 10, then fix it. Push back on me: where is my thinking weak, what could go wrong, what am I missing? Tell me the one thing to do next, and what you learned about me that should be saved to my Context page.</pre>
+SECOND OPINION
+Also answer as a brand marketer who disagrees on whether the people who engage are ever the people who buy. Show both views side by side. Do not blend them.
+
+CONTEXT
+Read my Business COMPASS in Notion first. My ICP is [target titles, company size and industry]. [paste the LinkedIn post URL here]
+
+TASK
+Tell me who engaged with this post, segmented by how well they fit my ICP, with what to do about each group.
+
+RED TEAM
+Before answering, list the 3 biggest ways this fails or wastes money.
+
+BLIND SPOTS
+End with 2 things I didn’t ask but should have.
+
+OUTPUT
+One row per person: Name | Title and company | Fit (High, Medium, Low) | What they did | The next move
+Then the 5 to act on first, and the message to send each, ready to paste.
+Plain words. No flattery. If a fact is missing, write [Needs input]. Never guess.
+Last, tell me what you learned about me that should be saved to my Context page.</pre>
                       </li>
                       <li>
                         <span class="skill-prompt-name">Employee Advocacy</span>
                         <button class="btn ghost small" type="button" data-copy="sp-employee-advocacy">Copy prompt</button>
-<pre class="prompt-text sr-prompt" id="sp-employee-advocacy" hidden>Help me get the team posting and launch advocacy properly. We are [number] people, the goal is [reach, pipeline, recruiting or thought leadership], and right now [everyone is silent, some are active, or output is inconsistent]. [paste your brand guideline constraints here]
+                        <a class="btn ghost small ai" data-ai="claude" data-ai-src="sp-employee-advocacy" href="#" target="_blank" rel="noopener">Open in Claude</a>
+                        <a class="btn ghost small ai" data-ai="chatgpt" data-ai-src="sp-employee-advocacy" href="#" target="_blank" rel="noopener">Open in ChatGPT</a>
+                        <a class="btn ghost small ai" data-ai="grok" data-ai-src="sp-employee-advocacy" href="#" target="_blank" rel="noopener">Open in Grok</a>
+<pre class="prompt-text sr-prompt" id="sp-employee-advocacy" hidden>ROLE
+You are a world-class internal communications lead with 20 years launching employee advocacy in companies where nobody posted.
 
-Before you start: restate my goal in one line and tell me if it's the right goal. Don't assume; if you need more context, ask me up to 3 questions first. When you finish: rate your work out of 10, say what would make it a 10, then fix it. Push back on me: where is my thinking weak, what could go wrong, what am I missing? Tell me the one thing to do next, and what you learned about me that should be saved to my Context page.</pre>
+SECOND OPINION
+Also answer as an employment lawyer who disagrees on how much a company can ask of its people’s personal accounts. Show both views side by side. Do not blend them.
+
+CONTEXT
+Read my Business COMPASS in Notion first. We are [number] people, the goal is [reach, pipeline, recruiting or thought leadership], and right now [everyone is silent, some are active, or output is inconsistent]. [paste your brand guideline constraints here]
+
+TASK
+Give me a launch plan that gets the team posting and keeps them posting.
+
+RED TEAM
+Before answering, list the 3 biggest ways this fails or wastes money.
+
+BLIND SPOTS
+End with 2 things I didn’t ask but should have.
+
+OUTPUT
+The 30 day plan first, week by week: what happens, who does it, what good looks like.
+Then the rules that stay voluntary, the three numbers to watch, and the first message to send the team, ready to paste.
+Plain words. No flattery. If a fact is missing, write [Needs input]. Never guess.
+Last, tell me what you learned about me that should be saved to my Context page.</pre>
                       </li>
                       <li>
                         <span class="skill-prompt-name">Story Superhuman</span>
                         <button class="btn ghost small" type="button" data-copy="sp-story-superhuman">Copy prompt</button>
-<pre class="prompt-text sr-prompt" id="sp-story-superhuman" hidden>Mine my calls for stories and build my story bank. Search the last [number] days of my call transcripts, voice notes and posts, and flag any story I tell more than once. Never invent a detail, and leave a field blank if the source does not have it. [paste a transcript, or say which sources to search]
+                        <a class="btn ghost small ai" data-ai="claude" data-ai-src="sp-story-superhuman" href="#" target="_blank" rel="noopener">Open in Claude</a>
+                        <a class="btn ghost small ai" data-ai="chatgpt" data-ai-src="sp-story-superhuman" href="#" target="_blank" rel="noopener">Open in ChatGPT</a>
+                        <a class="btn ghost small ai" data-ai="grok" data-ai-src="sp-story-superhuman" href="#" target="_blank" rel="noopener">Open in Grok</a>
+<pre class="prompt-text sr-prompt" id="sp-story-superhuman" hidden>ROLE
+You are a world-class story producer with 20 years finding the stories founders already tell without noticing.
 
-Before you start: restate my goal in one line and tell me if it's the right goal. Don't assume; if you need more context, ask me up to 3 questions first. When you finish: rate your work out of 10, say what would make it a 10, then fix it. Push back on me: where is my thinking weak, what could go wrong, what am I missing? Tell me the one thing to do next, and what you learned about me that should be saved to my Context page.</pre>
+SECOND OPINION
+Also answer as a fact-checker who disagrees on which of these are safe to tell in public. Show both views side by side. Do not blend them.
+
+CONTEXT
+Read my Business COMPASS in Notion first. Search the last [number] days of my call transcripts, voice notes and posts. [paste a transcript, or say which sources to search]
+
+TASK
+Find the stories I already tell, flag any I tell more than once, and bank them.
+
+RED TEAM
+Before answering, list the 3 biggest ways this fails or wastes money.
+
+BLIND SPOTS
+End with 2 things I didn’t ask but should have.
+
+OUTPUT
+One row per story: Story | The hook in my words | Type | Conflict | Resolution | Times told | Source
+Then the one to tell next, and where.
+Never invent a detail. Leave a field blank and write [Needs input] where the source does not have it.
+Plain words. No flattery. If a fact is missing, write [Needs input]. Never guess.
+Last, tell me what you learned about me that should be saved to my Context page.</pre>
                       </li>
                       <li>
                         <span class="skill-prompt-name">Social Proof</span>
                         <button class="btn ghost small" type="button" data-copy="sp-social-proof">Copy prompt</button>
-<pre class="prompt-text sr-prompt" id="sp-social-proof" hidden>Write me social proof lines for this result: five on-screen lines for a Reel, then mark the strongest and tell me why. Do not round the number up or invent anything. [paste the result, with the number and the timeframe, here]
+                        <a class="btn ghost small ai" data-ai="claude" data-ai-src="sp-social-proof" href="#" target="_blank" rel="noopener">Open in Claude</a>
+                        <a class="btn ghost small ai" data-ai="chatgpt" data-ai-src="sp-social-proof" href="#" target="_blank" rel="noopener">Open in ChatGPT</a>
+                        <a class="btn ghost small ai" data-ai="grok" data-ai-src="sp-social-proof" href="#" target="_blank" rel="noopener">Open in Grok</a>
+<pre class="prompt-text sr-prompt" id="sp-social-proof" hidden>ROLE
+You are a world-class direct response copywriter with 20 years writing proof lines that survive a lawyer.
 
-Before you start: restate my goal in one line and tell me if it's the right goal. Don't assume; if you need more context, ask me up to 3 questions first. When you finish: rate your work out of 10, say what would make it a 10, then fix it. Push back on me: where is my thinking weak, what could go wrong, what am I missing? Tell me the one thing to do next, and what you learned about me that should be saved to my Context page.</pre>
+SECOND OPINION
+Also answer as a compliance reviewer who disagrees on how far this result can be claimed. Show both views side by side. Do not blend them.
+
+CONTEXT
+Read my Business COMPASS in Notion first. [paste the result, with the number and the timeframe, here]
+
+TASK
+Write me five on-screen lines for a Reel about this result.
+
+RED TEAM
+Before answering, list the 3 biggest ways this fails or wastes money.
+
+BLIND SPOTS
+End with 2 things I didn’t ask but should have.
+
+OUTPUT
+Five lines, numbered, each under 12 words and ready to put on screen.
+Then the strongest, and why.
+Do not round the number up and do not invent anything.
+Plain words. No flattery. If a fact is missing, write [Needs input]. Never guess.
+Last, tell me what you learned about me that should be saved to my Context page.</pre>
                       </li>
                       <li>
                         <span class="skill-prompt-name">CTA Writer</span>
                         <button class="btn ghost small" type="button" data-copy="sp-cta-writer">Copy prompt</button>
-<pre class="prompt-text sr-prompt" id="sp-cta-writer" hidden>Write CTAs for this post about [your topic]. My goal is [comments, saves, DMs or link clicks], and nothing generic like “Thoughts?” or “Follow for more”. [paste your post here]
+                        <a class="btn ghost small ai" data-ai="claude" data-ai-src="sp-cta-writer" href="#" target="_blank" rel="noopener">Open in Claude</a>
+                        <a class="btn ghost small ai" data-ai="chatgpt" data-ai-src="sp-cta-writer" href="#" target="_blank" rel="noopener">Open in ChatGPT</a>
+                        <a class="btn ghost small ai" data-ai="grok" data-ai-src="sp-cta-writer" href="#" target="_blank" rel="noopener">Open in Grok</a>
+<pre class="prompt-text sr-prompt" id="sp-cta-writer" hidden>ROLE
+You are a world-class conversion copywriter with 20 years writing calls to action for expert-led businesses.
 
-Before you start: restate my goal in one line and tell me if it's the right goal. Don't assume; if you need more context, ask me up to 3 questions first. When you finish: rate your work out of 10, say what would make it a 10, then fix it. Push back on me: where is my thinking weak, what could go wrong, what am I missing? Tell me the one thing to do next, and what you learned about me that should be saved to my Context page.</pre>
+SECOND OPINION
+Also answer as an audience-first creator who disagrees on whether every post needs an ask at all. Show both views side by side. Do not blend them.
+
+CONTEXT
+Read my Business COMPASS in Notion first. My topic is [your topic] and my goal is [comments, saves, DMs or link clicks]. [paste your post here]
+
+TASK
+Write me the calls to action for this post.
+
+RED TEAM
+Before answering, list the 3 biggest ways this fails or wastes money.
+
+BLIND SPOTS
+End with 2 things I didn’t ask but should have.
+
+OUTPUT
+Max 7 CTAs, one line each, ranked best first.
+Nothing generic: no "Thoughts?", no "Follow for more".
+Then the one to use, and why.
+Plain words. No flattery. If a fact is missing, write [Needs input]. Never guess.
+Last, tell me what you learned about me that should be saved to my Context page.</pre>
                       </li>
                     </ul>
                   </div>
@@ -1234,92 +1631,99 @@ Tell me what you learned about me or my work that should be saved to my Context 
                     <div class="btn-row">
                       <button class="btn" type="button" data-copy="masterPrompt">Copy the prompt</button>
                       <button class="btn ghost" type="button" data-copy="masterPromptParagraph">Copy the one-paragraph version</button>
+                      <a class="btn ghost small ai" data-ai="claude" data-ai-src="masterPrompt" href="#" target="_blank" rel="noopener">Open in Claude</a>
+                      <a class="btn ghost small ai" data-ai="chatgpt" data-ai-src="masterPrompt" href="#" target="_blank" rel="noopener">Open in ChatGPT</a>
+                      <a class="btn ghost small ai" data-ai="grok" data-ai-src="masterPrompt" href="#" target="_blank" rel="noopener">Open in Grok</a>
                     </div>
                   </div>
 
                   <div class="item">
                     <h3>Recurring work audit</h3>
                     <p>Run it monthly. It finds what to turn into a skill, what to schedule and what to stop doing.</p>
-<pre class="prompt-text" id="auditPrompt">You are my Chief of Staff. Audit everything I do on a repeating basis and tell me what to turn into a skill, what to turn into a scheduled task, and what to stop doing.
+<pre class="prompt-text" id="auditPrompt">ROLE
+You are a world-class chief of staff with 20 years finding the repeating work buried inside founder-led businesses.
 
-Look back over the last 60 days in: Gmail (sent mail and templates), Google Calendar, Slack, Notion, Granola meeting notes and Google Drive. Count something as recurring if it happened 3 or more times, or happens on a fixed rhythm (daily, weekly, monthly, per client or per event).
+SECOND OPINION
+Also answer as an automation sceptic who disagrees on how much of this should be automated at all, rather than dropped or handed to a person. Show both views side by side. Do not blend them.
 
-Before you start:
-Restate my goal in one line, and tell me if it’s the right goal.
-Don’t assume. If you need more context, ask me up to 3 questions first.
-
-When you finish:
-Rate your work out of 10. Say what would make it a 10, then fix it.
-Push back on me: where is my thinking weak, what could go wrong, what am I missing?
-Tell me the one thing to do next.
-Tell me what you learned about me or my work that should be saved to my Context page, so you’re smarter next time.
-
-Sort every item by department:
-Sales: outreach, follow-ups, proposals, CRM updates, pitches
-Marketing and Content: newsletter, LinkedIn, Instagram, repurposing, event promo
-Operations: admin, scheduling, invoicing, onboarding, team handoffs
-Programs: delivery, workshops, client work
-
+CONTEXT
+Read my Business COMPASS in Notion first. Then look back over the last 60 days in: Gmail (sent mail and templates), Google Calendar, Slack, Notion, Granola meeting notes and Google Drive. If a source isn’t connected, say which one in a single line and carry on with the rest.
+Count something as recurring if it happened 3 or more times, or happens on a fixed rhythm (daily, weekly, monthly, per client or per event).
 Use these definitions:
 Skill: a repeatable task I trigger on demand that needs my context, voice or judgement. Example: writing a follow-up email after a sales call.
 Scheduled task: something that runs on its own at a set time and doesn’t need me to start it. Example: a Monday 8am pipeline brief.
 Both: a skill that a scheduled task runs on a timer.
 Cut: work that doesn’t move my top goals forward.
+Extra facts: [anything the sources cannot tell you].
 
-For each item, give me one table row with these columns:
-Department | Task | How often | Hours per month (estimate) | Evidence (link to email, thread or doc) | Skill, Scheduled task, Both or Cut | Why, in one line | Trigger or schedule
+TASK
+Audit everything I do on a repeating basis and tell me what to turn into a skill, what to schedule, and what to stop doing.
 
-Then give me:
-The top 5 items ranked by hours saved per month.
+RED TEAM
+Before answering, list the 3 biggest ways this fails or wastes money.
+
+BLIND SPOTS
+End with 2 things I didn’t ask but should have.
+
+OUTPUT
+Put the table first and skip the intro. Keep the whole thing to one page.
+One row per item, sorted by department: Department | Task | How often | Hours per month (estimate) | Evidence (link to email, thread or doc) | Skill, Scheduled task, Both or Cut | Why, in one line | Trigger or schedule
+Departments: Sales (outreach, follow-ups, proposals, CRM updates, pitches), Marketing and Content (newsletter, LinkedIn, Instagram, repurposing, event promo), Operations (admin, scheduling, invoicing, onboarding, team handoffs), Programs (delivery, workshops, client work).
+Then the top 5 items ranked by hours saved per month.
 For the number one item, a draft skill description (name, when it triggers, inputs, output) or a scheduled task spec (name, cadence, time, what it delivers and where).
-Any email I send repeatedly that should become a template. Quote the first line of each.
-
-Rules:
-Evidence only. If you can’t link to it, leave it out.
-Don’t create, send or schedule anything. This is an audit.
-Keep the whole thing to one page. Put the table first and skip the intro.
-If a source isn’t connected, say which one in a single line and carry on with the rest.</pre>
+Then any email I send repeatedly that should become a template. Quote the first line of each.
+Evidence only. If you can’t link to it, leave it out. Don’t create, send or schedule anything: this is an audit.
+Plain words. No flattery. If a fact is missing, write [Needs input]. Never guess.
+Last, tell me what you learned about me that should be saved to my Context page.</pre>
                     <div class="btn-row">
                       <button class="btn" type="button" data-copy="auditPrompt">Copy the prompt</button>
+                      <a class="btn ghost small ai" data-ai="claude" data-ai-src="auditPrompt" href="#" target="_blank" rel="noopener">Open in Claude</a>
+                      <a class="btn ghost small ai" data-ai="chatgpt" data-ai-src="auditPrompt" href="#" target="_blank" rel="noopener">Open in ChatGPT</a>
+                      <a class="btn ghost small ai" data-ai="grok" data-ai-src="auditPrompt" href="#" target="_blank" rel="noopener">Open in Grok</a>
                     </div>
                   </div>
 
                   <div class="item">
                     <h3>Find my stories</h3>
                     <p>Run it once a month. It reads your calls, voice notes and posts and banks the stories you already tell, ready for stage, posts and sales calls.</p>
-<pre class="prompt-text" id="storyBankPrompt">You are my story producer. Find the real stories I already tell and bank them so I can use them again on stage, in posts and on sales calls.
+<pre class="prompt-text" id="storyBankPrompt">ROLE
+You are a world-class story producer with 20 years banking the stories founders already tell on stage, in posts and on sales calls.
 
-Look through the last 90 days of my material: call transcripts (Granola or my AI note-taker), voice notes, podcast transcripts, LinkedIn posts and newsletters. Tell me in one line which sources you searched and which weren't available.
+SECOND OPINION
+Also answer as a cautious adviser who disagrees on which of these I am ready to tell in public yet. Show both views side by side. Do not blend them.
 
-Before you start:
-Restate my goal in one line, and tell me if it's the right goal.
-Don't assume. If you need more context, ask me up to 3 questions first.
+CONTEXT
+Read my Business COMPASS in Notion first. Then look through the last 90 days of my material: call transcripts (Granola or my AI note-taker), voice notes, podcast transcripts, LinkedIn posts and newsletters. Tell me in one line which sources you searched and which weren’t available.
+A story is one specific moment with a before, a turning point and an after. A career summary or an opinion is not a story. Look for moments with a date, place, person or number, lines like "I’ll never forget" or "the moment I realised", stories I tell more than once, and moments where a listener reacted.
+Extra facts: [anything the material cannot tell you].
 
-A story is one specific moment with a before, a turning point and an after. A career summary or an opinion is not a story. Look for moments with a date, place, person or number, lines like "I'll never forget" or "the moment I realised", stories I tell more than once, and moments where a listener reacted.
+TASK
+Find the real stories I already tell and bank them so I can use them again.
 
-Never invent. Every detail must come from my material. If something is missing, leave it blank and ask me.
+RED TEAM
+Before answering, list the 3 biggest ways this fails or wastes money.
 
-For each story, give me one table row with these columns:
-Story Name | The Hook (one line, in my words) | Type | Status | Takeaway | Question it answers | Conflict | Resolution | How I fit in | Times told | Audience evidence | Next place to tell it | Source
+BLIND SPOTS
+End with 2 things I didn’t ask but should have.
 
+OUTPUT
+Put the table first and skip the intro.
+One row per story: Story Name | The Hook (one line, in my words) | Type | Status | Takeaway | Question it answers | Conflict | Resolution | How I fit in | Times told | Audience evidence | Next place to tell it | Source
 Types: Badass (I backed myself and it worked), Party (I love telling it), Tough (not ready: a wound, not a scar), Shit to Shift (something bad forced the breakthrough), Core Story (how I got here).
 Status: Banked, Testing, or Needs detail.
-If a story is Tough, mark it "Hold" and don't suggest telling it publicly yet.
+If a story is Tough, mark it "Hold" and don’t suggest telling it publicly yet.
 Leave out anything confidential about clients, deals or other people, and list it under "Held back".
-
-Then give me:
-A table of questions people ask me, each with my go-to story and the takeaway I land.
-For every "Needs detail" story, the one question you need me to answer.
-
-Put the table first and skip the intro.
-
-When you finish:
-Rate your work out of 10. Say what would make it a 10, then fix it.
-Push back on me: which stories are weaker than I think, what's missing, what could go wrong if I tell one too early?
-Tell me the one story to tell next, and where.
-Tell me what you learned about me that should be saved to my Context page, so you're smarter next time.</pre>
+Then a table of questions people ask me, each with my go-to story and the takeaway I land.
+Then, for every "Needs detail" story, the one question you need me to answer.
+Then the one story to tell next, and where.
+Never invent. Every detail must come from my material.
+Plain words. No flattery. If a fact is missing, write [Needs input]. Never guess.
+Last, tell me what you learned about me that should be saved to my Context page.</pre>
                     <div class="btn-row">
                       <button class="btn" type="button" data-copy="storyBankPrompt">Copy the prompt</button>
+                      <a class="btn ghost small ai" data-ai="claude" data-ai-src="storyBankPrompt" href="#" target="_blank" rel="noopener">Open in Claude</a>
+                      <a class="btn ghost small ai" data-ai="chatgpt" data-ai-src="storyBankPrompt" href="#" target="_blank" rel="noopener">Open in ChatGPT</a>
+                      <a class="btn ghost small ai" data-ai="grok" data-ai-src="storyBankPrompt" href="#" target="_blank" rel="noopener">Open in Grok</a>
                     </div>
                   </div>
 
@@ -1599,6 +2003,74 @@ Tell me what you learned about me that should be saved to my Context page, so yo
         }
       });
     });
+
+    /**
+     * "Open in your AI": hands the whole prompt to Claude, ChatGPT or Grok
+     * in a new tab.
+     *
+     * Short enough to ride in the query string and the chat opens with the
+     * prompt already in it. Too long and the prompt goes to the clipboard
+     * instead and the AI opens on a blank chat, because a prompt cut in half
+     * is worse than no prompt: the reader would never know what went missing.
+     *
+     * Every button is a real link the browser follows by itself. Nothing here
+     * calls window.open, which is the thing a popup blocker stops.
+     */
+    (function () {
+      const AIS = {
+        claude: { name: "Claude", home: "https://claude.ai/new", q: "https://claude.ai/new?q=" },
+        chatgpt: { name: "ChatGPT", home: "https://chatgpt.com/", q: "https://chatgpt.com/?q=" },
+        grok: { name: "Grok", home: "https://grok.com/", q: "https://grok.com/?q=" },
+      };
+      /* Browsers and the AIs themselves disagree on the real ceiling, so this
+         sits well under the lowest of them. */
+      const MAX_URL = 6000;
+
+      let toast = null;
+      let timer = null;
+      function say(message) {
+        if (!toast) {
+          toast = document.createElement("div");
+          toast.className = "ai-toast";
+          toast.setAttribute("role", "status");
+          toast.setAttribute("aria-live", "polite");
+          document.body.appendChild(toast);
+        }
+        toast.textContent = message;
+        toast.setAttribute("data-show", "");
+        clearTimeout(timer);
+        timer = setTimeout(() => { toast.removeAttribute("data-show"); }, 3600);
+      }
+
+      document.querySelectorAll("[data-ai]").forEach((link) => {
+        const key = link.getAttribute("data-ai");
+        const ai = AIS[key];
+        const id = link.getAttribute("data-ai-src");
+        const source = document.getElementById(id);
+        if (!ai || !source) { link.remove(); return; }
+
+        const text = source.textContent;
+        const full = ai.q + encodeURIComponent(text);
+        const prefilled = full.length <= MAX_URL;
+        link.href = prefilled ? full : ai.home;
+        link.setAttribute("aria-label", "Open this prompt in " + ai.name);
+
+        link.addEventListener("click", () => {
+          track("prompt_open_ai", { ai: key, id: id });
+          // The link is already opening the blank chat, so all that is left
+          // is to put the prompt somewhere the reader can paste it from.
+          if (prefilled) return;
+          if (navigator.clipboard && navigator.clipboard.writeText) {
+            navigator.clipboard.writeText(text).then(
+              () => say("Copied. Paste it into the chat."),
+              () => say("Copy it from the card, then paste it into the chat.")
+            );
+            return;
+          }
+          say("Copy it from the card, then paste it into the chat.");
+        });
+      });
+    })();
 
     /**
      * Mobile menu below 820px: the links from the bar as a card on a dimmed

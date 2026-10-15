@@ -201,6 +201,103 @@
               <h1 class="trp-title">Resources<span class="trp-stop">.</span></h1>
               <p class="trp-lede">Skills, templates and prompts to download and use in your own account.</p>
             </header>
+
+            <!-- The agent comparison, first on the page because it is what a
+                 member comes here for the week they hear these named on a
+                 call: not a download, a decision about which one to try.
+
+                 .is-static because the card is a surface rather than a
+                 target -- nothing in it is clickable, so it must not lift
+                 under the pointer.
+
+                 The roles on the table are deliberate and not redundant.
+                 Below 900px the stylesheet reflows the table to one card
+                 per agent by changing `display`, and Chrome and Safari drop
+                 a table's implicit semantics as soon as that happens. See
+                 .trp-agents in portal-tailwind-src.css. -->
+            <section class="glass-card is-static p-7 lg:p-8" aria-labelledby="agents-heading">
+              <p class="trp-tag">New &middot; Checked 15 Oct 2026</p>
+              <h2 id="agents-heading" class="trp-section-title mt-3">Which personal AI agent should you start with?</h2>
+              <p class="trp-lede">Personal agents now do real work for you: your inbox, your calendar, your bookings. They overlap a lot, so don't try them all. Pick the one that lives where your context already is, give it one recurring task, and keep approval on.</p>
+
+              <div class="trp-agents-wrap">
+                <table class="trp-agents" role="table">
+                  <colgroup>
+                    <col class="trp-ac-name"/>
+                    <col class="trp-ac-maker"/>
+                    <col class="trp-ac-where"/>
+                    <col class="trp-ac-task"/>
+                    <col class="trp-ac-watch"/>
+                  </colgroup>
+                  <thead role="rowgroup">
+                    <tr role="row">
+                      <th role="columnheader" scope="col">Agent</th>
+                      <th role="columnheader" scope="col">Made by</th>
+                      <th role="columnheader" scope="col">Where it lives</th>
+                      <th role="columnheader" scope="col">Start with this task</th>
+                      <th role="columnheader" scope="col">Watch out for</th>
+                    </tr>
+                  </thead>
+                  <tbody role="rowgroup">
+                    <tr role="row">
+                      <th role="rowheader" scope="row" class="trp-agent-name">Dots</th>
+                      <td role="cell" data-label="Made by">OpenAI</td>
+                      <td role="cell" data-label="Where it lives">Inside ChatGPT (set up on desktop)</td>
+                      <td role="cell" data-label="Start with this task">Email drafts, using the ChatGPT context you already have</td>
+                      <td role="cell" data-label="Watch out for">Needs ChatGPT Pro ($100/month). Not yet open to Pro users in the UK or EU.</td>
+                    </tr>
+                    <tr role="row">
+                      <th role="rowheader" scope="row" class="trp-agent-name">Muse</th>
+                      <td role="cell" data-label="Made by">Meta</td>
+                      <td role="cell" data-label="Where it lives">App, web, WhatsApp and Mac</td>
+                      <td role="cell" data-label="Start with this task">Turning your saved Instagram posts into a list you can use</td>
+                      <td role="cell" data-label="Watch out for">US and Canada only. Trains on your chats unless you switch it off. Turn on approval for every action.</td>
+                    </tr>
+                    <tr role="row">
+                      <th role="rowheader" scope="row" class="trp-agent-name">Grok Bot</th>
+                      <td role="cell" data-label="Made by">xAI</td>
+                      <td role="cell" data-label="Where it lives">Named "Bots" in the Grok app, linked to Gmail, Calendar, Drive and Slack</td>
+                      <td role="cell" data-label="Start with this task">A daily brief Bot (we set this up in the Accelerator)</td>
+                      <td role="cell" data-label="Watch out for">Paid plan needed. All your Bots share one cloud computer, so logins are not kept apart.</td>
+                    </tr>
+                    <tr role="row">
+                      <th role="rowheader" scope="row" class="trp-agent-name">Instinct</th>
+                      <td role="cell" data-label="Made by">Instinct</td>
+                      <td role="cell" data-label="Where it lives">iMessage, WhatsApp and phone calls</td>
+                      <td role="cell" data-label="Start with this task">A morning brief sent by text</td>
+                      <td role="cell" data-label="Watch out for">Invite-only beta. Has sent an email without approval before.</td>
+                    </tr>
+                    <tr role="row">
+                      <th role="rowheader" scope="row" class="trp-agent-name">Hark</th>
+                      <td role="cell" data-label="Made by">Hark Labs</td>
+                      <td role="cell" data-label="Where it lives">Its own app, where you can watch each task as it runs</td>
+                      <td role="cell" data-label="Start with this task">Travel and browser admin you want to watch it do</td>
+                      <td role="cell" data-label="Watch out for">Newer and less proven. Check pricing before you rely on it.</td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+
+              <!-- The three rules, in the numbering the install steps below
+                   already use on this page. One sentence each, so there is
+                   no title line above the body. -->
+              <p class="trp-tag mt-8">Three rules</p>
+              <ol class="trp-steps mt-4">
+                <li>
+                  <span class="trp-step" aria-hidden="true">01</span>
+                  <p class="trp-step-body">Start with one task you already do every week, like a morning brief or email drafts. Count how much you have to correct.</p>
+                </li>
+                <li>
+                  <span class="trp-step" aria-hidden="true">02</span>
+                  <p class="trp-step-body">Keep approval on for anything that sends a message, spends money or books something.</p>
+                </li>
+                <li>
+                  <span class="trp-step" aria-hidden="true">03</span>
+                  <p class="trp-step-body">Choose by where your context lives. Your agent is only as good as what it already knows about you.</p>
+                </li>
+              </ol>
+            </section>
+
             
             <section class="space-y-10 mt-6">
               <div class="space-y-3">

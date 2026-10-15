@@ -79,6 +79,7 @@ const FORMS = [
       stage: 'Seed',
       revenue: 'Pre-revenue',
       platforms: ['LinkedIn', 'X'],
+      built_for_you: 'Yes',
       posts: 'Three a week',
       followers: '12,000',
       why: 'Building in public already.',
@@ -86,12 +87,12 @@ const FORMS = [
       entry_steps: ENTRY_STEPS,
       share_stanley: 'Happy to',
     },
-    only: ['platforms', 'posts', 'followers', 'share_stanley'],
+    only: ['platforms', 'built_for_you', 'posts', 'followers', 'share_stanley'],
     moreOpens: 'In partnership with Stanley',
     prizes: [
       '\u{1F39F}️ 2 seats in the AI Superhuman Accelerator',
       '\u{1F3E1} 1 year in the Time Rich Club',
-      '✍️ 3 months free of Stanley your AI Head of Content',
+      '✍️ Stanley set up for you by the Stanley team: brain, voice and rituals built with you ($1,000 value)',
     ],
   },
 ];
@@ -301,6 +302,66 @@ console.log('\n/ffg — the Fellowship rename and the matching lead');
     /og:description" content="One winner gets a Web Summit Lisbon ticket, 2 Superhuman Accelerator seats and more\./.test(ffg.html));
   check('no page still advertises a single Accelerator seat',
     !/a Superhuman Accelerator seat plus/i.test(ffg.html));
+}
+
+console.log('\n/stanley — would you want this built for you?');
+{
+  const form = FORMS.find((f) => f.name === 'stanley');
+  const page = boot(form);
+  const { document } = page;
+
+  const screen = document.querySelector('[data-key="built_for_you"]');
+  check('the question is on the page', Boolean(screen));
+  check('it asks what Ella wrote',
+    screen.querySelector('.q-title').textContent.trim() === 'Would you want this built for you?',
+    screen.querySelector('.q-title').textContent.trim());
+  check('Yes, Maybe, No, in that order',
+    [...screen.querySelectorAll('.opt')].map((o) => o.getAttribute('data-value')).join('|') === 'Yes|Maybe|No',
+    [...screen.querySelectorAll('.opt')].map((o) => o.getAttribute('data-value')));
+  check('one answer only, not a multi-select',
+    screen.hasAttribute('data-select') && !screen.hasAttribute('data-multi'));
+
+  // Straight after the platforms question, which is where Ella put it.
+  const steps = [...document.querySelectorAll('[data-key]')].map((el) => el.getAttribute('data-key'));
+  check('it comes directly after the platforms question',
+    steps[steps.indexOf('platforms') + 1] === 'built_for_you', steps);
+  check('and the questions are numbered straight through, 1 to 14',
+    [...document.querySelectorAll('.q-eyebrow')].map((e) => e.textContent.trim())
+      .filter((t) => t.startsWith('Question '))
+      .join('|') === Array.from({ length: 14 }, (_, i) => 'Question ' + (i + 1)).join('|'));
+  check('the progress bar counts to 14, on the page and in the script',
+    /aria-valuemax="14"/.test(form.html) && /1 of 14/.test(form.html) && /var STEPS = 14;/.test(form.html));
+  check('the submit screen still sits on the last step, so the bar reads full',
+    /id="s-submit" data-step="14"/.test(form.html));
+}
+
+console.log('\n/stanley — the new question is required');
+{
+  const form = FORMS.find((f) => f.name === 'stanley');
+  const without = { ...form.answers };
+  delete without.built_for_you;
+  const page = boot({ ...form, answers: without });
+  await submit(page);
+
+  check('an application without it is not sent',
+    page.sent.length === 0, page.sent.map((x) => x.url));
+  check('and the applicant is told one is still missing',
+    /still needs an answer/.test(errorText(page)), errorText(page));
+
+  // Answering it is enough to let the same application through.
+  const ok = boot(form);
+  await submit(ok);
+  check('answering it lets the application through',
+    ok.sent.length === 1 && ok.sent[0].body.built_for_you === 'Yes',
+    ok.sent[0] && ok.sent[0].body.built_for_you);
+  check('and Maybe and No are accepted just the same', await (async () => {
+    for (const value of ['Maybe', 'No']) {
+      const p = boot({ ...form, answers: { ...form.answers, built_for_you: value } });
+      await submit(p);
+      if (p.sent.length !== 1 || p.sent[0].body.built_for_you !== value) return false;
+    }
+    return true;
+  })());
 }
 
 console.log('\n' + pass + ' passed, ' + fail + ' failed');

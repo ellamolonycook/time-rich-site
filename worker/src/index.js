@@ -635,6 +635,7 @@ const GRANT_FORMS = {
     grant: "Founders Building in Public",
     extra: {
       "Platforms": "platforms",
+      "Built for you": "built_for_you",
       "Posts": "posts",
       "Followers": "followers",
       "Share Stanley": "share_stanley",
@@ -720,6 +721,12 @@ async function handleGrantApplication(form, d, env, cors, ctx) {
     stage: grantText(d.stage),
     revenue: grantText(d.revenue),
     linkedin: properties["LinkedIn"] ? properties["LinkedIn"].url : "",
+    // Only the forms that ask it send it, so the line is absent rather than
+    // an empty dash on a form that has no such question. extra is keyed by
+    // Notion column name, so the payload key is on the value side.
+    builtForYou: Object.values(form.extra).includes("built_for_you")
+      ? grantText(d.built_for_you)
+      : "",
     pageUrl: page && typeof page.url === "string" ? page.url : "",
   });
 
@@ -735,6 +742,7 @@ function notifySlackGrant(env, ctx, info) {
     `*Revenue:* ${calEsc(info.revenue) || "—"}`,
     `*LinkedIn:* ${info.linkedin || "—"}`,
   ];
+  if (info.builtForYou) lines.push(`*Wants it built for them:* ${calEsc(info.builtForYou)}`);
   if (info.pageUrl) lines.push(`<${info.pageUrl}|Open in Notion>`);
 
   const text = lines.join("\n");
