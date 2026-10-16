@@ -1,0 +1,546 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+  <script>
+    // Theme, applied before first paint so there is no flash of the wrong one.
+    // "system" follows the device; the CSS reads this attribute.
+    (function () {
+      var t = 'light';
+      try { t = window.localStorage.getItem('tr_dashboard_preview_theme') || 'light'; } catch (e) {}
+      if (t !== 'light' && t !== 'dark') t = 'system';
+      document.documentElement.setAttribute('data-theme', t);
+    })();
+  </script>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <!-- Google tag (gtag.js). The library is fetched once the page is
+       interactive: it is the heaviest request here and nothing on screen
+       waits on it. The consent defaults below are set first, so the queue
+       it replays on arrival already respects them. -->
+  
+
+  <title>Curriculum | Time Rich Portal</title>
+  <meta property="og:image" content="https://timerich.ai/og-time-rich.png" />
+  <meta property="og:image:width" content="1200" />
+  <meta property="og:image:height" content="630" />
+  <meta name="twitter:image" content="https://timerich.ai/og-time-rich.png" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <link rel="stylesheet" href="portal.css"/>
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin=""/>
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&amp;family=Inter:wght@400;500;600&amp;family=Space+Mono:wght@400;700&amp;display=swap" rel="stylesheet"/>
+  <link rel="stylesheet" href="portal-content.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+
+  
+
+
+  <!-- The session gate. Config first, then the library; both deferred so
+       the DOM is ready when the script mounts. No valid code redirects to
+       index.html, because this page has no login form of its own. -->
+  
+  
+  <script src="portal-live.js"></script>
+  <script src="portal-chrome.js" defer></script>
+<link rel="stylesheet" href="dashboard-ui.css?v=20261015h"><link rel="stylesheet" href="portal-ui.css?v=20261015"><script src="dashboard-ui.js?v=20261015d" defer></script><script src="portal-ui.js?v=20261015f" defer></script><script src="preview-adapter.js"></script></head>
+
+
+
+<body data-local-preview data-portal-page="curriculum" class="text-brand-deep font-sans min-h-screen flex flex-col selection:bg-brand-lime selection:text-brand-deep">
+
+  <!-- Noise Texture Overlay -->
+
+<a class="skip-link" href="#portal-main">Skip to content</a>
+  <!-- MOBILE MENU -->
+  <div id="mobile-menu-overlay" class="fixed inset-0 bg-brand-ink/25 z-[100] opacity-0 pointer-events-none transition-opacity duration-300 lg:hidden"></div>
+
+  <div id="mobile-menu" class="fixed top-0 left-0 bottom-0 w-[82%] max-w-[300px] bg-brand-page border-r border-brand-ink/10 z-[101] -translate-x-full transition-transform duration-300 ease-out flex flex-col lg:hidden" role="dialog" aria-modal="true" aria-label="Menu">
+    <div class="flex-1 overflow-y-auto p-5 pt-6 flex flex-col">
+      <a href="preview.html" class="flex items-baseline text-[20px] font-display font-bold tracking-tight text-brand-ink mb-8 px-1">
+        Time Rich<span class="text-brand-olive">.</span>
+      </a>
+      <nav class="space-y-1">
+        <a href="preview.html" class="flex items-center gap-3 px-4 py-2.5 rounded-[14px] text-sm font-medium text-brand-ink/70 hover:text-brand-ink hover:bg-brand-ink/5 transition-colors">
+          <svg class="w-4 h-4 text-brand-ink/50 shrink-0" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"></path></svg>
+          Dashboard
+        </a>
+        <a href="curriculum-preview.html" aria-current="page" aria-current="page" class="flex items-center gap-3 px-4 py-2.5 rounded-[14px] text-sm font-semibold bg-brand-deep text-brand-bg">
+          <svg class="w-4 h-4 shrink-0" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"></path></svg>
+          Curriculum
+        </a>
+        <a href="sessions-preview.html" class="flex items-center gap-3 px-4 py-2.5 rounded-[14px] text-sm font-medium text-brand-ink/70 hover:text-brand-ink hover:bg-brand-ink/5 transition-colors">
+          <svg class="w-4 h-4 text-brand-ink/50 shrink-0" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z"></path></svg>
+          Live Sessions
+        </a>
+        <a href="resources-preview.html" class="flex items-center gap-3 px-4 py-2.5 rounded-[14px] text-sm font-medium text-brand-ink/70 hover:text-brand-ink hover:bg-brand-ink/5 transition-colors">
+          <svg class="w-4 h-4 text-brand-ink/50 shrink-0" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"></path></svg>
+          Resources
+        </a>
+        <a href="prompts-preview.html" class="flex items-center gap-3 px-4 py-2.5 rounded-[14px] text-sm font-medium text-brand-ink/70 hover:text-brand-ink hover:bg-brand-ink/5 transition-colors">
+          <svg class="w-4 h-4 text-brand-ink/50 shrink-0" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path></svg>
+          Prompts
+        </a>
+        <a href="members-preview.html" data-portal-members-link hidden class="flex items-center gap-3 px-4 py-2.5 rounded-[14px] text-sm font-medium text-brand-ink/70 hover:text-brand-ink hover:bg-brand-ink/5 transition-colors">
+          <svg class="w-4 h-4 text-brand-ink/50 shrink-0" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"></path></svg>
+          Members
+        </a>
+      </nav>
+      <div class="mt-auto pt-8 border-t border-brand-ink/10">
+        <span class="preview-label">Local preview</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- TOP NAVBAR -->
+  <header id="top-nav" class="trp-header h-14 sm:h-16 flex items-center justify-between gap-3 px-4 sm:px-6 lg:px-10 shrink-0 sticky top-0 z-50">
+
+    <div class="flex items-center gap-2 shrink-0">
+      <button id="mobile-menu-btn" type="button" aria-expanded="false" aria-controls="mobile-menu" aria-label="Menu" class="lg:hidden flex items-center justify-center w-10 h-10 -ml-2 rounded-full text-brand-ink hover:bg-brand-ink/5 transition-colors">
+        <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5"></path></svg>
+      </button>
+
+      <a href="preview.html" class="flex items-baseline text-[18px] sm:text-[21px] font-display font-bold tracking-tight text-brand-ink whitespace-nowrap rounded focus:outline-none focus-visible:ring-2 focus-visible:ring-brand-ink/30">
+        Time Rich<span class="text-brand-olive">.</span>
+      </a>
+
+      <!-- Anchor sponsor. Hidden until 1280px: below that the centred nav
+           reaches too far left and the footer lockup is the only one. -->
+      <a class="trp-powered trp-powered-head hidden xl:inline-flex" href="https://x.getstanley.ai/r/mz4y9g" target="_blank" rel="noopener sponsored">
+        <span class="trp-powered-label">Powered by</span>
+        <img class="trp-powered-pos" src="https://timerich.ai/brand/partners/stanley-logo.png" alt="Stanley" width="765" height="203" loading="lazy" decoding="async"/>
+        <img class="trp-powered-rev" src="https://timerich.ai/brand/partners/stanley-logo-dark.png" alt="Stanley" width="765" height="203" loading="lazy" decoding="async"/>
+      </a>
+    </div>
+
+    <nav class="hidden lg:flex items-center gap-1 absolute left-1/2 -translate-x-1/2" aria-label="Portal">
+        <a href="preview.html" class="px-3 py-1.5 rounded-full text-xs font-medium text-brand-ink/70 hover:text-brand-ink hover:bg-brand-ink/5 transition-colors">Dashboard</a>
+        <a href="curriculum-preview.html" aria-current="page" aria-current="page" class="px-3 py-1.5 rounded-full text-xs font-semibold bg-brand-deep text-brand-bg">Curriculum</a>
+        <a href="sessions-preview.html" class="px-3 py-1.5 rounded-full text-xs font-medium text-brand-ink/70 hover:text-brand-ink hover:bg-brand-ink/5 transition-colors">Live Sessions</a>
+        <a href="resources-preview.html" class="px-3 py-1.5 rounded-full text-xs font-medium text-brand-ink/70 hover:text-brand-ink hover:bg-brand-ink/5 transition-colors">Resources</a>
+        <a href="prompts-preview.html" class="px-3 py-1.5 rounded-full text-xs font-medium text-brand-ink/70 hover:text-brand-ink hover:bg-brand-ink/5 transition-colors">Prompts</a>
+        <a href="members-preview.html" data-portal-members-link hidden class="px-3 py-1.5 rounded-full text-xs font-medium text-brand-ink/70 hover:text-brand-ink hover:bg-brand-ink/5 transition-colors">Members</a>
+    </nav>
+
+    <div class="flex items-center gap-2 sm:gap-4 shrink-0">
+      <!-- Filled in by portal-chrome.js, and only while a session is live or
+           about to start. Stays hidden the rest of the time. -->
+      <a data-portal-join hidden class="hidden lg:inline-flex items-center px-3.5 py-1.5 rounded-full bg-brand-ink text-brand-page text-[11px] font-mono font-medium tracking-[0.06em] whitespace-nowrap hover:bg-brand-ink/90 transition-colors"></a>
+
+      <div class="trp-theme">
+        <label class="sr-only" for="theme-curriculum">Theme</label>
+        <select id="theme-curriculum" data-theme-select>
+          <option value="system">System</option>
+          <option value="light">Light</option>
+          <option value="dark">Dark</option>
+        </select>
+        <svg class="trp-theme-caret" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7"></path></svg>
+      </div>
+
+      <span data-portal-name class="hidden sm:inline text-xs font-medium text-brand-ink/70 whitespace-nowrap"></span>
+
+      <span class="preview-label">Local preview</span>
+    </div>
+  </header>
+
+  <!-- MAIN APP AREA -->
+  <div class="flex-1 flex">
+    
+    <!-- LEFT SIDEBAR -->
+    
+    <!-- CENTER SCROLLABLE CONTENT -->
+    <main id="portal-main" class="flex-1 relative bg-transparent">
+<div class="relative z-10 px-3 sm:px-6 lg:px-12 py-8 lg:py-12 w-full flex justify-center overflow-x-hidden">
+          <div class="w-full max-w-[1150px] mx-auto space-y-16">
+          
+          <header>
+              <div class="space-y-4">
+                <span class="trp-kicker">Program overview</span>
+                <h1 class="trp-title">Curriculum</h1>
+                <p class="trp-lede">Every week of the program, with the sessions and materials in each.</p>
+              </div>
+            </header>
+
+          <div data-curriculum-live hidden></div>
+          <!-- The renderer below replaces this. It only stands in while the
+               payload is on its way or missing, so it stays to one line
+               rather than a fake set of weeks. -->
+          <div data-curriculum-static>
+            <p class="trp-lede">Loading your curriculum&hellip;</p>
+          </div>
+</div>
+      </div>
+    
+      </main> <!-- CLOSE main -->
+    </div> <!-- CLOSE h-screen container -->
+
+  <footer class="shrink-0 px-4 sm:px-6 lg:px-10 py-5 border-t border-brand-ink/10 text-[11px] text-brand-ink/70">
+    <p class="flex flex-wrap items-center justify-center gap-x-2 gap-y-1 text-center">
+      <span>Need help? <a href="mailto:emc@timerich.ai" class="hover:text-brand-ink transition-colors">emc@timerich.ai</a></span>
+      <span aria-hidden="true" class="text-brand-ink/70">&middot;</span>
+      <!-- Href comes from the week 0 link item; hidden when there is none. -->
+      <a data-portal-community hidden class="hover:text-brand-ink transition-colors">WhatsApp community</a>
+      <span data-portal-community hidden aria-hidden="true" class="text-brand-ink/70">&middot;</span>
+      <a href="https://timerich.ai/privacy/" class="hover:text-brand-ink transition-colors">Privacy</a>
+      <span aria-hidden="true" class="text-brand-ink/70">&middot;</span>
+      <a href="https://timerich.ai/terms/" class="hover:text-brand-ink transition-colors">Terms</a>
+      <span aria-hidden="true" class="text-brand-ink/70">&middot;</span>
+      <span>&copy; 2026 Time Rich</span>
+    </p>
+    <!-- Anchor sponsor. Every page inside carries it here; the header shows it
+         too from 1280px up, where there is room beside the wordmark. -->
+    <p class="mt-3 flex justify-center">
+      <a class="trp-powered" href="https://x.getstanley.ai/r/mz4y9g" target="_blank" rel="noopener sponsored">
+        <span class="trp-powered-label">Powered by</span>
+        <img class="trp-powered-pos" src="https://timerich.ai/brand/partners/stanley-logo.png" alt="Stanley" width="765" height="203" loading="lazy" decoding="async"/>
+        <img class="trp-powered-rev" src="https://timerich.ai/brand/partners/stanley-logo-dark.png" alt="Stanley" width="765" height="203" loading="lazy" decoding="async"/>
+      </a>
+    </p>
+  </footer>
+
+  <script>
+    document.addEventListener("DOMContentLoaded", () => {
+      // 3. Video Controls
+      const video = document.getElementById('promo-video');
+      const playBtn = document.getElementById('promo-play-btn');
+      const muteBtn = document.getElementById('promo-mute-btn');
+      
+      const iconPlay = document.getElementById('icon-play');
+      const iconPause = document.getElementById('icon-pause');
+      const iconMuted = document.getElementById('icon-muted');
+      const iconUnmuted = document.getElementById('icon-unmuted');
+
+      if(playBtn && video) {
+        playBtn.addEventListener('click', (e) => {
+          e.stopPropagation();
+          if (video.paused) {
+            video.play();
+            iconPlay.classList.add('hidden');
+            iconPause.classList.remove('hidden');
+          } else {
+            video.pause();
+            iconPause.classList.add('hidden');
+            iconPlay.classList.remove('hidden');
+          }
+        });
+      }
+
+      if(muteBtn && video) {
+        muteBtn.addEventListener('click', (e) => {
+          e.stopPropagation();
+          if (video.muted) {
+            video.muted = false;
+            iconMuted.classList.add('hidden');
+            iconUnmuted.classList.remove('hidden');
+          } else {
+            video.muted = true;
+            iconUnmuted.classList.add('hidden');
+            iconMuted.classList.remove('hidden');
+          }
+        });
+      }
+    });
+  </script>
+
+  <script>
+    // === SMOOTH PAGE TRANSITIONS ===
+    // Internal .html links fade the page out before navigating. The fade is
+    // decoration; the navigation is the job, so every path below ends in a
+    // navigation even when the animation never runs or is cut short.
+    (function () {
+      var FADE_MS = 150;
+
+      var reduced = false;
+      try {
+        reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+      } catch (e) { /* no matchMedia: treat as no preference */ }
+
+      // Coming back via the Back button can restore this page from the bfcache
+      // with the fade still applied, which shows a blank screen.
+      //
+      // Only this script's own fade is undone. Every portal page sets its own
+      // entrance transform inline on <body>, so clearing that unconditionally
+      // would kill the page's open animation on a normal load.
+      var LEAVING = 'data-trp-leaving';
+      window.addEventListener('pageshow', function () {
+        if (!document.body.hasAttribute(LEAVING)) return;
+        document.body.removeAttribute(LEAVING);
+        document.body.style.opacity = '';
+        document.body.style.transform = '';
+      });
+
+      document.addEventListener('DOMContentLoaded', function () {
+        document.querySelectorAll('a[href]').forEach(function (link) {
+          var href = link.getAttribute('href');
+          if (!href) return;
+          if (href.indexOf('http') === 0 || href.charAt(0) === '#' || href.indexOf('mailto') === 0) return;
+          if (href.slice(-5) !== '.html') return;
+          // A link meant for another tab keeps its default behaviour.
+          if (link.target && link.target !== '_self') return;
+
+          link.addEventListener('click', function (e) {
+            // Cmd/Ctrl/Shift/Alt click and middle click open a new tab.
+            // Hijacking those would quietly break them.
+            if (e.button !== 0 || e.metaKey || e.ctrlKey || e.shiftKey || e.altKey) return;
+
+            e.preventDefault();
+
+            // Anyone who asked for less motion simply goes.
+            if (reduced) { window.location.href = href; return; }
+
+            var done = false;
+            function go() {
+              if (done) return;
+              done = true;
+              window.location.href = href;
+            }
+
+            try {
+              document.body.setAttribute(LEAVING, '');
+              document.body.style.opacity = '0';
+              document.body.style.transform = 'scale(0.98)';
+              // Whichever comes first wins.
+              document.body.addEventListener('transitionend', go, { once: true });
+            } catch (err) {
+              go();                 // styling failed, so just navigate
+              return;
+            }
+
+            setTimeout(go, FADE_MS);
+            // A short backstop: transitionend does not fire in a backgrounded
+            // tab, and a click must never end on a page left faded out.
+            setTimeout(go, FADE_MS + 250);
+          });
+        });
+      });
+    })();
+  </script>
+
+
+
+  <script>
+    /* Curriculum, drawn from portal_get. Weeks come from `weeks` in id order,
+       with each week's sessions grouped under it by week_id. One card per
+       week; inside it, slim rows in the same shape as the Live Sessions
+       page. The one-line fallback above is hidden as soon as weeks land. */
+    (function () {
+      var L = window.TRLive;
+      if (!L) return;
+
+      var ACTION = 'trp-saction inline-flex items-center justify-center px-3.5 py-1.5 rounded-full ' +
+                   'text-[11px] font-semibold transition-colors';
+      var ACTION_JOIN = ACTION + ' bg-brand-deep text-brand-bg hover:bg-brand-green';
+      var ACTION_SOFT = ACTION + ' border border-brand-deep/25 text-brand-deep hover:border-brand-deep/60';
+      var ACTION_DEAD = ACTION + ' text-brand-deep/45 cursor-default';
+
+      var BONUS = /^bonus:\s*/i;
+      function isBonus(s) { return BONUS.test(L.str(s && s.title)); }
+      function titleOf(s) {
+        var t = L.str(s && s.title) || 'Session';
+        return isBonus(s) ? t.replace(BONUS, '') : t;
+      }
+
+      function svgIcon(d, cls) {
+        var ns = 'http://www.w3.org/2000/svg';
+        var svg = document.createElementNS(ns, 'svg');
+        svg.setAttribute('class', cls || 'w-4 h-4');
+        svg.setAttribute('fill', 'none');
+        svg.setAttribute('stroke', 'currentColor');
+        svg.setAttribute('stroke-width', '1.6');
+        svg.setAttribute('viewBox', '0 0 24 24');
+        svg.setAttribute('aria-hidden', 'true');
+        var path = document.createElementNS(ns, 'path');
+        path.setAttribute('stroke-linecap', 'round');
+        path.setAttribute('stroke-linejoin', 'round');
+        path.setAttribute('d', d);
+        svg.appendChild(path);
+        return svg;
+      }
+      function tickIcon() { return svgIcon('M5 13l4 4L19 7', 'w-3.5 h-3.5'); }
+
+      /* The same tick as the Live Sessions page: a small box, not a pill. */
+      function tick(isDone, toggle, label) {
+        var btn = L.el('button', 'trp-tick');
+        btn.type = 'button';
+        btn.appendChild(tickIcon());
+        function paint() {
+          var on = Boolean(isDone());
+          btn.setAttribute('aria-pressed', on ? 'true' : 'false');
+          btn.setAttribute('aria-label', (on ? 'Done: ' : 'Mark done: ') + label);
+          btn.classList.toggle('is-on', on);
+        }
+        btn.addEventListener('click', function () {
+          Promise.resolve(toggle()).then(paint);
+          paint();
+        });
+        paint();
+        btn.refresh = paint;
+        return btn;
+      }
+
+      /* ---- rows ---------------------------------------------------------- */
+
+      function itemRow(item) {
+        var name = L.str(item.title) || 'Untitled';
+        var row = L.el('li', 'trp-srow is-item');
+
+        var title = L.el('span', 'trp-stitle');
+        var link = L.linkTo(item.url, name, 'trp-slink');
+        title.appendChild(link || document.createTextNode(name));
+        if (item && item.kind === 'skill') {
+          title.appendChild(L.el('span', 'trp-pill', 'Skill'));
+        }
+        row.appendChild(title);
+
+        if (L.itemKey(item)) {
+          row.appendChild(tick(
+            function () { return L.isItemDone(item); },
+            function () { L.toggleItem(item); },
+            name));
+        } else {
+          row.appendChild(L.el('span', 'trp-tick-gap'));
+        }
+        return row;
+      }
+
+      function sessionRow(session, now) {
+        var name = L.str(session.title) || 'Session';
+        var past = L.isSessionPast(session, now);
+        var unlocked = L.isSessionUnlocked(session, now);
+
+        var row = L.el('li', 'trp-srow' + (past ? ' is-past' : ''));
+
+        var d = L.etDate(session.starts_at), t = L.etTime(session.starts_at);
+        row.appendChild(L.el('span', 'trp-sdate', d ? (t ? d + ' \u00b7 ' + t + ' ET' : d) : ''));
+
+        var title = L.el('span', 'trp-stitle');
+        title.appendChild(document.createTextNode(titleOf(session)));
+        if (isBonus(session)) title.appendChild(L.el('span', 'trp-pill', 'Bonus'));
+        row.appendChild(title);
+
+        var mark = tick(
+          function () { return L.isSessionMarked(session); },
+          function () { L.toggleSession(session); },
+          name);
+
+        function markOnUse(a) {
+          if (!a) return a;
+          a.addEventListener('click', function () {
+            Promise.resolve(L.markSession(session)).then(function () {
+              if (mark.refresh) mark.refresh();
+            });
+          });
+          return a;
+        }
+
+        /* One action, the same rule as Live Sessions: Join on the day,
+           the recording afterwards, nothing before. */
+        var slot = L.el('span', 'trp-sact');
+        var act = null;
+        if (past) {
+          act = markOnUse(L.linkTo(session.recording_url, 'Watch recording', ACTION_SOFT));
+          if (act) act.setAttribute('aria-label', 'Watch recording of ' + name);
+          else {
+            act = L.el('span', ACTION_DEAD, 'Recording soon');
+            act.setAttribute('aria-label', 'Recording of ' + name + ' is not up yet');
+          }
+        } else if (unlocked) {
+          act = markOnUse(L.linkTo(session.join_url, 'Join', ACTION_JOIN));
+          if (act) act.setAttribute('aria-label', 'Join ' + name);
+        }
+        if (act) slot.appendChild(act);
+        row.appendChild(slot);
+
+        row.appendChild(mark);
+        return row;
+      }
+
+      /* ---- a week card ---------------------------------------------------- */
+
+      function weekCard(data, week, openId) {
+        var n = L.num(week.id);
+        var label = n === 0 ? 'Start here' : 'Week ' + (n < 10 ? '0' + n : n);
+        var locked = week.unlocked !== true;
+        var opens = L.etDate(week.release_at);
+
+        var card = L.el('li', 'glass-card is-static trp-wkcard' + (locked ? ' is-locked' : ''));
+
+        var head = L.el('div', 'trp-wkcard-head');
+        head.appendChild(L.el('p', 'trp-tag', label));
+        // Week 0's label and its title are both "Start here", so showing
+        // both just says it twice. The heading goes in only when it adds
+        // something the label has not already said.
+        var theme = L.str(week.title) || label;
+        if (theme.toLowerCase() !== label.toLowerCase()) {
+          head.appendChild(L.el('h2', 'trp-wkcard-theme', theme));
+        }
+        if (L.str(week.summary) && !locked) {
+          head.appendChild(L.el('p', 'trp-wkcard-sub', L.str(week.summary)));
+        }
+        card.appendChild(head);
+
+        if (locked) {
+          var shut = L.el('p', 'trp-wkcard-locked', opens ? 'Opens ' + opens : 'Opens soon');
+          card.appendChild(shut);
+          return card;
+        }
+
+        var ul = L.el('ul', 'trp-srows');
+        var now = new Date();
+        L.items(week).forEach(function (item) { ul.appendChild(itemRow(item)); });
+        L.sessionsForWeek(data, week.id).forEach(function (s) { ul.appendChild(sessionRow(s, now)); });
+        if (!ul.childNodes.length) {
+          ul.appendChild(L.el('li', 'trp-srow is-empty', 'Nothing here yet.'));
+        }
+        card.appendChild(ul);
+        return card;
+      }
+
+      document.addEventListener('trportal:data', function (event) {
+        var data = event && event.detail;
+        var live = document.querySelector('[data-curriculum-live]');
+        var statik = document.querySelector('[data-curriculum-static]');
+        if (!live) return;
+
+        var list = L.weeks(data);
+        if (!list.length) return;          // no weeks: leave the fallback up
+
+        var current = L.latestUnlockedWeek(data);
+        var openId = current ? current.id : null;
+
+        L.clear(live);
+        var grid = L.el('ul', 'trp-wkcards');
+        list.forEach(function (week) { grid.appendChild(weekCard(data, week, openId)); });
+        live.appendChild(grid);
+
+        L.show(live, true);
+        L.show(statik, false);
+      });
+    })();
+  </script>
+
+  <script>
+    // Keeps every theme control on the page in step with what was stored,
+    // and writes the choice back. The attribute itself is set in <head>.
+    (function () {
+      var KEY = 'tr_dashboard_preview_theme';
+      var selects = document.querySelectorAll('[data-theme-select]');
+      if (!selects.length) return;
+
+      var current = document.documentElement.getAttribute('data-theme') || 'light';
+      Array.prototype.forEach.call(selects, function (sel) {
+        sel.value = current;
+        sel.addEventListener('change', function () {
+          var value = sel.value === 'light' || sel.value === 'dark' ? sel.value : 'system';
+          document.documentElement.setAttribute('data-theme', value);
+          try { window.localStorage.setItem(KEY, value); } catch (e) { /* choice lasts the session */ }
+          // any other control on the page follows
+          Array.prototype.forEach.call(selects, function (other) { other.value = value; });
+        });
+      });
+    })();
+  </script>
+
+<script src="preview-data.js?v=20261015g"></script></body>
+</html>
+
