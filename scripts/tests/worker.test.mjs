@@ -50,6 +50,7 @@ const FULL = {
   outcome: 'Take a two-week vacation without the business falling over.',
   coaching: 'Yes',
   coaching_focus: 'Delegating without micromanaging.',
+  referred_by: 'Dana Scully',
   source: 'utm_source=instagram | utm_campaign=sh-launch',
   _gotcha: '',
 };
@@ -73,6 +74,7 @@ console.log('\n/superhuman — new form payload (precise mapping)');
     !('Track preference' in p), Object.keys(p));
   check('1:1 coaching is select', p['1:1 coaching'].select.name === 'Yes');
   check('Coaching focus is rich_text', p['Coaching focus'].rich_text[0].text.content.startsWith('Delegating'));
+  check('Referred by is rich_text', p['Referred by'].rich_text[0].text.content === 'Dana Scully', p['Referred by']);
   check('Source is rich_text with the UTMs', p.Source.rich_text[0].text.content.includes('utm_source=instagram'));
   check('Status defaults to New', p.Status.select.name === 'New');
   check('never writes Call time', !('Call time' in p), Object.keys(p));
@@ -80,7 +82,7 @@ console.log('\n/superhuman — new form payload (precise mapping)');
   check('never writes old-form columns', !('AI stage' in p) && !('Pain points' in p) && !('Website' in p));
   check('no page body dump (precise mapping only)', b.children === undefined);
   check('reads no database schema (one API call)', calls.filter(c => c.url.includes('/v1/databases/')).length === 0);
-  check('exactly the 11 expected properties', Object.keys(p).length === 11, Object.keys(p));
+  check('exactly the 12 expected properties', Object.keys(p).length === 12, Object.keys(p));
 }
 
 console.log('\n/superhuman — every Department option maps 1:1');
@@ -158,7 +160,12 @@ console.log('\n/superhuman — junk and edge values');
   const neither = pageBody().properties;
   check('Q4 skipped entirely omits both columns',
     !('LinkedIn' in neither) && !('Website' in neither), Object.keys(neither));
-  check('and the application is still accepted', Object.keys(neither).length === 10, Object.keys(neither).length);
+  check('and the application is still accepted', Object.keys(neither).length === 11, Object.keys(neither).length);
+
+  await post('/superhuman', { ...FULL, referred_by: '' });
+  const noRef = pageBody().properties;
+  check('nobody referred them: the column is still sent, empty',
+    'Referred by' in noRef && noRef['Referred by'].rich_text.length === 0, noRef['Referred by']);
 
   await post('/superhuman', { ...FULL, linkedin: '', phone: '', coaching_focus: '', source: '' });
   const p = pageBody().properties;
@@ -228,6 +235,7 @@ const NOTION_PAGE = {
     Outcome: { type: 'rich_text', rich_text: [{ plain_text: 'Take a two-week vacation.' }] },
     'Track preference': { type: 'select', select: { name: 'Ten weeks' } },
     '1:1 coaching': { type: 'select', select: { name: 'Yes' } },
+    'Referred by': { type: 'rich_text', rich_text: [{ plain_text: 'Dana Scully' }] },
     Phone: { type: 'phone_number', phone_number: '+15125550114' },
     LinkedIn: { type: 'url', url: 'https://www.linkedin.com/in/jordanreyes' },
     Website: { type: 'url', url: null },
@@ -395,6 +403,9 @@ console.log('\n/cal-webhook — BOOKING_CREATED with a matching application');
   check('pulls Outcome', t.includes('Take a two-week vacation.'));
   check('no Track line in the breakdown', !t.includes('*Track:*'), t);
   check('pulls 1:1 coaching', t.includes('*1:1 coaching:* Yes'));
+  check('pulls Referred by', t.includes('*Referred by:* Dana Scully'), t);
+  check('Referred by sits with the rest of the breakdown, not the headline',
+    t.indexOf('*Referred by:*') > t.indexOf('*1:1 coaching:*'), t);
   check('pulls Phone', t.includes('+15125550114'));
   check('pulls LinkedIn', t.includes('linkedin.com/in/jordanreyes'));
   check('links back to the Notion page', t.includes('https://www.notion.so/Jordan-page-sh-1'));

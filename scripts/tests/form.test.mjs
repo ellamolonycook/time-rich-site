@@ -84,7 +84,8 @@ async function runToSubmit({ w, d }) {
   pickDepartments(w, d, 3); await settle();                              // Operations & admin
   type(w, '#f-outcome', 'A two-week holiday without the business falling over.');
   click(w, '#s-7 [data-next]'); await settle();
-  d.querySelectorAll('#s-8 .opt')[1].click(); await selectAdvance();      // No -> submit
+  d.querySelectorAll('#s-8 .opt')[1].click(); await selectAdvance();      // No -> referral
+  click(w, '#s-ref [data-next]'); await settle();                        // optional, left blank
 }
 
 console.log('\nOne question at a time');
@@ -565,16 +566,24 @@ console.log('\nQ8b only exists for Yes / Tell me more');
   click(w, '#s-7 [data-next]');
   check('on Q8', visible(d).join() === 's-8');
   d.querySelectorAll('#s-8 .opt')[1].click(); await selectAdvance();   // "No"
-  check('"No" skips Q8b straight to submit', visible(d).join() === 's-submit', visible(d));
+  check('"No" skips Q8b to the referral question', visible(d).join() === 's-ref', visible(d));
+  check('progress still reads "8 of 8" there', label(d) === '8 of 8');
+  click(w, '#s-ref [data-next]'); await settle();
+  check('and that leads to the submit screen', visible(d).join() === 's-submit', visible(d));
   check('progress still reads "8 of 8" on the submit screen', label(d) === '8 of 8');
 
   click(w, '#s-submit [data-back]'); await sleep(60);
-  check('Back from submit returns to Q8 on the "No" path', visible(d).join() === 's-8', visible(d));
+  check('Back from submit returns to the referral question', visible(d).join() === 's-ref', visible(d));
+  click(w, '#s-ref [data-back]'); await sleep(60);
+  check('Back again returns to Q8 on the "No" path', visible(d).join() === 's-8', visible(d));
   d.querySelectorAll('#s-8 .opt')[0].click(); await selectAdvance();   // "Yes"
   check('"Yes" opens Q8b', visible(d).join() === 's-8b');
   check('Q8b is a sub-step: progress stays "8 of 8"', label(d) === '8 of 8', label(d));
   click(w, '#s-8b [data-next]');
-  check('Q8b is optional — empty advances', visible(d).join() === 's-submit');
+  check('Q8b is optional — empty advances', visible(d).join() === 's-ref');
+  click(w, '#s-ref [data-back]'); await sleep(60);
+  check('Back from the referral question returns to Q8b on the "Yes" path',
+    visible(d).join() === 's-8b', visible(d));
 }
 
 console.log('\nBack keeps answers; sessionStorage survives a refresh');
@@ -690,7 +699,10 @@ console.log('\nOne POST at the end, with the exact payload shape');
   click(w, '#s-7 [data-next]');
   d.querySelectorAll('#s-8 .opt')[0].click(); await selectAdvance();        // Yes
   type(w, '#f-coaching_focus', 'Delegating without micromanaging.');
-  click(w, '#s-8b [data-next]');
+  click(w, '#s-8b [data-next]'); await settle();
+  check('on the referral question', visible(d).join() === 's-ref', visible(d));
+  type(w, '#f-referred_by', 'Dana Scully');
+  click(w, '#s-ref [data-next]'); await settle();
   check('on the submit screen', visible(d).join() === 's-submit');
   check('the submit button says "Submit my application"', $(d, '#submitBtn').textContent === 'Submit my application');
   check('the summary shows what they answered', /Operations & admin/.test($(d, '#summary').textContent));
@@ -703,8 +715,9 @@ console.log('\nOne POST at the end, with the exact payload shape');
   const b = posts[0].body;
   check('posts to /superhuman', String(posts[0].url).endsWith('/superhuman'));
   check('payload keys are exactly the agreed set',
-    Object.keys(b).sort().join() === ['_gotcha','business','coaching','coaching_focus','department','email','first_name','form_version','linkedin','outcome','phone','source','website'].sort().join(),
+    Object.keys(b).sort().join() === ['_gotcha','business','coaching','coaching_focus','department','email','first_name','form_version','linkedin','outcome','phone','referred_by','source','website'].sort().join(),
     Object.keys(b));
+  check('the referral rides along', b.referred_by === 'Dana Scully', b.referred_by);
   check('no track is sent at all', !('track' in b), Object.keys(b));
   check('form_version marks the new form', b.form_version === 'sh-apply-v2');
   check('first_name', b.first_name === 'Jordan');
@@ -751,13 +764,13 @@ console.log('\nMarkup / accessibility basics');
 {
   const { d } = boot();
   const qs = Array.from(d.querySelectorAll('form .screen[data-step]'));
-  check('eight numbered steps plus Q8b and submit', qs.length === 10, qs.length);
+  check('eight numbered steps plus Q8b, the referral and submit', qs.length === 11, qs.length);
   check('data-step never exceeds 8', qs.every(s => +s.getAttribute('data-step') <= 8));
   check('the eight steps are 1..8 with no gap',
     [...new Set(qs.map(s => +s.getAttribute('data-step')))].sort((a, b) => a - b).join() === '1,2,3,4,5,6,7,8',
     qs.map(s => s.getAttribute('data-step')));
   check('the progress bar tops out at 8', $(d, '#bar').getAttribute('aria-valuemax') === '8');
-  check('every text question has a real <label>', ['f-first_name','f-email','f-phone','f-linkedin','f-business','f-outcome','f-coaching_focus']
+  check('every text question has a real <label>', ['f-first_name','f-email','f-phone','f-linkedin','f-business','f-outcome','f-coaching_focus','f-referred_by']
     .every(id => d.querySelector('label[for="' + id + '"]')));
   check('every question screen has an aria-live error slot',
     qs.filter(s => s.id !== 's-submit').every(s => s.querySelector('.q-error[aria-live="polite"]')));
@@ -947,6 +960,152 @@ console.log('\nThe thank-you page');
   check('no flagged-off player\'s script is loaded either',
     Array.from(td.querySelectorAll('script[src]'))
       .every(sc => !/vimeo|spotify|youtube/i.test(sc.src)));
+}
+
+console.log('\nThe intro banner');
+{
+  const { d } = boot();
+  const intro = $(d, '#s-intro');
+  const banner = intro.querySelector('.intro-banner');
+
+  check('the banner is the first thing on the intro screen',
+    banner !== null && intro.firstElementChild === banner, intro.firstElementChild?.tagName);
+  check('it points at the file in the folder',
+    banner.getAttribute('src') === '/sh-apply/accelerator-banner.png', banner.getAttribute('src'));
+  check('width and height are the file’s real ones, so nothing shifts as it lands',
+    banner.getAttribute('width') === '1812' && banner.getAttribute('height') === '930',
+    banner.getAttribute('width') + 'x' + banner.getAttribute('height'));
+  check('the alt names the seven speakers and both sponsors',
+    banner.getAttribute('alt') === 'AI Superhuman Accelerator speakers: Cien Solon, Taylor Offer, '
+      + 'AJ Yadav, Terry Rice, Ella Cook, Matyas Kolsofszki and ViKa Victoria. '
+      + 'Sponsored by Stanley and Wispr Flow.',
+    banner.getAttribute('alt'));
+  // It is the first paint of the page, so it must not be deferred.
+  check('it is not lazy loaded, being the top of the page',
+    banner.getAttribute('loading') !== 'lazy');
+
+  check('it is also the og:image',
+    $(d, 'meta[property="og:image"]').getAttribute('content')
+      === 'https://timerich.ai/sh-apply/accelerator-banner.png');
+  check('and the twitter:image',
+    $(d, 'meta[name="twitter:image"]').getAttribute('content')
+      === 'https://timerich.ai/sh-apply/accelerator-banner.png');
+  check('the og image dimensions match the file too',
+    $(d, 'meta[property="og:image:width"]').getAttribute('content') === '1812'
+    && $(d, 'meta[property="og:image:height"]').getAttribute('content') === '930');
+
+  // The banner already carries both, so a second copy of either would be a
+  // repeat of the same information.
+  check('no separate speakers strip', intro.querySelectorAll('.spk-item').length === 0);
+  check('no separate sponsor logo row', intro.querySelectorAll('.spon-row').length === 0);
+}
+
+console.log('\nThe intro dropdown: who it is for and what you get');
+{
+  const { d } = boot();
+  const intro = $(d, '#s-intro');
+  const details = Array.from(intro.querySelectorAll('.ov details'));
+
+  check('exactly one dropdown', details.length === 1, details.length);
+  check('closed on arrival, so the intro stays short', !details[0].open);
+  check('a real <details>/<summary>, so the keyboard and the screen reader come free',
+    details[0].tagName === 'DETAILS' && details[0].querySelector(':scope > summary') !== null);
+  check('labelled the way the brief asked',
+    details[0].querySelector('summary').textContent.trim() === "Who it's for and what you get",
+    details[0].querySelector('summary').textContent.trim());
+
+  // DOCUMENT_POSITION_FOLLOWING === 4: the argument comes after the node.
+  check('it sits under the lead and above "Start my application"',
+    intro.querySelector('.lead').compareDocumentPosition(intro.querySelector('.ov')) === 4
+    && intro.querySelector('.ov').compareDocumentPosition(intro.querySelector('.q-actions')) === 4);
+
+  const text = details[0].textContent.replace(/\s+/g, ' ').trim();
+  check('Ella’s "who it’s for" line, word for word',
+    text.includes("Who it's for: ambitious founders & SMBs scaling their revenue and visibility."), text);
+  check('and the "what you get" label', text.includes('What you get:'));
+
+  const items = Array.from(details[0].querySelectorAll('li')).map((li) => li.textContent.trim());
+  const WANT = [
+    'Live sessions on Mondays and Fridays at 12pm ET, starting October 26th',
+    "Build sessions with people who've done it: an a16z-backed founder whose first company passed $50M",
+    'Hot seat coaching on your actual business',
+    'One part of your business (sales, content or ops) running on AI',
+  ];
+  check('the four things you get, word for word and in order',
+    items.join('|') === WANT.join('|'), items);
+
+  check('no long dashes in the dropdown', !/—/.test(details[0].textContent), details[0].textContent);
+}
+
+console.log('\nThe sticky header stays opaque over the banner');
+{
+  // The bar is sticky and the banner scrolls under it. At anything less than
+  // fully opaque the banner showed through and the backdrop blur smeared it
+  // into a band across the bar — which is the overlap that was reported.
+  const bar = /\.topbar\{[^}]*\}/.exec(HTML);
+  check('the topbar rule is still there', bar !== null);
+  check('its background is the page colour, not a translucent one',
+    /background:var\(--bg\)/.test(bar[0]), bar[0]);
+  check('no rgba background on it', !/background:\s*rgba\(/.test(bar[0]), bar[0]);
+  check('and no backdrop-filter, which an opaque bar makes pointless',
+    !/backdrop-filter/.test(bar[0]), bar[0]);
+  check('it is still sticky to the top', /position:sticky/.test(bar[0]) && /top:0/.test(bar[0]));
+  check('and still above the content', /z-index:20/.test(bar[0]));
+}
+
+console.log('\nNo long dashes in anything the page shows');
+{
+  const { d } = boot();
+  const LONG = /[–—]|&mdash;|&ndash;/;
+
+  // 1. Everything already in the markup. <script> and <style> text counts as
+  // textContent but is never read by anyone, so it comes out first.
+  const copy = d.body.cloneNode(true);
+  copy.querySelectorAll('script, style').forEach((n) => n.remove());
+  const shown = copy.textContent;
+  check('nothing in the rendered page has one',
+    !LONG.test(shown), (shown.match(/.{0,40}[–—].{0,40}/) || [])[0]);
+  check('and no entity form survives in the markup either',
+    !/&mdash;|&ndash;/.test(HTML), (HTML.match(/.{0,50}&[mn]dash;.{0,50}/) || [])[0]);
+
+  // 2. The strings the script writes onto the page later: every help line and
+  // error message. Code comments are not on the page, so they are stripped
+  // before the scan rather than counted against it.
+  const code = HTML
+    .replace(/<!--[\s\S]*?-->/g, '')
+    .replace(/\/\*[\s\S]*?\*\//g, '')
+    .replace(/^\s*\/\/.*$/gm, '');
+  const offenders = (code.match(/.{0,60}[–—].{0,60}/g) || []);
+  check('no long dash in any string the script puts on screen',
+    offenders.length === 0, offenders);
+
+  // 3. The two lines called out by name.
+  check('the referral help line reads as two sentences',
+    $(d, '#help-ref').textContent.trim() === 'Optional. So we can thank them.',
+    $(d, '#help-ref').textContent.trim());
+  check('and so does the resume note',
+    $(d, '#resumeNote').textContent.trim()
+      === 'You have an application in progress. Starting picks up where you left off.',
+    $(d, '#resumeNote').textContent.trim());
+}
+
+console.log('\nThe name: AI Superhuman Accelerator, everywhere it appears');
+{
+  const { d } = boot();
+  check('the page title', /Apply for the AI Superhuman Accelerator/.test($(d, 'title').textContent));
+  check('the eyebrow', $(d, '#s-intro .q-eyebrow').textContent.trim() === 'AI Superhuman Accelerator');
+  check('the h1', /Apply for the AI Superhuman Accelerator/.test($(d, '#introHead').textContent));
+  check('the meta description',
+    /AI Superhuman Accelerator/.test($(d, 'meta[name=description]').getAttribute('content')));
+  check('the og title',
+    /AI Superhuman Accelerator/.test($(d, 'meta[property="og:title"]').getAttribute('content')));
+  check('the footer link', /AI Superhuman Accelerator/.test($(d, '.foot').textContent));
+  check('the old name is gone from the page', !/Super Human Accelerator/.test(HTML));
+
+  const thanksPage = fs.readFileSync(site('sh-apply/thanks/index.html'), 'utf8');
+  check('and from the thanks page it hands off to', !/Super Human Accelerator/.test(thanksPage));
+  // Different thing, same two words: the podcast keeps its own name.
+  check('but the Super Human podcast keeps its name', /The Super Human podcast/.test(thanksPage));
 }
 
 console.log('\n' + pass + ' passed, ' + fail + ' failed');
