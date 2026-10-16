@@ -1,0 +1,649 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth" data-trp-gate>
+<head>
+  <script>
+    // Theme, applied before first paint so there is no flash of the wrong one.
+    // "system" follows the device; the CSS reads this attribute.
+    (function () {
+      var t = 'system';
+      try { t = window.localStorage.getItem('tr_portal_theme') || 'system'; } catch (e) {}
+      if (t !== 'light' && t !== 'dark') t = 'system';
+      document.documentElement.setAttribute('data-theme', t);
+    })();
+  </script>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <!-- Google tag (gtag.js). The library is fetched once the page is
+       interactive: it is the heaviest request here and nothing on screen
+       waits on it. The consent defaults below are set first, so the queue
+       it replays on arrival already respects them. -->
+  <script>
+    window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}
+    // Consent Mode v2. Region-specific default first, then the global fallback,
+    // which is the order Google's docs specify: the narrower region wins.
+    gtag('consent','default',{ad_storage:'denied',ad_user_data:'denied',ad_personalization:'denied',analytics_storage:'denied',region:['AT','BE','BG','HR','CY','CZ','DK','EE','FI','FR','DE','GR','HU','IS','IE','IT','LV','LI','LT','LU','MT','NL','NO','PL','PT','RO','SK','SI','ES','SE','GB','CH']});
+    gtag('consent','default',{ad_storage:'denied',ad_user_data:'denied',ad_personalization:'denied',analytics_storage:'granted'});
+    gtag('js',new Date());
+    gtag('config','G-CTZLQ4R388');
+
+    // The library, once the page has loaded and the main thread is free.
+    // requestIdleCallback's own timeout and the setTimeout fallback are both
+    // 2000ms, so it never waits longer than that on a busy page.
+    (function () {
+      var asked = false;
+      function loadGtag() {
+        if (asked) return;
+        asked = true;
+        var s = document.createElement('script');
+        s.async = true;
+        s.src = 'https://www.googletagmanager.com/gtag/js?id=G-CTZLQ4R388';
+        document.head.appendChild(s);
+      }
+      function schedule() {
+        if (typeof window.requestIdleCallback === 'function') {
+          window.requestIdleCallback(loadGtag, { timeout: 2000 });
+        } else {
+          window.setTimeout(loadGtag, 2000);
+        }
+      }
+      if (document.readyState === 'complete') schedule();
+      else window.addEventListener('load', schedule);
+    })();
+  </script>
+
+  <title>Dashboard | Time Rich Portal</title>
+  <meta property="og:image" content="https://timerich.ai/og-time-rich.png" />
+  <meta property="og:image:width" content="1200" />
+  <meta property="og:image:height" content="630" />
+  <meta name="twitter:image" content="https://timerich.ai/og-time-rich.png" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <link rel="stylesheet" href="portal.css"/>
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin=""/>
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&amp;family=Inter:wght@400;500;600&amp;family=Space+Mono:wght@400;700&amp;display=swap" rel="stylesheet"/>
+  <link rel="stylesheet" href="portal-content.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+
+  
+
+
+  <!-- The session gate. Config first, then the library; both deferred so
+       the DOM is ready when the script mounts. No valid code redirects to
+       index.html, because this page has no login form of its own. -->
+  <script src="portal-config.js" defer></script>
+  <script src="portal-access.js" defer></script>
+  <script src="portal-live.js"></script>
+  <script src="portal-chrome.js" defer></script>
+  <script src="portal-progress.js?v=20261015h" defer></script>
+<link rel="stylesheet" href="dashboard-ui.css?v=20261015h"/>
+<script src="dashboard-ui.js?v=20261015d" defer></script>
+<link rel="stylesheet" href="portal-ui.css?v=20261015"><script src="portal-ui.js?v=20261015f" defer></script></head>
+
+
+
+<body class="text-brand-deep font-sans min-h-screen flex flex-col selection:bg-brand-lime selection:text-brand-deep">
+
+  <!-- Noise Texture Overlay -->
+
+<a class="skip-link" href="#main-content">Skip to dashboard</a>
+  <!-- MOBILE MENU -->
+  <div id="mobile-menu-overlay" class="fixed inset-0 bg-brand-ink/25 z-[100] opacity-0 pointer-events-none transition-opacity duration-300 lg:hidden"></div>
+
+  <div id="mobile-menu" class="fixed top-0 left-0 bottom-0 w-[82%] max-w-[300px] bg-brand-page border-r border-brand-ink/10 z-[101] -translate-x-full transition-transform duration-300 ease-out flex flex-col lg:hidden" role="dialog" aria-modal="true" aria-label="Menu">
+    <div class="flex-1 overflow-y-auto p-5 pt-6 flex flex-col">
+      <a href="dashboard.html" class="flex items-baseline text-[20px] font-display font-bold tracking-tight text-brand-ink mb-8 px-1">
+        Time Rich<span class="text-brand-olive">.</span>
+      </a>
+      <nav class="space-y-1">
+        <a href="dashboard.html" aria-current="page" class="flex items-center gap-3 px-4 py-2.5 rounded-[14px] text-sm font-semibold bg-brand-deep text-brand-bg">
+          <svg class="w-4 h-4 shrink-0" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"></path></svg>
+          Dashboard
+        </a>
+        <a href="curriculum.html" class="flex items-center gap-3 px-4 py-2.5 rounded-[14px] text-sm font-medium text-brand-ink/70 hover:text-brand-ink hover:bg-brand-ink/5 transition-colors">
+          <svg class="w-4 h-4 text-brand-ink/50 shrink-0" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"></path></svg>
+          Curriculum
+        </a>
+        <a href="sessions.html" class="flex items-center gap-3 px-4 py-2.5 rounded-[14px] text-sm font-medium text-brand-ink/70 hover:text-brand-ink hover:bg-brand-ink/5 transition-colors">
+          <svg class="w-4 h-4 text-brand-ink/50 shrink-0" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z"></path></svg>
+          Live Sessions
+        </a>
+        <a href="resources.html" class="flex items-center gap-3 px-4 py-2.5 rounded-[14px] text-sm font-medium text-brand-ink/70 hover:text-brand-ink hover:bg-brand-ink/5 transition-colors">
+          <svg class="w-4 h-4 text-brand-ink/50 shrink-0" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"></path></svg>
+          Resources
+        </a>
+        <a href="prompts.html" class="flex items-center gap-3 px-4 py-2.5 rounded-[14px] text-sm font-medium text-brand-ink/70 hover:text-brand-ink hover:bg-brand-ink/5 transition-colors">
+          <svg class="w-4 h-4 text-brand-ink/50 shrink-0" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path></svg>
+          Prompts
+        </a>
+        <a href="members.html" data-portal-members-link hidden class="flex items-center gap-3 px-4 py-2.5 rounded-[14px] text-sm font-medium text-brand-ink/70 hover:text-brand-ink hover:bg-brand-ink/5 transition-colors">
+          <svg class="w-4 h-4 text-brand-ink/50 shrink-0" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"></path></svg>
+          Members
+        </a>
+      </nav>
+      <div class="mt-auto pt-8 border-t border-brand-ink/10">
+        <button type="button" data-portal-signout class="w-full text-left px-4 py-2.5 rounded-[14px] text-sm font-medium text-brand-ink/70 hover:text-brand-ink hover:bg-brand-ink/5 transition-colors">Sign out</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- TOP NAVBAR -->
+  <header id="top-nav" class="trp-header h-14 sm:h-16 flex items-center justify-between gap-3 px-4 sm:px-6 lg:px-10 shrink-0 sticky top-0 z-50">
+
+    <div class="flex items-center gap-2 shrink-0">
+      <button id="mobile-menu-btn" type="button" aria-expanded="false" aria-controls="mobile-menu" aria-label="Menu" class="lg:hidden flex items-center justify-center w-10 h-10 -ml-2 rounded-full text-brand-ink hover:bg-brand-ink/5 transition-colors">
+        <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5"></path></svg>
+      </button>
+
+      <a href="dashboard.html" class="flex items-baseline text-[18px] sm:text-[21px] font-display font-bold tracking-tight text-brand-ink whitespace-nowrap rounded focus:outline-none focus-visible:ring-2 focus-visible:ring-brand-ink/30">
+        Time Rich<span class="text-brand-olive">.</span>
+      </a>
+
+      <!-- Anchor sponsor. Hidden until 1280px: below that the centred nav
+           reaches too far left and the footer lockup is the only one. -->
+      <a class="trp-powered trp-powered-head hidden xl:inline-flex" href="https://x.getstanley.ai/r/mz4y9g" target="_blank" rel="noopener sponsored">
+        <span class="trp-powered-label">Powered by</span>
+        <img class="trp-powered-pos" src="../brand/partners/stanley-logo.png" alt="Stanley" width="765" height="203" loading="lazy" decoding="async"/>
+        <img class="trp-powered-rev" src="../brand/partners/stanley-logo-dark.png" alt="Stanley" width="765" height="203" loading="lazy" decoding="async"/>
+      </a>
+    </div>
+
+    <nav class="hidden lg:flex items-center gap-1 absolute left-1/2 -translate-x-1/2" aria-label="Portal">
+        <a href="dashboard.html" aria-current="page" class="px-3 py-1.5 rounded-full text-xs font-semibold bg-brand-deep text-brand-bg">Dashboard</a>
+        <a href="curriculum.html" class="px-3 py-1.5 rounded-full text-xs font-medium text-brand-ink/70 hover:text-brand-ink hover:bg-brand-ink/5 transition-colors">Curriculum</a>
+        <a href="sessions.html" class="px-3 py-1.5 rounded-full text-xs font-medium text-brand-ink/70 hover:text-brand-ink hover:bg-brand-ink/5 transition-colors">Live Sessions</a>
+        <a href="resources.html" class="px-3 py-1.5 rounded-full text-xs font-medium text-brand-ink/70 hover:text-brand-ink hover:bg-brand-ink/5 transition-colors">Resources</a>
+        <a href="prompts.html" class="px-3 py-1.5 rounded-full text-xs font-medium text-brand-ink/70 hover:text-brand-ink hover:bg-brand-ink/5 transition-colors">Prompts</a>
+        <a href="members.html" data-portal-members-link hidden class="px-3 py-1.5 rounded-full text-xs font-medium text-brand-ink/70 hover:text-brand-ink hover:bg-brand-ink/5 transition-colors">Members</a>
+    </nav>
+
+    <div class="flex items-center gap-2 sm:gap-4 shrink-0">
+      <!-- Filled in by portal-chrome.js, and only while a session is live or
+           about to start. Stays hidden the rest of the time. -->
+      <a data-portal-join hidden class="hidden lg:inline-flex items-center px-3.5 py-1.5 rounded-full bg-brand-ink text-brand-page text-[11px] font-mono font-medium tracking-[0.06em] whitespace-nowrap hover:bg-brand-ink/90 transition-colors"></a>
+
+      <div class="trp-theme">
+        <label class="sr-only" for="theme-dashboard">Theme</label>
+        <select id="theme-dashboard" data-theme-select>
+          <option value="system">System</option>
+          <option value="light">Light</option>
+          <option value="dark">Dark</option>
+        </select>
+        <svg class="trp-theme-caret" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7"></path></svg>
+      </div>
+
+      <span data-portal-name class="hidden sm:inline text-xs font-medium text-brand-ink/70 whitespace-nowrap"></span>
+
+      <button type="button" data-portal-signout class="hidden lg:inline-flex text-xs font-medium text-brand-ink/70 hover:text-brand-ink transition-colors">Sign out</button>
+    </div>
+  </header>
+
+<main id="main-content" class="dashboard-main">
+  <div class="dashboard-intro hero-with-video">
+    <div class="hero-copy"><h1 class="accelerator-title">Superhuman Accelerator</h1>
+    <p class="intro-note">Welcome back<span data-portal-name-wrap hidden>, <span data-portal-name></span></span>. Your next live session is below, with everything else you have open.</p>
+    <a href="curriculum.html" class="outline-link">Resume Curriculum <svg class="ui-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14m-6-6 6 6-6 6"/></svg></a></div>
+    <div id="magnet-area" class="relative flex-none w-full md:w-[28rem] flex items-center justify-center z-10 cursor-pointer lg:ml-auto mt-8 lg:mt-0" style="perspective: 1000px;">
+              <!-- Floating Glass Panel -->
+              <div class="z-10 relative w-full flex items-center justify-center pointer-events-none">
+                <div id="magnet-card" class="group relative w-full max-w-[24rem] sm:max-w-[26rem] aspect-video bg-brand-surface/40 border border-brand-surface/60 rounded-[14px] flex flex-col overflow-hidden pointer-events-auto" style="transition: transform 0.15s ease;">
+                  <video preload="none" id="promo-video" loop muted playsinline poster="../accelerator/accelerator-promo-poster.jpg" class="absolute inset-0 w-full h-full object-contain opacity-100 z-0">
+    <source src="assets/accelerator-promo.mp4" type="video/mp4">
+    </video>
+    
+    
+    <div class="absolute inset-0 z-[9999] flex items-center justify-center pointer-events-none" style="transform: translateZ(10px);">
+    <button id="promo-play-btn" class="w-12 h-12 rounded-full bg-black/50 hover:bg-black/70 text-brand-bg flex items-center justify-center transition-all hover:scale-110 cursor-pointer pointer-events-auto" aria-label="Toggle Play">
+    <svg id="icon-play" class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z" /></svg>
+    <svg id="icon-pause" class="w-6 h-6 hidden" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M10 9v6m4-6v6" /></svg>
+    </button>
+    </div>
+  <!-- Video Controls -->
+    <div class="absolute bottom-6 left-6 z-[9999] flex gap-2" style="transform: translateZ(10px);">
+    <button id="promo-mute-btn" class="w-8 h-8 rounded-full bg-black/50 hover:bg-black/70 text-brand-bg flex items-center justify-center transition-all hover:scale-110 cursor-pointer pointer-events-auto" aria-label="Toggle Mute">
+    <svg id="icon-muted" class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M5.586 15H4a1 1 0 01-1-1v-4a1 1 0 011-1h1.586l4.707-4.707C10.923 3.663 12 4.109 12 5v14c0 .891-1.077 1.337-1.707.707L5.586 15z" /><path stroke-linecap="round" stroke-linejoin="round" d="M17 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2" /></svg>
+    <svg id="icon-unmuted" class="w-4 h-4 hidden" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M15.536 8.464a5 5 0 010 7.072m2.828-9.9a9 9 0 010 12.728M5.586 15H4a1 1 0 01-1-1v-4a1 1 0 011-1h1.586l4.707-4.707C10.923 3.663 12 4.109 12 5v14c0 .891-1.077 1.337-1.707.707L5.586 15z" /></svg>
+    </button>
+    </div>
+
+<!-- Video Controls -->
+
+    <!-- Clean video card without text/lines -->
+                </div>
+                  
+              </div>
+            </div>
+          
+  </div>
+  <div class="focus-grid">
+    <section class="learning-card" aria-label="Your learning and progress">
+      <div data-dash-week hidden></div>
+      <div data-portal-progress hidden></div>
+    </section>
+    <aside class="session-card" aria-label="Your next live session">
+      <div class="session-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4"><rect x="3" y="5" width="18" height="16" rx="3"/><path d="M7 3v4m10-4v4M3 11h18m-13 5h3m2 0h3"/></svg></div>
+      <div data-dash-next hidden></div>
+      <a class="all-sessions" href="sessions.html">All sessions &amp; recordings <svg class="ui-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14m-6-6 6 6-6 6"/></svg></a>
+    </aside>
+  </div>
+  <nav class="shortcuts" aria-label="Portal shortcuts">
+    <a href="curriculum.html"><span class="shortcut-icon" aria-hidden="true">01</span><h2>Curriculum</h2><span class="arrow"><svg class="ui-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14m-6-6 6 6-6 6"/></svg></span></a>
+    <a href="resources.html"><span class="shortcut-icon" aria-hidden="true">02</span><h2>Resources</h2><span class="arrow"><svg class="ui-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14m-6-6 6 6-6 6"/></svg></span></a>
+    <a href="prompts.html"><span class="shortcut-icon" aria-hidden="true">03</span><h2>Prompts</h2><span class="arrow"><svg class="ui-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14m-6-6 6 6-6 6"/></svg></span></a>
+  </nav>
+  <div class="support-grid setup-only"><section class="glass-card is-static trp-connect" aria-labelledby="connect-heading">
+            <p class="trp-tag">Setup</p>
+            <h2 id="connect-heading" class="trp-connect-title">Connect your Notion to your AI</h2>
+            <p class="trp-connect-lede">Point your AI at your own pages once, and it stops guessing. Pick the tool you use.</p>
+
+            <details class="trp-acc">
+              <summary class="trp-acc-head">
+                <span class="trp-acc-title">In Claude</span>
+                <svg class="trp-acc-caret" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7"></path></svg>
+              </summary>
+              <div class="trp-acc-body">
+                <ol class="trp-acc-steps">
+                  <li>Open your Business Hub project.</li>
+                  <li>Go to Context.</li>
+                  <li>Choose Add, then Notion.</li>
+                  <li>Search for each page, or paste its link.</li>
+                  <li>Add it.</li>
+                </ol>
+                <!-- The file itself is cropped to the Context dialog. Nothing
+                     here hides any part of it. -->
+                <figure class="trp-acc-figure" data-shot>
+                  <img src="img/claude-notion-context.png"
+                       alt="The Context dialog in Claude, with Notion pages being added."
+                       loading="lazy" decoding="async"
+                       onerror="this.closest('[data-shot]').hidden = true"/>
+                </figure>
+              </div>
+            </details>
+
+            <details class="trp-acc">
+              <summary class="trp-acc-head">
+                <span class="trp-acc-title">In Grok Bot</span>
+                <svg class="trp-acc-caret" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7"></path></svg>
+              </summary>
+              <div class="trp-acc-body">
+                <ol class="trp-acc-steps">
+                  <li>Open Grok Bot.</li>
+                  <li>Paste the prompt below, with your own page links in place of the brackets.</li>
+                  <li>Check it confirms it can open all 8.</li>
+                </ol>
+
+                <div class="trp-copybox">
+                  <div class="trp-copybox-head">
+                    <span class="trp-tag">The prompt</span>
+                    <button type="button" class="trp-copy" data-copy-target="grok-prompt">Copy</button>
+                  </div>
+                  <pre id="grok-prompt" class="trp-copybox-text">Save this as standing context. Read these Notion pages live before any task. They are the source of truth:
+1. Business COMPASS: [paste your link]
+2. Content Hub: [paste your link]
+3. Content Library: [paste your link]
+4. Content Strategy: [paste your link]
+5. Ideas + Story Bank: [paste your link]
+6. Distribution Channels: [paste your link]
+7. Marketing Avenues: [paste your link]
+8. Customer insights: [paste your link]
+Confirm you can open all 8.</pre>
+                </div>
+
+                <figure class="trp-acc-figure" data-shot>
+                  <img src="img/grok-standing-context.png"
+                       alt="Grok Bot confirming it can open all eight Notion pages."
+                       loading="lazy" decoding="async"
+                       onerror="this.closest('[data-shot]').hidden = true"/>
+                </figure>
+              </div>
+            </details>
+
+            <details class="trp-acc">
+              <summary class="trp-acc-head">
+                <span class="trp-acc-title">In ChatGPT</span>
+                <svg class="trp-acc-caret" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7"></path></svg>
+              </summary>
+              <div class="trp-acc-body">
+                <ol class="trp-acc-steps">
+                  <li>Open Settings from your profile picture, then Apps &amp; connectors.</li>
+                  <li>Find Notion and choose Connect.</li>
+                  <li>Sign in to Notion and tick the pages you want ChatGPT to read.</li>
+                  <li>Back in Apps &amp; connectors, turn the Sync toggle on. Without it, ChatGPT will not search your pages.</li>
+                  <li>Open your project, choose the three dots, then Project settings, and put your standing instructions there.</li>
+                </ol>
+                <p class="trp-acc-note">Connectors need a paid ChatGPT plan. Skills and scheduled agents still run in Claude.</p>
+                <!-- Remove the hidden attribute once img/chatgpt-notion-connector.png
+                     is in place. The onerror below hides it again if the file goes
+                     missing later. -->
+                <figure class="trp-acc-figure" data-shot hidden>
+                  <img src="img/chatgpt-notion-connector.png"
+                       alt="The Apps and connectors screen in ChatGPT, with Notion connected and Sync on."
+                       loading="lazy" decoding="async"
+                       onerror="this.closest('[data-shot]').hidden = true"/>
+                </figure>
+              </div>
+            </details>
+
+            <p class="trp-connect-note">Use the links from your own duplicated workbook, not ours.</p>
+          </section></div>
+</main>
+  <footer class="shrink-0 px-4 sm:px-6 lg:px-10 py-5 border-t border-brand-ink/10 text-[11px] text-brand-ink/70">
+    <p class="flex flex-wrap items-center justify-center gap-x-2 gap-y-1 text-center">
+      <span>Need help? <a href="mailto:emc@timerich.ai" class="hover:text-brand-ink transition-colors">emc@timerich.ai</a></span>
+      <span aria-hidden="true" class="text-brand-ink/70">&middot;</span>
+      <!-- Href comes from the week 0 link item; hidden when there is none. -->
+      <a data-portal-community hidden class="hover:text-brand-ink transition-colors">WhatsApp community</a>
+      <span data-portal-community hidden aria-hidden="true" class="text-brand-ink/70">&middot;</span>
+      <a href="/privacy/" class="hover:text-brand-ink transition-colors">Privacy</a>
+      <span aria-hidden="true" class="text-brand-ink/70">&middot;</span>
+      <a href="/terms/" class="hover:text-brand-ink transition-colors">Terms</a>
+      <span aria-hidden="true" class="text-brand-ink/70">&middot;</span>
+      <span>&copy; 2026 Time Rich</span>
+    </p>
+    <!-- Anchor sponsor. Every page inside carries it here; the header shows it
+         too from 1280px up, where there is room beside the wordmark. -->
+    <p class="mt-3 flex justify-center">
+      <a class="trp-powered" href="https://x.getstanley.ai/r/mz4y9g" target="_blank" rel="noopener sponsored">
+        <span class="trp-powered-label">Powered by</span>
+        <img class="trp-powered-pos" src="../brand/partners/stanley-logo.png" alt="Stanley" width="765" height="203" loading="lazy" decoding="async"/>
+        <img class="trp-powered-rev" src="../brand/partners/stanley-logo-dark.png" alt="Stanley" width="765" height="203" loading="lazy" decoding="async"/>
+      </a>
+    </p>
+  </footer>
+
+  <script>
+    document.addEventListener("DOMContentLoaded", () => {
+      // 3. Video Controls
+      const video = document.getElementById('promo-video');
+      const playBtn = document.getElementById('promo-play-btn');
+      const muteBtn = document.getElementById('promo-mute-btn');
+      
+      const iconPlay = document.getElementById('icon-play');
+      const iconPause = document.getElementById('icon-pause');
+      const iconMuted = document.getElementById('icon-muted');
+      const iconUnmuted = document.getElementById('icon-unmuted');
+
+      if(playBtn && video) {
+        playBtn.addEventListener('click', (e) => {
+          e.stopPropagation();
+          if (video.paused) {
+            video.play();
+            iconPlay.classList.add('hidden');
+            iconPause.classList.remove('hidden');
+          } else {
+            video.pause();
+            iconPause.classList.add('hidden');
+            iconPlay.classList.remove('hidden');
+          }
+        });
+      }
+
+      if(muteBtn && video) {
+        muteBtn.addEventListener('click', (e) => {
+          e.stopPropagation();
+          if (video.muted) {
+            video.muted = false;
+            iconMuted.classList.add('hidden');
+            iconUnmuted.classList.remove('hidden');
+          } else {
+            video.muted = true;
+            iconUnmuted.classList.add('hidden');
+            iconMuted.classList.remove('hidden');
+          }
+        });
+      }
+    });
+  </script>
+
+  <script>
+    // === SMOOTH PAGE TRANSITIONS ===
+    // Internal .html links fade the page out before navigating. The fade is
+    // decoration; the navigation is the job, so every path below ends in a
+    // navigation even when the animation never runs or is cut short.
+    (function () {
+      var FADE_MS = 150;
+
+      var reduced = false;
+      try {
+        reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+      } catch (e) { /* no matchMedia: treat as no preference */ }
+
+      // Coming back via the Back button can restore this page from the bfcache
+      // with the fade still applied, which shows a blank screen.
+      //
+      // Only this script's own fade is undone. Every portal page sets its own
+      // entrance transform inline on <body>, so clearing that unconditionally
+      // would kill the page's open animation on a normal load.
+      var LEAVING = 'data-trp-leaving';
+      window.addEventListener('pageshow', function () {
+        if (!document.body.hasAttribute(LEAVING)) return;
+        document.body.removeAttribute(LEAVING);
+        document.body.style.opacity = '';
+        document.body.style.transform = '';
+      });
+
+      document.addEventListener('DOMContentLoaded', function () {
+        document.querySelectorAll('a[href]').forEach(function (link) {
+          var href = link.getAttribute('href');
+          if (!href) return;
+          if (href.indexOf('http') === 0 || href.charAt(0) === '#' || href.indexOf('mailto') === 0) return;
+          if (href.slice(-5) !== '.html') return;
+          // A link meant for another tab keeps its default behaviour.
+          if (link.target && link.target !== '_self') return;
+
+          link.addEventListener('click', function (e) {
+            // Cmd/Ctrl/Shift/Alt click and middle click open a new tab.
+            // Hijacking those would quietly break them.
+            if (e.button !== 0 || e.metaKey || e.ctrlKey || e.shiftKey || e.altKey) return;
+
+            e.preventDefault();
+
+            // Anyone who asked for less motion simply goes.
+            if (reduced) { window.location.href = href; return; }
+
+            var done = false;
+            function go() {
+              if (done) return;
+              done = true;
+              window.location.href = href;
+            }
+
+            try {
+              document.body.setAttribute(LEAVING, '');
+              document.body.style.opacity = '0';
+              document.body.style.transform = 'scale(0.98)';
+              // Whichever comes first wins.
+              document.body.addEventListener('transitionend', go, { once: true });
+            } catch (err) {
+              go();                 // styling failed, so just navigate
+              return;
+            }
+
+            setTimeout(go, FADE_MS);
+            // A short backstop: transitionend does not fire in a backgrounded
+            // tab, and a click must never end on a page left faded out.
+            setTimeout(go, FADE_MS + 250);
+          });
+        });
+      });
+    })();
+  </script>
+
+
+
+  <script>
+    /* Dashboard, drawn from portal_get. Every block hides itself when the
+       data it needs is not there, so a member never meets a placeholder. */
+    (function () {
+      var L = window.TRLive;
+      if (!L) return;
+
+      var CARD_H3 = 'text-2xl font-bold text-brand-deep mb-3';
+      var EYEBROW = 'text-[10px] font-mono tracking-[0.2em] uppercase text-brand-deep/80 font-bold';
+      var META    = 'text-sm text-brand-mid font-medium';
+      var BODY    = 'text-sm text-brand-mid leading-relaxed';
+      var BTN     = 'inline-flex items-center justify-center gap-2 px-5 py-2.5 rounded-full text-xs font-bold ' +
+                    'bg-brand-deep text-brand-bg hover:bg-brand-green transition-colors';
+      var BTN2    = 'inline-flex items-center justify-center gap-2 px-5 py-2.5 rounded-full text-xs font-semibold ' +
+                    'bg-brand-sagelt/60 text-brand-deep hover:bg-brand-sagelt transition-colors';
+
+      function renderNext(root, data) {
+        L.clear(root);
+        var next = L.nextSession(data);
+
+        if (next) {
+          root.appendChild(L.el('div', EYEBROW, 'Next session'));
+          root.appendChild(L.el('h3', CARD_H3, L.str(next.title) || 'Session'));
+          var when = L.etDateTime(next.starts_at);
+          if (when) root.appendChild(L.el('p', META, when));
+
+          var actions = L.el('div', 'flex flex-wrap gap-3 mt-auto pt-6');
+          var join = L.linkTo(next.join_url, 'Join via Zoom', BTN);
+          if (join) actions.appendChild(join);
+          // One link to the session's Add Event page, left out entirely
+          // when the session has no addevent_url.
+          var cal = L.calendarLink(next, 'Add to calendar', BTN2);
+          if (cal) actions.appendChild(cal);
+          if (actions.childNodes.length) root.appendChild(actions);
+
+          L.show(root, true);
+          return;
+        }
+
+        // Past the last session: offer the most recent recording instead.
+        var rec = L.latestRecording(data);
+        if (rec) {
+          root.appendChild(L.el('div', EYEBROW, 'Latest recording'));
+          root.appendChild(L.el('h3', CARD_H3, L.str(rec.title) || 'Session'));
+          var recWhen = L.etDateTime(rec.starts_at);
+          if (recWhen) root.appendChild(L.el('p', META, recWhen));
+          var watch = L.linkTo(rec.recording_url, 'Watch recording', BTN);
+          if (watch) {
+            var box = L.el('div', 'mt-auto pt-6');
+            box.appendChild(watch);
+            root.appendChild(box);
+          }
+          L.show(root, true);
+          return;
+        }
+
+        L.show(root, false);
+      }
+
+      function renderWeek(root, data) {
+        L.clear(root);
+        var week = L.latestUnlockedWeek(data);
+        if (!week) { L.show(root, false); return; }
+
+        root.appendChild(L.el('div', EYEBROW, 'This week'));
+        root.appendChild(L.el('h3', CARD_H3, L.str(week.title) || 'This week'));
+        if (L.str(week.summary)) root.appendChild(L.el('p', BODY, L.str(week.summary)));
+
+        var first = L.items(week).slice(0, 3);
+        if (first.length) {
+          var list = L.el('ul', 'mt-5 space-y-2');
+          first.forEach(function (item) {
+            var li = L.el('li', 'text-sm text-brand-mid flex gap-2');
+            li.appendChild(L.el('span', 'text-brand-deep/40', '·'));
+            li.appendChild(L.el('span', '', L.str(item.title) || 'Untitled'));
+            list.appendChild(li);
+          });
+          root.appendChild(list);
+        }
+
+        var go = L.el('a', BTN2 + ' mt-auto self-start', 'Open curriculum');
+        go.href = 'curriculum.html';
+        var wrap = L.el('div', 'mt-auto pt-6');
+        wrap.appendChild(go);
+        root.appendChild(wrap);
+
+        L.show(root, true);
+      }
+
+
+      document.addEventListener('trportal:data', function (event) {
+        var data = event && event.detail;
+        if (!data) return;
+
+        var nameWrap = document.querySelector('[data-portal-name-wrap]');
+        var name = document.querySelector('[data-portal-name]');
+        L.show(nameWrap, Boolean(name && L.str(name.textContent)));
+
+        var next = document.querySelector('[data-dash-next]');
+        var week = document.querySelector('[data-dash-week]');
+        if (next) renderNext(next, data);
+        if (week) renderWeek(week, data);
+      });
+    })();
+  </script>
+
+  <script>
+    // Copy the standing-context prompt. Falls back to a selection when the
+    // clipboard API is not there, so the button is never a dead end.
+    (function () {
+      var buttons = document.querySelectorAll('[data-copy-target]');
+      if (!buttons.length) return;
+
+      Array.prototype.forEach.call(buttons, function (btn) {
+        var idle = btn.textContent;
+        var timer = null;
+
+        function say(word) {
+          btn.textContent = word;
+          if (timer) window.clearTimeout(timer);
+          timer = window.setTimeout(function () { btn.textContent = idle; }, 1600);
+        }
+
+        btn.addEventListener('click', function () {
+          var source = document.getElementById(btn.getAttribute('data-copy-target'));
+          if (!source) return;
+          var text = source.textContent;
+
+          if (navigator.clipboard && navigator.clipboard.writeText) {
+            navigator.clipboard.writeText(text).then(function () { say('Copied'); },
+                                                     function () { select(source); say('Press Ctrl+C'); });
+            return;
+          }
+          select(source);
+          say('Press Ctrl+C');
+        });
+      });
+
+      function select(node) {
+        try {
+          var range = document.createRange();
+          range.selectNodeContents(node);
+          var sel = window.getSelection();
+          sel.removeAllRanges();
+          sel.addRange(range);
+        } catch (e) { /* nothing more we can do */ }
+      }
+    })();
+  </script>
+
+  <script>
+    // Keeps every theme control on the page in step with what was stored,
+    // and writes the choice back. The attribute itself is set in <head>.
+    (function () {
+      var KEY = 'tr_portal_theme';
+      var selects = document.querySelectorAll('[data-theme-select]');
+      if (!selects.length) return;
+
+      var current = document.documentElement.getAttribute('data-theme') || 'system';
+      Array.prototype.forEach.call(selects, function (sel) {
+        sel.value = current;
+        sel.addEventListener('change', function () {
+          var value = sel.value === 'light' || sel.value === 'dark' ? sel.value : 'system';
+          document.documentElement.setAttribute('data-theme', value);
+          try { window.localStorage.setItem(KEY, value); } catch (e) { /* choice lasts the session */ }
+          // any other control on the page follows
+          Array.prototype.forEach.call(selects, function (other) { other.value = value; });
+        });
+      });
+    })();
+  </script>
+
+</body>
+</html>
+
+
