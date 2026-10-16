@@ -10,19 +10,20 @@
 <script src="/js/affiliate.js"></script>
 <noscript><img height="1" width="1" style="display:none" alt=""
   src="https://www.facebook.com/tr?id=1790181495468842&amp;ev=PageView&amp;noscript=1" /></noscript>
-<title>Apply for the Super Human Accelerator</title>
-<meta name="description" content="Apply for the Super Human Accelerator. Eight questions, about three minutes. At the end you'll save your spot on the onboarding session." />
+<title>Apply for the AI Superhuman Accelerator</title>
+<meta name="description" content="Apply for the AI Superhuman Accelerator. Eight questions, about three minutes. At the end you'll save your spot on the onboarding session." />
 <link rel="canonical" href="https://timerich.ai/sh-apply/" />
 <meta name="robots" content="index, follow, max-image-preview:large" />
 <meta name="theme-color" content="#FFFCEB" />
-<meta property="og:title" content="Apply for the Super Human Accelerator" />
+<meta property="og:title" content="Apply for the AI Superhuman Accelerator" />
 <meta property="og:description" content="Eight questions, about three minutes. At the end you'll save your spot on the onboarding session." />
 <meta property="og:url" content="https://timerich.ai/sh-apply/" />
 <meta property="og:type" content="website" />
-<meta property="og:image" content="https://timerich.ai/og-time-rich.png" />
-<meta property="og:image:width" content="1200" />
-<meta property="og:image:height" content="630" />
-<meta name="twitter:image" content="https://timerich.ai/og-time-rich.png" />
+<meta property="og:image" content="https://timerich.ai/sh-apply/accelerator-banner.png" />
+<meta property="og:image:width" content="1812" />
+<meta property="og:image:height" content="930" />
+<meta property="og:image:alt" content="AI Superhuman Accelerator speakers, sponsored by Stanley and Wispr Flow." />
+<meta name="twitter:image" content="https://timerich.ai/sh-apply/accelerator-banner.png" />
 <meta name="twitter:card" content="summary_large_image" />
 
 <link rel="stylesheet" href="/sh-apply/fonts.css" />
@@ -51,7 +52,7 @@
 }
 
 /* =========================================================================
-   Super Human Accelerator application - same visual system as /accelerator/
+   AI Superhuman Accelerator application - same visual system as /accelerator/
    (cream ground, deep green ink, lime pop; Space Grotesk display, Inter body)
    ========================================================================= */
 :root{
@@ -97,7 +98,13 @@ a{color:inherit}
 .sr-only{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap;border:0}
 
 /* ---------- HEADER + PROGRESS ---------- */
-.topbar{border-bottom:1px solid var(--line);background:rgba(255,252,235,.94);-webkit-backdrop-filter:blur(10px);backdrop-filter:blur(10px);position:sticky;top:0;z-index:20}
+/* Solid, not 94% + a blur. The bar is sticky, so the intro banner scrolls
+   underneath it; at 94% the banner's lavender came through and the blur
+   smeared it into a visible band across the bar. Against the old plain cream
+   page nothing showed, which is why it only turned up once the banner landed.
+   An opaque background also makes the backdrop-filter a no-op, so it goes:
+   one less compositing layer on a phone. */
+.topbar{border-bottom:1px solid var(--line);background:var(--bg);position:sticky;top:0;z-index:20}
 .topbar-inner{display:flex;align-items:center;justify-content:space-between;gap:16px;height:58px}
 .brand-word{font-family:var(--display);font-weight:700;letter-spacing:-.02em;font-size:18px;color:var(--text);text-decoration:none;line-height:1}
 .brand-word .wm-dot{color:var(--lime)}
@@ -235,6 +242,40 @@ main{flex:1 0 auto;padding:38px 0 96px}
 .intro .lead{font-size:18px;color:var(--muted);margin-top:16px;max-width:34em}
 .intro .micro{margin-top:26px;font-family:var(--mono);font-size:12.5px;letter-spacing:.02em;color:var(--dim)}
 
+/* ---------- INTRO BANNER ---------- */
+/* Full width of the content column, the page's own corner radius. The
+   width/height attributes carry the real 1812x930, so the space is reserved
+   before the file lands and nothing below it jumps. */
+.intro-banner{display:block;width:100%;height:auto;border-radius:12px;margin-bottom:24px;
+  background:var(--panel2)}
+
+/* ---------- INTRO OVERVIEW ---------- */
+/* Two plain <details>. The browser owns the open and close, the keyboard and
+   the screen-reader announcement; everything here is only the look. Closed by
+   default, so the intro still reads as one short page. */
+.ov{margin-top:26px;display:grid;gap:10px}
+.ov details{border:1px solid var(--line-2);border-radius:10px;background:var(--cream)}
+.ov summary{display:flex;align-items:center;justify-content:space-between;gap:12px;
+  padding:15px 16px;cursor:pointer;list-style:none;
+  font-family:var(--display);font-weight:700;font-size:16.5px;color:var(--green-deep)}
+.ov summary::-webkit-details-marker{display:none}
+.ov summary:hover{background:var(--panel2);border-radius:9px}
+.ov details[open] summary{border-radius:9px 9px 0 0}
+/* The chevron is drawn from two borders rather than shipped as an icon. */
+.ov summary .chev{flex:0 0 auto;width:9px;height:9px;margin-right:5px;
+  border-right:2px solid var(--dim);border-bottom:2px solid var(--dim);
+  transform:rotate(45deg) translateY(-2px);transition:transform .15s ease}
+.ov details[open] summary .chev{transform:rotate(-135deg) translateY(1px)}
+.ov-body{padding:0 16px 16px}
+.ov-lede{font-size:15.5px;line-height:1.5;color:var(--muted);margin-bottom:12px}
+.ov-lede b{color:var(--text);font-weight:600}
+.ov ul{list-style:none;margin:0;padding:0;display:grid;gap:11px}
+.ov li{font-size:15.5px;line-height:1.5;color:var(--muted);padding-left:18px;position:relative}
+.ov li::before{content:"";position:absolute;left:0;top:9px;width:6px;height:6px;
+  border-radius:50%;background:var(--lime)}
+.ov li b{color:var(--text);font-weight:600}
+@media (prefers-reduced-motion:reduce){ .ov summary .chev{transition:none} }
+
 /* ---------- SUBMIT SCREEN ---------- */
 .summary{margin-top:22px;border:1px solid var(--line);border-radius:12px;background:var(--panel2);padding:18px 20px}
 .summary dl{display:grid;grid-template-columns:auto 1fr;gap:9px 18px;font-size:15px;margin:0}
@@ -280,13 +321,38 @@ main{flex:1 0 auto;padding:38px 0 96px}
 
       <!-- ================= INTRO ================= -->
       <section class="screen intro" id="s-intro" data-screen="intro">
-        <span class="q-eyebrow">Super Human Accelerator</span>
-        <h1 tabindex="-1" id="introHead">Apply for the Super Human Accelerator</h1>
+        <!-- Carries the seven speakers and both sponsor logos, which is why
+             there is no separate speakers strip or logo row below. -->
+        <img class="intro-banner" src="/sh-apply/accelerator-banner.png" width="1812" height="930" decoding="async"
+             alt="AI Superhuman Accelerator speakers: Cien Solon, Taylor Offer, AJ Yadav, Terry Rice, Ella Cook, Matyas Kolsofszki and ViKa Victoria. Sponsored by Stanley and Wispr Flow." />
+        <span class="q-eyebrow">AI Superhuman Accelerator</span>
+        <h1 tabindex="-1" id="introHead">Apply for the AI Superhuman Accelerator</h1>
         <p class="lead">Grateful you're taking this step toward building a system that scales in the new world. Take your time with your answers.</p>
+
+        <!-- Ella's wording, verbatim. One dropdown, closed by default, so
+             anyone who already knows can go straight to the button. The
+             browser owns the open and close, the keyboard and the
+             screen-reader announcement. -->
+        <div class="ov">
+          <details>
+            <summary>Who it's for and what you get<span class="chev" aria-hidden="true"></span></summary>
+            <div class="ov-body">
+              <p class="ov-lede"><b>Who it's for:</b> ambitious founders &amp; SMBs scaling their revenue and visibility.</p>
+              <p class="ov-lede"><b>What you get:</b></p>
+              <ul>
+                <li>Live sessions on Mondays and Fridays at 12pm ET, starting October 26th</li>
+                <li>Build sessions with people who've done it: an a16z-backed founder whose first company passed $50M</li>
+                <li>Hot seat coaching on your actual business</li>
+                <li>One part of your business (sales, content or ops) running on AI</li>
+              </ul>
+            </div>
+          </details>
+        </div>
+
         <div class="q-actions">
           <button type="button" class="btn" id="startBtn">Start my application</button>
         </div>
-        <p class="micro" id="resumeNote" hidden>You have an application in progress &mdash; starting picks up where you left off.</p>
+        <p class="micro" id="resumeNote" hidden>You have an application in progress. Starting picks up where you left off.</p>
       </section>
 
       <!-- ================= Q1 - FIRST NAME ================= -->
@@ -322,7 +388,7 @@ main{flex:1 0 auto;padding:38px 0 96px}
       <section class="screen" id="s-3" data-step="3" data-key="phone" hidden>
         <span class="q-eyebrow">Question 3</span>
         <h2 class="q-title" id="h-3" tabindex="-1"><label for="f-phone">Phone number</label></h2>
-        <p class="q-help" id="help-3">Include your country and area code &mdash; we'll text you your call reminder.</p>
+        <p class="q-help" id="help-3">Include your country and area code. We'll text you your call reminder.</p>
         <div class="q-field">
           <input type="tel" id="f-phone" name="phone" autocomplete="tel" inputmode="tel" enterkeyhint="next" aria-describedby="help-3 e-3" />
           <span class="q-error" id="e-3" aria-live="polite"></span>
@@ -423,7 +489,7 @@ main{flex:1 0 auto;padding:38px 0 96px}
       <section class="screen" id="s-8b" data-step="8" data-key="coaching_focus" data-substep hidden>
         <span class="q-eyebrow">Question 8, continued</span>
         <h2 class="q-title" id="h-8b" tabindex="-1"><label for="f-coaching_focus">What would you want to work through with her?</label></h2>
-        <p class="q-help" id="help-8b">Optional &mdash; a line is plenty.</p>
+        <p class="q-help" id="help-8b">Optional. A line is plenty.</p>
         <div class="q-field">
           <textarea id="f-coaching_focus" name="coaching_focus" rows="3" enterkeyhint="enter" aria-describedby="help-8b e-8b"></textarea>
           <span class="q-error" id="e-8b" aria-live="polite"></span>
@@ -432,6 +498,25 @@ main{flex:1 0 auto;padding:38px 0 96px}
           <button type="button" class="btn" data-next>Continue</button>
           <button type="button" class="btn ghost btn-back" data-back>Back</button>
           <span class="hint">Cmd + Enter</span>
+        </div>
+      </section>
+
+      <!-- ================= REFERRAL ================= -->
+      <!-- Optional, and the last thing asked before the summary. data-step
+           stays 8 for the same reason s-8b and the submit screen do: the bar
+           counts the eight questions, and this is not a ninth one. -->
+      <section class="screen" id="s-ref" data-step="8" data-key="referred_by" hidden>
+        <span class="q-eyebrow">One last thing</span>
+        <h2 class="q-title" id="h-ref" tabindex="-1"><label for="f-referred_by">Who referred you?</label></h2>
+        <p class="q-help" id="help-ref">Optional. So we can thank them.</p>
+        <div class="q-field">
+          <input type="text" id="f-referred_by" name="referred_by" autocomplete="off" inputmode="text" autocapitalize="words" enterkeyhint="next" placeholder="Name, or leave blank" aria-describedby="help-ref e-ref" />
+          <span class="q-error" id="e-ref" aria-live="polite"></span>
+        </div>
+        <div class="q-actions">
+          <button type="button" class="btn" data-next>Continue</button>
+          <button type="button" class="btn ghost btn-back" data-back>Back</button>
+          <span class="hint">Press Enter</span>
         </div>
       </section>
 
@@ -453,7 +538,7 @@ main{flex:1 0 auto;padding:38px 0 96px}
 
 <footer class="foot">
   <div class="wrap">
-    &copy; 2026 Time Rich &middot; <a href="/privacy">Privacy</a> &middot; <a href="/terms">Terms</a> &middot; <a href="/accelerator/">Superhuman Accelerator</a>
+    &copy; 2026 Time Rich &middot; <a href="/privacy">Privacy</a> &middot; <a href="/terms">Terms</a> &middot; <a href="/accelerator/">AI Superhuman Accelerator</a>
   </div>
 </footer>
 
@@ -475,7 +560,7 @@ main{flex:1 0 auto;padding:38px 0 96px}
   var THANKS_URL    = '/sh-apply/thanks/';
   var SELECT_DELAY  = 250;                // ms - lets the selection register visually
   var MIN_OUTCOME   = 15;
-  var OPTIONAL_KEYS = ['linkedin', 'coaching_focus'];   // may be left blank
+  var OPTIONAL_KEYS = ['linkedin', 'coaching_focus', 'referred_by'];   // may be left blank
 
   var form     = document.getElementById('applyForm');
   var progress = document.getElementById('progress');
@@ -828,7 +913,7 @@ main{flex:1 0 auto;padding:38px 0 96px}
     }
     if (key === 'email') {
       if (!raw) return 'Please add your email.';
-      if (!/^[^@\s]+@[^@\s]+\.[^@\s]{2,}$/.test(raw)) return 'That email doesn’t look right — check it over?';
+      if (!/^[^@\s]+@[^@\s]+\.[^@\s]{2,}$/.test(raw)) return 'That email doesn’t look right. Check it over?';
       return '';
     }
     if (key === 'phone') {
@@ -839,7 +924,7 @@ main{flex:1 0 auto;padding:38px 0 96px}
       }
       // Fallback when the intl-tel-input CDN is blocked: require full E.164.
       if (!/^\+[1-9]\d{7,14}$/.test(raw.replace(/[\s()\-.]/g, ''))) {
-        return 'Include your country code, starting with + — e.g. +353871234567.';
+        return 'Include your country code, starting with a plus, for example +353871234567.';
       }
       return '';
     }
@@ -847,8 +932,8 @@ main{flex:1 0 auto;padding:38px 0 96px}
       if (!raw) return '';                      // optional - an empty answer advances
       var url = normaliseUrl(raw);
       var host;
-      try{ host = new URL(url).hostname.toLowerCase(); }catch(e){ return 'That doesn’t look like a link — check it over?'; }
-      if (!/\./.test(host)) return 'That doesn’t look like a link — check it over?';
+      try{ host = new URL(url).hostname.toLowerCase(); }catch(e){ return 'That doesn’t look like a link. Check it over?'; }
+      if (!/\./.test(host)) return 'That doesn’t look like a link. Check it over?';
       if (!linkedinSwapped) {
         if (!/(^|\.)linkedin\.com$/.test(host)) {
           return 'That’s not a LinkedIn link. Paste your profile, or tap “I don’t use LinkedIn”.';
@@ -860,18 +945,19 @@ main{flex:1 0 auto;padding:38px 0 96px}
       return '';
     }
     if (key === 'business') {
-      if (!raw) return 'One line is all we need — what does the business do?';
-      if (raw.length > 140) return 'Keep it to 140 characters — the constraint is the point.';
+      if (!raw) return 'One line is all we need. What does the business do?';
+      if (raw.length > 140) return 'Keep it to 140 characters. The constraint is the point.';
       return '';
     }
-    if (key === 'department') return raw.length ? '' : 'Pick at least one — you can choose more than one.';
+    if (key === 'department') return raw.length ? '' : 'Pick at least one. You can choose more than one.';
     if (key === 'outcome') {
       if (!raw) return 'Tell Ella what you actually want out of this.';
-      if (raw.length < MIN_OUTCOME) return 'A little more detail — at least a sentence.';
+      if (raw.length < MIN_OUTCOME) return 'A little more detail. At least a sentence.';
       return '';
     }
     if (key === 'coaching') return raw ? '' : 'Pick one.';
     if (key === 'coaching_focus') return '';   // optional
+    if (key === 'referred_by') return '';      // optional
     return '';
   }
 
@@ -902,13 +988,16 @@ main{flex:1 0 auto;padding:38px 0 96px}
     if (el.id === 's-8') {
       var c = answers.coaching;
       return (c === 'Yes' || c === 'Tell me more') ? screens.indexOf(document.getElementById('s-8b'))
-                                                   : screens.indexOf(document.getElementById('s-submit'));
+                                                   : screens.indexOf(document.getElementById('s-ref'));
     }
     return i + 1;
   }
   function prevIndexFrom(i){
     var el = screenAt(i);
-    if (el.id === 's-submit') {
+    // The referral screen is the one both coaching paths meet at, so it is the
+    // one that has to know which of them to go back to. The submit screen now
+    // simply steps back one, onto this.
+    if (el.id === 's-ref') {
       var c = answers.coaching;
       return (c === 'Yes' || c === 'Tell me more') ? screens.indexOf(document.getElementById('s-8b'))
                                                    : screens.indexOf(document.getElementById('s-8'));
@@ -1034,7 +1123,7 @@ main{flex:1 0 auto;padding:38px 0 96px}
   function applyLinkedinMode(){
     if (linkedinSwapped) {
       liLabel.textContent = 'Website or Instagram';
-      liHelp.textContent = 'Optional — anywhere Ella can get a feel for what you do.';
+      liHelp.textContent = 'Optional. Anywhere Ella can get a feel for what you do.';
       liInput.placeholder = 'yourbusiness.com';
       liSwap.textContent = 'Actually, I do use LinkedIn';
     } else {
@@ -1115,7 +1204,7 @@ main{flex:1 0 auto;padding:38px 0 96px}
       if (!isAnswered(answers[key]) && OPTIONAL_KEYS.indexOf(key) === -1) { firstBad = i; break; }
     }
     if (firstBad > -1) {
-      document.getElementById('e-submit').textContent = 'One question still needs an answer — taking you back to it.';
+      document.getElementById('e-submit').textContent = 'One question still needs an answer. Taking you back to it.';
       setTimeout(function(){ show(firstBad); }, 600);
       return;
     }
@@ -1134,6 +1223,7 @@ main{flex:1 0 auto;padding:38px 0 96px}
       outcome:        answers.outcome || '',
       coaching:       answers.coaching || '',
       coaching_focus: answers.coaching_focus || '',
+      referred_by:    answers.referred_by || '',
       source:         answers.source || '',
       _gotcha:        document.getElementById('f-gotcha').value
     };
@@ -1169,7 +1259,7 @@ main{flex:1 0 auto;padding:38px 0 96px}
       btn.disabled = false;
       btn.textContent = 'Submit my application';
       document.getElementById('e-submit').textContent =
-        'That didn’t send. Check your connection and try again — nothing you typed is lost.';
+        'That didn’t send. Check your connection and try again. Nothing you typed is lost.';
     });
   });
 

@@ -816,6 +816,10 @@ async function handleSuperhumanApplication(d, env, cors) {
     "Business": { rich_text: rich(d.business) },
     "Outcome": { rich_text: rich(d.outcome) },
     "Coaching focus": { rich_text: rich(d.coaching_focus) },
+    // Optional on the form. rich() turns a blank into [], which Notion accepts
+    // as an empty cell -- but the column itself has to exist on the database
+    // or this create 400s and every application is lost, not just this field.
+    "Referred by": { rich_text: rich(d.referred_by) },
     "Source": { rich_text: rich(d.source) },
     "Status": { select: { name: "New" } },
   };
@@ -1518,6 +1522,7 @@ function buildCalSlackMessage(trigger, d) {
       ["Department", calProp(props["Department"])],
       ["Outcome", calProp(props["Outcome"])],
       ["1:1 coaching", calProp(props["1:1 coaching"])],
+      ["Referred by", calProp(props["Referred by"])],
       ["Phone", calProp(props["Phone"])],
       ["LinkedIn", calProp(props["LinkedIn"]) || calProp(props["Website"])],
     ].filter((pair) => pair[1]);
