@@ -1068,18 +1068,42 @@ console.log('\nNo long dashes in anything the page shows');
   check('and no entity form survives in the markup either',
     !/&mdash;|&ndash;/.test(HTML), (HTML.match(/.{0,50}&[mn]dash;.{0,50}/) || [])[0]);
 
-  // 2. The strings the script writes onto the page later: every help line and
-  // error message. Code comments are not on the page, so they are stripped
-  // before the scan rather than counted against it.
-  const code = HTML
-    .replace(/<!--[\s\S]*?-->/g, '')
-    .replace(/\/\*[\s\S]*?\*\//g, '')
-    .replace(/^\s*\/\/.*$/gm, '');
-  const offenders = (code.match(/.{0,60}[–—].{0,60}/g) || []);
+  // The file parsed again, with nothing allowed to run: the rest of this block
+  // is about what the source says, not what the page did to itself. Parsing is
+  // also what keeps HTML comments out of the scan for free — they become
+  // comment nodes, so they are never element text and never an attribute, and
+  // nothing has to strip them by hand.
+  const src = new JSDOM(HTML).window.document;
+
+  // 2. Copy that lives in an attribute rather than in a text node: the
+  // placeholders, alt text and labels a reader still sees.
+  const attrs = [];
+  for (const el of src.querySelectorAll('*')) {
+    for (const a of el.attributes) attrs.push(el.tagName.toLowerCase() + '[' + a.name + ']=' + a.value);
+  }
+  check('no long dash in an attribute either',
+    !attrs.some((a) => LONG.test(a)), attrs.filter((a) => LONG.test(a)));
+
+  // 3. The strings the script writes onto the page later: every help line and
+  // error message. Comments are not on the page, so they come out of the text
+  // first. Each pass repeats until the text stops changing: removing one
+  // comment can leave the two halves of another sitting next to each other,
+  // which a single pass would walk straight past.
+  const stripAll = (text, pattern) => {
+    let before;
+    let after = text;
+    do { before = after; after = before.replace(pattern, ''); } while (after !== before);
+    return after;
+  };
+  const scriptText = Array.from(src.querySelectorAll('script:not([src])'))
+    .map((s) => s.textContent)
+    .join('\n');
+  const code = stripAll(stripAll(scriptText, /\/\*[\s\S]*?\*\//g), /^\s*\/\/.*$/gm);
+  const offenders = code.match(/.{0,60}[–—].{0,60}/g) || [];
   check('no long dash in any string the script puts on screen',
     offenders.length === 0, offenders);
 
-  // 3. The two lines called out by name.
+  // 4. The two lines called out by name.
   check('the referral help line reads as two sentences',
     $(d, '#help-ref').textContent.trim() === 'Optional. So we can thank them.',
     $(d, '#help-ref').textContent.trim());
