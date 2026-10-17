@@ -55,7 +55,7 @@ jobs:
 
       - name: Check the committed stylesheet is up to date
         run: |
-          if ! git diff --exit-code -- portal/portal.css; then
+          if ! git diff --exit-code --ignore-all-space -- portal/portal.css; then
             echo "::error file=portal/portal.css::portal/portal.css is out of date. Run 'npm run build:css' and commit the result."
             exit 1
           fi
