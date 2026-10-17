@@ -68,7 +68,7 @@
     card.appendChild(track);
 
     var parts = [];
-    if (program.weeksTotal) parts.push('Week ' + program.weeksDone + ' of ' + program.weeksTotal);
+    if (program.weeksTotal) parts.push(program.weeksDone ? 'Week ' + program.weeksDone + ' of ' + program.weeksTotal : 'Before Week 1');
     if (sessionList.length) parts.push(sessionsDone + ' of ' + sessionList.length + ' sessions');
     if (materialsTotal) parts.push(materialsDone + ' of ' + materialsTotal + ' materials');
     card.appendChild(L.el('p', 'trp-progress-line', parts.join(' · ')));

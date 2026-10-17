@@ -11,6 +11,35 @@
 (function () {
   'use strict';
 
+  // Native details remain usable without animation. Only one connection guide
+  // stays open; rapid clicks reverse from the current height without jumping.
+  var accordionControls = [];
+  document.querySelectorAll('.trp-connect details').forEach(function (details) {
+    var summary = details.querySelector('summary');
+    if (!summary) return;
+    var animation = null, expanded = details.open;
+    function setOpen(next) {
+      expanded = next;
+      var from = details.getBoundingClientRect().height;
+      if (animation) { animation.cancel(); animation = null; }
+      if (!details.animate || window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+        details.open = next; return;
+      }
+      details.open = true;
+      var to = next ? details.scrollHeight : summary.getBoundingClientRect().height;
+      details.style.overflow = 'hidden';
+      animation = details.animate([{ height: from + 'px' }, { height: to + 'px' }], { duration: 220, easing: 'cubic-bezier(.2,.8,.2,1)' });
+      animation.onfinish = function () { details.open = next; details.style.overflow = ''; animation = null; };
+    }
+    accordionControls.push({ details: details, close: function () { if (expanded) setOpen(false); } });
+    summary.addEventListener('click', function (event) {
+      event.preventDefault();
+      var next = !expanded;
+      if (next) accordionControls.forEach(function (control) { if (control.details !== details) control.close(); });
+      setOpen(next);
+    });
+  });
+
   /* How close to the start time the "Join live session" button appears. */
   var LEAD_MINUTES = 30;
   var MINUTE = 60 * 1000;

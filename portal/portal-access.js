@@ -210,6 +210,15 @@
     });
   }
 
+  function setSetup(step, done) {
+    var token = readCode();
+    var endpoint = portalEndpoint('progressUrl');
+    if (!token || !endpoint || ['calendar', 'notion'].indexOf(step) < 0) return Promise.resolve(false);
+    return post(endpoint, { token: token, setup_step: step, done: Boolean(done) }).then(function (result) {
+      return result.status === 200 && result.data && result.data.ok === true;
+    });
+  }
+
   /* ---- Time Rich Members nav link ------------------------------------- */
   //
   // Every portal page carries a hidden "Members" link marked
@@ -883,6 +892,7 @@
     load: load,
     signOut: signOut,
     setProgress: setProgress,
+    setSetup: setSetup,
     hasCode: hasCode,
     renderWeeks: renderWeeks,
     renderSessions: renderSessions,

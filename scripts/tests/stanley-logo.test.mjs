@@ -153,6 +153,11 @@ console.log('\n/portal — where the lockups sit');
     lockup.closest('p').previousElementSibling.className);
   check('and nothing else follows it on that page',
     lockup.closest('p').nextElementSibling === null);
+  // No portal header on the sign-in page, so there is no masthead to sit in.
+  check('the sign-in page has no portal header, and still only one lockup',
+    signin.querySelector('header#top-nav') === null &&
+    signin.querySelectorAll('a.trp-powered').length === 1,
+    signin.querySelectorAll('a.trp-powered').length);
 
   for (const page of PAGES.filter((p) => p.path !== 'portal/index.html' &&
                                          p.path.startsWith('portal/'))) {
@@ -160,18 +165,57 @@ console.log('\n/portal — where the lockups sit');
     const inFooter = [...document.querySelectorAll('footer .trp-powered')];
     const inHeader = [...document.querySelectorAll('header#top-nav .trp-powered')];
 
-    check(page.path + ': one in the header, and that is the only one',
+    // Counted across the whole document, not just the two places it has ever
+    // lived. A second credit anywhere is the bug this pins.
+    const everywhere = [...document.querySelectorAll('a.trp-powered')];
+    check(page.path + ': exactly one lockup on the page, counted everywhere',
+      everywhere.length === 1, everywhere.length);
+
+    check(page.path + ': and that one is in the header',
       inHeader.length === 1 && inFooter.length === 0,
       { header: inHeader.length, footer: inFooter.length });
+
+    // The header is two groups: the masthead on the left and the controls on
+    // the right. The credit belongs to the first and must not be in the second.
+    const header = document.querySelector('header#top-nav');
+    const rightGroup = header.lastElementChild;
+    check(page.path + ': the right-hand group carries no Stanley logo',
+      rightGroup.querySelectorAll('a.trp-powered').length === 0,
+      rightGroup.querySelectorAll('a.trp-powered').length);
+    check(page.path + ': the right-hand group is the theme, the name and Sign out',
+      Boolean(rightGroup.querySelector('.trp-theme')) &&
+      Boolean(rightGroup.querySelector('[data-portal-name]')) &&
+      Boolean(rightGroup.querySelector('[data-portal-signout]')));
 
     check(page.path + ': the footer is one quiet line with no lockup under it',
       inFooter.length === 0, inFooter.length);
 
-    // It sits on the right, with the thin divider and the member after it.
-    check(page.path + ': it sits in the right-hand group, before the divider',
+    // It sits in the masthead now, beside the Time Rich wordmark rather than
+    // out on the right with the controls: wordmark, hairline, then the credit,
+    // and the nav after all three.
+    const wordmark = document.querySelector('header#top-nav .trp-wordmark');
+    check(page.path + ': it sits beside the wordmark, not in the right-hand group',
+      wordmark !== null &&
+      wordmark.compareDocumentPosition(inHeader[0]) === 4 &&
+      wordmark.parentElement === inHeader[0].parentElement,
+      inHeader[0].parentElement && inHeader[0].parentElement.className);
+
+    check(page.path + ': with a hairline between the wordmark and the credit',
+      inHeader[0].previousElementSibling !== null &&
+      inHeader[0].previousElementSibling.className.includes('trp-head-div') &&
+      inHeader[0].previousElementSibling.previousElementSibling === wordmark,
+      inHeader[0].previousElementSibling && inHeader[0].previousElementSibling.className);
+
+    check(page.path + ': and the nav comes after it',
       inHeader[0].nextElementSibling !== null &&
-      inHeader[0].nextElementSibling.className.includes('trp-head-div'),
-      inHeader[0].nextElementSibling && inHeader[0].nextElementSibling.className);
+      inHeader[0].nextElementSibling.tagName === 'NAV',
+      inHeader[0].nextElementSibling && inHeader[0].nextElementSibling.tagName);
+
+    // The hairline beside the wordmark is drawn at every width, so the two
+    // marks never run together on a phone.
+    check(page.path + ': that hairline is not held back to a desktop width',
+      !/hidden/.test(inHeader[0].previousElementSibling.className),
+      inHeader[0].previousElementSibling.className);
 
     // The one credit on the page cannot be hidden at any width. What the
     // phone drops is the wording, which .trp-powered-head clips rather than
