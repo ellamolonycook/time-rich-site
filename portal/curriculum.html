@@ -140,18 +140,32 @@
         TIME RICH<span class="trp-stop">.</span>
       </a>
 
+      <span class="trp-head-div" aria-hidden="true"></span>
+
+      <!-- The anchor sponsor, beside the wordmark: the credit reads as part of
+           the masthead rather than as one more control on the right. Same
+           link and same two files as before; the dark one swaps in on the
+           dark theme. At phone widths the words are read out but not drawn,
+           see .trp-powered-head in portal-tailwind-src.css. -->
+      <a class="trp-powered trp-powered-head" href="https://x.getstanley.ai/r/mz4y9g" target="_blank" rel="noopener sponsored">
+        <span class="trp-powered-label">Powered by</span>
+        <img class="trp-powered-pos" src="../brand/partners/stanley-logo.png" alt="Stanley" width="765" height="203" loading="lazy" decoding="async"/>
+        <img class="trp-powered-rev" src="../brand/partners/stanley-logo-dark.png" alt="Stanley" width="765" height="203" loading="lazy" decoding="async"/>
+      </a>
+
       <nav class="hidden lg:flex items-center gap-0.5" aria-label="Portal">
-        <a href="dashboard.html" class="trp-nav-link px-3.5 py-2 rounded-full text-xs font-medium text-brand-ink/70 hover:text-brand-ink hover:bg-brand-ink/5">Dashboard</a>
-        <a href="curriculum.html" aria-current="page" class="trp-nav-link px-3.5 py-2 rounded-full text-xs font-semibold">Curriculum</a>
-        <a href="sessions.html" class="trp-nav-link px-3.5 py-2 rounded-full text-xs font-medium text-brand-ink/70 hover:text-brand-ink hover:bg-brand-ink/5">Live Sessions</a>
-        <a href="resources.html" class="trp-nav-link px-3.5 py-2 rounded-full text-xs font-medium text-brand-ink/70 hover:text-brand-ink hover:bg-brand-ink/5">Resources</a>
-        <a href="prompts.html" class="trp-nav-link px-3.5 py-2 rounded-full text-xs font-medium text-brand-ink/70 hover:text-brand-ink hover:bg-brand-ink/5">Prompts</a>
-        <a href="members.html" data-portal-members-link hidden class="trp-nav-link px-3.5 py-2 rounded-full text-xs font-medium text-brand-ink/70 hover:text-brand-ink hover:bg-brand-ink/5">Members</a>
+        <a href="dashboard.html" class="trp-nav-link px-3.5 py-2 text-xs font-medium text-brand-ink/70 hover:text-brand-ink">Dashboard</a>
+        <a href="curriculum.html" aria-current="page" class="trp-nav-link px-3.5 py-2 text-xs font-semibold">Curriculum</a>
+        <a href="sessions.html" class="trp-nav-link px-3.5 py-2 text-xs font-medium text-brand-ink/70 hover:text-brand-ink">Live Sessions</a>
+        <a href="resources.html" class="trp-nav-link px-3.5 py-2 text-xs font-medium text-brand-ink/70 hover:text-brand-ink">Resources</a>
+        <a href="prompts.html" class="trp-nav-link px-3.5 py-2 text-xs font-medium text-brand-ink/70 hover:text-brand-ink">Prompts</a>
+        <a href="members.html" data-portal-members-link hidden class="trp-nav-link px-3.5 py-2 text-xs font-medium text-brand-ink/70 hover:text-brand-ink">Members</a>
       </nav>
     </div>
 
-    <!-- Right: the sponsor credit, a thin divider, the member and Sign out.
-         The theme control keeps its place at the head of the group. -->
+    <!-- Right: the theme control, a thin divider, the member and Sign out.
+         The sponsor credit is no longer here; it sits beside the wordmark on
+         the left, which is the only place it appears on the page. -->
     <div class="flex items-center gap-2 sm:gap-3 shrink-0">
       <!-- Filled in by portal-chrome.js, and only while a session is live or
            about to start. Stays hidden the rest of the time. -->
@@ -166,17 +180,6 @@
         </select>
         <svg class="trp-theme-caret" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7"></path></svg>
       </div>
-
-      <!-- The anchor sponsor, and the one place it appears on this page now:
-           the second lockup every footer used to carry is gone, so this one
-           is the whole credit and cannot be held back to a desktop width.
-           At phone widths the words are read out but not drawn; see
-           .trp-powered-head in portal-tailwind-src.css. -->
-      <a class="trp-powered trp-powered-head" href="https://x.getstanley.ai/r/mz4y9g" target="_blank" rel="noopener sponsored">
-        <span class="trp-powered-label">Powered by</span>
-        <img class="trp-powered-pos" src="../brand/partners/stanley-logo.png" alt="Stanley" width="765" height="203" loading="lazy" decoding="async"/>
-        <img class="trp-powered-rev" src="../brand/partners/stanley-logo-dark.png" alt="Stanley" width="765" height="203" loading="lazy" decoding="async"/>
-      </a>
 
       <span class="trp-head-div hidden md:block" aria-hidden="true"></span>
 
@@ -381,7 +384,12 @@
         var list = L.weeks(data);
         if (!list.length) return;          // no weeks: leave the fallback up
 
-        var open = list.filter(function (w) { return w && w.unlocked === true; });
+        var hasFirst = list.some(function (w) { return Number(w.id) === 1; });
+        var hasPrep = list.some(function (w) { return Number(w.id) === 0 && w.unlocked === true; });
+        var open = list.filter(function (w) {
+          if (Number(w.id) === 0 && hasFirst) return false;
+          return w && (w.unlocked === true || (Number(w.id) === 1 && hasPrep));
+        });
 
         L.clear(live);
 
@@ -389,7 +397,7 @@
 
         var column = L.el('div', 'trp-curriculum-open');
         open.forEach(function (week) {
-          column.appendChild(L.checklistCard(data, week, { sessions: true }));
+          column.appendChild(L.learningCard(data, week, { sessions: true }));
         });
         if (!open.length) {
           var none = L.el('div', 'glass-card is-static trp-check');

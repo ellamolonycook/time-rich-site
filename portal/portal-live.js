@@ -225,7 +225,7 @@
   // have already run, over the totals. Same for every member on the schedule.
   function scheduleProgress(data, now) {
     var at = now || new Date();
-    var weekList = weeks(data);
+    var weekList = weeks(data).filter(function (week) { return num(week.id) !== 0; });
     var sessionList = sessions(data);
     var weeksDone = 0;
     var sessionsDone = 0;
@@ -610,6 +610,31 @@
     return card;
   }
 
+  // Presentation grouping only: keep source IDs and release flags unchanged.
+  // Preparation is accessible before kickoff, inside Week 1, never a fifth week.
+  function learningCard(data, week, opts) {
+    var prep = weeks(data).filter(function (w) { return num(w.id) === 0 && w.unlocked === true; })[0];
+    var first = weeks(data).filter(function (w) { return num(w.id) === 1; })[0];
+    if (num(week && week.id) === 0 && first) week = first;
+    if (!week || num(week.id) !== 1 || !prep) return checklistCard(data, week, opts);
+    var view = Object.assign({}, week, { items: week.unlocked ? items(week) : [] });
+    var card = checklistCard(data, view, Object.assign({}, opts, { sessions: !!(opts && opts.sessions && week.unlocked) }));
+    var list = card.querySelector('.trp-checks');
+    var prepLabel = el('h3', 'trp-prep-label', 'Start here');
+    card.insertBefore(prepLabel, list);
+    if (str(prep.summary)) card.insertBefore(el('p', 'trp-check-sub', str(prep.summary)), list);
+    var prepList = el('ul', 'trp-checks');
+    items(prep).forEach(function (item) { prepList.appendChild(checkItemRow(item)); });
+    card.insertBefore(prepList, list);
+    if (!week.unlocked) {
+      list.remove();
+      card.appendChild(el('p', 'trp-check-sub', 'Week 1 sessions and materials open ' + (etDate(week.release_at) || 'soon') + '.'));
+    } else if (items(week).length) card.insertBefore(el('h3', 'trp-prep-label', week.title), list);
+    var count = card.querySelector('.trp-check-count');
+    if (count) count.remove();
+    return card;
+  }
+
 
   /* ---- coming up ------------------------------------------------------
    *
@@ -621,7 +646,8 @@
    */
   function comingCard(data, opts) {
     opts = opts || {};
-    var shut = weeks(data).filter(function (w) { return w && w.unlocked !== true; });
+    var hasPrep = weeks(data).some(function (w) { return num(w.id) === 0 && w.unlocked === true; });
+    var shut = weeks(data).filter(function (w) { return w && w.unlocked !== true && !(hasPrep && num(w.id) === 1); });
     if (!shut.length) return null;
 
     var card = el(opts.el === 'li' ? 'li' : 'div', 'glass-card is-static trp-coming');
@@ -725,6 +751,7 @@
     doneToggle: doneToggle,
     checkBox: checkBox,
     checklistCard: checklistCard,
+    learningCard: learningCard,
     comingCard: comingCard,
     weekLabel: weekLabel,
     latestRecording: latestRecording,

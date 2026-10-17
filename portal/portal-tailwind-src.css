@@ -618,18 +618,60 @@
   /* -- navigation --------------------------------------------------------
      The page you are on is filled and dark; everything else is quiet until
      hovered. Both the header nav and the mobile menu use these. */
+  /* A tab is text with a line under it, never a filled pill.
+
+     The line is a ::after, absolutely placed, so it costs no layout: the
+     header stays 64px on a desktop whatever state a tab is in, and nothing
+     reflows when one lights up.
+
+     It is inset by 14px on both sides, which is the link's own px-3.5
+     padding, so the line is exactly as wide as the word above it.
+
+     Only .trp-nav-link is touched here. The mobile slide-out menu uses its
+     own classes and is left exactly as it was. */
   .trp-nav-link {
+    --trp-nav-line: var(--trp-ink);
+    position: relative;
     display: inline-flex;
     align-items: center;
     min-height: 44px;
-    transition: background-color var(--trp-t) ease, color var(--trp-t) ease;
+    transition: color var(--trp-t) ease;
   }
+  .trp-nav-link::after {
+    content: '';
+    position: absolute;
+    left: 14px;
+    right: 14px;
+    bottom: 9px;
+    height: 2px;
+    border-radius: 2px;
+    background: var(--trp-nav-line);
+    transform: scaleX(0);
+    transform-origin: center;
+    transition: transform 200ms ease-out;
+  }
+
+  /* Hover and keyboard focus draw the same line, out from the middle. The
+     focus ring the page already had is untouched and still shows alongside. */
+  .trp-nav-link:hover::after,
+  .trp-nav-link:focus-visible::after { transform: scaleX(1); }
+
+  /* The page you are on: deep green, a little heavier, line already out. */
   .trp-nav-link[aria-current='page'] {
-    background: var(--trp-ink);
-    color: var(--trp-bg);
+    color: var(--trp-ink);
+    font-weight: 600;
   }
-  .trp-nav-link[aria-current='page']:hover {
-    background: var(--trp-ink);
+  .trp-nav-link[aria-current='page']::after { transform: scaleX(1); }
+
+  /* Deep green on paper, lime on the dark ground. */
+  :root[data-theme='dark'] .trp-nav-link { --trp-nav-line: rgb(var(--c-lime)); }
+  @media (prefers-color-scheme: dark) {
+    :root[data-theme='system'] .trp-nav-link { --trp-nav-line: rgb(var(--c-lime)); }
+  }
+
+  /* Asked for less motion: the line is simply there or not. */
+  @media (prefers-reduced-motion: reduce) {
+    .trp-nav-link::after { transition: none; }
   }
 
   /* -- the checklist card -------------------------------------------------
@@ -1849,4 +1891,62 @@
     scroll-behavior: auto !important;
   }
   .glass-card:hover { transform: none; }
+}
+
+@layer components {
+  /* -- set up once -------------------------------------------------------
+     The two things a member does before the rest of the dashboard is much
+     use: subscribe to the schedule, and duplicate the Notion workbook. One
+     card, numbered steps, and a tick that stays ticked.
+
+     Only the setup rules are here. The rest of the card system is unchanged
+     from what the page already had. */
+  .trp-setup { padding: 24px 28px; }
+  .trp-setup-heading { display: flex; align-items: center; justify-content: space-between; gap: 16px; }
+  .trp-setup-heading h2 { margin: 0; font-size: 22px; letter-spacing: -.035em; }
+  .trp-setup-heading > span { color: var(--trp-muted); font-size: 12px; }
+  .trp-setup-steps { list-style: none; margin: 18px 0 0; padding: 0; }
+  .trp-setup-step {
+    display: grid;
+    grid-template-columns: 30px minmax(0, 1fr) auto;
+    align-items: center;
+    gap: 16px;
+    padding: 18px 0;
+    border-top: 1px solid var(--trp-rule);
+  }
+  .trp-step-number { font: 12px var(--trp-label); color: var(--trp-dim); }
+  .trp-setup-copy { min-width: 0; }
+  .trp-setup-copy h3 { font-size: 15px; margin: 0; }
+  .trp-setup-placeholder { font: 11px var(--trp-label); color: var(--trp-dim); overflow-wrap: anywhere; margin: 5px 0 0; }
+  .trp-setup-actions { display: flex; align-items: center; gap: 12px; }
+  .trp-setup-actions .trp-btn { font-size: 12px; min-width: 154px; }
+  .trp-setup-tick,
+  .trp-setup-review {
+    font-size: 12px;
+    font-weight: 600;
+    min-height: 44px;
+    padding: 8px 12px;
+    border-radius: 10px;
+    border: 1px solid var(--trp-rule);
+    color: var(--trp-ink);
+  }
+  .trp-setup-tick { min-width: 90px; }
+  .trp-setup-tick[aria-pressed='true'] { background: rgb(var(--c-panel)); }
+  .trp-setup-status { font-size: 12px; color: var(--trp-dim); margin: 2px 0 0; }
+
+  /* A disabled button should say so with the cursor as well as the colour. */
+  button:disabled { cursor: not-allowed; opacity: .55; }
+
+  /* The heading over the preparation items inside a learning card. */
+  .trp-prep-label { font-size: 13px; margin: 18px 0 8px; color: var(--trp-muted); }
+
+  @media (max-width: 640px) {
+    .trp-setup { padding: 20px; }
+    .trp-setup-heading { align-items: baseline; }
+    .trp-setup-heading h2 { font-size: 20px; }
+    .trp-setup-heading > span { white-space: nowrap; font-size: 11px; }
+    .trp-setup-step { grid-template-columns: 24px minmax(0, 1fr); gap: 10px; }
+    .trp-setup-actions { grid-column: 1 / -1; justify-content: space-between; gap: 8px; }
+    .trp-setup-actions .trp-btn { min-width: 0; padding: 10px 12px; }
+  }
 }
