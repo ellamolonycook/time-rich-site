@@ -1856,19 +1856,22 @@ async function handlePortalProgress(request, env) {
   const sessionId = body?.session_id == null ? null : Number(body.session_id);
   const done = body?.done;
 
-  const oneTarget = (Number.isSafeInteger(itemId) && itemId > 0 && sessionId === null) ||
+  const setupStep = body?.setup_step;
+  if (setupStep != null && (!['calendar', 'notion'].includes(setupStep) || itemId !== null || sessionId !== null)) {
+    return json({ ok: false }, 400, cors);
+  }
+  const oneTarget = (setupStep != null) || (Number.isSafeInteger(itemId) && itemId > 0 && sessionId === null) ||
     (Number.isSafeInteger(sessionId) && sessionId > 0 && itemId === null);
   if (!token || !oneTarget || typeof done !== "boolean") return json({ ok: false }, 400, cors);
 
   let payload;
   try {
-    const res = await fetch(`${sb.base}/rest/v1/rpc/portal_set_progress`, {
+    const res = await fetch(`${sb.base}/rest/v1/rpc/${setupStep != null ? "portal_set_setup" : "portal_set_progress"}`, {
       method: "POST",
       headers: sb.headers,
       body: JSON.stringify({
         p_token: token,
-        p_item_id: itemId,
-        p_session_id: sessionId,
+        ...(setupStep != null ? { p_step: setupStep } : { p_item_id: itemId, p_session_id: sessionId }),
         p_done: done,
       }),
     });

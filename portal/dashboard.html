@@ -76,11 +76,14 @@
   <script src="portal-live.js"></script>
   <script src="portal-chrome.js" defer></script>
   <script src="portal-progress.js" defer></script>
+  <script src="portal-setup.js" defer></script>
+<link rel="stylesheet" href="portal-design.css?v=20261017d">
+<script src="portal-design.js?v=20261017d" defer></script>
 </head>
 
 
 
-<body class="text-brand-deep font-sans min-h-screen flex flex-col selection:bg-brand-lime selection:text-brand-deep">
+<body data-portal-page="dashboard" class="text-brand-deep font-sans min-h-screen flex flex-col selection:bg-brand-lime selection:text-brand-deep">
 
   <!-- Noise Texture Overlay -->
 
@@ -213,6 +216,8 @@
 
           <!-- ONE ROW OF TWO CARDS. The next live session, which is the only
                deep green block on the page, and the member's own progress. -->
+          <section data-portal-setup hidden aria-label="Set up once"></section>
+
           <div class="grid grid-cols-1 lg:grid-cols-2 gap-5 lg:gap-6 items-stretch">
             <!-- Hidden until there is a session to show. -->
             <div data-dash-next hidden></div>
@@ -240,7 +245,7 @@
 
                    The "Setup" label is gone: the heading under it already
                    said what this is. -->
-              <section class="glass-card is-static is-sage trp-connect" aria-labelledby="connect-heading">
+              <section class="glass-card is-static trp-connect" aria-labelledby="connect-heading">
                 <h2 id="connect-heading" class="trp-connect-title">Connect your Notion to your AI</h2>
                 <p class="trp-connect-lede">Point your AI at your own pages once, and it stops guessing. Pick the tool you use.</p>
 
@@ -351,6 +356,25 @@ Confirm you can open all 8.</pre>
             </div>
           </div>
 
+          <section class="trp-stack" aria-labelledby="stack-heading">
+            <div class="trp-section-heading"><h2 id="stack-heading">Your tech stack</h2><span>Tools for your accelerator</span></div>
+            <div class="trp-stack-grid">
+              <article class="glass-card is-static trp-sponsor trp-sponsor-main">
+                <p class="trp-tag">Presenting sponsor</p>
+                <div class="trp-stack-brand">
+                  <img class="trp-stack-logo trp-stack-stanley trp-stack-pos" src="../brand/partners/stanley-logo.png" alt="Stanley" width="240" height="80" loading="lazy">
+                  <img class="trp-stack-logo trp-stack-stanley trp-stack-rev" src="../brand/partners/stanley-logo-dark.png" alt="Stanley" width="240" height="80" loading="lazy">
+                </div>
+                <p>Your AI head of content: drafts from your calls, learns your voice, posts for you</p>
+                <div class="trp-offer"><span>[STANLEY_OFFER: one month free, link/code TBC]</span><button type="button" class="trp-btn trp-btn-outline" disabled>Offer coming soon</button></div>
+              </article>
+              <article class="glass-card is-static trp-sponsor">
+                <p class="trp-tag">Your tech stack</p>
+                <img class="trp-stack-logo" src="../os/img/wispr-flow.png" alt="Wispr Flow" width="200" height="80" loading="lazy">
+                <h3>Wispr Flow</h3>
+              </article>
+            </div>
+          </section>
           </div> <!-- CLOSE Full Width Column -->
         </div> <!-- CLOSE max-w-[1200px] -->
       </main> <!-- CLOSE main -->
@@ -473,7 +497,7 @@ Confirm you can open all 8.</pre>
          Join via Zoom. Add to calendar beside it is the outline. */
       function renderNext(root, data) {
         L.clear(root);
-        root.className = 'glass-card is-static is-deep trp-next';
+        root.className = 'glass-card is-static trp-next';
 
         var next = L.nextSession(data);
 
@@ -493,8 +517,7 @@ Confirm you can open all 8.</pre>
           if (join) actions.appendChild(join);
           // One link to the session's Add Event page, left out entirely
           // when the session has no addevent_url.
-          var cal = L.calendarLink(next, 'Add to calendar', 'trp-btn trp-btn-outline');
-          if (cal) actions.appendChild(cal);
+          // Subscribe to every session in the Set up once card above.
           if (actions.childNodes.length) root.appendChild(actions);
 
           L.show(root, true);
@@ -538,7 +561,7 @@ Confirm you can open all 8.</pre>
         L.clear(root);
         var week = L.latestUnlockedWeek(data);
         if (!week) { L.show(root, false); return; }
-        root.appendChild(L.checklistCard(data, week, { sessions: false }));
+        root.appendChild(L.learningCard(data, week, { sessions: false }));
         L.show(root, true);
       }
 

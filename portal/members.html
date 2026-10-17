@@ -75,11 +75,13 @@
   <script src="portal-access.js" defer></script>
   <script src="portal-live.js"></script>
   <script src="portal-chrome.js" defer></script>
+<link rel="stylesheet" href="portal-design.css?v=20261017d">
+<script src="portal-design.js?v=20261017d" defer></script>
 </head>
 
 
 
-<body class="text-brand-deep font-sans min-h-screen flex flex-col selection:bg-brand-lime selection:text-brand-deep">
+<body data-portal-page="members" class="text-brand-deep font-sans min-h-screen flex flex-col selection:bg-brand-lime selection:text-brand-deep">
 
   <!-- Noise Texture Overlay -->
 
@@ -519,7 +521,7 @@
       }
 
       function meta(profile) {
-        return [str(profile.title), str(profile.company)].filter(Boolean).join(' · ');
+        return [str(profile.title), str(profile.company)].filter(Boolean).join(' Â· ');
       }
 
       function card(profile, index) {

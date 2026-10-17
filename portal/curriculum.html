@@ -75,11 +75,13 @@
   <script src="portal-access.js" defer></script>
   <script src="portal-live.js"></script>
   <script src="portal-chrome.js" defer></script>
+<link rel="stylesheet" href="portal-design.css?v=20261017d">
+<script src="portal-design.js?v=20261017d" defer></script>
 </head>
 
 
 
-<body class="text-brand-deep font-sans min-h-screen flex flex-col selection:bg-brand-lime selection:text-brand-deep">
+<body data-portal-page="curriculum" class="text-brand-deep font-sans min-h-screen flex flex-col selection:bg-brand-lime selection:text-brand-deep">
 
   <!-- Noise Texture Overlay -->
 
@@ -381,7 +383,12 @@
         var list = L.weeks(data);
         if (!list.length) return;          // no weeks: leave the fallback up
 
-        var open = list.filter(function (w) { return w && w.unlocked === true; });
+        var hasFirst = list.some(function (w) { return Number(w.id) === 1; });
+        var hasPrep = list.some(function (w) { return Number(w.id) === 0 && w.unlocked === true; });
+        var open = list.filter(function (w) {
+          if (Number(w.id) === 0 && hasFirst) return false;
+          return w && (w.unlocked === true || (Number(w.id) === 1 && hasPrep));
+        });
 
         L.clear(live);
 
@@ -389,7 +396,7 @@
 
         var column = L.el('div', 'trp-curriculum-open');
         open.forEach(function (week) {
-          column.appendChild(L.checklistCard(data, week, { sessions: true }));
+          column.appendChild(L.learningCard(data, week, { sessions: true }));
         });
         if (!open.length) {
           var none = L.el('div', 'glass-card is-static trp-check');

@@ -54,12 +54,12 @@
     --c-cream: 255 252 235;       /* #FFFCEB */
     --c-surface: 255 255 255;     /* a card raised off the page */
     /* surfaces */
-    --c-sage: 220 222 191;        /* #DCDEBF */
-    --c-sagelt: 233 234 213;      /* #E9EAD5 */
+    --c-sage: 245 243 238;        /* #DCDEBF */
+    --c-sagelt: 245 243 238;      /* #E9EAD5 */
     /* A quiet tint, for a hover and for ::selection. It is no longer the
        card fill: a card is white with a hairline, and the heavy olive panel
        that used to be under every section is gone. */
-    --c-panel: 233 234 213;       /* #E9EAD5 */
+    --c-panel: 245 243 238;       /* #E9EAD5 */
     /* ink */
     --c-ink: 44 52 34;            /* #2C3422 */
     --c-deep: 51 58 40;           /* #333A28 */
@@ -152,24 +152,24 @@
 @layer base {
   :root[data-theme='dark'] {
     /* paper becomes the deep green ground */
-    --c-bg: 26 32 21;             /* #1A2015 */
-    --c-page: 26 32 21;
-    --c-offwhite: 26 32 21;
-    --c-cream: 34 41 27;          /* #22291B */
-    --c-surface: 44 52 34;        /* #2C3422  raised off the ground */
+    --c-bg: 28 29 26;             /* #1A2015 */
+    --c-page: 28 29 26;
+    --c-offwhite: 28 29 26;
+    --c-cream: 34 35 32;          /* #22291B */
+    --c-surface: 39 40 36;        /* neutral raised off the ground */
     /* surfaces sit above the ground, not below it */
-    --c-sage: 54 64 41;           /* #364029 */
-    --c-sagelt: 70 82 55;         /* #465237  a step above the card, not the same as it */
+    --c-sage: 39 40 36;           /* #364029 */
+    --c-sagelt: 47 48 43;         /* #465237  a step above the card, not the same as it */
     /* The hover tint, which has to sit above the card rather than equal it,
        or a hover does nothing on the dark theme. */
-    --c-panel: 70 82 55;          /* #465237 */
+    --c-panel: 47 48 43;          /* #465237 */
     /* ink becomes cream */
     --c-ink: 244 241 230;         /* #F4F1E6 */
     --c-deep: 244 241 230;
     --c-green: 230 228 214;       /* #E6E4D6  body copy */
     --c-mid: 197 203 178;         /* #C5CBB2 */
-    --c-muted: 186 193 167;       /* #BAC1A7 */
-    --c-dim: 156 165 134;         /* #9CA586 */
+    --c-muted: 195 195 184;       /* #BAC1A7 */
+    --c-dim: 173 174 163;         /* #9CA586 */
     /* accent is the brand lime, which only works as a light on dark */
     --c-olive: 204 238 160;       /* #CCEEA0 */
     --c-lime: 204 238 160;
@@ -183,20 +183,20 @@
 
   @media (prefers-color-scheme: dark) {
     :root[data-theme='system'] {
-      --c-bg: 26 32 21;
-      --c-page: 26 32 21;
-      --c-offwhite: 26 32 21;
-      --c-cream: 34 41 27;
-      --c-surface: 44 52 34;
-      --c-sage: 54 64 41;
-      --c-sagelt: 70 82 55;
-      --c-panel: 70 82 55;
+      --c-bg: 28 29 26;
+      --c-page: 28 29 26;
+      --c-offwhite: 28 29 26;
+      --c-cream: 34 35 32;
+      --c-surface: 39 40 36;
+      --c-sage: 39 40 36;
+      --c-sagelt: 47 48 43;
+      --c-panel: 47 48 43;
       --c-ink: 244 241 230;
       --c-deep: 244 241 230;
       --c-green: 230 228 214;
       --c-mid: 197 203 178;
-      --c-muted: 186 193 167;
-      --c-dim: 156 165 134;
+      --c-muted: 195 195 184;
+      --c-dim: 173 174 163;
       --c-olive: 204 238 160;
       --c-lime: 204 238 160;
       --c-error: 255 169 158;       /* #FFA99E */
@@ -1785,7 +1785,7 @@
      Measured, not guessed: with every item showing, the footer is a single
      row from 540px up. Below that it wraps, and a separator that happened to
      fall at the wrap would be left stranded at the head of the second line
-     ("· Need help? ..."), which is what this rule is here to prevent. CSS
+     ("Â· Need help? ..."), which is what this rule is here to prevent. CSS
      cannot ask whether an element starts a wrapped line, so the whole set
      goes rather than one of them.
 
@@ -1850,3 +1850,73 @@
   }
   .glass-card:hover { transform: none; }
 }
+
+/* Portal flow: quiet surfaces, one lime call to action, readable spacing. */
+@layer components {
+  .glass-card { box-shadow: 0 4px 20px rgb(var(--c-rule) / .025); border-radius: 18px; }
+  .trp-tag, .trp-kicker, .trp-stop { color: var(--trp-muted); }
+  [data-portal-name] { color: var(--trp-ink); font-weight: 650; }
+  .trp-powered img { filter:grayscale(1); transition:filter .18s ease,opacity .18s ease; }
+  .trp-powered:hover img, .trp-powered:focus-visible img { filter:grayscale(0); }
+  .trp-pill { color:var(--trp-muted); }
+  .trp-setup { padding: 24px 28px; }
+  .trp-setup-heading, .trp-section-heading { display:flex; align-items:center; justify-content:space-between; gap:16px; }
+  .trp-setup-heading h2, .trp-section-heading h2 { margin:0; font-size:22px; letter-spacing:-.035em; }
+  .trp-setup-heading > span, .trp-section-heading > span { color:var(--trp-muted); font-size:12px; }
+  .trp-setup-steps { list-style:none; margin:18px 0 0; padding:0; }
+  .trp-setup-step { display:grid; grid-template-columns:30px minmax(0,1fr) auto; align-items:center; gap:16px; padding:18px 0; border-top:1px solid var(--trp-rule); }
+  .trp-step-number { font:12px var(--trp-label); color:var(--trp-dim); }
+  .trp-setup-copy { min-width:0; }
+  .trp-setup-copy h3 { font-size:15px; margin:0; }
+  .trp-setup-placeholder { font:11px var(--trp-label); color:var(--trp-dim); overflow-wrap:anywhere; margin:5px 0 0; }
+  .trp-setup-actions { display:flex; align-items:center; gap:12px; }
+  .trp-setup-actions .trp-btn { font-size:12px; min-width:154px; }
+  .trp-setup-tick, .trp-setup-review { font-size:12px; font-weight:600; min-height:44px; padding:8px 12px; border-radius:10px; border:1px solid var(--trp-rule); color:var(--trp-ink); }
+  .trp-setup-tick { min-width:90px; }
+  .trp-setup-tick[aria-pressed='true'] { background:rgb(var(--c-panel)); }
+  .trp-setup-status { font-size:12px; color:var(--trp-dim); margin:2px 0 0; }
+  button:disabled { cursor:not-allowed; opacity:.55; }
+  .trp-stack { padding-top:8px; }
+  .trp-stack-grid { display:grid; grid-template-columns:minmax(0,1.6fr) minmax(0,1fr); gap:24px; margin-top:20px; }
+  .trp-sponsor { padding:28px; min-width:0; }
+  .trp-stack-logo { width:180px; height:64px; object-fit:contain; object-position:left center; margin:18px 0; }
+  .trp-stack-stanley { width:220px; }
+  .trp-sponsor > p:not(.trp-tag) { max-width:50ch; font-size:15px; line-height:1.7; }
+  .trp-offer { display:flex; gap:16px; align-items:center; flex-wrap:wrap; margin-top:24px; padding-top:20px; border-top:1px solid var(--trp-rule); }
+  .trp-offer > span { font-size:12px; color:var(--trp-muted); max-width:32ch; }
+  .trp-sponsor h3 { font-size:18px; }
+  .trp-acc.is-pill > .trp-acc-head { border-radius:12px; padding:14px 16px; background:rgb(var(--c-surface)); }
+  .trp-acc.is-pill[open] > .trp-acc-head { background:rgb(var(--c-panel)); color:var(--trp-ink); }
+  .trp-acc.is-pill .trp-acc-body { padding:16px 8px 20px; }
+  .trp-acc-caret { transition:transform .22s ease; }
+  .trp-coming-row { align-items:start; }
+  .trp-coming-when { white-space:normal; }
+  .trp-check-head > div { min-width:0; }
+  .trp-check-heading { overflow-wrap:anywhere; }
+  .trp-prep-label { font-size:13px; margin:18px 0 8px; color:var(--trp-muted); }
+  .trp-stack-rev { display:none; }
+  :root[data-theme='dark'] .trp-stack-pos { display:none; }
+  :root[data-theme='dark'] .trp-stack-rev { display:block; }
+  @media (prefers-color-scheme:dark) {
+    :root[data-theme='system'] .trp-stack-pos { display:none; }
+    :root[data-theme='system'] .trp-stack-rev { display:block; }
+  }
+  @media (max-width:640px) {
+    .trp-setup, .trp-sponsor { padding:20px; }
+    .trp-setup-heading { align-items:baseline; }
+    .trp-setup-heading h2 { font-size:20px; }
+    .trp-setup-heading > span { white-space:nowrap; font-size:11px; }
+    .trp-setup-step { grid-template-columns:24px minmax(0,1fr); gap:10px; }
+    .trp-setup-actions { grid-column:1/-1; justify-content:space-between; gap:8px; }
+    .trp-setup-actions .trp-btn { min-width:0; padding:10px 12px; }
+    .trp-stack-grid { grid-template-columns:1fr; gap:16px; }
+    .trp-section-heading { display:block; }
+    .trp-section-heading > span { display:block; margin-top:6px; }
+    .trp-check-head { flex-wrap:wrap; }
+    .trp-coming-row { grid-template-columns:30px minmax(0,1fr); }
+    .trp-coming-when { grid-column:2; }
+  }
+  @media (prefers-reduced-motion:reduce) { .trp-acc-caret { transition:none; } }
+}
+
+@layer components { .trp-next { --trp-on-deep:var(--trp-ink); --trp-on-deep-soft:var(--trp-muted); --trp-on-deep-line:var(--trp-rule); } }
