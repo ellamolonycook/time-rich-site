@@ -58,16 +58,18 @@
   <meta name="twitter:image" content="https://timerich.ai/og-time-rich.png" />
   <meta name="twitter:card" content="summary_large_image" />
   <link rel="stylesheet" href="portal.css"/>
-  <link rel="preconnect" href="https://fonts.googleapis.com"/>
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin=""/>
-  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&amp;display=swap" rel="stylesheet"/>
+  <!-- The two faces, served from this repo. They used to come from Google
+       Fonts, which costs a DNS lookup, a stylesheet and only then the font
+       itself: three round trips before a heading could be drawn in the right
+       face, and a reflow when it finally was. Preloading the files directly
+       starts them with the stylesheet instead.
+
+       crossorigin is required on a font preload even for a same-origin file:
+       fonts are fetched in CORS mode, and a preload without it is fetched
+       twice. -->
+  <link rel="preload" href="../brand/fonts/SpaceGrotesk-Variable.woff2" as="font" type="font/woff2" crossorigin/>
+  <link rel="preload" href="../brand/fonts/JetBrainsMono-Variable.woff2" as="font" type="font/woff2" crossorigin/>
   <link rel="stylesheet" href="portal-content.css">
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-
-  
-
-
   <!-- The session gate. Config first, then the library; both deferred so
        the DOM is ready when the script mounts. No valid code redirects to
        index.html, because this page has no login form of its own. -->
@@ -76,6 +78,20 @@
   <script src="portal-live.js"></script>
   <script src="portal-chrome.js" defer></script>
   <script src="portal-sessions.js" defer></script>
+
+  <!-- Warm the next page while the pointer is still travelling to the link.
+       "moderate" is roughly 200ms of hover, which is long enough that a
+       pointer crossing the nav does not fetch all six. Only portal pages are
+       listed: a rule that matched everything would also warm sign-out and
+       the partner links. -->
+  <script type="speculationrules">
+  {
+    "prefetch": [{
+      "where": { "href_matches": "/portal/*.html" },
+      "eagerness": "moderate"
+    }]
+  }
+  </script>
 </head>
 
 
@@ -205,6 +221,20 @@
             <span class="trp-kicker">Live calls</span>
             <h1 class="trp-title">Live Sessions<span class="trp-stop">.</span></h1>
             <p class="trp-lede">Every live call in the program, with its Join link and recording.</p>
+
+            <!-- One subscribe link for the whole cohort schedule. Every row
+                 used to carry its own "Add to calendar", which was ten
+                 presses for the same answer. This is written into the page
+                 rather than built by portal-sessions.js, so it is on screen
+                 and pressable before the payload lands. -->
+            <p>
+              <a class="trp-addall" href="https://www.addevent.com/calendar/z0j4nlqbgt6b"
+                 target="_blank" rel="noopener noreferrer"
+                 aria-label="Add all sessions to your calendar">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="1.6" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M8 7V3m8 4V3M3 11h18M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
+                <span>Add all sessions</span>
+              </a>
+            </p>
           </header>
 
           <!-- THE PROMO. It used to sit beside the dashboard heading, where
@@ -231,11 +261,120 @@
             </div>
           </figure>
 
-          <!-- portal-sessions.js replaces this with the real schedule. It
-               only stands in while the payload is on its way or missing, so
-               it stays to one line rather than a fake set of cards. -->
-          <div id="trSessionList">
-            <p class="trp-lede">Loading your schedule&hellip;</p>
+          <!-- portal-sessions.js clears this and puts the real schedule in
+               its place. It is built from the same classes as the real next
+               session card and the real week cards, so the space is already
+               the right height at every width and nothing on the page moves
+               when the payload lands. aria-hidden because there is nothing
+               here to read; the live region below says what is happening. -->
+          <div id="trSessionList" class="trp-sched">
+            <div class="trp-skel" aria-hidden="true">
+              <div class="glass-card is-static trp-next">
+                <p class="trp-tag"><span class="trp-bar">Next session</span></p>
+                <h2 class="trp-next-title"><span class="trp-bar">Open Business Surgery</span></h2>
+                <p class="trp-next-when"><span class="trp-bar">MON 26 OCT &middot; 12PM ET</span></p>
+                <div class="trp-next-acts">
+                  <span class="trp-bar is-btn"></span>
+                  <span class="trp-bar is-tick"></span>
+                </div>
+              </div>
+
+              <ul class="trp-wkcards">
+                <li class="glass-card is-static trp-wkcard">
+                  <div class="trp-wkcard-head">
+                    <p class="trp-tag"><span class="trp-bar">Week 01</span></p>
+                    <h2 class="trp-wkcard-theme"><span class="trp-bar">Diagnose and train</span></h2>
+                  </div>
+                  <ul class="trp-srows">
+                    <li class="trp-srow">
+                      <span class="trp-sdate"><span class="trp-bar"></span></span>
+                      <span class="trp-stitle"><span class="trp-bar"></span></span>
+                      <span class="trp-sact"></span>
+                      <span class="trp-tick-gap"></span>
+                    </li>
+                    <li class="trp-srow">
+                      <span class="trp-sdate"><span class="trp-bar"></span></span>
+                      <span class="trp-stitle"><span class="trp-bar"></span></span>
+                      <span class="trp-sact"></span>
+                      <span class="trp-tick-gap"></span>
+                    </li>
+                    <li class="trp-srow">
+                      <span class="trp-sdate"><span class="trp-bar"></span></span>
+                      <span class="trp-stitle"><span class="trp-bar"></span></span>
+                      <span class="trp-sact"></span>
+                      <span class="trp-tick-gap"></span>
+                    </li>
+                  </ul>
+                </li>
+                <li class="glass-card is-static trp-wkcard">
+                  <div class="trp-wkcard-head">
+                    <p class="trp-tag"><span class="trp-bar">Week 01</span></p>
+                    <h2 class="trp-wkcard-theme"><span class="trp-bar">Diagnose and train</span></h2>
+                  </div>
+                  <ul class="trp-srows">
+                    <li class="trp-srow">
+                      <span class="trp-sdate"><span class="trp-bar"></span></span>
+                      <span class="trp-stitle"><span class="trp-bar"></span></span>
+                      <span class="trp-sact"></span>
+                      <span class="trp-tick-gap"></span>
+                    </li>
+                    <li class="trp-srow">
+                      <span class="trp-sdate"><span class="trp-bar"></span></span>
+                      <span class="trp-stitle"><span class="trp-bar"></span></span>
+                      <span class="trp-sact"></span>
+                      <span class="trp-tick-gap"></span>
+                    </li>
+                  </ul>
+                </li>
+                <li class="glass-card is-static trp-wkcard">
+                  <div class="trp-wkcard-head">
+                    <p class="trp-tag"><span class="trp-bar">Week 01</span></p>
+                    <h2 class="trp-wkcard-theme"><span class="trp-bar">Diagnose and train</span></h2>
+                  </div>
+                  <ul class="trp-srows">
+                    <li class="trp-srow">
+                      <span class="trp-sdate"><span class="trp-bar"></span></span>
+                      <span class="trp-stitle"><span class="trp-bar"></span></span>
+                      <span class="trp-sact"></span>
+                      <span class="trp-tick-gap"></span>
+                    </li>
+                    <li class="trp-srow">
+                      <span class="trp-sdate"><span class="trp-bar"></span></span>
+                      <span class="trp-stitle"><span class="trp-bar"></span></span>
+                      <span class="trp-sact"></span>
+                      <span class="trp-tick-gap"></span>
+                    </li>
+                  </ul>
+                </li>
+                <li class="glass-card is-static trp-wkcard">
+                  <div class="trp-wkcard-head">
+                    <p class="trp-tag"><span class="trp-bar">Week 01</span></p>
+                    <h2 class="trp-wkcard-theme"><span class="trp-bar">Diagnose and train</span></h2>
+                  </div>
+                  <ul class="trp-srows">
+                    <li class="trp-srow">
+                      <span class="trp-sdate"><span class="trp-bar"></span></span>
+                      <span class="trp-stitle"><span class="trp-bar"></span></span>
+                      <span class="trp-sact"></span>
+                      <span class="trp-tick-gap"></span>
+                    </li>
+                    <li class="trp-srow">
+                      <span class="trp-sdate"><span class="trp-bar"></span></span>
+                      <span class="trp-stitle"><span class="trp-bar"></span></span>
+                      <span class="trp-sact"></span>
+                      <span class="trp-tick-gap"></span>
+                    </li>
+                    <li class="trp-srow">
+                      <span class="trp-sdate"><span class="trp-bar"></span></span>
+                      <span class="trp-stitle"><span class="trp-bar"></span></span>
+                      <span class="trp-sact"></span>
+                      <span class="trp-tick-gap"></span>
+                    </li>
+                  </ul>
+                </li>
+              </ul>
+            </div>
+            <p class="trp-skel-say" role="status">Loading your schedule&hellip;</p>
           </div>
 </div>
       </div>
@@ -264,7 +403,7 @@
       <span data-portal-community hidden class="trp-foot-sep" aria-hidden="true">&middot;</span>
       <a data-portal-community hidden class="trp-foot-link">WhatsApp community</a>
       <span class="trp-foot-sep" aria-hidden="true">&middot;</span>
-      <span>Need help? <a href="mailto:emc@timerich.ai" class="trp-foot-link">emc@timerich.ai</a></span>
+      <span>Need help? <a href="mailto:emc@timerichclub.com" class="trp-foot-link">emc@timerichclub.com</a></span>
     </p>
   </footer>
 

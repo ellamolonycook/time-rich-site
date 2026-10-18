@@ -59,9 +59,17 @@
   <meta name="twitter:card" content="summary_large_image" />
 
   <link rel="stylesheet" href="portal.css"/>
-  <link rel="preconnect" href="https://fonts.googleapis.com"/>
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
-  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&amp;display=swap" rel="stylesheet"/>
+  <!-- The two faces, served from this repo. They used to come from Google
+       Fonts, which costs a DNS lookup, a stylesheet and only then the font
+       itself: three round trips before a heading could be drawn in the right
+       face, and a reflow when it finally was. Preloading the files directly
+       starts them with the stylesheet instead.
+
+       crossorigin is required on a font preload even for a same-origin file:
+       fonts are fetched in CORS mode, and a preload without it is fetched
+       twice. -->
+  <link rel="preload" href="../brand/fonts/SpaceGrotesk-Variable.woff2" as="font" type="font/woff2" crossorigin/>
+  <link rel="preload" href="../brand/fonts/JetBrainsMono-Variable.woff2" as="font" type="font/woff2" crossorigin/>
   <link rel="stylesheet" href="portal-content.css"/>
 
   <style>
@@ -157,26 +165,35 @@
                  autocapitalize="off"
                  autocorrect="off"
                  spellcheck="false"
+                 aria-describedby="login-error"
                  required/>
         </div>
 
-        <!-- Two lines are reserved, not one. The card is centred on the page,
-             so a message that wraps would grow the card and shift everything
-             up by half the extra height. Every message here runs to two lines
-             at the widths members use. -->
-        <p data-portal-error role="alert" aria-live="polite"
-           class="mt-3 min-h-[2.75rem] text-[14px] leading-[1.35rem] text-brand-error"></p>
-
-        <!-- The page's one main action, so it is the pastel fill. -->
-        <button type="submit" class="trp-btn trp-btn-pastel mt-5 w-full active:scale-[0.99]">
+        <!-- The page's one main action, so it is the pastel fill. It sits
+             right under the field, close enough to read as one group. -->
+        <button type="submit" class="trp-btn trp-btn-pastel mt-3 w-full active:scale-[0.99]">
           <span id="btn-text">Continue</span>
         </button>
 
+        <!-- The message sits under the button, not between it and the field,
+             so the field and the button stay together.
+             Two lines are reserved, not one. The card is centred on the page,
+             so a message that wraps would grow the card and shift everything
+             up by half the extra height. Every message here runs to two lines
+             at the widths members use. The input points at this slot with
+             aria-describedby, so a screen reader still reads the two together
+             even though they are no longer neighbours. -->
+        <p id="login-error" data-portal-error role="alert" aria-live="polite"
+           class="mt-3 min-h-[2.75rem] text-[14px] leading-[1.35rem] text-brand-error"></p>
+
       </form>
 
-      <p class="mt-7 text-[15px] text-brand-ink/70">
+      <!-- mt-2, not the mt-7 it was: the message slot above now holds two
+           lines open under the button, so the breathing room below the form
+           is already there and a second helping of it left a hole. -->
+      <p class="mt-2 text-[15px] text-brand-ink/70">
         Can't log in?
-        <a href="mailto:emc@timerich.ai" class="text-brand-ink underline underline-offset-2 decoration-brand-ink/25 hover:decoration-brand-ink transition-colors">Contact support</a>
+        <a href="mailto:emc@timerichclub.com" class="text-brand-ink underline underline-offset-2 decoration-brand-ink/25 hover:decoration-brand-ink transition-colors">Contact support</a>
       </p>
 
     </div>

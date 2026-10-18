@@ -58,12 +58,18 @@
   <meta name="twitter:image" content="https://timerich.ai/og-time-rich.png" />
   <meta name="twitter:card" content="summary_large_image" />
   <link rel="stylesheet" href="portal.css"/>
-  <link rel="preconnect" href="https://fonts.googleapis.com"/>
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin=""/>
-  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&amp;display=swap" rel="stylesheet"/>
+  <!-- The two faces, served from this repo. They used to come from Google
+       Fonts, which costs a DNS lookup, a stylesheet and only then the font
+       itself: three round trips before a heading could be drawn in the right
+       face, and a reflow when it finally was. Preloading the files directly
+       starts them with the stylesheet instead.
+
+       crossorigin is required on a font preload even for a same-origin file:
+       fonts are fetched in CORS mode, and a preload without it is fetched
+       twice. -->
+  <link rel="preload" href="../brand/fonts/SpaceGrotesk-Variable.woff2" as="font" type="font/woff2" crossorigin/>
+  <link rel="preload" href="../brand/fonts/JetBrainsMono-Variable.woff2" as="font" type="font/woff2" crossorigin/>
   <link rel="stylesheet" href="portal-content.css">
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 
   
 
@@ -75,8 +81,21 @@
   <script src="portal-access.js" defer></script>
   <script src="portal-live.js"></script>
   <script src="portal-chrome.js" defer></script>
-  <script src="portal-progress.js" defer></script>
   <script src="portal-setup.js" defer></script>
+
+  <!-- Warm the next page while the pointer is still travelling to the link.
+       "moderate" is roughly 200ms of hover, which is long enough that a
+       pointer crossing the nav does not fetch all six. Only portal pages are
+       listed: a prefetch rule that matched everything would also warm the
+       sign-out and the partner links. -->
+  <script type="speculationrules">
+  {
+    "prefetch": [{
+      "where": { "href_matches": "/portal/*.html" },
+      "eagerness": "moderate"
+    }]
+  }
+  </script>
 </head>
 
 
@@ -200,101 +219,210 @@
     <main class="flex-1 relative bg-transparent">
 
       <div class="relative z-10 px-6 sm:px-8 py-8 lg:py-12 max-w-[1200px] mx-auto transition-all duration-150 ease-[cubic-bezier(0.16,1,0.3,1)]">
-        
-        <!-- FULL WIDTH COLUMN -->
-        <div class="w-full space-y-6 lg:space-y-8">
-          
-          <!-- PAGE HEADER. The programme name, the heading greeting the
-               member by name, and one line saying what to do first. The
-               promo video that used to sit beside this has moved to the top
-               of the Live Sessions page, where there is a reason to watch
-               it. -->
-          <header class="pt-2">
-            <span class="trp-kicker">Superhuman Accelerator</span>
-            <h1 class="trp-title">Good to see you<span data-portal-name-wrap hidden>, <span data-portal-name></span></span><span class="trp-stop">.</span></h1>
-            <p class="trp-lede">Finish your Start here list before kickoff. Everything else is one click away.</p>
+
+        <div class="trp-dash">
+
+          <!-- 1. WELCOME BAR. The greeting on the left, where the cohort is
+                  on the right. The pill is filled by the script because it
+                  counts from the first session's Eastern date, which only
+                  the payload knows. -->
+          <header class="trp-dash-bar">
+            <div class="trp-dash-greet">
+              <span class="trp-kicker">Superhuman Accelerator</span>
+              <h1 class="trp-title">Good to see you<span data-portal-name-wrap hidden>, <span data-portal-name></span></span><span class="trp-stop">.</span></h1>
+            </div>
+            <!-- Held open rather than hidden: appearing from nothing, the
+                 pill pushed the whole page down 58px at 375px, where it sits
+                 on its own line under the greeting. -->
+            <p class="trp-dash-pill" data-dash-countdown><span class="trp-skel" aria-hidden="true"><span class="trp-bar">Kickoff Mon 26 Oct &middot; 9 days to go</span></span></p>
           </header>
 
-          <!-- Filled by portal-setup.js, and hidden until there is a step to
-               show. The two things every member does once, before anything
-               else on this page is much use. -->
-          <section data-portal-setup hidden aria-label="Set up once"></section>
+          <!-- 2. YOUR NEXT STEP. One thing to do, which is the whole point
+                  of this page. Drawn from the same items and in the same
+                  order the Curriculum shows them. -->
+          <!-- The placeholder stands at the height the card will be: the same
+               classes, and the words it will hold, inked out. The renderer
+               clears it, so the card replaces the placeholder rather than
+               appearing under it. -->
+          <section data-dash-step class="glass-card is-static trp-nextstep" aria-label="Your next step">
+            <div class="trp-skel trp-nextstep-main" aria-hidden="true">
+              <p class="trp-tag"><span class="trp-bar">Your next step &middot; 1 of 9</span></p>
+              <h2 class="trp-nextstep-title"><span class="trp-bar">Make your copy of the Business COMPASS</span></h2>
+              <p class="trp-nextstep-body"><span class="trp-bar">Click to make your own copy. Keep it open.</span></p>
+              <div class="trp-nextstep-acts">
+                <span class="trp-bar is-btn"></span>
+                <span class="trp-bar is-btn"></span>
+              </div>
+            </div>
+            <div class="trp-skel trp-nextstep-side" aria-hidden="true">
+              <p class="trp-nextstep-count"><span class="trp-bar">1 of 9 done</span></p>
+              <div class="trp-progress-track"></div>
+              <p class="trp-nextstep-note"><span class="trp-bar">Start here &middot; finish before kickoff</span></p>
+            </div>
+          </section>
 
-          <!-- ONE ROW OF TWO CARDS. The next live session, which is the only
-               deep green block on the page, and the member's own progress. -->
-          <div class="grid grid-cols-1 lg:grid-cols-2 gap-5 lg:gap-6 items-stretch">
-            <!-- Hidden until there is a session to show. -->
-            <div data-dash-next hidden></div>
-            <!-- portal-progress.js renders into this slot. -->
-            <div data-portal-progress hidden></div>
+          <!-- 3. THREE TILES. The next call, how far through the member is,
+                  and what comes free with their place. -->
+          <div class="trp-dash-tiles">
+            <div data-dash-next class="glass-card is-static is-deep trp-tile trp-next">
+              <div class="trp-skel" aria-hidden="true">
+                <p class="trp-tag"><span class="trp-bar">Next live session</span></p>
+                <h2 class="trp-next-title"><span class="trp-bar">Open Business Surgery</span></h2>
+                <p class="trp-next-when"><span class="trp-bar">MON 26 OCT &middot; 12PM ET</span></p>
+                <div class="trp-next-acts"><span class="trp-bar is-btn"></span></div>
+                <p class="trp-join-note"><span class="trp-bar">Opens 30 minutes before the start.</span></p>
+              </div>
+            </div>
+            <div data-dash-sessions class="glass-card is-static trp-tile">
+              <div class="trp-skel" aria-hidden="true">
+                <p class="trp-tag"><span class="trp-bar">Your progress</span></p>
+                <p class="trp-tile-big"><span class="trp-bar is-big"></span></p>
+                <div class="trp-progress-track"></div>
+                <p class="trp-tile-go"><span class="trp-bar">Open curriculum</span></p>
+              </div>
+            </div>
+
+            <!-- The partner lines are the ones on Resources, word for word.
+                 A test compares the two files so they cannot drift; this
+                 tile is the trailer, Resources is the page. -->
+            <section class="glass-card is-static trp-tile trp-ptile" aria-labelledby="dash-partners">
+              <p class="trp-tag">Your partner offers</p>
+              <h2 id="dash-partners" class="trp-tile-title">Included with your place</h2>
+              <ul class="trp-ptile-list">
+                <li>
+                  <span class="trp-ptile-name">Stanley</span>
+                  <span class="trp-ptile-line">Your AI head of content. Drafts from your calls, learns your voice, posts for you.</span>
+                </li>
+                <li>
+                  <span class="trp-ptile-name">Wispr Flow</span>
+                  <span class="trp-ptile-line">6 months of Wispr Flow Pro, the voice dictation app the accelerator runs on.</span>
+                </li>
+                <li>
+                  <span class="trp-ptile-name">LaunchLemonade</span>
+                  <span class="trp-ptile-line">3 months of LaunchLemonade included.</span>
+                </li>
+              </ul>
+              <a class="trp-tile-go" href="resources.html">Claim in Resources <span aria-hidden="true">&rarr;</span></a>
+            </section>
           </div>
 
-          <!-- ONE ROW. The Start here checklist, wide, with the setup card
-               and the help card stacked in a narrower column beside it. -->
-          <div class="grid grid-cols-1 lg:grid-cols-[minmax(0,1.6fr)_minmax(0,1fr)] gap-5 lg:gap-6 items-start">
+          <!-- 4. TWO COLUMNS. The whole Start here list on the left, kept to
+                  titles so it stays scannable, and everything a member sets
+                  up once on the right. -->
+          <div class="trp-dash-cols">
 
-            <!-- The section that is open now, drawn by the shared checklist
-                 card in portal-live.js. The Curriculum draws every open
-                 section with the same one. -->
-            <div data-dash-start hidden></div>
-
-            <div class="grid gap-5 lg:gap-6">
-
-              <!-- CONNECT YOUR NOTION. The page's one quiet sage card. The
-                   three tool choices are the same <details> elements they
-                   were, so the open and close, the keyboard handling and
-                   in-page search all still come from the browser; they are
-                   drawn as pills and start closed. Everything inside them --
-                   the steps, the prompts, the copy boxes -- is untouched.
-
-                   The "Setup" label is gone: the heading under it already
-                   said what this is. -->
-              <section class="glass-card is-static is-sage trp-connect" aria-labelledby="connect-heading">
-                <h2 id="connect-heading" class="trp-connect-title">Connect your Notion to your AI</h2>
-                <p class="trp-connect-lede">Point your AI at your own pages once, and it stops guessing. Pick the tool you use.</p>
-
-            <details class="trp-acc is-pill">
-              <summary class="trp-acc-head">
-                <span class="trp-acc-title">In Claude</span>
-                <svg class="trp-acc-caret" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7"></path></svg>
-              </summary>
-              <div class="trp-acc-body">
-                <ol class="trp-acc-steps">
-                  <li>Open your Business Hub project.</li>
-                  <li>Go to Context.</li>
-                  <li>Choose Add, then Notion.</li>
-                  <li>Search for each page, or paste its link.</li>
-                  <li>Add it.</li>
-                </ol>
-                <!-- The file itself is cropped to the Context dialog. Nothing
-                     here hides any part of it. -->
-                <figure class="trp-acc-figure" data-shot>
-                  <img src="img/claude-notion-context.png"
-                       alt="The Context dialog in Claude, with Notion pages being added."
-                       loading="lazy" decoding="async"
-                       onerror="this.closest('[data-shot]').hidden = true"/>
-                </figure>
-              </div>
-            </details>
-
-            <details class="trp-acc is-pill">
-              <summary class="trp-acc-head">
-                <span class="trp-acc-title">In Grok Bot</span>
-                <svg class="trp-acc-caret" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7"></path></svg>
-              </summary>
-              <div class="trp-acc-body">
-                <ol class="trp-acc-steps">
-                  <li>Open Grok Bot.</li>
-                  <li>Paste the prompt below, with your own page links in place of the brackets.</li>
-                  <li>Check it confirms it can open all 8.</li>
-                </ol>
-
-                <div class="trp-copybox">
-                  <div class="trp-copybox-head">
-                    <span class="trp-tag">The prompt</span>
-                    <button type="button" class="trp-copy" data-copy-target="grok-prompt">Copy</button>
+            <div data-dash-list class="glass-card is-static trp-dlist">
+              <div class="trp-skel" aria-hidden="true">
+                <div class="trp-check-head">
+                  <div>
+                    <p class="trp-tag"><span class="trp-bar">Week 01 &middot; Start here</span></p>
+                    <h2 class="trp-check-heading"><span class="trp-bar">Your steps</span></h2>
                   </div>
-                  <pre id="grok-prompt" class="trp-copybox-text">Save this as standing context. Read these Notion pages live before any task. They are the source of truth:
+                  <p class="trp-check-count"><span class="trp-bar">1 of 9 done</span></p>
+                </div>
+                <ul class="trp-dsteps">
+                    <li class="trp-dstep">
+                      <span class="trp-check-gap"></span>
+                      <span class="trp-dstep-head"><span class="trp-bar">Welcome to the Superhuman Accelerator</span></span>
+                    </li>
+                    <li class="trp-dstep">
+                      <span class="trp-check-gap"></span>
+                      <span class="trp-dstep-head"><span class="trp-bar">Make your copy of the Business COMPASS</span></span>
+                    </li>
+                    <li class="trp-dstep">
+                      <span class="trp-check-gap"></span>
+                      <span class="trp-dstep-head"><span class="trp-bar">Install Wispr Flow</span></span>
+                    </li>
+                    <li class="trp-dstep">
+                      <span class="trp-check-gap"></span>
+                      <span class="trp-dstep-head"><span class="trp-bar">Turn it on</span></span>
+                    </li>
+                    <li class="trp-dstep">
+                      <span class="trp-check-gap"></span>
+                      <span class="trp-dstep-head"><span class="trp-bar">Say it: One-liners</span></span>
+                    </li>
+                    <li class="trp-dstep">
+                      <span class="trp-check-gap"></span>
+                      <span class="trp-dstep-head"><span class="trp-bar">Say it: Who I serve</span></span>
+                    </li>
+                </ul>
+                <div class="trp-dlist-foot">
+                  <p class="trp-dlist-more"><span class="trp-bar">+ 3 more steps</span></p>
+                  <p class="trp-dlist-go"><span class="trp-bar">See all in Curriculum</span></p>
+                </div>
+              </div>
+            </div>
+
+            <div class="trp-dash-aside">
+
+              <!-- Filled by portal-setup.js. The aside's own rules make it
+                   the compact two-row version of the same card. -->
+              <section data-portal-setup class="glass-card is-static trp-setup" aria-label="Set up once">
+                <div class="trp-skel" aria-hidden="true">
+                  <div class="trp-setup-heading">
+                    <h2><span class="trp-bar">Set up once</span></h2>
+                    <span><span class="trp-bar">0 of 2 complete</span></span>
+                  </div>
+                  <ol class="trp-setup-steps">
+                    <li class="trp-setup-step">
+                      <div class="trp-setup-copy"><h3><span class="trp-bar">Add every session to your calendar</span></h3></div>
+                      <div class="trp-setup-actions"><span class="trp-bar is-btn"></span><span class="trp-bar is-btn"></span></div>
+                    </li>
+                    <li class="trp-setup-step">
+                      <div class="trp-setup-copy"><h3><span class="trp-bar">Duplicate your Superhuman OS</span></h3></div>
+                      <div class="trp-setup-actions"><span class="trp-bar is-btn"></span><span class="trp-bar is-btn"></span></div>
+                    </li>
+                  </ol>
+                  <p class="trp-setup-status"><span class="trp-bar">Mark each step done when you have finished.</span></p>
+                </div>
+              </section>
+
+            <section class="glass-card is-static is-sage trp-connect" aria-labelledby="connect-heading">
+              <h2 id="connect-heading" class="trp-connect-title">Connect your Notion to your AI</h2>
+              <p class="trp-connect-lede">Point your AI at your own pages once, and it stops guessing. Pick the tool you use.</p>
+
+          <details class="trp-acc is-pill">
+            <summary class="trp-acc-head">
+              <span class="trp-acc-title">In Claude</span>
+              <svg class="trp-acc-caret" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7"></path></svg>
+            </summary>
+            <div class="trp-acc-body">
+              <ol class="trp-acc-steps">
+                <li>Open your Business Hub project.</li>
+                <li>Go to Context.</li>
+                <li>Choose Add, then Notion.</li>
+                <li>Search for each page, or paste its link.</li>
+                <li>Add it.</li>
+              </ol>
+              <!-- The file itself is cropped to the Context dialog. Nothing
+                   here hides any part of it. -->
+              <figure class="trp-acc-figure" data-shot>
+                <img src="img/claude-notion-context.png"
+                     alt="The Context dialog in Claude, with Notion pages being added."
+                     loading="lazy" decoding="async"
+                     onerror="this.closest('[data-shot]').hidden = true"/>
+              </figure>
+            </div>
+          </details>
+
+          <details class="trp-acc is-pill">
+            <summary class="trp-acc-head">
+              <span class="trp-acc-title">In Grok Bot</span>
+              <svg class="trp-acc-caret" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7"></path></svg>
+            </summary>
+            <div class="trp-acc-body">
+              <ol class="trp-acc-steps">
+                <li>Open Grok Bot.</li>
+                <li>Paste the prompt below, with your own page links in place of the brackets.</li>
+                <li>Check it confirms it can open all 8.</li>
+              </ol>
+
+              <div class="trp-copybox">
+                <div class="trp-copybox-head">
+                  <span class="trp-tag">The prompt</span>
+                  <button type="button" class="trp-copy" data-copy-target="grok-prompt">Copy</button>
+                </div>
+                <pre id="grok-prompt" class="trp-copybox-text">Save this as standing context. Read these Notion pages live before any task. They are the source of truth:
 1. Business COMPASS: [paste your link]
 2. Content Hub: [paste your link]
 3. Content Library: [paste your link]
@@ -304,64 +432,63 @@
 7. Marketing Avenues: [paste your link]
 8. Customer insights: [paste your link]
 Confirm you can open all 8.</pre>
-                </div>
-
-                <figure class="trp-acc-figure" data-shot>
-                  <img src="img/grok-standing-context.png"
-                       alt="Grok Bot confirming it can open all eight Notion pages."
-                       loading="lazy" decoding="async"
-                       onerror="this.closest('[data-shot]').hidden = true"/>
-                </figure>
               </div>
-            </details>
 
-            <details class="trp-acc is-pill">
-              <summary class="trp-acc-head">
-                <span class="trp-acc-title">In ChatGPT</span>
-                <svg class="trp-acc-caret" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7"></path></svg>
-              </summary>
-              <div class="trp-acc-body">
-                <ol class="trp-acc-steps">
-                  <li>Open Settings from your profile picture, then Apps &amp; connectors.</li>
-                  <li>Find Notion and choose Connect.</li>
-                  <li>Sign in to Notion and tick the pages you want ChatGPT to read.</li>
-                  <li>Back in Apps &amp; connectors, turn the Sync toggle on. Without it, ChatGPT will not search your pages.</li>
-                  <li>Open your project, choose the three dots, then Project settings, and put your standing instructions there.</li>
-                </ol>
-                <p class="trp-acc-note">Connectors need a paid ChatGPT plan. Skills and scheduled agents still run in Claude.</p>
-                <!-- Remove the hidden attribute once img/chatgpt-notion-connector.png
-                     is in place. The onerror below hides it again if the file goes
-                     missing later. -->
-                <figure class="trp-acc-figure" data-shot hidden>
-                  <img src="img/chatgpt-notion-connector.png"
-                       alt="The Apps and connectors screen in ChatGPT, with Notion connected and Sync on."
-                       loading="lazy" decoding="async"
-                       onerror="this.closest('[data-shot]').hidden = true"/>
-                </figure>
-              </div>
-            </details>
+              <figure class="trp-acc-figure" data-shot>
+                <img src="img/grok-standing-context.png"
+                     alt="Grok Bot confirming it can open all eight Notion pages."
+                     loading="lazy" decoding="async"
+                     onerror="this.closest('[data-shot]').hidden = true"/>
+              </figure>
+            </div>
+          </details>
 
-                <p class="trp-connect-note">Use the links from your own duplicated workbook, not ours.</p>
-              </section>
+          <details class="trp-acc is-pill">
+            <summary class="trp-acc-head">
+              <span class="trp-acc-title">In ChatGPT</span>
+              <svg class="trp-acc-caret" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7"></path></svg>
+            </summary>
+            <div class="trp-acc-body">
+              <ol class="trp-acc-steps">
+                <li>Open Settings from your profile picture, then Apps &amp; connectors.</li>
+                <li>Find Notion and choose Connect.</li>
+                <li>Sign in to Notion and tick the pages you want ChatGPT to read.</li>
+                <li>Back in Apps &amp; connectors, turn the Sync toggle on. Without it, ChatGPT will not search your pages.</li>
+                <li>Open your project, choose the three dots, then Project settings, and put your standing instructions there.</li>
+              </ol>
+              <p class="trp-acc-note">Connectors need a paid ChatGPT plan. Skills and scheduled agents still run in Claude.</p>
+              <!-- Remove the hidden attribute once img/chatgpt-notion-connector.png
+                   is in place. The onerror below hides it again if the file goes
+                   missing later. -->
+              <figure class="trp-acc-figure" data-shot hidden>
+                <img src="img/chatgpt-notion-connector.png"
+                     alt="The Apps and connectors screen in ChatGPT, with Notion connected and Sync on."
+                     loading="lazy" decoding="async"
+                     onerror="this.closest('[data-shot]').hidden = true"/>
+              </figure>
+            </div>
+          </details>
 
-              <!-- NEED A HAND. The two ways out of a stuck moment, in the
-                   column beside the checklist rather than only in the
-                   footer. -->
+              <p class="trp-connect-note">Use the links from your own duplicated workbook, not ours.</p>
+            </section>
+
+              <!-- NEED A HAND. The two ways out of a stuck moment, on one
+                   line rather than in a card of its own height. -->
               <section class="glass-card is-static trp-aside" aria-labelledby="help-heading">
                 <h2 id="help-heading" class="trp-aside-title">Need a hand?</h2>
                 <p class="trp-aside-links">
                   <!-- Href comes from the week 0 link item; the whole row is
                        hidden when there is none. -->
                   <a data-portal-community hidden class="trp-aside-link">WhatsApp community</a>
-                  <a href="mailto:emc@timerich.ai" class="trp-aside-link">emc@timerich.ai</a>
+                  <a href="mailto:emc@timerichclub.com" class="trp-aside-link">emc@timerichclub.com</a>
                 </p>
               </section>
 
             </div>
           </div>
 
-          </div> <!-- CLOSE Full Width Column -->
-        </div> <!-- CLOSE max-w-[1200px] -->
+        </div>
+      </div>
       </main> <!-- CLOSE main -->
     </div> <!-- CLOSE h-screen container -->
 
@@ -384,7 +511,7 @@ Confirm you can open all 8.</pre>
       <span data-portal-community hidden class="trp-foot-sep" aria-hidden="true">&middot;</span>
       <a data-portal-community hidden class="trp-foot-link">WhatsApp community</a>
       <span class="trp-foot-sep" aria-hidden="true">&middot;</span>
-      <span>Need help? <a href="mailto:emc@timerich.ai" class="trp-foot-link">emc@timerich.ai</a></span>
+      <span>Need help? <a href="mailto:emc@timerichclub.com" class="trp-foot-link">emc@timerichclub.com</a></span>
     </p>
   </footer>
 
@@ -469,22 +596,204 @@ Confirm you can open all 8.</pre>
     /* Dashboard, drawn from portal_get. Every block hides itself when the
        data it needs is not there, so a member never meets a placeholder.
 
-       The Tailwind class strings this file used to carry are gone. Each
-       card is a component class now -- .trp-next, .trp-check, .trp-btn --
-       so the dashboard and the pages that draw the same shapes cannot drift
-       apart by a padding or a font weight. */
+       The page is one question answered five ways: what do I do next. The
+       next step card answers it outright, the tiles say what is coming and
+       what is already paid for, and the list on the left is the same steps
+       in full. Nothing is drawn twice: the long week card and the second
+       progress card that used to sit here are gone, and so is the Resume
+       curriculum link that said the same thing as the tile under it.
+
+       Every card is a component class -- .trp-tile, .trp-nextstep,
+       .trp-dstep -- so this page and the ones that draw the same shapes
+       cannot drift apart by a padding or a font weight. */
     (function () {
       var L = window.TRLive;
       if (!L) return;
 
-      /* ---- the next live session ------------------------------------------
-         The only deep green block on the page, and the only pastel button:
-         Join via Zoom. Add to calendar beside it is the outline. */
-      function renderNext(root, data) {
-        L.clear(root);
-        root.className = 'glass-card is-static is-deep trp-next';
+      var TZ = 'America/New_York';
+      var DAY = 86400000;
 
-        var next = L.nextSession(data);
+      function arrow() {
+        var a = L.el('span', '', '\u2192');
+        a.setAttribute('aria-hidden', 'true');
+        return a;
+      }
+
+      function goLink(href, text, cls) {
+        var a = L.el('a', cls || 'trp-tile-go');
+        a.href = href;
+        a.appendChild(document.createTextNode(text + ' '));
+        a.appendChild(arrow());
+        return a;
+      }
+
+      /* A thin bar with the numbers already on it. Used by the next step
+         card and by the sessions tile, which is why it takes its label
+         rather than writing one. */
+      function bar(done, total, label) {
+        var track = L.el('div', 'trp-progress-track');
+        var fill = L.el('div', 'trp-progress-fill');
+        var percent = total ? Math.round((done / total) * 100) : 0;
+        fill.style.width = Math.max(0, Math.min(100, percent)) + '%';
+        track.appendChild(fill);
+        track.setAttribute('role', 'progressbar');
+        track.setAttribute('aria-valuemin', '0');
+        track.setAttribute('aria-valuemax', String(total));
+        track.setAttribute('aria-valuenow', String(done));
+        track.setAttribute('aria-label', label);
+        return track;
+      }
+
+      /* ---- the steps ------------------------------------------------------
+         The same items the Curriculum shows, in the same order: everything
+         in Start here, then Week 1's own items once that week has opened.
+         TRLive.learningCard draws exactly this, which is why the order is
+         taken from there rather than invented here. */
+      function stepList(data) {
+        var out = [];
+        var all = L.weeks(data);
+        var prep = all.filter(function (w) { return L.num(w.id) === 0 && w.unlocked === true; })[0];
+        var week1 = all.filter(function (w) { return L.num(w.id) === 1; })[0];
+        if (prep) L.items(prep).forEach(function (i) { if (L.itemKey(i)) out.push(i); });
+        if (week1 && week1.unlocked === true) {
+          L.items(week1).forEach(function (i) { if (L.itemKey(i)) out.push(i); });
+        }
+        return out;
+      }
+
+      function stepState(data) {
+        var list = stepList(data);
+        var done = 0, firstOpen = -1;
+        for (var i = 0; i < list.length; i++) {
+          if (L.isItemDone(list[i])) done += 1;
+          else if (firstOpen === -1) firstOpen = i;
+        }
+        return { list: list, done: done, total: list.length, index: firstOpen };
+      }
+
+      /* ---- 1. the countdown pill ------------------------------------------
+         Whole Eastern days between today and the first session, because the
+         cohort is announced in ET and a member in Sydney must see the same
+         number as one in Los Angeles. Comparing the two date keys rather
+         than subtracting timestamps is what keeps a daylight-saving change
+         from costing a day. */
+      function etMidnight(value) {
+        var key = L.dateKey(value, TZ);
+        return key ? Date.parse(key + 'T00:00:00Z') : NaN;
+      }
+
+      function countdownText(data, now) {
+        var list = L.sessions(data);
+        if (!list.length) return '';
+        var first = list[0];
+        var start = L.toDate(first && first.starts_at);
+        if (!start) return '';
+
+        var days = Math.round((etMidnight(start) - etMidnight(now)) / DAY);
+        if (!isFinite(days)) return '';
+
+        if (days > 0) {
+          var when = L.etDate(first.starts_at);
+          return 'Kickoff ' + when + ' \u00b7 ' + days + (days === 1 ? ' day to go' : ' days to go');
+        }
+        if (days === 0) return 'Kickoff today';
+
+        /* Past kickoff the pill stops counting and says where the cohort is.
+           The week number is the count of weeks that have opened, which is
+           the same flag the Curriculum reads. */
+        var program = L.scheduleProgress(data, now);
+        var total = program.weeksTotal || 4;
+        var n = Math.min(total, Math.max(1, program.weeksDone));
+        return 'Week ' + n + ' of ' + total;
+      }
+
+      function renderCountdown(root, data, now) {
+        var text = countdownText(data, now);
+        L.clear(root);
+        if (!text) { L.show(root, false); return; }
+        root.appendChild(document.createTextNode(text));
+        L.show(root, true);
+      }
+
+      /* ---- 2. your next step ----------------------------------------------
+         One item, the first one not ticked. Ticking it redraws the card from
+         the state the tick just wrote, so the next one takes its place
+         without a reload. */
+      function renderStep(root, data) {
+        var state = stepState(data);
+        L.clear(root);
+        root.className = 'glass-card is-static trp-nextstep';
+
+        if (!state.total) { L.show(root, false); return; }
+
+        var main = L.el('div', 'trp-nextstep-main');
+        var side = L.el('div', 'trp-nextstep-side');
+
+        if (state.index === -1) {
+          main.appendChild(L.el('p', 'trp-tag', 'Your next step'));
+          main.appendChild(L.el('h2', 'trp-nextstep-title', 'You\u2019re ready for kickoff.'));
+          main.appendChild(L.el('p', 'trp-nextstep-body',
+            'Everything on your Start here list is done.'));
+          main.appendChild(goLink('curriculum.html', 'Open curriculum', 'trp-nextstep-go'));
+        } else {
+          var item = state.list[state.index];
+          main.appendChild(L.el('p', 'trp-tag',
+            'Your next step \u00b7 ' + (state.index + 1) + ' of ' + state.total));
+          main.appendChild(L.el('h2', 'trp-nextstep-title', L.str(item.title) || 'Untitled'));
+
+          var body = L.str(item.body);
+          if (body) main.appendChild(L.el('p', 'trp-nextstep-body', body));
+
+          var acts = L.el('div', 'trp-nextstep-acts');
+          // No url means there is nothing to open, so there is no button.
+          var open = L.linkTo(item.url, 'Open', 'trp-btn trp-btn-pastel');
+          if (open) {
+            open.setAttribute('aria-label', 'Open ' + (L.str(item.title) || 'this step'));
+            acts.appendChild(open);
+          }
+
+          /* The same write every tick on the site makes: TRLive.toggleItem,
+             which calls TRPortal.setProgress and announces the change. The
+             listener at the foot of this file redraws on that announcement,
+             which is what moves the card on. */
+          var mark = L.el('button', 'trp-btn trp-btn-outline', 'Mark done');
+          mark.type = 'button';
+          mark.setAttribute('aria-label', 'Mark done: ' + (L.str(item.title) || 'this step'));
+          mark.addEventListener('click', function () {
+            if (mark.disabled) return;
+            mark.disabled = true;
+            Promise.resolve(L.toggleItem(item)).then(function () { mark.disabled = false; },
+              function () { mark.disabled = false; });
+          });
+          acts.appendChild(mark);
+          main.appendChild(acts);
+        }
+
+        side.appendChild(L.el('p', 'trp-nextstep-count',
+          state.done + ' of ' + state.total + ' done'));
+        side.appendChild(bar(state.done, state.total,
+          'Start here: ' + state.done + ' of ' + state.total + ' done'));
+        side.appendChild(L.el('p', 'trp-nextstep-note',
+          'Start here \u00b7 finish before kickoff'));
+
+        root.appendChild(main);
+        root.appendChild(side);
+        L.show(root, true);
+      }
+
+      /* ---- 3a. the next live session --------------------------------------
+         The button's state is not decided here. This card used to hand out a
+         live link as soon as the session carried one, while Live Sessions
+         kept the same call dead until its Eastern calendar day began, so the
+         two pages disagreed about the same session. Both call
+         TRLive.joinControl now, which opens the link half an hour before the
+         start and shuts it when the call ends. */
+      function renderNext(root, data, now) {
+        L.clear(root);
+        root.className = 'glass-card is-static is-deep trp-tile trp-next';
+
+        var at = now || new Date();
+        var next = L.nextSession(data, at);
 
         if (next) {
           root.appendChild(L.el('p', 'trp-tag', 'Next live session'));
@@ -498,18 +807,17 @@ Confirm you can open all 8.</pre>
           }
 
           var actions = L.el('div', 'trp-next-acts');
-          var join = L.linkTo(next.join_url, 'Join via Zoom', 'trp-btn trp-btn-pastel');
-          if (join) actions.appendChild(join);
-          // No per-session calendar link here any more: the Set up once
-          // card above subscribes to the whole schedule in one go.
-          if (actions.childNodes.length) root.appendChild(actions);
+          var join = L.joinControl(next, at);
+          actions.appendChild(join.control);
+          root.appendChild(actions);
+          if (join.note) root.appendChild(join.note);
 
           L.show(root, true);
           return;
         }
 
         // Past the last session: offer the most recent recording instead.
-        var rec = L.latestRecording(data);
+        var rec = L.latestRecording(data, at);
         if (rec) {
           root.appendChild(L.el('p', 'trp-tag', 'Latest recording'));
           root.appendChild(L.el('h2', 'trp-next-title', L.str(rec.title) || 'Session'));
@@ -532,48 +840,190 @@ Confirm you can open all 8.</pre>
         L.show(root, false);
       }
 
-      /* ---- the open section ----------------------------------------------
-         The shared checklist card from portal-live.js, pointed at the newest
-         week the member can open -- "Start here" until the first week opens,
-         and then whichever week is newest. The card that used to sit here
-         showed the first three items and a link; this is the whole list,
-         with the ticks on it.
-
-         Sessions are left out on purpose: the next one has its own card at
-         the top of this page, and the whole schedule is one click away. */
-      function renderStart(root, data) {
+      /* ---- 3b. sessions attended ------------------------------------------
+         Sessions only. The materials have their own count on the next step
+         card above, and one number per thing is the rule this page is built
+         on. */
+      function renderSessions(root, data) {
+        var list = L.sessions(data).filter(function (s) { return L.sessionKey(s); });
         L.clear(root);
-        var week = L.latestUnlockedWeek(data);
-        if (!week) { L.show(root, false); return; }
-        root.appendChild(L.learningCard(data, week, { sessions: false }));
+        root.className = 'glass-card is-static trp-tile';
+
+        if (!list.length) { L.show(root, false); return; }
+
+        var done = 0;
+        for (var i = 0; i < list.length; i++) {
+          if (L.isSessionMarked(list[i])) done += 1;
+        }
+
+        root.appendChild(L.el('p', 'trp-tag', 'Your progress'));
+        var big = L.el('p', 'trp-tile-big');
+        big.appendChild(L.el('span', 'trp-tile-n', String(done)));
+        big.appendChild(L.el('span', 'trp-tile-of',
+          'of ' + list.length + ' sessions'));
+        root.appendChild(big);
+        root.appendChild(bar(done, list.length,
+          'Sessions attended: ' + done + ' of ' + list.length));
+        root.appendChild(goLink('curriculum.html', 'Open curriculum'));
         L.show(root, true);
       }
 
-      function paint(data) {
+      /* ---- 4. the compact Start here list ---------------------------------
+         Titles and ticks, because a page of bodies is what the Curriculum is
+         for. A row opens on its own title: the body and the link are there,
+         one press away, without leaving the dashboard. */
+      var SHOWN = 6;
+      var rowSeq = 0;
+
+      function stepRow(item, isNext) {
+        var name = L.str(item && item.title) || 'Untitled';
+        var row = L.el('li', 'trp-dstep');
+
+        row.appendChild(L.checkBox(
+          function () { return L.isItemDone(item); },
+          function () { return L.toggleItem(item); },
+          name));
+
+        var body = L.str(item && item.body);
+        var link = L.linkTo(item && item.url, 'Open', 'trp-slink');
+        var hasMore = Boolean(body || link);
+
+        var head = L.el('button', 'trp-dstep-head');
+        head.type = 'button';
+        head.appendChild(L.el('span', 'trp-dstep-name', name));
+        if (isNext) head.appendChild(L.el('span', 'trp-dstep-next', 'Next'));
+
+        if (hasMore) {
+          rowSeq += 1;
+          var id = 'dstep-' + rowSeq;
+          var panel = L.el('div', 'trp-dstep-body');
+          panel.id = id;
+          panel.hidden = true;
+          if (body) panel.appendChild(L.el('p', 'trp-dstep-text', body));
+          if (link) panel.appendChild(link);
+
+          head.appendChild(caret());
+          head.setAttribute('aria-expanded', 'false');
+          head.setAttribute('aria-controls', id);
+          head.addEventListener('click', function () {
+            var open = head.getAttribute('aria-expanded') === 'true';
+            head.setAttribute('aria-expanded', open ? 'false' : 'true');
+            panel.hidden = open;
+            row.classList.toggle('is-open', !open);
+          });
+          row.appendChild(head);
+          row.appendChild(panel);
+        } else {
+          // Nothing to open, so the title is not a control that pretends to.
+          head.disabled = true;
+          row.appendChild(head);
+        }
+
+        return row;
+      }
+
+      function caret() {
+        var ns = 'http://www.w3.org/2000/svg';
+        var svg = document.createElementNS(ns, 'svg');
+        svg.setAttribute('class', 'trp-dstep-caret');
+        svg.setAttribute('viewBox', '0 0 24 24');
+        svg.setAttribute('fill', 'none');
+        svg.setAttribute('stroke', 'currentColor');
+        svg.setAttribute('stroke-width', '1.5');
+        svg.setAttribute('aria-hidden', 'true');
+        var path = document.createElementNS(ns, 'path');
+        path.setAttribute('stroke-linecap', 'round');
+        path.setAttribute('stroke-linejoin', 'round');
+        path.setAttribute('d', 'M19 9l-7 7-7-7');
+        svg.appendChild(path);
+        return svg;
+      }
+
+      function renderList(root, data) {
+        var state = stepState(data);
+        L.clear(root);
+        root.className = 'glass-card is-static trp-dlist';
+
+        if (!state.total) { L.show(root, false); return; }
+
+        var head = L.el('div', 'trp-check-head');
+        var left = L.el('div', '');
+        left.appendChild(L.el('p', 'trp-tag', 'Week 01 \u00b7 Start here'));
+        left.appendChild(L.el('h2', 'trp-check-heading', 'Your steps'));
+        head.appendChild(left);
+        head.appendChild(L.el('p', 'trp-check-count',
+          state.done + ' of ' + state.total + ' done'));
+        root.appendChild(head);
+
+        var ul = L.el('ul', 'trp-dsteps');
+        state.list.slice(0, SHOWN).forEach(function (item, i) {
+          ul.appendChild(stepRow(item, i === state.index));
+        });
+        root.appendChild(ul);
+
+        var foot = L.el('div', 'trp-dlist-foot');
+        var rest = state.total - SHOWN;
+        if (rest > 0) {
+          foot.appendChild(L.el('p', 'trp-dlist-more',
+            '+ ' + rest + (rest === 1 ? ' more step' : ' more steps')));
+        }
+        foot.appendChild(goLink('curriculum.html', 'See all in Curriculum', 'trp-dlist-go'));
+        root.appendChild(foot);
+
+        L.show(root, true);
+      }
+
+      /* ---- all of it ------------------------------------------------------
+         `now` is threaded in rather than read inside each card: a test can
+         then put this page and Live Sessions on the same clock and compare
+         them, which is the only way to prove they agree. */
+      function paint(data, now) {
         if (!data) return;
+        var at = now || new Date();
 
         var nameWrap = document.querySelector('[data-portal-name-wrap]');
         var name = document.querySelector('[data-portal-name]');
         L.show(nameWrap, Boolean(name && L.str(name.textContent)));
 
+        var pill = document.querySelector('[data-dash-countdown]');
+        var step = document.querySelector('[data-dash-step]');
         var next = document.querySelector('[data-dash-next]');
-        var start = document.querySelector('[data-dash-start]');
-        if (next) renderNext(next, data);
-        if (start) renderStart(start, data);
+        var sess = document.querySelector('[data-dash-sessions]');
+        var list = document.querySelector('[data-dash-list]');
+
+        if (pill) renderCountdown(pill, data, at);
+        if (step) renderStep(step, data);
+        if (next) renderNext(next, data, at);
+        if (sess) renderSessions(sess, data);
+        if (list) renderList(list, data);
       }
+
+      // The test harness drives these directly, with a frozen clock.
+      window.TRDashboard = {
+        paint: paint,
+        renderNext: renderNext,
+        renderStep: renderStep,
+        renderList: renderList,
+        countdownText: countdownText,
+        stepState: stepState
+      };
 
       document.addEventListener('trportal:data', function (event) {
         paint(event && event.detail);
       });
 
-      /* A tick anywhere on the page changes the count in the checklist
-         card's header, so the card is redrawn from the state the tick just
-         wrote. portal-progress.js does the same for its own card. */
+      /* A tick anywhere on the page changes what the next step is and what
+         the counts read, so both are redrawn from the state the tick just
+         wrote. The tiles are left alone unless the tick was a session. */
       document.addEventListener('trportal:progress', function () {
         var data = window.TR_PORTAL_DATA;
         if (!data) return;
-        var start = document.querySelector('[data-dash-start]');
-        if (start) renderStart(start, data);
+        var step = document.querySelector('[data-dash-step]');
+        var list = document.querySelector('[data-dash-list]');
+        var sess = document.querySelector('[data-dash-sessions]');
+        if (step) renderStep(step, data);
+        if (list) renderList(list, data);
+        if (sess) renderSessions(sess, data);
       });
     })();
   </script>

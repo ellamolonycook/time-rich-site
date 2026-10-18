@@ -109,15 +109,11 @@ console.log('\nPrompt Library skills — the rows match the cards');
     rows.every((r) => cardFiles.includes(r.url)),
     rows.map((r) => r.url).filter((u) => !cardFiles.includes(u)));
 
-  // The card's `week` is only a label, but a label that disagrees with the
-  // row would tell a member the wrong date.
-  const cardWeeks = Object.fromEntries(
-    [...js.matchAll(/file: '([^']+)',\s+week: (\d+),/g)].map((m) => [m[1], Number(m[2])]));
-  check('every card that has a week agrees with the row the migration made',
-    rows.every((r) => cardWeeks[r.url] === r.week_id),
-    rows.filter((r) => cardWeeks[r.url] !== r.week_id).map((r) => [r.url, r.week_id, cardWeeks[r.url]]));
-  check('the card with no row has no week either, so it claims nothing',
-    cardWeeks['audit-linkedin-for-icp-goal.zip'] === undefined);
+  // A card used to carry the week its pack unlocked in, so the page could say
+  // "Download unlocks Week 3". The Prompt Library hands over a prompt now and
+  // gates nothing, so there is no week on a card to disagree with the row.
+  check('no card claims a week any more, because nothing on the page is gated',
+    !/week: \d+/.test(js), (js.match(/.{0,40}week: \d+.{0,20}/) || [])[0]);
 
   const unwired = cardFiles.filter((f) => !wired.has(f));
   check('exactly one card is still waiting on its pack',

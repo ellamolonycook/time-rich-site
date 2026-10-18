@@ -18,6 +18,8 @@
 
   var TZ = 'America/New_York';
   var SESSION_MINUTES = 75;
+  // Join opens half an hour before the start and shuts when the call ends.
+  var JOIN_OPENS_MINUTES = 30;
 
   /* ---- DOM ------------------------------------------------------------ */
 
@@ -170,12 +172,16 @@
     return open.length ? open[open.length - 1] : null;
   }
 
+  // The next session a member still has to turn up to, which includes one
+  // that is running right now. This used to be the first session starting
+  // strictly in the future, so at 12:05 on a Monday the card jumped to
+  // Friday's call and took the live Join link with it, in the one hour the
+  // link is any use.
   function nextSession(data, now) {
     var at = now || new Date();
     var list = sessions(data);
     for (var i = 0; i < list.length; i++) {
-      var d = toDate(list[i] && list[i].starts_at);
-      if (d && d.getTime() > at.getTime()) return list[i];
+      if (toDate(list[i] && list[i].starts_at) && !isSessionPast(list[i], at)) return list[i];
     }
     return null;
   }
@@ -219,6 +225,62 @@
     var start = toDate(session && session.starts_at);
     if (!start) return false;
     return start.getTime() + SESSION_MINUTES * 60000 <= at.getTime();
+  }
+
+  /* ---- Join via Zoom --------------------------------------------------
+     One rule, one builder, used by the dashboard's Next live session card
+     and by the Live Sessions page. They had drifted: the dashboard handed
+     out a live link the moment it had one, and Live Sessions waited for the
+     Eastern calendar day to begin, so on a session morning the same call was
+     joinable on one page and dead on the other. Neither was the rule.
+
+     The rule is the half hour before the start, through to the end of the
+     call. Before that the button is there but disabled, with a line under
+     it saying when it opens. */
+
+  function isJoinOpen(session, now) {
+    var at = now || new Date();
+    var start = toDate(session && session.starts_at);
+    if (!start) return false;
+    var t = at.getTime();
+    return t >= start.getTime() - JOIN_OPENS_MINUTES * 60000 &&
+           t < start.getTime() + SESSION_MINUTES * 60000;
+  }
+
+  var JOIN_NOTE = 'Opens 30 minutes before the start.';
+
+  /* Returns { control, note, open }. control is always a node, so a caller
+     never has to decide what to draw; note is the line to put under it, or
+     null when there is nothing to explain. The two class names default to
+     the pastel fill and the muted fill every page already uses. */
+  function joinControl(session, now, options) {
+    var opts = options || {};
+    var name = str(session && session.title) || 'Session';
+    var open = isJoinOpen(session, now);
+
+    if (open) {
+      var link = linkTo(session && session.join_url,
+        'Join via Zoom', opts.onClass || 'trp-btn trp-btn-pastel');
+      if (link) {
+        link.setAttribute('aria-label', 'Join ' + name);
+        return { control: link, note: null, open: true };
+      }
+    }
+
+    var off = el('button', opts.offClass || 'trp-btn trp-btn-off', 'Join via Zoom');
+    off.type = 'button';
+    off.disabled = true;
+
+    // Open but no usable link is a different thing from not open yet, and
+    // saying "opens 30 minutes before" to someone standing in the window
+    // would be a lie.
+    if (open) {
+      off.setAttribute('aria-label', 'Join ' + name + ' is not available');
+      return { control: off, note: null, open: false };
+    }
+
+    off.setAttribute('aria-label', 'Join ' + name + ' opens 30 minutes before the start');
+    return { control: off, note: el('p', 'trp-join-note', JOIN_NOTE), open: false };
   }
 
   // Cohort schedule progress from portal_get: unlocked weeks + sessions that
@@ -509,6 +571,17 @@
     var link = linkTo(item && item.url, name, 'trp-slink');
     label.appendChild(link || document.createTextNode(name));
     if (item && item.kind === 'skill') label.appendChild(el('span', 'trp-pill', 'Skill'));
+
+    /* The body, on its own line under the title. A week row used to show the
+       title and nothing else, so anything written into body was stored and
+       never read: the hotkeys and the voice prompts in week 1 are all body.
+
+       el() writes it with textContent, so whatever is in there is text and
+       never markup. Line breaks written into the row survive, because
+       .trp-check-body sets white-space: pre-line. */
+    var body = str(item && item.body);
+    if (body) label.appendChild(el('span', 'trp-check-body', body));
+
     row.appendChild(label);
 
     return row;
@@ -738,6 +811,8 @@
     dateKey: dateKey,
     isSessionUnlocked: isSessionUnlocked,
     isSessionPast: isSessionPast,
+    isJoinOpen: isJoinOpen,
+    joinControl: joinControl,
     scheduleProgress: scheduleProgress,
     itemKey: itemKey,
     sessionKey: sessionKey,
@@ -757,7 +832,9 @@
     latestRecording: latestRecording,
     sessionsForWeek: sessionsForWeek,
     findLinkItem: findLinkItem,
-    SESSION_MINUTES: SESSION_MINUTES
+    SESSION_MINUTES: SESSION_MINUTES,
+    JOIN_OPENS_MINUTES: JOIN_OPENS_MINUTES,
+    JOIN_NOTE: JOIN_NOTE
   };
 
 })(window, document);

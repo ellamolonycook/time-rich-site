@@ -11,9 +11,12 @@
  *   - unlock uses the ET calendar day of starts_at (see
  *     TRLive.isSessionUnlocked) so every member opens together
  *
- * Only the layout changed in this pass. Data loading, the unlock rule, Add to
- * calendar, the attended toggle, markOnUse, recordings and the time-zone
- * handling are the same calls as before.
+ * There is no per-session "Add to calendar" any more, and none on the next
+ * session card: one link at the top of the page subscribes to the whole
+ * cohort schedule at once, and it is written into sessions.html rather than
+ * built here, so it is on screen before the payload arrives. Data loading,
+ * the unlock rule, the attended toggle, markOnUse, recordings and the
+ * time-zone handling are the same calls as before.
  * ===================================================================== */
 (function (window, document) {
   'use strict';
@@ -21,18 +24,15 @@
   var L = window.TRLive;
   if (!L) return;
 
-  var ALL_SESSIONS_URL = 'https://cal.ae/z0j4nlqbgt6b';
-
-  /* The shared pill, in its three fills. These used to be hand-written
-     Tailwind strings here and again in three other files, each a slightly
-     different height and weight. Join via Zoom is this page's one pastel
-     action; everything else is the outline. */
+  /* The shared pill, in its fills. These used to be hand-written Tailwind
+     strings here and again in three other files, each a slightly different
+     height and weight. Join via Zoom is this page's one pastel action;
+     everything else is the outline. */
   var BTN_PRIMARY = 'trp-btn trp-btn-pastel';
   // Disabled. The label has to stay readable in both themes, so it is the
   // same ink as the page, muted, on a wash of that ink rather than a solid
   // fill with inverted text.
   var BTN_PRIMARY_OFF = 'trp-btn trp-btn-off';
-  var BTN_SECONDARY = 'trp-btn trp-btn-outline';
   var ACTION_JOIN = 'trp-saction trp-btn trp-btn-primary trp-btn-sm';
   var ACTION_SOFT = 'trp-saction trp-btn trp-btn-outline trp-btn-sm';
   var ACTION_DEAD = 'trp-saction trp-btn trp-btn-sm trp-btn-dead';
@@ -56,9 +56,6 @@
     return svg;
   }
 
-  function calendarIcon() {
-    return svgIcon('M8 7V3m8 4V3M3 11h18M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z');
-  }
   function tickIcon() {
     return svgIcon('M5 13l4 4L19 7', 'w-3.5 h-3.5');
   }
@@ -115,7 +112,7 @@
 
   /* ---- one row's single action ----------------------------------------- */
 
-  function rowAction(session, unlocked, past, tick) {
+  function rowAction(session, unlocked, past, tick, now) {
     var name = L.str(session.title) || 'Session';
 
     function markOnUse(link) {
@@ -139,7 +136,11 @@
       return soon;
     }
 
-    if (unlocked) {
+    // The same half-hour rule the card above the rows uses. A row that went
+    // live at Eastern midnight while the next session card still read
+    // "Opens 30 minutes before the start" was the page disagreeing with
+    // itself. The note is not repeated on every row; the row has its date.
+    if (L.isJoinOpen(session, now)) {
       var join = markOnUse(L.linkTo(session.join_url, 'Join', ACTION_JOIN));
       if (join) {
         join.setAttribute('aria-label', 'Join ' + name);
@@ -152,15 +153,18 @@
       return off;
     }
 
-    // Before its day: save the date. One link to the session's Add Event
-    // page. No addevent_url means there is nothing to add, so no button.
-    var cal = L.calendarLink(session, '', ACTION_SOFT + ' trp-cal');
-    if (cal) {
-      L.clear(cal);
-      cal.appendChild(calendarIcon());
-      cal.setAttribute('aria-label', 'Add ' + name + ' to your calendar');
-      return cal;
+    if (unlocked) {
+      var waiting = L.el('button', ACTION_DEAD, 'Join');
+      waiting.type = 'button';
+      waiting.disabled = true;
+      waiting.setAttribute('aria-label',
+        'Join ' + name + ' opens 30 minutes before the start');
+      return waiting;
     }
+
+    // Before its day there is nothing to press. The row keeps its date, its
+    // title and its tick; the one subscribe link at the top of the page is
+    // what puts the whole schedule in a member's calendar.
     return null;
   }
 
@@ -183,7 +187,7 @@
     var tick = attendedToggle(session);
 
     var slot = L.el('span', 'trp-sact');
-    var act = rowAction(session, unlocked, past, tick);
+    var act = rowAction(session, unlocked, past, tick, now);
     if (act) slot.appendChild(act);
     row.appendChild(slot);
 
@@ -202,7 +206,7 @@
     return name;
   }
 
-  function weekCard(data, weekId, list) {
+  function weekCard(data, weekId, list, now) {
     var card = L.el('li', 'glass-card is-static trp-wkcard');
 
     var head = L.el('div', 'trp-wkcard-head');
@@ -228,7 +232,9 @@
     card.appendChild(head);
 
     var ul = L.el('ul', 'trp-srows');
-    list.forEach(function (s) { ul.appendChild(sessionRow(s, new Date())); });
+    // One clock for the whole render, so the rows and the card above
+    // them cannot land on different sides of a join window.
+    list.forEach(function (s) { ul.appendChild(sessionRow(s, now)); });
     card.appendChild(ul);
     return card;
   }
@@ -264,8 +270,6 @@
     if (isBonus(next)) meta.appendChild(bonusPill());
     card.appendChild(meta);
 
-    var name = L.str(next.title) || 'Session';
-    var unlocked = L.isSessionUnlocked(next, now);
     var acts2 = L.el('div', 'trp-next-acts');
 
     var tick = attendedToggle(next);
@@ -280,46 +284,20 @@
       return link;
     }
 
-    var join = unlocked ? markOnUse(L.linkTo(next.join_url, 'Join via Zoom', BTN_PRIMARY)) : null;
-    if (join) {
-      join.setAttribute('aria-label', 'Join ' + name);
-      acts2.appendChild(join);
-    } else {
-      // Same rule as before: the button is there but dead until its ET day.
-      var off = L.el('button', BTN_PRIMARY_OFF, 'Join via Zoom');
-      off.type = 'button';
-      off.disabled = true;
-      off.setAttribute('aria-label', 'Join ' + name + ' opens on the day');
-      acts2.appendChild(off);
-    }
-
-    var cal = L.calendarLink(next, 'Add to calendar', BTN_SECONDARY);
-    if (cal) {
-      cal.setAttribute('aria-label', 'Add ' + name + ' to your calendar');
-      acts2.appendChild(cal);
-    }
+    // The shared rule, the same call the dashboard makes: live from half an
+    // hour before the start until the call ends, disabled with a line under
+    // it before that.
+    var join = L.joinControl(next, now, { onClass: BTN_PRIMARY, offClass: BTN_PRIMARY_OFF });
+    if (join.open) markOnUse(join.control);
+    acts2.appendChild(join.control);
 
     acts2.appendChild(tick);
     card.appendChild(acts2);
+    if (join.note) card.appendChild(join.note);
     return card;
   }
 
   /* ---- all of it -------------------------------------------------------- */
-
-  /* One link that takes the whole cohort schedule, rather than ten separate
-     adds. It used to sit as an underlined line below everything, where it was
-     the last thing anyone would see; it is now a button directly under the
-     next session, which is where someone is already asking "when are these?". */
-  function addAllButton(count) {
-    var a = L.el('a', 'trp-addall');
-    a.href = ALL_SESSIONS_URL;
-    a.target = '_blank';
-    a.rel = 'noopener noreferrer';
-    a.setAttribute('aria-label', 'Add all ' + count + ' sessions to your calendar');
-    a.appendChild(calendarIcon());
-    a.appendChild(L.el('span', '', 'Add all ' + count + ' sessions to your calendar'));
-    return a;
-  }
 
   function render(listEl, data) {
     var sessions = L.sessions(data);
@@ -340,10 +318,8 @@
     });
     order.sort(function (a, b) { return a - b; });
 
-    listEl.appendChild(addAllButton(sessions.length));
-
     var weeks = L.el('ul', 'trp-wkcards');
-    order.forEach(function (id) { weeks.appendChild(weekCard(data, id, byWeek[id])); });
+    order.forEach(function (id) { weeks.appendChild(weekCard(data, id, byWeek[id], now)); });
     listEl.appendChild(weeks);
   }
 

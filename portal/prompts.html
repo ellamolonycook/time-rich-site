@@ -58,16 +58,18 @@
   <meta name="twitter:image" content="https://timerich.ai/og-time-rich.png" />
   <meta name="twitter:card" content="summary_large_image" />
   <link rel="stylesheet" href="portal.css"/>
-  <link rel="preconnect" href="https://fonts.googleapis.com"/>
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin=""/>
-  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&amp;display=swap" rel="stylesheet"/>
+  <!-- The two faces, served from this repo. They used to come from Google
+       Fonts, which costs a DNS lookup, a stylesheet and only then the font
+       itself: three round trips before a heading could be drawn in the right
+       face, and a reflow when it finally was. Preloading the files directly
+       starts them with the stylesheet instead.
+
+       crossorigin is required on a font preload even for a same-origin file:
+       fonts are fetched in CORS mode, and a preload without it is fetched
+       twice. -->
+  <link rel="preload" href="../brand/fonts/SpaceGrotesk-Variable.woff2" as="font" type="font/woff2" crossorigin/>
+  <link rel="preload" href="../brand/fonts/JetBrainsMono-Variable.woff2" as="font" type="font/woff2" crossorigin/>
   <link rel="stylesheet" href="portal-content.css">
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-
-  
-
-
   <!-- The session gate. Config first, then the library; both deferred so
        the DOM is ready when the script mounts. No valid code redirects to
        index.html, because this page has no login form of its own. -->
@@ -81,6 +83,20 @@
        ordered before the renderer that reads it. -->
   <script src="skill-instructions.js" defer></script>
   <script src="portal-prompts.js" defer></script>
+
+  <!-- Warm the next page while the pointer is still travelling to the link.
+       "moderate" is roughly 200ms of hover, which is long enough that a
+       pointer crossing the nav does not fetch all six. Only portal pages are
+       listed: a rule that matched everything would also warm sign-out and
+       the partner links. -->
+  <script type="speculationrules">
+  {
+    "prefetch": [{
+      "where": { "href_matches": "/portal/*.html" },
+      "eagerness": "moderate"
+    }]
+  }
+  </script>
 </head>
 
 
@@ -205,26 +221,160 @@
         <div class="relative z-10 px-3 sm:px-6 lg:px-12 py-8 lg:py-12 flex justify-center w-full">
           <div class="w-full space-y-16 max-w-[1200px]">
           
-    <header class="space-y-4">
-              <span class="trp-kicker">Prompt library</span>
-              <h1 class="trp-title">Prompts<span class="trp-stop">.</span></h1>
-              <p class="trp-lede">One card per skill. Say the line, and your AI does the rest.</p>
+    <header class="trp-page-head">
+              <div class="space-y-4">
+                <span class="trp-kicker">Prompt library</span>
+                <h1 class="trp-title">Prompts<span class="trp-stop">.</span></h1>
+                <p class="trp-lede">Pick the job you want done. One click opens it in your AI with the prompt already written.</p>
+              </div>
+              <!-- The shape lives at the foot of the page, where it cannot push
+                   the library down. This is only the way to it, parked in the
+                   space beside the title that was empty anyway. -->
+              <a class="trp-own-link" href="#write-your-own">Write your own prompt</a>
             </header>
 
             <section class="space-y-10 mt-6" aria-labelledby="prompt-cards-heading">
               <div class="space-y-3">
-                <h2 id="prompt-cards-heading" class="trp-section-title">Say this</h2>
-                <p class="trp-lede">Copy the line, paste it into your AI, and answer what it asks. Where a skill can run to a schedule there is a brief you can hand to Cowork.</p>
+                <h2 id="prompt-cards-heading" class="trp-section-title">Your prompts</h2>
+                <p class="trp-lede">Choose where your prompts open once, and every card below follows it. Nothing to set up.</p>
               </div>
 
-              <!-- portal-prompts.js fills this once the payload lands. The
-                   cards themselves do not need the payload: it decides which
-                   downloads are open to this member and when. -->
+              <!-- Which AI the Open buttons point at. Chosen once, remembered
+                   on this device, and applied to all sixteen cards, so the
+                   page carries one button each instead of three. -->
+              <!-- The picker is built by the script, so its row is held open
+                   here. Empty, it was 114px of nothing that pushed the whole
+                   grid down the moment the script ran. -->
+              <div id="prompt-ai-picker">
+                <div class="trp-skel" aria-hidden="true">
+                  <div class="trp-picker">
+                    <span class="trp-tag trp-picker-label"><span class="trp-bar">Open prompts in</span></span>
+                    <div class="trp-picker-opts">
+                      <span class="trp-picker-opt"><span class="trp-bar">Claude</span></span>
+                      <span class="trp-picker-opt"><span class="trp-bar">ChatGPT</span></span>
+                      <span class="trp-picker-opt"><span class="trp-bar">Grok</span></span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- portal-prompts.js fills this on load. It needs nothing from
+                   the payload: every card carries its own prompt. -->
               <!-- data-portal-message lets the shared gate replace the loading
                    line with a reason when the payload never arrives. Without it
                    this page waits on "Loading" with nothing to say. -->
-              <div id="prompt-cards" data-portal-message>
-                <p class="trp-lede">Loading the prompt library&hellip;</p>
+              <div id="prompt-cards" data-portal-message class="trp-sched">
+                <div class="trp-skel" aria-hidden="true">
+                <div class="trp-group-head">
+                  <h3 class="trp-group-title"><span class="trp-bar">Set up your AI</span></h3>
+                  <p class="trp-group-lede"><span class="trp-bar">Do these once. They give every other prompt something to read.</span></p>
+                </div>
+                <ul class="trp-pcards">
+                  <li class="glass-card is-static trp-pcard">
+                    <div class="trp-pcard-head"><h3 class="trp-pcard-name"><span class="trp-bar">Build my context</span></h3></div>
+                    <p class="trp-pcard-one"><span class="trp-bar">Builds your Business COMPASS from your own calls, docs, email and Notion, then shows where your time goes.</span></p>
+                    <div class="trp-actions"><span class="trp-bar is-btn"></span><span class="trp-bar is-btn"></span></div>
+                    <div class="trp-pcard-more"><span class="trp-bar">More ways to use this</span></div>
+                  </li>
+                  <li class="glass-card is-static trp-pcard">
+                    <div class="trp-pcard-head"><h3 class="trp-pcard-name"><span class="trp-bar">Lock down my AI</span></h3></div>
+                    <p class="trp-pcard-one"><span class="trp-bar">Walks you through three privacy settings in your AI before you connect anything, and reports back what changed.</span></p>
+                    <div class="trp-actions"><span class="trp-bar is-btn"></span><span class="trp-bar is-btn"></span></div>
+                    <div class="trp-pcard-more"><span class="trp-bar">More ways to use this</span></div>
+                  </li>
+                  <li class="glass-card is-static trp-pcard">
+                    <div class="trp-pcard-head"><h3 class="trp-pcard-name"><span class="trp-bar">Build my story bank</span></h3></div>
+                    <p class="trp-pcard-one"><span class="trp-bar">Pulls the stories you already tell out of your own transcripts and banks them in one place.</span></p>
+                    <div class="trp-actions"><span class="trp-bar is-btn"></span><span class="trp-bar is-btn"></span></div>
+                    <div class="trp-pcard-more"><span class="trp-bar">More ways to use this</span></div>
+                  </li>
+                </ul>
+                <div class="trp-group-head">
+                  <h3 class="trp-group-title"><span class="trp-bar">LinkedIn</span></h3>
+                  <p class="trp-group-lede"><span class="trp-bar">Write it, post it, and keep up with what comes back.</span></p>
+                </div>
+                <ul class="trp-pcards">
+                  <li class="glass-card is-static trp-pcard">
+                    <div class="trp-pcard-head"><h3 class="trp-pcard-name"><span class="trp-bar">Audit my LinkedIn</span></h3></div>
+                    <p class="trp-pcard-one"><span class="trp-bar">Scores your LinkedIn profile against one 90 day goal and one ideal client, then gives you ranked fixes with drafts.</span></p>
+                    <div class="trp-actions"><span class="trp-bar is-btn"></span><span class="trp-bar is-btn"></span></div>
+                    <div class="trp-pcard-more"><span class="trp-bar">More ways to use this</span></div>
+                  </li>
+                  <li class="glass-card is-static trp-pcard">
+                    <div class="trp-pcard-head"><h3 class="trp-pcard-name"><span class="trp-bar">Optimise my profile</span></h3></div>
+                    <p class="trp-pcard-one"><span class="trp-bar">Rewrites your whole LinkedIn profile, from the headline to the recommendations.</span></p>
+                    <div class="trp-actions"><span class="trp-bar is-btn"></span><span class="trp-bar is-btn"></span></div>
+                    <div class="trp-pcard-more"><span class="trp-bar">More ways to use this</span></div>
+                  </li>
+                  <li class="glass-card is-static trp-pcard">
+                    <div class="trp-pcard-head"><h3 class="trp-pcard-name"><span class="trp-bar">Plan my week</span></h3></div>
+                    <p class="trp-pcard-one"><span class="trp-bar">Builds a seven day LinkedIn plan with a pillar, a format and a hook for each day.</span></p>
+                    <div class="trp-actions"><span class="trp-bar is-btn"></span><span class="trp-bar is-btn"></span></div>
+                    <div class="trp-pcard-more"><span class="trp-bar">More ways to use this</span></div>
+                  </li>
+                  <li class="glass-card is-static trp-pcard">
+                    <div class="trp-pcard-head"><h3 class="trp-pcard-name"><span class="trp-bar">Write a post</span></h3></div>
+                    <p class="trp-pcard-one"><span class="trp-bar">Writes a LinkedIn post from scratch using a proven hook, then takes the AI tells out of it.</span></p>
+                    <div class="trp-actions"><span class="trp-bar is-btn"></span><span class="trp-bar is-btn"></span></div>
+                    <div class="trp-pcard-more"><span class="trp-bar">More ways to use this</span></div>
+                  </li>
+                  <li class="glass-card is-static trp-pcard">
+                    <div class="trp-pcard-head"><h3 class="trp-pcard-name"><span class="trp-bar">Break down a hook</span></h3></div>
+                    <p class="trp-pcard-one"><span class="trp-bar">Takes a post that worked and tells you which hook formula it used, and why.</span></p>
+                    <div class="trp-actions"><span class="trp-bar is-btn"></span><span class="trp-bar is-btn"></span></div>
+                    <div class="trp-pcard-more"><span class="trp-bar">More ways to use this</span></div>
+                  </li>
+                  <li class="glass-card is-static trp-pcard">
+                    <div class="trp-pcard-head"><h3 class="trp-pcard-name"><span class="trp-bar">Humanise a draft</span></h3></div>
+                    <p class="trp-pcard-one"><span class="trp-bar">Takes the AI tells out of a draft, and audits a post before you publish it.</span></p>
+                    <div class="trp-actions"><span class="trp-bar is-btn"></span><span class="trp-bar is-btn"></span></div>
+                    <div class="trp-pcard-more"><span class="trp-bar">More ways to use this</span></div>
+                  </li>
+                  <li class="glass-card is-static trp-pcard">
+                    <div class="trp-pcard-head"><h3 class="trp-pcard-name"><span class="trp-bar">Repurpose something</span></h3></div>
+                    <p class="trp-pcard-one"><span class="trp-bar">Rebuilds a tweet, video, blog or newsletter as a native LinkedIn post.</span></p>
+                    <div class="trp-actions"><span class="trp-bar is-btn"></span><span class="trp-bar is-btn"></span></div>
+                    <div class="trp-pcard-more"><span class="trp-bar">More ways to use this</span></div>
+                  </li>
+                  <li class="glass-card is-static trp-pcard">
+                    <div class="trp-pcard-head"><h3 class="trp-pcard-name"><span class="trp-bar">Interview me</span></h3></div>
+                    <p class="trp-pcard-one"><span class="trp-bar">Interviews you for the raw material your posts are made of.</span></p>
+                    <div class="trp-actions"><span class="trp-bar is-btn"></span><span class="trp-bar is-btn"></span></div>
+                    <div class="trp-pcard-more"><span class="trp-bar">More ways to use this</span></div>
+                  </li>
+                  <li class="glass-card is-static trp-pcard">
+                    <div class="trp-pcard-head"><h3 class="trp-pcard-name"><span class="trp-bar">Comment on a post</span></h3></div>
+                    <p class="trp-pcard-one"><span class="trp-bar">Drafts a comment on someone else’s post, in your voice.</span></p>
+                    <div class="trp-actions"><span class="trp-bar is-btn"></span><span class="trp-bar is-btn"></span></div>
+                    <div class="trp-pcard-more"><span class="trp-bar">More ways to use this</span></div>
+                  </li>
+                  <li class="glass-card is-static trp-pcard">
+                    <div class="trp-pcard-head"><h3 class="trp-pcard-name"><span class="trp-bar">Clear my comments</span></h3></div>
+                    <p class="trp-pcard-one"><span class="trp-bar">Drafts a reply to one comment, or sweeps a whole post and replies to every comment worth answering.</span></p>
+                    <div class="trp-actions"><span class="trp-bar is-btn"></span><span class="trp-bar is-btn"></span></div>
+                    <div class="trp-pcard-more"><span class="trp-bar">More ways to use this</span></div>
+                  </li>
+                  <li class="glass-card is-static trp-pcard">
+                    <div class="trp-pcard-head"><h3 class="trp-pcard-name"><span class="trp-bar">Find my warm threads</span></h3></div>
+                    <p class="trp-pcard-one"><span class="trp-bar">Tracks which of your comments got a reply, and flags the ones worth following up now.</span></p>
+                    <div class="trp-actions"><span class="trp-bar is-btn"></span><span class="trp-bar is-btn"></span></div>
+                    <div class="trp-pcard-more"><span class="trp-bar">More ways to use this</span></div>
+                  </li>
+                  <li class="glass-card is-static trp-pcard">
+                    <div class="trp-pcard-head"><h3 class="trp-pcard-name"><span class="trp-bar">Who engaged</span></h3></div>
+                    <p class="trp-pcard-one"><span class="trp-bar">Pulls everyone who liked or commented on a post and sorts them by how well they fit your ideal client.</span></p>
+                    <div class="trp-actions"><span class="trp-bar is-btn"></span><span class="trp-bar is-btn"></span></div>
+                    <div class="trp-pcard-more"><span class="trp-bar">More ways to use this</span></div>
+                  </li>
+                  <li class="glass-card is-static trp-pcard">
+                    <div class="trp-pcard-head"><h3 class="trp-pcard-name"><span class="trp-bar">Get the team posting</span></h3></div>
+                    <p class="trp-pcard-one"><span class="trp-bar">Sets up and runs a LinkedIn program for your team, from the launch plan to the numbers.</span></p>
+                    <div class="trp-actions"><span class="trp-bar is-btn"></span><span class="trp-bar is-btn"></span></div>
+                    <div class="trp-pcard-more"><span class="trp-bar">More ways to use this</span></div>
+                  </li>
+                </ul>
+                </div>
+                <p class="trp-skel-say" role="status">Loading the prompt library&hellip;</p>
               </div>
             </section>
 
@@ -261,7 +411,7 @@
       <span data-portal-community hidden class="trp-foot-sep" aria-hidden="true">&middot;</span>
       <a data-portal-community hidden class="trp-foot-link">WhatsApp community</a>
       <span class="trp-foot-sep" aria-hidden="true">&middot;</span>
-      <span>Need help? <a href="mailto:emc@timerich.ai" class="trp-foot-link">emc@timerich.ai</a></span>
+      <span>Need help? <a href="mailto:emc@timerichclub.com" class="trp-foot-link">emc@timerichclub.com</a></span>
     </p>
   </footer>
 

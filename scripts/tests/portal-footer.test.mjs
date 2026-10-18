@@ -1,7 +1,7 @@
 // The portal footer: one quiet line, and no stranded separator when it wraps.
 //
 // The line reads "© 2026 Time Rich · Privacy · Terms · WhatsApp community ·
-// Need help? emc@timerich.ai". It is a wrapping flex row, so on a narrow
+// Need help? emc@timerichclub.com". It is a wrapping flex row, so on a narrow
 // screen it breaks over two lines -- and wherever the break lands, the "·"
 // after the last item on line one would be carried down to the head of line
 // two, which read as "· Need help? ...". CSS cannot ask whether an element
@@ -14,7 +14,7 @@
 // that class by default and brings it back above the breakpoint, and the
 // conditional WhatsApp separator still answers to [hidden].
 import { JSDOM } from 'jsdom';
-import { readFileSync } from 'node:fs';
+import { readFileSync, readdirSync } from 'node:fs';
 
 const read = (p) => readFileSync(new URL('../../' + p, import.meta.url), 'utf8');
 
@@ -84,7 +84,7 @@ for (const path of PAGES) {
 
   const text = row.textContent.replace(/\s+/g, ' ').trim();
   check('the line still reads as the brief sets it',
-    /^© 2026 Time Rich · Privacy · Terms · WhatsApp community · Need help\? emc@timerich\.ai$/.test(text),
+    /^© 2026 Time Rich · Privacy · Terms · WhatsApp community · Need help\? emc@timerichclub.com$/.test(text),
     text);
 }
 
@@ -114,6 +114,52 @@ console.log('\nthe rule that keeps a separator off the head of a wrapped line');
   // separator would reappear on a wide screen with no link beside it.
   check('[hidden] still wins over the breakpoint, so the conditional dot stays away',
     /\[hidden\] \{ display: none !important; \}/.test(read('portal/portal-content.css')));
+}
+
+/* ---- the support address ------------------------------------------------ */
+
+// Support moved to emc@timerichclub.com. The old address is not forwarded, so
+// a single mailto left behind anywhere in the portal is a member writing into
+// a mailbox nobody reads. This sweeps the whole folder rather than the five
+// footers, because the address is also on the sign-in page, in the dashboard
+// help link, in the bad-code message in portal-access.js and twice in the
+// Resources questions.
+console.log('\nthe support address, everywhere in portal/');
+{
+  const dir = new URL('../../portal/', import.meta.url);
+  const files = readdirSync(dir).filter((f) => /\.(html|js|css)$/.test(f));
+
+  check('there are portal files to sweep', files.length > 10, files.length);
+
+  const stale = files
+    .map((f) => [f, readFileSync(new URL(f, dir), 'utf8')])
+    .filter(([, body]) => body.includes('emc@timerich.ai'));
+  check('not one file still carries emc@timerich.ai', stale.length === 0,
+    stale.map(([f]) => f));
+
+  // And the new one is actually there, or the sweep above would pass on a
+  // portal with no support address at all.
+  const carrying = files
+    .map((f) => [f, readFileSync(new URL(f, dir), 'utf8')])
+    .filter(([, body]) => body.includes('emc@timerichclub.com'));
+  check('every page inside the gate carries the new one',
+    PAGES.every((p) => carrying.some(([f]) => p.endsWith(f))),
+    carrying.map(([f]) => f));
+  check('so does the sign-in page and the gate script itself',
+    carrying.some(([f]) => f === 'index.html') &&
+    carrying.some(([f]) => f === 'portal-access.js'),
+    carrying.map(([f]) => f));
+
+  // Every mailto on a page goes to the new address, not just the text beside
+  // it: the two drift apart the moment one is edited and the other is not.
+  for (const path of PAGES.concat(['portal/index.html'])) {
+    const d = new JSDOM(read(path)).window.document;
+    const mailtos = [...d.querySelectorAll('a[href^="mailto:"]')]
+      .map((a) => a.getAttribute('href').replace(/^mailto:/, '').split('?')[0]);
+    check(path + ': every mailto goes to the new address',
+      mailtos.length > 0 && mailtos.every((m) => m === 'emc@timerichclub.com'),
+      mailtos);
+  }
 }
 
 console.log('\n' + pass + ' passed, ' + fail + ' failed');
