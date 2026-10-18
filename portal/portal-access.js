@@ -59,7 +59,7 @@
   var STATE_ATTR  = 'data-tr-portal';
 
   var MSG = {
-    bad_code:    "We couldn't find that email. Use the email you joined with, or contact emc@timerich.ai.",
+    bad_code:    "We couldn't find that email. Use the email you joined with, or contact emc@timerichclub.com.",
     rate_limited: "Too many attempts. Try again in a few minutes.",
     unavailable: "The portal is unavailable right now. Please try again in a few minutes."
   };
@@ -115,6 +115,59 @@
 
   function hasCode() {
     return !!readCode();
+  }
+
+  /* ---- the payload cache -------------------------------------------------
+
+     Every portal page fetched the whole payload again on load, so moving from
+     the dashboard to Resources meant a loading state and then a page that
+     grew under the reader, for data that had not changed in the two seconds
+     since the last page asked for it.
+
+     The answer is kept in sessionStorage: this tab, this browsing session,
+     gone when the tab closes. It is never localStorage, because this is a
+     member's own name, their progress and their session links, and a shared
+     laptop should not keep them on disk.
+
+     It is stamped with the session token it was fetched for, and a cache
+     whose stamp does not match the token in hand is discarded unread, so one
+     member can never be shown another's data after a sign-out and a sign-in
+     on the same machine. Signing out clears it outright as well; the stamp is
+     the belt to that pair of braces.
+
+     TTL is deliberately short. The cache is there to carry a member across a
+     click, not to let the page go stale: whatever it draws, a live fetch is
+     already on its way and will redraw from the answer. */
+
+  var PAYLOAD_CACHE_KEY = 'tr_portal_payload';
+  var PAYLOAD_TTL_MS = 10 * 60 * 1000;
+
+  function readPayloadCache() {
+    var token = readCode();
+    if (!token) return null;
+    try {
+      var raw = window.sessionStorage.getItem(PAYLOAD_CACHE_KEY);
+      if (!raw) return null;
+      var saved = JSON.parse(raw);
+      if (!saved || saved.token !== token) return null;
+      if (!saved.at || Date.now() - saved.at > PAYLOAD_TTL_MS) return null;
+      if (!saved.data || saved.data.ok !== true) return null;
+      return saved.data;
+    } catch (e) { return null; }
+  }
+
+  function writePayloadCache(data) {
+    var token = readCode();
+    if (!token || !data || data.ok !== true) return;
+    try {
+      window.sessionStorage.setItem(PAYLOAD_CACHE_KEY,
+        JSON.stringify({ token: token, at: Date.now(), data: data }));
+    } catch (e) { /* private mode, or the quota: the page still works */ }
+  }
+
+  function clearPayloadCache() {
+    try { window.sessionStorage.removeItem(PAYLOAD_CACHE_KEY); }
+    catch (e) { /* non-fatal */ }
   }
 
   /* ---- the one API call -------------------------------------------- */
@@ -177,10 +230,11 @@
       var data = result.data;
       // Only forget the session when the server actually refused it. A
       // network blip should not sign somebody out.
-      if (result.status === 401) { clearCode(); return { ok: false, reason: 'bad_code' }; }
+      if (result.status === 401) { clearCode(); clearPayloadCache(); return { ok: false, reason: 'bad_code' }; }
       if (result.status !== 200 || !data || data.ok !== true) {
         return { ok: false, reason: 'unavailable' };
       }
+      writePayloadCache(data);
       return { ok: true, data: data };
     });
   }
@@ -193,6 +247,7 @@
     if (token && endpoint) { try { post(endpoint, { token: token }); } catch (e) { /* non-fatal */ } }
     clearCode();
     clearMembersLinkCache();
+    clearPayloadCache();
   }
 
   function setProgress(target, done) {
@@ -714,7 +769,25 @@
   }
 /* ---- auto-mount ------------------------------------------------------- */
 
+  /* The JSON of the payload the page is currently drawn from. The refresh
+     after a cached first paint usually brings back exactly what the cache
+     held, and redrawing the page from identical data is a flash of every
+     card being torn down and rebuilt for no reason. */
+  var paintedJson = null;
+
+  function sameAsPainted(data) {
+    if (paintedJson === null) return false;
+    try { return JSON.stringify(data) === paintedJson; }
+    catch (e) { return false; }
+  }
+
   function applyData(data) {
+    // Nothing changed since the cached draw, so nothing is redrawn. The gate
+    // is still opened below, because a cached draw leaves it open already and
+    // setState is idempotent.
+    if (sameAsPainted(data)) { setState('in'); return; }
+    try { paintedJson = JSON.stringify(data); } catch (e) { paintedJson = null; }
+
     var first = str(data && data.member && data.member.first_name);
     var names = document.querySelectorAll('[data-portal-name]');
     for (var i = 0; i < names.length; i++) names[i].textContent = first;
@@ -860,13 +933,24 @@
 
     if (!hasCode()) { signedOut(); return; }
 
-    setState('loading');
+    /* Draw from the cache first if there is one, so a member moving through
+       the nav sees the page they asked for straight away rather than a
+       loading state. The fetch below still runs; applyData compares what it
+       brings back with what is already on screen and leaves the page alone
+       when the two match. */
+    var cached = readPayloadCache();
+    if (cached) applyData(cached);
+    else setState('loading');
+
     load().then(function (result) {
       if (result.ok) { applyData(result.data); return; }
 
       if (result.reason === 'unavailable') {
         // Keep the stored code and say so, rather than bouncing the
-        // member to the login page over a temporary failure.
+        // member to the login page over a temporary failure. A page already
+        // drawn from the cache keeps what it is showing: a failed refresh is
+        // not a reason to replace real content with an error.
+        if (cached) return;
         setState(document.querySelector('[data-portal-login]') ? 'out' : 'in');
         showMessage(MSG.unavailable);
         return;
@@ -874,6 +958,7 @@
 
       signedOut();
     }, function () {
+      if (cached) return;
       setState(document.querySelector('[data-portal-login]') ? 'out' : 'in');
       showMessage(MSG.unavailable);
     });
@@ -894,6 +979,9 @@
     setProgress: setProgress,
     setSetup: setSetup,
     hasCode: hasCode,
+    readPayloadCache: readPayloadCache,
+    writePayloadCache: writePayloadCache,
+    clearPayloadCache: clearPayloadCache,
     renderWeeks: renderWeeks,
     renderSessions: renderSessions,
     // resources.html renders its own skill library and reuses this button, so

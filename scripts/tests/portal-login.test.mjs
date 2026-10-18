@@ -343,4 +343,62 @@ if (fail) {
   console.error(`\n${fail} portal login test(s) failed.`);
   process.exit(1);
 }
+/* ---- the form on the page ------------------------------------------------ */
+
+// The field and the Continue button used to have 76px between them: 12px of
+// margin, then a two-line slot held open for an error message, then 20px
+// more. Empty, which it is on every first load, that read as a field and a
+// button belonging to two different groups.
+//
+// The slot could not simply be removed. The card is centred on the page, so
+// a message appearing in a box of no height would grow the card and lift
+// everything by half the extra. It moved below the button instead: the field
+// and the button are 12px apart, the two lines are still held open, and the
+// card is still the same height whether a message is showing or not.
+console.log('\nthe sign-in form, as it sits on the page');
+{
+  const { JSDOM } = await import('jsdom');
+  const { readFileSync } = await import('node:fs');
+  const doc = new JSDOM(readFileSync(new URL('../../portal/index.html', import.meta.url), 'utf8'))
+    .window.document;
+
+  const form = doc.querySelector('[data-portal-login]');
+  const field = doc.getElementById('email');
+  const button = form.querySelector('button[type="submit"]');
+  const slot = form.querySelector('[data-portal-error]');
+
+  check('the form has one field and one button',
+    form.querySelectorAll('input').length === 1 && form.querySelectorAll('button').length === 1);
+
+  // The order on the page is what closes the gap.
+  check('the button follows the field, with nothing between them',
+    field.closest('div').nextElementSibling === button,
+    field.closest('div').nextElementSibling &&
+      field.closest('div').nextElementSibling.tagName);
+  check('and the message slot comes after the button',
+    button.nextElementSibling === slot, button.nextElementSibling &&
+      button.nextElementSibling.tagName);
+
+  // 12px, not the 20px it was, and nothing bigger left on the button.
+  check('the button sits mt-3 under the field',
+    /\bmt-3\b/.test(button.className) && !/\bmt-[4-9]\b/.test(button.className),
+    button.className);
+
+  // The two reserved lines are the thing that stops the centred card moving.
+  check('two lines are still held open for a message',
+    /min-h-\[2\.75rem\]/.test(slot.className), slot.className);
+  check('the slot is still announced politely, as an alert',
+    slot.getAttribute('role') === 'alert' && slot.getAttribute('aria-live') === 'polite');
+
+  // It is no longer next to the field, so it has to be joined to it by name.
+  check('the field points at the slot, so a screen reader reads the two together',
+    slot.id.length > 0 && field.getAttribute('aria-describedby') === slot.id,
+    field.getAttribute('aria-describedby') + ' / ' + slot.id);
+
+  // The field still has no name attribute: without one a stray native submit
+  // cannot put the address in the URL.
+  check('the field still carries no name, so an address never reaches the URL',
+    field.getAttribute('name') === null);
+}
+
 console.log(`\n${pass} portal login test(s) passed.`);

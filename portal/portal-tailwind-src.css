@@ -3,18 +3,65 @@
 @tailwind utilities;
 
 /* ---------------------------------------------------------------------------
-   The label face, served from the repo rather than Google Fonts.
-   The brand bible sets small uppercase labels in JetBrains Mono, and the
-   variable file already ships in brand/fonts/. One file covers every weight
-   the portal asks for, so this replaces a third Google Fonts family rather
-   than adding to it.
+   The two faces, served from the repo rather than Google Fonts.
+
+   Space Grotesk used to come from fonts.googleapis.com, which is a DNS
+   lookup, a stylesheet, and only then the font: three round trips before a
+   heading could be drawn in the right face. Every page preloads these two
+   files in its <head> instead, so they start with the stylesheet.
+
+   woff2, not the .ttf that shipped here before: 137KB becomes 49KB for Space
+   Grotesk and 187KB becomes 72KB for JetBrains Mono, for the same glyphs.
    ------------------------------------------------------------------------- */
+@font-face {
+  font-family: 'Space Grotesk';
+  font-style: normal;
+  font-weight: 300 700;
+  font-display: swap;
+  src: url('../brand/fonts/SpaceGrotesk-Variable.woff2') format('woff2-variations');
+}
+
 @font-face {
   font-family: 'JetBrains Mono';
   font-style: normal;
   font-weight: 100 800;
   font-display: swap;
-  src: url('../brand/fonts/JetBrainsMono-Variable.ttf') format('truetype-variations');
+  src: url('../brand/fonts/JetBrainsMono-Variable.woff2') format('woff2-variations');
+}
+
+/* The faces a heading and a label are set in for the few hundred
+   milliseconds before the real files arrive. font-display: swap means that
+   swap happens; what these do is make it cost nothing, by overriding the
+   fallback's metrics to the real face's own.
+
+   Every number here was measured in the browser against the portal's own
+   strings, not copied off a table. Arial renders them 12.4% wider than Space
+   Grotesk at the same size, so the fallback is scaled to 89% and the two
+   occupy the same width; the ascent and descent are then Space Grotesk's own
+   (984 and 292 per 1000 em) divided by that same 0.89, so the line box
+   matches as well as the width does.
+
+   Without this a heading reflows when its font lands, and on the dashboard
+   that reflow moves everything under it. */
+@font-face {
+  font-family: 'Space Grotesk Fallback';
+  src: local('Arial'), local('Helvetica Neue'), local('Liberation Sans');
+  size-adjust: 89%;
+  ascent-override: 110.6%;
+  descent-override: 32.8%;
+  line-gap-override: 0%;
+}
+
+/* Same measurement for the label face. A monospace fallback only has to
+   match one advance width, and Courier New's is 6.7% narrower than JetBrains
+   Mono's, so it is scaled up rather than down. */
+@font-face {
+  font-family: 'JetBrains Mono Fallback';
+  src: local('Courier New'), local('Liberation Mono'), local('DejaVu Sans Mono');
+  size-adjust: 106.7%;
+  ascent-override: 95.6%;
+  descent-override: 28.1%;
+  line-gap-override: 0%;
 }
 
 /* ===========================================================================
@@ -98,12 +145,67 @@
        system sans for body copy, JetBrains Mono for small uppercase labels.
        Inter and Space Mono are both gone, so the portal now asks Google
        Fonts for one family instead of three. */
-    --trp-face: 'Space Grotesk', system-ui, -apple-system, 'Segoe UI', sans-serif;
+    --trp-face: 'Space Grotesk', 'Space Grotesk Fallback', system-ui, -apple-system, 'Segoe UI', sans-serif;
     --trp-body: system-ui, -apple-system, 'Segoe UI', Roboto, Helvetica, sans-serif;
-    --trp-label: 'JetBrains Mono', ui-monospace, SFMono-Regular, Menlo, monospace;
+    --trp-label: 'JetBrains Mono', 'JetBrains Mono Fallback', ui-monospace, SFMono-Regular, Menlo, monospace;
 
     /* One motion budget. Hover and focus only; nothing here loops. */
     --trp-t: .15s;
+  }
+
+  /* A page short enough to need no scrollbar and one long enough to need one
+     are 15px different in width, and the header is laid out across that
+     width: the wordmark stays put but the nav, which is centred in what is
+     left, slides. Reserving the gutter on every page makes the header sit on
+     the same pixel whichever page a member is on.
+
+     stable, not both-edges: the gutter goes on the end side only, which is
+     where the scrollbar already was. */
+  /* Both, because one alone does not do it. Chrome computes
+     scrollbar-gutter: stable on the root but does not reserve anything until
+     the root is really a scroll container, and overflow-y: auto is not
+     enough to make it one when the page is short. Measured at 1440px:
+     overflow-y: scroll takes Members from a 1440px viewport to the 1425px
+     every other page already had, which is what makes the header land on the
+     same pixel whichever page a member is on.
+
+     scrollbar-gutter stays because it is the modern half of the pair: where
+     it is supported the gutter is reserved without a track being painted. */
+  html { scrollbar-gutter: stable; overflow-y: scroll; }
+
+  /* ---- moving between pages -------------------------------------------
+     A cross-document view transition. The browser holds the old page on
+     screen while the new one is built, then cross-fades the two, so a member
+     clicking through the nav never sees the white frame between them.
+
+     The header is named, which takes it out of the page-wide fade and gives
+     it a transition of its own. Because it is pixel-identical on every page
+     (see the gutter above), that transition has nothing to animate and the
+     header simply stays still while the content under it changes.
+
+     Browsers without this ignore the whole at-rule and navigate as before. */
+  @view-transition { navigation: auto; }
+
+  ::view-transition-old(root),
+  ::view-transition-new(root) {
+    animation-duration: 180ms;
+    animation-timing-function: ease;
+  }
+
+  /* Named, so it is its own transition group and does not fade with the
+     page. One name per document is the rule, and the header is the one
+     element every portal page has in the same place. */
+  header#top-nav { view-transition-name: trp-header; }
+  ::view-transition-group(trp-header) { animation-duration: 0ms; }
+  ::view-transition-old(trp-header),
+  ::view-transition-new(trp-header) { animation: none; mix-blend-mode: normal; }
+
+  /* Somebody who asked for less motion gets the navigation with no
+     animation at all, rather than a shorter one. */
+  @media (prefers-reduced-motion: reduce) {
+    ::view-transition-group(*),
+    ::view-transition-old(*),
+    ::view-transition-new(*) { animation: none !important; }
   }
 
   /* The ground. accelerator/index.html sets `--bg` on :root and paints the
@@ -151,29 +253,37 @@
    --------------------------------------------------------------------- */
 @layer base {
   :root[data-theme='dark'] {
-    /* paper becomes the deep green ground */
-    --c-bg: 26 32 21;             /* #1A2015 */
-    --c-page: 26 32 21;
-    --c-offwhite: 26 32 21;
-    --c-cream: 34 41 27;          /* #22291B */
-    --c-surface: 44 52 34;        /* #2C3422  raised off the ground */
+    /* Paper becomes a neutral near-black. It was a deep green ground, which
+       read as green rather than as dark; the greens are gone from every
+       surface and the lime is now the only colour on the page.
+
+       The ladder is four steps, each one lighter than the last, so a card
+       on the page and a hover on that card still read apart:
+       ground 28, cream 34, card 39, hover 47. */
+    --c-bg: 28 29 26;             /* #1C1D1A */
+    --c-page: 28 29 26;
+    --c-offwhite: 28 29 26;
+    --c-cream: 34 35 32;          /* #222320 */
+    --c-surface: 39 40 36;        /* #272824  raised off the ground */
     /* surfaces sit above the ground, not below it */
-    --c-sage: 54 64 41;           /* #364029 */
-    --c-sagelt: 70 82 55;         /* #465237  a step above the card, not the same as it */
+    --c-sage: 39 40 36;           /* #272824  the sage card is just a card here */
+    --c-sagelt: 47 48 43;         /* #2F302B  a step above the card, not the same as it */
     /* The hover tint, which has to sit above the card rather than equal it,
        or a hover does nothing on the dark theme. */
-    --c-panel: 70 82 55;          /* #465237 */
-    /* ink becomes cream */
+    --c-panel: 47 48 43;          /* #2F302B */
+    /* ink stays cream */
     --c-ink: 244 241 230;         /* #F4F1E6 */
     --c-deep: 244 241 230;
     --c-green: 230 228 214;       /* #E6E4D6  body copy */
-    --c-mid: 197 203 178;         /* #C5CBB2 */
-    --c-muted: 186 193 167;       /* #BAC1A7 */
-    --c-dim: 156 165 134;         /* #9CA586 */
-    /* accent is the brand lime, which only works as a light on dark */
+    /* The three quiet inks were sage-tinted, which is what made a page of
+       small print look green. Same lightness, no hue. */
+    --c-mid: 205 206 195;         /* #CDCEC3 */
+    --c-muted: 195 195 184;       /* #C3C3B8 */
+    --c-dim: 173 174 163;         /* #ADAEA3 */
+    /* accent is the brand lime, and on this theme it is the only colour */
     --c-olive: 204 238 160;       /* #CCEEA0 */
     --c-lime: 204 238 160;
-    /* a deep red disappears into the green ground, so it lifts */
+    /* a deep red disappears into a dark ground, so it lifts */
     --c-error: 255 169 158;       /* #FFA99E */
     /* a cream hairline, and a touch stronger so it survives the dark */
     --c-rule: 244 241 230;
@@ -183,20 +293,20 @@
 
   @media (prefers-color-scheme: dark) {
     :root[data-theme='system'] {
-      --c-bg: 26 32 21;
-      --c-page: 26 32 21;
-      --c-offwhite: 26 32 21;
-      --c-cream: 34 41 27;
-      --c-surface: 44 52 34;
-      --c-sage: 54 64 41;
-      --c-sagelt: 70 82 55;
-      --c-panel: 70 82 55;
+      --c-bg: 28 29 26;
+      --c-page: 28 29 26;
+      --c-offwhite: 28 29 26;
+      --c-cream: 34 35 32;
+      --c-surface: 39 40 36;
+      --c-sage: 39 40 36;
+      --c-sagelt: 47 48 43;
+      --c-panel: 47 48 43;
       --c-ink: 244 241 230;
       --c-deep: 244 241 230;
       --c-green: 230 228 214;
-      --c-mid: 197 203 178;
-      --c-muted: 186 193 167;
-      --c-dim: 156 165 134;
+      --c-mid: 205 206 195;
+      --c-muted: 195 195 184;
+      --c-dim: 173 174 163;
       --c-olive: 204 238 160;
       --c-lime: 204 238 160;
       --c-error: 255 169 158;       /* #FFA99E */
@@ -431,6 +541,12 @@
     color: var(--trp-ink);
     cursor: not-allowed;
   }
+  /* On the deep card the page's ink is the background, so a wash of it is
+     invisible. The card's own cream takes over for both. */
+  .glass-card.is-deep .trp-btn-off {
+    background: var(--trp-on-deep-line);
+    color: var(--trp-on-deep);
+  }
   .trp-btn-dead {
     background: transparent;
     color: var(--trp-muted);
@@ -568,6 +684,340 @@
     :root[data-theme='system'] .trp-powered .trp-powered-rev { display: block; }
   }
 
+  /* -- the dashboard ------------------------------------------------------
+     Four bands down the page: the welcome bar, the one thing to do next,
+     three tiles, then the full list beside everything a member sets up once.
+     Each band is its own rule here rather than a string of Tailwind in the
+     page, so the shapes this page shares with Curriculum and Live Sessions
+     cannot drift apart by a padding.
+
+     Everything is one column under 1024px, in the order it is written. */
+  .trp-dash { display: grid; gap: 20px; }
+  @media (min-width: 1024px) { .trp-dash { gap: 24px; } }
+
+  /* 1. the welcome bar */
+  .trp-dash-bar {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 16px 24px;
+    padding-top: 8px;
+  }
+  /* The greeting grows a line when the member's name arrives: at 375px
+     "Good to see you." is one line and "Good to see you, Ella." is two, and
+     that second line pushed the whole page down 58px on first load. Two
+     lines are held open from the start, so the name lands in space that was
+     already there.
+
+     Only below 640px. Above it the greeting has never needed a second line,
+     and reserving one would leave a gap under the heading. */
+  .trp-dash-greet { min-width: 0; }
+  @media (max-width: 639px) {
+    .trp-dash-greet h1 { min-height: 2.2em; }
+  }
+  /* The pill is where the cohort is, not where the member is, so it is a
+     quiet outline rather than a fill competing with the heading. */
+  .trp-dash-pill {
+    flex: none;
+    margin: 6px 0 0;
+    display: inline-flex;
+    align-items: center;
+    min-height: 36px;
+    padding: 8px 18px;
+    border: 1px solid var(--trp-rule-2);
+    border-radius: 99px;
+    font-family: var(--trp-label);
+    font-size: 12px;
+    letter-spacing: .06em;
+    color: var(--trp-ink);
+    white-space: nowrap;
+  }
+  /* At 320px "Kickoff Mon 26 Oct · 9 days to go" is 5px wider than the
+     column, and a pill that cannot wrap pushes the whole page sideways. */
+  @media (max-width: 400px) {
+    /* flex: none above means it will not shrink on its own, so the cap is
+       explicit: wrap inside the pill rather than widen the page. */
+    .trp-dash-pill { white-space: normal; text-align: center; line-height: 1.5; max-width: 100%; }
+  }
+
+  /* 2. your next step */
+  .trp-nextstep {
+    display: grid;
+    gap: 20px 32px;
+    padding: 28px 30px;
+  }
+  @media (min-width: 900px) {
+    /* The step takes the room; the counts sit in a fixed column so the
+       bar is the same width whatever the step is called. */
+    .trp-nextstep { grid-template-columns: minmax(0, 1fr) 240px; align-items: start; }
+  }
+  .trp-nextstep-main { min-width: 0; }
+  .trp-nextstep-title {
+    margin: 8px 0 0;
+    font-size: 23px;
+    line-height: 1.25;
+  }
+  @media (min-width: 900px) { .trp-nextstep-title { font-size: 26px; } }
+  .trp-nextstep-body {
+    margin: 10px 0 0;
+    font-size: 15px;
+    line-height: 1.6;
+    color: var(--trp-muted);
+    white-space: pre-line;
+    overflow-wrap: anywhere;
+  }
+  .trp-nextstep-acts {
+    margin-top: 20px;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+  }
+  .trp-nextstep-go { margin-top: 18px; display: inline-flex; gap: 6px; }
+  .trp-nextstep-side {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+  @media (min-width: 900px) {
+    /* A hairline between the two halves, on the side the counts are. */
+    .trp-nextstep-side { padding-left: 32px; border-left: 1px solid var(--trp-rule); }
+  }
+  .trp-nextstep-count {
+    margin: 0;
+    font-size: 20px;
+    font-weight: 600;
+    line-height: 1.2;
+  }
+  .trp-nextstep-note {
+    margin: 0;
+    font-family: var(--trp-label);
+    font-size: 11px;
+    letter-spacing: .08em;
+    text-transform: uppercase;
+    color: var(--trp-dim);
+  }
+
+  /* 3. the three tiles */
+  .trp-dash-tiles { display: grid; gap: 20px; }
+  @media (min-width: 900px) {
+    .trp-dash-tiles { grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 24px; }
+  }
+  .trp-tile {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    padding: 24px 26px;
+  }
+  .trp-tile-title { margin: 8px 0 0; font-size: 18px; line-height: 1.3; }
+  .trp-tile-big { margin: 10px 0 0; display: flex; align-items: baseline; gap: 10px; }
+  .trp-tile-n { font-size: 40px; font-weight: 700; line-height: 1; }
+  .trp-tile-of { font-size: 14px; color: var(--trp-muted); }
+  .trp-tile .trp-progress-track { margin-top: 16px; }
+  /* margin-top: auto pins the way out to the foot of the tile, so three
+     tiles of different lengths still line their links up. */
+  .trp-tile-go {
+    margin-top: auto;
+    padding-top: 18px;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 14px;
+    font-weight: 500;
+    color: var(--trp-ink);
+    text-decoration: underline;
+    text-underline-offset: 3.5px;
+    text-decoration-color: var(--trp-rule-2);
+    transition: text-decoration-color var(--trp-t) ease;
+  }
+  .trp-tile-go:hover { text-decoration-color: var(--trp-ink); }
+
+  /* The partner tile: three names, each with the line Resources uses. */
+  .trp-ptile-list { list-style: none; margin: 16px 0 0; padding: 0; display: grid; gap: 12px; }
+  .trp-ptile-list li { display: grid; gap: 2px; }
+  .trp-ptile-name { font-size: 14px; font-weight: 600; }
+  .trp-ptile-line { font-size: 13px; line-height: 1.5; color: var(--trp-muted); }
+
+  /* The next session tile keeps its own title size rather than the tile's,
+     because it is the only one of the three with a name to read. */
+  .trp-tile.trp-next { padding: 24px 26px; }
+  .trp-tile .trp-next-title { font-size: 20px; }
+  .trp-tile .trp-next-acts { padding-top: 18px; }
+
+  /* 4. the two columns */
+  .trp-dash-cols { display: grid; gap: 20px; align-items: start; }
+  @media (min-width: 1024px) {
+    .trp-dash-cols {
+      grid-template-columns: minmax(0, 1.5fr) minmax(0, 1fr);
+      gap: 24px;
+    }
+  }
+  .trp-dash-aside { display: grid; gap: 20px; align-content: start; }
+
+  /* The compact list: titles and ticks, with the rest one press away. */
+  .trp-dlist { padding: 26px 28px 22px; }
+  .trp-dsteps { list-style: none; margin: 16px 0 0; padding: 0; }
+  .trp-dstep {
+    display: grid;
+    grid-template-columns: auto minmax(0, 1fr);
+    align-items: start;
+    gap: 0 14px;
+    padding: 4px 0;
+  }
+  .trp-dstep + .trp-dstep { border-top: 1px solid var(--trp-rule); }
+  .trp-dstep-head {
+    grid-column: 2;
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 8px;
+    width: 100%;
+    /* 44px of target without a 44px box: the row is 15px of text with the
+       padding doing the rest. */
+    min-height: 44px;
+    padding: 0;
+    font: inherit;
+    font-size: 15px;
+    line-height: 1.45;
+    text-align: left;
+    color: var(--trp-ink);
+    background: transparent;
+    border: 0;
+    cursor: pointer;
+  }
+  .trp-dstep-head[disabled] { cursor: default; }
+  .trp-dstep-name { min-width: 0; }
+  .trp-dstep.is-done .trp-dstep-name { color: var(--trp-dim); text-decoration: line-through; }
+  /* The one row to do next, named so it can be found without counting. */
+  .trp-dstep-next {
+    flex: none;
+    font-family: var(--trp-label);
+    font-size: 10px;
+    font-weight: 600;
+    letter-spacing: .12em;
+    text-transform: uppercase;
+    padding: 2px 8px;
+    border-radius: 99px;
+    color: var(--trp-accent);
+    border: 1px solid rgb(var(--c-olive) / .38);
+    white-space: nowrap;
+  }
+  .trp-dstep-caret {
+    flex: none;
+    width: 16px;
+    height: 16px;
+    margin-left: auto;
+    color: var(--trp-dim);
+    transition: transform var(--trp-t) ease;
+  }
+  .trp-dstep.is-open .trp-dstep-caret { transform: rotate(180deg); }
+  .trp-dstep-body { grid-column: 2; padding: 0 0 14px; }
+  .trp-dstep-text {
+    margin: 0 0 10px;
+    font-size: 14px;
+    line-height: 1.55;
+    color: var(--trp-muted);
+    white-space: pre-line;
+    overflow-wrap: anywhere;
+  }
+  .trp-dlist-foot {
+    margin-top: 16px;
+    padding-top: 14px;
+    border-top: 1px solid var(--trp-rule);
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px 16px;
+  }
+  .trp-dlist-more { margin: 0; font-size: 13px; color: var(--trp-dim); }
+  .trp-dlist-go {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 14px;
+    font-weight: 500;
+    color: var(--trp-ink);
+    text-decoration: underline;
+    text-underline-offset: 3.5px;
+    text-decoration-color: var(--trp-rule-2);
+  }
+  .trp-dlist-go:hover { text-decoration-color: var(--trp-ink); }
+
+  /* The Set up once card, in the narrow column. Same card, less of it: the
+     two steps sit on one line each instead of three, and the numbers go,
+     because a list of two does not need counting. */
+  .trp-dash-aside .trp-setup { padding: 22px 24px 20px; }
+  .trp-dash-aside .trp-setup-step {
+    grid-template-columns: minmax(0, 1fr) auto;
+    gap: 8px 12px;
+    padding: 12px 0;
+  }
+  .trp-dash-aside .trp-step-number { display: none; }
+  .trp-dash-aside .trp-setup-actions { gap: 8px; }
+  .trp-dash-aside .trp-setup-actions .trp-btn { padding: 8px 14px; min-height: 38px; font-size: 13px; }
+  @media (max-width: 480px) {
+    .trp-dash-aside .trp-setup-step { grid-template-columns: minmax(0, 1fr); }
+    .trp-dash-aside .trp-setup-actions { justify-content: flex-start; }
+  }
+
+  /* -- the partner offers --------------------------------------------------
+     Three cards at the top of Resources, each a link out to something a
+     member already has. The mark sits in a fixed 40px well so three logos of
+     very different proportions (Stanley is a 3.8:1 wordmark, Wispr a square,
+     LaunchLemonade a 2:1 block) line up along one baseline without any of
+     them being stretched.
+
+     No grayscale and no filter: these are other people's marks. */
+  .trp-partners {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: grid;
+    gap: 16px;
+  }
+  @media (min-width: 768px) {
+    .trp-partners { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+  }
+  .trp-partner {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    height: 100%;
+    padding: 24px 24px 26px;
+    text-decoration: none;
+    color: inherit;
+  }
+  .trp-partner-mark {
+    display: flex;
+    align-items: center;
+    min-height: 40px;
+  }
+  .trp-partner-mark img {
+    display: block;
+    height: auto;
+    width: auto;
+    max-height: 40px;
+    max-width: 170px;
+  }
+  /* Stanley ships a reversed file, so the card swaps it on the dark theme the
+     same way the header lockup does. These are their own rules rather than a
+     reuse of .trp-powered, which is a 24px header component with a 44px tap
+     target built into it. */
+  .trp-partner-mark .trp-powered-rev { display: none; }
+  :root[data-theme='dark'] .trp-partner-mark .trp-powered-pos { display: none; }
+  :root[data-theme='dark'] .trp-partner-mark .trp-powered-rev { display: block; }
+  @media (prefers-color-scheme: dark) {
+    :root[data-theme='system'] .trp-partner-mark .trp-powered-pos { display: none; }
+    :root[data-theme='system'] .trp-partner-mark .trp-powered-rev { display: block; }
+  }
+  .trp-partner-line {
+    font-size: 15px;
+    line-height: 1.5;
+    color: var(--trp-muted);
+  }
+  .trp-partner:hover .trp-partner-line { color: var(--trp-ink); }
+
   /* The header is the one place the lockup appears now: the second copy in
      every footer is gone, so this one carries the credit on its own and
      cannot be held back to a desktop width.
@@ -599,6 +1049,19 @@
   /* -- the header's thin divider ------------------------------------------
      Between the sponsor credit and the member's own name: two different
      things, so there is a hair between them rather than a gap and a hope. */
+  /* The member's name is empty until the payload lands, and the group it
+     sits in is at the end of the header, so filling it slid the theme
+     control and the sign-out button sideways on every load. Holding a name's
+     worth of width open costs nothing and the header stops moving.
+
+     Right-aligned inside that width, so the divider to its left is the edge
+     that stays put. A name longer than the reservation still widens it, by
+     the few pixels it overruns. */
+  [data-portal-name] {
+    min-width: 4.5rem;
+    text-align: right;
+  }
+
   .trp-head-div {
     width: 1px;
     height: 20px;
@@ -794,6 +1257,24 @@
   }
   .trp-check-act { display: inline-flex; justify-self: end; }
 
+  /* The item's own body, under its title. Takes the whole row of the label's
+     flex so it always starts on a new line, and keeps any line breaks the
+     copy was written with. */
+  .trp-check-body {
+    flex: 1 0 100%;
+    margin-top: 2px;
+    font-size: 14px;
+    line-height: 1.55;
+    color: var(--trp-muted);
+    white-space: pre-line;
+    overflow-wrap: anywhere;
+  }
+  /* A row with a body is taller than one line, so the tick sits at the top
+     of it rather than floating in the middle of the paragraph. */
+  .trp-check-row:has(.trp-check-body) { align-items: start; }
+  .trp-check-row:has(.trp-check-body) > .trp-check-box,
+  .trp-check-row:has(.trp-check-body) > .trp-check-gap { margin-top: 3px; }
+
   @media (max-width: 640px) {
     /* The action drops under the row and takes its width, so a 44px pill
        never has to squeeze in beside a wrapping title. */
@@ -964,7 +1445,15 @@
      "Need a hand?" on the dashboard: a heading, and two links. */
   .trp-aside { padding: 24px 26px; }
   .trp-aside-title { margin: 8px 0 0; font-size: 18px; line-height: 1.25; }
-  .trp-aside-links { margin: 14px 0 0; display: grid; gap: 10px; }
+  /* One line, not a stack: two links and a dot between them. They wrap to
+     two lines only when the column is too narrow to hold both. */
+  .trp-aside-links {
+    margin: 10px 0 0;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    column-gap: 18px;
+  }
   .trp-aside-link {
     display: inline-flex;
     align-items: center;
@@ -1247,49 +1736,11 @@
      in the bucket and the week has opened. */
   /* The shared button carries a small download icon before its label, so it
      has to be a flex row or the icon sits on its own line. */
-  .trp-pcard-get {
-    flex: none;
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    gap: 7px;
-    min-height: 44px;
-    padding: 11px 18px;
-    border: 1px solid var(--trp-rule-2);
-    border-radius: 99px;
-    font-size: 13px;
-    font-weight: 600;
-    white-space: nowrap;
-    color: var(--trp-ink);
-    background: transparent;
-    transition: background-color var(--trp-t) ease, border-color var(--trp-t) ease;
-  }
-  .trp-pcard-get:hover { background: var(--trp-panel); border-color: var(--trp-ink); }
-  .trp-pcard-get:disabled { opacity: .6; cursor: default; }
-  .trp-pcard-get svg { width: 13px; height: 13px; flex: none; }
-  /* Where the button will be once the week opens, so the card keeps its
-     shape on the day it does. Not a button: there is nothing to press. */
-  /* Where the button will be once the week opens. Not a button, so it does
-     not take a button's height: it is a note in the label face. */
-  .trp-pcard-locked {
-    flex: none;
-    align-self: center;
-    padding: 6px 14px;
-    border: 1px dashed var(--trp-rule-2);
-    border-radius: 99px;
-    font-family: var(--trp-label);
-    font-size: 11px;
-    letter-spacing: .04em;
-    white-space: nowrap;
-    color: var(--trp-muted);
-  }
-  /* "Download coming soon" is 171px and will not wrap, which set the grid
-     track's minimum and pushed the whole page sideways on a 320px screen.
-     It is allowed to shrink and wrap below the width where that happens;
-     above it there is room and the label stays on one line as designed. */
-  @media (max-width: 359px) {
-    .trp-pcard-locked { flex: 0 1 auto; white-space: normal; text-align: center; }
-  }
+  /* The optional long version. Folded, so the short prompt above stays the
+     thing the card is for. */
+  .trp-pcard-full { margin-top: 14px; }
+  .trp-pcard-full .trp-acc-note { margin: 0 0 10px; }
+
   .trp-pcard-one {
     margin: 10px 0 0;
     font-size: 14px;
@@ -1297,63 +1748,150 @@
     color: var(--trp-text);
   }
 
-  .trp-saybox {
-    margin-top: 16px;
-    border: 1px solid var(--trp-rule);
-    border-radius: 12px;
-    background: var(--trp-bg);
-  }
-  .trp-saybox-head {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: 12px;
-    padding: 9px 12px;
-    border-bottom: 1px solid var(--trp-rule);
-  }
-  .trp-saybox-text {
-    margin: 0;
-    padding: 12px;
-    font-family: var(--trp-label);
-    font-size: 13px;
-    line-height: 1.5;
-    color: var(--trp-ink);
-    overflow-wrap: anywhere;
-  }
   /* The disclosure is the last row of the card, so it pins to the bottom and
      every card in a row lines up whether or not it has one. */
   .trp-pcard-auto { margin-top: auto; }
   .trp-pcard-auto .trp-copybox { margin-top: 12px; }
 
-  /* -- open in your AI ---------------------------------------------------
-     Three outline pills in the same family as Copy and Download: no new
-     colour, nothing filled. They wrap onto a second line on a narrow card
-     rather than squeezing, and each one draws at the full 44px because it
-     has no box head to borrow the extra height from. */
-  .trp-ai-row {
+  /* -- which AI, chosen once --------------------------------------------
+     A segmented control under the page intro. One choice drives all sixteen
+     Open buttons, so the cards carry one button each rather than three. */
+  .trp-picker {
     display: flex;
     flex-wrap: wrap;
-    gap: 8px;
-    margin-top: 12px;
+    align-items: center;
+    gap: 10px 14px;
+    padding: 14px 16px;
+    border: 1px solid var(--trp-rule);
+    border-radius: 12px;
+    background: var(--trp-panel);
   }
-  .trp-ai {
+  .trp-picker-label { flex: none; }
+  .trp-picker-opts {
+    display: flex;
+    gap: 4px;
+    padding: 3px;
+    border: 1px solid var(--trp-rule);
+    border-radius: 99px;
+    background: var(--trp-bg);
+  }
+  .trp-picker-opt {
+    min-height: 36px;
+    padding: 8px 16px;
+    border: 0;
+    border-radius: 99px;
+    background: transparent;
+    color: var(--trp-muted);
+    font-family: var(--trp-sans);
+    font-size: 13px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: background var(--trp-t) ease, color var(--trp-t) ease;
+  }
+  .trp-picker-opt:hover { color: var(--trp-ink); }
+  .trp-picker-opt[aria-checked='true'] {
+    background: var(--trp-ink);
+    color: var(--trp-bg);
+  }
+  .trp-picker-opt:focus-visible { outline: 2px solid var(--trp-text); outline-offset: 2px; }
+
+  /* -- the two actions on a card -----------------------------------------
+     Open is the only filled button anywhere in the grid, so the eye lands on
+     it first on every card. Copy sits beside it as plain text. */
+  .trp-actions {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 8px 12px;
+    margin-top: 16px;
+  }
+  .trp-open {
     display: inline-flex;
     align-items: center;
     justify-content: center;
     min-height: 44px;
-    padding: 11px 15px;
+    padding: 11px 20px;
+    border-radius: 99px;
+    background: var(--trp-ink);
+    color: var(--trp-bg);
+    font-size: 13px;
+    font-weight: 600;
+    letter-spacing: .01em;
+    text-decoration: none;
+    white-space: nowrap;
+    transition: opacity var(--trp-t) ease;
+  }
+  .trp-open:hover { opacity: .88; }
+  .trp-open:focus-visible { outline: 2px solid var(--trp-text); outline-offset: 3px; }
+
+  /* -- one fold per card, not two ---------------------------------------- */
+  .trp-pcard-more { margin-top: auto; padding-top: 14px; }
+  .trp-pcard-more .trp-copybox { margin-top: 12px; }
+  .trp-pcard-more .trp-copybox:first-child { margin-top: 0; }
+  .trp-pcard-more .trp-acc-note { margin: 10px 0 0; }
+
+  /* -- the page head, with the one secondary action beside it ------------
+     The title block takes the left, the way into the template sits on the
+     right in space that was empty. It drops under the title on a phone
+     rather than squeezing the heading. */
+  .trp-page-head {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 16px 24px;
+  }
+  .trp-own-link {
+    flex: none;
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+    min-height: 40px;
+    padding: 9px 16px;
     border: 1px solid var(--trp-rule-2);
     border-radius: 99px;
-    font-size: 12.5px;
-    font-weight: 600;
-    line-height: 1;
-    white-space: nowrap;
+    color: var(--trp-muted);
+    font-size: 13px;
+    font-weight: 500;
     text-decoration: none;
-    color: var(--trp-ink);
-    background: transparent;
-    transition: background-color var(--trp-t) ease, border-color var(--trp-t) ease;
+    transition: border-color var(--trp-t) ease, color var(--trp-t) ease;
   }
-  .trp-ai:hover { background: var(--trp-panel); border-color: var(--trp-ink); }
+  .trp-own-link::after { content: '\2193 '; font-size: 14px; line-height: 1; }
+  .trp-own-link:hover { border-color: var(--trp-ink); color: var(--trp-ink); }
+  .trp-own-link:focus-visible { outline: 2px solid var(--trp-text); outline-offset: 3px; }
+
+  /* -- write your own, at the foot and folded ---------------------------- */
+  .trp-own { margin-top: 36px; }
+  /* The summary is the whole card when it is shut, so it carries the card's
+     own padding rather than sitting flush against the border. No rule above
+     it either: it is the first thing inside the card, not a section inside
+     a card the way the in-card folds are. */
+  .trp-ptemplate {
+    display: block;
+    padding: 0;
+    margin-bottom: 0;
+  }
+  .trp-ptemplate-head {
+    padding: 20px 22px;
+    border-top: 0;
+    font-size: 16px;
+  }
+  .trp-ptemplate-head .trp-pcard-name { margin: 0; }
+  .trp-ptemplate > :not(summary) { padding-left: 22px; padding-right: 22px; }
+  .trp-ptemplate > :last-child { padding-bottom: 22px; }
+  .trp-ptemplate[open] .trp-ptemplate-head { padding-bottom: 6px; }
+
+  /* -- a heading over each run of cards ---------------------------------- */
+  .trp-group-head { margin: 36px 0 16px; }
+  .trp-group-title {
+    font-family: var(--trp-display);
+    font-size: 20px;
+    font-weight: 600;
+    letter-spacing: -.01em;
+    color: var(--trp-ink);
+    margin: 0;
+  }
+  .trp-group-lede { margin: 6px 0 0; font-size: 14.5px; color: var(--trp-muted); }
 
   /* The template card sits above the grid, so the gap between them is its
      own: the grid's own gap only applies between cards inside it. */
@@ -1447,9 +1985,10 @@
     .trp-pcards { grid-template-columns: 1fr; }
     .trp-pcard { padding: 18px 18px 16px; }
     .trp-ptemplate { padding: 18px 18px 16px; }
-    /* Each pill takes a little under half the row, so three of them land two
-       up and then one, flush to both edges, instead of wrapping ragged. */
-    .trp-ai { flex: 1 1 calc(50% - 4px); padding: 11px 10px; }
+    /* One button now, so it takes the row rather than sharing it. */
+    .trp-open { flex: 1 1 100%; }
+    .trp-picker { padding: 12px 14px; }
+    .trp-picker-opt { flex: 1 1 auto; padding: 8px 12px; }
     .trp-guides { grid-template-columns: 1fr; }
   }
 
@@ -1483,6 +2022,19 @@
     gap: 12px;
   }
 
+  /* The line under a Join button that is not live yet. It sits outside
+     .trp-next-acts rather than in it, so it starts on its own line at every
+     width instead of becoming a third flex item beside the button and the
+     tick. On the deep card it takes the same soft ink the date above it
+     does, which is cream at 72% on paper and --c-mid on the dark theme. */
+  .trp-join-note {
+    margin: 10px 0 0;
+    font-size: 13px;
+    line-height: 1.45;
+    color: var(--trp-muted);
+  }
+  .glass-card.is-deep .trp-join-note { color: var(--trp-on-deep-soft); }
+
   /* Two up on a wide screen, as on the accelerator page, so the whole
      schedule sits in about one screen under the next-session card. */
   /* The whole schedule in one add. Quiet, but a real target. */
@@ -1501,6 +2053,69 @@
     transition: background-color var(--trp-t) ease, border-color var(--trp-t) ease;
   }
   .trp-addall:hover { background: var(--trp-panel); border-color: var(--trp-ink); }
+
+  /* -- the schedule, while it is still on its way -------------------------
+     #trSessionList used to hold one line of text and then grow by about
+     860px when the payload arrived, which pushed the whole page down under
+     the reader. The placeholder is now built from the real card classes, so
+     it stands at the height the schedule will be and nothing moves.
+
+     The status line is taken out of flow: it is the one part of the
+     placeholder that has no counterpart in the loaded page, so leaving it in
+     the box would cost its own height when it went. */
+  .trp-sched { position: relative; }
+  .trp-skel-say {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    text-align: center;
+    font-size: 14px;
+    color: var(--trp-muted);
+    pointer-events: none;
+  }
+  /* A bar stands in for a line of text. An empty one is sized by this rule:
+     1.35em against the inherited font size, which is the line box of the row
+     it sits in. A fixed pixel height was 9px short on every session row at
+     375px, where the title is 16px rather than 15.5px.
+
+     The headings instead hold the words they stand in for, inked out. The
+     browser then measures them with the real font and wraps them where the
+     real heading wraps, which a width in pixels cannot do: at 375px the next
+     session's title runs to two lines and a one-line bar left the card 25px
+     short. */
+  .trp-skel .trp-bar {
+    display: inline-block;
+    max-width: 100%;
+    border-radius: 6px;
+    background: var(--trp-rule-2);
+    color: transparent;
+    opacity: 0.55;
+    animation: trp-skel-pulse 1.5s ease-in-out infinite;
+  }
+  /* An empty bar has no line box of its own, so it borrows the one it sits
+     in: 1.35em against the inherited font size. A bar with words in it is
+     left to its own line box, which is the heading's real one. */
+  .trp-skel .trp-bar:empty { height: 1.35em; }
+  /* Rows have nothing written in them, so they take a width. */
+  .trp-skel .trp-sdate .trp-bar { width: 118px; }
+  .trp-skel .trp-stitle .trp-bar { width: 62%; }
+  /* The ones that stand in for controls and figures, not text. */
+  .trp-skel .trp-bar.is-btn { width: 148px; height: 44px; border-radius: 99px; }
+  .trp-skel .trp-bar.is-tick { width: 22px; height: 22px; }
+  .trp-skel .trp-bar.is-big { width: 108px; height: 40px; }
+  /* A placeholder row has no tick to press, so the circle's column is held
+     open by a gap of the same width. */
+  .trp-skel .trp-dstep-head { pointer-events: none; }
+  /* An empty track in a placeholder still has to be the bar's own height. */
+  .trp-skel .trp-progress-track { margin-top: 4px; }
+  @keyframes trp-skel-pulse {
+    0%, 100% { opacity: 0.3; }
+    50% { opacity: 0.6; }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .trp-skel .trp-bar { animation: none; opacity: 0.4; }
+  }
 
   .trp-wkcards { list-style: none; margin: 16px 0 0; padding: 0; display: grid; gap: 16px; }
   @media (min-width: 1024px) {
@@ -1805,6 +2420,9 @@
     .trp-next-acts > div { flex: 1 1 auto; }
     .trp-next-acts > div > button { width: 100%; }
     .trp-next-acts > .trp-tick { flex: 0 0 auto; }
+    /* The skeleton's stand-ins, wrapping the way the real two do. */
+    .trp-next-acts > .trp-bar.is-btn { flex: 1 1 100%; }
+    .trp-next-acts > .trp-bar.is-tick { flex: 0 0 auto; }
     .trp-wkcard { padding: 22px 20px 10px; }
     .trp-srow {
       grid-template-columns: minmax(0, 1fr) auto;

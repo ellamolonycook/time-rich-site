@@ -58,16 +58,18 @@
   <meta name="twitter:image" content="https://timerich.ai/og-time-rich.png" />
   <meta name="twitter:card" content="summary_large_image" />
   <link rel="stylesheet" href="portal.css"/>
-  <link rel="preconnect" href="https://fonts.googleapis.com"/>
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin=""/>
-  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&amp;display=swap" rel="stylesheet"/>
+  <!-- The two faces, served from this repo. They used to come from Google
+       Fonts, which costs a DNS lookup, a stylesheet and only then the font
+       itself: three round trips before a heading could be drawn in the right
+       face, and a reflow when it finally was. Preloading the files directly
+       starts them with the stylesheet instead.
+
+       crossorigin is required on a font preload even for a same-origin file:
+       fonts are fetched in CORS mode, and a preload without it is fetched
+       twice. -->
+  <link rel="preload" href="../brand/fonts/SpaceGrotesk-Variable.woff2" as="font" type="font/woff2" crossorigin/>
+  <link rel="preload" href="../brand/fonts/JetBrainsMono-Variable.woff2" as="font" type="font/woff2" crossorigin/>
   <link rel="stylesheet" href="portal-content.css">
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-
-  
-
-
   <!-- The session gate. Config first, then the library; both deferred so
        the DOM is ready when the script mounts. No valid code redirects to
        index.html, because this page has no login form of its own. -->
@@ -75,6 +77,20 @@
   <script src="portal-access.js" defer></script>
   <script src="portal-live.js"></script>
   <script src="portal-chrome.js" defer></script>
+
+  <!-- Warm the next page while the pointer is still travelling to the link.
+       "moderate" is roughly 200ms of hover, which is long enough that a
+       pointer crossing the nav does not fetch all six. Only portal pages are
+       listed: a rule that matched everything would also warm sign-out and
+       the partner links. -->
+  <script type="speculationrules">
+  {
+    "prefetch": [{
+      "where": { "href_matches": "/portal/*.html" },
+      "eagerness": "moderate"
+    }]
+  }
+  </script>
 </head>
 
 
@@ -202,10 +218,61 @@
     <header class="space-y-4">
               <span class="trp-kicker">Toolkit</span>
               <h1 class="trp-title">Resources<span class="trp-stop">.</span></h1>
-              <p class="trp-lede">Skills, templates and prompts to download and use in your own account.</p>
+              <p class="trp-lede">Your partner offers, agent guide and answers.</p>
             </header>
 
-            <!-- The agent comparison, first on the page because it is what a
+            <!-- The partner offers, first on the page. Each one is something
+                 a member already has as part of the accelerator, so this is
+                 where they go to claim it rather than a page of downloads.
+
+                 Full colour, no grayscale: these are other people's marks
+                 and the deal is that they are shown as they are. Stanley
+                 ships a reversed file for the dark theme, so it swaps the
+                 way the header lockup does; the other two carry their own
+                 background and read in both themes as they are.
+
+                 rel="sponsored" because the accelerator has a commercial
+                 relationship with all three, which is what that value is
+                 for. -->
+            <section class="space-y-4" aria-labelledby="partners-heading">
+              <div class="space-y-2">
+                <h2 id="partners-heading" class="trp-section-title">Your partner offers</h2>
+                <p class="trp-lede">Included with your place. Claim them whenever you are ready.</p>
+              </div>
+
+              <ul class="trp-partners">
+                <li>
+                  <a class="glass-card trp-partner" href="https://x.getstanley.ai/r/mz4y9g"
+                     target="_blank" rel="noopener sponsored">
+                    <span class="trp-partner-mark">
+                      <img class="trp-powered-pos" src="../brand/partners/stanley-logo.png" alt="Stanley" width="765" height="203" loading="lazy" decoding="async"/>
+                      <img class="trp-powered-rev" src="../brand/partners/stanley-logo-dark.png" alt="Stanley" width="765" height="203" loading="lazy" decoding="async"/>
+                    </span>
+                    <span class="trp-partner-line">Your AI head of content. Drafts from your calls, learns your voice, posts for you.</span>
+                  </a>
+                </li>
+                <li>
+                  <a class="glass-card trp-partner" href="https://ref.wisprflow.ai/ella-cook-vt27"
+                     target="_blank" rel="noopener sponsored">
+                    <span class="trp-partner-mark">
+                      <img src="../os/img/wispr-flow.png" alt="Wispr Flow" width="256" height="256" loading="lazy" decoding="async"/>
+                    </span>
+                    <span class="trp-partner-line">6 months of Wispr Flow Pro, the voice dictation app the accelerator runs on.</span>
+                  </a>
+                </li>
+                <li>
+                  <a class="glass-card trp-partner" href="https://launchlemonade.app"
+                     target="_blank" rel="noopener sponsored">
+                    <span class="trp-partner-mark">
+                      <img src="../brand/partners/launchlemonade-logo.jpg" alt="LaunchLemonade" width="1280" height="628" loading="lazy" decoding="async"/>
+                    </span>
+                    <span class="trp-partner-line">3 months of LaunchLemonade included.</span>
+                  </a>
+                </li>
+              </ul>
+            </section>
+
+            <!-- The agent comparison, under the partner offers. It is what a
                  member comes here for the week they hear these named on a
                  call: not a download, a decision about which one to try.
 
@@ -301,87 +368,6 @@
               </ol>
             </section>
 
-            
-            <section class="space-y-10 mt-6">
-              <div class="space-y-3">
-                <h2 class="trp-section-title">Skill library</h2>
-                <p class="trp-lede">Each skill is a ZIP. Download it, keep it zipped, and upload it once.</p>
-              </div>
-              
-              <div id="skill-library">
-                <p class="trp-lede">Loading the skill library&hellip;</p>
-              </div>
-
-              <!-- Install steps (Smooth JS-free Accordion) -->
-              <div class="group p-7 lg:p-8 glass-card mt-10 cursor-pointer" onclick="this.classList.toggle('is-open')">
-                <div class="flex flex-wrap items-center justify-between gap-4 select-none">
-                  <div class="min-w-0 space-y-3">
-    <p class="trp-tag">Install</p>
-    <h3 class="trp-section-title">How to add a skill</h3>
-    <p class="trp-lede">Seven short steps. Leave the file as a ZIP the whole way through.</p>
-                  </div>
-                  <div class="w-11 h-11 rounded-full border border-brand-ink/20 flex items-center justify-center shrink-0 transition-transform duration-150 group-[.is-open]:-rotate-180">
-    <svg class="w-5 h-5 text-brand-ink/70" fill="none" stroke="currentColor" stroke-width="1.6" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7"></path></svg>
-                  </div>
-                </div>
-                
-                <div class="grid grid-rows-[0fr] opacity-0 transition-all duration-150 ease-[cubic-bezier(0.16,1,0.3,1)] group-[.is-open]:grid-rows-[1fr] group-[.is-open]:opacity-100 group-[.is-open]:mt-8 group-[.is-open]:pt-8 border-t border-transparent group-[.is-open]:border-brand-deep/5">
-                  <div class="overflow-hidden">
-    <ol class="trp-steps">
-    <li class="flex gap-4">
-    <span class="trp-step">01</span>
-    <div class="min-w-0">
-    <p class="trp-step-title">Download the ZIP</p>
-    <p class="trp-step-body">Use Download on the skill card. The file saves to your computer.</p>
-    </div>
-    </li>
-    <li class="flex gap-4">
-    <span class="trp-step">02</span>
-    <div class="min-w-0">
-    <p class="trp-step-title">Keep it zipped</p>
-    <p class="trp-step-body">Leave the skill as a ZIP. Uploading an unzipped folder will not work.</p>
-    </div>
-    </li>
-    <li class="flex gap-4">
-    <span class="trp-step">03</span>
-    <div class="min-w-0">
-    <p class="trp-step-title">Open Skills</p>
-    <p class="trp-step-body">In your AI tool, open the screen where you add Skills.</p>
-    </div>
-    </li>
-    <li class="flex gap-4">
-    <span class="trp-step">04</span>
-    <div class="min-w-0">
-    <p class="trp-step-title">Click Upload</p>
-    <p class="trp-step-body">Choose Upload on that screen.</p>
-    </div>
-    </li>
-    <li class="flex gap-4">
-    <span class="trp-step">05</span>
-    <div class="min-w-0">
-    <p class="trp-step-title">Select the ZIP</p>
-    <p class="trp-step-body">Pick the file you just downloaded. Do not rename it.</p>
-    </div>
-    </li>
-    <li class="flex gap-4">
-    <span class="trp-step">06</span>
-    <div class="min-w-0">
-    <p class="trp-step-title">Confirm and save</p>
-    <p class="trp-step-body">Accept the prompt so the skill is stored on your account.</p>
-    </div>
-    </li>
-    <li class="flex gap-4">
-    <span class="trp-step">07</span>
-    <div class="min-w-0">
-    <p class="trp-step-title">Start using it</p>
-    <p class="trp-step-body">Open a new chat. The skill is ready.</p>
-    </div>
-    </li>
-                  </ol>
-                  </div>
-                </div>
-              </div>
-            </section>
 
           <!-- FAQ. Four questions, on <details> so the open and close, the
                keyboard handling and in-page search are the browser's. -->
@@ -406,7 +392,7 @@
               </summary>
               <div class="trp-acc-body">
                 <p class="trp-faq-answer">Nothing is lost. Every session is recorded and the recording appears on the Live Sessions page under that week.</p>
-                <p class="trp-faq-answer">If you know in advance, send your question to the WhatsApp group or to emc@timerich.ai and it gets answered on the call.</p>
+                <p class="trp-faq-answer">If you know in advance, send your question to the WhatsApp group or to emc@timerichclub.com and it gets answered on the call.</p>
               </div>
             </details>
 
@@ -428,16 +414,29 @@
               </summary>
               <div class="trp-acc-body">
                 <p class="trp-faq-answer">Quick question, and one the cohort can answer: the WhatsApp group. The link is in Quick links below.</p>
-                <p class="trp-faq-answer">Anything about your account, your access or your billing: email <a href="mailto:emc@timerich.ai" class="trp-slink">emc@timerich.ai</a>.</p>
+                <p class="trp-faq-answer">Anything about your account, your access or your billing: email <a href="mailto:emc@timerichclub.com" class="trp-slink">emc@timerichclub.com</a>.</p>
               </div>
             </details>
           </section>
 
           <!-- Links from the payload. Each one is left out when there is no
                match, and the whole block hides when none of them land. -->
-          <section data-res-links class="mt-10" hidden>
+          <!-- The heading is in the page and the card under it comes from the
+               payload, so the card's space is held open rather than appearing
+               from nothing and pushing the footer down. The whole section is
+               still hidden when no link lands. -->
+          <section data-res-links class="mt-10">
             <h2 class="trp-section-title">Quick links</h2>
             <p class="trp-lede mt-2 mb-6">The workbook, the group and the places things live.</p>
+            <div class="trp-skel" data-res-links-skel aria-hidden="true">
+              <div class="glass-card is-static trp-wkcard">
+                <ul class="trp-rrows">
+                  <li class="trp-rrow"><div class="trp-rbody"><p class="trp-rname"><span class="trp-bar">Make your copy of the Business COMPASS</span></p><p class="trp-rsub"><span class="trp-bar">Click to make your own copy.</span></p></div><span class="trp-ract"><span class="trp-bar is-btn"></span></span></li>
+                  <li class="trp-rrow"><div class="trp-rbody"><p class="trp-rname"><span class="trp-bar">Answer the onboarding questions</span></p><p class="trp-rsub"><span class="trp-bar">Shapes the curriculum and your hot seat room.</span></p></div><span class="trp-ract"><span class="trp-bar is-btn"></span></span></li>
+                  <li class="trp-rrow"><div class="trp-rbody"><p class="trp-rname"><span class="trp-bar">Join the Superhuman WhatsApp group</span></p><p class="trp-rsub"><span class="trp-bar">Where the cohort talks between sessions.</span></p></div><span class="trp-ract"><span class="trp-bar is-btn"></span></span></li>
+                </ul>
+              </div>
+            </div>
           </section>
 </div>
       </div>
@@ -465,15 +464,15 @@
       <span data-portal-community hidden class="trp-foot-sep" aria-hidden="true">&middot;</span>
       <a data-portal-community hidden class="trp-foot-link">WhatsApp community</a>
       <span class="trp-foot-sep" aria-hidden="true">&middot;</span>
-      <span>Need help? <a href="mailto:emc@timerich.ai" class="trp-foot-link">emc@timerich.ai</a></span>
+      <span>Need help? <a href="mailto:emc@timerichclub.com" class="trp-foot-link">emc@timerichclub.com</a></span>
     </p>
   </footer>
 
   <script>
     /* Resources, drawn from portal_get.
-       Skills are the kind = 'skill' items, grouped by week, each with the
-       gated download button from portal-access.js. A locked week cannot send
-       its items at all, so it shows as locked with no button. */
+       The skill library and its download buttons are gone: members install
+       nothing now, so the only thing built from the payload here is the
+       "Where things live" card of links. */
     (function () {
       var L = window.TRLive;
       if (!L) return;
@@ -482,86 +481,13 @@
       // uses, rather than a hand-written copy of it at a different height.
       var ROW_ACTION = 'trp-saction trp-btn trp-btn-outline trp-btn-sm';
 
-      /* One row per skill: the kind on the left, the name and its line in the
-         middle, the download on the right. */
-      function skillRow(item) {
-        var name = L.str(item.title) || 'Skill';
-        var row = L.el('li', 'trp-rrow');
-
-        var mid = L.el('div', 'trp-rbody');
-        mid.appendChild(L.el('p', 'trp-rname', name));
-        if (L.str(item.body)) mid.appendChild(L.el('p', 'trp-rsub', L.str(item.body)));
-        row.appendChild(mid);
-
-        var slot = L.el('span', 'trp-ract');
-        // The button re-checks the code and the week server side before it
-        // mints a five-minute signed URL.
-        if (window.TRPortal && typeof window.TRPortal.skillButton === 'function') {
-          var btn = window.TRPortal.skillButton(item);
-          if (btn) {
-            btn.setAttribute('aria-label', 'Download ' + name);
-            slot.appendChild(btn);
-          }
-        }
-        row.appendChild(slot);
-        return row;
-      }
-
-      function weekCard(week, skills) {
-        var n = L.num(week.id);
-        var label = n === 0 ? 'Start here' : 'Week ' + (n < 10 ? '0' + n : n);
-
-        var card = L.el('li', 'glass-card is-static trp-wkcard');
-        var head = L.el('div', 'trp-wkcard-head');
-        // Week 0's label and its title are both "Start here", so showing
-        // both just says it twice. The heading goes in only when it adds
-        // something the label has not already said.
-        var theme = L.str(week.title) || label;
-        if (theme.toLowerCase() !== label.toLowerCase()) {
-          head.appendChild(L.el('p', 'trp-tag', label));
-        }
-        head.appendChild(L.el('h3', 'trp-wkcard-theme', theme));
-        card.appendChild(head);
-
-        var ul = L.el('ul', 'trp-rrows');
-        skills.forEach(function (item) { ul.appendChild(skillRow(item)); });
-        card.appendChild(ul);
-        return card;
-      }
-
-      /* A locked week never sends its items, so the only honest thing to
-         show is that the week is still shut. That used to be a full-size
-         card per week with one line in it, which left a column of empty
-         boxes down the page; the weeks share one "Coming up" card now, the
-         same one the Curriculum uses, built from the same payload. */
-      function renderSkills(root, data) {
-        L.clear(root);
-        var grid = L.el('ul', 'trp-wkcards');
-        var any = false;
-
-        L.weeks(data).forEach(function (week) {
-          if (week.unlocked !== true) return;
-          var skills = L.items(week).filter(function (i) { return i && i.kind === 'skill'; });
-          if (!skills.length) return;
-          grid.appendChild(weekCard(week, skills));
-          any = true;
-        });
-
-        if (any) root.appendChild(grid);
-
-        var coming = L.comingCard(data);
-        if (coming) {
-          coming.classList.add('mt-5');
-          root.appendChild(coming);
-          any = true;
-        }
-
-        L.show(root, any);
-      }
-
       // The four placeholder cards are now real links from the payload, or
-      // they are not rendered at all. Same rows as the skills above.
+      // they are not rendered at all.
       function renderLinks(root, data) {
+        // The placeholder goes the moment there is something real to put in
+        // its place, so the two are never both in the box.
+        var skel = root.querySelector('[data-res-links-skel]');
+        if (skel) skel.remove();
         // the section's heading lives in the page, so only the card is rebuilt
         var host = root.querySelector('[data-res-links-card]');
         if (!host) {
@@ -616,9 +542,7 @@
       document.addEventListener('trportal:data', function (event) {
         var data = event && event.detail;
         if (!data) return;
-        var skills = document.getElementById('skill-library');
         var links = document.querySelector('[data-res-links]');
-        if (skills) renderSkills(skills, data);
         if (links) renderLinks(links, data);
       });
     })();

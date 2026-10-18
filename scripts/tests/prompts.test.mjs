@@ -116,144 +116,79 @@ console.log('\nPrompt Library — the cards');
   const page = await openPrompts();
   const cards = page.cards();
   check('sixteen cards', cards.length === 16, cards.length);
-  check('every card has a name, a line and a phrase to say',
+  check('every card has a name and a line',
+    cards.length === 16 &&
     cards.every((c) => c.querySelector('.trp-pcard-name')?.textContent.trim() &&
-      c.querySelector('.trp-pcard-one')?.textContent.trim() &&
-      c.querySelector('.trp-saybox-text')?.textContent.trim()));
-  check('every card has a copy button for its phrase',
-    cards.every((c) => c.querySelector('.trp-saybox .trp-copy')));
+      c.querySelector('.trp-pcard-one')?.textContent.trim()));
+  check('every card has a copy button for its prompt',
+    cards.every((c) => c.querySelector('.trp-actions .trp-copy')));
+
+  // The trigger phrase is gone. "Superhuman: build my context" does nothing
+  // in an AI that has no pack installed, and nobody installs one now, so it
+  // was an instruction on every card that quietly did not work.
+  check('no card carries an "Or say" trigger line',
+    cards.every((c) => !c.querySelector('.trp-pcard-say') &&
+      !c.querySelector('.trp-pcard-say-text') && !c.querySelector('.trp-saybox')));
+  check('and the words are not on the page in any other shape',
+    !/\bOr say\b/i.test(page.doc.body.textContent) &&
+    !/Superhuman: /.test(page.doc.body.textContent),
+    (page.doc.body.textContent.match(/.{0,30}(Or say|Superhuman: ).{0,30}/i) || [])[0]);
 
   const names = cards.map((c) => c.querySelector('.trp-pcard-name').textContent);
   check('no two cards share a name', new Set(names).size === names.length, names);
-  check('the new context trigger is the one Ella set',
-    page.cardByName('Build my context').querySelector('.trp-saybox-text').textContent ===
-    'Superhuman: build my context');
-  check('the security card is there with its own trigger',
-    page.cardByName('Lock down my Claude').querySelector('.trp-saybox-text').textContent ===
-    'Superhuman: lock down my Claude');
+  check('the context card is there, under the name Ella set',
+    Boolean(page.cardByName('Build my context')));
+  check('and the security card, under its new name',
+    Boolean(page.cardByName('Lock down my AI')) && !names.includes('Lock down my Claude'),
+    names);
   check('the story bank card is there',
     Boolean(page.cardByName('Build my story bank')));
   check('Audit my AI is not a card', !names.includes('Audit my AI'), names);
 }
 
-console.log('\nPrompt Library — downloads follow the payload, not the page');
+console.log('\nPrompt Library — nothing to install, nothing to download');
 {
+  // The page used to hand out skill packs: a Download button once the week
+  // opened, an "unlocks Week 3" label until then, and AI buttons only on the
+  // cards whose pack the member already had. All of it assumed the member
+  // knew what installing a skill meant. None of it is here any more.
   const page = await openPrompts();
-  const withButton = page.cards().filter((c) => c.querySelector('.trp-pcard-get'));
-  check('only the packs in an unlocked week get a Download button',
-    withButton.length === 2 &&
-    withButton.map((c) => c.querySelector('.trp-pcard-name').textContent).sort().join('|') ===
-      'Build my context|Lock down my Claude',
-    withButton.map((c) => c.querySelector('.trp-pcard-name').textContent));
 
-  check('a card whose week has not opened has no button',
-    !page.cardByName('Write a post').querySelector('.trp-pcard-get'));
+  check('no card has a download button',
+    page.cards().every((c) => !c.querySelector('.trp-pcard-get')),
+    page.cards().filter((c) => c.querySelector('.trp-pcard-get')).length);
+  check('no card has an unlock or coming-soon download label',
+    page.cards().every((c) => !c.querySelector('.trp-pcard-locked')));
+  check('the page never posts to the download route',
+    !page.calls.some((c) => c.url.includes('/portal-download')),
+    page.calls.map((c) => c.url));
 
-  // the same gated call the Resources page makes
-  page.cardByName('Build my context').querySelector('.trp-pcard-get').click();
-  for (let i = 0; i < 10; i++) await new Promise((r) => setTimeout(r, 0));
-  const dl = page.calls.find((c) => c.url.includes('/portal-download'));
-  check('the button posts the item id and the session token to the Worker',
-    Boolean(dl) && dl.body.item_id === 11 && dl.body.token === 'tok-ABCDE', dl && dl.body);
+  // Said out loud as well as in the markup: a member should not meet the
+  // word "install" or "download" on this page at all.
+  const shown = page.doc.body.textContent.replace(/\s+/g, ' ');
+  check('the word install never appears on the page', !/install/i.test(shown),
+    (shown.match(/.{0,40}install.{0,40}/i) || [])[0]);
+  check('the word download never appears either', !/download/i.test(shown),
+    (shown.match(/.{0,40}download.{0,40}/i) || [])[0]);
+  check('and no aria-label says it behind the scenes',
+    [...page.doc.querySelectorAll('[aria-label]')]
+      .every((n) => !/install|download/i.test(n.getAttribute('aria-label'))),
+    [...page.doc.querySelectorAll('[aria-label]')]
+      .map((n) => n.getAttribute('aria-label')).filter((l) => /install|download/i.test(l)));
   check('no public link to a pack anywhere on the page',
     !/drive\.google\.com|\/downloads\//.test(PROMPTS_JS + PROMPTS_HTML));
 
+  // The payload used to decide which cards worked. Now it decides nothing.
   const locked = await openPrompts({
     ...PAYLOAD,
-    weeks: [{ id: 0, title: 'Start here', unlocked: false, items: [
-      { id: 11, kind: 'skill', title: 'Business COMPASS', url: 'compass-superhuman.zip' }] }],
+    weeks: [{ id: 0, title: 'Start here', unlocked: false, items: [] }],
   });
-  check('a locked week gives no buttons at all',
-    locked.cards().length === 16 && locked.cards().every((c) => !c.querySelector('.trp-pcard-get')));
-}
-
-console.log('\nPrompt Library — a pack whose week has not opened');
-{
-  const page = await openPrompts();
-  const label = (name) => page.cardByName(name).querySelector('.trp-pcard-locked');
-
-  check('a week 3 card says when it unlocks',
-    label('Write a post')?.textContent === 'Download unlocks Week 3', label('Write a post')?.textContent);
-  check('all thirteen week 3 cards say it',
-    page.cards().filter((c) => c.querySelector('.trp-pcard-locked')?.textContent === 'Download unlocks Week 3').length === 13,
-    page.cards().filter((c) => c.querySelector('.trp-pcard-locked')).length);
-  check('a card that already has its pack says nothing about unlocking',
-    !label('Build my context') && !label('Lock down my Claude'));
-  check('the pack that has not been built yet says so, rather than nothing',
-    label('Audit my LinkedIn')?.textContent === 'Download coming soon',
-    label('Audit my LinkedIn')?.textContent);
-  check('and it reads properly out loud',
-    /download is coming soon/i.test(label('Audit my LinkedIn').getAttribute('aria-label')),
-    label('Audit my LinkedIn').getAttribute('aria-label'));
-  check('same style and same slot as the unlock label, so cards keep their shape',
-    label('Audit my LinkedIn').tagName === 'SPAN' &&
-    label('Audit my LinkedIn').className === label('Write a post').className &&
-    label('Audit my LinkedIn').parentElement.className ===
-      label('Write a post').parentElement.className,
-    label('Audit my LinkedIn').className);
-  check('it is never a button, because there is nothing to download yet',
-    !page.cardByName('Audit my LinkedIn').querySelector('.trp-pcard-get'));
-  check('the label is not a button, because there is nothing to press',
-    label('Write a post').tagName === 'SPAN');
-  check('the label reads properly out loud',
-    /download unlocks in week 3/i.test(label('Write a post').getAttribute('aria-label')),
-    label('Write a post').getAttribute('aria-label'));
-  check('the label says it is the download that is locked, not the phrase',
-    /^Download unlocks/.test(label('Write a post').textContent));
-  check('a locked card can still be copied from',
-    page.cards().every((c) => Boolean(c.querySelector('.trp-saybox .trp-copy'))) &&
-    page.cards().every((c) => !c.querySelector('.trp-saybox .trp-copy').disabled));
-
-  // A week the member does not have at all is not something to claim a date for.
-  const noWeek3 = await openPrompts({
-    ...PAYLOAD,
-    weeks: PAYLOAD.weeks.filter((w) => w.id !== 3),
-  });
-  check('no unlock date is claimed for a week that is not in the payload',
-    noWeek3.cards().every((c) => {
-      const l = c.querySelector('.trp-pcard-locked');
-      return !l || l.textContent === 'Download coming soon';
-    }),
-    noWeek3.cards().map((c) => c.querySelector('.trp-pcard-locked')?.textContent).filter(Boolean).slice(0, 3));
-
-  // And once week 3 opens, the label gives way to the button.
-  const open3 = await openPrompts({
-    ...PAYLOAD,
-    weeks: PAYLOAD.weeks.map((w) => w.id === 3
-      ? { ...w, unlocked: true, items: [{ id: 40, kind: 'skill', title: 'Write a post', url: 'linkedin-post-writer.zip' }] }
-      : w),
-  });
-  const writer = open3.cardByName('Write a post');
-  check('when the week opens the label becomes a download',
-    Boolean(writer.querySelector('.trp-pcard-get')) && !writer.querySelector('.trp-pcard-locked'));
-}
-
-console.log('\nPrompt Library — autopilot briefs');
-{
-  const page = await openPrompts();
-  const withAuto = page.cards().filter((c) => c.querySelector('.trp-pcard-auto'));
-  check('seven cards carry an autopilot brief', withAuto.length === 7, withAuto.length);
-
-  const LIVE_LINKEDIN = ['Audit my LinkedIn', 'Optimise my profile', 'Break down a hook',
-    'Comment on a post', 'Clear my comments', 'Find my warm threads', 'Who engaged',
-    'Get the team posting'];
-  check('nothing that needs a live LinkedIn page has one',
-    LIVE_LINKEDIN.every((n) => !page.cardByName(n).querySelector('.trp-pcard-auto')),
-    LIVE_LINKEDIN.filter((n) => page.cardByName(n).querySelector('.trp-pcard-auto')));
-  check('locking down your AI has none either',
-    !page.cardByName('Lock down my Claude').querySelector('.trp-pcard-auto'));
-
-  const briefs = withAuto.map((c) => c.querySelector('.trp-copybox-text').textContent);
-  check('every brief has all six lines, in order',
-    briefs.every((b) => /^Job: .+\nReads: .+\nDoes: .+\nDelivers: .+\nNever: .+\nRuns: .+$/s.test(b)),
-    briefs[0]);
-  check('every brief drafts and never sends',
-    briefs.every((b) => /Never: send, post or publish anything\. Draft only/.test(b)));
-  check('every brief delivers into the Notion workbook',
-    briefs.every((b) => /Notion workbook/.test(b.split('\n').find((l) => l.startsWith('Delivers:')))),
-    briefs.map((b) => b.split('\n').find((l) => l.startsWith('Delivers:'))).filter((l) => !/Notion workbook/.test(l)));
-  check('each brief is closed until it is opened',
-    withAuto.every((c) => !c.querySelector('.trp-pcard-auto').open));
+  check('a member with every week locked still gets all sixteen cards',
+    locked.cards().length === 16, locked.cards().length);
+  check('and every one of them still opens in an AI',
+    locked.cards().every((c) => c.querySelectorAll('.trp-open').length === 1),
+    locked.cards().filter((c) => c.querySelectorAll('.trp-open').length !== 1)
+      .map((c) => c.querySelector('.trp-pcard-name').textContent));
 }
 
 console.log('\nPrompt Library — when the payload never arrives');
@@ -324,18 +259,24 @@ console.log('\nPrompt Library — the page and the nav');
   check('the Tailwind content globs cover the new renderer',
     /'\.\/portal\/\*\.js'/.test(cfg), cfg.split('content:')[1]?.slice(0, 120));
   const css = read('portal/portal.css');
-  for (const cls of ['trp-pcards', 'trp-pcard-head', 'trp-saybox', 'trp-pcard-get']) {
+  for (const cls of ['trp-pcards', 'trp-pcard-head', 'trp-toast', 'trp-ptemplate']) {
     check('the built stylesheet still has .' + cls, css.includes(cls));
   }
-  for (const cls of ['trp-ai-row', 'trp-ai', 'trp-toast', 'trp-ptemplate']) {
+  for (const cls of ['trp-picker', 'trp-picker-opt', 'trp-open', 'trp-actions',
+                     'trp-group-title', 'trp-pcard-more']) {
     check('the built stylesheet has the new .' + cls, css.includes(cls));
   }
-  // The unlock label is 171px and will not wrap, which used to set the grid
-  // track's minimum and push the whole page sideways on a 320px screen.
-  check('the unlock label is allowed to wrap on the narrowest screens',
-    /@media\s*\(max-width:\s*359px\)/.test(css) &&
-    /\.trp-pcard-locked\{[^}]*white-space:normal/.test(css.replace(/\s*([{:;])\s*/g, '$1')),
-    css.includes('359px'));
+  // The three pills, the bordered phrase panel and the trigger line itself
+  // have no markup left.
+  for (const cls of ['trp-ai-row', 'trp-saybox', 'trp-pcard-say']) {
+    check('the stylesheet no longer carries the dead .' + cls, !css.includes(cls));
+  }
+  // The download button and its unlock label are gone from this page, so
+  // their rules should have gone with them rather than sitting in the
+  // stylesheet forever waiting for markup that never comes back.
+  for (const cls of ['trp-pcard-get', 'trp-pcard-locked']) {
+    check('the stylesheet no longer carries the dead .' + cls, !css.includes(cls));
+  }
 }
 
 console.log('\nResources — the FAQ');
@@ -381,148 +322,218 @@ console.log('\nDashboard — the In ChatGPT dropdown');
   check('all three dropdowns are closed by default', accs.every((d) => !d.hasAttribute('open')));
 }
 
-console.log('\nPrompt Library — the prompt template card');
+console.log('\nPrompt Library — choose your AI once');
 {
   const page = await openPrompts();
-  const card = page.doc.querySelector('.trp-ptemplate');
-  check('there is a template card', Boolean(card));
-  check('it is the first thing in the library, above the cards',
-    page.doc.getElementById('prompt-cards').firstElementChild === card);
-  check('it is titled the way Ella named it',
-    card.querySelector('.trp-pcard-name').textContent === 'The prompt template');
-  check('and carries the one-line intro, word for word',
-    card.querySelector('.trp-pcard-one').textContent ===
-    'Use this shape for any prompt. The second opinion and blind spots are where the value is.',
-    card.querySelector('.trp-pcard-one').textContent);
+  const picker = page.doc.querySelector('.trp-picker');
 
-  const text = card.querySelector('.trp-copybox-text').textContent;
-  check('the shape is blank, ready to fill in', /\[expert type\]/.test(text) && /\[your offer\]|\[One sentence/.test(text));
-  check('it has all seven headings, in order',
-    headingsOf(text).join('|') === HEADINGS.join('|'), headingsOf(text).join('|'));
-  check('it has a Copy button', Boolean(card.querySelector('.trp-copy')));
-  check('and the three AI buttons', card.querySelectorAll('.trp-ai').length === 3);
-  check('it is not counted as one of the sixteen skill cards',
-    !card.classList.contains('trp-pcard') && page.cards().length === 16);
+  check('the picker is on the page, above the cards', Boolean(picker) &&
+    picker.compareDocumentPosition(page.doc.querySelector('.trp-pcard')) === 4);
+  check('it is labelled for what it does',
+    picker.querySelector('.trp-picker-label').textContent === 'Open prompts in');
+  check('it offers Claude, ChatGPT and Grok, in that order',
+    [...picker.querySelectorAll('.trp-picker-opt')].map((b) => b.textContent).join('|')
+      === 'Claude|ChatGPT|Grok');
+  check('it is a radio group, so the keyboard and a screen reader understand it',
+    picker.querySelector('[role="radiogroup"]') &&
+    [...picker.querySelectorAll('.trp-picker-opt')].every((b) => b.getAttribute('role') === 'radio'));
+  check('Claude is the one chosen to begin with',
+    [...picker.querySelectorAll('.trp-picker-opt')]
+      .map((b) => b.getAttribute('aria-checked')).join('|') === 'true|false|false');
+
+  // One button per card, not three. That is the whole point of the picker.
+  check('every card carries exactly one open button',
+    page.cards().every((c) => c.querySelectorAll('.trp-open').length === 1),
+    page.cards().filter((c) => c.querySelectorAll('.trp-open').length !== 1).length);
+  check('so the page has sixteen of them, not forty-eight',
+    page.doc.querySelectorAll('.trp-pcard .trp-open').length === 16,
+    page.doc.querySelectorAll('.trp-pcard .trp-open').length);
+  check('and they all say where they open',
+    page.cards().every((c) => c.querySelector('.trp-open').textContent === 'Open in Claude'));
+
+  // Pressing another option moves every button on the page at once.
+  picker.querySelectorAll('.trp-picker-opt')[1].click();
+  check('choosing ChatGPT repoints all sixteen',
+    page.cards().every((c) => c.querySelector('.trp-open').textContent === 'Open in ChatGPT' &&
+      c.querySelector('.trp-open').href.startsWith('https://chatgpt.com/?q=')),
+    page.cards().filter((c) => !c.querySelector('.trp-open').href.startsWith('https://chatgpt.com/?q=')).length);
+  check('and the choice moves with it in the control',
+    [...picker.querySelectorAll('.trp-picker-opt')]
+      .map((b) => b.getAttribute('aria-checked')).join('|') === 'false|true|false');
+  check('the prompt still rides along after the switch',
+    decodeURIComponent(page.cardByName('Write a post').querySelector('.trp-open').href.split('?q=')[1])
+      .startsWith('You are a ghostwriter'));
+  check('the choice is remembered for next time',
+    page.dom.window.localStorage.getItem('tr_prompt_ai') === 'chatgpt',
+    page.dom.window.localStorage.getItem('tr_prompt_ai'));
+
+  picker.querySelectorAll('.trp-picker-opt')[2].click();
+  check('and again for Grok',
+    page.cards().every((c) => c.querySelector('.trp-open').href.startsWith('https://grok.com/?q=')));
 }
 
-console.log('\nPrompt Library — open in your AI');
+console.log('\nPrompt Library — what the open button hands over');
 {
-  const page = await openPrompts(OPEN_PAYLOAD);
-  const AI = { claude: 'https://claude.ai/new', chatgpt: 'https://chatgpt.com/', grok: 'https://grok.com/' };
+  const page = await openPrompts();
 
-  const withAi = page.cards().filter((c) => c.querySelector('.trp-ai'));
-  check('a card whose pack the member has gets the three buttons',
-    withAi.length === 4 &&
-    withAi.map((c) => c.querySelector('.trp-pcard-name').textContent).sort().join('|') ===
-      'Break down a hook|Build my context|Lock down my Claude|Write a post',
-    withAi.map((c) => c.querySelector('.trp-pcard-name').textContent));
+  const links = [...page.doc.querySelectorAll('.trp-pcard .trp-open')];
+  check('every one carries its prompt in the URL',
+    links.length === 16 && links.every((a) => a.href.includes('?q=')),
+    links.filter((a) => !a.href.includes('?q=')).length);
+  check('not one falls back to a blank chat',
+    links.every((a) => a.href !== 'https://claude.ai/new'));
+  check('and none runs past the 6000 character ceiling',
+    links.every((a) => a.href.length <= 6000), Math.max(...links.map((a) => a.href.length)));
 
-  const links = withAi[0].querySelectorAll('.trp-ai');
-  check('they are Claude, ChatGPT and Grok, in that order',
-    [...links].map((a) => a.textContent).join('|') === 'Open in Claude|Open in ChatGPT|Open in Grok');
-  check('each opens a new tab and cannot reach back into this one',
-    [...links].every((a) => a.target === '_blank' && /\bnoopener\b/.test(a.rel)));
-  check('each names the skill and the AI out loud',
-    [...links].every((a) => /^Open the .+ skill in (Claude|ChatGPT|Grok)$/.test(a.getAttribute('aria-label'))),
-    [...links].map((a) => a.getAttribute('aria-label')));
-  check('they are the outline pill, not a new filled button',
-    [...links].every((a) => a.className === 'trp-ai'));
-
-  // The phrase alone does nothing in an AI that has not installed the pack,
-  // so what travels is the pack's own instructions and then the phrase.
   const writer = page.cardByName('Write a post');
-  const sent = page.dom.window.TRSkillText['linkedin-post-writer.zip'].trim() + '\n\nwrite a post';
-  check('what a skill button sends is the instructions, then the Say-this line',
-    sent.startsWith('---\nname: linkedin-post-writer') && sent.endsWith('\n\nwrite a post'));
-  check('and the Say-this box is untouched by any of it',
-    writer.querySelector('.trp-saybox-text').textContent === 'write a post' &&
-    Boolean(writer.querySelector('.trp-saybox .trp-copy')));
+  const sent = decodeURIComponent(writer.querySelector('.trp-open').href.split('?q=')[1]);
+  check('the prompt arrives whole',
+    sent.endsWith('Never invent a number, client or result.'), sent.slice(-50));
+  check('it is a prompt, not a trigger phrase',
+    sent.startsWith('You are a ghostwriter') && sent !== 'write a post');
+  check('it stands on its own, with nothing installed and no pack named',
+    !/skill|install|download|\.zip/i.test(sent));
+  check('line breaks survive the encoding', writer.querySelector('.trp-open').href.includes('%0A'));
+  check('each opens a new tab and cannot reach back into this one',
+    links.every((a) => a.target === '_blank' && /\bnoopener\b/.test(a.rel)));
+  check('each names the prompt and the AI out loud',
+    links.every((a) => /^Open the .+ prompt in Claude$/.test(a.getAttribute('aria-label'))),
+    links.map((a) => a.getAttribute('aria-label')).slice(0, 2));
 
-  // Every pack is far past the ceiling, so all of them take the fallback.
-  check('a skill is too long to carry in a URL, so it falls back to a blank chat',
-    [...writer.querySelectorAll('.trp-ai')].every((a) => a.href === AI[/Claude/.test(a.textContent) ? 'claude' : /ChatGPT/.test(a.textContent) ? 'chatgpt' : 'grok']),
-    [...writer.querySelectorAll('.trp-ai')].map((a) => a.href));
-  check('and not one of them carries half a skill',
-    [...writer.querySelectorAll('.trp-ai')].every((a) => !a.href.includes('?q=')));
-  // Unlike the LinkedIn packs, this one fits in a query string, so it is
-  // the one skill card that opens the chat already filled in.
-  const sec = page.cardByName('Lock down my Claude');
-  const secText = page.dom.window.TRSkillText['security-superhuman.zip'].trim() +
-    '\n\nSuperhuman: lock down my Claude';
-  check('a short skill rides in the URL instead of the clipboard',
-    [...sec.querySelectorAll('.trp-ai')].every((a) => a.href.includes('?q=')),
-    [...sec.querySelectorAll('.trp-ai')].map((a) => a.href.slice(0, 40)));
-  check('and it arrives whole, instructions then the phrase',
-    decodeURIComponent(sec.querySelector('.trp-ai').href.split('?q=')[1]) === secText);
+  const texts = links.map((a) => a.href.split('?q=')[1]);
+  check('no two cards send the same prompt', new Set(texts).size === 16, new Set(texts).size);
 
-  check('no href on the page runs past the 6000 character ceiling',
-    [...page.doc.querySelectorAll('.trp-ai')].every((a) => a.href.length <= 6000),
-    Math.max(...[...page.doc.querySelectorAll('.trp-ai')].map((a) => a.href.length)));
-
-  // The template is short, so it goes the other way and arrives prefilled.
-  const tmpl = [...page.doc.querySelectorAll('.trp-ptemplate .trp-ai')];
-  const shape = page.doc.querySelector('.trp-ptemplate .trp-copybox-text').textContent;
-  check('the template is short enough to arrive already in the chat',
-    tmpl[0].href === 'https://claude.ai/new?q=' + encodeURIComponent(shape));
-  check('and arrives whole, not truncated',
-    decodeURIComponent(tmpl[0].href.split('?q=')[1]) === shape);
-  check('line breaks and brackets survive the encoding',
-    tmpl[0].href.includes('%0A') && tmpl[0].href.includes('%5Bexpert%20type%5D'));
-  check('a curly apostrophe survives as UTF-8',
-    tmpl[2].href.includes('%E2%80%99') && shape.includes(String.fromCharCode(8217)));
-  check('each AI gets its own query parameter',
-    tmpl[1].href.startsWith('https://chatgpt.com/?q=') && tmpl[2].href.startsWith('https://grok.com/?q='));
+  check('every card can also just hand over the text',
+    page.cards().every((c) => c.querySelector('.trp-actions .trp-copy')));
+  check('and none of them offers a trigger phrase instead',
+    page.cards().length === 16 &&
+    page.cards().every((c) => !c.querySelector('.trp-pcard-say-text') &&
+      !c.querySelector('.trp-saybox')));
 }
 
-console.log('\nPrompt Library — a locked card stays locked');
+console.log('\nPrompt Library — the prompts themselves');
 {
   const page = await openPrompts();
-  const locked = page.cards().filter((c) => c.querySelector('.trp-pcard-locked'));
-  check('no card with an unlock label has AI buttons',
-    locked.every((c) => !c.querySelector('.trp-ai')),
-    locked.filter((c) => c.querySelector('.trp-ai')).map((c) => c.querySelector('.trp-pcard-name').textContent));
-  check('the buttons cannot be used to walk around the week a pack opens in',
-    !page.cardByName('Write a post').querySelector('.trp-ai'));
+  const prompts = page.cards().map((c) => ({
+    name: c.querySelector('.trp-pcard-name').textContent,
+    text: decodeURIComponent(c.querySelector('.trp-open').href.split('?q=')[1]),
+  }));
 
-  const everythingLocked = await openPrompts({
-    ...PAYLOAD,
-    weeks: [{ id: 0, title: 'Start here', unlocked: false, items: [] }],
-  });
-  check('a member with nothing open sees no AI buttons on any card',
-    everythingLocked.cards().every((c) => !c.querySelector('.trp-ai')));
-  check('but the template card is theirs either way',
-    everythingLocked.doc.querySelectorAll('.trp-ptemplate .trp-ai').length === 3);
+  check('all sixteen are written', prompts.length === 16 && prompts.every((p) => p.text.length > 150));
+  check('each one opens by saying what the AI is',
+    prompts.every((p) => /^You are /.test(p.text)), prompts.filter((p) => !/^You are /.test(p.text)).map((p) => p.name));
+
+  const BANNED = /game-?changing|transformative|empower|ecosystem|leverage|unlock|journey|foster|navigate|cutting-edge|innovative|seamless|robust|holistic/i;
+  check('no long dashes in any prompt',
+    prompts.every((p) => !/[–—]/.test(p.text)),
+    prompts.filter((p) => /[–—]/.test(p.text)).map((p) => p.name));
+  check('no banned words',
+    prompts.every((p) => !BANNED.test(p.text)),
+    prompts.filter((p) => BANNED.test(p.text)).map((p) => p.name + ': ' + p.text.match(BANNED)[0]));
+  check('no "thing" standing in for a real noun',
+    prompts.every((p) => !/\bthings?\b/i.test(p.text)),
+    prompts.filter((p) => /\bthings?\b/i.test(p.text)).map((p) => p.name));
+
+  check('the context prompt builds the COMPASS',
+    /Business COMPASS/.test(prompts.find((p) => p.name === 'Build my context').text));
+  check('the security prompt covers the settings before connecting anything',
+    /before I connect/.test(prompts.find((p) => p.name === 'Lock down my AI').text));
+  check('the audit prompt asks for the goal and the buyer first',
+    /90 day goal/.test(prompts.find((p) => p.name === 'Audit my LinkedIn').text));
 }
 
-console.log('\nPrompt Library — a pack with no instructions to send');
+console.log('\nPrompt Library — two groups, not a wall of sixteen');
 {
-  // Every pack a member can unlock is in downloads/ now. The one card left
-  // without instructions is the one whose pack has not been built at all,
-  // and it has no download either, so the two stay in step: no pack, no
-  // button of any kind, rather than a trigger phrase that quietly does
-  // nothing in an AI that has not installed the skill.
   const page = await openPrompts();
-  const soon = page.cardByName('Audit my LinkedIn');
-  check('the pack that does not exist yet has neither a download nor AI buttons',
-    !soon.querySelector('.trp-pcard-get') && !soon.querySelector('.trp-ai') &&
-    soon.querySelector('.trp-pcard-locked').textContent === 'Download coming soon');
-  check('both week 0 cards now have their three buttons',
-    page.cardByName('Build my context').querySelectorAll('.trp-ai').length === 3 &&
-    page.cardByName('Lock down my Claude').querySelectorAll('.trp-ai').length === 3);
-  check('and the phrase each one sends is its own, after the instructions',
-    page.dom.window.TRSkillText['security-superhuman.zip'].includes('security-superhuman') &&
-    page.dom.window.TRSkillText['compass-superhuman.zip'].includes('compass-superhuman'));
-  check('the generated file is the only place that text comes from',
-    /TRSkillText/.test(PROMPTS_JS) && !/ROLE\\nYou are a world-class/.test(PROMPTS_JS));
-  check('and the page loads it before the renderer that reads it',
-    PROMPTS_HTML.indexOf('skill-instructions.js') < PROMPTS_HTML.indexOf('portal-prompts.js'));
+  const heads = [...page.doc.querySelectorAll('.trp-group-title')];
+  check('the cards are split under two headings',
+    heads.map((h) => h.textContent).join('|') === 'Set up your AI|LinkedIn',
+    heads.map((h) => h.textContent));
+  check('each heading has a line saying what the group is for',
+    [...page.doc.querySelectorAll('.trp-group-lede')].every((p) => p.textContent.trim().length > 10));
 
-  // Without it loaded at all, the page still works: it just has no buttons.
-  const bare = await openPrompts(OPEN_PAYLOAD, false);
-  check('a missing instructions file costs the buttons, never the page',
+  const lists = [...page.doc.querySelectorAll('.trp-pcards')];
+  check('three cards in the setup group and thirteen in LinkedIn',
+    lists.map((ul) => ul.children.length).join('|') === '3|13',
+    lists.map((ul) => ul.children.length));
+  check('the setup group is the three that give the others context',
+    [...lists[0].children].map((li) => li.querySelector('.trp-pcard-name').textContent).join('|')
+      === 'Build my context|Lock down my AI|Build my story bank');
+  check('and every card lands in exactly one group',
+    lists.reduce((n, ul) => n + ul.children.length, 0) === 16);
+
+  // A week item in the Curriculum links straight to a run of cards, so the
+  // heading has to carry the id that link points at.
+  const heads2 = [...page.doc.querySelectorAll('.trp-group-head')];
+  check('each group heading carries an anchor to link to',
+    heads2.map((h) => h.id).join('|') === 'set-up-your-ai|linkedin',
+    heads2.map((h) => h.id));
+  check('the setup anchor is on the heading above the setup cards',
+    page.doc.getElementById('set-up-your-ai').nextElementSibling.classList.contains('trp-pcards') &&
+    page.doc.getElementById('set-up-your-ai').nextElementSibling.children.length === 3);
+}
+
+console.log('\nPrompt Library — one fold per card');
+{
+  const page = await openPrompts();
+  const more = (name) => page.cardByName(name).querySelector('.trp-pcard-more');
+
+  check('a card folds its extras into one disclosure, not two',
+    page.cards().every((c) => c.querySelectorAll('details').length <= 1),
+    page.cards().filter((c) => c.querySelectorAll('details').length > 1).length);
+  check('it is folded away, so the button stays the point',
+    page.cards().every((c) => !c.querySelector('details') || !c.querySelector('details').open));
+  check('it is titled for what is inside, with no mention of installing',
+    more('Write a post').querySelector('.trp-acc-title').textContent === 'More ways to use this');
+
+  check('fifteen cards carry the long version',
+    page.cards().filter((c) => /THE FULL VERSION|The full version/i
+      .test(c.querySelector('.trp-pcard-more')?.textContent || '')).length === 15,
+    page.cards().filter((c) => /the full version/i.test(c.querySelector('.trp-pcard-more')?.textContent || '')).length);
+  check('seven carry an autopilot brief',
+    page.cards().filter((c) => /put it on autopilot/i
+      .test(c.querySelector('.trp-pcard-more')?.textContent || '')).length === 7,
+    page.cards().filter((c) => /put it on autopilot/i.test(c.querySelector('.trp-pcard-more')?.textContent || '')).length);
+  check('the one pack that was never built still has its prompt and button',
+    page.cardByName('Audit my LinkedIn').querySelectorAll('.trp-open').length === 1 &&
+    page.cardByName('Audit my LinkedIn').querySelector('.trp-open').href.includes('?q='));
+
+  // Without the generated instructions the folds thin out, nothing else does.
+  const bare = await openPrompts(PAYLOAD, false);
+  check('a missing instructions file costs the long version, never the prompts',
     bare.cards().length === 16 &&
-    bare.cards().every((c) => !c.querySelector('.trp-ai')) &&
-    bare.cards().every((c) => c.querySelector('.trp-saybox-text').textContent.trim()));
+    bare.cards().every((c) => c.querySelectorAll('.trp-open').length === 1));
+}
+
+console.log('\nPrompt Library — write your own, at the foot');
+{
+  const page = await openPrompts();
+  const tmpl = page.doc.querySelector('.trp-ptemplate');
+
+  check('the template is a fold, not a wall of monospace on arrival',
+    tmpl.tagName === 'DETAILS' && !tmpl.open);
+  check('it is titled for the job it does',
+    tmpl.querySelector('.trp-pcard-name').textContent === 'Write your own prompt');
+  check('it sits below the cards now, not above them',
+    page.doc.querySelector('.trp-pcard').compareDocumentPosition(tmpl) === 4);
+  check('it still carries the shape and a way to take it',
+    tmpl.querySelector('.trp-copybox-text').textContent.includes('ROLE') &&
+    Boolean(tmpl.querySelector('.trp-copy')));
+  check('and it opens in an AI like everything else',
+    tmpl.querySelector('.trp-open').href.startsWith('https://claude.ai/new?q='));
+  check('its brackets are deliberate and survive the encoding',
+    tmpl.querySelector('.trp-open').href.includes('%5Bexpert%20type%5D'));
+
+  // Folded at the foot is only safe if there is a way to it from the top.
+  const link = page.doc.querySelector('.trp-own-link');
+  check('a link beside the page title points at it',
+    Boolean(link) && link.getAttribute('href') === '#write-your-own' && tmpl.id === 'write-your-own');
+  check('it sits in the page head, not in the library',
+    Boolean(link.closest('.trp-page-head')));
+  check('and the title still comes first in the markup, for a screen reader',
+    page.doc.querySelector('.trp-title').compareDocumentPosition(link) === 4);
+  check('following it opens the fold rather than dropping you on a closed one',
+    (link.click(), tmpl.open === true));
 }
 
 console.log('\nPrompt Library — the generated instructions');
@@ -533,10 +544,10 @@ console.log('\nPrompt Library — the generated instructions');
   check('every pack in downloads/ is in it', files.length === 17, files.length);
   check('each entry is the pack\u2019s own SKILL.md',
     files.every((f) => /^---\nname: /.test(text[f])), files.filter((f) => !/^---\nname: /.test(text[f])));
-  check('fifteen of the sixteen cards can be opened in an AI',
+  check('fifteen of the sixteen cards have a long version to offer',
     CARD_FILES.filter((f) => text[f]).length === 15,
     CARD_FILES.filter((f) => !text[f]));
-  check('and the only one that cannot is the pack that has not been built',
+  check('and the only one without is the pack that was never built',
     CARD_FILES.filter((f) => !text[f]).join(', ') === 'audit-linkedin-for-icp-goal.zip',
     CARD_FILES.filter((f) => !text[f]));
   check('the file says not to edit it by hand',

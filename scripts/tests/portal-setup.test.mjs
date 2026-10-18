@@ -75,5 +75,34 @@ check('prep appears inside Week 1',card.textContent.includes('Week 1') && card.t
 check('locked materials stay hidden',!card.textContent.includes('Locked material'));
 check('grouping never changes source payload',weeks[1].unlocked===false && weeks[0].id===0 && weeks[1].items.length===1);
 check('coming up does not duplicate Week 1',!w.TRLive.comingCard({weeks}).textContent.includes('Week 1'));
+
+// A week row carries its body as well as its title. Week 1's hotkeys and its
+// six voice prompts are all body, so a row that drew only the title would
+// store that copy and never show it to anyone.
+const NL = String.fromCharCode(10);
+const BODY = 'Hold fn on Mac (Ctrl + Opt if your Mac has no fn key) or Ctrl + Win on Windows.' + NL + 'Speak, then let go.';
+const withBody=[{id:0,unlocked:true,title:'Start here',items:[
+  {id:1,title:'Turn it on',body:BODY},
+  {id:2,title:'No body here'},
+  {id:3,title:'Tagged <b>bold</b>',body:'Body with <b>markup</b> & an ampersand'}]},
+  {id:1,unlocked:false,title:'Week 1',release_at:'2030-01-01',items:[]}];
+const bodyCard=w.TRLive.learningCard({weeks:withBody},withBody[1],{sessions:false});
+const rows=[...bodyCard.querySelectorAll('.trp-check-row')];
+check('a week 0 item shows its body under the title',
+  rows[0].querySelector('.trp-check-body') !== null &&
+  rows[0].querySelector('.trp-check-body').textContent === BODY);
+check('the body sits after the title, not in place of it',
+  rows[0].textContent.indexOf('Turn it on') < rows[0].textContent.indexOf('Hold fn on Mac'));
+check('the hotkey copy arrives whole',
+  rows[0].textContent.includes('Ctrl + Opt if your Mac has no fn key') &&
+  rows[0].textContent.includes('Ctrl + Win on Windows'));
+check('an item with no body grows no empty line',
+  rows[1].querySelector('.trp-check-body') === null);
+check('a body is text, never markup',
+  rows[2].querySelector('.trp-check-body').innerHTML === 'Body with &lt;b&gt;markup&lt;/b&gt; &amp; an ampersand' &&
+  rows[2].querySelector('.trp-check-body').querySelector('b') === null);
+check('line breaks in a body are kept by the stylesheet',
+  /\.trp-check-body\s*\{[^}]*white-space:\s*pre-line/.test(read('portal/portal-tailwind-src.css')) &&
+  read('portal/portal.css').includes('white-space:pre-line'));
 w.close();
 console.log(`\n${checks} setup checks passed`);

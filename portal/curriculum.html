@@ -58,12 +58,18 @@
   <meta name="twitter:image" content="https://timerich.ai/og-time-rich.png" />
   <meta name="twitter:card" content="summary_large_image" />
   <link rel="stylesheet" href="portal.css"/>
-  <link rel="preconnect" href="https://fonts.googleapis.com"/>
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin=""/>
-  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&amp;display=swap" rel="stylesheet"/>
+  <!-- The two faces, served from this repo. They used to come from Google
+       Fonts, which costs a DNS lookup, a stylesheet and only then the font
+       itself: three round trips before a heading could be drawn in the right
+       face, and a reflow when it finally was. Preloading the files directly
+       starts them with the stylesheet instead.
+
+       crossorigin is required on a font preload even for a same-origin file:
+       fonts are fetched in CORS mode, and a preload without it is fetched
+       twice. -->
+  <link rel="preload" href="../brand/fonts/SpaceGrotesk-Variable.woff2" as="font" type="font/woff2" crossorigin/>
+  <link rel="preload" href="../brand/fonts/JetBrainsMono-Variable.woff2" as="font" type="font/woff2" crossorigin/>
   <link rel="stylesheet" href="portal-content.css">
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 
   
 
@@ -75,6 +81,20 @@
   <script src="portal-access.js" defer></script>
   <script src="portal-live.js"></script>
   <script src="portal-chrome.js" defer></script>
+
+  <!-- Warm the next page while the pointer is still travelling to the link.
+       "moderate" is roughly 200ms of hover, which is long enough that a
+       pointer crossing the nav does not fetch all six. Only portal pages are
+       listed: a prefetch rule that matched everything would also warm the
+       sign-out and the partner links. -->
+  <script type="speculationrules">
+  {
+    "prefetch": [{
+      "where": { "href_matches": "/portal/*.html" },
+      "eagerness": "moderate"
+    }]
+  }
+  </script>
 </head>
 
 
@@ -208,15 +228,90 @@
               <h1 class="trp-title">Curriculum<span class="trp-stop">.</span></h1>
               <p class="trp-lede">Each week opens on Monday. Start here is open now.</p>
             </div>
-            <div class="trp-headbar w-full lg:w-[260px] shrink-0" data-curriculum-bar hidden></div>
+            <!-- Held open rather than hidden. At 375px this bar sits on its
+                 own line under the heading, so appearing from nothing moved
+                 the first week card down 67px. -->
+            <div class="trp-headbar w-full lg:w-[260px] shrink-0" data-curriculum-bar>
+              <div class="trp-skel" aria-hidden="true">
+                <div class="trp-headbar-top">
+                  <p class="trp-tag"><span class="trp-bar">Your progress</span></p>
+                  <p class="trp-headbar-count"><span class="trp-bar">1 of 9 done</span></p>
+                </div>
+                <div class="trp-progress-track"></div>
+              </div>
+            </div>
           </header>
 
           <div data-curriculum-live hidden></div>
           <!-- The renderer below replaces this. It only stands in while the
                payload is on its way or missing, so it stays to one line
                rather than a fake set of weeks. -->
-          <div data-curriculum-static>
-            <p class="trp-lede">Loading your curriculum&hellip;</p>
+          <!-- The placeholder the renderer replaces. It is built from the
+               real week-card classes and holds the words a week card holds,
+               inked out, so the box is already the right height and the
+               footer under it does not move when the payload lands. -->
+          <div data-curriculum-static class="trp-sched">
+            <div class="trp-skel" aria-hidden="true">
+                <div class="glass-card is-static trp-check">
+                  <div class="trp-check-head">
+                    <div>
+                      <p class="trp-tag"><span class="trp-bar">Week 01</span></p>
+                      <h2 class="trp-check-heading"><span class="trp-bar">Diagnose and train</span></h2>
+                    </div>
+                    <p class="trp-check-count"><span class="trp-bar">1 of 9 done</span></p>
+                  </div>
+                  <ul class="trp-checks">
+                    <li class="trp-check-row">
+                      <span class="trp-check-gap"></span>
+                      <span class="trp-check-label"><span class="trp-bar">Welcome to the Superhuman Accelerator</span><span class="trp-check-body"><span class="trp-bar">Over the next 4 weeks you'll build a real part of your business on AI, live, with founders who have done it.</span></span></span>
+                    </li>
+                    <li class="trp-check-row">
+                      <span class="trp-check-gap"></span>
+                      <span class="trp-check-label"><span class="trp-bar">Make your copy of the Business COMPASS</span><span class="trp-check-body"><span class="trp-bar">Click to make your own copy. Keep it open: the voice prompts below fill it in.</span></span></span>
+                    </li>
+                    <li class="trp-check-row">
+                      <span class="trp-check-gap"></span>
+                      <span class="trp-check-label"><span class="trp-bar">Install Wispr Flow</span><span class="trp-check-body"><span class="trp-bar">Your accelerator includes 6 months of Wispr Flow Pro. Install it and sign in.</span></span></span>
+                    </li>
+                    <li class="trp-check-row">
+                      <span class="trp-check-gap"></span>
+                      <span class="trp-check-label"><span class="trp-bar">Turn it on</span><span class="trp-check-body"><span class="trp-bar">Hold fn on Mac (Ctrl + Opt if your Mac has no fn key) or Ctrl + Win on Windows.</span></span></span>
+                    </li>
+                    <li class="trp-check-row">
+                      <span class="trp-check-gap"></span>
+                      <span class="trp-check-label"><span class="trp-bar">Say it: One-liners</span><span class="trp-check-body"><span class="trp-bar">Click into your COMPASS under 1. One-liners, hold fn and say what you do.</span></span></span>
+                    </li>
+                    <li class="trp-check-row">
+                      <span class="trp-check-gap"></span>
+                      <span class="trp-check-label"><span class="trp-bar">Say it: Who I serve</span><span class="trp-check-body"><span class="trp-bar">Click into your COMPASS under 2. Who I serve, hold fn and say who they are.</span></span></span>
+                    </li>
+                    <li class="trp-check-row">
+                      <span class="trp-check-gap"></span>
+                      <span class="trp-check-label"><span class="trp-bar">Say it: What I sell</span><span class="trp-check-body"><span class="trp-bar">Click into your COMPASS under 3. What I sell, hold fn and say what your offers are.</span></span></span>
+                    </li>
+                    <li class="trp-check-row">
+                      <span class="trp-check-gap"></span>
+                      <span class="trp-check-label"><span class="trp-bar">Answer the onboarding questions</span><span class="trp-check-body"><span class="trp-bar">Your answers shape the curriculum, your hot seat room and your profile.</span></span></span>
+                    </li>
+                    <li class="trp-check-row">
+                      <span class="trp-check-gap"></span>
+                      <span class="trp-check-label"><span class="trp-bar">Join the Superhuman WhatsApp group</span><span class="trp-check-body"><span class="trp-bar">Where the cohort talks between sessions.</span></span></span>
+                    </li>
+                  </ul>
+                </div>
+              <div class="glass-card is-static trp-coming mt-5">
+                <div class="trp-check-head">
+                  <div><h2 class="trp-check-heading"><span class="trp-bar">Coming up</span></h2></div>
+                  <p class="trp-check-count"><span class="trp-bar">3 weeks</span></p>
+                </div>
+                <ul class="trp-coming-rows">
+                  <li class="trp-coming-row"><span class="trp-coming-n"><span class="trp-bar">W02</span></span><span class="trp-coming-title"><span class="trp-bar">Week 2: Your AI Operating System</span></span><span class="trp-coming-when"><span class="trp-bar">Opens Mon 2 Nov</span></span></li>
+                  <li class="trp-coming-row"><span class="trp-coming-n"><span class="trp-bar">W03</span></span><span class="trp-coming-title"><span class="trp-bar">Week 3: Storytelling for GTM</span></span><span class="trp-coming-when"><span class="trp-bar">Opens Mon 9 Nov</span></span></li>
+                  <li class="trp-coming-row"><span class="trp-coming-n"><span class="trp-bar">W04</span></span><span class="trp-coming-title"><span class="trp-bar">Week 4: Unfair AI Advantage</span></span><span class="trp-coming-when"><span class="trp-bar">Opens Mon 16 Nov</span></span></li>
+                </ul>
+              </div>
+            </div>
+            <p class="trp-skel-say" role="status">Loading your curriculum&hellip;</p>
           </div>
 </div>
       </div>
@@ -243,7 +338,7 @@
       <span data-portal-community hidden class="trp-foot-sep" aria-hidden="true">&middot;</span>
       <a data-portal-community hidden class="trp-foot-link">WhatsApp community</a>
       <span class="trp-foot-sep" aria-hidden="true">&middot;</span>
-      <span>Need help? <a href="mailto:emc@timerich.ai" class="trp-foot-link">emc@timerich.ai</a></span>
+      <span>Need help? <a href="mailto:emc@timerichclub.com" class="trp-foot-link">emc@timerichclub.com</a></span>
     </p>
   </footer>
 
