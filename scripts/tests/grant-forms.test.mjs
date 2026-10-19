@@ -58,7 +58,7 @@ const FORMS = [
     prizes: [
       '\u{1F39F}️ 1 ticket to Web Summit Lisbon',
       '\u{1F46F} 2 seats in the 4-week Superhuman Accelerator (bring a founder you believe in)',
-      '✍️ 3 months free of an AI Head of Content - Stanley',
+      '✍️ Stanley set up for you by the Stanley team: brain, voice and rituals built with you ($1,000 value)',
       '\u{1F399}️ 6 months of Wispr Flow Pro, the voice dictation app the accelerator runs on',
       '\u{1F34B} 3 months free of an AI tool - LaunchLemonade',
     ],
