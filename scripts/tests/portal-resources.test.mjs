@@ -37,7 +37,7 @@ const PARTNERS = [
     name: 'Stanley',
     href: 'https://x.getstanley.ai/r/mz4y9g',
     logo: '../brand/partners/stanley-logo.png',
-    line: 'Your AI head of content. Drafts from your calls, learns your voice, posts for you.',
+    line: '6 months of Stanley free with code TIMERICH6. Your AI head of content: drafts from your calls, learns your voice, posts for you.',
   },
   {
     name: 'Wispr Flow',
