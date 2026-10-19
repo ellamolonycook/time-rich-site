@@ -2711,6 +2711,23 @@ const BQ_LEAD_GEN = [
   "Referrals", "Events / IRL", "Paid Ads", "Other",
 ];
 const BQ_YES_NO = ["Yes", "No"];
+// The Stanley content build question, which is the one place the form and
+// Notion do not agree on the words. A Notion select option cannot contain a
+// comma, so the third answer is stored there in brackets. The page keeps the
+// sentence it reads better as, and the two spellings meet here and nowhere
+// else: the Notion column gets the mapped name, the Google Sheet gets what
+// the member actually picked.
+const BQ_STANLEY_CONTENT_BUILD_NOTION = {
+  "Yes": "Yes",
+  "Maybe": "Maybe",
+  "No, I'll build it myself": "No (I'll build it myself)",
+};
+// What the Notion select will accept, which is the right-hand side above.
+const BQ_STANLEY_CONTENT_BUILD = Object.values(BQ_STANLEY_CONTENT_BUILD_NOTION);
+// An answer that is not one of the three maps to nothing, and select() then
+// leaves the column alone rather than sending Notion a name it refuses.
+const stanleyContentBuildOption = (value) =>
+  BQ_STANLEY_CONTENT_BUILD_NOTION[String(value == null ? "" : value).trim()] || "";
 
 async function handleOnboardQuestionnaire(data, env, cors, ctx) {
   const trackingId = String(data.trackingId || data.tracking_id || "").trim();
@@ -2786,6 +2803,8 @@ async function handleOnboardQuestionnaire(data, env, cors, ctx) {
   multi("Q Lead Gen Platforms", data.lead_gen_platforms, BQ_LEAD_GEN);
   text("Q AI in Outreach", data.ai_in_outreach);
   select("Q $100 Vendor Call", data.vendor_call_100, BQ_YES_NO);
+  select("Q Stanley Content Build",
+    stanleyContentBuildOption(data.stanley_content_build), BQ_STANLEY_CONTENT_BUILD);
   text("Q Bring Someone In", data.bring_someone_in);
   text("Q Other Answers", data.other_answers);
 
@@ -2843,6 +2862,7 @@ async function handleOnboardQuestionnaire(data, env, cors, ctx) {
         leadGenPlatforms: list(data.lead_gen_platforms),
         aiInOutreach: data.ai_in_outreach || "",
         vendorCall100: data.vendor_call_100 || "",
+        stanleyContentBuild: data.stanley_content_build || "",
         bringSomeoneIn: data.bring_someone_in || "",
         otherAnswers: data.other_answers || "",
       }),
@@ -3074,6 +3094,8 @@ async function handleSuperhumanQuestionnaire(data, env, cors, ctx) {
   // was dropped from the page. The Notion column is kept for the answers
   // already in it.
   select("Q $100 Vendor Call", data.vendor_call_100, BQ_YES_NO);
+  select("Q Stanley Content Build",
+    stanleyContentBuildOption(data.stanley_content_build), BQ_STANLEY_CONTENT_BUILD);
   text("Q Bring Someone In", data.bring_someone_in);
   text("Q Other Answers", data.other_answers);
 
@@ -3183,6 +3205,7 @@ async function handleSuperhumanQuestionnaire(data, env, cors, ctx) {
         aiDailyOutreach: data.ai_daily_outreach || "",
         leadGenPlatforms: list(data.lead_gen_platforms),
         vendorCall100: data.vendor_call_100 || "",
+        stanleyContentBuild: data.stanley_content_build || "",
         bringSomeoneIn: data.bring_someone_in || "",
         otherAnswers: data.other_answers || "",
       }),

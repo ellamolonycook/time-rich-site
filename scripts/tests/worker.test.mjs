@@ -1,6 +1,7 @@
 // Worker mapping tests: mock Notion's API, POST payloads, assert what we'd write.
 import worker from '../../worker/src/index.js';
 import { createHmac, createHash } from 'node:crypto';
+import { readFileSync } from 'node:fs';
 
 const env = {
   NOTION_TOKEN: 'secret_test',
@@ -1146,6 +1147,131 @@ console.log('\nTime Rich Members — questionnaire sync');
   mem.members = [{ email: 'ada@example.com', role: 'buyer', active: false }];
   await submitQuestionnaire(ADA);
   check('an inactive member is not listed', Object.keys(mem.directory).length === 0);
+}
+
+console.log('\nThe Stanley content build question');
+{
+  // The page and Notion do not agree on the words for the third answer. A
+  // Notion select option cannot contain a comma, so "No, I'll build it
+  // myself" is stored as "No (I'll build it myself)". The page keeps the
+  // sentence; the Worker maps it on the way out. Everything below is about
+  // that seam: the mapped name reaching Notion, the original text reaching
+  // the Google Sheet, and no comma getting as far as a select option.
+  const page = readFileSync(new URL('../../superhuman/index.html', import.meta.url), 'utf8');
+  const spec = page.slice(page.indexOf('key: "stanley_content_build"'));
+  const pageOptions = [...spec.slice(0, spec.indexOf('\n    ]')).matchAll(/value: "([^"]+)"/g)].map((m) => m[1]);
+  const src = readFileSync(new URL('../../worker/src/index.js', import.meta.url), 'utf8');
+
+  // The map the Worker reads, lifted out of the source so the test cannot
+  // drift from it: a change to either side shows up here.
+  const mapSrc = src.slice(src.indexOf('BQ_STANLEY_CONTENT_BUILD_NOTION = {'));
+  const MAP = Object.fromEntries(
+    [...mapSrc.slice(0, mapSrc.indexOf('};')).matchAll(/"([^"]+)": "([^"]+)",/g)].map((m) => [m[1], m[2]]));
+
+  check('the page offers the three options from the brief',
+    pageOptions.length === 3 &&
+    pageOptions.join('|') === "Yes|Maybe|No, I'll build it myself", pageOptions);
+  check('the question sits straight after the vendor call one, as the form reads',
+    page.indexOf('key: "vendor_call_100"') < page.indexOf('key: "stanley_content_build"') &&
+    page.indexOf('key: "stanley_content_build"') < page.indexOf('key: "bring_someone_in"'));
+  check('it is not required: nobody is held up by it',
+    !/key: "stanley_content_build"[\s\S]{0,120}required: true/.test(page));
+
+  // Every answer the page can send has somewhere to go. Without this a
+  // renamed option would simply stop being written, silently.
+  check('the Worker has a mapping for every option the page offers',
+    pageOptions.length === 3 && pageOptions.every((o) => typeof MAP[o] === 'string' && MAP[o]),
+    { pageOptions, MAP });
+  check('Yes and Maybe are passed through unchanged',
+    MAP.Yes === 'Yes' && MAP.Maybe === 'Maybe', MAP);
+  check('and the comma answer becomes the bracketed name Notion holds',
+    MAP["No, I'll build it myself"] === "No (I'll build it myself)",
+    MAP["No, I'll build it myself"]);
+
+  // Both questionnaire routes map it, not just the one the page posts to.
+  check('both Notion writes go through the mapping, not the raw answer',
+    (src.match(/select\("Q Stanley Content Build",\s*\n\s*stanleyContentBuildOption\(data\.stanley_content_build\), BQ_STANLEY_CONTENT_BUILD\);/g) || []).length === 2);
+  check('and neither writes data.stanley_content_build to Notion directly',
+    !/select\("Q Stanley Content Build", data\.stanley_content_build/.test(src));
+  check('both Google Sheet payloads keep the original form text',
+    (src.match(/stanleyContentBuild: data\.stanley_content_build \|\| "",/g) || []).length === 2);
+
+  // The rule that caused this change in the first place. Checked across every
+  // allowlist in the Worker, not just this one: a comma in any select option
+  // is a write Notion refuses.
+  const allowLists = [...src.matchAll(/const (BQ_[A-Z0-9_]+) = \[([\s\S]*?)\];/g)]
+    .map((m) => [m[1], [...m[2].matchAll(/"((?:[^"\\]|\\.)*)"/g)].map((o) => o[1])]);
+  const withCommas = allowLists.filter(([, opts]) => opts.some((o) => o.includes(',')));
+  check('every Notion select allowlist in the Worker is comma-free',
+    allowLists.length >= 6 && withCommas.length === 0,
+    { lists: allowLists.length, offenders: withCommas });
+  const mapped = Object.values(MAP);
+  check('and so is every name this question can send',
+    mapped.length === 3 && !mapped.some((o) => o.includes(',')), mapped);
+
+  // Driven for real, through the route the page actually posts to.
+  const lastNotion = () => {
+    const call = [...mem.calls].reverse().find((c) => c.url.startsWith('https://api.notion.com/v1/pages'));
+    return call ? JSON.parse(call.init.body).properties : {};
+  };
+  // memEnv has no sheet URL, so the Worker skips that write entirely. This
+  // one adds it, which is the only way to see what the sheet would receive.
+  const SHEET = 'https://script.google.test/sheet';
+  const sheetEnv = { ...memEnv, GOOGLE_SHEET_ORDERS_URL: SHEET };
+  const lastSheet = () => {
+    const call = [...mem.calls].reverse().find((c) => String(c.url).startsWith(SHEET));
+    return call ? JSON.parse(call.init.body) : null;
+  };
+
+  // Driven over the three the page lists, not a copy of them: a question that
+  // lost an option would otherwise go untested rather than red. The count is
+  // checked first so an empty list cannot make the loop vanish.
+  check('there are three answers to drive', pageOptions.length === 3, pageOptions.length);
+  for (const answer of pageOptions) {
+    resetMembers();
+    mem.members = [{ email: 'ada@example.com', role: 'buyer', active: true }];
+    const res = await submitQuestionnaire({ ...ADA, stanley_content_build: answer });
+    const prop = lastNotion()['Q Stanley Content Build'];
+    check('"' + answer + '" reaches Notion as "' + MAP[answer] + '"',
+      res.status === 200 && prop && prop.select && prop.select.name === MAP[answer], prop);
+    check('"' + answer + '" has no comma by the time Notion sees it',
+      Boolean(prop && prop.select) && !prop.select.name.includes(','), prop && prop.select);
+  }
+
+  // The sheet is the other half: it keeps what the member actually picked,
+  // commas and all, so the export reads the way the form reads.
+  resetMembers();
+  mem.members = [{ email: 'ada@example.com', role: 'buyer', active: true }];
+  await submitQuestionnaire({ ...ADA, stanley_content_build: "No, I'll build it myself" }, sheetEnv);
+  const sheet = lastSheet();
+  check('the Google Sheet gets the original text, comma and all',
+    sheet && sheet.stanleyContentBuild === "No, I'll build it myself",
+    sheet && sheet.stanleyContentBuild);
+  check('so the two differ on purpose, rather than by accident',
+    sheet && sheet.stanleyContentBuild !== lastNotion()['Q Stanley Content Build'].select.name);
+
+  // A value the Notion select has never seen would 400 the whole PATCH and
+  // take every other answer down with it, so the Worker drops it instead.
+  resetMembers();
+  mem.members = [{ email: 'ada@example.com', role: 'buyer', active: true }];
+  const odd = await submitQuestionnaire({ ...ADA, stanley_content_build: 'Perhaps' });
+  check('an answer outside the three is dropped, and the rest still saves',
+    odd.status === 200 && !('Q Stanley Content Build' in lastNotion()),
+    Object.keys(lastNotion()).filter((k) => k.includes('Stanley')));
+
+  // Including the bracketed spelling itself: only the page's own words map.
+  resetMembers();
+  mem.members = [{ email: 'ada@example.com', role: 'buyer', active: true }];
+  const already = await submitQuestionnaire({ ...ADA, stanley_content_build: "No (I'll build it myself)" });
+  check('the Notion spelling is not accepted back as an answer',
+    already.status === 200 && !('Q Stanley Content Build' in lastNotion()));
+
+  // Not required, so most people will leave it alone.
+  resetMembers();
+  mem.members = [{ email: 'ada@example.com', role: 'buyer', active: true }];
+  const none = await submitQuestionnaire(ADA);
+  check('leaving it blank writes no property at all',
+    none.status === 200 && !('Q Stanley Content Build' in lastNotion()));
 }
 
 console.log('\nAmbassador portal access');
