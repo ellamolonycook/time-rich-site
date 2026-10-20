@@ -364,8 +364,11 @@ var Q_SPEC = [
     key: "about_you", type: "fields", required: true,
     eyebrow: "Your links",
     title: "About you",
-    help: "Paste the full link for each (starting with https://).",
+    // The help line names the link fields rather than the whole screen: City
+    // sits above them and is not a link.
+    help: "For the links, paste the full address starting with https://.",
     fields: [
+      { key: "city", kind: "short", required: true, label: "City you're based in", placeholder: "New York" },
       { key: "linkedin", kind: "url", required: true, label: "LinkedIn profile URL", placeholder: "https://www.linkedin.com/in/you" },
       { key: "instagram", kind: "url", label: "Instagram URL", placeholder: "https://www.instagram.com/you" },
       // One link per line, each checked the same way as the single-link fields.

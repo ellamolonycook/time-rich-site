@@ -2945,6 +2945,11 @@ function questionnaireSlackText(fields) {
   const identity = [who, fields.email ? slackEscape(fields.email) : ""].filter(Boolean).join(" · ");
   if (identity) lines.push(identity);
 
+  // Where they are based, on its own line: it is what the NYC events and the
+  // hot seat rooms get sorted by, so it should not be buried in the identity run.
+  const city = notionPropText(props, "City");
+  if (city) lines.push(`City: ${slackEscape(city)}`);
+
   const facts = [
     ["Build priority", notionPropText(props, "Q Build Priority")],
     ["Revenue", notionPropText(props, "Q Revenue")],
@@ -3082,6 +3087,7 @@ async function handleSuperhumanQuestionnaire(data, env, cors, ctx) {
   link("LinkedIn", data.linkedin);
   link("Instagram", data.instagram);
   text("Other Links", data.other_links);
+  text("City", data.city);
   text("Title", data.job_title);
   text("Company", data.company);
   text("What the Company Does", data.company_does);
@@ -3199,6 +3205,7 @@ async function handleSuperhumanQuestionnaire(data, env, cors, ctx) {
         linkedin: data.linkedin || "",
         instagram: data.instagram || "",
         otherLinks: data.other_links || "",
+        city: data.city || "",
         jobTitle: data.job_title || "",
         company: data.company || "",
         companyDoes: data.company_does || "",

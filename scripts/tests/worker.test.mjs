@@ -1264,6 +1264,88 @@ console.log('\nThe "Also building" question');
     sheet && sheet.leadGenPlatforms);
 }
 
+console.log('\nThe City question');
+{
+  // Ella needs where every member is based, for the NYC events, the hot seat
+  // rooms and the members directory. It is a plain short text field, so what
+  // matters here is the seams: it is asked first on the "About you" screen, it
+  // is required like LinkedIn, and it reaches the Notion "City" column, the
+  // Google Sheet and the Slack line.
+  const page = readFileSync(new URL('../../superhuman/index.html', import.meta.url), 'utf8');
+  const src = readFileSync(new URL('../../worker/src/index.js', import.meta.url), 'utf8');
+
+  const aboutSpec = page.slice(page.indexOf('key: "about_you"'));
+  const aboutFields = aboutSpec.slice(0, aboutSpec.indexOf('\n    ]'));
+  const fieldOrder = [...aboutFields.matchAll(/\{ key: "([^"]+)", kind:/g)].map((m) => m[1]);
+
+  check('City is asked on the About you screen', fieldOrder.includes('city'), fieldOrder);
+  check('and asked first, above LinkedIn',
+    fieldOrder[0] === 'city' && fieldOrder.indexOf('city') < fieldOrder.indexOf('linkedin'), fieldOrder);
+  check('as a short text field, not a link one',
+    /\{ key: "city", kind: "short",/.test(aboutFields));
+  check('and required, like LinkedIn',
+    /\{ key: "city", kind: "short", required: true,/.test(aboutFields));
+  // The required message is built from the label, so the label is the sentence
+  // the member reads back when they skip it.
+  check('with the label from the brief',
+    /label: "City you're based in"/.test(aboutFields));
+
+  check('the Worker writes it to the Notion City column',
+    /text\("City", data\.city\);/.test(src));
+  check('and the Google Sheet payload carries it',
+    /city: data\.city \|\| "",/.test(src));
+
+  // Driven for real, through the route the page posts to.
+  const SHEET_CITY = 'https://script.google.test/sheet';
+  const cityEnv = {
+    ...memEnv,
+    GOOGLE_SHEET_ORDERS_URL: SHEET_CITY,
+    SLACK_QUESTIONNAIRE_WEBHOOK_URL: 'https://hooks.slack.test/questionnaire',
+  };
+  const cityProps = () => {
+    const call = [...mem.calls].reverse().find((c) => c.url.startsWith('https://api.notion.com/v1/pages'));
+    return call ? JSON.parse(call.init.body).properties : {};
+  };
+  const citySheet = () => {
+    const call = [...mem.calls].reverse().find((c) => String(c.url).startsWith(SHEET_CITY));
+    return call ? JSON.parse(call.init.body) : null;
+  };
+  const sendCity = async (city) => {
+    resetMembers();
+    mem.members = [{ email: 'ada@example.com', role: 'buyer', active: true }];
+    const res = await submitQuestionnaire({ ...ADA, city }, cityEnv);
+    const prop = cityProps()['City'];
+    return { res, stored: prop ? prop.rich_text[0].text.content : null };
+  };
+
+  const nyc = await sendCity('New York');
+  check('a typed city reaches Notion as rich text',
+    nyc.res.status === 200 && nyc.stored === 'New York', nyc.stored);
+  check('and the same answer reaches the Google Sheet',
+    citySheet() && citySheet().city === 'New York', citySheet() && citySheet().city);
+  check('Slack gets a City line of its own',
+    mem.slack.some((t) => t.split('\n').includes('City: New York')), mem.slack);
+
+  // Clipped exactly like every other short answer: 2,000 is Notion's per-rich
+  // text ceiling and this column is not special.
+  const long = await sendCity('x'.repeat(2500));
+  check('a very long city is clipped to the 2,000-char Notion limit',
+    long.stored !== null && long.stored.length === 2000, long.stored && long.stored.length);
+
+  // The page makes it required, but an empty answer must still leave the column
+  // alone rather than blanking what is already in it - the rule every other
+  // text answer follows, so a second pass over the form can only ever add.
+  const blank = await sendCity('');
+  check('an empty city writes no property at all',
+    blank.res.status === 200 && !('City' in cityProps()),
+    Object.keys(cityProps()).filter((k) => k === 'City'));
+  check('and Slack gets no City line either', !mem.slack.some((t) => t.includes('City:')), mem.slack);
+
+  const absent = await sendCity(undefined);
+  check('a payload that omits the field writes nothing too',
+    absent.res.status === 200 && !('City' in cityProps()));
+}
+
 console.log('\nThe Stanley content build question');
 {
   // The page and Notion do not agree on the words for the third answer. A
