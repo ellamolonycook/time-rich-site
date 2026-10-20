@@ -1,10 +1,11 @@
 // The portal footer: one quiet line, and no stranded separator when it wraps.
 //
 // The line reads "© 2026 Time Rich · Privacy · Terms · WhatsApp community ·
-// Need help? emc@timerichclub.com". It is a wrapping flex row, so on a narrow
-// screen it breaks over two lines -- and wherever the break lands, the "·"
-// after the last item on line one would be carried down to the head of line
-// two, which read as "· Need help? ...". CSS cannot ask whether an element
+// Need help? emc@timerichclub.com · Powered by Stanley". It is a wrapping
+// flex row, so on a narrow screen it breaks over two lines -- and wherever
+// the break lands, the "·" after the last item on line one would be carried
+// down to the head of line two, which read as "· Need help? ...". CSS cannot
+// ask whether an element
 // starts a wrapped line, so the rule takes the whole set out below the width
 // at which the line fits in one row, and opens the gap up instead.
 //
@@ -50,10 +51,11 @@ for (const path of PAGES) {
     row !== null && /\btrp-foot\b/.test(row.className) && /\bflex-wrap\b/.test(row.className),
     row && row.className);
 
-  // Four separators: after the copyright, after Privacy, after Terms, and the
-  // conditional one before the WhatsApp link.
+  // Five separators: after the copyright, after Privacy, after Terms, the
+  // conditional one before the WhatsApp link, and the one before the Stanley
+  // credit that came back down from the header.
   const seps = [...row.querySelectorAll('.trp-foot-sep')];
-  check('four separators, every one of them named', seps.length === 4, seps.length);
+  check('five separators, every one of them named', seps.length === 5, seps.length);
 
   check('and every one is the middle dot, hidden from assistive tech',
     seps.every((s) => s.textContent.trim() === '·' &&
@@ -78,13 +80,19 @@ for (const path of PAGES) {
     community.filter((el) => /\btrp-foot-sep\b/.test(el.className || '')).length === 1 &&
     community.filter((el) => el.tagName === 'A').length === 1);
 
-  // The lockup moved to the header; nothing but the line is down here.
-  check('and no sponsor lockup under it',
-    footer.querySelectorAll('.trp-powered').length === 0);
+  // The Stanley credit came back down from the header, where it had been
+  // since the duplicate was removed. It is on the line itself rather than in
+  // a band under it, so the footer is still one wrapping row, and it is the
+  // last item on it with its own separator in front.
+  const lockups = [...footer.querySelectorAll('.trp-powered')];
+  check('the Stanley credit is on the line, exactly once',
+    lockups.length === 1, lockups.length);
+  check('and it is inside the row rather than under it',
+    lockups.length === 1 && row.contains(lockups[0]));
 
   const text = row.textContent.replace(/\s+/g, ' ').trim();
-  check('the line still reads as the brief sets it',
-    /^© 2026 Time Rich · Privacy · Terms · WhatsApp community · Need help\? emc@timerichclub.com$/.test(text),
+  check('the line still reads as the brief sets it, with the credit last',
+    /^© 2026 Time Rich · Privacy · Terms · WhatsApp community · Need help\? emc@timerichclub\.com · Powered by$/.test(text),
     text);
 }
 
@@ -98,11 +106,14 @@ console.log('\nthe rule that keeps a separator off the head of a wrapped line');
   check('the separators are hidden by default, which is the narrow case',
     /\.trp-foot-sep \{\s*display: none;\s*\}/.test(src));
 
-  // The breakpoint has to be above the width at which the line still wraps.
-  // Measured in a browser at 540px with every item showing; 576 leaves room.
+  // The breakpoint has to be at or above the width the line stops wrapping
+  // at. Measured in headless Chrome with every item showing, including the
+  // Stanley credit that came back down from the header: the row is one line
+  // from 900px and two or three below it. It was 576 when the line ended at
+  // the support address.
   const m = src.match(/@media \(min-width: (\d+)px\) \{\s*\.trp-foot \{[^}]*\}\s*\.trp-foot-sep \{\s*display: inline;/);
   check('and come back at a breakpoint above the width the line wraps at',
-    m !== null && Number(m[1]) >= 540, m && m[1]);
+    m !== null && Number(m[1]) >= 900, m && m[1]);
 
   check('the gap opens up below the breakpoint, so the items still read apart',
     /\.trp-foot \{ column-gap: 14px; row-gap: 4px; \}/.test(src));

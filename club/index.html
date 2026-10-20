@@ -1,6 +1,123 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+<!-- ==== /club: two pages at one address ================================
+     A signed-in member gets the Club home; everyone else gets the Apply
+     page below, exactly as it has always been.
+
+     The member view is a full-bleed iframe of /portal/club.html rather than
+     the same markup inlined here, because this page styles bare h1, p, a,
+     section, nav and footer -- those rules would land on the Club home and
+     restyle it. The frame boundary is what keeps the two apart.
+
+     The check is the stored session token, read synchronously, so the
+     decision is made before the body is parsed and neither page flashes.
+     It is deliberately only a *local* check: asking the Worker would cost a
+     round trip with nothing on screen. A token the Worker later rejects is
+     handled at the other end -- portal-access.js takes the top window back
+     to /club, having cleared the token, so this page then draws Apply.
+     ==================================================================== -->
+<style>
+  /* Hidden until the script asks for it, so markup order cannot matter. */
+  #trp-club-frame { display: none; }
+
+  html[data-trp-member], html[data-trp-member] body {
+    height: 100%;
+    overflow: hidden;
+  }
+  /* The Apply page is left in the document, just not drawn. Nothing is
+     removed, so dropping the attribute restores it whole. */
+  html[data-trp-member] body > *:not(#trp-club-frame) { display: none !important; }
+  html[data-trp-member] #trp-club-frame {
+    display: block;
+    position: fixed;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    border: 0;
+    z-index: 2147483647;
+  }
+</style>
+<script>
+(function () {
+  'use strict';
+
+  var SESSION = 'tr_portal_session';
+  var THEME = 'tr_portal_theme';
+  /* How long the frame gets to load before this page gives up and shows
+     Apply. The session check itself is synchronous, so this is the only
+     thing that can hold the page, and it only runs when it goes wrong. */
+  var FRAME_TIMEOUT_MS = 4000;
+
+  var root = document.documentElement;
+
+  function live() {
+    try {
+      var saved = JSON.parse(window.localStorage.getItem(SESSION) || 'null');
+      if (!saved || typeof saved.token !== 'string' || !saved.token) return false;
+      // An expiry that has passed is the same as no session at all, which
+      // is the rule portal-access.js reads this value by.
+      if (saved.expires_at && new Date(saved.expires_at).getTime() <= Date.now()) return false;
+      return true;
+    } catch (e) {
+      // Storage blocked or unreadable: treat them as a visitor.
+      return false;
+    }
+  }
+
+  if (!live()) return;
+  root.setAttribute('data-trp-member', '');
+
+  var frame = null;
+  var settled = false;
+
+  // Back to the Apply page, whole, whatever went wrong.
+  function showApply() {
+    if (settled) return;
+    settled = true;
+    root.removeAttribute('data-trp-member');
+    if (frame && frame.parentNode) frame.parentNode.removeChild(frame);
+  }
+
+  function mount() {
+    if (settled) return;
+
+    frame = document.createElement('iframe');
+    frame.id = 'trp-club-frame';
+    frame.title = 'Time Rich Club';
+    frame.setAttribute('frameborder', '0');
+
+    /* The frame's own background, so a dark-theme member does not get a
+       white rectangle for the moment before the Club home paints. Same two
+       grounds the portal uses, picked by the same stored preference. */
+    var theme = 'system';
+    try { theme = window.localStorage.getItem(THEME) || 'system'; } catch (e) {}
+    var dark = theme === 'dark' || (theme !== 'light' &&
+      window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches);
+    frame.style.background = dark ? '#1C1D1A' : '#FFFDFB';
+
+    var timer = window.setTimeout(showApply, FRAME_TIMEOUT_MS);
+    frame.addEventListener('load', function () {
+      window.clearTimeout(timer);
+      settled = true;        // it is up; Apply is not coming back
+    });
+    frame.addEventListener('error', function () {
+      window.clearTimeout(timer);
+      showApply();
+    });
+
+    frame.src = '/portal/club.html';
+    document.body.appendChild(frame);
+  }
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', mount);
+  } else {
+    mount();
+  }
+})();
+</script>
+
   <link rel="icon" type="image/png" sizes="32x32" href="/rocketship-icon-32.png" />
   <link rel="apple-touch-icon" sizes="180x180" href="/rocketship-icon-180.png" />
 <meta charset="UTF-8" />

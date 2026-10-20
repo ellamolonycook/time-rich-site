@@ -241,15 +241,24 @@ console.log('\nPrompt Library — the page and the nav');
   check('the guides section stays hidden until a guide has a link',
     /data-prompt-guides hidden/.test(PROMPTS_HTML) && !/http[^']*notion[^']*'\s*}/.test(PROMPTS_JS));
 
-  for (const name of ['dashboard', 'curriculum', 'sessions', 'resources', 'members', 'prompts']) {
+  // The redesign takes Prompts out of the menu. The page is still built and
+  // still served — every link to it from inside the Resources page and from
+  // the curriculum still works — it is simply no longer one of the four
+  // places the menu steers to. So what is pinned here is the opposite of
+  // what used to be: no portal page offers it in either menu.
+  for (const name of ['club', 'dashboard', 'curriculum', 'sessions', 'resources', 'members', 'prompts']) {
     const html = read('portal/' + name + '.html');
-    const links = [...html.matchAll(/<a href="prompts\.html"([^>]*)>/g)].map((m) => m[1]);
-    check(name + '.html: a Prompts link in the top nav and the phone menu',
-      links.length === 2, links.length);
-    const current = links.filter((a) => /aria-current="page"/.test(a)).length;
-    check(name + '.html: marked as the current page only on prompts.html',
-      current === (name === 'prompts' ? 2 : 0), current);
+    const menus = html.slice(html.indexOf('<div id="mobile-menu"'), html.indexOf('</header>'));
+    const links = [...menus.matchAll(/<a href="prompts\.html"([^>]*)>/g)].map((m) => m[1]);
+    check(name + '.html: no Prompts link in the top nav or the phone menu',
+      links.length === 0, links.length);
   }
+  // It is the Accelerator that is lit while a member is on it: the menu's
+  // Accelerator entry points at the dashboard, so it carries the generic
+  // "current item in this set" rather than claiming to be this page.
+  check('prompts.html lights the Accelerator, without claiming to be it',
+    /<a href="dashboard\.html"[^>]*aria-current="true"/.test(PROMPTS_HTML) &&
+    !/aria-current="page"/.test(PROMPTS_HTML));
   check('prompts.html does not still think it is Resources',
     !/href="resources\.html" aria-current/.test(PROMPTS_HTML));
 

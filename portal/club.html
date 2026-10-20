@@ -1,0 +1,575 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth" data-trp-gate>
+<head>
+  <script>
+    // Theme, applied before first paint so there is no flash of the wrong one.
+    // "system" follows the device; the CSS reads this attribute.
+    (function () {
+      var t = 'system';
+      try { t = window.localStorage.getItem('tr_portal_theme') || 'system'; } catch (e) {}
+      if (t !== 'light' && t !== 'dark') t = 'system';
+      document.documentElement.setAttribute('data-theme', t);
+    })();
+  </script>
+  <meta charset="utf-8"/>
+  <base target="_top"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <!-- Google tag (gtag.js). The library is fetched once the page is
+       interactive: it is the heaviest request here and nothing on screen
+       waits on it. The consent defaults below are set first, so the queue
+       it replays on arrival already respects them. -->
+  <script>
+    window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}
+    // Consent Mode v2. Region-specific default first, then the global fallback,
+    // which is the order Google's docs specify: the narrower region wins.
+    gtag('consent','default',{ad_storage:'denied',ad_user_data:'denied',ad_personalization:'denied',analytics_storage:'denied',region:['AT','BE','BG','HR','CY','CZ','DK','EE','FI','FR','DE','GR','HU','IS','IE','IT','LV','LI','LT','LU','MT','NL','NO','PL','PT','RO','SK','SI','ES','SE','GB','CH']});
+    gtag('consent','default',{ad_storage:'denied',ad_user_data:'denied',ad_personalization:'denied',analytics_storage:'granted'});
+    gtag('js',new Date());
+    gtag('config','G-CTZLQ4R388');
+
+    // The library, once the page has loaded and the main thread is free.
+    // requestIdleCallback's own timeout and the setTimeout fallback are both
+    // 2000ms, so it never waits longer than that on a busy page.
+    (function () {
+      var asked = false;
+      function loadGtag() {
+        if (asked) return;
+        asked = true;
+        var s = document.createElement('script');
+        s.async = true;
+        s.src = 'https://www.googletagmanager.com/gtag/js?id=G-CTZLQ4R388';
+        document.head.appendChild(s);
+      }
+      function schedule() {
+        if (typeof window.requestIdleCallback === 'function') {
+          window.requestIdleCallback(loadGtag, { timeout: 2000 });
+        } else {
+          window.setTimeout(loadGtag, 2000);
+        }
+      }
+      if (document.readyState === 'complete') schedule();
+      else window.addEventListener('load', schedule);
+    })();
+  </script>
+
+  <title>Club | Time Rich Portal</title>
+  <meta property="og:image" content="https://timerich.ai/og-time-rich.png" />
+  <meta property="og:image:width" content="1200" />
+  <meta property="og:image:height" content="630" />
+  <meta name="twitter:image" content="https://timerich.ai/og-time-rich.png" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <link rel="stylesheet" href="portal.css"/>
+  <!-- The two faces, served from this repo. They used to come from Google
+       Fonts, which costs a DNS lookup, a stylesheet and only then the font
+       itself: three round trips before a heading could be drawn in the right
+       face, and a reflow when it finally was. Preloading the files directly
+       starts them with the stylesheet instead.
+
+       crossorigin is required on a font preload even for a same-origin file:
+       fonts are fetched in CORS mode, and a preload without it is fetched
+       twice. -->
+  <link rel="preload" href="../brand/fonts/SpaceGrotesk-Variable.woff2" as="font" type="font/woff2" crossorigin/>
+  <link rel="preload" href="../brand/fonts/Inter-Variable.woff2" as="font" type="font/woff2" crossorigin/>
+  <link rel="stylesheet" href="portal-content.css">
+
+  
+
+
+  <!-- The session gate. Config first, then the library; both deferred so
+       the DOM is ready when the script mounts. No valid code redirects to
+       index.html, because this page has no login form of its own. -->
+  <script src="portal-config.js" defer></script>
+  <script src="portal-access.js" defer></script>
+  <script src="portal-live.js"></script>
+  <script src="portal-chrome.js" defer></script>
+
+  <!-- Warm the next page while the pointer is still travelling to the link.
+       "moderate" is roughly 200ms of hover, which is long enough that a
+       pointer crossing the nav does not fetch all six. Only portal pages are
+       listed: a prefetch rule that matched everything would also warm the
+       sign-out and the partner links. -->
+  <script type="speculationrules">
+  {
+    "prefetch": [{
+      "where": { "href_matches": "/portal/*.html" },
+      "eagerness": "moderate"
+    }]
+  }
+  </script>
+</head>
+
+
+
+<body class="text-brand-ink font-sans min-h-screen flex flex-col selection:bg-brand-sage selection:text-brand-ink">
+
+  <!-- Noise Texture Overlay -->
+
+  <!-- MOBILE MENU -->
+  <div id="mobile-menu-overlay" class="fixed inset-0 bg-brand-ink/25 z-[100] opacity-0 pointer-events-none transition-opacity duration-300 lg:hidden"></div>
+
+  <div id="mobile-menu" class="fixed top-0 left-0 bottom-0 w-[82%] max-w-[300px] bg-brand-page border-r border-brand-ink/10 z-[101] -translate-x-full transition-transform duration-300 ease-out flex flex-col lg:hidden" role="dialog" aria-modal="true" aria-label="Menu">
+    <div class="flex-1 overflow-y-auto p-5 pt-6 flex flex-col">
+      <a href="/club" class="trp-wordmark text-[22px] mb-8 px-1">
+        TIME RICH<span class="trp-stop">.</span>
+      </a>
+      <nav class="space-y-1">
+        <a href="/club" aria-current="page" class="flex items-center gap-3 px-4 py-3 rounded-[14px] text-sm font-medium bg-brand-green text-brand-bg">
+          <svg class="w-4 h-4 shrink-0" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"></path></svg>
+          Club
+        </a>
+        <a href="dashboard.html" class="flex items-center gap-3 px-4 py-3 rounded-[14px] text-sm font-medium text-brand-ink/70 hover:text-brand-ink hover:bg-brand-ink/5 transition-colors">
+          <svg class="w-4 h-4 shrink-0 text-brand-ink/50" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"></path></svg>
+          Accelerator
+        </a>
+        <a href="resources.html" class="flex items-center gap-3 px-4 py-3 rounded-[14px] text-sm font-medium text-brand-ink/70 hover:text-brand-ink hover:bg-brand-ink/5 transition-colors">
+          <svg class="w-4 h-4 shrink-0 text-brand-ink/50" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"></path></svg>
+          Resources
+        </a>
+        <a href="members.html" data-portal-members-link class="flex items-center gap-3 px-4 py-3 rounded-[14px] text-sm font-medium text-brand-ink/70 hover:text-brand-ink hover:bg-brand-ink/5 transition-colors">
+          <svg class="w-4 h-4 shrink-0 text-brand-ink/50" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"></path></svg>
+          Members
+          <span class="trp-soon ml-auto">Soon</span>
+        </a>
+      </nav>
+      <div class="mt-auto pt-8 border-t border-brand-ink/10">
+        <button type="button" data-portal-signout class="w-full text-left px-4 py-3 rounded-[14px] text-sm font-medium text-brand-ink/70 hover:text-brand-ink hover:bg-brand-ink/5 transition-colors">Sign out</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- TOP NAVBAR -->
+  <header id="top-nav" class="trp-header h-14 sm:h-16 shrink-0 sticky top-0 z-50">
+    <div class="mx-auto max-w-[1120px] h-full flex items-center justify-between gap-3 px-4 sm:px-6 lg:px-8">
+
+    <!-- Left: the wordmark, then the nav pills beside it. The nav used to be
+         absolutely centred in the header, which left the right-hand side no
+         room for the sponsor credit, the member's name and Sign out all at
+         once. It flows after the wordmark now, which is also the order the
+         design asks for: logo, nav pills, then the right-hand group. -->
+    <div class="flex items-center gap-2 lg:gap-6 min-w-0">
+      <button id="mobile-menu-btn" type="button" aria-expanded="false" aria-controls="mobile-menu" aria-label="Menu" class="lg:hidden flex items-center justify-center w-11 h-11 -ml-2.5 rounded-full text-brand-ink hover:bg-brand-ink/5 transition-colors">
+        <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5"></path></svg>
+      </button>
+
+      <a href="/club" class="trp-wordmark text-[17px] sm:text-[20px] whitespace-nowrap rounded focus:outline-none focus-visible:ring-2 focus-visible:ring-brand-ink/30">
+        TIME RICH<span class="trp-stop">.</span>
+      </a>
+
+      <span class="trp-head-div" aria-hidden="true"></span>
+
+      <nav class="hidden lg:flex items-center gap-0.5" aria-label="Portal">
+        <a href="/club" aria-current="page" class="trp-nav-link px-3.5 text-[13px] font-medium">Club</a>
+        <a href="dashboard.html" class="trp-nav-link px-3.5 text-[13px] font-medium text-brand-ink/70 hover:text-brand-ink">Accelerator</a>
+        <a href="resources.html" class="trp-nav-link px-3.5 text-[13px] font-medium text-brand-ink/70 hover:text-brand-ink">Resources</a>
+        <a href="members.html" data-portal-members-link class="trp-nav-link gap-1.5 px-3.5 text-[13px] font-medium text-brand-ink/70 hover:text-brand-ink">Members <span class="trp-soon">Soon</span></a>
+      </nav>
+    </div>
+
+    <!-- Right: the theme control, a thin divider, the member and Sign out.
+         The sponsor credit is no longer here; it sits beside the wordmark on
+         the left, which is the only place it appears on the page. -->
+    <div class="flex items-center gap-2 sm:gap-3 shrink-0">
+      <!-- Filled in by portal-chrome.js, and only while a session is live or
+           about to start. Stays hidden the rest of the time. -->
+      <a data-portal-join hidden class="hidden xl:inline-flex items-center px-3.5 py-1.5 rounded-full bg-brand-green text-brand-bg text-[11px] font-medium tracking-[0.04em] whitespace-nowrap hover:bg-brand-green/90 transition-colors"></a>
+
+      <div class="trp-theme">
+        <label class="sr-only" for="theme-dashboard">Theme</label>
+        <select id="theme-dashboard" data-theme-select>
+          <option value="system">System</option>
+          <option value="light">Light</option>
+          <option value="dark">Dark</option>
+        </select>
+        <svg class="trp-theme-caret" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7"></path></svg>
+      </div>
+
+      <span class="trp-head-div hidden md:block" aria-hidden="true"></span>
+
+      <span data-portal-name class="hidden md:inline text-xs font-medium text-brand-ink/70 whitespace-nowrap"></span>
+
+      <button type="button" data-portal-signout class="hidden lg:inline-flex items-center h-11 text-[13px] font-medium text-brand-ink/70 hover:text-brand-ink transition-colors">Sign out</button>
+      </div>
+    </div>
+  </header>
+
+  <!-- MAIN -->
+  <main class="trp-club flex-1">
+    <div class="px-5 sm:px-6 lg:px-8 py-14 lg:py-24 max-w-[1120px] mx-auto">
+
+      <!-- ---- hero ----------------------------------------------------
+           The greeting is written by the script at the foot of this page
+           rather than by dropping [data-portal-name] into the sentence:
+           the name is empty until the payload lands, and "Welcome back,
+           ." is what that would read as in the meantime. -->
+      <section class="grid lg:grid-cols-[1fr_360px] lg:items-start gap-12 lg:gap-20">
+        <div class="min-w-0">
+          <p class="trp-eyebrow">Time Rich Club &middot; Members</p>
+          <h1 data-club-greet class="trp-club-h1 mt-5">Welcome back.</h1>
+          <p class="trp-club-intro mt-7 max-w-[34rem]">
+            Where founders, creators and investors invest in themselves, their
+            relationships and a system that makes them Time Rich. Build
+            alongside people who are building too.
+          </p>
+          <hr class="trp-hero-rule"/>
+        </div>
+
+        <aside aria-labelledby="ethos-heading">
+          <p class="trp-eyebrow" id="ethos-heading">The Time Rich ethos</p>
+          <ol class="trp-ethos mt-5">
+            <li>
+              <span class="trp-ethos-n" aria-hidden="true">01</span>
+              <span>Delegate before you scale.</span>
+            </li>
+            <li>
+              <span class="trp-ethos-n" aria-hidden="true">02</span>
+              <span>Build the system once. Let it run.</span>
+            </li>
+            <li>
+              <span class="trp-ethos-n" aria-hidden="true">03</span>
+              <span>Show up in public. Grow in public.</span>
+            </li>
+          </ol>
+        </aside>
+      </section>
+
+      <!-- ---- your programs -------------------------------------------- -->
+      <section class="trp-sec" aria-labelledby="programs-heading">
+        <h2 id="programs-heading" class="trp-club-h2">Your programs</h2>
+
+        <div class="mt-7 grid lg:grid-cols-2 gap-5 items-stretch">
+
+          <!-- The Accelerator, which is the one a member is in. The card is
+               a hairline now: the green is spent on the button inside it,
+               which is the thing you actually press. -->
+          <div class="trp-prog trp-prog-on">
+            <p class="trp-eyebrow">You're enrolled</p>
+            <h3 class="trp-club-h3 text-[27px] sm:text-[32px] mt-4">Superhuman Accelerator</h3>
+            <p class="mt-4 text-[15px] leading-[1.7] max-w-[30rem]">
+              Four weeks, live. Build the AI system behind your sales, your
+              systems and your visibility. Kicks off Monday 26 October, 12pm ET.
+            </p>
+
+            <!-- Filled from the same TRLive.userProgress the dashboard
+                 reads. Stays out of the page until there is a count, so
+                 the card never shows "0 of 0 done". -->
+            <div data-club-progress hidden class="mt-8 max-w-[20rem]"></div>
+
+            <a href="dashboard.html" class="trp-btn trp-btn-primary mt-8">
+              Enter the Accelerator
+              <span aria-hidden="true">&rarr;</span>
+            </a>
+          </div>
+
+          <!-- The Club proper, which has not opened. Not a link, because
+               there is nowhere for it to go yet. -->
+          <div class="trp-prog trp-prog-off">
+            <p class="trp-eyebrow">Time Rich Club</p>
+            <h3 class="trp-club-h3 text-[21px] sm:text-[24px] mt-4">Private conversations, firesides and your network</h3>
+            <p class="mt-4 text-[15px] leading-[1.7] text-brand-muted">
+              Investing, building your brand, time hacks and running your life
+              on AI. Fireside chats with family offices and exited founders.
+            </p>
+            <span class="trp-soon trp-soon-lg self-start mt-auto">Coming soon</span>
+          </div>
+        </div>
+      </section>
+
+      <!-- ---- upcoming in new york -------------------------------------- -->
+      <section class="trp-sec" aria-labelledby="events-heading">
+        <div class="trp-sec-head">
+          <h2 id="events-heading" class="trp-club-h2">Upcoming in New York</h2>
+          <a class="trp-sec-link" href="https://luma.com/timerich" target="_blank" rel="noopener noreferrer">
+            All events <span aria-hidden="true">&rarr;</span>
+          </a>
+        </div>
+
+        <div class="trp-rows">
+          <a class="trp-row trp-row-media" href="https://luma.com/contentsystem" target="_blank" rel="noopener noreferrer">
+            <span class="trp-date" aria-hidden="true">
+              <span class="trp-date-m">Nov</span>
+              <span class="trp-date-d">04</span>
+            </span>
+            <span class="min-w-0">
+              <span class="trp-row-t">AI Content System + Investor Fireside</span>
+              <span class="trp-row-d">The Ned. Build your content agents and leave with a week of posts scheduled.</span>
+              <span class="sr-only">4 November, opens in a new tab</span>
+            </span>
+            <!-- Decorative: the room, not information. The date and the
+                 title above carry everything this says. -->
+            <span class="trp-row-shot">
+              <img src="../brand/img/event-1.jpg" alt="" width="1600" height="1200" loading="lazy" decoding="async"/>
+            </span>
+          </a>
+
+          <a class="trp-row trp-row-media" href="https://luma.com/nycwomen" target="_blank" rel="noopener noreferrer">
+            <span class="trp-date" aria-hidden="true">
+              <span class="trp-date-m">Nov</span>
+              <span class="trp-date-d">09</span>
+            </span>
+            <span class="min-w-0">
+              <span class="trp-row-t">Women's Wealth Transfer</span>
+              <span class="trp-row-d">An honest panel with women who have exited and invested, then drinks. 6 to 9pm.</span>
+              <span class="sr-only">9 November, opens in a new tab</span>
+            </span>
+            <span class="trp-row-shot">
+              <img src="../brand/img/room-2.jpg" alt="" width="1067" height="1600" loading="lazy" decoding="async"/>
+            </span>
+          </a>
+        </div>
+      </section>
+
+      <!-- ---- stay in the room ------------------------------------------ -->
+      <section class="trp-sec" aria-labelledby="rooms-heading">
+        <h2 id="rooms-heading" class="trp-club-h2">Stay in the room</h2>
+
+        <div class="trp-rows mt-7">
+          <a class="trp-row" href="https://chat.whatsapp.com/H495V76Eewx2dFxDnfr6VF?mode=gi_t" target="_blank" rel="noopener noreferrer">
+            <span class="min-w-0">
+              <span class="trp-row-t">Time Rich Women</span>
+              <span class="trp-row-d">WhatsApp community</span>
+            </span>
+            <span class="trp-row-side">Join <span aria-hidden="true">&rarr;</span></span>
+          </a>
+
+          <!-- The Superhuman group, whose link is the week 0 item the
+               dashboard footer already uses. portal-chrome.js fills the
+               href and takes the row out when there is no such item. -->
+          <a data-portal-community hidden class="trp-row">
+            <span class="min-w-0">
+              <span class="trp-row-t">NYC Founders, Creators &amp; Investors</span>
+              <span class="trp-row-d">WhatsApp community</span>
+            </span>
+            <span class="trp-row-side">Join <span aria-hidden="true">&rarr;</span></span>
+          </a>
+
+          <div class="trp-row">
+            <span class="min-w-0">
+              <span class="trp-row-t">Time Rich Slack</span>
+              <span class="trp-row-d">Your cohort, in one place</span>
+            </span>
+            <span class="trp-row-side"><span class="trp-soon">Coming soon</span></span>
+          </div>
+        </div>
+      </section>
+
+      <!-- ---- follow along ----------------------------------------------- -->
+      <section class="trp-sec" aria-labelledby="follow-heading">
+        <h2 id="follow-heading" class="trp-club-h2">Follow along</h2>
+
+        <nav class="trp-follow mt-7" aria-label="Time Rich elsewhere">
+          <a href="https://timerichclub.com" target="_blank" rel="noopener noreferrer">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 5h16M4 9.5h16M4 14h16v6l-8-4-8 4z"/></svg>
+            Substack
+          </a>
+          <a href="https://www.linkedin.com/in/ellamolonycook/" target="_blank" rel="noopener noreferrer">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="3" width="18" height="18" rx="2.5"/><path d="M7.5 10.5V17M7.5 7v.01M11.5 17v-3.75a2.25 2.25 0 0 1 4.5 0V17"/></svg>
+            LinkedIn
+          </a>
+          <a href="https://www.instagram.com/timerichtalk" target="_blank" rel="noopener noreferrer">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="3.8"/><path d="M17 7v.01"/></svg>
+            Instagram
+          </a>
+          <a href="https://luma.com/timerich" target="_blank" rel="noopener noreferrer">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="5" width="18" height="16" rx="2.5"/><path d="M8 3v4M16 3v4M3 11h18"/></svg>
+            Events
+          </a>
+        </nav>
+      </section>
+
+    </div>
+  </main>
+
+  <!-- FOOTER -->
+  <footer class="trp-club shrink-0 border-t border-brand-ink/10 px-5 sm:px-6 lg:px-8 py-7">
+    <div class="max-w-[1120px] mx-auto flex flex-wrap items-center justify-between gap-x-6 gap-y-4 text-[12px] text-brand-muted">
+      <p>&copy; 2026 Time Rich</p>
+
+      <p class="flex flex-wrap items-center gap-x-3 gap-y-2">
+        <!-- Both partners, at one height. The credit used to sit beside the
+             wordmark in the header; it reads better down here with Wispr
+             than as a third thing in the masthead. "Powered by" is said
+             once, over the pair. -->
+        <span class="trp-credits">
+          <span class="trp-credit-label">Powered by</span>
+          <a class="trp-credit" href="https://x.getstanley.ai/r/mz4y9g" target="_blank" rel="noopener sponsored">
+            <img class="trp-powered-pos" src="../brand/partners/stanley-logo.png" alt="Stanley" width="765" height="203" loading="lazy" decoding="async"/>
+            <img class="trp-powered-rev" src="../brand/partners/stanley-logo-dark.png" alt="Stanley" width="765" height="203" loading="lazy" decoding="async"/>
+          </a>
+          <a class="trp-credit" href="https://ref.wisprflow.ai/ella-cook-vt27" target="_blank" rel="noopener sponsored">
+            <img class="trp-credit-tile" src="../os/img/wispr-flow.png" alt="Wispr Flow" width="256" height="256" loading="lazy" decoding="async"/>
+          </a>
+        </span>
+        <span aria-hidden="true">&middot;</span>
+        <span>Help: <a href="mailto:emc@timerichclub.com" class="trp-foot-link">emc@timerichclub.com</a></span>
+      </p>
+    </div>
+  </footer>
+
+
+  <script>
+    // The greeting and the Accelerator card's progress, both from the payload
+    // portal-access.js fetches. Nothing here owns any data: TRLive.userProgress
+    // is the same call the dashboard's own progress card makes, so the two can
+    // never disagree about where a member is.
+    (function () {
+      var greet = document.querySelector('[data-club-greet]');
+      var slot = document.querySelector('[data-club-progress]');
+
+      function name(data) {
+        var m = data && data.member;
+        var first = m && typeof m.first_name === 'string' ? m.first_name.trim() : '';
+        return first;
+      }
+
+      function fill(data) {
+        if (greet) {
+          var first = name(data);
+          // Built with textContent, never innerHTML: the name is member input.
+          greet.textContent = first ? 'Welcome back, ' + first + '.' : 'Welcome back.';
+        }
+
+        var L = window.TRLive;
+        if (!slot || !L || !L.userProgress) return;
+
+        var you = L.userProgress(data);
+        if (!you || !you.total) { slot.setAttribute('hidden', ''); return; }
+
+        while (slot.firstChild) slot.removeChild(slot.firstChild);
+
+        /* Before week 1 opens there is nothing to have got through, and a
+           bar pinned at zero reads as "you are behind" rather than "it has
+           not started yet". So until then this says where the cohort is and
+           when it begins, and the bar arrives with the first week.
+
+           weeksDone is the count of weeks that have unlocked, which is the
+           same flag the Curriculum and the dashboard's countdown read. */
+        var program = L.scheduleProgress ? L.scheduleProgress(data) : null;
+        var weeksTotal = (program && program.weeksTotal) || 4;
+        var weeksDone = program ? program.weeksDone : 0;
+
+        if (!weeksDone) {
+          var when = '';
+          var first = L.sessions(data)[0];
+          if (first && first.starts_at && L.etDate) when = L.etDate(first.starts_at);
+
+          var pre = document.createElement('p');
+          pre.className = 'trp-prog-line trp-prog-when';
+          pre.textContent = 'Week 0 of ' + weeksTotal +
+            (when ? ' · Starts ' + when : '');
+          slot.appendChild(pre);
+          slot.removeAttribute('hidden');
+          return;
+        }
+
+        var track = document.createElement('div');
+        track.className = 'trp-prog-track';
+        var fillBar = document.createElement('div');
+        fillBar.className = 'trp-prog-fill';
+        fillBar.style.width = Math.max(0, Math.min(100, you.percent)) + '%';
+        track.appendChild(fillBar);
+        track.setAttribute('role', 'progressbar');
+        track.setAttribute('aria-valuemin', '0');
+        track.setAttribute('aria-valuemax', String(you.total));
+        track.setAttribute('aria-valuenow', String(you.done));
+        track.setAttribute('aria-label', 'Your progress: ' + you.done + ' of ' + you.total + ' done');
+        slot.appendChild(track);
+
+        var line = document.createElement('p');
+        line.className = 'trp-prog-line';
+        line.textContent = 'Week ' + Math.min(weeksDone, weeksTotal) + ' of ' + weeksTotal +
+                           ' · ' + you.done + ' of ' + you.total + ' done';
+        slot.appendChild(line);
+
+        slot.removeAttribute('hidden');
+      }
+
+      document.addEventListener('trportal:data', function (e) { fill(e && e.detail); });
+      document.addEventListener('trportal:progress', function () { fill(window.TR_PORTAL_DATA); });
+
+      // The event may already have fired: portal-access.js leaves the payload
+      // behind for exactly this case.
+      if (window.TR_PORTAL_DATA) fill(window.TR_PORTAL_DATA);
+    })();
+  </script>
+
+  <script>
+    // === SMOOTH PAGE TRANSITIONS ===
+    // Internal .html links fade the page out before navigating. The fade is
+    // decoration; the navigation is the job, so every path below ends in a
+    // navigation even when the animation never runs or is cut short.
+    (function () {
+      // Framed at /club, every link already goes to the top window via the
+      // page's <base target="_top">. This script assigns window.location,
+      // which would move the frame instead, so it stands down.
+      try { if (window.top !== window.self) return; } catch (e) { return; }
+
+      var FADE_MS = 150;
+
+      var reduced = false;
+      try {
+        reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+      } catch (e) { /* no matchMedia: treat as no preference */ }
+
+      // Coming back via the Back button can restore this page from the bfcache
+      // with the fade still applied, which shows a blank screen.
+      //
+      // Only this script's own fade is undone. Every portal page sets its own
+      // entrance transform inline on <body>, so clearing that unconditionally
+      // would kill the page's open animation on a normal load.
+      var LEAVING = 'data-trp-leaving';
+      window.addEventListener('pageshow', function () {
+        if (!document.body.hasAttribute(LEAVING)) return;
+        document.body.removeAttribute(LEAVING);
+        document.body.style.opacity = '';
+        document.body.style.transform = '';
+      });
+
+      document.addEventListener('DOMContentLoaded', function () {
+        document.querySelectorAll('a[href]').forEach(function (link) {
+          var href = link.getAttribute('href');
+          if (!href) return;
+          if (href.indexOf('http') === 0 || href.charAt(0) === '#' || href.indexOf('mailto') === 0) return;
+          if (href.slice(-5) !== '.html') return;
+          // A link meant for another tab keeps its default behaviour.
+          if (link.target && link.target !== '_self') return;
+
+          link.addEventListener('click', function (e) {
+            // Cmd/Ctrl/Shift/Alt click and middle click open a new tab.
+            // Hijacking those would quietly break them.
+            if (e.button !== 0 || e.metaKey || e.ctrlKey || e.shiftKey || e.altKey) return;
+
+            e.preventDefault();
+
+            // Anyone who asked for less motion simply goes.
+            if (reduced) { window.location.href = href; return; }
+
+            var done = false;
+            function go() {
+              if (done) return;
+              done = true;
+              window.location.href = href;
+            }
+
+            try {
+              document.body.setAttribute(LEAVING, '');
+              document.body.style.opacity = '0';
+              document.body.style.transform = 'scale(0.98)';
+              // Whichever comes first wins.
+              document.body.addEventListener('transitionend', go, { once: true });
+            } catch (err) {
+              go();                 // styling failed, so just navigate
+              return;
+            }
+
+            setTimeout(go, FADE_MS);
+            // A short backstop: transitionend does not fire in a backgrounded
+            // tab, and a click must never end on a page left faded out.
+            setTimeout(go, FADE_MS + 250);
+          });
+        });
+      });
+    })();
+  </script>
+
+</body>
+</html>

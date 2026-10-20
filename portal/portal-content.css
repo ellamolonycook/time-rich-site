@@ -10,38 +10,102 @@
  * on the class names.
  * ===================================================================== */
 
-/* The "Members" nav link stays hidden until portal-access.js reveals it.
-   Needed because Tailwind's .flex on the phone-menu link would otherwise
-   beat the browser's own [hidden] rule. */
-[data-portal-members-link][hidden] { display: none !important; }
+/* "Members" is in the menu for everyone now, carrying a purple Soon pill,
+   so the two rules that used to hide it are gone.
 
-/* The first time, before the Worker has answered, the link keeps its box but
-   paints nothing. The top nav is centred, so a fifth link arriving a second
-   late would otherwise shove the other four sideways. */
-[data-portal-members-link][data-pending] { visibility: hidden !important; }
+   They worked because Tailwind's .flex on the phone-menu link, and
+   .trp-nav-link's own display on the desktop one, both beat the browser's
+   [hidden] rule -- so [hidden] only did anything here while this file put
+   it back. Without them the link shows whatever portal-access.js decides.
 
+   The script itself is untouched: it still asks the Worker whether the
+   directory is open and still toggles [hidden] and [data-pending]. That
+   answer simply no longer decides anything, which is what lets the gate be
+   switched back on by restoring these two rules and dropping the pill. */
+
+/* ---- the palette ------------------------------------------------------
+   The redesign's colours, written down once. These mirror the --c-* RGB
+   triplets in portal-tailwind-src.css, which is what the Tailwind utilities
+   (text-brand-ink, bg-brand-green, ...) resolve from. Both have to stay in
+   step: this file names the colours for the hand-written .trp- components,
+   that one names them for the generated utilities.
+
+   Only the two themes' values differ, so everything below that is not a
+   colour -- the radius, the faces -- is written once.
+   --------------------------------------------------------------------- */
 :root {
+  /* paper */
   --trp-cream:    #FFFCEB;
-  --trp-offwhite: #FFFDFB;
-  --trp-sage:     #DCDEBF;
-  --trp-sagelt:   #E9EAD5;
+  --trp-offwhite: #FFFDFB;   /* the page */
+
+  /* the two light greens: a soft button, a code box */
+  --trp-sage:     #D8D9B9;
+  --trp-sagelt:   #E5E6CF;
+
+  /* the green, for a button and for the active menu item */
   --trp-green:    #424B36;
-  --trp-deep:     #333A28;
   --trp-mid:      #4E5840;
+
+  /* type. The green is out of the ink: text is a warm near-black and the
+     quiet ink a warm grey, so a page of small print stops reading green. */
+  --trp-deep:     #1A1816;
+  --trp-soft:     #57534E;
+
+  /* accent */
   --trp-lime:     #CCEEA0;
   --trp-olive:    #67762E;
 
-  --trp-line:     rgba(51, 58, 40, 0.12);
+  /* Purple is reserved for "not yet" -- a Soon pill beside a link, a Coming
+     soon pill on a card -- and appears nowhere else. */
+  --trp-plumbg:   #EEEBFF;
+  --trp-plum:     #4A3DB8;
+
+  --trp-line:     rgba(26, 24, 22, 0.12);
   --trp-shadow:   none;
   --trp-radius:   20px;
 
-  /* The same three faces as portal-tailwind-src.css. Plus Jakarta Sans was
-     never loaded by any page, so every rule below that asked for it has
-     been falling through to the system sans all along; naming it properly
-     is what the brand bible sets anyway. */
-  --trp-sans:    system-ui, -apple-system, "Segoe UI", Roboto, Helvetica, sans-serif;
-  --trp-display: "Space Grotesk", var(--trp-sans);
-  --trp-mono:    "JetBrains Mono", ui-monospace, SFMono-Regular, Menlo, monospace;
+  /* Two faces, the same two as portal-tailwind-src.css: Space Grotesk for
+     headings, Inter for body copy, menus and labels. --trp-mono is kept as
+     a name because rules below still ask for it, but it points at Inter --
+     nothing the member reads is monospaced any more. */
+  --trp-sans:    "Inter", "Inter Fallback", system-ui, -apple-system, "Segoe UI", Roboto, Helvetica, sans-serif;
+  --trp-display: "Space Grotesk", "Space Grotesk Fallback", var(--trp-sans);
+  --trp-mono:    var(--trp-sans);
+}
+
+/* The dark theme swaps the ink family and the paper family over, exactly as
+   portal-tailwind-src.css does, so a component written as "green fill, paper
+   type" inverts without a rule of its own. */
+:root[data-theme='dark'] {
+  --trp-cream:    #222320;
+  --trp-offwhite: #1C1D1A;
+  --trp-sage:     #272824;
+  --trp-sagelt:   #2F302B;
+  --trp-green:    #E6E4D6;
+  --trp-mid:      #CDCEC3;
+  --trp-deep:     #F4F1E6;
+  --trp-soft:     #C3C3B8;
+  --trp-olive:    #CCEEA0;
+  --trp-plumbg:   #2F2B4F;
+  --trp-plum:     #C7C1FF;
+  --trp-line:     rgba(244, 241, 230, 0.22);
+}
+
+@media (prefers-color-scheme: dark) {
+  :root[data-theme='system'] {
+    --trp-cream:    #222320;
+    --trp-offwhite: #1C1D1A;
+    --trp-sage:     #272824;
+    --trp-sagelt:   #2F302B;
+    --trp-green:    #E6E4D6;
+    --trp-mid:      #CDCEC3;
+    --trp-deep:     #F4F1E6;
+    --trp-soft:     #C3C3B8;
+    --trp-olive:    #CCEEA0;
+    --trp-plumbg:   #2F2B4F;
+    --trp-plum:     #C7C1FF;
+    --trp-line:     rgba(244, 241, 230, 0.22);
+  }
 }
 
 /* ---- gating -----------------------------------------------------------
@@ -89,15 +153,6 @@ html[data-trp-gate]:not([data-tr-portal="in"]) body > *:not(script):not(style) {
 
 .trp-section { margin-top: 2.5rem; }
 
-.trp-eyebrow {
-  margin: 0 0 0.5rem;
-  font-family: var(--trp-mono);
-  font-size: 0.625rem;
-  letter-spacing: 0.2em;
-  text-transform: uppercase;
-  color: rgba(51, 58, 40, 0.6);
-}
-
 .trp-h1,
 .trp-h2 {
   font-family: var(--trp-display);
@@ -143,7 +198,7 @@ html[data-trp-gate]:not([data-tr-portal="in"]) body > *:not(script):not(style) {
   overflow-wrap: break-word;
 }
 
-.trp-week-locked .trp-week-title { color: rgba(51, 58, 40, 0.6); }
+.trp-week-locked .trp-week-title { color: var(--trp-soft); }
 
 .trp-week-summary,
 .trp-week-meta {
