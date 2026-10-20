@@ -1149,6 +1149,121 @@ console.log('\nTime Rich Members — questionnaire sync');
   check('an inactive member is not listed', Object.keys(mem.directory).length === 0);
 }
 
+console.log('\nThe "Also building" question');
+{
+  // Thirteen options plus Other, written to a Notion multi-select. The page
+  // stores the Notion option names as its values and shows a longer sentence
+  // as the label, so the two lists have to be the same list.
+  const page = readFileSync(new URL('../../superhuman/index.html', import.meta.url), 'utf8');
+  const spec = page.slice(page.indexOf('key: "also_build"'));
+  const specEnd = spec.slice(0, spec.indexOf('\n    ]'));
+  const pageValues = [...specEnd.matchAll(/value: "([^"]+)"/g)].map((m) => m[1]);
+  const pageLabels = [...specEnd.matchAll(/label: "([^"]+)"/g)].map((m) => m[1]);
+  const src = readFileSync(new URL('../../worker/src/index.js', import.meta.url), 'utf8');
+  const listSrc = src.slice(src.indexOf('const BQ_ALSO_BUILD = ['));
+  const allowed = [...listSrc.slice(0, listSrc.indexOf('];')).matchAll(/"([^"]+)"/g)].map((m) => m[1]);
+
+  check('the page offers thirteen options', pageValues.length === 13, pageValues.length);
+  check('and a label for every one of them', pageLabels.length === 13, pageLabels.length);
+  check('the question sits straight after the first-build one',
+    page.indexOf('key: "build_priority"') < page.indexOf('key: "also_build"') &&
+    page.indexOf('key: "also_build"') < page.indexOf('key: "tech_stack"'));
+  check('it is not required', !/key: "also_build"[\s\S]{0,200}required: true/.test(page));
+  check('and it offers an Other box', /key: "also_build"[\s\S]{0,300}other: true/.test(page));
+  check('whose text is filed under its own prefix',
+    /\{ key: "also_build", prefix: "Also build" \}/.test(page));
+
+  check('the Worker allows those thirteen plus Other, and nothing else',
+    allowed.length === 14 &&
+    pageValues.every((v) => allowed.includes(v)) &&
+    allowed.every((v) => v === 'Other' || pageValues.includes(v)),
+    { allowed: allowed.length, missing: pageValues.filter((v) => !allowed.includes(v)) });
+  // Notion refuses a select option containing a comma, which is why several
+  // of these read as "Website / pricing / checkout" rather than with commas.
+  check('no allowed option contains a comma',
+    allowed.length === 14 && !allowed.some((v) => v.includes(',')),
+    allowed.filter((v) => v.includes(',')));
+
+  check('both questionnaire routes write the property',
+    (src.match(/multi\("Q Also Build", data\.also_build, BQ_ALSO_BUILD\);/g) || []).length === 2);
+  check('and both Google Sheet payloads carry the field',
+    (src.match(/alsoBuild: semiList\(data\.also_build\),/g) || []).length === 2);
+
+  // Driven for real, through the route the page posts to.
+  const lastNotion = () => {
+    const call = [...mem.calls].reverse().find((c) => c.url.startsWith('https://api.notion.com/v1/pages'));
+    return call ? JSON.parse(call.init.body).properties : {};
+  };
+  const SHEET = 'https://script.google.test/sheet';
+  const sheetEnv = { ...memEnv, GOOGLE_SHEET_ORDERS_URL: SHEET };
+  const lastSheet = () => {
+    const call = [...mem.calls].reverse().find((c) => String(c.url).startsWith(SHEET));
+    return call ? JSON.parse(call.init.body) : null;
+  };
+  const send = async (also_build, env) => {
+    resetMembers();
+    mem.members = [{ email: 'ada@example.com', role: 'buyer', active: true }];
+    const res = await submitQuestionnaire({ ...ADA, also_build }, env);
+    const prop = lastNotion()['Q Also Build'];
+    return { res, names: prop ? prop.multi_select.map((o) => o.name) : null };
+  };
+  // `names` is null when nothing was written, so every read of it below goes
+  // through this: a block that throws halfway reports far less than it knows.
+  const joined = (r) => (r.names || []).join('|');
+
+  // Valid values pass through, in the order they were sent.
+  const three = ['Client journey', 'Admin assistant', 'Email list growth'];
+  const some = await send(three);
+  check('the chosen options reach Notion as a multi-select',
+    some.res.status === 200 && some.names && joined(some) === three.join('|'), some.names);
+
+  // All thirteen at once: proves every single option name is one Notion holds.
+  const all = await send(pageValues);
+  check('every one of the thirteen is accepted, none silently dropped',
+    all.names && all.names.length === 13 && joined(all) === pageValues.join('|'),
+    { got: all.names && all.names.length, missing: pageValues.filter((v) => !(all.names || []).includes(v)) });
+
+  // An option Notion has never heard of would 400 the whole PATCH and take
+  // every other answer down with it, so the Worker drops it instead.
+  const odd = await send(['Client journey', 'Something nobody offered', 'Admin assistant']);
+  check('an unknown value is dropped, and the rest still saves',
+    odd.res.status === 200 && joined(odd) === 'Client journey|Admin assistant', odd.names);
+
+  // When the member ticks Other and types, the page sends "Other" in the
+  // array and the text goes to Q Other Answers under its own prefix.
+  const other = await send(['Admin assistant', 'Other']);
+  check('Other is written when it was chosen',
+    other.names && other.names.includes('Other'), other.names);
+
+  const onlyOther = await send(['Other']);
+  check('and on its own, with nothing else ticked',
+    joined(onlyOther) === 'Other', onlyOther.names);
+
+  // Not required, so most people will leave it alone.
+  const none = await send([]);
+  check('an empty answer writes no property at all',
+    none.res.status === 200 && !('Q Also Build' in lastNotion()),
+    Object.keys(lastNotion()).filter((k) => k.includes('Also')));
+  const missing = await send(undefined);
+  check('and so does a payload that omits the field',
+    missing.res.status === 200 && !('Q Also Build' in lastNotion()));
+  const allBad = await send(['Nope', 'Also nope']);
+  check('as does an answer where nothing was recognised',
+    allBad.res.status === 200 && !('Q Also Build' in lastNotion()), allBad.names);
+
+  // The sheet gets the same answers, joined with semicolons rather than the
+  // commas the other list columns use: several of these read as a list of
+  // their own, and a comma would be one separator too many.
+  await send(three, sheetEnv);
+  const sheet = lastSheet();
+  check('the Google Sheet gets them joined with semicolons',
+    sheet && sheet.alsoBuild === 'Client journey; Admin assistant; Email list growth',
+    sheet && sheet.alsoBuild);
+  check('and the lead gen column still uses commas, unchanged',
+    sheet && typeof sheet.leadGenPlatforms === 'string' && !sheet.alsoBuild.includes(', '),
+    sheet && sheet.leadGenPlatforms);
+}
+
 console.log('\nThe Stanley content build question');
 {
   // The page and Notion do not agree on the words for the third answer. A

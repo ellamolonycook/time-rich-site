@@ -2711,6 +2711,20 @@ const BQ_LEAD_GEN = [
   "Referrals", "Events / IRL", "Paid Ads", "Other",
 ];
 const BQ_YES_NO = ["Yes", "No"];
+// "Q Also Build", the one multi-select with thirteen options plus Other.
+// These are the Notion option names exactly, which is why the page stores
+// these strings as its option values and shows a longer sentence as the
+// label. Notion refuses a select option containing a comma, so none of these
+// may ever grow one; the slashes are fine.
+const BQ_ALSO_BUILD = [
+  "Contacts and follow-up", "Client journey", "Past client check-ins",
+  "Prospect and partner research", "Outreach and follow-up",
+  "Podcast and speaking pitches", "Workshops and presentations",
+  "Website / pricing / checkout", "Email list growth",
+  "Client questionnaires and reports", "Admin assistant",
+  "Grants and business coaching", "Course / membership / passive income",
+  "Other",
+];
 // The Stanley content build question, which is the one place the form and
 // Notion do not agree on the words. A Notion select option cannot contain a
 // comma, so the third answer is stored there in brackets. The page keeps the
@@ -2788,6 +2802,7 @@ async function handleOnboardQuestionnaire(data, env, cors, ctx) {
   text("Q Success by 20 Nov", data.success_by_20_nov);
   text("Q Personal Transformation", data.personal_transformation);
   select("Q Build Priority", data.build_priority, BQ_BUILD_PRIORITY);
+  multi("Q Also Build", data.also_build, BQ_ALSO_BUILD);
   text("Q Tech Stack", data.tech_stack);
   select("Q Project Management", data.project_management, BQ_PROJECT_MANAGEMENT);
   select("Q Team Size", data.team_size, BQ_TEAM_SIZE);
@@ -2835,6 +2850,7 @@ async function handleOnboardQuestionnaire(data, env, cors, ctx) {
   const sheetUrl = env.GOOGLE_SHEET_ORDERS_URL || env.GOOGLE_SHEET_WEBHOOK_URL;
   if (sheetUrl) {
     const list = (value) => (Array.isArray(value) ? value.join(", ") : String(value == null ? "" : value));
+    const semiList = (value) => (Array.isArray(value) ? value.join("; ") : String(value == null ? "" : value));
     const sheetWork = fetch(sheetUrl, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
@@ -2860,6 +2876,7 @@ async function handleOnboardQuestionnaire(data, env, cors, ctx) {
         recurringTasks: data.recurring_tasks || "",
         aiDailyOutreach: data.ai_daily_outreach || "",
         leadGenPlatforms: list(data.lead_gen_platforms),
+        alsoBuild: semiList(data.also_build),
         aiInOutreach: data.ai_in_outreach || "",
         vendorCall100: data.vendor_call_100 || "",
         stanleyContentBuild: data.stanley_content_build || "",
@@ -3077,6 +3094,7 @@ async function handleSuperhumanQuestionnaire(data, env, cors, ctx) {
   text("Q Success by 20 Nov", data.success_by_20_nov);
   text("Q Personal Transformation", data.personal_transformation);
   select("Q Build Priority", data.build_priority, BQ_BUILD_PRIORITY);
+  multi("Q Also Build", data.also_build, BQ_ALSO_BUILD);
   text("Q Tech Stack", data.tech_stack);
   select("Q Project Management", data.project_management, BQ_PROJECT_MANAGEMENT);
   select("Q Team Size", data.team_size, BQ_TEAM_SIZE);
@@ -3168,6 +3186,7 @@ async function handleSuperhumanQuestionnaire(data, env, cors, ctx) {
   const sheetUrl = env.GOOGLE_SHEET_ORDERS_URL || env.GOOGLE_SHEET_WEBHOOK_URL;
   if (sheetUrl) {
     const list = (value) => (Array.isArray(value) ? value.join(", ") : String(value == null ? "" : value));
+    const semiList = (value) => (Array.isArray(value) ? value.join("; ") : String(value == null ? "" : value));
     const sheetWork = fetch(sheetUrl, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
@@ -3204,6 +3223,7 @@ async function handleSuperhumanQuestionnaire(data, env, cors, ctx) {
         recurringTasks: data.recurring_tasks || "",
         aiDailyOutreach: data.ai_daily_outreach || "",
         leadGenPlatforms: list(data.lead_gen_platforms),
+        alsoBuild: semiList(data.also_build),
         vendorCall100: data.vendor_call_100 || "",
         stanleyContentBuild: data.stanley_content_build || "",
         bringSomeoneIn: data.bring_someone_in || "",

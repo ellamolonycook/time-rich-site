@@ -961,6 +961,46 @@
     .trp-dash-aside .trp-setup-actions { justify-content: flex-start; }
   }
 
+  /* -- the build library --------------------------------------------------
+     Five cards on Resources, each holding a few ready-made prompts. Nothing
+     here is a new component: the prompt itself is the same .trp-copybox the
+     dashboard uses for the standing-context prompt, so a prompt reads the
+     same wherever a member meets it.
+
+     One column always. These are long prompts, and two columns of monospace
+     at 12.5px is a wall. */
+  .trp-builds { display: grid; gap: 20px; margin-top: 20px; }
+  .trp-build { padding: 26px 28px; }
+  .trp-build-title { margin: 0; font-size: 19px; line-height: 1.3; }
+  .trp-build-sub {
+    margin: 8px 0 0;
+    font-size: 15px;
+    line-height: 1.55;
+    color: var(--trp-muted);
+  }
+  /* The box head carries a name and two actions. It wraps rather than
+     squeezing them, which is what a phone needs. */
+  .trp-build .trp-copybox-head { flex-wrap: wrap; row-gap: 10px; }
+  .trp-build-acts { display: flex; align-items: center; gap: 8px; flex: none; }
+  /* Open is the 44px pill on the Prompts page, where it is a card's main
+     action. Here it shares a box head with Copy, so it takes Copy's 36px and
+     keeps the 44px target through the same overlay trick. */
+  .trp-build .trp-open {
+    position: relative;
+    min-height: 36px;
+    padding: 7px 16px;
+    font-size: 13px;
+  }
+  .trp-build .trp-open::before { content: ''; position: absolute; inset: -4px; border-radius: 99px; }
+
+  @media (max-width: 640px) {
+    .trp-build { padding: 22px 20px; }
+    /* Both actions on their own line, half each, rather than crushed against
+       the prompt name. */
+    .trp-build-acts { width: 100%; }
+    .trp-build-acts > * { flex: 1 1 0; justify-content: center; text-align: center; }
+  }
+
   /* -- the partner offers --------------------------------------------------
      Three cards at the top of Resources, each a link out to something a
      member already has. The mark sits in a fixed 40px well so three logos of

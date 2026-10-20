@@ -272,6 +272,204 @@
               </ul>
             </section>
 
+            <!-- THE BUILD LIBRARY. Sixteen ready-made prompts, grouped by the
+                 part of the week they take back. Each one is the portal's own
+                 copy box: the name and the two actions in the head, the prompt
+                 itself in a <pre> underneath.
+            
+                 The <pre> holds the prompt with no leading or trailing
+                 whitespace on purpose. Copy sends textContent straight to the
+                 clipboard, so an indented tag would paste an indented prompt. -->
+            <section class="trp-buildlib" aria-labelledby="build-library">
+              <div class="space-y-2">
+                <h2 id="build-library" class="trp-section-title">Build library</h2>
+                <p class="trp-lede">Ready-made builds for the work that eats your week. Copy a prompt, paste it into your Business Hub project, fill in the brackets.</p>
+              </div>
+            
+              <div class="trp-builds">
+                <article class="glass-card is-static trp-build">
+                  <h3 class="trp-build-title">Relationships and the client journey</h3>
+                  <p class="trp-build-sub">Capture every contact, run every client the same way, and stay in touch without remembering to.</p>
+                  <div class="trp-copybox">
+                    <div class="trp-copybox-head">
+                      <span class="trp-tag">Contact capture</span>
+                      <span class="trp-build-acts">
+                        <a class="trp-open" data-open-prompt="bl-1-1" href="https://claude.ai/new" target="_blank" rel="noopener">Open in Claude</a>
+                        <button type="button" class="trp-copy" data-copy-target="bl-1-1">Copy</button>
+                      </span>
+                    </div>
+                    <pre id="bl-1-1" class="trp-copybox-text">Build me a simple contact system for people I meet at events, workshops and communities. Give me the columns (name, where we met, date, what they need, next step, follow-up date) and a 2-line follow-up message I can send within 48 hours. My business: [what you do and who you serve].</pre>
+                  </div>
+                  <div class="trp-copybox">
+                    <div class="trp-copybox-head">
+                      <span class="trp-tag">Client journey map</span>
+                      <span class="trp-build-acts">
+                        <a class="trp-open" data-open-prompt="bl-1-2" href="https://claude.ai/new" target="_blank" rel="noopener">Open in Claude</a>
+                        <button type="button" class="trp-copy" data-copy-target="bl-1-2">Copy</button>
+                      </span>
+                    </div>
+                    <pre id="bl-1-2" class="trp-copybox-text">Map my client journey step by step: discovery call, proposal, contract, delivery, report, review and follow-up. For each step give me what happens, what the client receives, and a short email template. My service: [your main offer and price].</pre>
+                  </div>
+                  <div class="trp-copybox">
+                    <div class="trp-copybox-head">
+                      <span class="trp-tag">Check-in schedule</span>
+                      <span class="trp-build-acts">
+                        <a class="trp-open" data-open-prompt="bl-1-3" href="https://claude.ai/new" target="_blank" rel="noopener">Open in Claude</a>
+                        <button type="button" class="trp-copy" data-copy-target="bl-1-3">Copy</button>
+                      </span>
+                    </div>
+                    <pre id="bl-1-3" class="trp-copybox-text">Write a check-in sequence for past clients at 1 week, 1 month, 3 months, 6 months and 1 year. Each message under 80 words, warm, no hard sell, and gives them a reason to reply. Keep past clients connected even if they don't buy again. My service: [what you deliver].</pre>
+                  </div>
+                </article>
+                <article class="glass-card is-static trp-build">
+                  <h3 class="trp-build-title">Sales, partnerships and speaking</h3>
+                  <p class="trp-build-sub">Find the right people, reach out like a human, and get booked to speak.</p>
+                  <div class="trp-copybox">
+                    <div class="trp-copybox-head">
+                      <span class="trp-tag">Prospect and partner list</span>
+                      <span class="trp-build-acts">
+                        <a class="trp-open" data-open-prompt="bl-2-1" href="https://claude.ai/new" target="_blank" rel="noopener">Open in Claude</a>
+                        <button type="button" class="trp-copy" data-copy-target="bl-2-1">Copy</button>
+                      </span>
+                    </div>
+                    <pre id="bl-2-1" class="trp-copybox-text">Research 20 potential clients and 20 referral partners for my business in [city]. Partners can include [e.g. realtors, designers, architects, private members clubs]. For each: name, why they fit, who to contact, and one personal opening line. My ideal client: [describe them].</pre>
+                  </div>
+                  <div class="trp-copybox">
+                    <div class="trp-copybox-head">
+                      <span class="trp-tag">Outreach and follow-up</span>
+                      <span class="trp-build-acts">
+                        <a class="trp-open" data-open-prompt="bl-2-2" href="https://claude.ai/new" target="_blank" rel="noopener">Open in Claude</a>
+                        <button type="button" class="trp-copy" data-copy-target="bl-2-2">Copy</button>
+                      </span>
+                    </div>
+                    <pre id="bl-2-2" class="trp-copybox-text">Write a 3-touch outreach sequence for [type of prospect]: a first message, a follow-up after 4 days, and a final nudge after 10 days. Short, specific, one clear ask. My offer: [what you do and the result you get people].</pre>
+                  </div>
+                  <div class="trp-copybox">
+                    <div class="trp-copybox-head">
+                      <span class="trp-tag">Podcast and speaking pitch</span>
+                      <span class="trp-build-acts">
+                        <a class="trp-open" data-open-prompt="bl-2-3" href="https://claude.ai/new" target="_blank" rel="noopener">Open in Claude</a>
+                        <button type="button" class="trp-copy" data-copy-target="bl-2-3">Copy</button>
+                      </span>
+                    </div>
+                    <pre id="bl-2-3" class="trp-copybox-text">Find 10 podcasts and 5 event series where my audience listens, with the host name and why I fit. Then write a pitch under 120 words with 3 talk titles. My expertise: [your topic]. My audience: [who they are].</pre>
+                  </div>
+                  <div class="trp-copybox">
+                    <div class="trp-copybox-head">
+                      <span class="trp-tag">Workshop for a venue</span>
+                      <span class="trp-build-acts">
+                        <a class="trp-open" data-open-prompt="bl-2-4" href="https://claude.ai/new" target="_blank" rel="noopener">Open in Claude</a>
+                        <button type="button" class="trp-copy" data-copy-target="bl-2-4">Copy</button>
+                      </span>
+                    </div>
+                    <pre id="bl-2-4" class="trp-copybox-text">Create a 45-minute workshop outline I can pitch to [venue, e.g. design showrooms, members clubs]. Include the title, the promise, 5 sections, one hands-on moment, and a short pitch email to the venue's events lead. My topic: [your topic].</pre>
+                  </div>
+                </article>
+                <article class="glass-card is-static trp-build">
+                  <h3 class="trp-build-title">Website and client materials</h3>
+                  <p class="trp-build-sub">A site that sells, offers that convert, and materials clients keep.</p>
+                  <div class="trp-copybox">
+                    <div class="trp-copybox-head">
+                      <span class="trp-tag">Website and packages</span>
+                      <span class="trp-build-acts">
+                        <a class="trp-open" data-open-prompt="bl-3-1" href="https://claude.ai/new" target="_blank" rel="noopener">Open in Claude</a>
+                        <button type="button" class="trp-copy" data-copy-target="bl-3-1">Copy</button>
+                      </span>
+                    </div>
+                    <pre id="bl-3-1" class="trp-copybox-text">Review my website [URL] as my ideal client would. Then rewrite my homepage headline, 3 pricing packages (name, what's included, price), and the booking and checkout steps so it takes 3 clicks or fewer to buy. My ideal client: [describe them].</pre>
+                  </div>
+                  <div class="trp-copybox">
+                    <div class="trp-copybox-head">
+                      <span class="trp-tag">Emotional hooks</span>
+                      <span class="trp-build-acts">
+                        <a class="trp-open" data-open-prompt="bl-3-2" href="https://claude.ai/new" target="_blank" rel="noopener">Open in Claude</a>
+                        <button type="button" class="trp-copy" data-copy-target="bl-3-2">Copy</button>
+                      </span>
+                    </div>
+                    <pre id="bl-3-2" class="trp-copybox-text">My clients come to me wanting [e.g. wealth, love, calm]. For each intention write a headline, a 2-line description and a call to action I can use on my site and in posts. Sound like a person, not a brochure.</pre>
+                  </div>
+                  <div class="trp-copybox">
+                    <div class="trp-copybox-head">
+                      <span class="trp-tag">Email list magnet</span>
+                      <span class="trp-build-acts">
+                        <a class="trp-open" data-open-prompt="bl-3-3" href="https://claude.ai/new" target="_blank" rel="noopener">Open in Claude</a>
+                        <button type="button" class="trp-copy" data-copy-target="bl-3-3">Copy</button>
+                      </span>
+                    </div>
+                    <pre id="bl-3-3" class="trp-copybox-text">Create a one-page checklist my ideal client would swap their email for. Title, 7 to 10 practical tips, and a closing line that points to my offer. Then write the 3-email welcome sequence that follows. My topic: [your topic].</pre>
+                  </div>
+                  <div class="trp-copybox">
+                    <div class="trp-copybox-head">
+                      <span class="trp-tag">Client questionnaire and report</span>
+                      <span class="trp-build-acts">
+                        <a class="trp-open" data-open-prompt="bl-3-4" href="https://claude.ai/new" target="_blank" rel="noopener">Open in Claude</a>
+                        <button type="button" class="trp-copy" data-copy-target="bl-3-4">Copy</button>
+                      </span>
+                    </div>
+                    <pre id="bl-3-4" class="trp-copybox-text">Create a client intake questionnaire (10 questions max) and a report template I fill in after the session: summary, findings, recommendations, next steps. Make it feel premium and easy to complete. My service: [what you deliver].</pre>
+                  </div>
+                </article>
+                <article class="glass-card is-static trp-build">
+                  <h3 class="trp-build-title">Business support</h3>
+                  <p class="trp-build-sub">Hand off the admin and get a second brain for big decisions.</p>
+                  <div class="trp-copybox">
+                    <div class="trp-copybox-head">
+                      <span class="trp-tag">Admin assistant</span>
+                      <span class="trp-build-acts">
+                        <a class="trp-open" data-open-prompt="bl-4-1" href="https://claude.ai/new" target="_blank" rel="noopener">Open in Claude</a>
+                        <button type="button" class="trp-copy" data-copy-target="bl-4-1">Copy</button>
+                      </span>
+                    </div>
+                    <pre id="bl-4-1" class="trp-copybox-text">Here are the admin tasks I repeat every week: [list them]. Sort them into automate, delegate to AI, or keep. For each AI task, write the exact instructions I can give an assistant so it runs without me.</pre>
+                  </div>
+                  <div class="trp-copybox">
+                    <div class="trp-copybox-head">
+                      <span class="trp-tag">Business coach</span>
+                      <span class="trp-build-acts">
+                        <a class="trp-open" data-open-prompt="bl-4-2" href="https://claude.ai/new" target="_blank" rel="noopener">Open in Claude</a>
+                        <button type="button" class="trp-copy" data-copy-target="bl-4-2">Copy</button>
+                      </span>
+                    </div>
+                    <pre id="bl-4-2" class="trp-copybox-text">Act as my business coach. Ask me 5 questions, one at a time, about my revenue, offers and time. Then give me the 3 moves that would make the biggest difference in the next 30 days, in order.</pre>
+                  </div>
+                  <div class="trp-copybox">
+                    <div class="trp-copybox-head">
+                      <span class="trp-tag">Grants research</span>
+                      <span class="trp-build-acts">
+                        <a class="trp-open" data-open-prompt="bl-4-3" href="https://claude.ai/new" target="_blank" rel="noopener">Open in Claude</a>
+                        <button type="button" class="trp-copy" data-copy-target="bl-4-3">Copy</button>
+                      </span>
+                    </div>
+                    <pre id="bl-4-3" class="trp-copybox-text">Find grants, competitions and funding programmes I could apply for as a [type of business] in [country/city]. For each: name, amount, deadline, eligibility and a link. Flag the 3 best fits.</pre>
+                  </div>
+                </article>
+                <article class="glass-card is-static trp-build">
+                  <h3 class="trp-build-title">New income</h3>
+                  <p class="trp-build-sub">Turn what you already know into income that doesn't need you in the room.</p>
+                  <div class="trp-copybox">
+                    <div class="trp-copybox-head">
+                      <span class="trp-tag">Course or membership</span>
+                      <span class="trp-build-acts">
+                        <a class="trp-open" data-open-prompt="bl-5-1" href="https://claude.ai/new" target="_blank" rel="noopener">Open in Claude</a>
+                        <button type="button" class="trp-copy" data-copy-target="bl-5-1">Copy</button>
+                      </span>
+                    </div>
+                    <pre id="bl-5-1" class="trp-copybox-text">Turn my expertise in [your topic] into an online course or membership. Give me 3 concepts, each with the promise, who it's for, a 4 to 6 module outline and a price. Recommend the one to launch first and why.</pre>
+                  </div>
+                  <div class="trp-copybox">
+                    <div class="trp-copybox-head">
+                      <span class="trp-tag">Post-session offers</span>
+                      <span class="trp-build-acts">
+                        <a class="trp-open" data-open-prompt="bl-5-2" href="https://claude.ai/new" target="_blank" rel="noopener">Open in Claude</a>
+                        <button type="button" class="trp-copy" data-copy-target="bl-5-2">Copy</button>
+                      </span>
+                    </div>
+                    <pre id="bl-5-2" class="trp-copybox-text">After a client session I want to offer a next step. Create 3 service bundles or follow-on offers with names, what's included and prices, plus a short message I can send the day after the session. My main service: [what you deliver].</pre>
+                  </div>
+                </article>
+              </div>
+            </section>
+
             <!-- The agent comparison, under the partner offers. It is what a
                  member comes here for the week they hear these named on a
                  call: not a download, a decision about which one to try.
@@ -544,6 +742,106 @@
         if (!data) return;
         var links = document.querySelector('[data-res-links]');
         if (links) renderLinks(links, data);
+      });
+    })();
+  </script>
+
+  <script>
+    /* The Build library's two buttons.
+
+       Copy is the same handler the dashboard carries for its standing-context
+       prompt, down to the fallback: when the clipboard API is missing or
+       refused, the prompt is selected and the button says so, rather than
+       doing nothing. It copies textContent, which is why the <pre> above
+       holds the prompt with no indentation.
+
+       Open points at whichever AI the member chose on the Prompts page. That
+       choice lives under the same localStorage key portal-prompts.js writes,
+       so picking ChatGPT there changes these buttons too. The whole of
+       portal-prompts.js is not loaded here for it: that file is 37KB and
+       builds a card grid this page does not have. */
+    (function () {
+      var AIS = {
+        claude:  { name: 'Claude',  home: 'https://claude.ai/new',  q: 'https://claude.ai/new?q=' },
+        chatgpt: { name: 'ChatGPT', home: 'https://chatgpt.com/',   q: 'https://chatgpt.com/?q=' },
+        grok:    { name: 'Grok',    home: 'https://grok.com/',      q: 'https://grok.com/?q=' }
+      };
+      // Same key and same ceiling as the Prompts page, so the two agree.
+      var AI_KEY = 'tr_prompt_ai';
+      var MAX_URL = 6000;
+
+      function chosen() {
+        try {
+          var saved = window.localStorage.getItem(AI_KEY);
+          if (saved && AIS[saved]) return AIS[saved];
+        } catch (e) { /* private mode: Claude is the default anyway */ }
+        return AIS.claude;
+      }
+
+      var opens = document.querySelectorAll('[data-open-prompt]');
+      var copies = document.querySelectorAll('[data-copy-target]');
+      if (!opens.length && !copies.length) return;
+
+      function textOf(id) {
+        var node = document.getElementById(id);
+        return node ? node.textContent : '';
+      }
+
+      var ai = chosen();
+      Array.prototype.forEach.call(opens, function (a) {
+        var id = a.getAttribute('data-open-prompt');
+        var text = textOf(id);
+        // Past the ceiling the query string is dropped on the floor, so the
+        // link opens the AI's home page and the click copies instead.
+        var full = ai.q + window.encodeURIComponent(text);
+        var prefilled = full.length <= MAX_URL;
+        a.href = prefilled ? full : ai.home;
+        a.textContent = 'Open in ' + ai.name;
+        a.setAttribute('aria-label', 'Open the ' + id + ' prompt in ' + ai.name);
+        a.setAttribute('data-prefilled', prefilled ? 'true' : 'false');
+        a.addEventListener('click', function () {
+          if (a.getAttribute('data-prefilled') === 'true') return;
+          if (window.navigator.clipboard && window.navigator.clipboard.writeText) {
+            window.navigator.clipboard.writeText(textOf(id));
+          }
+        });
+      });
+
+      function select(node) {
+        try {
+          var range = document.createRange();
+          range.selectNodeContents(node);
+          var sel = window.getSelection();
+          sel.removeAllRanges();
+          sel.addRange(range);
+        } catch (e) { /* nothing more we can do */ }
+      }
+
+      Array.prototype.forEach.call(copies, function (btn) {
+        var idle = btn.textContent;
+        var timer = null;
+
+        function say(word) {
+          btn.textContent = word;
+          if (timer) window.clearTimeout(timer);
+          timer = window.setTimeout(function () { btn.textContent = idle; }, 1600);
+        }
+
+        btn.addEventListener('click', function () {
+          var source = document.getElementById(btn.getAttribute('data-copy-target'));
+          if (!source) return;
+          var text = source.textContent;
+
+          if (window.navigator.clipboard && window.navigator.clipboard.writeText) {
+            window.navigator.clipboard.writeText(text).then(
+              function () { say('Copied'); },
+              function () { select(source); say('Press Ctrl+C'); }
+            );
+            return;
+          }
+          select(source);
+          say('Press Ctrl+C');
+        });
       });
     })();
   </script>
