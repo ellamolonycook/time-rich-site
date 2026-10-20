@@ -221,11 +221,20 @@ console.log('\nThe header sits on the same pixel on every page');
 
 console.log('\nThe faces are the page’s own, and they do not reflow it');
 {
+  // Two faces, and the second one is Inter now. The portal set its small
+  // uppercase labels in JetBrains Mono; the redesign takes every monospace
+  // off the visible page, so --trp-label and --trp-body are the same family
+  // and only the size and tracking tell a label from the copy around it.
   check('Space Grotesk ships as woff2', existsSync(new URL('../../brand/fonts/SpaceGrotesk-Variable.woff2', import.meta.url)));
-  check('so does JetBrains Mono', existsSync(new URL('../../brand/fonts/JetBrainsMono-Variable.woff2', import.meta.url)));
-  check('and both are smaller than the .ttf they replace',
-    bytes('brand/fonts/SpaceGrotesk-Variable.woff2') < bytes('brand/fonts/SpaceGrotesk-Variable.ttf') &&
-    bytes('brand/fonts/JetBrainsMono-Variable.woff2') < bytes('brand/fonts/JetBrainsMono-Variable.ttf'));
+  check('so does Inter', existsSync(new URL('../../brand/fonts/Inter-Variable.woff2', import.meta.url)));
+  check('Space Grotesk is smaller than the .ttf it replaces',
+    bytes('brand/fonts/SpaceGrotesk-Variable.woff2') < bytes('brand/fonts/SpaceGrotesk-Variable.ttf'));
+  // Matched against the declarations, not the prose: the source still
+  // mentions JetBrains in the comment explaining why it went.
+  check('and no portal page asks for a monospace face any more',
+    !/font-family:[^;]*JetBrains/.test(SRC) && !/--trp-(body|label)[^;]*mono/.test(SRC) &&
+    ALL.every((n) => !/JetBrains/.test(html[n])),
+    ALL.filter((n) => /JetBrains/.test(html[n])));
 
   for (const name of ALL) {
     check(name + ': asks Google for nothing',
@@ -243,12 +252,13 @@ console.log('\nThe faces are the page’s own, and they do not reflow it');
   check('the heading face has a metric-matched fallback',
     /font-family: 'Space Grotesk Fallback';/.test(SRC) &&
     /size-adjust: 89%;/.test(SRC) && /ascent-override: 110\.6%;/.test(SRC));
-  check('so does the label face',
-    /font-family: 'JetBrains Mono Fallback';/.test(SRC) &&
-    /size-adjust: 106\.7%;/.test(SRC));
+  check('so does the body face',
+    /font-family: 'Inter Fallback';/.test(SRC) &&
+    /size-adjust: 107\.12%;/.test(SRC));
   check('and both fallbacks are in the stacks, ahead of the generic families',
     /--trp-face: 'Space Grotesk', 'Space Grotesk Fallback',/.test(SRC) &&
-    /--trp-label: 'JetBrains Mono', 'JetBrains Mono Fallback',/.test(SRC));
+    /--trp-body: 'Inter', 'Inter Fallback',/.test(SRC) &&
+    /--trp-label: 'Inter', 'Inter Fallback',/.test(SRC));
   check('the built stylesheet carries them, so the source was rebuilt',
     BUILT.includes('Space Grotesk Fallback') && BUILT.includes('size-adjust:89%'));
 }

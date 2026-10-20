@@ -11,7 +11,13 @@
    files in its <head> instead, so they start with the stylesheet.
 
    woff2, not the .ttf that shipped here before: 137KB becomes 49KB for Space
-   Grotesk and 187KB becomes 72KB for JetBrains Mono, for the same glyphs.
+   Grotesk, and Inter is 47KB for the same glyphs.
+
+   Inter replaces JetBrains Mono as the second face. The portal set its small
+   uppercase labels in a monospace, which the redesign drops: nothing the
+   member reads is monospaced any more, so --trp-label and --trp-body are the
+   same family and only the size and tracking tell them apart. The JetBrains
+   files are left in brand/fonts/ for anything outside the portal.
    ------------------------------------------------------------------------- */
 @font-face {
   font-family: 'Space Grotesk';
@@ -22,11 +28,11 @@
 }
 
 @font-face {
-  font-family: 'JetBrains Mono';
+  font-family: 'Inter';
   font-style: normal;
-  font-weight: 100 800;
+  font-weight: 400 700;
   font-display: swap;
-  src: url('../brand/fonts/JetBrainsMono-Variable.woff2') format('woff2-variations');
+  src: url('../brand/fonts/Inter-Variable.woff2') format('woff2-variations');
 }
 
 /* The faces a heading and a label are set in for the few hundred
@@ -52,15 +58,16 @@
   line-gap-override: 0%;
 }
 
-/* Same measurement for the label face. A monospace fallback only has to
-   match one advance width, and Courier New's is 6.7% narrower than JetBrains
-   Mono's, so it is scaled up rather than down. */
+/* Same job for the body face. Inter is a touch narrower than Arial at the
+   same size, so the fallback is scaled up rather than down, and the ascent
+   and descent are Inter's own over that scale. Body copy is the bulk of
+   every portal page, so this is the reflow that would be most felt. */
 @font-face {
-  font-family: 'JetBrains Mono Fallback';
-  src: local('Courier New'), local('Liberation Mono'), local('DejaVu Sans Mono');
-  size-adjust: 106.7%;
-  ascent-override: 95.6%;
-  descent-override: 28.1%;
+  font-family: 'Inter Fallback';
+  src: local('Arial'), local('Helvetica Neue'), local('Liberation Sans');
+  size-adjust: 107.12%;
+  ascent-override: 90.44%;
+  descent-override: 22.52%;
   line-gap-override: 0%;
 }
 
@@ -101,29 +108,37 @@
     --c-cream: 255 252 235;       /* #FFFCEB */
     --c-surface: 255 255 255;     /* a card raised off the page */
     /* surfaces */
-    --c-sage: 220 222 191;        /* #DCDEBF */
-    --c-sagelt: 233 234 213;      /* #E9EAD5 */
+    --c-sage: 216 217 185;        /* #D8D9B9  the redesign's light green */
+    --c-sagelt: 229 230 207;      /* #E5E6CF  a step lighter, for a code box */
     /* A quiet tint, for a hover and for ::selection. It is no longer the
        card fill: a card is white with a hairline, and the heavy olive panel
        that used to be under every section is gone. */
-    --c-panel: 233 234 213;       /* #E9EAD5 */
-    /* ink */
-    --c-ink: 44 52 34;            /* #2C3422 */
-    --c-deep: 51 58 40;           /* #333A28 */
-    --c-green: 66 75 54;          /* #424B36 */
+    --c-panel: 229 230 207;       /* #E5E6CF */
+    /* ink. The redesign takes the green out of the type: text is a warm
+       near-black and the quiet inks are a warm grey, so a page of small
+       print no longer reads as green. The green survives as a fill, which
+       is what --c-green is for. */
+    --c-ink: 26 24 22;            /* #1A1816  text */
+    --c-deep: 26 24 22;           /* #1A1816  same ink, kept as its own name */
+    --c-green: 66 75 54;          /* #424B36  buttons and the active menu item */
     --c-mid: 78 88 64;            /* #4E5840 */
-    --c-muted: 82 91 66;         /* #525B42  4.94 on the card fill */
-    --c-dim: 87 96 70;           /* #576046  4.61 on the card fill */
+    --c-muted: 87 83 78;          /* #57534E  soft text, 7.0 on the card fill */
+    --c-dim: 87 83 78;            /* #57534E  the same soft text */
     /* accent */
     --c-olive: 103 118 46;        /* #67762E */
     --c-lime: 204 238 160;        /* #CCEEA0 */
     /* the one warm colour on the page, for a failed sign-in */
     --c-error: 138 43 43;         /* #8A2B2B */
+    /* Purple is reserved. It says "not yet" and nothing else: the Soon pill
+       beside Members and the Coming soon pill on a card. Using it anywhere
+       else takes that meaning away. */
+    --c-plumbg: 238 235 255;      /* #EEEBFF */
+    --c-plum: 74 61 184;          /* #4A3DB8 */
     /* the hairline, as its own value because its alpha differs per theme.
        The brand hairline on cream is rgba(51,58,40,.12): one hair, not a
        border. --trp-rule-2 is the same ink at the weight an outline button
        or a tick box needs to read as a real edge. */
-    --c-rule: 51 58 40;
+    --c-rule: 26 24 22;
     --trp-rule-a: .12;
     --trp-rule-2-a: .30;
 
@@ -141,13 +156,14 @@
        anything else that ships with a white background of its own */
     --trp-shot: #FFFDFB;
 
-    /* Three faces, the brand bible's own: Space Grotesk for headings, the
-       system sans for body copy, JetBrains Mono for small uppercase labels.
-       Inter and Space Mono are both gone, so the portal now asks Google
-       Fonts for one family instead of three. */
+    /* Two faces: Space Grotesk for headings, Inter for body copy, menus and
+       labels. Both are served from brand/fonts/, so the portal asks Google
+       Fonts for nothing. A label is no longer a different family from the
+       copy around it -- it is Inter at a small size with wide tracking,
+       which is what --trp-label now means. */
     --trp-face: 'Space Grotesk', 'Space Grotesk Fallback', system-ui, -apple-system, 'Segoe UI', sans-serif;
-    --trp-body: system-ui, -apple-system, 'Segoe UI', Roboto, Helvetica, sans-serif;
-    --trp-label: 'JetBrains Mono', 'JetBrains Mono Fallback', ui-monospace, SFMono-Regular, Menlo, monospace;
+    --trp-body: 'Inter', 'Inter Fallback', system-ui, -apple-system, 'Segoe UI', Roboto, Helvetica, sans-serif;
+    --trp-label: 'Inter', 'Inter Fallback', system-ui, -apple-system, 'Segoe UI', Roboto, Helvetica, sans-serif;
 
     /* One motion budget. Hover and focus only; nothing here loops. */
     --trp-t: .15s;
@@ -285,6 +301,12 @@
     --c-lime: 204 238 160;
     /* a deep red disappears into a dark ground, so it lifts */
     --c-error: 255 169 158;       /* #FFA99E */
+    /* The Soon pill, inverted the way every other fill here is: the light
+       lavender ground would be a hole in a dark page, so the ground goes
+       dark-violet and the type comes up to meet it. Still the only purple
+       on the page, and still only on "not yet". */
+    --c-plumbg: 47 43 79;         /* #2F2B4F */
+    --c-plum: 199 193 255;        /* #C7C1FF  6.9 on the ground above */
     /* a cream hairline, and a touch stronger so it survives the dark */
     --c-rule: 244 241 230;
     --trp-rule-a: .22;
@@ -310,6 +332,8 @@
       --c-olive: 204 238 160;
       --c-lime: 204 238 160;
       --c-error: 255 169 158;       /* #FFA99E */
+      --c-plumbg: 47 43 79;         /* #2F2B4F */
+      --c-plum: 199 193 255;        /* #C7C1FF */
       --c-rule: 244 241 230;
       --trp-rule-a: .22;
       --trp-rule-2-a: .42;
@@ -432,9 +456,12 @@
      reads those, rather than reading --c-cream directly: the cream tokens
      flip to a dark green on the dark theme, so a label written as
      rgb(var(--c-cream)) would come out dark on dark there. */
+  /* The filled card. Green, not ink: --c-ink is the text colour and the
+     redesign made it a warm near-black, which turned this card from a deep
+     green panel into a black one. A filled surface is the brand green. */
   .glass-card.is-deep {
-    background: rgb(var(--c-ink));
-    border-color: rgb(var(--c-ink));
+    background: rgb(var(--c-green));
+    border-color: rgb(var(--c-green));
     --trp-on-deep: #FFFCEB;
     --trp-on-deep-soft: rgba(255, 252, 235, .72);
     --trp-on-deep-line: rgba(255, 252, 235, .34);
@@ -676,12 +703,20 @@
   .trp-powered:hover img { opacity: 1; }
 
   /* The light file is the default; the dark theme swaps in the reversed one. */
-  .trp-powered .trp-powered-rev { display: none; }
-  :root[data-theme='dark'] .trp-powered .trp-powered-pos { display: none; }
-  :root[data-theme='dark'] .trp-powered .trp-powered-rev { display: block; }
+  /* .trp-credit is the Club footer's version of the same lockup, so it
+     picks the same file. Written here rather than copied again: the pair of
+     files and the rule that chooses between them belong together. */
+  .trp-powered .trp-powered-rev,
+  .trp-credit .trp-powered-rev { display: none; }
+  :root[data-theme='dark'] .trp-powered .trp-powered-pos,
+  :root[data-theme='dark'] .trp-credit .trp-powered-pos { display: none; }
+  :root[data-theme='dark'] .trp-powered .trp-powered-rev,
+  :root[data-theme='dark'] .trp-credit .trp-powered-rev { display: block; }
   @media (prefers-color-scheme: dark) {
-    :root[data-theme='system'] .trp-powered .trp-powered-pos { display: none; }
-    :root[data-theme='system'] .trp-powered .trp-powered-rev { display: block; }
+    :root[data-theme='system'] .trp-powered .trp-powered-pos,
+    :root[data-theme='system'] .trp-credit .trp-powered-pos { display: none; }
+    :root[data-theme='system'] .trp-powered .trp-powered-rev,
+    :root[data-theme='system'] .trp-credit .trp-powered-rev { display: block; }
   }
 
   /* -- the dashboard ------------------------------------------------------
@@ -1068,6 +1103,12 @@
      button and the theme control have first claim on it -- so what is left
      is the Stanley mark itself, which is a wordmark and still reads as the
      credit. From 640px up the full lockup is back. */
+  /* On the quiet footer line the lockup sits at the line's own size, and
+     the wording stays at every width -- there is room for it down here,
+     unlike in the masthead it came from. */
+  .trp-powered-foot { gap: 7px; }
+  .trp-powered-foot img { height: 15px; }
+
   .trp-powered-head img { height: 20px; }
   @media (min-width: 640px) {
     .trp-powered-head img { height: 22px; }
@@ -1119,63 +1160,557 @@
   }
 
   /* -- navigation --------------------------------------------------------
-     The page you are on is filled and dark; everything else is quiet until
-     hovered. Both the header nav and the mobile menu use these. */
-  /* A tab is text with a line under it, never a filled pill.
+     The page you are on is a filled green pill; everything else is quiet
+     until hovered. The redesign puts the fill back: a tab used to be text
+     with a 2px line under it, which read as a link rather than as a place.
 
-     The line is a ::after, absolutely placed, so it costs no layout: the
-     header stays 64px on a desktop whatever state a tab is in, and nothing
-     reflows when one lights up.
-
-     It is inset by 14px on both sides, which is the link's own px-3.5
-     padding, so the line is exactly as wide as the word above it.
+     The pill is drawn on the link's own box, so it still costs no layout --
+     the radius and the background change, nothing moves. min-height stays
+     44px, which is the tap target, and the horizontal padding is the
+     link's own px-3.5.
 
      Only .trp-nav-link is touched here. The mobile slide-out menu uses its
      own classes and is left exactly as it was. */
   .trp-nav-link {
-    --trp-nav-line: var(--trp-ink);
     position: relative;
     display: inline-flex;
     align-items: center;
     min-height: 44px;
-    transition: color var(--trp-t) ease;
+    border-radius: 999px;
+    letter-spacing: -.005em;
+    /* 200ms, the same fade as everything on the Club home, so the header
+       settles at the same speed as the page under it. */
+    transition: color 200ms ease, background-color 200ms ease;
   }
-  .trp-nav-link::after {
+
+  /* A quiet tab lifts on a tint rather than drawing anything new, so the
+     only filled pill on the row is the page you are on. */
+  .trp-nav-link:hover,
+  .trp-nav-link:focus-visible {
+    background: rgb(var(--c-rule) / .06);
+  }
+
+  /* The page you are on: the brand green, paper-coloured type, a little
+     heavier. On the dark theme --c-green is the cream body ink and --c-bg
+     the near-black ground, so the pill inverts on its own -- the same trick
+     every primary button in the portal already relies on. */
+  .trp-nav-link[aria-current='page'],
+  .trp-nav-link[aria-current='page']:hover,
+  .trp-nav-link[aria-current='page']:focus-visible {
+    background: rgb(var(--c-green));
+    color: rgb(var(--c-bg));
+    font-weight: 500;
+  }
+
+  /* -- the second row, under the menu ------------------------------------
+     Only the Accelerator carries one: Dashboard and Curriculum are two
+     views of the same programme, so they sit a level below the menu rather
+     than beside Club and Resources in it.
+
+     It is a sibling of the header, never a child. The header's markup is
+     identical on every portal page on purpose -- that is what lets the
+     cross-document view transition hold it still -- and a row that exists
+     on two pages out of seven would break that. */
+  .trp-subnav {
+    background: var(--trp-bg);
+    border-bottom: 1px solid var(--trp-rule);
+  }
+  .trp-subnav-link {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    min-height: 44px;
+    padding: 0 2px;
+    margin-right: 22px;
+    color: var(--trp-muted);
+    font-weight: 400;
+    transition: color 200ms ease;
+  }
+  .trp-subnav-link:hover { color: var(--trp-ink); }
+  .trp-subnav-link[aria-current='page'] {
+    color: var(--trp-ink);
+    font-weight: 500;
+  }
+  /* The line sits on the row's own bottom border, so the two read as one
+     edge with a piece of it inked in. A ::after, so it costs no layout. */
+  .trp-subnav-link[aria-current='page']::after {
     content: '';
     position: absolute;
-    left: 14px;
-    right: 14px;
-    bottom: 9px;
+    left: 0;
+    right: 0;
+    bottom: -1px;
     height: 2px;
-    border-radius: 2px;
-    background: var(--trp-nav-line);
-    transform: scaleX(0);
-    transform-origin: center;
-    transition: transform 200ms ease-out;
+    background: var(--trp-ink);
   }
 
-  /* Hover and keyboard focus draw the same line, out from the middle. The
-     focus ring the page already had is untouched and still shows alongside. */
-  .trp-nav-link:hover::after,
-  .trp-nav-link:focus-visible::after { transform: scaleX(1); }
-
-  /* The page you are on: deep green, a little heavier, line already out. */
-  .trp-nav-link[aria-current='page'] {
-    color: var(--trp-ink);
+  /* -- the Soon pill ------------------------------------------------------
+     The one place purple appears. It means "not yet" and nothing else: the
+     Members link, which everyone can see but nobody can open, and a card
+     for something that has not started. It is never a button, so it has no
+     hover and no focus state of its own. */
+  .trp-soon {
+    display: inline-flex;
+    align-items: center;
+    border-radius: 999px;
+    background: rgb(var(--c-plumbg));
+    color: rgb(var(--c-plum));
+    font-size: 10px;
     font-weight: 600;
+    letter-spacing: .08em;
+    text-transform: uppercase;
+    padding: 3px 8px;
+    white-space: nowrap;
   }
-  .trp-nav-link[aria-current='page']::after { transform: scaleX(1); }
+  /* The same pill at the size a card wants, where it is read as words
+     rather than as a tag on the end of a link. */
+  .trp-soon-lg {
+    font-size: 11px;
+    letter-spacing: .06em;
+    padding: 5px 11px;
+  }
 
-  /* Deep green on paper, lime on the dark ground. */
-  :root[data-theme='dark'] .trp-nav-link { --trp-nav-line: rgb(var(--c-lime)); }
+
+  /* ---- the Club home ----------------------------------------------------
+     club.html is the page a member lands on after signing in, served on its
+     own and inside the frame at /club.
+
+     The second pass took the boxes out. It used to be a page of filled
+     panels -- a green card, sage cards, sage date chips -- and the fills
+     were doing the work that space and a hairline do better. Now:
+
+       - one hairline, rgba(26,24,22,.08), and a lot of room either side
+       - green survives on the primary button and the active menu item only
+       - a secondary action is an outlined pill
+       - headings are Space Grotesk at 500, not 600 or 700, and track tight
+       - every hover is a 200ms fade, and nothing moves
+
+     --------------------------------------------------------------------- */
+
+  /* The hairline, as its own token: it is quoted in the brief as
+     rgba(26,24,22,.08) and that is the light theme's ink at 8%. The dark
+     theme needs more alpha to survive a dark ground, same as --trp-rule. */
+  .trp-club { --trp-hair: rgb(var(--c-rule) / .08); }
+  :root[data-theme='dark'] .trp-club { --trp-hair: rgb(var(--c-rule) / .14); }
   @media (prefers-color-scheme: dark) {
-    :root[data-theme='system'] .trp-nav-link { --trp-nav-line: rgb(var(--c-lime)); }
+    :root[data-theme='system'] .trp-club { --trp-hair: rgb(var(--c-rule) / .14); }
   }
 
-  /* Asked for less motion: the line is simply there or not. */
-  @media (prefers-reduced-motion: reduce) {
-    .trp-nav-link::after { transition: none; }
+  /* -- rhythm --
+     56px between sections on a phone, 112px from the large breakpoint. The
+     brief asks for 56-64 and 96-120; these are the two Tailwind steps that
+     sit inside both. */
+  .trp-sec { margin-top: 56px; }
+  @media (min-width: 1024px) { .trp-sec { margin-top: 112px; } }
+
+  /* The small caps line above a heading. Inter, not a monospace -- the
+     tracking and the size are what make it a label. */
+  .trp-eyebrow {
+    font-family: var(--trp-label);
+    font-size: 11px;
+    font-weight: 500;
+    letter-spacing: .14em;
+    text-transform: uppercase;
+    color: var(--trp-muted);
   }
+
+  /* A section heading. 500, not 700: at this size the weight was doing the
+     shouting and the size can do it on its own. */
+  .trp-club-h2 {
+    font-family: var(--trp-face);
+    font-size: 26px;
+    font-weight: 500;
+    letter-spacing: -.025em;
+    color: var(--trp-ink);
+  }
+  @media (min-width: 1024px) { .trp-club-h2 { font-size: 34px; } }
+
+  /* The hero. Fluid between the brief's 56 and 72, and it keeps shrinking
+     below that on a phone rather than wrapping into four lines. */
+  .trp-club-h1 {
+    font-family: var(--trp-face);
+    font-size: clamp(38px, 7.2vw, 72px);
+    font-weight: 500;
+    letter-spacing: -.03em;
+    line-height: 1.03;
+    color: var(--trp-ink);
+  }
+
+  /* A heading sitting on a card. */
+  .trp-club-h3 {
+    font-family: var(--trp-face);
+    font-weight: 500;
+    letter-spacing: -.02em;
+    line-height: 1.12;
+    color: var(--trp-ink);
+  }
+
+  /* -- the hero --
+     One fine rule under the welcome block, and an intro set a step larger
+     than body copy so the first paragraph carries the page. */
+  .trp-hero-rule {
+    border: 0;
+    border-top: 1px solid var(--trp-hair);
+    margin: 44px 0 0;
+  }
+  .trp-club-intro {
+    font-size: 18px;
+    line-height: 1.6;
+    color: var(--trp-muted);
+  }
+
+  /* -- the ethos --
+     Three lines, no fill. The numerals are the only colour and they sit in
+     their own column so the sentences line up against them. */
+  .trp-ethos { border-top: 1px solid var(--trp-hair); }
+  .trp-ethos li {
+    display: flex;
+    gap: 18px;
+    padding: 14px 0;
+    border-bottom: 1px solid var(--trp-hair);
+    font-size: 15px;
+    color: var(--trp-ink);
+  }
+  .trp-ethos-n {
+    flex: none;
+    width: 1.5rem;
+    font-variant-numeric: tabular-nums;
+    font-weight: 500;
+    color: var(--trp-muted);
+  }
+
+  /* -- the two programme cards --
+     Still cards, because each one is a single object you can act on, but a
+     hairline rather than a fill, and the padding the brief asks for. */
+  .trp-prog {
+    display: flex;
+    flex-direction: column;
+    border: 1px solid var(--trp-hair);
+    border-radius: var(--trp-radius);
+    padding: 32px;
+    text-decoration: none;
+    transition: border-color 200ms ease;
+  }
+  @media (min-width: 640px) { .trp-prog { padding: 40px; } }
+  /* The one a member is in is the page's single filled moment: the brand
+     green, cream type, and the only filled button on the page sitting on
+     it. The Club card beside it stays light, which is what makes it land.
+
+     One colour in both themes, unusually for this stylesheet. The green is
+     dark enough to carry cream type on the light theme (9.03:1) and light
+     enough to lift off the dark theme's near-black ground -- 1.85:1 against
+     it, where an ordinary card manages about 1.3 -- so there is nothing for
+     a dark override to fix. An earlier pass used #1A1816 here, which had to
+     flip on the dark theme because #1A1816 on a #1C1D1A page is the same
+     colour twice over (1.05:1).
+
+     Measured: cream on green 9.03, cream at 75% 5.92, both AA. */
+  .trp-prog-on {
+    /* The literal, not var(--c-green): that token is the brand green on the
+       light theme but the cream body ink on the dark one, so taking it
+       would have flipped this card to cream and left cream type on it. */
+    background: #424B36;
+    border-color: #424B36;
+    color: #FFFDFB;
+  }
+  .trp-prog-on .trp-eyebrow,
+  .trp-prog-on .trp-prog-line,
+  .trp-prog-on p { color: rgb(255 253 251 / .75); }
+  .trp-prog-on :is(h1, h2, h3, h4, h5, h6) { color: #FFFDFB; }
+
+  /* The one that has not opened reads quieter than the one you are in. */
+  .trp-prog-off { background: transparent; }
+
+  /* -- buttons --
+     One green button per page, and it is the primary action. Everything
+     else is an outlined pill. */
+  .trp-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 9px;
+    align-self: flex-start;
+    min-height: 48px;
+    border-radius: 999px;
+    padding: 0 26px;
+    font-size: 14px;
+    font-weight: 500;
+    text-decoration: none;
+    transition: background-color 200ms ease, border-color 200ms ease, color 200ms ease;
+  }
+  .trp-btn-primary {
+    background: rgb(var(--c-green));
+    color: rgb(var(--c-bg));
+    border: 1px solid rgb(var(--c-green));
+  }
+  .trp-btn-primary:hover { background: rgb(var(--c-mid)); border-color: rgb(var(--c-mid)); }
+
+  /* On the filled card the button is the cream, with the card's own green
+     as its type. Still the one filled button on the page, and the same pair
+     of colours in both themes because the card is. */
+  .trp-prog-on .trp-btn-primary {
+    background: #FFFDFB;
+    border-color: #FFFDFB;
+    color: #424B36;
+  }
+  .trp-prog-on .trp-btn-primary:hover {
+    background: rgb(255 253 251 / .88);
+    border-color: rgb(255 253 251 / .88);
+  }
+
+  /* -- progress, on the Accelerator card -- */
+  /* Before the cohort starts there is nothing to fill in, and a bar sitting
+     at zero reads as "you are behind" rather than "it has not begun". So
+     until week 1 opens this is a line of text, and the bar arrives with the
+     first week. */
+  .trp-prog-track {
+    height: 3px;
+    border-radius: 999px;
+    /* The groove. What has to be legible is the filled part against this,
+       not this against the card: cream at full strength over cream at 22%
+       is an unmistakable step. */
+    background: rgb(255 253 251 / .22);
+    overflow: hidden;
+  }
+  .trp-prog-fill {
+    height: 100%;
+    border-radius: 999px;
+    background: #FFFDFB;
+  }
+  .trp-prog-line {
+    margin-top: 10px;
+    font-size: 12px;
+    letter-spacing: .04em;
+  }
+  /* The before-it-starts line, which replaces the bar rather than sitting
+     under it. Slightly larger, because it is the only thing there. */
+  .trp-prog-when {
+    font-size: 13px;
+    letter-spacing: .01em;
+  }
+
+  /* -- a row --
+     Events and rooms are both lists now rather than grids of cards: a rule
+     above each one, the last carrying the closing rule. */
+  .trp-rows { border-top: 1px solid var(--trp-hair); }
+  .trp-row {
+    display: flex;
+    align-items: baseline;
+    gap: 20px;
+    padding: 22px 2px;
+    border-bottom: 1px solid var(--trp-hair);
+    text-decoration: none;
+    transition: opacity 200ms ease;
+  }
+  a.trp-row:hover { opacity: .62; }
+  /* A row carrying a picture lines its columns up at the top; a plain text
+     row still sits on the baseline. */
+  .trp-row-media { align-items: flex-start; }
+  @media (min-width: 640px) { .trp-row { gap: 32px; padding: 26px 2px; } }
+
+  /* The date, set big. The month is a small label above the day, and the
+     day is Space Grotesk at display size in the lightest weight the face
+     carries well -- the size does the work, not the weight. Fixed width so
+     every title in the list starts on the same pixel. */
+  .trp-date {
+    flex: none;
+    width: 68px;
+    text-align: left;
+  }
+  .trp-date-m {
+    display: block;
+    font-family: var(--trp-label);
+    font-size: 11px;
+    font-weight: 500;
+    letter-spacing: .14em;
+    text-transform: uppercase;
+    color: var(--trp-muted);
+  }
+  .trp-date-d {
+    display: block;
+    margin-top: 2px;
+    font-family: var(--trp-face);
+    font-size: 40px;
+    font-weight: 400;
+    line-height: 1;
+    letter-spacing: -.02em;
+    color: var(--trp-ink);
+    font-variant-numeric: tabular-nums;
+  }
+  @media (min-width: 640px) {
+    .trp-date { width: 86px; }
+    .trp-date-d { font-size: 48px; }
+  }
+
+  /* The picture, on the end of the row. 4:3, cropped to fill, and the
+     first thing to go when the row runs out of width. */
+  .trp-row-shot {
+    flex: none;
+    display: block;
+    width: 128px;
+    aspect-ratio: 4 / 3;
+    border-radius: 10px;
+    overflow: hidden;
+    background: rgb(var(--c-rule) / .06);
+    margin-left: auto;
+  }
+  .trp-row-shot img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+    transition: opacity 200ms ease;
+  }
+  a.trp-row:hover .trp-row-shot img { opacity: .82; }
+  @media (max-width: 599px) { .trp-row-shot { display: none; } }
+  @media (min-width: 900px) { .trp-row-shot { width: 168px; } }
+
+  .trp-row-t {
+    display: block;
+    font-family: var(--trp-face);
+    font-size: 17px;
+    font-weight: 500;
+    letter-spacing: -.015em;
+    color: var(--trp-ink);
+  }
+  @media (min-width: 640px) { .trp-row-t { font-size: 19px; } }
+  .trp-row-d {
+    display: block;
+    margin-top: 6px;
+    font-size: 13px;
+    line-height: 1.55;
+    color: var(--trp-muted);
+  }
+  /* The quiet word at the end of a row: "Join", "Coming soon". */
+  .trp-row-side {
+    flex: none;
+    margin-left: auto;
+    font-size: 12px;
+    letter-spacing: .04em;
+    color: var(--trp-muted);
+    white-space: nowrap;
+  }
+
+  /* -- a section's heading, with a link on the far side -- */
+  /* On a phone the link drops under the heading. Side by side it squeezed
+     the heading into two lines with "All events" stranded beside the first
+     of them. */
+  .trp-sec-head {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 10px;
+    margin-bottom: 26px;
+  }
+  @media (min-width: 640px) {
+    .trp-sec-head {
+      flex-direction: row;
+      align-items: baseline;
+      justify-content: space-between;
+      gap: 20px;
+    }
+  }
+  .trp-sec-link {
+    flex: none;
+    font-size: 13px;
+    color: var(--trp-muted);
+    text-decoration: none;
+    transition: color 200ms ease;
+  }
+  .trp-sec-link:hover { color: var(--trp-ink); }
+
+  /* -- follow along --
+     Outlined pills with a line icon. Monochrome: the icons are drawn in the
+     current colour and carry no brand colour of their own. */
+  .trp-follow {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+  }
+  .trp-follow a {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    min-height: 48px;
+    border: 1px solid var(--trp-hair);
+    border-radius: 999px;
+    padding: 0 20px;
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--trp-ink);
+    text-decoration: none;
+    transition: border-color 200ms ease, color 200ms ease;
+  }
+  .trp-follow a:hover { border-color: rgb(var(--c-rule) / .28); }
+  .trp-follow svg {
+    width: 17px;
+    height: 17px;
+    flex: none;
+    stroke: currentColor;
+    fill: none;
+    stroke-width: 1.4;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+    opacity: .72;
+  }
+
+  /* -- the Soon pill --
+     The one place purple appears. It means "not yet" and nothing else, so
+     it is never a button and has no hover of its own. */
+  .trp-soon {
+    display: inline-flex;
+    align-items: center;
+    border-radius: 999px;
+    background: rgb(var(--c-plumbg));
+    color: rgb(var(--c-plum));
+    font-size: 10px;
+    font-weight: 500;
+    letter-spacing: .12em;
+    text-transform: uppercase;
+    padding: 4px 9px;
+    white-space: nowrap;
+  }
+  .trp-soon-lg { font-size: 11px; padding: 5px 12px; }
+
+  /* -- the footer credit --
+     .trp-partner was already a column-flex card on the Resources page, so
+     this one is its own name. */
+  .trp-credit {
+    display: inline-flex;
+    align-items: center;
+    flex: none;
+    white-space: nowrap;
+    gap: 9px;
+    min-height: 44px;
+    text-decoration: none;
+    color: inherit;
+  }
+  /* Both partners at the same height, in their own colours. Wispr's mark is
+     a dark rounded tile with white bars inside it, not a wordmark on
+     transparent like Stanley's -- held at 60% it read as a grey box, which
+     is what this fixes. Full strength, and a hairline ring on the dark
+     theme so the tile's own edge is still findable against the ground. */
+  .trp-credit img {
+    height: 20px;
+    width: auto;
+    display: block;
+  }
+  .trp-credit-tile {
+    border-radius: 5px;
+    box-shadow: 0 0 0 1px rgb(var(--c-rule) / .12);
+  }
+  :root[data-theme='dark'] .trp-credit-tile { box-shadow: 0 0 0 1px rgb(var(--c-rule) / .22); }
+  @media (prefers-color-scheme: dark) {
+    :root[data-theme='system'] .trp-credit-tile { box-shadow: 0 0 0 1px rgb(var(--c-rule) / .22); }
+  }
+  .trp-credit-label { white-space: nowrap; }
+
+  /* The two credits sit in one group, so "Powered by" is said once. */
+  .trp-credits {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 14px;
+  }
+
 
   /* -- the checklist card -------------------------------------------------
      The shape a member meets on the dashboard and again on the Curriculum:
@@ -2483,25 +3018,31 @@
 
      The separators only appear once the line actually fits on one line.
      Measured, not guessed: with every item showing, the footer is a single
-     row from 540px up. Below that it wraps, and a separator that happened to
+     row from 900px up. Below that it wraps, and a separator that happened to
      fall at the wrap would be left stranded at the head of the second line
      ("· Need help? ..."), which is what this rule is here to prevent. CSS
      cannot ask whether an element starts a wrapped line, so the whole set
      goes rather than one of them.
 
-     576px, not 540px, so there is headroom if a font metric differs or the
-     line grows by a word. The gap opens up in exchange, so the items still
+     The breakpoint was 576px, measured when the line ended at the support
+     address. The Stanley credit then came back down from the header, and
+     "Powered by" plus the logo is most of a column wider -- measured in
+     headless Chrome, the line now needs 900px to sit in one row, and at 620
+     to 880 it was wrapping with the dots showing, which is precisely the
+     stranded separator this rule exists to stop.
+
+     900px, then, with the gap opening up in exchange so the items still
      read as separate things with no dots between them.
 
      scripts/tests/portal-footer.test.mjs pins the shape of this: every
      separator is a .trp-foot-sep and nothing else, and this rule hides them
      under the breakpoint and brings them back over it. jsdom does no layout,
-     so it cannot measure the wrap itself; if a word is ever added to this
-     line, check it in a browser at 540px as well. */
+     so it cannot measure the wrap itself. Anything added to this line moves
+     the width it fits at, so measure it in a browser again. */
   .trp-foot { column-gap: 14px; row-gap: 4px; }
   .trp-foot-sep { display: none; }
 
-  @media (min-width: 576px) {
+  @media (min-width: 900px) {
     .trp-foot { column-gap: 8px; }
     .trp-foot-sep { display: inline; }
   }

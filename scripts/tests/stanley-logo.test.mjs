@@ -10,12 +10,13 @@
 // theme, so the portal carries a reversed copy beside the normal one and the
 // theme picks. /accelerator has no dark theme and carries only the normal one.
 //
-// Inside the portal the credit now appears ONCE per page, in the header. It
+// Inside the portal the credit appears ONCE per page, on the footer line. It
 // used to appear twice -- once in the header from 1280px up, and again in
-// every footer -- which meant a desktop member met the same logo twice on
-// one screen. With only one left it can no longer be held back to a desktop
-// width, so the header lockup has to be on at every width; what gives way on
-// a phone is the words "Powered by", which are read out but not drawn.
+// every footer -- so the footer copy was dropped and the header one kept.
+// The redesign then cleared the masthead down to the wordmark, the menu and
+// the member's own controls, which sent the single remaining credit back to
+// the footer. It is shown at every width, wording and all: the quiet line
+// has room for it in a way the masthead did not.
 import { JSDOM } from 'jsdom';
 import { readFileSync } from 'node:fs';
 
@@ -171,64 +172,53 @@ console.log('\n/portal — where the lockups sit');
     check(page.path + ': exactly one lockup on the page, counted everywhere',
       everywhere.length === 1, everywhere.length);
 
-    check(page.path + ': and that one is in the header',
-      inHeader.length === 1 && inFooter.length === 0,
+    check(page.path + ': and that one is in the footer',
+      inFooter.length === 1 && inHeader.length === 0,
       { header: inHeader.length, footer: inFooter.length });
 
-    // The header is two groups: the masthead on the left and the controls on
-    // the right. The credit belongs to the first and must not be in the second.
+    // The masthead is now the wordmark, the menu and the member's own
+    // controls, and nothing else. The credit moved to the quiet line at the
+    // foot of the page, which is where it was before it went up there --
+    // the difference being that there is only one of it now.
     const header = document.querySelector('header#top-nav');
-    const rightGroup = header.lastElementChild;
-    check(page.path + ': the right-hand group carries no Stanley logo',
-      rightGroup.querySelectorAll('a.trp-powered').length === 0,
-      rightGroup.querySelectorAll('a.trp-powered').length);
+    const bar = header.firstElementChild;
+    const rightGroup = bar.lastElementChild;
+    check(page.path + ': the header carries no Stanley logo at all',
+      header.querySelectorAll('a.trp-powered').length === 0,
+      header.querySelectorAll('a.trp-powered').length);
     check(page.path + ': the right-hand group is the theme, the name and Sign out',
       Boolean(rightGroup.querySelector('.trp-theme')) &&
       Boolean(rightGroup.querySelector('[data-portal-name]')) &&
       Boolean(rightGroup.querySelector('[data-portal-signout]')));
 
-    check(page.path + ': the footer is one quiet line with no lockup under it',
-      inFooter.length === 0, inFooter.length);
+    // It sits on the footer line itself rather than in a band under it, so
+    // the footer is still one line, and it is the last thing on it.
+    const footLine = document.querySelector('footer .trp-foot');
+    check(page.path + ': the lockup is on the footer line, not below it',
+      footLine !== null && footLine.contains(inFooter[0]));
+    check(page.path + ': it is the last item on that line',
+      footLine !== null && footLine.lastElementChild === inFooter[0],
+      footLine && footLine.lastElementChild && footLine.lastElementChild.className);
+    check(page.path + ': with a separator before it, like every other item',
+      inFooter[0].previousElementSibling !== null &&
+      inFooter[0].previousElementSibling.className.includes('trp-foot-sep'),
+      inFooter[0].previousElementSibling && inFooter[0].previousElementSibling.className);
 
-    // It sits in the masthead now, beside the Time Rich wordmark rather than
-    // out on the right with the controls: wordmark, hairline, then the credit,
-    // and the nav after all three.
-    const wordmark = document.querySelector('header#top-nav .trp-wordmark');
-    check(page.path + ': it sits beside the wordmark, not in the right-hand group',
-      wordmark !== null &&
-      wordmark.compareDocumentPosition(inHeader[0]) === 4 &&
-      wordmark.parentElement === inHeader[0].parentElement,
-      inHeader[0].parentElement && inHeader[0].parentElement.className);
-
-    check(page.path + ': with a hairline between the wordmark and the credit',
-      inHeader[0].previousElementSibling !== null &&
-      inHeader[0].previousElementSibling.className.includes('trp-head-div') &&
-      inHeader[0].previousElementSibling.previousElementSibling === wordmark,
-      inHeader[0].previousElementSibling && inHeader[0].previousElementSibling.className);
-
-    check(page.path + ': and the nav comes after it',
-      inHeader[0].nextElementSibling !== null &&
-      inHeader[0].nextElementSibling.tagName === 'NAV',
-      inHeader[0].nextElementSibling && inHeader[0].nextElementSibling.tagName);
-
-    // The hairline beside the wordmark is drawn at every width, so the two
-    // marks never run together on a phone.
-    check(page.path + ': that hairline is not held back to a desktop width',
-      !/hidden/.test(inHeader[0].previousElementSibling.className),
-      inHeader[0].previousElementSibling.className);
-
-    // The one credit on the page cannot be hidden at any width. What the
-    // phone drops is the wording, which .trp-powered-head clips rather than
-    // removes, so the credit still reads out.
+    // The one credit on the page cannot be hidden at any width.
     check(page.path + ': it is shown at every width, phone included',
-      !/\bhidden\b/.test(inHeader[0].className) &&
-      !/\bxl:inline-flex\b/.test(inHeader[0].className),
-      inHeader[0].className);
+      !/\bhidden\b/.test(inFooter[0].className) &&
+      !/\bxl:inline-flex\b/.test(inFooter[0].className),
+      inFooter[0].className);
 
-    check(page.path + ': and it is marked as the header one, so the phone ' +
-      'step-down in the stylesheet reaches it',
-      /\btrp-powered-head\b/.test(inHeader[0].className),
-      inHeader[0].className);
+    check(page.path + ': and it is marked as the footer one, so the ' +
+      'stylesheet sizes it for that line',
+      /\btrp-powered-foot\b/.test(inFooter[0].className),
+      inFooter[0].className);
+
+    // The wording is read on this line at every width: the footer has room
+    // for it, unlike the masthead it came from.
+    check(page.path + ': the "Powered by" wording is drawn, not clipped',
+      inFooter[0].querySelector('.trp-powered-label') !== null);
   }
 }
 

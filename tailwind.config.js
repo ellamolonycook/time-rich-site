@@ -53,23 +53,28 @@ module.exports = {
           lime: 'rgb(var(--c-lime) / <alpha-value>)',
           olive: 'rgb(var(--c-olive) / <alpha-value>)',
           error: 'rgb(var(--c-error) / <alpha-value>)',
+          // Reserved for "not yet": the Soon pill and the Coming soon card.
+          plum: 'rgb(var(--c-plum) / <alpha-value>)',
+          plumbg: 'rgb(var(--c-plumbg) / <alpha-value>)',
         },
       },
-      // Three faces, the brand bible's own: Space Grotesk for headings, the
-      // system sans for body copy, JetBrains Mono for small uppercase
-      // labels. `serif` is left out so a stray font-serif falls back rather
-      // than silently loading a fourth face.
+      // Two faces: Space Grotesk for headings, Inter for everything else.
+      // `serif` is left out so a stray font-serif falls back rather than
+      // silently loading a third face.
       //
-      // Both of the faces that used to be here are gone. Inter was a
-      // webfont doing the job the system sans does for nothing, and Space
-      // Mono was never the brand's label face -- the bible sets labels in
-      // JetBrains Mono, which now loads from brand/fonts/ rather than from
-      // Google. These names are mirrored by --trp-body and --trp-label in
+      // `mono` is Inter too, deliberately. The portal set its small
+      // uppercase labels in JetBrains Mono, and the redesign takes every
+      // monospace off the visible page -- but `font-mono` is written into
+      // markup and into the strings portal-live.js builds, so the name is
+      // kept and pointed at the body face rather than hunted down. What
+      // still tells a label apart is its size and tracking.
+      //
+      // These names are mirrored by --trp-body and --trp-label in
       // portal/portal-tailwind-src.css; the two have to stay in step.
       fontFamily: {
-        sans: ['system-ui', '-apple-system', '"Segoe UI"', 'Roboto', 'Helvetica', 'sans-serif'],
-        display: ['"Space Grotesk"', 'system-ui', 'sans-serif'],
-        mono: ['"JetBrains Mono"', 'ui-monospace', 'SFMono-Regular', 'Menlo', 'monospace'],
+        sans: ['Inter', '"Inter Fallback"', 'system-ui', '-apple-system', '"Segoe UI"', 'Roboto', 'Helvetica', 'sans-serif'],
+        display: ['"Space Grotesk"', '"Space Grotesk Fallback"', 'system-ui', 'sans-serif'],
+        mono: ['Inter', '"Inter Fallback"', 'system-ui', '-apple-system', '"Segoe UI"', 'Roboto', 'Helvetica', 'sans-serif'],
       },
     },
   },

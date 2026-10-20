@@ -69,7 +69,7 @@
        fonts are fetched in CORS mode, and a preload without it is fetched
        twice. -->
   <link rel="preload" href="../brand/fonts/SpaceGrotesk-Variable.woff2" as="font" type="font/woff2" crossorigin/>
-  <link rel="preload" href="../brand/fonts/JetBrainsMono-Variable.woff2" as="font" type="font/woff2" crossorigin/>
+  <link rel="preload" href="../brand/fonts/Inter-Variable.woff2" as="font" type="font/woff2" crossorigin/>
   <link rel="stylesheet" href="portal-content.css"/>
 
   <style>
@@ -238,9 +238,12 @@
         }).observe(slot, { childList: true, characterData: true, subtree: true });
       }
 
-      // An address we know lands on the dashboard.
+      // An address we know lands on the Club home, which is the front of
+      // the portal: the Accelerator is one of the programmes on it. /club is
+      // the public address for it -- it serves the Club home to a member and
+      // the Apply page to everyone else -- so that is where members land.
       document.addEventListener('trportal:data', function () {
-        window.location.replace('dashboard.html');
+        window.location.replace('/club');
       });
     })();
   </script>

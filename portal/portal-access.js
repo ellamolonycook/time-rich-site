@@ -599,7 +599,7 @@
        // The download button stands in for the chevron on a skill card.
        bottom.appendChild(skillButton(item));
     } else {
-       var iconWrapper = el('div', 'w-8 h-8 rounded-full border border-brand-green/15 flex items-center justify-center group-hover:bg-brand-deep group-hover:border-brand-deep group-hover:text-brand-bg text-brand-deep transition-all duration-300');
+       var iconWrapper = el('div', 'w-8 h-8 rounded-full border border-brand-green/15 flex items-center justify-center group-hover:bg-brand-green group-hover:border-brand-green group-hover:text-brand-bg text-brand-deep transition-all duration-300');
        iconWrapper.innerHTML = '<svg class="w-4 h-4 transform group-hover:translate-x-0.5 transition-transform" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7"></path></svg>';
        bottom.appendChild(iconWrapper);
     }
@@ -730,7 +730,7 @@
       var actions = el('div', 'mt-6 md:mt-0 w-full md:w-auto flex flex-col sm:flex-row gap-3');
       if (join) {
          var jBtn = linkButton(join, 'Join via Zoom');
-         jBtn.className = 'w-full md:w-auto px-6 py-3 bg-brand-deep text-brand-offwhite text-xs font-semibold rounded-xl hover:bg-brand-green transition-colors shadow-sm flex items-center justify-center gap-2';
+         jBtn.className = 'w-full md:w-auto px-6 py-3 bg-brand-green text-brand-offwhite text-xs font-semibold rounded-xl hover:bg-brand-mid transition-colors shadow-sm flex items-center justify-center gap-2';
          actions.appendChild(jBtn);
       }
       if (rec) {
@@ -839,10 +839,39 @@
     if (target) { clear(target); target.appendChild(el('p', 'trp-error', text)); }
   }
 
+  /* ---- leaving the portal, from inside a frame or not ------------------
+   * The Club home is served two ways: on its own at /portal/club.html, and
+   * inside a full-bleed iframe at timerich.ai/club, where a visitor without
+   * a session gets the public Apply page at that same address.
+   *
+   * So "send them to sign in" has to move the TOP window when this page is
+   * framed. Navigating the frame instead would draw the sign-in form inside
+   * the frame with /club still in the address bar, which is neither page.
+   *
+   * Same origin, so window.top is reachable; it is still wrapped, because a
+   * cross-origin embed throws on the first touch rather than returning null.
+   */
+  function isFramed() {
+    try { return window.top !== window.self; } catch (e) { return true; }
+  }
+
+  /* Takes the top window to /club and says whether it managed it. /club is
+     the right destination rather than the sign-in page: it shows Apply to
+     anyone without a session, which is what this member now is. */
+  function leaveFrame() {
+    if (!isFramed()) return false;
+    try {
+      window.top.location.replace('/club');
+      return true;
+    } catch (e) {
+      return false;
+    }
+  }
+
   function signedOut() {
     if (document.querySelector('[data-portal-login]')) {
       setState('out');
-    } else {
+    } else if (!leaveFrame()) {
       window.location.replace('index.html');
     }
   }
@@ -874,7 +903,9 @@
       buttons[i].addEventListener('click', function (event) {
         event.preventDefault();
         signOut();
-        window.location.reload();
+        // Framed at /club, reloading would reload the frame and leave the
+        // member looking at the sign-in page inside it.
+        if (!leaveFrame()) window.location.reload();
       });
     }
   }

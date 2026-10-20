@@ -193,17 +193,34 @@ async function openPortalPage(name, { directoryStatus = 200, cache, directoryThr
   return { dom, links, calls, release, directoryCalls: () => calls.filter((u) => u === DIRECTORY_URL).length };
 }
 
+// Members is in the menu for everyone now, carrying a purple Soon pill. The
+// directory itself has not opened; what changed is the way in. The link used
+// to be hidden in the markup and revealed only when the Worker said this
+// member could see the directory.
+//
+// portal-access.js is untouched. It still asks, still remembers the answer
+// for ten minutes and still toggles [hidden] and [data-pending] on the link,
+// and every assertion below about that is the one it always was. What is
+// gone is the pair of rules in portal-content.css that made [hidden] mean
+// anything here — so the answer no longer decides whether the link shows,
+// and the gate can be switched back on by restoring two rules rather than by
+// rebuilding any of this.
 console.log('\nMembers nav link on the other portal pages');
 for (const name of PAGES) {
   const html = readFileSync(new URL(`../../portal/${name}.html`, import.meta.url), 'utf8');
   const raw = [...html.matchAll(/<a href="members\.html"([^>]*)>/g)].map((m) => m[1]);
-  check(name + '.html: a Members link in the top nav and the phone menu, both hidden by default',
-    raw.length === 2 && raw.every((attrs) => /data-portal-members-link/.test(attrs) && /\shidden(\s|$)/.test(attrs)), raw);
+  check(name + '.html: a Members link in the top nav and the phone menu, neither hidden',
+    raw.length === 2 && raw.every((attrs) => !/\shidden(\s|$)/.test(attrs)), raw);
+  check(name + '.html: the attribute stays, so portal-access.js still finds them',
+    raw.length === 2 && raw.every((attrs) => /data-portal-members-link/.test(attrs)), raw);
+  check(name + '.html: both carry a Soon pill',
+    (html.match(/<span class="trp-soon[^"]*">Soon<\/span>/g) || []).length === 2);
 }
 {
   const css = readFileSync(new URL('../../portal/portal-content.css', import.meta.url), 'utf8');
-  check('the shared stylesheet keeps a hidden link hidden even with Tailwind .flex on it',
-    /\[data-portal-members-link\]\[hidden\]\s*\{\s*display:\s*none\s*!important/.test(css));
+  check('the stylesheet no longer hides the link on [hidden]',
+    !/\[data-portal-members-link\]\[hidden\]\s*\{\s*display:\s*none/.test(css),
+    (css.match(/\[data-portal-members-link\]\[hidden\][^}]*\}/) || [])[0]);
 
   const closed = await openPortalPage('dashboard', { directoryStatus: 403 });
   check('directory 403 (switched off, a buyer): the link stays hidden',
@@ -233,8 +250,9 @@ for (const name of PAGES) {
   // keeps its box while the answer is in flight.
   {
     const css = readFileSync(new URL('../../portal/portal-content.css', import.meta.url), 'utf8');
-    check('the stylesheet gives a pending link its box but no paint',
-      /\[data-portal-members-link\]\[data-pending\]\s*\{\s*visibility:\s*hidden/.test(css));
+    check('nor blanks it while the answer is in flight',
+      !/\[data-portal-members-link\]\[data-pending\]\s*\{\s*visibility:\s*hidden/.test(css),
+      (css.match(/\[data-portal-members-link\]\[data-pending\][^}]*\}/) || [])[0]);
 
     const slow = await openPortalPage('dashboard', { holdDirectory: true });
     check('while the answer is in flight the link is not hidden, just unpainted',
