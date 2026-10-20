@@ -445,6 +445,34 @@ var Q_SPEC = [
     ]
   },
   {
+    // Every `value` here is the name of an option on the Notion multi-select
+    // "Q Also Build", so the two have to stay spelled the same. The `label`
+    // is what the member reads; qOptionLabel() shows that and qToggle()
+    // stores the value, so a longer sentence on the button costs nothing in
+    // Notion. None of them may contain a comma, which Notion refuses in a
+    // select option name.
+    key: "also_build", type: "many",
+    eyebrow: "Also building",
+    title: "What else do you want AI to help you build? Select all that apply.",
+    help: "We use this to shape the build library and your hot seat room.",
+    other: true,
+    options: [
+      { value: "Contacts and follow-up", label: "Capture contacts and follow up with people you meet" },
+      { value: "Client journey", label: "Client journey: discovery call to proposal, contract and delivery" },
+      { value: "Past client check-ins", label: "Check-ins with past clients (1 week, 1 month, 3, 6, 12 months)" },
+      { value: "Prospect and partner research", label: "Research prospects and referral partners" },
+      { value: "Outreach and follow-up", label: "Outreach and follow-up" },
+      { value: "Podcast and speaking pitches", label: "Podcast and speaking pitches" },
+      { value: "Workshops and presentations", label: "Workshops and presentations" },
+      { value: "Website / pricing / checkout", label: "Website, pricing, booking and checkout" },
+      { value: "Email list growth", label: "Grow my email list (tips, checklists, offers)" },
+      { value: "Client questionnaires and reports", label: "Client questionnaires, checklists and reports" },
+      { value: "Admin assistant", label: "An assistant for admin and repetitive tasks" },
+      { value: "Grants and business coaching", label: "Grants research and AI business coaching" },
+      { value: "Course / membership / passive income", label: "Course, membership or passive income" }
+    ]
+  },
+  {
     key: "tech_stack", type: "short",
     eyebrow: "Tech stack",
     title: "What are you running today? Tools only, one line.",
@@ -589,12 +617,13 @@ var Q_SPEC = [
     placeholder: "Name, and the best way to reach them."
   }
 ];
-// Only these three offer an "Other" box, and their text is folded into one
+// Only these four offer an "Other" box, and their text is folded into one
 // Notion column. The prefix is what that column shows for each.
 var Q_OTHER_PREFIX = [
   { key: "focus_ranking", prefix: "Focus" },
   { key: "project_management", prefix: "Projects" },
-  { key: "lead_gen_platforms", prefix: "Platforms" }
+  { key: "lead_gen_platforms", prefix: "Platforms" },
+  { key: "also_build", prefix: "Also build" }
 ];
 
 var Q_OTHER_VALUE = "Other";
@@ -1231,7 +1260,7 @@ function qRankString(key) {
   return chosen.map(function (value, i) { return (i + 1) + ". " + value; }).join("; ");
 }
 
-// The three Other boxes share one Notion column. A box is only read when its
+// The four Other boxes share one Notion column. A box is only read when its
 // question still has Other selected, so changing your mind leaves nothing behind.
 function qOtherAnswers() {
   var parts = [];
