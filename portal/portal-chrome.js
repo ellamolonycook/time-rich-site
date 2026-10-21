@@ -11,6 +11,44 @@
 (function () {
   'use strict';
 
+  function mountAppearance() {
+    var media = window.matchMedia('(prefers-color-scheme: dark)');
+    document.querySelectorAll('[data-theme-select]').forEach(function (select) {
+      var button = document.createElement('button');
+      button.type = 'button';
+      button.className = 'trp-day-night';
+      button.setAttribute('role', 'switch');
+      button.setAttribute('aria-label', 'Night mode');
+      button.innerHTML = '<span class="trp-day-night-thumb"></span><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="4"/><path d="M12 2v2m0 16v2M2 12h2m16 0h2M5 5l1.5 1.5M17.5 17.5l1.5 1.5M5 19l1.5-1.5M17.5 6.5l1.5-1.5"/></svg><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20 14a8 8 0 0 1-10-10 8.5 8.5 0 1 0 10 10Z"/></svg>';
+      function dark() {
+        var theme = document.documentElement.getAttribute('data-theme');
+        return theme === 'dark' || (theme !== 'light' && media.matches);
+      }
+      function paint() { button.setAttribute('aria-checked', String(dark())); }
+      button.addEventListener('click', function () {
+        select.value = dark() ? 'light' : 'dark';
+        select.dispatchEvent(new Event('change', { bubbles: true }));
+        paint();
+      });
+      select.parentElement.hidden = true;
+      select.parentElement.after(button);
+      new MutationObserver(paint).observe(document.documentElement, { attributes: true, attributeFilter: ['data-theme'] });
+      media.addEventListener('change', paint);
+      paint();
+    });
+    document.querySelectorAll('.trp-powered, .trp-credit').forEach(function (credit) {
+      if (!credit.querySelector('img[alt="Stanley"]')) return;
+      credit.querySelectorAll('img').forEach(function (img) { img.remove(); });
+      var frame = document.createElement('span');
+      frame.className = 'trp-stanley-clean';
+      var image = document.createElement('img');
+      image.src = 'assets/stanley-clean.png';
+      image.alt = 'Stanley';
+      frame.append(image);
+      credit.append(frame);
+    });
+  }
+
   // Native details remain usable without animation. Only one connection guide
   // stays open; rapid clicks reverse from the current height without jumping.
   var accordionControls = [];
@@ -213,7 +251,9 @@
 
   if (document.readyState === 'loading') {
     document.addEventListener('DOMContentLoaded', mountMenu);
+    document.addEventListener('DOMContentLoaded', mountAppearance);
   } else {
     mountMenu();
+    mountAppearance();
   }
 })();
