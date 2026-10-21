@@ -75,17 +75,11 @@ console.log('\n/contentworkshop — the WORKSHOP config, one place for the open 
   check('a const WORKSHOP block exists', /const WORKSHOP\s*=\s*\{|var WORKSHOP\s*=\s*\{/.test(HTML));
   check('mikaPrompt is in it', /mikaPrompt\s*:/.test(HTML));
   check('winnersWhen is in it', /winnersWhen\s*:/.test(HTML));
-  // Both defaults still carry their brackets, which is what keeps noindex on.
-  check('the Step 1 prompt default is still the placeholder',
-    HTML.includes('[PROMPT FROM MIKA: the content strategy interview]'));
-  check('the winners line default is still the placeholder',
-    HTML.includes('[WHEN AND WHERE]'));
-
   const { document } = load();
   check('the Step 1 prompt is rendered into the page',
-    document.getElementById('mikaprompt').textContent.includes('PROMPT FROM MIKA'));
+    document.getElementById('mikaprompt').textContent.trim().length > 0);
   check('the winners line is rendered into the page',
-    document.getElementById('winnerswhen').textContent === '[WHEN AND WHERE]');
+    document.getElementById('winnerswhen').textContent === 'Tuesday 27 Oct at 12pm ET');
 }
 
 console.log('\n/contentworkshop — the copy buttons');
