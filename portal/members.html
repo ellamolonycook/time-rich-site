@@ -69,14 +69,14 @@
        twice. -->
   <link rel="preload" href="../brand/fonts/SpaceGrotesk-Variable.woff2" as="font" type="font/woff2" crossorigin/>
   <link rel="preload" href="../brand/fonts/Inter-Variable.woff2" as="font" type="font/woff2" crossorigin/>
-  <link rel="stylesheet" href="portal-content.css">
+  <link rel="stylesheet" href="portal-content.css?v=20261021">
   <!-- The session gate. Config first, then the library; both deferred so
        the DOM is ready when the script mounts. No valid code redirects to
        index.html, because this page has no login form of its own. -->
   <script src="portal-config.js" defer></script>
   <script src="portal-access.js" defer></script>
   <script src="portal-live.js"></script>
-  <script src="portal-chrome.js" defer></script>
+  <script src="portal-chrome.js?v=20261021" defer></script>
 
   <!-- Warm the next page while the pointer is still travelling to the link.
        "moderate" is roughly 200ms of hover, which is long enough that a
@@ -260,79 +260,6 @@
     </p>
   </footer>
 
-  <script>
-    // === SMOOTH PAGE TRANSITIONS ===
-    // Internal .html links fade the page out before navigating. The fade is
-    // decoration; the navigation is the job, so every path below ends in a
-    // navigation even when the animation never runs or is cut short.
-    (function () {
-      var FADE_MS = 150;
-
-      var reduced = false;
-      try {
-        reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-      } catch (e) { /* no matchMedia: treat as no preference */ }
-
-      // Coming back via the Back button can restore this page from the bfcache
-      // with the fade still applied, which shows a blank screen.
-      //
-      // Only this script's own fade is undone. Every portal page sets its own
-      // entrance transform inline on <body>, so clearing that unconditionally
-      // would kill the page's open animation on a normal load.
-      var LEAVING = 'data-trp-leaving';
-      window.addEventListener('pageshow', function () {
-        if (!document.body.hasAttribute(LEAVING)) return;
-        document.body.removeAttribute(LEAVING);
-        document.body.style.opacity = '';
-        document.body.style.transform = '';
-      });
-
-      document.addEventListener('DOMContentLoaded', function () {
-        document.querySelectorAll('a[href]').forEach(function (link) {
-          var href = link.getAttribute('href');
-          if (!href) return;
-          if (href.indexOf('http') === 0 || href.charAt(0) === '#' || href.indexOf('mailto') === 0) return;
-          if (href.slice(-5) !== '.html') return;
-          // A link meant for another tab keeps its default behaviour.
-          if (link.target && link.target !== '_self') return;
-
-          link.addEventListener('click', function (e) {
-            // Cmd/Ctrl/Shift/Alt click and middle click open a new tab.
-            // Hijacking those would quietly break them.
-            if (e.button !== 0 || e.metaKey || e.ctrlKey || e.shiftKey || e.altKey) return;
-
-            e.preventDefault();
-
-            // Anyone who asked for less motion simply goes.
-            if (reduced) { window.location.href = href; return; }
-
-            var done = false;
-            function go() {
-              if (done) return;
-              done = true;
-              window.location.href = href;
-            }
-
-            try {
-              document.body.setAttribute(LEAVING, '');
-              document.body.style.opacity = '0';
-              document.body.style.transform = 'scale(0.98)';
-              // Whichever comes first wins.
-              document.body.addEventListener('transitionend', go, { once: true });
-            } catch (err) {
-              go();                 // styling failed, so just navigate
-              return;
-            }
-
-            setTimeout(go, FADE_MS);
-            // A short backstop: transitionend does not fire in a backgrounded
-            // tab, and a click must never end on a page left faded out.
-            setTimeout(go, FADE_MS + 250);
-          });
-        });
-      });
-    })();
-  </script>
 
 
 
