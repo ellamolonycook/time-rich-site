@@ -2,6 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8" />
+<script>if (location.protocol === 'http:' && !/^(localhost|127\.0\.0\.1)$/.test(location.hostname)) location.replace('https://' + location.host + location.pathname + location.search + location.hash);</script>
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
 <link rel="icon" type="image/png" sizes="32x32" href="/rocketship-icon-32.png" />
 <link rel="apple-touch-icon" sizes="180x180" href="/rocketship-icon-180.png" />
@@ -54,6 +55,7 @@ a { color: inherit; }
 .mark small { font-family: var(--sans); font-weight: 500; font-size: 13px; letter-spacing: .08em; text-transform: uppercase; color: var(--soft); margin-left: 12px; padding-left: 12px; border-left: 1px solid var(--line); }
 .pill { display: inline-flex; align-items: center; justify-content: center; gap: 8px; min-height: 44px; padding: 0 20px; border-radius: 999px; border: 0; font: inherit; font-size: 14px; font-weight: 600; text-decoration: none; cursor: pointer; white-space: nowrap; transition: background-color .18s ease, transform .18s ease; }
 .pill:focus-visible { outline: 2px solid var(--ink); outline-offset: 3px; }
+#now-title:focus { outline: none; }
 .pill.is-green { background: var(--green); color: var(--paper); }
 .pill.is-green:hover { background: var(--green-deep); }
 .pill.is-light { background: var(--paper); color: var(--ink); }
