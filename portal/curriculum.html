@@ -121,6 +121,13 @@
     .trp-cw-pillar.is-systems { background: var(--trp-sage); }
     .trp-cw-pillar.is-visibility { background: var(--trp-sagelt); }
     .trp-cw-week[aria-selected="true"] .trp-cw-pillar { background: rgba(255, 253, 251, .16); color: #FFFDFB; }
+    /* On the dark theme the card is the same colour as the sage, so every
+       tag on an unpicked card gets one light tint and they all read as
+       pills, the same as Foundations and Visibility. */
+    :root[data-theme='dark'] .trp-cw-week:not([aria-selected="true"]) .trp-cw-pillar { background: rgba(244, 241, 230, .12); }
+    @media (prefers-color-scheme: dark) {
+      :root[data-theme='system'] .trp-cw-week:not([aria-selected="true"]) .trp-cw-pillar { background: rgba(244, 241, 230, .12); }
+    }
 
     /* the panel for the picked week */
     .trp-cw-panel { background: rgb(var(--c-surface)); border: 1px solid var(--trp-line); border-radius: 24px; padding: clamp(20px, 4vw, 36px); display: flex; flex-direction: column; gap: 22px; }
