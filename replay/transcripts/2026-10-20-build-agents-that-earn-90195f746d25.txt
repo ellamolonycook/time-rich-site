@@ -139,13 +139,13 @@ Cien - LaunchLemonade: who here… I think, Indra… I'm gonna… I'm gonna, cal
 Cien - LaunchLemonade: What all of these are.
 Cien - LaunchLemonade: Are you able to tell us
 Cien - LaunchLemonade: What all of these things are.
-Indra K.: Maybe.
-Indra K.: Maybe, to some degree, yeah. But I feel like the definitions are constantly changing, so that's why it's always a maybe.
+Attendee: Maybe.
+Attendee: Maybe, to some degree, yeah. But I feel like the definitions are constantly changing, so that's why it's always a maybe.
 Cien - LaunchLemonade: Choose one that I can deep dive into.
-Indra K.: Let's go, let's go with… since I said tokens, let's go with tokens. I mean, do you want my definition, or are you gonna deep dive into it?
+Attendee: Let's go, let's go with… since I said tokens, let's go with tokens. I mean, do you want my definition, or are you gonna deep dive into it?
 Cien - LaunchLemonade: Go for it.
-Indra K.: So, tokens… tokens have lots of different meanings, but in the context of…
-Indra K.: In the context of AI and LLMs, it's a unit of work that you pay for, or indirectly or directly, and that's, to me, what it is. It's like, it's… I'm paying for a chunk of processing.
+Attendee: So, tokens… tokens have lots of different meanings, but in the context of…
+Attendee: In the context of AI and LLMs, it's a unit of work that you pay for, or indirectly or directly, and that's, to me, what it is. It's like, it's… I'm paying for a chunk of processing.
 Cien - LaunchLemonade: Absolutely. So, if, by human teammates, we look at their budget, like, what's your base salary gonna be, maybe they'll have a commission, you know, like, all of these things, within the world of AI, when we're budgeting for AI, we're gonna look at token consumption and token pricing.
 Cien - LaunchLemonade: But that's essentially what it is. So if you're… if you're feeling a little bit overwhelmed with kind of like a technical definition of what a token is, just think, okay, if I'm gonna deploy.
 Cien - LaunchLemonade: an AI agent, and it's gonna serve thousands or hundreds of thousands of people, and it's gonna be used by my team so many times, I'm gonna look at the token budget. Like, what…
@@ -180,12 +180,12 @@ Cien - LaunchLemonade: So when I talk about AI agents, I'm actually talking abou
 Cien - LaunchLemonade: can we delegate, to, to AI? Now, give me one second, because it's getting dark, I just have to switch my lights off.
 Ella Molony Cook: Guys, any questions?
 Cien - LaunchLemonade: Clippy and Microsoft, the original consumer-facing agent. That is true, we want Clippy back.
-Micah: Actually, I have a quick question. Obviously, you can have these harnesses in place, but, you know, I think
-Micah: at least what I've heard is that most developers have the skills to bypass the harness infrastructure, so unless there's additional safeguards, sometimes you're still running the risk
-Micah: them being able to bypass the guardrails that are in place if they have ill intent. And the only way to prevent that is from, like, creating encryption or making sure that you're, you know, keeping sensitive data out of
-Micah: You know, not being able to be accessed, but that obviously then undermines the value of the tool itself.
-Micah: Have you come across that, and what's… what would you recommend as a good balance between, sort of, creating things that are clunky and don't work well together and slow down
-Micah: efficiency versus making sure that folks can… don't just bypass things because they get frustrated, like when they go to the, you know, open version of ChatGPT or whatever, because they don't like the enterprise rules, or they don't want to see their employer, you know, have their employer see what they're prompting.
+Attendee: Actually, I have a quick question. Obviously, you can have these harnesses in place, but, you know, I think
+Attendee: at least what I've heard is that most developers have the skills to bypass the harness infrastructure, so unless there's additional safeguards, sometimes you're still running the risk
+Attendee: them being able to bypass the guardrails that are in place if they have ill intent. And the only way to prevent that is from, like, creating encryption or making sure that you're, you know, keeping sensitive data out of
+Attendee: You know, not being able to be accessed, but that obviously then undermines the value of the tool itself.
+Attendee: Have you come across that, and what's… what would you recommend as a good balance between, sort of, creating things that are clunky and don't work well together and slow down
+Attendee: efficiency versus making sure that folks can… don't just bypass things because they get frustrated, like when they go to the, you know, open version of ChatGPT or whatever, because they don't like the enterprise rules, or they don't want to see their employer, you know, have their employer see what they're prompting.
 Cien - LaunchLemonade: You're asking the right person, because I experienced all of that. So, a lot of my clients are in regulated spaces.
 Cien - LaunchLemonade: So whether they're regulated by the FCA, I've had to apply for Texas RAMP, which is the Texas, kind of like, version of GDPR. And we've had to prioritize that because we think that that's more important than some of the crazy features that are out there, so…
 Cien - LaunchLemonade: I think that understanding your audience will allow you to build the right things. And because I understood that the audience that I want to cater for needs security.
@@ -200,8 +200,8 @@ Ella Molony Cook: I wonder what Australia did, you know? Like, why are we gettin
 Cien - LaunchLemonade: they… I don't think it was a target, but there was a press release announcement by your government, actually, which is quite… so it was really interesting. They didn't even know.
 Ella Molony Cook: That was a joke. That was a joke, but it was just funny.
 Cien - LaunchLemonade: Okay. It was really funny. I don't even… I don't wanna… yeah, but anyway.
-Micah: Actually, to that point really quickly, if the people who are creating these things don't know why they're going rogue.
-Micah: How can we then basically go to our clients, or whomever and assure them that if they are going to allow agents, that they're also not going to go rogue? Because if the people who are creating them don't know the reason, or at least not telling us, how can we effectively then make sure that we're coming up with a good solution to prevent it from happening?
+Attendee: Actually, to that point really quickly, if the people who are creating these things don't know why they're going rogue.
+Attendee: How can we then basically go to our clients, or whomever and assure them that if they are going to allow agents, that they're also not going to go rogue? Because if the people who are creating them don't know the reason, or at least not telling us, how can we effectively then make sure that we're coming up with a good solution to prevent it from happening?
 Cien - LaunchLemonade: So it depends… so you can choose the model. So there are different models, right? And the models that were able to do that are the latest models. So you got the Fable 5.1 and the 6 Astra are kind of like the models that we think and are proven that can
 Cien - LaunchLemonade: go rogue. Now, the older models, if we're wanting to build specific solutions for our clients, there's a lot of tests and study on the other models that just follow your rule set. You can build a harness, which, you know, like, we can, again, there are different harnesses, you can white-label harness, you can build your own harness.
 Cien - LaunchLemonade: That, one, chooses a model that, is reliable, and two, you can set it… set your harness up so your data is encrypted.
@@ -347,15 +347,15 @@ Cien - LaunchLemonade: And some of our users have generated thousands, added yea
 Cien - LaunchLemonade: Chucking their frameworks and strategies in an agent, and then selling it out.
 Ella Molony Cook: Okay, ladies and gentlemen, raise your hand if you have a question. We have 6 minutes.
 Ella Molony Cook: Speed fire crap, rapid questions.
-Micah: I have a quick question. So, once we get to the monetization part.
-Micah: You know, some people want to do, like, the app stores, and I know there are, you know, rev share agreements and restrictions and other things that you have to go through. If you do it this route, you can still monetize without having to basically go through the app stores, is that correct? Unless you want the obvious… the additional visibility, or I guess.
-Micah: Accessibility, that somebody wouldn't have to just come to your website.
-Micah: together.
+Attendee: I have a quick question. So, once we get to the monetization part.
+Attendee: You know, some people want to do, like, the app stores, and I know there are, you know, rev share agreements and restrictions and other things that you have to go through. If you do it this route, you can still monetize without having to basically go through the app stores, is that correct? Unless you want the obvious… the additional visibility, or I guess.
+Attendee: Accessibility, that somebody wouldn't have to just come to your website.
+Attendee: together.
 Cien - LaunchLemonade: No, yeah, this is… Stripe is already connected in there, so you just add your bank details through Stripe.
 Cien - LaunchLemonade: And then… and then Stripe processes all of our payments, and there's a rev share of 10% to us, and 90% to you, currently.
 Cien - LaunchLemonade: And Stripe just processes all of that. So the… the… that pays for our… for the API costs, and managing your customer data within our platform as well.
 Cien - LaunchLemonade: And then how did you decide…
-Micah: Oh, sorry, I was gonna say, and how do you decide how much to charge?
+Attendee: Oh, sorry, I was gonna say, and how do you decide how much to charge?
 Cien - LaunchLemonade: We've… we've mostly left that to our customers. We have someone who's charging… the biggest that I've seen is $2,500 per year, was the plan.
 Cien - LaunchLemonade: And I have seen, I've seen, I've seen the payments getting processed for, for that. So imagine if you have, like.
 Ella Molony Cook: Was it a white male?
@@ -377,10 +377,10 @@ Ella Molony Cook: we're going to be doing a specific onboarding session that's j
 Ella Molony Cook: too advanced, we're gonna have breakout rooms so that we can… you can jump into the right level for you. So, we have two grants that are coming up, which is really exciting. One includes a Web Summit Lisbon ticket, that'll go out in the email after this as well, but we do have two minutes left, so anyone that has a burning question…
 Ella Molony Cook: Or just wants to share their thoughts on where… how they would actually monetize their IP.
 Ella Molony Cook: Indra, love you.
-Indra K.: I'm happy to go.
-Indra K.: Hey, big fan. Explained a lot of things that are really hard to explain really easily, and some things that I haven't heard people talk about, like security and things like that, so thank you for that.
-Indra K.: I am just, in my brain, thinking through, like, the different aspects of what I can turn in… things that I've wanted to turn into agents, and I didn't quite know how to…
-Indra K.: create such a sophisticated agent, so I'm just so excited. I'm just so excited, that's what I will say. So no questions, just a big, giant, like, shout out, so… and with some, like, ideas of where I'm going.
+Attendee: I'm happy to go.
+Attendee: Hey, big fan. Explained a lot of things that are really hard to explain really easily, and some things that I haven't heard people talk about, like security and things like that, so thank you for that.
+Attendee: I am just, in my brain, thinking through, like, the different aspects of what I can turn in… things that I've wanted to turn into agents, and I didn't quite know how to…
+Attendee: create such a sophisticated agent, so I'm just so excited. I'm just so excited, that's what I will say. So no questions, just a big, giant, like, shout out, so… and with some, like, ideas of where I'm going.
 Cien - LaunchLemonade: Love.
 Ella Molony Cook: So, my last thought is, we want to do more immersive, in-real-life events, Shen and I. So, we're going to keep you guys in the loop of that, because I think right now, like, I just love Shen so much, because she…
 Ella Molony Cook: literally in 60 min- like, 50 minutes, because I took 10 at the start, just crushed that. So, first of all, thank you. Second of all, we've dropped your LinkedIn profile, but if there's any other links that you want to send out, please let me know. But otherwise, community, thank you so much for showing up today. Your time is such an asset, and we appreciate your time spent with us.

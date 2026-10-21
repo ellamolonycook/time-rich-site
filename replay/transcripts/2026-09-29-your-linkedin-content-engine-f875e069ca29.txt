@@ -52,11 +52,11 @@ Ella Molony Cook: your granola, whatever you use, so on and so forth. So, what w
 Ella Molony Cook: Or no? Yes? Okay, great. So this is something that I was doing this morning, because I was actually like, you know what, I'm walking in on LinkedIn, and…
 Ella Molony Cook: I think right now, like, if you are someone that wants to build a personal brand, and you don't love recording and editing reels all the time, like, LinkedIn and Substacks are your best tools. And so I was like, I actually want to do a optimizer. So all I did here was run the skill, and those skills are in that folder that you're currently pulling up.
 Ella Molony Cook: I gave it my LinkedIn profile, and then what I gave it is actually a Notion hub, and I will show you that in a second, because I want to…
-Annie Barker: We're still seeing your Substack. Is that what we're supposed to be seeing?
+Attendee: We're still seeing your Substack. Is that what we're supposed to be seeing?
 Ella Molony Cook: Thank you. No.
-Annie Barker: Yeah, you're fine.
+Attendee: Yeah, you're fine.
 Ella Molony Cook: Perfect.
-Annie Barker: Thanks.
+Attendee: Thanks.
 Ella Molony Cook: Change that.
 Ella Molony Cook: Okay.
 Ella Molony Cook: So…
@@ -76,9 +76,9 @@ Ella Molony Cook: And I'm just gonna pause for a second, because I know everyone
 Ella Molony Cook: As well as the LinkedIn Profile Optimizer. These are the two that I would like you guys to put in right now. The Audit and the LinkedIn Profile Optimizer.
 Ella Molony Cook: So I'm gonna give you guys a second to do that, I'm gonna keep chatting.
 Ella Molony Cook: If you feel like doing this later, totally fine.
-Al Leisengang: Ellen, I can only do this if I have Substack, right? I have to…
+Attendee: Ellen, I can only do this if I have Substack, right? I have to…
 Ella Molony Cook: No, so you… all you have to do when you come into the Substack is you just have to scroll down. Obviously, you're going to put your email address inside of here, you can be a free member, that's totally fine, and then you come in here, and then you click the link.
-Al Leisengang: Got it, okay, thank you.
+Attendee: Got it, okay, thank you.
 Ella Molony Cook: And then it'll open up here. And then all you're going to do is download the audit and then the profile optimizer.
 Ella Molony Cook: Now, I want to show you what my profile optimizer output looked like. So, what I like to do is have a sexy Notion portal, because my… I'm like a visual learner.
 Ella Molony Cook: And I think, like, I get too many Google Docs all over the place that I like to link back in here. So what I do is I created, actually today, is we're going through and we're building out every single department for our accelerator. So the master doc that's going to be, like, this
@@ -89,9 +89,9 @@ Ella Molony Cook: perfect, right? I'm gonna give my own feedback to it, but I th
 Ella Molony Cook: obviously, you're gonna have your own discernment of what your LinkedIn profile should look like, but I think it's important, before we go into all of the branding stuff, and how to create content with AI, that we're… we're… we have our LinkedIn profile optimized.
 Ella Molony Cook: How are we going with actually embedding the skills? Does anyone need support?
 Ella Molony Cook: It's a.
-Annie Barker: Yeah, sorry. So, when I upload it, the link… the audit is, like, a dot skill, but then the optimizer is a zip. Will it… it… is… am I doing something wrong?
+Attendee: Yeah, sorry. So, when I upload it, the link… the audit is, like, a dot skill, but then the optimizer is a zip. Will it… it… is… am I doing something wrong?
 Ella Molony Cook: No, that's totally fine.
-Annie Barker: Okay, great, thanks.
+Attendee: Okay, great, thanks.
 Ella Molony Cook: Yep.
 Ella Molony Cook: Perfect. So, the important part that I think with AI that I've learned very quickly is that we need to keep, like… I have so many different projects, and I think it's great because my mind works so quickly.
 Ella Molony Cook: The part that I think is important for you guys is that once you are very happy with your ICP, your tone of voice document, all of the pieces of collateral of output that you can go in and scrape, where the AI is pulling from your granola, all of these things, there's two pieces that I think is really important to have.
@@ -106,10 +106,10 @@ Ella Molony Cook: table that has all of your stories, your products, your testim
 Ella Molony Cook: pieces. And we actually do not have a shortage of content. Like, if you are using an AI note-taker, you have too much content. It's about discerning where is the pieces that are actually going to make me visible in the right way.
 Ella Molony Cook: So obviously I'm not going to be posting. If I just posted educational content, people don't actually relate to me.
 Ella Molony Cook: They're they're not actually attached to my journey and and what I'm doing. So I think it's really important inside of this story bank is to have your personal pillars of the stories that you want to come in with, and then also like your entrepreneurial stories. And then obviously you can you can keep continuing this. And this is also really helpful if you're wanting to outsource content in the future, which is definitely my goal.
-Kamil Homsi, GRC Investment Group (SFO)-Dubai: Utah.
+Attendee: Utah.
 Ella Molony Cook: Sorry?
 Ella Molony Cook: That might have just been on mute. Okay. Did we get the skills uploaded?
-Annie Barker: Yes.
+Attendee: Yes.
 Ella Molony Cook: Yes, Annie. That's what I love to hear. So… You are coming through, you are running your… your profile optimizer.
 Ella Molony Cook: The second skill that we are going to be running is an audit for LinkedIn for your ICP. So it's going to… so inside of this skill, what I've asked it to do is ask you a series of questions. Inside of skills that you're pre-building for yourself.
 Ella Molony Cook: Make sure that you're always getting it to ask you clarifying questions. And this is the part where I think we're over-complicating, like, prompts and skills and all of that. This is just a conversation. So I want to create a skill for us right now, because I think what's really important is, yes, there are these templates, that's amazing, but one thing that we all can be doing… And I'm just gonna… talk to AI right now.
@@ -196,38 +196,38 @@ Ella Molony Cook: It's like an investment advisor. Do your own research, I am no
 Ella Molony Cook: I mean, it's not going anywhere, I don't think. But, you know, I'm not.
 Ella Molony Cook: I'm not deep into the, to the, content creation space. This is a new world for me, and that's why I'm like, okay, I have to make this easy, I have to make this frictionless, but I have to do it. As a business owner, you're now a content creator. Because it is what it is. I'm gonna pause there, and let's check the chat box. Does Stanley actually create content for… yes. I wish I could show you guys, actually.
 Ella Molony Cook: I just got a new laptop, and I was thinking it was gonna help me… Like, because I have so many tabs open as, like, a… Person that has scatterbrain. But I can feel my laptop's, like, overheating right now, so I apologize that I can't get this platform up.
-Annie Barker: I'd like your little second monitor.
+Attendee: I'd like your little second monitor.
 Ella Molony Cook: Do I have a second monitor?
-Annie Barker: Yeah, you should get, like, a little one.
+Attendee: Yeah, you should get, like, a little one.
 Ella Molony Cook: I know, it's just like…
-Annie Barker: You're like, not right now, Annie.
+Attendee: You're like, not right now, Annie.
 Ella Molony Cook: Trying to, I'm trying to actually get rid of stuff.
-Annie Barker: Yeah, totally.
+Attendee: Yeah, totally.
 Ella Molony Cook: you.
-Annie Barker: Okay, so it, like, will create, like, it… okay, so you have your idea, whatever, it makes the post in LinkedIn, and then it will be like, okay, does this look good? You can press yes, and then it will actually, like, post it on LinkedIn.
+Attendee: Okay, so it, like, will create, like, it… okay, so you have your idea, whatever, it makes the post in LinkedIn, and then it will be like, okay, does this look good? You can press yes, and then it will actually, like, post it on LinkedIn.
 Ella Molony Cook: So you go in and you schedule the time, the day, so on. I haven't done that through, messaging it. I do that actually in the web platform. So when you sign up, you can text it, and then it'll give you this little link. So I'll just bring this back up on the screen. In this link, this is where it's going to be taking me to the web platform. So inside of here… Let me just… I don't know if you guys can see that.
 Ella Molony Cook: But it's… it's creating drafts from me, from my note-taker, and then it's also looking at my great posts that have done really well, and thinking about, like, how can I repurpose it?
 Ella Molony Cook: And then the other part that I think is really important to know about this platform is you can go in there and create skills. So there's a whole brain function inside of Stanley, where it's taking your… so you… you will drop in your… all of your social medias, and then you'll drop in, like, your website. Obviously, all of the things that it's gonna just pull all of the data, and then you can go in and edit that data inside of the platform. So if there's anything that's, like, just not correct, that's where it's
 Ella Molony Cook: I think they've done really well, because
 Ella Molony Cook: they've created, a space where it's like, okay, we know that having a brain and having your second brain and all of your data organized, you even have all of your images, where, from every single LinkedIn post, like, I kind of thought that was cool, because I was like, okay, I can actually repurpose photos, because who… no one goes back through and scrolls through your LinkedIn. Unless they're really stalking you, which, I mean, it's quite flattering, but kind of creepy.
-Annie Barker: So do you use, yeah, that makes… so then, like, let's say you go and you, like, update a couple things in there, then is there, like, a big green button that says, like, post on LinkedIn now?
+Attendee: So do you use, yeah, that makes… so then, like, let's say you go and you, like, update a couple things in there, then is there, like, a big green button that says, like, post on LinkedIn now?
 Ella Molony Cook: Yep.
-Annie Barker: Oh, okay, perfect.
+Attendee: Oh, okay, perfect.
 Ella Molony Cook: Yeah.
-Annie Barker: Do you know if that happens in other platforms, or is it really just LinkedIn that you feel like is the strongest right now that it's working for?
+Attendee: Do you know if that happens in other platforms, or is it really just LinkedIn that you feel like is the strongest right now that it's working for?
 Ella Molony Cook: So, as I said, I have only been using it for LinkedIn. Substack, I don't like it for. I'm not going in and doing reels inside of there, that's just not my POV, but I think Twitter, like X, will be really good for, because it's like.
 Ella Molony Cook: it's… it's written, it's easy. But I, like, for me, right, I actually did do a LinkedIn post the other day, and it went semi-viral, and it was posted from Stanley. And that's why I know the algorithm doesn't hate it, because there's been some scheduling tools that I haven't liked, because I'm like, oh, I post it, and then there's just crickets.
 Ella Molony Cook: So I think it's really about seeing if the platform itself, like, trial things out, you know? Don't take my word for it, you guys have to get in there and kind of get your hands a little bit dirty, but it's the easiest platform on planet Earth, and you guys are never gonna have an issue with it, because you're able to just talk to it and text it. So that's been really fun to play around with.
-Annie Barker: Great. And then do you combine Stanley with that, like, Notion Claude version? And, like, can you elaborate a little bit on that? Because I can't, like, I'm, I don't understand exactly how you're, like, combining them.
+Attendee: Great. And then do you combine Stanley with that, like, Notion Claude version? And, like, can you elaborate a little bit on that? Because I can't, like, I'm, I don't understand exactly how you're, like, combining them.
 Ella Molony Cook: So, anytime with any AI platform, whether it's something like this that's more of, like, a consumer product, so this is not for enterprise client, like, this is for your personal brand. You can't go in and connect your company into it, but, like, and you can't have team members. So, any AI tool, it needs to have data that it's pulling from, whether it's your website. I like Notion, like, not everyone likes this. Me and Laura talk about it, like, she doesn't like it.
 Ella Molony Cook: everyone has their own perspective, but what I think is important is having it in Google Docs, Notion, any kind of tool where a lot of
 Ella Molony Cook: AI platforms are going to integrate with. So, like, Google Drive is never going to go anywhere. Like, you're always going to have Google Docs that you're able to pull from. I never want to pigeonhole myself into one platform, because then when I decide to move to Grokbot, because all of a sudden, you know, Elon's figured out the coolest AI tool ever, I'm like.
 Ella Molony Cook: fuck, damn, like, I am now stuck in this one platform. So, think about Notion, this second brain, as really just a filing system for everything that's important into your business. So…
 Ella Molony Cook: I don't care what platform you use with that, it just… you just have to do it, because, right now, your data and having that easily accessed is the thing that's gonna make AI useful. Without that, it's like… What's the point?
-Annie Barker: Whatever you've been doing, exactly. Okay, thank you. So then will you be like, Stanley, look at my Notion content brainstorm database, and, like, pick what I should do next? Like, are you almost talking…
+Attendee: Whatever you've been doing, exactly. Okay, thank you. So then will you be like, Stanley, look at my Notion content brainstorm database, and, like, pick what I should do next? Like, are you almost talking…
 Ella Molony Cook: No, with Stanley, no. So that's more with Claude. So that's the differentiation, is Stanley does that. You don't, like, you don't need to have Notion, you just need to have context of your business. So, Notion is not as important if you're not, like.
 Ella Molony Cook: I use Notion for my CRM, like, how to manage all different types of data, not just content. But I think what's important when it comes to Stanley is, like, Stanley's really doing it all for you. You don't need to have many other bells and whistles, because it's that… it already lays it out in a pretty format.
-Annie Barker: Yeah. Okay. So Stanley is, like, my true, you know, social media manager that I.
+Attendee: Yeah. Okay. So Stanley is, like, my true, you know, social media manager that I.
 Ella Molony Cook: Yeah, exactly. So one last thing that I want you to make you guys aware of.
 Ella Molony Cook: And I'm… was pretty audacious, and I think everyone that's in my community would have seen this. I am really excited because I have officially launched the Accelerator, and this for me was… okay, this 60-minute workshop is helpful, of course, but at the same time.
 Ella Molony Cook: I'm still learning about AI. I am not someone that's going to sit here and be like, I know everything about AI. I understand systems, and I understand how to delegate. I understand how we need to leverage humans a part of this process. I have brought in some of the top individuals that are backed by A16Z, that are working with Google, Adobe, L'Oreal as their AI trainer. These individuals are in rooms and building live, and I think a lot of
@@ -241,44 +241,44 @@ Ella Molony Cook: you're able to bring someone that is going to keep you account
 Ella Molony Cook: I talk to individuals all the time around this, because you need to be surrounded by individuals that you're collaborating with, whether it's interns, whether it's your business partner, but you have to have people that you're talking to about your AI system, because that conversation is going to be context to help AI understand what you need to delegate. So, we're doing this two-for-one deal, we have an early bird special.
 Ella Molony Cook: I'm not a salesy person, but this means the world for me. If you know someone that's struggling with AI, please invite them to a call, invite them to the accelerator, and I'm really grateful for all of you for staying over to the end. If there's any questions, I'm happy to stay on and answer. I have time, but otherwise…
 Ella Molony Cook: I love how we have one male. Hi, male!
-Laura Treganowan: Thanks, Ella.
+Attendee: Thanks, Ella.
 Ella Molony Cook: Bye.
-ThiersSantos: I love it. Thank you for for all the tips. I I figured that it more folks for women, right? But was really useful as well.
+Attendee: I love it. Thank you for for all the tips. I I figured that it more folks for women, right? But was really useful as well.
 Ella Molony Cook: No, no, we're opening up the community for everyone. We started out as women, we still have, like, women-led events, but, no, this is open community, it's just… sometimes it's rare, because we started out that way, so I'm grateful for you joining, and if there's anything we want answered, I'm happy to go into it. Otherwise.
-ThiersSantos: Yeah, that's great, that was great, that was awesome. Thank you very much.
+Attendee: Yeah, that's great, that was great, that was awesome. Thank you very much.
 Ella Molony Cook: Thank you, guys.
-Aycin Demir: Hi Ella, can.
-Lauren B: the.
-Aycin Demir: Good question.
+Attendee: Hi Ella, can.
+Attendee: the.
+Attendee: Good question.
 Ella Molony Cook: Do you have that?
-Aycin Demir: Do you have a Stan Store account?
+Attendee: Do you have a Stan Store account?
 Ella Molony Cook: You know, it's something that I really should. Okay. So thank you for calling me out.
-Aycin Demir: No, because I don't as well, but I know that's where Stanley's especially like grow right from those.
+Attendee: No, because I don't as well, but I know that's where Stanley's especially like grow right from those.
 Ella Molony Cook: Yeah.
-Aycin Demir: Or like this kind of thought leadership where you can actually sell that as a digital product kind of thing. So I am investigating as well, but I also I am like you, like I know I'm behind, but I'm also staying behind happily, kind of in a way.
+Attendee: Or like this kind of thought leadership where you can actually sell that as a digital product kind of thing. So I am investigating as well, but I also I am like you, like I know I'm behind, but I'm also staying behind happily, kind of in a way.
 Ella Molony Cook: Well, the thing about that is I don't have a large audience and I think Stanstor works really well for people.
-Aycin Demir: Mubarak.
+Attendee: Mubarak.
 Ella Molony Cook: have bigger like short form content, whereas I'm more focusing on Substack as my paid like like $8 per month.
-Aycin Demir: Yeah, yeah, yeah.
+Attendee: Yeah, yeah, yeah.
 Ella Molony Cook: Because I'm able to give, like, tangible value, whereas, like, yeah, so I'm not there yet for a standstall, but I do think it's something, because you do have to pay a monthly subscription.
-Aycin Demir: Okay.
+Attendee: Okay.
 Ella Molony Cook: I'm, I'm also at that journey of my life where I have so many subscriptions. I'm like, do I really need another one?
-Aycin Demir: Yeah, yeah, yeah, yeah.
+Attendee: Yeah, yeah, yeah, yeah.
 Ella Molony Cook: But it is something where I do think where you have an offer where people can go and just purchase without you, and it's a little bit more… you know, Substack is like you're… obviously you're reading something, but I think there's… you can have better offers, and the… the back end of the data is really important, because, you can purchase all within the stand store, and I know people that have made a lot of money through that, so I think it's something to look into, for sure.
-Aycin Demir: Yeah, yeah. Thank you.
+Attendee: Yeah, yeah. Thank you.
 Ella Molony Cook: Of course. Thanks for joining.
-SE: Ella, I have a quick question.
+Attendee: Ella, I have a quick question.
 Ella Molony Cook: Of course.
-SE: So the session that you laid out is the one on Wednesday going to be the same one as we just did today, or is it is every day different?
+Attendee: So the session that you laid out is the one on Wednesday going to be the same one as we just did today, or is it is every day different?
 Ella Molony Cook: Every day is different, because what it does, it actually helps me, with Substack, because every time I'm doing a, workshop, I'm always gonna give the value through Substack, because it's a way where I'm like, okay, at least, like, obviously, for me, I'm like, I want to make sure I keep consistent on that platform. So if there's anything that you actually want to… me to go through.
 Ella Molony Cook: please let me know, like, anything around the content creation side, or agents. I'm always here to serve if there's something specific.
-SE: Yeah, thank you for letting me know. I'm gonna be on the journey every single day, every single one, so if there's anything that comes up, I'll definitely shout out. Thank you so much again.
+Attendee: Yeah, thank you for letting me know. I'm gonna be on the journey every single day, every single one, so if there's anything that comes up, I'll definitely shout out. Thank you so much again.
 Ella Molony Cook: Please do. And I hope you're having you're in London right now?
-SE: I am.
+Attendee: I am.
 Ella Molony Cook: Good. I didn't get to get there this year, but I now have a partnership with the NED, and so I'm doing work…
-SE: You did.
+Attendee: You did.
 Ella Molony Cook: Yeah, I'm doing workshops in New York that we're planning right now , for November. And so they have the Ned London. So as long as I crush these upcoming ones, then I will keep you in mind when we, you know, move out to London. 'cause that's, it is something I know it's really on my radar, but I don't wanna go in winter 'cause it just is too depressing.
-SE: Exactly. Definitely. Let me know when you're coming next and also when you're starting at the NED as well. I want to help as much as possible. Thank you.
+Attendee: Exactly. Definitely. Let me know when you're coming next and also when you're starting at the NED as well. I want to help as much as possible. Thank you.
 Ella Molony Cook: Yeah, I appreciate that.
-SE: Thank you!
+Attendee: Thank you!
 Ella Molony Cook: Thank you. Bye, guys. Have a good one.

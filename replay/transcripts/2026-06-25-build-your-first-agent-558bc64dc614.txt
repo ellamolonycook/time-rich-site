@@ -4,12 +4,12 @@ Transcript generated automatically from the recording, so expect the odd mishear
 
 Ella Molony Cook: Ew, it's been a while.
 Ella Molony Cook: Give me 2 seconds, guys… We have Europe. Hi, Lena.
-Lena KADRIU: Need a switch.
+Attendee: Need a switch.
 Ella Molony Cook: Switzerland! Elena! I went to Switzerland for the first time this year, actually.
-Elena de Weck: Whereabouts?
+Attendee: Whereabouts?
 Ella Molony Cook: I went to the WEF, and then I went snowboarding…
 Ella Molony Cook: oh my god, it's not coming to me, the name, but it was, like, an hour outside of, the WEF, and I loved it. It was, like, beautiful food, beautiful skies, so thank you for tuning in, I know it's late for you.
-Elena de Weck: Not too late, but you're welcome to come back.
+Attendee: Not too late, but you're welcome to come back.
 Ella Molony Cook: Yes, absolutely.
 Ella Molony Cook: Okay, cool, so everyone's kind of flowing in.
 Ella Molony Cook: I'm gonna give everyone another minute, and we're gonna get on started. While we're waiting for everyone to join… oops, I'm going to reshare my screen.
@@ -57,21 +57,21 @@ Ella Molony Cook: And so what I'm gonna do here, let me just double check… Per
 Ella Molony Cook: So it says here, number 7, stop immediately if any warning, capture, or restrictions appears. And it also says inside of here, if they doesn't know,
 Ella Molony Cook: I need to manually review that list. So I'm going to approve that. What we're going to be setting up is a couple of things to run in the background, so that I can come back and show you the output.
 Ella Molony Cook: Is there anything that you specifically would love for me to go through today? If it's… I would love to, like, have this a really interactive, live conversation. Lena, you just unmuted yourself, do you want to share something?
-Lena KADRIU: I used to use ChatGPT a lot, and I was wondering if they do the same, like, this Chrome extension, or… I don't know if you have experience only with Cloud.
+Attendee: I used to use ChatGPT a lot, and I was wondering if they do the same, like, this Chrome extension, or… I don't know if you have experience only with Cloud.
 Ella Molony Cook: So, I'm gonna refer everything to Claude as I'm an investor in Anthropic, and that's not because I'm biased of… I actually do use ChatGPT for things. I don't know about the Chrome extension, but I would ask chat, do you have a Chrome extension? The other thing that I will mention is…
 Ella Molony Cook: there are certain AIs that are better for specific things. Like, ChatGPT, I use a lot of visual, you know, identity, whereas Claude kind of stuck at the visual side. So.
 Ella Molony Cook: when we're thinking about AI, I would have a conversation, also, with your AI and say, hey, these are the types of things that I'm actually doing inside of my company. I'd love for you to give me a breakdown of what inside of Reddit people are saying is the best tool for X, Y, and Z. Because I don't have time, obviously, to go through what everyone's doing and really understand.
 Ella Molony Cook: But AI will be able… Reddit is a great place for it to go and sift through.
 Ella Molony Cook: Baleen.
 Ella Molony Cook: Hi.
-Belén Cusi: Hey, it's been letting.
+Attendee: Hey, it's been letting.
 Ella Molony Cook: Berlin.
-Belén Cusi: It's good to meet you, it's good to be on, and it's really cool to meet other women, and just people generally really excited about this. There's also an echo, I don't know who's… maybe it's mine, I don't think so.
-Belén Cusi: I have a few specific questions. One is kind of what we talk about when we talk about agents, and is it just the projects and chats inside…
-Belén Cusi: Is that my… sorry, is that my… is that me? Oh, it is.
+Attendee: It's good to meet you, it's good to be on, and it's really cool to meet other women, and just people generally really excited about this. There's also an echo, I don't know who's… maybe it's mine, I don't think so.
+Attendee: I have a few specific questions. One is kind of what we talk about when we talk about agents, and is it just the projects and chats inside…
+Attendee: Is that my… sorry, is that my… is that me? Oh, it is.
 Ella Molony Cook: there.
-Belén Cusi: Hold on.
-Belén Cusi: I'll just type him in the chat then, while I troubleshoot this.
+Attendee: Hold on.
+Attendee: I'll just type him in the chat then, while I troubleshoot this.
 Ella Molony Cook: Okay, no worries. Perfect.
 Ella Molony Cook: Okay, cool. So, inside of Time Rich, right, I run a couple of different businesses, but inside of Time Rich, these are the core buckets inside of my business, right? So, we have events, social media, community, PR, and then I have time things that I really importantly block, which I like to write down, when I think about AI. Now, when I think about, actually, the team that I've
 Ella Molony Cook: built for Time Ridge. I don't have any team members, it is just my AI agents.
@@ -117,7 +117,7 @@ Ella Molony Cook: Whether that's searching the web, whether that's putting a cal
 Ella Molony Cook: But what it starts to get really interesting is when, if you have a team, drop a 1 in the chat, I'm really curious.
 Ella Molony Cook: How is this different from prompting an agent versus Claude to act?
 Ella Molony Cook: So…
-Belén Cusi: That was for the notebook element, that was for the.
+Attendee: That was for the notebook element, that was for the.
 Ella Molony Cook: Oh, oh, oh, oh, okay, okay, got you. So, it's funny, like, I think of Notebook LLM not as much as, like, an agent, as more of just, like, obviously a conversational tool, because yes, it's going out to the internet, but it's not really doing anything on my behalf.
 Ella Molony Cook: But it's interesting to take that data and then store it back inside of here. So there's been a couple of things, I just want to come back to this workspace. There's been a couple of things that I've actually taken from Notebook LLM because of a specific health coach.
 Ella Molony Cook: popped it into my workspace so that every time, my AI inside of this workspace, it's pulling data from here.
@@ -242,15 +242,15 @@ Ella Molony Cook: one-on-one coaching is very much for someone that is ready to 
 Ella Molony Cook: There you go. Great.
 Ella Molony Cook: Now, I have KK. Hi, KK!
 Ella Molony Cook: You had a question?
-KK: Thank you so much for, all the information you're sharing.
+Attendee: Thank you so much for, all the information you're sharing.
 Ella Molony Cook: Of course.
-KK: I just wanted to ask around the… just because my screen is blurry, I don't know if it's my settings, or if it's…
-KK: Yeah, I think it may be my Zoom settings. What was in the $4,500 package? It's very blurry, so I couldn't see exactly what's in there.
+Attendee: I just wanted to ask around the… just because my screen is blurry, I don't know if it's my settings, or if it's…
+Attendee: Yeah, I think it may be my Zoom settings. What was in the $4,500 package? It's very blurry, so I couldn't see exactly what's in there.
 Ella Molony Cook: everything on this screen is going to come to you in an email as well, so if there's any questions, you're able to respond to that email, and we'll be able to dive into that deeper. Okay, thank you. Is anyone else, everyone else's, drop a 1 if your screen is blurry.
 Ella Molony Cook: Only if your screen is blurry.
 Ella Molony Cook: Oh, you're… oh, there's a couple screens blurry. Oh, interesting.
 Ella Molony Cook: Let me just change…
-Indra K.: There's usually a difference between… It's usually a difference between your resolution and our resolution, so…
+Attendee: There's usually a difference between… It's usually a difference between your resolution and our resolution, so…
 Ella Molony Cook: Oh, okay.
 Ella Molony Cook: Thank you, Indra, I appreciate that. Okay, so what does this look like when I talk about keeping your data organized, and how do we actually set up an AI operating system?
 Ella Molony Cook: So, you're gonna start off with making sure if you do have multiple projects or multiple clients that you're working on, you're gonna wanna separate that data. And it starts with this.
@@ -294,17 +294,17 @@ Ella Molony Cook: A couple of times, hopefully, but we're not handing over the f
 Ella Molony Cook: Pause there for a second.
 Ella Molony Cook: And I want to show you a couple of things, because I think it's really important.
 Ella Molony Cook: Because I know we're running out of time, but I will stop.
-Belén Cusi: I was curious, I had a quick question about the back end, like, your local folders, because that's where I get tricked in.
+Attendee: I was curious, I had a quick question about the back end, like, your local folders, because that's where I get tricked in.
 Ella Molony Cook: the… your folders.
-Belén Cusi: Yeah, cause all of that ultimately… or does it only live in Notion, or do you have, like, on your local drive?
+Attendee: Yeah, cause all of that ultimately… or does it only live in Notion, or do you have, like, on your local drive?
 Ella Molony Cook: Yeah, so it has to live in your drive. I personally want it in my iCloud, because I get nervous that, like, what if I lose my laptop? But none of it is in Notion when it comes to using agents, it's all in your normal desktop.
-Belén Cusi: And did you have to reorganize that, like, by entity and, like, by function, and do you do shared services across different entities, or not? That's been a hang-up for me.
+Attendee: And did you have to reorganize that, like, by entity and, like, by function, and do you do shared services across different entities, or not? That's been a hang-up for me.
 Ella Molony Cook: your audio's a little bit…
-Belén Cusi: I don't know…
+Attendee: I don't know…
 Ella Molony Cook: But, I'm gonna say that when it comes to separate businesses, no, I don't have agents going into other folders. It's very clear on their folder, their workspace, their markdown file, because they're not smart.
 Ella Molony Cook: they're not smart. Not yet. They are for specific things, but you have to give it that framework of giving it an identity, because every time you're starting from scratch, it doesn't know who they are. So they're reading the markdown file, and then being like, okay, now I know again, you know.
 Ella Molony Cook: Who am I?
-Belén Cusi: Okay, cool, I've put it in the.
+Attendee: Okay, cool, I've put it in the.
 Ella Molony Cook: Okay, perfect.
 Ella Molony Cook: I'll bring up the chat…
 Ella Molony Cook: What other security measures can be protected on personal data is?
@@ -333,44 +333,44 @@ Ella Molony Cook: Thank you, Jenny, Jess.
 Ella Molony Cook: Okay, Q&A. Feel free to raise your hand, because I know there was… I tried to get through everything before some folks had to jump off.
 Ella Molony Cook: But if you have time, Incredible.
 Ella Molony Cook: Thanks, Martha!
-Oksana Malysheva: Ella, can I just say, like, I know from my behalf, like, lots of compliments for doing this. This is amazing. And you're right, like, women are adopting AI a lot less than men, and I think that's what they were doing is priceless.
-Oksana Malysheva: I'm DC from Austin, so if you ever want to do a female-specific event for the founders, we could collaborate offline, but I just want to say this is super helpful and also super…
+Attendee: Ella, can I just say, like, I know from my behalf, like, lots of compliments for doing this. This is amazing. And you're right, like, women are adopting AI a lot less than men, and I think that's what they were doing is priceless.
+Attendee: I'm DC from Austin, so if you ever want to do a female-specific event for the founders, we could collaborate offline, but I just want to say this is super helpful and also super…
 Ella Molony Cook: Not like me.
-Oksana Malysheva: I hope universe pays you back, there's a lot of good karma for good work you're doing here.
+Attendee: I hope universe pays you back, there's a lot of good karma for good work you're doing here.
 Ella Molony Cook: No, I would… I love Austin. I went to South by Southwest one year, and I was like, oh my god, this place is so cool. And that's actually one other thing that you just brought up that I would love to mention, is if anyone is…
 Ella Molony Cook: is wanting to put together an event, whether that's virtually or in person and collaborate, I would absolutely love to, because the more education that we can get out to women faster, the better this movement is going to be. So I am actually doing a little bit of, like, chapter leads for specific locations that are, like, Austin, Texas.
-Oksana Malysheva: Yeah.
+Attendee: Yeah.
 Ella Molony Cook: So I would love to… I dropped my.
-Oksana Malysheva: Yeah.
+Attendee: Yeah.
 Ella Molony Cook: in the chat.
-Oksana Malysheva: Yeah, drop, yeah, I'll drop my email, and, yeah, so.
+Attendee: Yeah, drop, yeah, I'll drop my email, and, yeah, so.
 Ella Molony Cook: Perfect.
-Oksana Malysheva: That's a great… and I think I particularly love, because it's hard to have fun as a founder, and people forget about their health. So I think one of the things was, like, really remarkably valuable, the fact that we have a health coach and all that, I think.
+Attendee: That's a great… and I think I particularly love, because it's hard to have fun as a founder, and people forget about their health. So I think one of the things was, like, really remarkably valuable, the fact that we have a health coach and all that, I think.
 Ella Molony Cook: Given, like, We could do a meetup on that.
 Ella Molony Cook: 100%. It's also, like, AI, but with health. Like, there's so many.
-Oksana Malysheva: Yeah.
+Attendee: Yeah.
 Ella Molony Cook: like, that niches that we get stuck sometimes in the business world.
-Oksana Malysheva: So…
+Attendee: So…
 Ella Molony Cook: Actually, how do I need to be a better founder, leader, daughter, mother? There's so many ways.
-Oksana Malysheva: Which geographer are you in, Ella?
+Attendee: Which geographer are you in, Ella?
 Ella Molony Cook: I'm in New York right now.
-Oksana Malysheva: I'll connect you also, like, let's talk offline, I'll connect you with people in New York for, like, that could be great, female founders as well for this community.
+Attendee: I'll connect you also, like, let's talk offline, I'll connect you with people in New York for, like, that could be great, female founders as well for this community.
 Ella Molony Cook: Thank you so much, it means the world. Have a beautiful evening.
-Oksana Malysheva: I don't.
+Attendee: I don't.
 Ella Molony Cook: I mean, afternoon, gosh, what day is it?
-Oksana Malysheva: reality.
+Attendee: reality.
 Ella Molony Cook: Lena, if you want to unmute yourself… Yeah.
-Lena KADRIU: Daniela, first of all, I loved your speech, during Tech Week, the energy and the information you shared.
+Attendee: Daniela, first of all, I loved your speech, during Tech Week, the energy and the information you shared.
 Ella Molony Cook: Weird.
-Lena KADRIU: So, this is how I got to know you, and you were talking to so many people, so I didn't have a chance to say hi or talk longer. I just had a…
-Lena KADRIU: short conversation, and thank you so much for sharing this information. So, I wanted to know what exactly would be the role of chapter lead, and I was already… I have a PhD, and I work with students.
-Lena KADRIU: And taught them about innovation and management, and then I quit because 5 years ago, I pivoted to having my own startup. I wanted to actually, see what I'm preaching. So this is the phase. I love AI and what we can do with it, and I'm,
-Lena KADRIU: I'm in between of thinking of not a school, but doing something like training and stuff like that for people who would be interested to…
-Lena KADRIU: use same thing that you, are teaching us now, so I was wondering, like, about the possibilities of collaborating here and, you know, bringing to a level that truly
-Lena KADRIU: make women or men who get out of the training really have something valuable, like, literally create, with us an agent that does a job for them, and they are definitely 1 or 2 hours, 3 hours richer per week, because they join this training.
-Lena KADRIU: Hands-on value given.
+Attendee: So, this is how I got to know you, and you were talking to so many people, so I didn't have a chance to say hi or talk longer. I just had a…
+Attendee: short conversation, and thank you so much for sharing this information. So, I wanted to know what exactly would be the role of chapter lead, and I was already… I have a PhD, and I work with students.
+Attendee: And taught them about innovation and management, and then I quit because 5 years ago, I pivoted to having my own startup. I wanted to actually, see what I'm preaching. So this is the phase. I love AI and what we can do with it, and I'm,
+Attendee: I'm in between of thinking of not a school, but doing something like training and stuff like that for people who would be interested to…
+Attendee: use same thing that you, are teaching us now, so I was wondering, like, about the possibilities of collaborating here and, you know, bringing to a level that truly
+Attendee: make women or men who get out of the training really have something valuable, like, literally create, with us an agent that does a job for them, and they are definitely 1 or 2 hours, 3 hours richer per week, because they join this training.
+Attendee: Hands-on value given.
 Ella Molony Cook: I…
-Lena KADRIU: I personally didn't…
+Attendee: I personally didn't…
 Ella Molony Cook: I'm gonna just, sorry, give me 2 seconds, is…
 Ella Molony Cook: An echo. First of all, your face is looking familiar, so thank you so much for coming out and supporting Tech Week, that means a lot.
 Ella Molony Cook: I totally agree. Like, my biggest thing is I don't want to overwhelm people too early, and I know that us as women, we need to kind of, like, dip our toe in, get our understanding, so this is always, like, a pre-teaser, and then when we're going into the actual build phase of an agent, we need 90-plus minutes. Like, we're not gonna… we're not gonna make a dent.
@@ -388,84 +388,84 @@ Ella Molony Cook: I'm not trying to go out and, like, pave the way, it's like, l
 Ella Molony Cook: AI is… we're able to do so much more with so little, so…
 Ella Molony Cook: the internal, kind of, like, leadership team, there is responsibility that comes on, but I won't bore everyone now. But we can definitely, when you fill out your application, just mention that you're interested, and I'll send you over more information, and then what I'm gonna do is schedule, probably in 2 weeks, I'm gonna schedule an internal leadership conversation, where we're just gonna go through and see if it's the right fit for both sides, and then we'll have a one-on-one
 Ella Molony Cook: conversation to kind of knuckle in, okay, what would this look like? Do we vibe?
-Lena KADRIU: That's very important to me. Yeah, yeah, I know, that's why, like, I felt a good energy when you were talking, and the struggles you shared.
-Lena KADRIU: And, the feeling of being fulfilled by providing value to others.
-Lena KADRIU: Of course, we want the side effects to be money compensation as well, because we need
-Lena KADRIU: to be rich in money and time as well. But I loved, I loved what you shared. I did already, fill the form. I'm not sure if I mentioned the chapter lead. I'm not sure I missed that or not.
+Attendee: That's very important to me. Yeah, yeah, I know, that's why, like, I felt a good energy when you were talking, and the struggles you shared.
+Attendee: And, the feeling of being fulfilled by providing value to others.
+Attendee: Of course, we want the side effects to be money compensation as well, because we need
+Attendee: to be rich in money and time as well. But I loved, I loved what you shared. I did already, fill the form. I'm not sure if I mentioned the chapter lead. I'm not sure I missed that or not.
 Ella Molony Cook: No worries.
-Lena KADRIU: you can go through it. And this is the thing, because it aligns a lot with my plans of what I wanted to do. I am in Balkans, Kosovo, so this is…
-Lena KADRIU: a market that it's still not very developed AI-wise.
-Lena KADRIU: But the thing is that it was interesting that although even in U.S. in tech weeks, I have seen people that are very, knowledgeable regarding AI. I have met many, many people who are very successful, and they were not at all. And people who are actually, doing other roles, and they had
-Lena KADRIU: Like, a little bit of fluor, just using for…
-Lena KADRIU: answers and questions and stuff like that. I was like, oh, okay, so this is a huge room for improvement and, you know, providing value.
+Attendee: you can go through it. And this is the thing, because it aligns a lot with my plans of what I wanted to do. I am in Balkans, Kosovo, so this is…
+Attendee: a market that it's still not very developed AI-wise.
+Attendee: But the thing is that it was interesting that although even in U.S. in tech weeks, I have seen people that are very, knowledgeable regarding AI. I have met many, many people who are very successful, and they were not at all. And people who are actually, doing other roles, and they had
+Attendee: Like, a little bit of fluor, just using for…
+Attendee: answers and questions and stuff like that. I was like, oh, okay, so this is a huge room for improvement and, you know, providing value.
 Ella Molony Cook: I love that. Thank you so much, and yes, I've taken a screenshot, so I will reach out, and we will figure this out together, and I appreciate you for joining.
 Ella Molony Cook: I'm gonna butcher your name again. I'm gonna say B.
 Ella Molony Cook: That's fine, Pete's really good.
-Belén Cusi: I had a couple of, actually, technical questions, I think.
-Belén Cusi: I don't know what the vote is.
-Belén Cusi: Do you use Claude exclusively for your Ella, like, your main…
-Belén Cusi: like, assistant, or do you toggle between? And basically, I find I end up spinning up a lot of assistants, but then I get really overwhelmed after a while, because I'm, like, toggling… there's, like, no way to just see all these chats, like, I can't see various cloud chats at the same time. How do you… how are you doing that?
+Attendee: I had a couple of, actually, technical questions, I think.
+Attendee: I don't know what the vote is.
+Attendee: Do you use Claude exclusively for your Ella, like, your main…
+Attendee: like, assistant, or do you toggle between? And basically, I find I end up spinning up a lot of assistants, but then I get really overwhelmed after a while, because I'm, like, toggling… there's, like, no way to just see all these chats, like, I can't see various cloud chats at the same time. How do you… how are you doing that?
 Ella Molony Cook: Yeah, I do find… are you using… when you're saying chats, you're talking about, like, literally in Claude Code?
-Belén Cusi: I don't even… I use co-work right now, I haven't even gotten to Claude Code, and that's what I was curious about, whether you had an agent inside Notion.
+Attendee: I don't even… I use co-work right now, I haven't even gotten to Claude Code, and that's what I was curious about, whether you had an agent inside Notion.
 Ella Molony Cook: There are, like, I don't use the Notion AI, but you can get… there is, like, an AI version of that, but I don't really think it's gonna be, like, that useful for me, because obviously, my data… yeah.
-Belén Cusi: Yeah, you need the brain.
+Attendee: Yeah, you need the brain.
 Ella Molony Cook: a lot of it's stored in my Markdown files, and there's only specific… yeah, so for me, I haven't really gone into the Notion AI side, but I think that the way that I like to think about this is start to build, like, your…
 Ella Molony Cook: operating dashboard, and inside of there, you start to be able to say, like, okay, these are the things that I've taken off my plate,
 Ella Molony Cook: And it is hard, especially in co-work.
 Ella Molony Cook: I'm going to, in the two-day chat, I'm actually gonna show women a different version, where you're able to plug in
 Ella Molony Cook: the, you know, your Opus LLM, but you're seeing a different visualization to actually see agents working. That's, like, a real advanced level, but I do see what you're saying. It's, like, it's hard to kind of keep track of everything, and that's why I think, like, these harnesses that are coming out, there's gonna be more and more. I would love to build one for women, because I think we are visual people, and, like, just seeing
 Ella Molony Cook: chatbots aren't really helpful for us. 100%.
-Belén Cusi: ADHD women need help.
+Attendee: ADHD women need help.
 Ella Molony Cook: Yeah, no, 100%, girl, that's… and that's where, honestly, I have found, like, the more tech bros that I've hung out with is, like, they're not actually using…
 Ella Molony Cook: the Claude extension, like, when they have multiple agents, because you just really wouldn't be able to do that. There's… there's these other things that people are using where you're able to see all of your files, and then see the agent in the middle actually actioning things.
-Belén Cusi: Is that just, like, is that cursor and codecs and that stuff? Do I just need to graduate to that, it sounds like?
+Attendee: Is that just, like, is that cursor and codecs and that stuff? Do I just need to graduate to that, it sounds like?
 Ella Molony Cook: Yeah, like, you're able to put it, plug in any LLM, but I haven't dived into that yet. Like, to be honest with you, I've been very much focused on building my operating system for this, because this new venture's only been around for 3 months, and it takes you…
 Ella Molony Cook: I would say a good… for me, like, I'm… because I'm constantly trying different tools, I still come back to Claude.
 Ella Molony Cook: So I am going to try this new one that this tech bro told me about, and I want to see if it's worthwhile, like, moving my stack to there, just because I like to be able to see your files. And I think for women, you need to be able to see that the backend is just simply files.
-Belén Cusi: Yeah. Are you willing to share what he recommended?
+Attendee: Yeah. Are you willing to share what he recommended?
 Ella Molony Cook: I have to check, but I will… I'll send it out in email blast if that helps.
-Belén Cusi: Cool. So right now, you use that one other one where you see, like, the various…
+Attendee: Cool. So right now, you use that one other one where you see, like, the various…
 Ella Molony Cook: Yeah. Yeah. And I think, like, for me, like, in right now, Claude…
 Ella Molony Cook: code is fine, because I don't have, like, as you saw, I don't have a million agents, right? It's when you start to get, it's when you start to get, I would say, probably more than, like.
 Ella Molony Cook: 15 is when you kind of need to be like, okay, what am I doing? Because this is starting to get overwhelming. Like, I only have, like, 6, so, I'm more focused on quality over quantity, but that's just how I operate. Some people are all over the place, and that's how they work. I'm just a little bit more systematic.
-Belén Cusi: Yeah, yeah, that resonated. Thank you so much, super helpful.
+Attendee: Yeah, yeah, that resonated. Thank you so much, super helpful.
 Ella Molony Cook: Of course, thanks for joining.
 Ella Molony Cook: Any other questions?
 Ella Molony Cook: Concerns…
-Belén Cusi: Oh, I was wondering if there were gonna be in-person… Meetups.
+Attendee: Oh, I was wondering if there were gonna be in-person… Meetups.
 Ella Molony Cook: Yes. So, I am heading to Europe for the summer, and that's why I'm very much focused on chapter leads, because I can't be everywhere at once, unfortunately. But we are gonna be having events in Q4 in New York and Miami. That's all I have scheduled for right now.
 Ella Molony Cook: But if you're someone who's like, I would love to throw an event, let's definitely chat.
 Ella Molony Cook: Otherwise…
 Ella Molony Cook: in person, it's gonna be more of a 2027 initiative once, we onboard more chapter leads, because right now,
 Ella Molony Cook: I have some sponsors that are really interested, but at the same time, I need to make sure the quality of the experience is there, because that's important for me. And I'll need to have a lot more agents.
-Belén Cusi: Yeah. Okay, cool.
+Attendee: Yeah. Okay, cool.
 Ella Molony Cook: Amazing.
-Belén Cusi: At the draw, but thank you so much.
+Attendee: At the draw, but thank you so much.
 Ella Molony Cook: Thank you. Have a great day.
 Ella Molony Cook: Ladies…
 Ella Molony Cook: Everyone's just… Doing their agents in the background, I can tell.
-Lena KADRIU: No, on… I was on my way into following all social media, so we can stay connected, and then I'll go to…
+Attendee: No, on… I was on my way into following all social media, so we can stay connected, and then I'll go to…
 Ella Molony Cook: I love that. Jenny, did you have something that you wanted to share?
-Jenni Ogden: I did, I did. I find that I've been using chat more, Claude more and more.
+Attendee: I did, I did. I find that I've been using chat more, Claude more and more.
 Ella Molony Cook: But I find that…
-Jenni Ogden: I have Sony.
+Attendee: I have Sony.
 Ella Molony Cook: Cat!
 Ella Molony Cook: Knowing that.
-Jenni Ogden: that I lose track, I get overwhelmed, and then I don't do the tasks that I set out for myself.
+Attendee: that I lose track, I get overwhelmed, and then I don't do the tasks that I set out for myself.
 Ella Molony Cook: Through the research I'm doing in Claude, so…
 Ella Molony Cook: I'm thinking that might be something that my AI chief of staff can help me keep track of. My old company, pre-COVID.
-Jenni Ogden: I had, a small staff, like 12 people that were full-time.
-Jenni Ogden: And, I, I couldn't… I wouldn't have been able to function on that level without my.
+Attendee: I had, a small staff, like 12 people that were full-time.
+Attendee: And, I, I couldn't… I wouldn't have been able to function on that level without my.
 Ella Molony Cook: EA.
-Jenni Ogden: Keeping track of me and reminding me every morning of what.
+Attendee: Keeping track of me and reminding me every morning of what.
 Ella Molony Cook: tasks were priority, and checking in to see if I had a chance to follow up.
-Jenni Ogden: And, I'm thinking maybe my… if I set up an AI.
+Attendee: And, I'm thinking maybe my… if I set up an AI.
 Ella Molony Cook: Chief of staff, because I can't really hire anybody right now for that role.
-Jenni Ogden: In my new,
+Attendee: In my new,
 Ella Molony Cook: company until I…
-Jenni Ogden: raise some funding, or start earning some money again.
+Attendee: raise some funding, or start earning some money again.
 Ella Molony Cook: Yeah.
-Jenni Ogden: Maybe that'll help keep me on track.
+Attendee: Maybe that'll help keep me on track.
 Ella Molony Cook: 100%. And I think the other part is…
 Ella Molony Cook: for me, especially when it comes to conversations, like, in chat, labeling them, and then putting them into projects. The more you can systemize the data flow, like, I have…
 Ella Molony Cook: now that I'm really deep into projects, I'll have, like, time-rich systems. So anytime that I'm thinking of a new system, and I love to go back, because then it gives me content ideas, whether if I had all of time-rich under, like, every, like, every single idea I had.
@@ -477,13 +477,13 @@ Ella Molony Cook: And so that's kind of… that's helped me a little bit, but I 
 Ella Molony Cook: it's just a way for you to use any LLM, but you're able to see your files, and then see in the middle what your agent's actually doing.
 Ella Molony Cook: And it's like, I need that visualization piece for me, so let me do a little bit more recon. But I'm glad, like, any pain points that you ladies are having, I love to try and solve them, because I'm normally feeling them too. So keep it coming.
 Ella Molony Cook: But thank you for sharing.
-Jenni Ogden: I'm… I'm having some serious ADHD lately.
+Attendee: I'm… I'm having some serious ADHD lately.
 Ella Molony Cook: It's good, though, because you're getting your hands dirty. It's the women that are standing on the sidelines just looking at it.
 Ella Molony Cook: it's like, if you're feeling overwhelmed, that's a good sign. It's then just coming back to the basics of, okay, where… where am I actually not getting an ROI for my time? Like, if my biggest thing right now is capital raising.
 Ella Molony Cook: and bring in revenue, I need to be making sure that my agents are focused on XYZ.
-Jenni Ogden: Great. I just got a pop-up that we're transcribing this, so that'll be… are you sharing that?
+Attendee: Great. I just got a pop-up that we're transcribing this, so that'll be… are you sharing that?
 Ella Molony Cook: Yes, I will share that.
-Jenni Ogden: Perfect.
+Attendee: Perfect.
 Ella Molony Cook: For sure… Okay, I've got some messages in this chat… Copy this…
 Ella Molony Cook: Any other questions? We got these…
 Ella Molony Cook: Beautiful backgrounds. Kim, Allison, what are you ladies doing back there? Why are you still on the call, if you don't have any questions? I'm curious.
