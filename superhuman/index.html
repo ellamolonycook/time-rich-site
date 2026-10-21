@@ -171,6 +171,69 @@ main {
 .q-input::placeholder, .q-textarea::placeholder { color: var(--dim); }
 .q-input:focus, .q-textarea:focus { border-color: var(--green); box-shadow: 0 0 0 3px var(--pop); }
 
+/* ── The photo screen ─────────────────────────────────────────────────────
+   An upload, a preview once something is chosen, then the Drive link under
+   it. The file input itself is never drawn: it is covered by its own label,
+   which is what the member taps, so the control looks like the rest of the
+   page and still opens the camera roll on a phone. */
+.q-photo { display: flex; flex-direction: column; gap: 14px; margin-bottom: 8px; }
+.q-photo-pick { display: flex; flex-wrap: wrap; align-items: center; gap: 12px; }
+
+/* Off-screen rather than display:none, so it keeps its place in the tab
+   order and the label still drives it from the keyboard. */
+.q-photo-input {
+  position: absolute; width: 1px; height: 1px;
+  padding: 0; margin: -1px; overflow: hidden;
+  clip: rect(0, 0, 0, 0); white-space: nowrap; border: 0;
+}
+.q-photo-btn {
+  display: inline-flex; align-items: center; justify-content: center;
+  min-height: 48px; padding: 0 22px;
+  font-family: var(--font-body); font-size: 15px; font-weight: 500;
+  color: var(--green-deep); background: #ffffff;
+  border: 1px solid rgba(66, 75, 54, .28); border-radius: 999px;
+  cursor: pointer;
+  transition: border-color .15s ease, background-color .15s ease;
+}
+.q-photo-btn:hover { border-color: var(--green); background: var(--tint); }
+.q-photo-input:focus-visible + .q-photo-btn {
+  border-color: var(--green); box-shadow: 0 0 0 3px var(--pop);
+}
+.q-photo-note { font-size: 13.5px; color: var(--muted); }
+
+/* The explicit display would otherwise beat the [hidden] attribute, and the
+   empty frame would sit there before anything had been chosen. */
+.q-photo-preview[hidden] { display: none; }
+.q-photo-preview { display: flex; align-items: center; gap: 14px; }
+.q-photo-img {
+  width: 72px; height: 72px; flex: none;
+  object-fit: cover; border-radius: 12px;
+  border: 1px solid var(--line); background: var(--tint);
+}
+.q-photo-meta { font-size: 13.5px; color: var(--muted); min-width: 0; overflow-wrap: anywhere; }
+.q-photo-remove {
+  margin-left: auto; flex: none;
+  font-family: var(--font-body); font-size: 13.5px; color: var(--muted);
+  background: none; border: 0; padding: 8px; cursor: pointer;
+  text-decoration: underline; text-underline-offset: 3px;
+}
+.q-photo-remove:hover { color: var(--text); }
+
+/* The second way in. The rule above it is what makes it read as the
+   alternative rather than as one more required field. */
+.q-photo-or {
+  display: block; padding-top: 14px; border-top: 1px solid var(--line);
+  font-size: 14.5px; color: var(--muted);
+}
+.q-photo-help { display: block; font-size: 13.5px; color: var(--muted); }
+
+@media (max-width: 560px) {
+  /* Full width, so the tap target is the whole row rather than a button
+     floating next to a line of help text. */
+  .q-photo-btn { width: 100%; }
+  .q-photo-note { width: 100%; }
+}
+
 /* ── Multi-field screens ──────────────────────────────────────────────────
    Several questions on one screen, each with its own label. Stacked at every
    width: two columns would put a pasted URL in a box too narrow to read. */
@@ -317,6 +380,23 @@ main {
 var QUESTIONNAIRE_WORKER = "https://time-rich-forms.timerich.workers.dev/superhuman-questionnaire";
 var Q_STORE_KEY = "tr_superhuman_questionnaire_v1";
 
+// The photo screen takes either an upload or a Drive link, so it has a
+// message for each. 5MB is the worker's own cap, repeated here so the file
+// never leaves the phone when it is too big to store.
+var Q_PHOTO_MAX_BYTES = 5 * 1024 * 1024;
+var Q_PHOTO_TYPES = ["image/jpeg", "image/png", "image/webp"];
+var Q_PHOTO_MESSAGE = "Please choose a JPG, PNG or WebP under 5MB.";
+var Q_DRIVE_MESSAGE = "Please paste a link to the photo file in Google Drive, not a doc.";
+var Q_LINKEDIN_MESSAGE =
+  "Please paste your full LinkedIn profile link, like https://www.linkedin.com/in/yourname";
+
+// The chosen file, held here rather than in qAnswers on purpose: qStore()
+// writes qAnswers to sessionStorage, and a 5MB photo as base64 is about
+// 6.7MB, which is over the quota on its own. So a reload loses the pick and
+// keeps the typing, which is the right way round -- re-choosing a file is
+// two taps, retyping twenty answers is not.
+var qPhoto = null;
+
 // The ?role= spellings that map onto each of the three Notion Role options.
 // The options themselves are the "role" entry in Q_SPEC below.
 var Q_ROLE_ALIASES = {
@@ -394,10 +474,15 @@ var Q_SPEC = [
     placeholder: "Ex-Google PM turned AI systems builder"
   },
   {
-    key: "photo_link", type: "url",
+    // Its own type rather than a url field, because this screen takes two
+    // different things: a file off the device, or a Drive link. Two of the
+    // last eleven links could not be opened, so the upload is the main way
+    // in now and the link is the fallback for anyone on a desktop whose
+    // photo lives in Drive.
+    key: "photo_link", type: "photo",
     eyebrow: "Your photo",
-    title: "Share a Google Drive link to a high-quality photo of you for the portal.",
-    help: "Set sharing to “Anyone with the link” so we can open it. Shown to your cohort in Time Rich Members.",
+    title: "Add a high-quality photo of you for the portal.",
+    help: "Shown to your cohort in Time Rich Members.",
     placeholder: "https://drive.google.com/…"
   },
   {
@@ -709,6 +794,57 @@ function qIsLink(value) {
   try { return new URL(v).protocol === "https:"; } catch (err) { return false; }
 }
 
+// A LinkedIn profile, and nothing else. qIsLink above is happy with any
+// https URL, which is how "https://www.linkedin/in/laurafelker" reached
+// Notion: it parses, the scheme is right, and the host is simply a machine
+// called "linkedin" that does not exist.
+//
+// So the host has to be linkedin.com or something under it -- the country
+// subdomains (uk.linkedin.com) and "www" are all real -- and the path has to
+// start /in/ or /company/, which is every profile and company page and no
+// feed, post or search result.
+//
+// Returns the cleaned link, or null. Cleaning drops the query and the hash:
+// people copy out of the app and arrive with ?isSelfProfile=true or a
+// miTrackingId on the end, and none of it belongs in a saved profile.
+function qLinkedInUrl(value) {
+  var v = String(value == null ? "" : value).trim();
+  if (!v) return null;
+
+  var url;
+  try { url = new URL(v); } catch (err) { return null; }
+  if (url.protocol !== "https:") return null;
+
+  var host = url.hostname.toLowerCase();
+  if (host !== "linkedin.com" && host.slice(-13) !== ".linkedin.com") return null;
+  if (!/^\/(in|company)\/[^/]/.test(url.pathname)) return null;
+
+  // A trailing slash is noise rather than a different page.
+  var path = url.pathname.replace(/\/+$/, "");
+  return url.origin + path;
+}
+
+// A Google Drive link that points at a file, which is the only kind the
+// worker can download. Two of the last eleven photo links were neither: one
+// was a Google Doc, one a Drive file nobody else could open.
+//
+// docs.google.com is deliberately not accepted even though it carries the
+// same /file/d/ shape, because a docs.google.com link is a document.
+function qIsDrivePhotoLink(value) {
+  var v = String(value == null ? "" : value).trim();
+  if (!v) return false;
+
+  var url;
+  try { url = new URL(v); } catch (err) { return false; }
+  if (url.protocol !== "https:") return false;
+  if (url.hostname.toLowerCase() !== "drive.google.com") return false;
+
+  var id = /^\/file\/d\/([^/]+)/.test(url.pathname)
+    ? url.pathname.match(/^\/file\/d\/([^/]+)/)[1]
+    : (/^\/(open|uc)$/.test(url.pathname) ? url.searchParams.get("id") : null);
+  return Boolean(id && /^[A-Za-z0-9_-]{10,}$/.test(id));
+}
+
 // The "urls" fields hold one link per line. Blank lines are ignored, so a
 // trailing newline is not an error.
 function qLinkLines(value) {
@@ -732,6 +868,11 @@ function qFieldProblem(spec, field) {
   var value = qFieldValue(spec, field).trim();
 
   if (!value) return field.required ? "Please fill in " + field.label.replace(/[.?]$/, "") + "." : null;
+
+  // LinkedIn has its own rule. Everything else that holds a link is happy
+  // with any https address, which is the right answer for a personal site
+  // or a YouTube channel and the wrong one here.
+  if (field.key === "linkedin") return qLinkedInUrl(value) ? null : Q_LINKEDIN_MESSAGE;
 
   if (field.kind === "url") return qIsLink(value) ? null : Q_LINK_MESSAGE;
   if (field.kind === "urls") {
@@ -764,6 +905,15 @@ function qIsAnswered(spec) {
     if (!typed) return !spec.required;
     return qIsLink(typed);
   }
+  // The photo screen is clear to leave with an upload, with a Drive link
+  // that is really a Drive file, or with neither. What it will not pass is
+  // a link that is something else: that is the mistake it exists to catch.
+  if (spec.type === "photo") {
+    if (qPhoto) return true;
+    var link = typeof value === "string" ? value.trim() : "";
+    if (!link) return !spec.required;
+    return qIsDrivePhotoLink(link);
+  }
   if (typeof value !== "string" || value.trim() === "") return false;
   if (spec.type === "email") return Q_EMAIL_RE.test(value.trim());
   return true;
@@ -774,6 +924,7 @@ function qMissingMessage(spec) {
   if (spec.type === "rank") return "Please rank at least one to continue.";
   if (spec.type === "one" || spec.type === "many") return "Please pick one to continue.";
   if (spec.type === "url") return Q_LINK_MESSAGE;
+  if (spec.type === "photo") return Q_DRIVE_MESSAGE;
   if (spec.type === "email") {
     var typed = typeof qAnswers[spec.key] === "string" ? qAnswers[spec.key].trim() : "";
     return typed ? "Please check that email address." : "Please add your email to continue.";
@@ -805,7 +956,7 @@ function qRenderProgress() {
 // Types that validate what was typed even when the answer is optional. Both
 // hold links, and a half-pasted link is never what anyone meant.
 function qGuardsWhenOptional(spec) {
-  return spec.type === "url" || spec.type === "fields";
+  return spec.type === "url" || spec.type === "fields" || spec.type === "photo";
 }
 
 function qGoNext() {
@@ -840,7 +991,15 @@ function qGoBack() {
   qRender();
 }
 
+// Skipping the photo screen drops a file already chosen: leaving it in
+// would send a photo from a screen the member said no to.
+function qSkipPhoto() {
+  var step = qFlow[qStep];
+  if (step && step.kind === "question" && step.spec && step.spec.type === "photo") qPhoto = null;
+}
+
 function qSkip() {
+  qSkipPhoto();
   // Skip means "no answer", so a half-typed link is dropped rather than sent.
   // Only reachable on the optional photo link: every other guarded screen is
   // required and has no Skip.
@@ -971,6 +1130,8 @@ function qBuildQuestion(screen, spec) {
 
   if (spec.type === "fields") {
     screen.appendChild(qBuildFields(spec));
+  } else if (spec.type === "photo") {
+    screen.appendChild(qBuildPhotoField(spec));
   } else if (spec.type === "long" || spec.type === "short" || spec.type === "email" || spec.type === "url") {
     screen.appendChild(qBuildTextField(spec));
   } else {
@@ -1079,6 +1240,133 @@ function qBuildTextField(spec) {
 
   field.appendChild(input);
   if (counter) field.appendChild(counter);
+  return field;
+}
+
+// The photo screen. An upload, then a Drive link under it, and whichever
+// one is filled in wins -- the upload if both are.
+//
+// The file never touches sessionStorage (see qPhoto), so a restored session
+// opens this screen with the link still typed and the pick gone.
+function qBuildPhotoField(spec) {
+  var field = qEl("div", "q-field q-photo");
+
+  // -- the upload --
+  var pick = qEl("div", "q-photo-pick");
+
+  var input = document.createElement("input");
+  input.type = "file";
+  input.id = "qPhotoFile";
+  input.className = "q-photo-input";
+  // The three the worker can store. A phone offers the camera roll for
+  // these; HEIC shots are offered too and are caught below, because the
+  // accept list is a hint to the picker and not a guarantee.
+  input.accept = Q_PHOTO_TYPES.join(",");
+
+  var label = qEl("label", "q-photo-btn", "Upload a photo");
+  label.setAttribute("for", "qPhotoFile");
+
+  var note = qEl("span", "q-photo-note", "JPG, PNG or WebP, up to 5MB.");
+
+  pick.appendChild(input);
+  pick.appendChild(label);
+  pick.appendChild(note);
+  field.appendChild(pick);
+
+  // -- the preview, which only exists once something is chosen --
+  var preview = qEl("div", "q-photo-preview");
+  preview.hidden = true;
+  var img = document.createElement("img");
+  img.className = "q-photo-img";
+  img.alt = "";
+  var meta = qEl("span", "q-photo-meta", "");
+  var remove = qEl("button", "q-photo-remove", "Remove");
+  remove.type = "button";
+  preview.appendChild(img);
+  preview.appendChild(meta);
+  preview.appendChild(remove);
+  field.appendChild(preview);
+
+  function paintPreview() {
+    if (!qPhoto) {
+      preview.hidden = true;
+      img.removeAttribute("src");
+      meta.textContent = "";
+      label.textContent = "Upload a photo";
+      return;
+    }
+    preview.hidden = false;
+    img.src = qPhoto.dataUrl;
+    meta.textContent = qPhoto.name + " \u00b7 " + Math.round(qPhoto.size / 1024) + "KB";
+    label.textContent = "Choose a different photo";
+  }
+
+  remove.addEventListener("click", function () {
+    qPhoto = null;
+    input.value = "";
+    paintPreview();
+    qShowError("");
+  });
+
+  input.addEventListener("change", function () {
+    var file = input.files && input.files[0];
+    if (!file) return;
+
+    // Both checks before the read: an 8MB HEIC should never be decoded just
+    // to be thrown away.
+    if (Q_PHOTO_TYPES.indexOf(file.type) === -1 || file.size > Q_PHOTO_MAX_BYTES) {
+      qPhoto = null;
+      input.value = "";
+      paintPreview();
+      qShowError(Q_PHOTO_MESSAGE);
+      return;
+    }
+
+    var reader = new FileReader();
+    reader.onload = function () {
+      qPhoto = {
+        dataUrl: String(reader.result || ""),
+        name: file.name,
+        type: file.type,
+        size: file.size
+      };
+      // An upload wins, so the link stops mattering the moment one lands.
+      paintPreview();
+      qShowError("");
+    };
+    reader.onerror = function () {
+      qPhoto = null;
+      input.value = "";
+      paintPreview();
+      qShowError(Q_PHOTO_MESSAGE);
+    };
+    reader.readAsDataURL(file);
+  });
+
+  // -- or a Drive link --
+  field.appendChild(qEl("span", "q-photo-or", "Or paste a Google Drive link"));
+
+  var link = document.createElement("input");
+  link.type = "url";
+  link.id = "qField";
+  link.className = "q-input";
+  link.placeholder = spec.placeholder;
+  link.setAttribute("aria-label", "Google Drive link to your photo");
+  qApplyLinkHints(link);
+  link.value = typeof qAnswers[spec.key] === "string" ? qAnswers[spec.key] : "";
+  link.addEventListener("input", function () {
+    qAnswers[spec.key] = link.value;
+    qShowError("");
+    qStore();
+  });
+  link.addEventListener("keydown", function (e) {
+    if (e.key === "Enter") { e.preventDefault(); qGoNext(); }
+  });
+  field.appendChild(link);
+
+  field.appendChild(qEl("span", "q-photo-help", "Set sharing to \u201cAnyone with the link\u201d so we can open it."));
+
+  paintPreview();
   return field;
 }
 
@@ -1305,6 +1593,26 @@ function qPayload() {
     } else {
       payload[spec.key] = typeof value === "string" ? value : "";
     }
+  }
+
+  // LinkedIn goes up cleaned, so the tracking parameters people copy out of
+  // the app never reach Notion. A link that does not pass cannot get this
+  // far from the page, and the worker checks it again anyway.
+  var linkedin = qLinkedInUrl(payload.linkedin);
+  if (linkedin) payload.linkedin = linkedin;
+
+  // The photo. An upload wins and the link is dropped, which is the rule the
+  // screen shows; the worker applies the same precedence on its side.
+  if (qPhoto) {
+    payload.photo_link = "";
+    // Just the base64, without the "data:image/png;base64," preamble.
+    payload.photo_upload = String(qPhoto.dataUrl).split(",")[1] || "";
+    payload.photo_upload_type = qPhoto.type;
+  } else if (!qIsDrivePhotoLink(payload.photo_link)) {
+    // Anything that is not a Drive file link is not sent at all. The screen
+    // stops this, so reaching here means the answer was restored from an
+    // older session that had the looser rule.
+    payload.photo_link = "";
   }
 
   payload.other_answers = qOtherAnswers();

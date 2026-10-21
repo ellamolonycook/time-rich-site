@@ -203,6 +203,31 @@ console.log('\nOther routes are untouched');
   await post('/accelerator', { Name: 'Acc', Email: 'acc@example.com' });
   check('/accelerator unchanged', pageBody().parent.database_id === undefined || true);
 
+  // /apply checks the LinkedIn field before it submits. This is the same
+  // check behind it, for a POST that never loaded the page.
+  {
+    const bad = await post('/accelerator', {
+      Name: 'Acc', Email: 'acc@example.com', LinkedIn: 'https://www.linkedin/in/laurafelker',
+    });
+    check('/accelerator: a host that is not LinkedIn is refused 400', bad.status === 400, bad.status);
+    check('/accelerator: with the same message the page shows',
+      (await bad.json()).error ===
+      'Please paste your full LinkedIn profile link, like https://www.linkedin.com/in/yourname');
+    check('/accelerator: and nothing is written to Notion',
+      !calls.some((c) => c.url.endsWith('/v1/pages')), calls.map((c) => c.url));
+
+    const good = await post('/accelerator', {
+      Name: 'Acc', Email: 'acc@example.com', LinkedIn: 'https://www.linkedin.com/in/acc?isSelfProfile=true',
+    });
+    check('/accelerator: a real profile is accepted', good.status === 200, good.status);
+    // The stubbed schema is only Name and Email, so LinkedIn travels in the
+    // submission dump rather than as a column. Either way it is the cleaned
+    // link that goes, with nothing of the tracking left on it.
+    const dumped = JSON.stringify(pageBody());
+    check('/accelerator: the cleaned link is what gets written',
+      dumped.includes('https://www.linkedin.com/in/acc') && !dumped.includes('isSelfProfile'));
+  }
+
   const opt = await worker.fetch(new Request('https://w.dev/superhuman', { method: 'OPTIONS', headers: { Origin: 'https://timerich.ai' } }), env);
   check('CORS preflight still answers 204 for timerich.ai',
     opt.status === 204 && opt.headers.get('Access-Control-Allow-Origin') === 'https://timerich.ai');
@@ -1590,9 +1615,9 @@ console.log('\nTime Rich Members — photos');
   await submitQuestionnaire(ADA, photoEnv);
   row = mem.directory['ada@example.com'];
   check('HTML response: status failed, nothing uploaded', row.photo_status === 'failed' && mem.uploads.length === 0, row);
-  check('HTML response: Slack told exactly once, by name',
+  check('HTML response: Slack told exactly once, by name and address',
     photoAlerts().length === 1 &&
-    photoAlerts()[0] === 'Photo link failed for Ada Lovelace. Ask them to set sharing to Anyone with the link.', mem.slack);
+    photoAlerts()[0] === 'Photo link failed for Ada Lovelace (ada@example.com). Ask them to set sharing to Anyone with the link.', mem.slack);
   check('HTML response: the link is not saved as the last good one', !row.photo_source_url);
   check('HTML response: the link is never logged', !linkLeaked(), mem.logs);
 
@@ -1609,14 +1634,20 @@ console.log('\nTime Rich Members — photos');
     mem.directory['ada@example.com'].photo_status === 'failed' && mem.uploads.length === 0);
 
   // 4. Not a Drive link at all, or a Drive link with no file id.
-  // (Anything that is not an https link is already dropped by the questionnaire
-  // before it reaches Notion, so it arrives here as "no link".)
+  //
+  // These used to be accepted, stored, and quietly marked failed once the
+  // download came back with nothing — which is how someone could paste a
+  // Google Doc, watch the form succeed, and never learn the photo had not
+  // arrived. They are refused at the door now, so nothing reaches the sync
+  // at all. The full set and the message each one gets is in "The photo: an
+  // upload, or a Drive link that is really a file" below.
   for (const bad of ['https://example.com/me.jpg', 'https://drive.google.com/drive/folders/abc']) {
     resetMembers(); listAda();
-    await submitQuestionnaire({ ...ADA, photo_link: bad }, photoEnv);
-    const r = mem.directory['ada@example.com'];
-    check('bad link "' + bad + '": failed without calling Drive, Slack once',
-      r && r.photo_status === 'failed' && mem.driveHits.length === 0 && photoAlerts().length === 1, { r, hits: mem.driveHits });
+    const bounced = await submitQuestionnaire({ ...ADA, photo_link: bad }, photoEnv);
+    check('bad link "' + bad + '": refused 400, Drive never called',
+      bounced.status === 400 && mem.driveHits.length === 0, { status: bounced.status, hits: mem.driveHits });
+    check('bad link "' + bad + '": no row written and nobody told it failed',
+      !mem.directory['ada@example.com'] && photoAlerts().length === 0, mem.slack);
   }
 
   // 5. Other image types and the other two Drive link shapes.
@@ -1682,6 +1713,181 @@ console.log('\nTime Rich Members — photos');
     mem.directory['ada@example.com'].photo_status === 'missing' && mem.driveHits.length === 0 && photoAlerts().length === 0);
 
   check('across every photo case, no link was ever logged', !linkLeaked(), mem.logs);
+}
+
+console.log('\nThe photo: an upload, or a Drive link that is really a file');
+{
+  const photoEnv = { ...memEnv, SLACK_QUESTIONNAIRE_WEBHOOK_URL: 'https://hooks.slack.test/questionnaire' };
+  const listAda = () => { mem.members = [{ email: 'ada@example.com', role: 'buyer', active: true }]; };
+  const photoAlerts = () => mem.slack.filter((t) => t.startsWith('Photo link failed'));
+
+  // Real file headers, because the Worker reads the bytes rather than
+  // trusting what the browser called the file.
+  const b64 = (bytes) => Buffer.from(Uint8Array.from(bytes)).toString('base64');
+  const pad = (head, total) => head.concat(Array(Math.max(0, total - head.length)).fill(0x41));
+  const JPEG = b64(pad([0xff, 0xd8, 0xff, 0xe0], 64));
+  const PNG = b64(pad([0x89, 0x50, 0x4e, 0x47, 0x0d, 0x0a, 0x1a, 0x0a], 64));
+  const WEBP = b64(pad([0x52, 0x49, 0x46, 0x46, 0, 0, 0, 0, 0x57, 0x45, 0x42, 0x50], 64));
+  // An iPhone shot: the box type is "ftypheic" and nothing we can store.
+  const HEIC = b64(pad([0, 0, 0, 0x18, 0x66, 0x74, 0x79, 0x70, 0x68, 0x65, 0x69, 0x63], 64));
+
+  const upload = (extra) => ({ ...ADA, photo_link: '', ...extra });
+
+  // 1. The upload is stored exactly where a Drive photo would be.
+  resetMembers(); listAda();
+  let res = await submitQuestionnaire(upload({ photo_upload: JPEG, photo_upload_type: 'image/jpeg' }), photoEnv);
+  let row = mem.directory['ada@example.com'];
+  const adaPath = createHash('sha256').update('ada@example.com').digest('hex') + '.jpg';
+  check('upload: the form answers 200', res.status === 200, res.status);
+  check('upload: stored in the same bucket, under the same <sha256(email)>.jpg',
+    mem.uploads.length === 1 && mem.uploads[0].path === adaPath && mem.uploads[0].type === 'image/jpeg' &&
+    mem.uploads[0].upsert === 'true', mem.uploads);
+  check('upload: the row is marked ok, with the same photo_path',
+    row.photo_status === 'ok' && row.photo_path === adaPath, row);
+  // There is no URL to remember, so the content is the identity.
+  check('upload: photo_source_url records the content, not a link',
+    /^upload:[0-9a-f]{64}$/.test(row.photo_source_url || ''), row.photo_source_url);
+  check('upload: Drive is never called', !mem.calls.some((c) => String(c).includes('drive.google.com')));
+  check('upload: nobody is told anything failed', photoAlerts().length === 0, mem.slack);
+
+  // Notion is told the bytes are already stored rather than given a link.
+  const lastNotionProps = () => {
+    const call = [...mem.calls].reverse().find((c) => c.url.startsWith('https://api.notion.com/v1/pages'));
+    return call ? JSON.parse(call.init.body).properties : {};
+  };
+  const photoProp = lastNotionProps()['Photo Link'];
+  check('upload: Notion\'s Photo Link says Uploaded',
+    photoProp && photoProp.url === 'Uploaded', photoProp);
+
+  // 2. PNG and WebP land too.
+  for (const [name, data, ext] of [['png', PNG, 'png'], ['webp', WEBP, 'webp']]) {
+    resetMembers(); listAda();
+    await submitQuestionnaire(upload({ photo_upload: data, photo_upload_type: 'image/' + name }), photoEnv);
+    const path = createHash('sha256').update('ada@example.com').digest('hex') + '.' + ext;
+    check('upload: a ' + name.toUpperCase() + ' is stored as .' + ext,
+      mem.uploads.length === 1 && mem.uploads[0].path === path, mem.uploads);
+  }
+
+  // 3. The wrong type, however it is labelled. The browser calls an iPhone
+  //    photo image/jpeg often enough that the declared type is worthless.
+  resetMembers(); listAda();
+  res = await submitQuestionnaire(upload({ photo_upload: HEIC, photo_upload_type: 'image/jpeg' }), photoEnv);
+  check('wrong type: refused 400, whatever the browser called it', res.status === 400, res.status);
+  check('wrong type: with the message the screen shows',
+    (await res.clone().json()).error === 'Please choose a JPG, PNG or WebP under 5MB.');
+  check('wrong type: nothing stored and no row written',
+    mem.uploads.length === 0 && !mem.directory['ada@example.com'], mem.uploads);
+
+  // 4. Over the cap, measured after decoding: base64 is a third bigger, so
+  //    capping the string would turn away files that are inside the limit.
+  resetMembers(); listAda();
+  const big = Buffer.alloc(5 * 1024 * 1024 + 1024, 0x41);
+  big[0] = 0xff; big[1] = 0xd8; big[2] = 0xff;
+  res = await submitQuestionnaire(upload({ photo_upload: big.toString('base64'), photo_upload_type: 'image/jpeg' }), photoEnv);
+  check('over 5MB: refused 400', res.status === 400, res.status);
+  check('over 5MB: nothing stored', mem.uploads.length === 0, mem.uploads);
+
+  // And one just under it is fine, which is what proves the cap is not
+  // being applied to the base64.
+  resetMembers(); listAda();
+  const justUnder = Buffer.alloc(5 * 1024 * 1024 - 64, 0x41);
+  justUnder[0] = 0xff; justUnder[1] = 0xd8; justUnder[2] = 0xff;
+  res = await submitQuestionnaire(upload({ photo_upload: justUnder.toString('base64'), photo_upload_type: 'image/jpeg' }), photoEnv);
+  check('just under 5MB: accepted and stored', res.status === 200 && mem.uploads.length === 1, res.status);
+
+  // 5. The Drive route only takes a Drive *file*. A Google Doc was one of
+  //    the two that failed, and it is refused rather than quietly dropped:
+  //    the member thinks they have given us a photo.
+  for (const [what, bad] of [
+    ['a Google Doc', 'https://docs.google.com/document/d/AdaPhotoFileAbc/edit'],
+    ['a docs.google.com file link', 'https://docs.google.com/file/d/AdaPhotoFileAbc/view'],
+    ['a Dropbox link', 'https://www.dropbox.com/s/abc/photo.jpg'],
+    ['an iCloud link', 'https://share.icloud.com/photos/abc'],
+    ['a Drive folder', 'https://drive.google.com/drive/folders/AdaPhotoFileAbc'],
+  ]) {
+    resetMembers(); listAda();
+    res = await submitQuestionnaire({ ...ADA, photo_link: bad }, photoEnv);
+    check('drive route: ' + what + ' is refused 400', res.status === 400, res.status);
+    check('drive route: ' + what + ' says to paste the file, not a doc',
+      (await res.clone().json()).error === 'Please paste a link to the photo file in Google Drive, not a doc.');
+  }
+
+  // 6. A resubmission with no new file. Notion still holds "Uploaded" from
+  //    last time, which is a marker and not something to fetch -- without
+  //    that case the stored photo would be marked failed and the team told
+  //    about it every time someone edited any other answer.
+  resetMembers(); listAda();
+  await submitQuestionnaire(upload({ photo_upload: JPEG, photo_upload_type: 'image/jpeg' }), photoEnv);
+  const firstPath = mem.directory['ada@example.com'].photo_path;
+  mem.uploads.length = 0;
+  await submitQuestionnaire({ ...ADA, photo_link: 'Uploaded', bio: 'Edited the bio only' }, photoEnv);
+  row = mem.directory['ada@example.com'];
+  check('resubmitting without a new file keeps the photo',
+    row.photo_status === 'ok' && row.photo_path === firstPath, row);
+  check('and uploads nothing, and tells nobody it failed',
+    mem.uploads.length === 0 && photoAlerts().length === 0, { uploads: mem.uploads, slack: mem.slack });
+
+  // 7. The same file twice is not stored twice.
+  resetMembers(); listAda();
+  await submitQuestionnaire(upload({ photo_upload: JPEG, photo_upload_type: 'image/jpeg' }), photoEnv);
+  mem.uploads.length = 0;
+  await submitQuestionnaire(upload({ photo_upload: JPEG, photo_upload_type: 'image/jpeg' }), photoEnv);
+  check('the same photo submitted again is recognised by its content',
+    mem.uploads.length === 0, mem.uploads);
+
+  // 8. An upload beats a link when both arrive.
+  resetMembers(); listAda();
+  await submitQuestionnaire({ ...ADA, photo_upload: JPEG, photo_upload_type: 'image/jpeg' }, photoEnv);
+  row = mem.directory['ada@example.com'];
+  check('an upload wins over a link in the same submit',
+    /^upload:/.test(row.photo_source_url || '') &&
+    !mem.calls.some((c) => String(c).includes('drive.google.com')), row.photo_source_url);
+}
+
+console.log('\nLinkedIn has to be a LinkedIn link');
+{
+  const listAda = () => { mem.members = [{ email: 'ada@example.com', role: 'buyer', active: true }]; };
+  const prop = () => {
+    const call = [...mem.calls].reverse().find((c) => c.url.startsWith('https://api.notion.com/v1/pages'));
+    return call ? JSON.parse(call.init.body).properties?.LinkedIn?.url : undefined;
+  };
+
+  // The one that got through: it parses, it is https, and the host is a
+  // machine called "linkedin" that does not exist.
+  for (const bad of [
+    'https://www.linkedin/in/laurafelker',
+    'https://linkedin/in/x',
+    'https://notlinkedin.com/in/x',
+    'https://www.linkedin.com.evil.test/in/x',
+    'https://www.linkedin.com/feed/',
+    'https://www.linkedin.com/',
+    'http://www.linkedin.com/in/x',
+    '',
+  ]) {
+    resetMembers(); listAda();
+    const res = await submitQuestionnaire({ ...ADA, linkedin: bad });
+    check('rejected: ' + (bad || '(empty)'), res.status === 400, res.status);
+    check('  and nothing is written for it', !mem.directory['ada@example.com']);
+  }
+
+  check('the message names the shape we want',
+    (await (await submitQuestionnaire({ ...ADA, linkedin: 'https://www.linkedin/in/x' })).json()).error ===
+    'Please paste your full LinkedIn profile link, like https://www.linkedin.com/in/yourname');
+
+  // Accepted, and cleaned on the way in.
+  for (const [given, want] of [
+    ['https://www.linkedin.com/in/x?isSelfProfile=true', 'https://www.linkedin.com/in/x'],
+    ['https://www.linkedin.com/in/x/', 'https://www.linkedin.com/in/x'],
+    ['https://www.linkedin.com/in/x#about', 'https://www.linkedin.com/in/x'],
+    ['https://linkedin.com/in/x', 'https://linkedin.com/in/x'],
+    ['https://uk.linkedin.com/in/x', 'https://uk.linkedin.com/in/x'],
+    ['https://www.linkedin.com/company/acme', 'https://www.linkedin.com/company/acme'],
+  ]) {
+    resetMembers(); listAda();
+    const res = await submitQuestionnaire({ ...ADA, linkedin: given });
+    check('accepted: ' + given, res.status === 200, res.status);
+    check('  saved as ' + want, prop() === want, prop());
+  }
 }
 
 console.log('\nTime Rich Members — backfill');

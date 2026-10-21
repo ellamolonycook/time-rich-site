@@ -303,6 +303,24 @@ export default {
     // Same schema-driven mapping as the club form; stamps Status = New so the
     // "Call today" / pipeline views pick fresh applications up.
     if (path.endsWith("/accelerator")) {
+      // The page checks the LinkedIn field before it will submit; this is the
+      // check that holds when the page is bypassed. Only a link that is there
+      // and wrong is refused -- an empty one is the page's business, since
+      // nothing is stored either way and an application is too valuable to
+      // turn away over a field the form itself already marks required.
+      //
+      // A link that passes is stored cleaned, so the ?isSelfProfile=true
+      // people copy out of the app never reaches Notion.
+      if (String(data["LinkedIn"] || "").trim()) {
+        const cleaned = linkedinUrl(data["LinkedIn"]);
+        if (!cleaned) {
+          return json({
+            ok: false,
+            error: "Please paste your full LinkedIn profile link, like https://www.linkedin.com/in/yourname",
+          }, 400, cors);
+        }
+        data = { ...data, LinkedIn: cleaned };
+      }
       const res = await createApplication(data, env, cors, env.NOTION_ACCELERATOR_DATABASE_ID, { Status: "New" });
       if (res.status < 500) return res;
       // Safety net: if the accelerator DB isn't shared with the integration (yet),
@@ -3028,6 +3046,42 @@ async function handleSuperhumanQuestionnaire(data, env, cors, ctx) {
   }
   if (!SHQ_ROLES.includes(role)) return json({ ok: false, error: "A role is required" }, 400, cors);
 
+  // LinkedIn is required and has to be a real profile. The page checks this
+  // too; this is the check that holds when the page is skipped, which is
+  // how "https://www.linkedin/in/laurafelker" was stored.
+  const linkedin = linkedinUrl(data.linkedin);
+  if (!linkedin) {
+    return json({
+      ok: false,
+      error: "Please paste your full LinkedIn profile link, like https://www.linkedin.com/in/yourname",
+    }, 400, cors);
+  }
+
+  // The photo, which is optional. Either a file came up with the form or a
+  // Drive link did, and an upload wins if somehow both arrive.
+  //
+  // A link that is present and wrong is refused rather than quietly
+  // dropped: someone who pasted a Google Doc believes they have given us a
+  // photo, and saving the rest of the form without telling them is how we
+  // ended up chasing two of the last eleven by hand.
+  const photoLinkRaw = String(data.photo_link || "").trim();
+  let upload = null;
+  if (String(data.photo_upload || "").trim()) {
+    upload = decodeUploadedPhoto(data.photo_upload);
+    if (!upload) {
+      return json({ ok: false, error: "Please choose a JPG, PNG or WebP under 5MB." }, 400, cors);
+    }
+  } else if (photoLinkRaw && !isDrivePhotoLink(photoLinkRaw)) {
+    return json({
+      ok: false,
+      error: "Please paste a link to the photo file in Google Drive, not a doc.",
+    }, 400, cors);
+  }
+
+  // What the Photo Link column will say: the marker for an upload, the link
+  // for a link, nothing at all when the screen was skipped.
+  const photoLink = upload ? PHOTO_UPLOADED : photoLinkRaw;
+
   // The same three helpers /qualify and /onboard-questionnaire use.
   const rich = (s) => {
     const v = String(s == null ? "" : s).trim();
@@ -3084,7 +3138,7 @@ async function handleSuperhumanQuestionnaire(data, env, cors, ctx) {
 
   // Who they are and what they do. The page asks these on two grouped screens
   // but sends them flat, one key per Notion column.
-  link("LinkedIn", data.linkedin);
+  link("LinkedIn", linkedin);
   link("Instagram", data.instagram);
   text("Other Links", data.other_links);
   text("City", data.city);
@@ -3093,7 +3147,10 @@ async function handleSuperhumanQuestionnaire(data, env, cors, ctx) {
   text("What the Company Does", data.company_does);
   text("Who They Serve", data.who_you_serve);
   text("Bio", data.bio);
-  link("Photo Link", data.photo_link);
+  // Not link(): that helper only writes something it can parse as an https
+  // URL, and "Uploaded" is deliberately neither. It says the bytes are in
+  // the bucket already and there is nothing here to fetch.
+  if (photoLink) properties["Photo Link"] = { url: clip(photoLink, 2000) };
   text("Superpower", data.superpower);
 
   text("Q Focus Ranking", data.focus_ranking);
@@ -3180,7 +3237,7 @@ async function handleSuperhumanQuestionnaire(data, env, cors, ctx) {
   // Time Rich Members: copy the saved profile into portal_directory. Built
   // from the properties Notion stored (the reply to the write), not from this
   // request body, and off the response path like Slack.
-  queueDirectorySync(env, ctx, page);
+  queueDirectorySync(env, ctx, page, upload);
 
   // An ambassador who is already on the allowlist gets portal access here.
   // Buyers and second seats are untouched: they get their row from the
@@ -3202,7 +3259,7 @@ async function handleSuperhumanQuestionnaire(data, env, cors, ctx) {
         name,
         email,
         role,
-        linkedin: data.linkedin || "",
+        linkedin: linkedin,
         instagram: data.instagram || "",
         otherLinks: data.other_links || "",
         city: data.city || "",
@@ -3211,7 +3268,7 @@ async function handleSuperhumanQuestionnaire(data, env, cors, ctx) {
         companyDoes: data.company_does || "",
         whoTheyServe: data.who_you_serve || "",
         bio: data.bio || "",
-        photoLink: data.photo_link || "",
+        photoLink: photoLink,
         superpower: data.superpower || "",
         focusRanking: data.focus_ranking || "",
         successBy20Nov: data.success_by_20_nov || "",
@@ -3515,7 +3572,7 @@ async function findDirectoryRow(sb, email) {
 // Copies one Notion questionnaire row into portal_directory.
 // Returns { outcome: "listed" | "skipped", photo }, where photo is "ok",
 // "failed", "missing" or "kept". Throws only when Supabase itself fails.
-async function syncDirectoryProfile(env, properties) {
+async function syncDirectoryProfile(env, properties, upload) {
   const sb = supabaseService(env);
   if (!sb) throw new Error("Supabase is not configured");
 
@@ -3527,7 +3584,8 @@ async function syncDirectoryProfile(env, properties) {
 
   const row = directoryRowFromNotion(email, member.role, properties);
   const existing = await findDirectoryRow(sb, email);
-  const photo = await syncDirectoryPhoto(env, sb, row, existing, calProp(properties["Photo Link"]).trim());
+  const photo = await syncDirectoryPhoto(
+    env, sb, row, existing, calProp(properties["Photo Link"]).trim(), upload);
 
   await upsertDirectoryRow(sb, row);
   return { outcome: "listed", photo };
@@ -3550,10 +3608,36 @@ const DIRECTORY_PHOTO_MAX_BYTES = 5 * 1024 * 1024;
 const DIRECTORY_PHOTO_TYPES = { "image/jpeg": "jpg", "image/png": "png", "image/webp": "webp" };
 
 // Sets the photo columns on `row` and returns what happened.
-async function syncDirectoryPhoto(env, sb, row, existing, link) {
+//
+// Two ways in, one way through. A Drive link is downloaded; an upload
+// arrives as bytes with the form and skips the download. Everything after
+// that -- the hash for the object name, the upsert, clearing a stale
+// extension, the columns written on `row` -- is shared, because a photo is
+// a photo once it is in hand and a second storage path would be a second
+// thing to get wrong.
+async function syncDirectoryPhoto(env, sb, row, existing, link, upload) {
+  // An upload wins, the same way it does on the page.
+  if (upload) {
+    // photo_source_url is what the "has this changed?" check compares, and
+    // an upload has no URL to compare. So the content is the identity: the
+    // same file submitted twice hashes the same and is not re-uploaded.
+    const source = `upload:${await sha256Bytes(upload.bytes)}`;
+    if (existing && existing.photo_source_url === source && existing.photo_status === "ok") return "kept";
+    return await storeDirectoryPhoto(sb, row, existing, upload, source);
+  }
+
   if (!link) {
     // Notion keeps an earlier link when a resubmission leaves it empty, so no
     // link here means the member has never given one.
+    if (!existing || existing.photo_status !== "ok") row.photo_status = "missing";
+    return existing && existing.photo_status === "ok" ? "kept" : "missing";
+  }
+
+  // A resubmission with no new file: Notion still says "Uploaded" from last
+  // time, which is a marker and not something to fetch. Without this the
+  // stored photo would be marked failed and the team told about it every
+  // time someone edited any other answer.
+  if (link === PHOTO_UPLOADED) {
     if (!existing || existing.photo_status !== "ok") row.photo_status = "missing";
     return existing && existing.photo_status === "ok" ? "kept" : "missing";
   }
@@ -3566,10 +3650,17 @@ async function syncDirectoryPhoto(env, sb, row, existing, link) {
     // Keep any earlier photo_path and photo_source_url: the next attempt
     // compares against the last link that actually worked.
     row.photo_status = "failed";
-    await notifyPhotoFailed(env, row.name);
+    await notifyPhotoFailed(env, row.name, row.email);
     return "failed";
   }
 
+  return await storeDirectoryPhoto(sb, row, existing, image, link);
+}
+
+// Puts the bytes in the bucket and sets the columns. `source` is what goes
+// in photo_source_url: the Drive link for a download, or "upload:<hash>"
+// for a file that came up with the form.
+async function storeDirectoryPhoto(sb, row, existing, image, source) {
   const path = `${await sha256Hex(row.email)}.${image.ext}`;
   const uploaded = await fetch(`${sb.base}/storage/v1/object/${DIRECTORY_BUCKET}/${path}`, {
     method: "POST",
@@ -3588,7 +3679,7 @@ async function syncDirectoryPhoto(env, sb, row, existing, link) {
 
   row.photo_path = path;
   row.photo_status = "ok";
-  row.photo_source_url = link;
+  row.photo_source_url = source;
   return "ok";
 }
 
@@ -3606,6 +3697,103 @@ function driveFileId(link) {
     ? url.pathname.match(/^\/file\/d\/([^/]+)/)[1]
     : (/^\/(open|uc)$/.test(url.pathname) ? url.searchParams.get("id") : null);
   return id && /^[A-Za-z0-9_-]{10,}$/.test(id) ? id : null;
+}
+
+// The same rule the questionnaire applies before it will let anyone past
+// the photo screen, repeated here because the page is not the gate: anyone
+// can POST this endpoint directly.
+//
+// Stricter than driveFileId above, deliberately. That one also accepts
+// docs.google.com, because links already stored in Notion use it and still
+// download; this one is about what is allowed in, and a docs.google.com
+// link is a document. Two of the last eleven photo links were exactly that
+// mistake.
+function isDrivePhotoLink(link) {
+  let url;
+  try { url = new URL(String(link == null ? "" : link).trim()); } catch { return false; }
+  if (url.protocol !== "https:") return false;
+  if (url.hostname.toLowerCase() !== "drive.google.com") return false;
+
+  const id = /^\/file\/d\/([^/]+)/.test(url.pathname)
+    ? url.pathname.match(/^\/file\/d\/([^/]+)/)[1]
+    : (/^\/(open|uc)$/.test(url.pathname) ? url.searchParams.get("id") : null);
+  return Boolean(id && /^[A-Za-z0-9_-]{10,}$/.test(id));
+}
+
+// A LinkedIn profile or company page, cleaned, or null.
+//
+// The host must be linkedin.com or something under it -- the country
+// subdomains are real -- and the path a profile or a company. The query and
+// the hash go: people paste out of the app and arrive carrying
+// ?isSelfProfile=true, which is not part of anyone's profile.
+//
+// This is the check that was missing. The page only asked whether the URL
+// parsed and used https, so "https://www.linkedin/in/laurafelker" -- a host
+// that does not resolve -- was saved as though it were a profile.
+function linkedinUrl(value) {
+  let url;
+  try { url = new URL(String(value == null ? "" : value).trim()); } catch { return null; }
+  if (url.protocol !== "https:") return null;
+
+  const host = url.hostname.toLowerCase();
+  if (host !== "linkedin.com" && !host.endsWith(".linkedin.com")) return null;
+  if (!/^\/(in|company)\/[^/]/.test(url.pathname)) return null;
+
+  return url.origin + url.pathname.replace(/\/+$/, "");
+}
+
+// What goes in the Notion "Photo Link" column when the photo came up with
+// the form rather than as a link. It is not a URL, which is the point: it
+// says the bytes are already in the bucket and there is nothing to fetch.
+const PHOTO_UPLOADED = "Uploaded";
+
+// The first bytes of a JPEG, PNG or WebP. The declared type is the
+// browser's word for it and a direct POST can say anything, so the file
+// itself is what decides. An iPhone HEIC renamed .jpg fails here.
+function sniffImage(bytes) {
+  if (!bytes || bytes.byteLength < 12) return null;
+  const b = bytes;
+
+  if (b[0] === 0xff && b[1] === 0xd8 && b[2] === 0xff) return { type: "image/jpeg", ext: "jpg" };
+
+  if (b[0] === 0x89 && b[1] === 0x50 && b[2] === 0x4e && b[3] === 0x47 &&
+      b[4] === 0x0d && b[5] === 0x0a && b[6] === 0x1a && b[7] === 0x0a) {
+    return { type: "image/png", ext: "png" };
+  }
+
+  // "RIFF" .... "WEBP"
+  if (b[0] === 0x52 && b[1] === 0x49 && b[2] === 0x46 && b[3] === 0x46 &&
+      b[8] === 0x57 && b[9] === 0x45 && b[10] === 0x42 && b[11] === 0x50) {
+    return { type: "image/webp", ext: "webp" };
+  }
+
+  return null;
+}
+
+// Turns the base64 the page sends into { bytes, type, ext }, or null.
+//
+// The 5MB cap is applied to the decoded length, not the base64, because the
+// base64 is about a third bigger and capping that would quietly reject
+// files that are inside the limit. The length is worked out from the string
+// before decoding, so an oversized payload is never held twice.
+function decodeUploadedPhoto(raw) {
+  const b64 = String(raw == null ? "" : raw).trim();
+  if (!b64) return null;
+  if (!/^[A-Za-z0-9+/]+={0,2}$/.test(b64) || b64.length % 4 !== 0) return null;
+
+  const padding = b64.endsWith("==") ? 2 : (b64.endsWith("=") ? 1 : 0);
+  if ((b64.length / 4) * 3 - padding > DIRECTORY_PHOTO_MAX_BYTES) return null;
+
+  let binary;
+  try { binary = atob(b64); } catch { return null; }
+  if (binary.length > DIRECTORY_PHOTO_MAX_BYTES) return null;
+
+  const bytes = new Uint8Array(binary.length);
+  for (let i = 0; i < binary.length; i++) bytes[i] = binary.charCodeAt(i);
+
+  const sniffed = sniffImage(bytes);
+  if (!sniffed) return null;
+  return { bytes, type: sniffed.type, ext: sniffed.ext };
 }
 
 // Downloads a publicly shared Drive file. Returns { bytes, type, ext } only
@@ -3660,21 +3848,32 @@ async function readAtMost(res, max) {
   return out;
 }
 
+// The same digest over raw bytes. An uploaded photo has no URL to compare
+// against on the next submission, so its content is what identifies it.
+async function sha256Bytes(bytes) {
+  const digest = await crypto.subtle.digest("SHA-256", bytes);
+  return [...new Uint8Array(digest)].map((b) => b.toString(16).padStart(2, "0")).join("");
+}
+
 async function sha256Hex(text) {
   const digest = await crypto.subtle.digest("SHA-256", new TextEncoder().encode(String(text)));
   return [...new Uint8Array(digest)].map((b) => b.toString(16).padStart(2, "0")).join("");
 }
 
 // One line to the questionnaire Slack channel. Never the link itself.
-async function notifyPhotoFailed(env, name) {
+async function notifyPhotoFailed(env, name, email) {
   const webhook = env && env.SLACK_QUESTIONNAIRE_WEBHOOK_URL;
   if (!webhook) return;
   const who = slackEscape(String(name || "").trim() || "a member");
+  // The address so the reply can go out without looking anyone up first.
+  // Still never the link: that is the one thing that could be private.
+  const at = String(email || "").trim();
+  const line = at ? `${who} (${slackEscape(at)})` : who;
   try {
     const res = await fetch(webhook, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ text: `Photo link failed for ${who}. Ask them to set sharing to Anyone with the link.` }),
+      body: JSON.stringify({ text: `Photo link failed for ${line}. Ask them to set sharing to Anyone with the link.` }),
     });
     if (!res.ok) console.error("[members] photo slack webhook returned", res.status);
   } catch {
@@ -3685,9 +3884,9 @@ async function notifyPhotoFailed(env, name) {
 // Called after the questionnaire is safely in Notion. `page` is Notion's reply
 // to the create or update, which carries every stored property, so a partial
 // resubmission still produces a complete profile.
-function queueDirectorySync(env, ctx, page) {
+function queueDirectorySync(env, ctx, page, upload) {
   if (!page || !page.properties || !supabaseService(env)) return;
-  const work = syncDirectoryProfile(env, page.properties).catch((err) => {
+  const work = syncDirectoryProfile(env, page.properties, upload).catch((err) => {
     // Our own messages only: never the payload, a link or an error object.
     console.error("[members] directory sync failed:", String(err && err.message));
   });
