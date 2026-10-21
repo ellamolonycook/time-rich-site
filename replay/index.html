@@ -1,0 +1,652 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+<link rel="icon" type="image/png" sizes="32x32" href="/rocketship-icon-32.png" />
+<link rel="apple-touch-icon" sizes="180x180" href="/rocketship-icon-180.png" />
+<title>Time Rich Replay</title>
+<meta name="description" content="Every Time Rich workshop, on demand. Pick an episode, press play and download the transcript." />
+<link rel="canonical" href="https://timerich.ai/replay/" />
+<meta name="robots" content="noindex, nofollow" />
+<meta name="theme-color" content="#FFFDFB" />
+<meta property="og:title" content="Time Rich Replay" />
+<meta property="og:description" content="Every Time Rich workshop, on demand. Pick an episode, press play and download the transcript." />
+<meta property="og:url" content="https://timerich.ai/replay/" />
+<meta property="og:type" content="website" />
+<meta property="og:image" content="https://timerich.ai/og-time-rich.png" />
+<meta name="twitter:card" content="summary_large_image" />
+<link rel="preload" href="/brand/fonts/SpaceGrotesk-Variable.woff2" as="font" type="font/woff2" crossorigin />
+<link rel="preload" href="/brand/fonts/Inter-Variable.woff2" as="font" type="font/woff2" crossorigin />
+<style>
+@font-face { font-family: "Space Grotesk"; src: url("/brand/fonts/SpaceGrotesk-Variable.woff2") format("woff2"); font-weight: 300 700; font-display: swap; }
+@font-face { font-family: "Inter"; src: url("/brand/fonts/Inter-Variable.woff2") format("woff2"); font-weight: 100 900; font-display: swap; }
+
+/* The portal's palette. Purple is left out: the portal keeps it for "Soon". */
+:root {
+  --paper: #FFFDFB;
+  --ink: #1A1816;
+  --soft: #57534E;
+  --green: #424B36;
+  --green-deep: #2C3224;
+  --sage: #D8D9B9;
+  --sage-lt: #E5E6CF;
+  --lime: #CCEEA0;
+  --line: rgba(26, 24, 22, .12);
+  --display: "Space Grotesk", system-ui, -apple-system, "Segoe UI", sans-serif;
+  --sans: "Inter", system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+}
+*, *::before, *::after { box-sizing: border-box; }
+html { -webkit-text-size-adjust: 100%; }
+body { margin: 0; background: var(--paper); color: var(--ink); font-family: var(--sans); line-height: 1.5; }
+a { color: inherit; }
+.wrap { max-width: 1120px; margin: 0 auto; padding: 0 24px; }
+@media (max-width: 640px) { .wrap { padding: 0 16px; } }
+/* [hidden] always wins, even over a section that sets its own display. */
+[hidden] { display: none !important; }
+.sr-only { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+
+/* ---- masthead ------------------------------------------------------- */
+.mast { border-bottom: 1px solid var(--line); background: var(--paper); }
+.mast .wrap { display: flex; align-items: center; justify-content: space-between; gap: 16px; min-height: 64px; }
+.mark { font-family: var(--display); font-weight: 700; font-size: 20px; letter-spacing: -.02em; text-decoration: none; }
+.mark span { color: var(--green); }
+.mark small { font-family: var(--sans); font-weight: 500; font-size: 13px; letter-spacing: .08em; text-transform: uppercase; color: var(--soft); margin-left: 12px; padding-left: 12px; border-left: 1px solid var(--line); }
+.pill { display: inline-flex; align-items: center; justify-content: center; gap: 8px; min-height: 44px; padding: 0 20px; border-radius: 999px; border: 0; font: inherit; font-size: 14px; font-weight: 600; text-decoration: none; cursor: pointer; white-space: nowrap; transition: background-color .18s ease, transform .18s ease; }
+.pill:focus-visible { outline: 2px solid var(--ink); outline-offset: 3px; }
+.pill.is-green { background: var(--green); color: var(--paper); }
+.pill.is-green:hover { background: var(--green-deep); }
+.pill.is-light { background: var(--paper); color: var(--ink); }
+.pill.is-light:hover { background: var(--sage-lt); }
+.pill.is-soft { background: var(--sage-lt); color: var(--ink); }
+.pill.is-soft:hover { background: var(--sage); }
+.pill.is-ghost { background: transparent; color: var(--paper); box-shadow: inset 0 0 0 1.5px rgba(255, 253, 251, .45); }
+.pill.is-ghost:hover { background: rgba(255, 253, 251, .08); }
+.pill svg { width: 16px; height: 16px; flex: none; }
+
+/* ---- now showing ---------------------------------------------------- */
+.now { background: var(--green-deep); color: var(--paper); overflow: hidden; }
+.now .wrap { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: clamp(32px, 6vw, 80px); align-items: center; padding-top: clamp(40px, 7vw, 88px); padding-bottom: clamp(48px, 7vw, 96px); }
+.now-copy { display: flex; flex-direction: column; gap: 16px; min-width: 0; }
+.eyebrow { font-size: 12px; font-weight: 600; letter-spacing: .12em; text-transform: uppercase; }
+.now .eyebrow { color: var(--lime); }
+.now-title { font-family: var(--display); font-weight: 600; font-size: clamp(36px, 6vw, 64px); line-height: 1.02; letter-spacing: -.03em; margin: 0; }
+.now-meta { font-size: 15px; color: rgba(255, 253, 251, .72); margin: 0; }
+.now-hook { font-size: 18px; line-height: 1.6; color: rgba(255, 253, 251, .86); margin: 0; max-width: 54ch; }
+.now-actions { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 8px; }
+.now .dvd { --w: clamp(190px, 24vw, 250px); }
+@media (max-width: 760px) {
+  .now .wrap { grid-template-columns: 1fr; }
+  .now .dvd { order: -1; justify-self: start; --w: 180px; }
+}
+
+.intro { padding: clamp(40px, 6vw, 64px) 0 8px; }
+.intro h1 { font-family: var(--display); font-weight: 600; font-size: clamp(30px, 4.6vw, 46px); line-height: 1.06; letter-spacing: -.025em; margin: 0 0 12px; }
+.intro p { margin: 0; font-size: 17px; color: var(--soft); max-width: 60ch; }
+
+/* ---- the shelves ---------------------------------------------------- */
+.shelf { padding: 36px 0 8px; }
+.shelf-head { display: flex; align-items: baseline; justify-content: space-between; gap: 12px; margin-bottom: 18px; }
+.shelf-head h2 { font-family: var(--display); font-weight: 600; font-size: clamp(22px, 3vw, 28px); letter-spacing: -.02em; margin: 0; }
+.shelf-head span { font-size: 13px; color: var(--soft); white-space: nowrap; }
+.shelf-row { display: flex; gap: clamp(12px, 2vw, 24px); overflow-x: auto; padding: 8px 4px 22px; margin: 0 -4px; scroll-snap-type: x proximity; scrollbar-width: thin; }
+/* the shelf board the cases stand on */
+.shelf-board { height: 12px; border-radius: 0 0 6px 6px; background: linear-gradient(var(--sage), var(--sage-lt)); box-shadow: 0 10px 18px -12px rgba(26, 24, 22, .45); margin-top: -14px; position: relative; z-index: -1; }
+
+/* ---- a DVD ---------------------------------------------------------- */
+.item { --w: 176px; flex: 0 0 auto; width: calc(var(--w) * 1.55); scroll-snap-align: start; display: flex; flex-direction: column; gap: 12px; }
+.dvd { --w: 176px; flex: 0 0 auto; width: var(--w); background: none; border: 0; padding: 0; text-align: left; font: inherit; color: inherit; cursor: pointer; display: flex; flex-direction: column; gap: 12px; }
+.dvd:focus-visible { outline: none; }
+.dvd:focus-visible .dvd-case { outline: 3px solid var(--lime); outline-offset: 4px; }
+.dvd-stage { position: relative; width: var(--w); aspect-ratio: 135 / 190; perspective: 900px; }
+/* the disc, which slides out of the case on hover */
+.dvd-disc { position: absolute; top: 8%; right: 4%; width: 84%; aspect-ratio: 1; border-radius: 50%;
+  background:
+    radial-gradient(circle, var(--paper) 0 9%, rgba(26, 24, 22, .25) 9.5% 10.5%, transparent 11%),
+    conic-gradient(from 20deg, #E9EAE0, #C9CBB6, #F4F2E8, #B9BCA5, #E9EAE0);
+  box-shadow: inset 0 0 0 1px rgba(26, 24, 22, .15); transition: transform .45s cubic-bezier(.16, 1, .3, 1); }
+.dvd-case { position: absolute; inset: 0; display: flex; border-radius: 6px 10px 10px 6px; overflow: hidden; background: var(--c1); color: var(--c3);
+  box-shadow: 0 1px 0 rgba(255, 255, 255, .25) inset, 0 18px 30px -16px rgba(26, 24, 22, .6), 0 4px 10px -4px rgba(26, 24, 22, .35);
+  transform-origin: left center; transition: transform .45s cubic-bezier(.16, 1, .3, 1), box-shadow .45s ease; }
+.dvd-spine { flex: 0 0 15%; background: var(--c2); display: flex; align-items: center; justify-content: center; border-right: 1px solid rgba(26, 24, 22, .18); }
+.dvd-spine span { writing-mode: vertical-rl; transform: rotate(180deg); font-size: 9px; font-weight: 700; letter-spacing: .18em; text-transform: uppercase; white-space: nowrap; opacity: .9; }
+.dvd-cover { position: relative; flex: 1; display: flex; flex-direction: column; padding: 10% 10% 9%; min-width: 0; }
+/* a plastic sleeve sheen over the cover */
+.dvd-cover::after { content: ""; position: absolute; inset: 0; background: linear-gradient(115deg, rgba(255, 255, 255, .22) 0%, rgba(255, 255, 255, 0) 38%, rgba(255, 255, 255, 0) 70%, rgba(255, 255, 255, .08) 100%); pointer-events: none; }
+.dvd-label { font-size: 8.5px; font-weight: 700; letter-spacing: .2em; text-transform: uppercase; opacity: .8; }
+.dvd-ep { font-family: var(--display); font-weight: 700; font-size: calc(var(--w) * .34); line-height: .9; letter-spacing: -.05em; margin-top: auto; color: var(--c4); }
+.dvd-title { font-family: var(--display); font-weight: 600; font-size: calc(var(--w) * .1); line-height: 1.04; letter-spacing: -.02em; margin-top: 8%; }
+.dvd-series { font-size: calc(var(--w) * .052); font-weight: 600; letter-spacing: .06em; text-transform: uppercase; margin-top: 6%; opacity: .78; }
+.dvd-foot { display: flex; justify-content: space-between; gap: 6px; font-size: calc(var(--w) * .048); font-weight: 600; letter-spacing: .06em; text-transform: uppercase; margin-top: 9%; padding-top: 6%; border-top: 1px solid currentColor; opacity: .75; }
+.dvd-soon { align-self: flex-start; margin-top: 8px; font-size: 8.5px; font-weight: 700; letter-spacing: .14em; text-transform: uppercase; background: var(--paper); color: var(--ink); border-radius: 999px; padding: 4px 8px; }
+
+.dvd:hover .dvd-disc, .dvd:focus-visible .dvd-disc { transform: translateX(46%) rotate(40deg); }
+.dvd:hover .dvd-case, .dvd:focus-visible .dvd-case { transform: rotateY(-14deg) translateX(-2%); box-shadow: 0 1px 0 rgba(255, 255, 255, .25) inset, 0 26px 40px -18px rgba(26, 24, 22, .7), 0 6px 14px -6px rgba(26, 24, 22, .4); }
+@media (prefers-reduced-motion: reduce) {
+  .dvd-disc, .dvd-case { transition: none; }
+  .dvd:hover .dvd-case, .dvd:focus-visible .dvd-case { transform: none; }
+}
+/* under each case: the transcript, one click, no need to open the episode */
+.item-dl { display: inline-flex; align-items: center; gap: 8px; align-self: flex-start; min-height: 44px; padding: 0 16px; border-radius: 999px; background: var(--sage-lt); color: var(--ink); font-size: 13px; font-weight: 600; text-decoration: none; }
+.item-dl:hover { background: var(--sage); }
+.item-dl:focus-visible { outline: 2px solid var(--ink); outline-offset: 2px; }
+.item-dl svg { width: 15px; height: 15px; }
+
+/* cover colourways, one per series */
+.c-forest { --c1: #424B36; --c2: #2C3224; --c3: #FFFDFB; --c4: #CCEEA0; }
+.c-sage   { --c1: #D8D9B9; --c2: #C3C5A0; --c3: #1A1816; --c4: #424B36; }
+.c-ink    { --c1: #1A1816; --c2: #2E2B27; --c3: #FFFDFB; --c4: #D8D9B9; }
+.c-cream  { --c1: #F3F0E4; --c2: #E5E6CF; --c3: #1A1816; --c4: #67762E; }
+
+/* ---- the episode, opened ------------------------------------------ */
+dialog.ep { width: min(1040px, calc(100vw - 32px)); max-height: calc(100vh - 32px); padding: 0; border: 0; border-radius: 22px; background: var(--paper); color: var(--ink); box-shadow: 0 30px 80px -20px rgba(0, 0, 0, .6); overflow: auto; }
+dialog.ep::backdrop { background: rgba(20, 22, 17, .78); backdrop-filter: blur(4px); }
+.ep-screen { position: relative; aspect-ratio: 16 / 9; background: #0E0F0C; }
+.ep-screen iframe { position: absolute; inset: 0; width: 100%; height: 100%; border: 0; }
+.ep-soon { position: absolute; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 8px; color: var(--paper); text-align: center; padding: 24px; }
+.ep-soon b { font-family: var(--display); font-size: clamp(22px, 3vw, 30px); letter-spacing: -.02em; }
+.ep-soon span { color: rgba(255, 253, 251, .7); font-size: 15px; }
+.ep-close { position: absolute; top: 12px; right: 12px; z-index: 2; width: 44px; height: 44px; border-radius: 50%; border: 0; background: rgba(255, 253, 251, .92); color: var(--ink); cursor: pointer; display: inline-flex; align-items: center; justify-content: center; }
+.ep-close:focus-visible { outline: 2px solid var(--lime); outline-offset: 2px; }
+.ep-close svg { width: 18px; height: 18px; }
+.ep-body { display: grid; grid-template-columns: minmax(0, 1.5fr) minmax(0, 1fr); gap: 28px 40px; padding: clamp(20px, 4vw, 36px); }
+@media (max-width: 760px) { .ep-body { grid-template-columns: 1fr; } }
+.ep-main { display: flex; flex-direction: column; gap: 12px; min-width: 0; }
+.ep-main .eyebrow { color: var(--green); }
+.ep-title { font-family: var(--display); font-weight: 600; font-size: clamp(26px, 3.6vw, 36px); line-height: 1.08; letter-spacing: -.02em; margin: 0; }
+.ep-hook { margin: 0; font-size: 16.5px; line-height: 1.6; color: var(--soft); }
+.ep-list { margin: 6px 0 0; padding: 0; list-style: none; display: flex; flex-direction: column; gap: 10px; }
+.ep-list li { position: relative; padding-left: 20px; font-size: 15px; line-height: 1.55; }
+.ep-list li::before { content: ""; position: absolute; left: 0; top: .6em; width: 8px; height: 8px; border-radius: 50%; background: var(--sage); box-shadow: inset 0 0 0 1.5px var(--green); }
+.ep-list b { font-weight: 600; }
+.ep-side { display: flex; flex-direction: column; gap: 18px; min-width: 0; }
+.ep-box { background: var(--sage-lt); border-radius: 16px; padding: 18px; display: flex; flex-direction: column; gap: 6px; }
+.ep-box h3 { margin: 0 0 4px; font-size: 12px; font-weight: 600; letter-spacing: .1em; text-transform: uppercase; color: var(--soft); }
+.ep-box p { margin: 0; font-size: 15px; }
+.ep-actions { display: flex; flex-wrap: wrap; gap: 10px; }
+.ep-prompt { grid-column: 1 / -1; border: 1px solid var(--line); border-radius: 18px; padding: clamp(18px, 3vw, 24px); display: flex; flex-direction: column; gap: 12px; }
+.ep-prompt-head { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 12px; }
+.ep-prompt h3 { margin: 0; font-family: var(--display); font-weight: 600; font-size: 20px; letter-spacing: -.01em; }
+.ep-prompt ol { margin: 0; padding-left: 20px; font-size: 14.5px; color: var(--soft); display: flex; flex-direction: column; gap: 2px; }
+.ep-prompt pre { margin: 0; white-space: pre-wrap; word-break: break-word; background: var(--sage-lt); border-radius: 14px; padding: 16px 18px; font-family: var(--sans); font-size: 14.5px; line-height: 1.6; color: var(--ink); }
+
+/* ---- the access code ------------------------------------------------ */
+.gate { background: var(--green-deep); color: var(--paper); min-height: calc(100vh - 65px); display: flex; align-items: center; padding: 48px 0; }
+.gate .wrap { width: 100%; display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: clamp(32px, 6vw, 80px); align-items: center; }
+.gate-copy { display: flex; flex-direction: column; gap: 16px; max-width: 520px; }
+.gate .eyebrow { color: var(--lime); }
+.gate h1 { font-family: var(--display); font-weight: 600; font-size: clamp(34px, 5.6vw, 58px); line-height: 1.03; letter-spacing: -.03em; margin: 0; }
+.gate p { margin: 0; font-size: 17px; line-height: 1.6; color: rgba(255, 253, 251, .82); }
+.gate form { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 8px; }
+.gate input { flex: 1 1 200px; min-height: 48px; padding: 0 18px; border-radius: 999px; border: 1.5px solid rgba(255, 253, 251, .4); background: rgba(255, 253, 251, .06); color: var(--paper); font: inherit; font-size: 16px; font-weight: 600; letter-spacing: .14em; text-transform: uppercase; }
+.gate input::placeholder { color: rgba(255, 253, 251, .5); letter-spacing: .06em; text-transform: none; font-weight: 500; }
+.gate input:focus { outline: none; border-color: var(--lime); }
+.gate .pill { min-height: 48px; }
+.gate-err { min-height: 1.5em; color: var(--lime) !important; font-size: 15px !important; }
+.gate-note a, .gate-copy p a { color: var(--paper); }
+.gate .dvd-stack { display: flex; gap: 18px; align-items: flex-end; }
+.gate .dvd-stack .dvd { --w: 132px; pointer-events: none; }
+.gate .dvd-stack .dvd:nth-child(2) { margin-bottom: 22px; }
+@media (max-width: 1000px) { .gate .dvd-stack .dvd:nth-child(1) { display: none; } }
+@media (max-width: 760px) { .gate .wrap { grid-template-columns: 1fr; } .gate .dvd-stack { display: none; } }
+
+/* ---- footer --------------------------------------------------------- */
+.foot { border-top: 1px solid var(--line); margin-top: 48px; }
+.foot .wrap { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 16px; padding-top: 28px; padding-bottom: 40px; font-size: 14px; color: var(--soft); }
+.foot nav { display: flex; flex-wrap: wrap; gap: 8px; }
+.foot nav a { display: inline-flex; align-items: center; min-height: 44px; padding: 0 16px; border: 1px solid var(--line); border-radius: 999px; text-decoration: none; color: var(--ink); font-weight: 500; }
+.foot nav a:hover { border-color: var(--green); }
+</style>
+</head>
+<body>
+
+<header class="mast">
+  <div class="wrap">
+    <a class="mark" href="/">TIME RICH<span>.</span><small>Replay</small></a>
+    <a class="pill is-green" href="https://timerichclub.com" target="_blank" rel="noopener">Join the Club</a>
+  </div>
+</header>
+
+<!-- The access code. A shared code on a static page keeps casual
+     visitors out; it is not an account. The code itself is not in this
+     file, only its SHA-256. -->
+<section class="gate" aria-labelledby="gate-title" data-gate>
+  <div class="wrap">
+    <div class="gate-copy">
+      <span class="eyebrow">Time Rich Replay</span>
+      <h1 id="gate-title">The members&rsquo; screening room</h1>
+      <p>Time Rich Replay is for members of <a href="https://timerichclub.com" target="_blank" rel="noopener">timerichclub.com</a>. Enter your access code to watch every workshop, download each transcript and get a prompt to use it with your AI.</p>
+      <form data-gate-form novalidate>
+        <label class="sr-only" for="gate-code">Access code</label>
+        <input id="gate-code" name="code" type="text" autocomplete="off" autocapitalize="characters" spellcheck="false" placeholder="Access code" required />
+        <button class="pill is-light" type="submit">Unlock</button>
+      </form>
+      <p class="gate-err" role="alert" data-gate-err></p>
+      <p class="gate-note">Not a member yet? <a href="https://timerichclub.com" target="_blank" rel="noopener">Join at timerichclub.com</a></p>
+    </div>
+    <div class="dvd-stack" aria-hidden="true" data-gate-stack></div>
+  </div>
+</section>
+
+<main hidden data-main>
+  <!-- Filled in from EPISODES below: the newest episode that can be played. -->
+  <section class="now" aria-labelledby="now-title" data-now hidden></section>
+
+  <div class="wrap">
+    <section class="intro">
+      <h1>The Time Rich Collection</h1>
+      <p>Every workshop, on demand. Pick an episode, press play, and download the transcript to keep or hand to your AI.</p>
+    </section>
+    <div data-shelves></div>
+    <noscript><p>Turn on JavaScript to browse and play the episodes.</p></noscript>
+  </div>
+</main>
+
+<footer class="foot">
+  <div class="wrap">
+    <span>&copy; 2026 Time Rich &middot; <a href="mailto:emc@timerichclub.com">emc@timerichclub.com</a></span>
+    <nav aria-label="Follow Time Rich">
+      <a href="https://www.linkedin.com/in/ellamolonycook/" target="_blank" rel="noopener">LinkedIn</a>
+      <a href="https://www.instagram.com/timerichtalk" target="_blank" rel="noopener">Instagram</a>
+      <a href="https://substack.com/@timerichtalk" target="_blank" rel="noopener">Substack</a>
+    </nav>
+  </div>
+</footer>
+
+<dialog class="ep" aria-labelledby="ep-title" data-ep></dialog>
+
+<script>
+/* =====================================================================
+ * Time Rich Replay.
+ *
+ * Every episode is one entry below. To add a recording: add an entry,
+ * put its transcript in replay/transcripts/, and paste the Vimeo number
+ * into `vimeo` once the video is uploaded with embedding allowed on
+ * timerich.ai. An entry with vimeo: null shows as "Coming soon".
+ *
+ * Everything on the page is built with textContent from this list, so
+ * nothing here is ever read as markup.
+ * ===================================================================== */
+var EPISODES = [
+  {
+    id: 'e01', ep: 1, series: 'Female Founder Circle', cover: 'c-forest',
+    title: 'Turn Followers Into Buyers', date: '2026-06-18', minutes: 56, vimeo: '1236882810',
+    transcript: '2026-06-18-turn-followers-into-buyers-79f7cbd56823.txt',
+    prompt: ['Help me map my life\u2019s peaks and valleys and pick the 3 stories only I can tell.', 'Turn each story into a short-form hook, a medium-form idea and a live-call talking point, using the 3-part content funnel from the session.', 'Write me a know, like, trust checklist for the next 30 days.'],
+    hook: 'Real estate investor Alexis Morgan and Time Rich founder Ella Molony Cook on building a personal brand that converts in the age of AI.',
+    overview: [
+      ['Your story is your edge', 'information is now a commodity; your peaks, valleys and lived experience are what set you apart'],
+      ['Paint a vision', 'sharing goals and series keeps an audience invested for years, not just one post'],
+      ['Know, like, trust', 'the three pillars of social selling, and why who you are online has to match who you are live'],
+      ['The 3-part content funnel', 'short-form hooks, medium-form deep dives, and live calls or events where the sale happens'],
+      ['AI in your voice', 'brain-dumping your story into an AI note-taker and setting clear requirements so content still sounds like you']
+    ],
+    speakers: ['Ella Molony Cook, Founder, Time Rich', 'Alexis Morgan, Real Estate Investor & Lender (@alexismorganinvests)']
+  },
+  {
+    id: 'e02', ep: 2, series: 'AI Build Sessions', cover: 'c-sage',
+    title: 'Build Your First Agent', date: '2026-06-25', minutes: 78, vimeo: '1236812833',
+    transcript: '2026-06-25-build-your-first-agent-558bc64dc614.txt',
+    prompt: ['List the 5 tasks I repeat every week and pick the one to hand to an agent first.', 'Write that agent\u2019s rules file: its role, what it can and can\u2019t do, and when it must ask me before acting.', 'Set it up as a scheduled task with a human check-in, step by step for the tool I use.'],
+    hook: 'Time Rich founder Ella Molony Cook breaks down what an AI agent really is and builds one live, so you can start delegating real work to AI whatever tool you use.',
+    overview: [
+      ['Agents are team members', 'map your workflows first and give each agent one clear role, the same way you would onboard a new hire'],
+      ['Start your day with AI', 'using Claude in Chrome to work through LinkedIn connection requests, with ask-before-acting safeguards'],
+      ['Projects as a personal brain', 'NotebookLM for learning from the experts you admire, and a Claude project that turns your own data into a plan and puts it straight into your calendar'],
+      ['Under the hood', 'agents are just markdown files, an agent file for the rules and a memory file for a self-improving loop, plus connected tools, skills and plugins'],
+      ['Building one live', 'a scheduled daily task that sources leads into a Google Sheet, plus SOP tools like Scribe and Tango and a Notion hub that keeps a human in the loop']
+    ],
+    speakers: ['Ella Molony Cook, Founder, Time Rich']
+  },
+  {
+    id: 'e03', ep: 3, series: 'AI Build Sessions', cover: 'c-sage',
+    title: 'Your LinkedIn Content Engine', date: '2026-09-29', minutes: 61, vimeo: '1236334903',
+    transcript: '2026-09-29-your-linkedin-content-engine-f875e069ca29.txt',
+    prompt: ['Audit my LinkedIn headline and About section against my ideal client. I\u2019ll paste them in.', 'Build me a story bank: 10 stories, products and testimonials I can post about.', 'Draft my first post in my voice, messy over polished, with a hook in the first line.'],
+    hook: 'Time Rich founder Ella Molony Cook on using AI skills, a story bank and the right tools to build a LinkedIn presence that grows your authority and sales.',
+    overview: [
+      ['Messy beats polished', 'why vulnerability, fun and education outperform buttoned-up posts, and how authority turns into distribution and sales'],
+      ['Get clear first', 'your values, stories, client testimonials and ICP are what AI should amplify'],
+      ['Skills as SOPs', 'loading LinkedIn skills, running a live LinkedIn profile optimizer and ICP audit, and building a custom skill by having AI ask you clarifying questions'],
+      ['A story bank in Notion', 'one place for your stories, products and testimonials, so you never run out of content and every post can be repurposed into Substack Notes'],
+      ['Stanley as your social media manager', 'an AI tool that drafts posts from your notes, learns your voice and keeps you posting consistently']
+    ],
+    speakers: ['Ella Molony Cook, Founder, Time Rich']
+  },
+  {
+    id: 'e04', ep: 4, series: 'Leading with AI', cover: 'c-ink',
+    title: 'Build Your Delegation Muscle', date: '2026-10-19', minutes: 56, vimeo: '1238089857',
+    transcript: '2026-10-19-build-your-delegation-muscle-5bb4802e936e.txt',
+    prompt: ['Sort my task list into AI, a person or an expert, the three layers from the session. I\u2019ll paste my tasks in.', 'For the top AI task, apply the 4 C\u2019s: what done looks like, the context it needs, how we collaborate and its cadence.', 'Give me a 10-minute morning delegation routine I can start tomorrow.'],
+    hook: 'Time Rich founder Ella Molony Cook on knowing what to hand to AI, to a person and to an expert, and the systems that make delegation stick.',
+    overview: [
+      ['AI, intern or expert', 'which of the three layers each task belongs to, and breaking the "faster if I do it myself" habit'],
+      ['Sell before it’s perfect', 'how a 60K in 60 days goal became a 53K launch in 21 days by moving before everything was finished'],
+      ['The 4 C’s of delegating to AI', 'clarity on what done looks like, context, collaboration and cadence'],
+      ['Interns as a delegation strategy', 'building judgment and taste in people while AI takes the low-level work'],
+      ['The system underneath', 'a Notion operating system, a lean tech stack and a morning delegation habit']
+    ],
+    speakers: ['Ella Molony Cook, Founder, Time Rich']
+  },
+  {
+    id: 'e05', ep: 5, series: 'AI Build Sessions', cover: 'c-sage',
+    title: 'Build Agents That Earn', date: '2026-10-20', minutes: 57, vimeo: '1238094358',
+    transcript: '2026-10-20-build-agents-that-earn-90195f746d25.txt',
+    prompt: ['Suggest 3 customer-facing agents my business could run, and which one could make money.', 'For the best one, write its brief: model, knowledge, tools, policies, guardrails and token budget.', 'Write its instructions and a welcome message in my voice.'],
+    hook: 'LaunchLemonade founder Cien Solon shows how customer-facing AI agents save time and make money, and builds one live with Time Rich founder Ella Molony Cook.',
+    overview: [
+      ['Hire AI like a teammate', 'the model, knowledge, tools, policies, memory, guardrails and token budget an agent needs'],
+      ['Why customer-facing agents pay', 'real examples of bigger orders, support cases resolved and hours saved'],
+      ['Build one live', 'a customer service agent with a fast model, clear instructions, your website as its knowledge and an embed on your site'],
+      ['Security first', 'prompt injections, models going rogue, and keeping data encrypted and auditable'],
+      ['Monetize your expertise', 'turn your frameworks into a paid agent with a LaunchLemonade stand']
+    ],
+    speakers: ['Ella Molony Cook, Founder, Time Rich', 'Cien Solon, Co-Founder and CEO, LaunchLemonade']
+  }
+];
+
+/* The shelves, in the order they appear. A series with no episodes yet
+   is simply not drawn. */
+var SERIES = ['AI Build Sessions', 'Leading with AI', 'Female Founder Circle'];
+
+(function () {
+  'use strict';
+
+  var MONTHS = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+
+  function el(tag, cls, text) {
+    var n = document.createElement(tag);
+    if (cls) n.className = cls;
+    if (text != null) n.textContent = text;
+    return n;
+  }
+  function pad(n) { return n < 10 ? '0' + n : String(n); }
+  function niceDate(iso) {
+    var p = iso.split('-');
+    return Number(p[2]) + ' ' + MONTHS[Number(p[1]) - 1] + ' ' + p[0];
+  }
+  function code(e) { return 'S1 · E' + pad(e.ep); }
+  function icon(d) {
+    var ns = 'http://www.w3.org/2000/svg';
+    var s = document.createElementNS(ns, 'svg');
+    s.setAttribute('viewBox', '0 0 24 24'); s.setAttribute('fill', 'none'); s.setAttribute('stroke', 'currentColor');
+    s.setAttribute('stroke-width', '2'); s.setAttribute('stroke-linecap', 'round'); s.setAttribute('stroke-linejoin', 'round');
+    s.setAttribute('aria-hidden', 'true');
+    var p = document.createElementNS(ns, 'path'); p.setAttribute('d', d); s.appendChild(p);
+    return s;
+  }
+  var PLAY = 'M7 4.5v15l12-7.5z';
+  var DOWN = 'M12 4v11m0 0l-4.5-4.5M12 15l4.5-4.5M5 19.5h14';
+  var CLOSE = 'M6 6l12 12M18 6L6 18';
+
+  /* ---- a DVD case ------------------------------------------------------ */
+  function dvd(e, opts) {
+    opts = opts || {};
+    var b = el('button', 'dvd ' + e.cover);
+    b.type = 'button';
+    b.setAttribute('aria-label', 'Play episode ' + e.ep + ': ' + e.title + (e.vimeo ? '' : ' (coming soon)'));
+    b.addEventListener('click', function () { open(e, b); });
+
+    var stage = el('span', 'dvd-stage');
+    stage.setAttribute('aria-hidden', 'true');
+    stage.appendChild(el('span', 'dvd-disc'));
+    var c = el('span', 'dvd-case');
+    var spine = el('span', 'dvd-spine');
+    spine.appendChild(el('span', '', 'Time Rich · ' + code(e)));
+    c.appendChild(spine);
+    var cover = el('span', 'dvd-cover');
+    cover.appendChild(el('span', 'dvd-label', 'Time Rich Replay'));
+    if (!e.vimeo) cover.appendChild(el('span', 'dvd-soon', 'Coming soon'));
+    cover.appendChild(el('span', 'dvd-ep', pad(e.ep)));
+    cover.appendChild(el('span', 'dvd-title', e.title));
+    cover.appendChild(el('span', 'dvd-series', e.series));
+    var foot = el('span', 'dvd-foot');
+    foot.appendChild(el('span', '', e.minutes + ' min'));
+    foot.appendChild(el('span', '', niceDate(e.date)));
+    cover.appendChild(foot);
+    c.appendChild(cover);
+    stage.appendChild(c);
+    b.appendChild(stage);
+
+    return b;
+  }
+
+  /* ---- now showing: the newest episode that can be played ------------- */
+  function renderNow() {
+    var box = document.querySelector('[data-now]');
+    var ready = EPISODES.filter(function (e) { return e.vimeo; });
+    var e = (ready.length ? ready : EPISODES).slice().sort(function (a, b) { return a.date < b.date ? 1 : -1; })[0];
+    if (!box || !e) return;
+    var wrap = el('div', 'wrap');
+    var copy = el('div', 'now-copy');
+    copy.appendChild(el('span', 'eyebrow', 'Now showing · ' + code(e)));
+    var h = el('h2', 'now-title', e.title); h.id = 'now-title';
+    copy.appendChild(h);
+    copy.appendChild(el('p', 'now-meta', e.series + ' · ' + niceDate(e.date) + ' · ' + e.minutes + ' min'));
+    copy.appendChild(el('p', 'now-hook', e.hook));
+    var acts = el('div', 'now-actions');
+    var play = el('button', 'pill is-light'); play.type = 'button';
+    play.appendChild(icon(PLAY)); play.appendChild(document.createTextNode(e.vimeo ? 'Play episode' : 'Coming soon'));
+    play.addEventListener('click', function () { open(e, play); });
+    acts.appendChild(play);
+    acts.appendChild(transcriptLink(e, 'pill is-ghost'));
+    copy.appendChild(acts);
+    wrap.appendChild(copy);
+    wrap.appendChild(dvd(e, { bare: true }));
+    box.appendChild(wrap);
+    box.hidden = false;
+  }
+
+  /* ---- the shelves ----------------------------------------------------- */
+  function renderShelves() {
+    var root = document.querySelector('[data-shelves]');
+    if (!root) return;
+    SERIES.forEach(function (name) {
+      var list = EPISODES.filter(function (e) { return e.series === name; })
+                         .sort(function (a, b) { return a.date < b.date ? 1 : -1; });
+      if (!list.length) return;
+      var sec = el('section', 'shelf');
+      var id = 'shelf-' + name.toLowerCase().replace(/[^a-z0-9]+/g, '-');
+      sec.setAttribute('aria-labelledby', id);
+      var head = el('div', 'shelf-head');
+      var h = el('h2', '', name); h.id = id;
+      head.appendChild(h);
+      head.appendChild(el('span', '', list.length + (list.length === 1 ? ' episode' : ' episodes')));
+      sec.appendChild(head);
+      var row = el('div', 'shelf-row');
+      list.forEach(function (e) {
+        var item = el('div', 'item');
+        item.appendChild(dvd(e));
+        var dl = transcriptLink(e, 'item-dl', 'Transcript');
+        dl.setAttribute('aria-label', 'Download the transcript of ' + e.title);
+        item.appendChild(dl);
+        row.appendChild(item);
+      });
+      sec.appendChild(row);
+      sec.appendChild(el('div', 'shelf-board'));
+      root.appendChild(sec);
+    });
+  }
+
+  function transcriptLink(e, cls, label) {
+    var a = el('a', cls);
+    a.href = 'transcripts/' + e.transcript;
+    a.setAttribute('download', '');
+    a.appendChild(icon(DOWN));
+    a.appendChild(document.createTextNode(label || 'Download transcript'));
+    return a;
+  }
+
+  /* The prompt to use with a transcript: the same opening for every
+     episode, then that episode's own asks. */
+  function promptFor(e) {
+    return 'I\u2019ve attached the transcript of the Time Rich workshop "' + e.title + '". Read all of it first.\n\n' +
+      'Then:\n' + e.prompt.map(function (p, i) { return (i + 1) + '. ' + p; }).join('\n') +
+      '\n\nAsk me clarifying questions about my business before you start, and use only what is in the transcript for the method.';
+  }
+
+  /* ---- an episode, opened ---------------------------------------------- */
+  var dialog = document.querySelector('[data-ep]');
+  var opener = null;
+
+  function open(e, from) {
+    if (!dialog) return;
+    opener = from || null;
+    while (dialog.firstChild) dialog.removeChild(dialog.firstChild);
+
+    var screen = el('div', 'ep-screen');
+    if (e.vimeo && /^\d+$/.test(e.vimeo)) {
+      var f = document.createElement('iframe');
+      f.src = 'https://player.vimeo.com/video/' + e.vimeo + '?dnt=1&title=0&byline=0&portrait=0&autoplay=1';
+      f.title = e.title;
+      f.allow = 'autoplay; fullscreen; picture-in-picture';
+      f.setAttribute('allowfullscreen', '');
+      screen.appendChild(f);
+    } else {
+      var soon = el('div', 'ep-soon');
+      soon.appendChild(el('b', '', 'Coming soon'));
+      soon.appendChild(el('span', '', 'This episode is being prepared. The transcript is ready now.'));
+      screen.appendChild(soon);
+    }
+    var x = el('button', 'ep-close'); x.type = 'button'; x.setAttribute('aria-label', 'Close');
+    x.appendChild(icon(CLOSE));
+    x.addEventListener('click', close);
+    screen.appendChild(x);
+    dialog.appendChild(screen);
+
+    var body = el('div', 'ep-body');
+    var main = el('div', 'ep-main');
+    main.appendChild(el('span', 'eyebrow', code(e) + ' · ' + e.series));
+    var t = el('h2', 'ep-title', e.title); t.id = 'ep-title';
+    main.appendChild(t);
+    main.appendChild(el('p', 'ep-hook', e.hook));
+    var ul = el('ul', 'ep-list');
+    e.overview.forEach(function (o) {
+      var li = el('li');
+      li.appendChild(el('b', '', o[0] + ': '));
+      li.appendChild(document.createTextNode(o[1]));
+      ul.appendChild(li);
+    });
+    main.appendChild(ul);
+    body.appendChild(main);
+
+    var side = el('div', 'ep-side');
+    var info = el('div', 'ep-box');
+    info.appendChild(el('h3', '', 'Episode'));
+    info.appendChild(el('p', '', niceDate(e.date) + ' · ' + e.minutes + ' min'));
+    side.appendChild(info);
+    var who = el('div', 'ep-box');
+    who.appendChild(el('h3', '', 'Speakers'));
+    e.speakers.forEach(function (s) { who.appendChild(el('p', '', s)); });
+    side.appendChild(who);
+    var acts = el('div', 'ep-actions');
+    acts.appendChild(transcriptLink(e, 'pill is-green'));
+    side.appendChild(acts);
+    body.appendChild(side);
+
+    var pr = el('section', 'ep-prompt');
+    pr.setAttribute('aria-label', 'Use it with your AI');
+    var ph = el('div', 'ep-prompt-head');
+    ph.appendChild(el('h3', '', 'Use it with your AI'));
+    var copy = el('button', 'pill is-soft', 'Copy prompt'); copy.type = 'button';
+    var text = promptFor(e);
+    copy.addEventListener('click', function () {
+      var done = function () { copy.textContent = 'Copied'; setTimeout(function () { copy.textContent = 'Copy prompt'; }, 1800); };
+      if (navigator.clipboard && navigator.clipboard.writeText) navigator.clipboard.writeText(text).then(done, function () {});
+    });
+    ph.appendChild(copy);
+    pr.appendChild(ph);
+    var steps = el('ol');
+    ['Download the transcript above.', 'Attach it in ChatGPT, Claude or Grok.', 'Paste this prompt and send.'].forEach(function (t) { steps.appendChild(el('li', '', t)); });
+    pr.appendChild(steps);
+    pr.appendChild(el('pre', '', text));
+    body.appendChild(pr);
+
+    dialog.appendChild(body);
+
+    try { history.replaceState(null, '', '#' + e.id); } catch (err) {}
+    if (typeof dialog.showModal === 'function') dialog.showModal(); else dialog.setAttribute('open', '');
+    x.focus();
+  }
+
+  function close() {
+    if (!dialog) return;
+    // Emptying the dialog stops the video, which an iframe left in place
+    // would keep playing.
+    while (dialog.firstChild) dialog.removeChild(dialog.firstChild);
+    if (dialog.open) { if (typeof dialog.close === 'function') dialog.close(); else dialog.removeAttribute('open'); }
+    try { history.replaceState(null, '', location.pathname + location.search); } catch (err) {}
+    if (opener && opener.focus) opener.focus();
+  }
+
+  if (dialog) {
+    dialog.addEventListener('cancel', function (ev) { ev.preventDefault(); close(); });   // Escape
+    dialog.addEventListener('click', function (ev) { if (ev.target === dialog) close(); }); // backdrop
+  }
+
+  var started = false;
+  function start() {
+    if (started) return;
+    started = true;
+    var gate = document.querySelector('[data-gate]');
+    if (gate) gate.hidden = true;
+    var main = document.querySelector('[data-main]');
+    if (main) main.hidden = false;
+    renderNow();
+    renderShelves();
+    // A link to an episode (timerich.ai/replay/#e03) opens it.
+    var want = location.hash.replace('#', '');
+    var hit = EPISODES.filter(function (e) { return e.id === want; })[0];
+    if (hit) open(hit, null);
+  }
+
+  /* ---- the access code -------------------------------------------------
+     Only the SHA-256 of the code is here. What was typed is trimmed and
+     upper-cased, so "spicy" and " Spicy " both work. Once it is right the
+     page remembers it in this browser, so a member is not asked again. */
+  var CODE_HASH = '4a2b9b959825b6f4c9ae242072b24e6e82c82ec7c02949f52dd766686bae29ea';
+  var KEY = 'tr_replay_unlocked';
+
+  function sha256(text) {
+    var bytes = new TextEncoder().encode(text);
+    return crypto.subtle.digest('SHA-256', bytes).then(function (buf) {
+      return Array.prototype.map.call(new Uint8Array(buf), function (b) {
+        return ('0' + b.toString(16)).slice(-2);
+      }).join('');
+    });
+  }
+
+  var remembered = null;
+  try { remembered = localStorage.getItem(KEY); } catch (err) {}
+  if (remembered === CODE_HASH) {
+    start();
+  } else {
+    var stack = document.querySelector('[data-gate-stack]');
+    if (stack) EPISODES.slice(-3).forEach(function (e) { stack.appendChild(dvd(e, { bare: true })); });
+    var form = document.querySelector('[data-gate-form]');
+    var input = document.getElementById('gate-code');
+    var err = document.querySelector('[data-gate-err]');
+    if (form) form.addEventListener('submit', function (ev) {
+      ev.preventDefault();
+      var typed = (input.value || '').trim().toUpperCase();
+      if (!typed) { err.textContent = 'Enter your access code.'; input.focus(); return; }
+      sha256(typed).then(function (h) {
+        if (h !== CODE_HASH) {
+          err.textContent = 'That code isn\u2019t right. Check it and try again.';
+          input.select();
+          return;
+        }
+        try { localStorage.setItem(KEY, CODE_HASH); } catch (e2) {}
+        err.textContent = '';
+        start();
+        var title = document.getElementById('now-title');
+        if (title) { title.tabIndex = -1; title.focus(); }
+      }, function () {
+        err.textContent = 'Something went wrong. Refresh the page and try again.';
+      });
+    });
+  }
+})();
+</script>
+</body>
+</html>

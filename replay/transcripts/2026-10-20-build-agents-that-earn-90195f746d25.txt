@@ -1,0 +1,390 @@
+Time Rich Replay
+AI Agents Workshop: Build Agents That Earn | 20 Oct 2026
+Transcript generated automatically from the recording, so expect the odd misheard word.
+
+Ella Molony Cook: Perfect.
+Ella Molony Cook: First of all.
+Ella Molony Cook: I wanted to start this conversation off with my mom, because I'm in my last couple of months until I head back to Australia.
+Ella Molony Cook: And the reason why I'm so ambitious and love supporting women and started this Time Rich Women community.
+Ella Molony Cook: was because of her. I saw someone that had big goals for herself, but didn't have the community to really support her. And Australia is such a place, I think… drop in the chat if you've ever been to Australia. I know we have some fellow Aussies on this call.
+Ella Molony Cook: You will know that we have smallpie syndrome, where we don't love to bring others up, and we don't love to talk about ourself. And…
+Ella Molony Cook: I'm really excited about this conversation today, because we're bringing in Shen, and Shen is actually from the Philippines, and we're in a… we came from a similar part of the world, and so just a quick background on me, I'm a dyslexic high school dropout that
+Ella Molony Cook: Built four companies, had her first exit back in Australia in 2021 in the health and wellness space. I've…
+Ella Molony Cook: very much, in the last couple of months, really been thinking about, where do I want this time-rich community to go? And a part of that is collaborating with other incredible entrepreneurs and bringing us together
+Ella Molony Cook: In real life.
+Ella Molony Cook: And so, we're going to be launching the official Time Rich Club in New York City on the 9th of November. So, if you're not inside of our New York channel, please… we will drop that in the chat. Please join our WhatsApp, we're going to be keeping up to date with what's going to be happening there. We have our last AI
+Ella Molony Cook: Free session for 2026 tomorrow.
+Ella Molony Cook: And it's going to be around intellectual property, and being able to understand
+Ella Molony Cook: how do we actually secure our IP? What do our assets look like when we're building with AI? So if you want to have a conversation around that, or you want the recording.
+Ella Molony Cook: join the Time Rich Club. So what we've done is anyone that wants these recordings, that wants private, kind of, fireside conversations, we've made that $8 per month, so it's super, super affordable. And the thesis around this is
+Ella Molony Cook: I went through burnout multiple times, and didn't focus on
+Ella Molony Cook: my relationships, A, but B, also.
+Ella Molony Cook: having the right mentorship. And so, inside of the Time Rich Club, we're going to be going into this in a later conversation, but we're going to be moving into having a real structure inside of our calendar. Instead of doing individual Loomer events, we're just going to have one synced calendar, for our Time Rich paid members.
+Ella Molony Cook: So that's gonna be a really exciting transition. If you have not been using Whisperflow to be delegating to agents, I'm really grateful for this partnership, because we're getting 3 months
+Ella Molony Cook: Inside of the time-rich community. And what I will say here, for me personally, because I am dyslexic, this, because it has a layer of AI inside of it, I've really…
+Ella Molony Cook: I, for me, it's a non-negotiable. Because I struggle with language full stop, even though English is the only language I speak, I'm really, really excited about what we're going to be doing with Whisper Flow, actually, in our in-real-life build sessions as well, coming up in New York. Last but not least.
+Ella Molony Cook: Shen is a part of this, and so we wanted to have this conversation, because this is actually going to be a recording inside of the accelerator as well. So if you want to join the upcoming Accelerator, it's the last couple of days to apply for 100%, you get granted into the accelerator. And if you don't know anything about the accelerator, it is a 4-week intensive
+Ella Molony Cook: on becoming visible, increasing revenue, and building your AI operating system. So we have a 75-minute build session on a Monday, and then on a Friday, we do breakout rooms with experts, and we go into Q&A and hot seat coaching.
+Ella Molony Cook: Last but not least, this is our upcoming launch event. I'm really, really excited. We're hosting this at the NED, and it's going to be…
+Ella Molony Cook: very much focused on having a conversation around the wealth transfer that's happening. Obviously, women, it's the greatest time in history to be a woman, and it's the greatest time in history to be building. So, we're gonna have a panel discussion, we're gonna do Q&A, and then we're gonna have a beautiful networking at the NED, and then…
+Ella Molony Cook: I'm really excited, because when I met Shen, she was doing a workshop.
+Ella Molony Cook: I was so impressed by not only her… the way that she explains AI, but how immersive she makes it feel when she's going through a workshop. And obviously, virtually, there's only so much energy you can feel, but what I'm really excited about is Shen has built this multi-harness LLM, and she's obviously going to go into this in detail.
+Ella Molony Cook: But what made me so impressed about her is her ability to give.
+Ella Molony Cook: Inside of this free workshop that she ran, she gave so much value in 45 minutes.
+Ella Molony Cook: But, also, it really made me stop and think around
+Ella Molony Cook: how are you building with AI? And what is the security and data measures that you are taking with understanding building with agents? So, Shen and I have been chatting a lot recently, obviously getting prepared for the accelerator, but the other part that I'm really excited is we're going to be launching some events coming in London in real life. So…
+Ella Molony Cook: Without further ado… Shen, are you there?
+Cien - LaunchLemonade: I'm here, but I can't… you need to, Share my video. Yeah.
+Cien - LaunchLemonade: Start my video. There you go. Hello, everyone.
+Cien - LaunchLemonade: I'm here! My background is San Francisco, because I think this is the Golden Gate. I'm headed there in a few weeks, so if anyone's there, connect with me, I'd love to meet you, but I am actually currently in London.
+Cien - LaunchLemonade: Yes, I am from the Philippines, and we share, you know, like, a lot of… actually, we are quite similar people, Ella, which is quite funny. But it's so nice to meet all of you guys, and yeah, I can't wait to get started, so let's get into it.
+Cien - LaunchLemonade: So how do we grow our venture? So this is going to be a very, like, a jam-packed session. We're gonna go through, as much as we can, you know, what is an AI agent, but also, more importantly, talk about customer-facing agents. What are they? How do they help businesses?
+Cien - LaunchLemonade: Can they generate revenue? So we'll be showing some statistics as well, and then quickly, show you how to build them yourselves. And it's gonna be, yeah, like I said, it's gonna be jam-packed.
+Cien - LaunchLemonade: But I do get sick of my voice, and like what Ella said, I've been doing this for years, so I've been, teaching, and delivering, master classes, I've been building my thing for years, so I can go
+Cien - LaunchLemonade: fast.
+Cien - LaunchLemonade: And sometimes I'm not aware that I'm going fast, so I'd love for you to, if you're feeling overwhelmed, just say, shen.
+Cien - LaunchLemonade: Can you just, go back to that point and explain it in a slower, pace?
+Cien - LaunchLemonade: Alright, you guys can see my screen?
+Cien - LaunchLemonade: Thumbs up!
+Cien - LaunchLemonade: You're seeing… perfect, you're seeing my Canva. So, Ella, thank you for having me, and Whisper Flow as well, for, for being part of this.
+Cien - LaunchLemonade: I'd like to start with a question. So this is a question that I've asked thousands of people across the globe, from, like, yesterday I was in Amsterdam, I asked that same question, I asked this in Miami, in Vegas.
+Cien - LaunchLemonade: I want you to take your chat GPTs, or your Clauds out, or your Gemini out, and if you could share, what was your last prompt?
+Cien - LaunchLemonade: You can leave it in the chat.
+Cien - LaunchLemonade: Or you could unmute yourself if you'd like to share. What was your last prompt?
+Cien - LaunchLemonade: I have some predictions, like, again, I've asked thousands of people this, and there are common themes that usually come out.
+Ella Molony Cook: I feel like mine's always, make sure this grandma is correct in this flow.
+Cien - LaunchLemonade: Check my spelling. Literally.
+Cien - LaunchLemonade: Anyone who can share.
+Cien - LaunchLemonade: What was your last prompt? It's usually about car insurance, or correct my email is a good one. How to create process agent to streamline processes?
+Cien - LaunchLemonade: Or anything you can find on Google. Yeah.
+Cien - LaunchLemonade: Can you… oh, I like this one. Can you give me a very short paragraph of the benefit of attending this hackathon? Wow. This is, this is… this is good.
+Cien - LaunchLemonade: I love it. Hackathon gives AI hub… yes, I mean, hackathons are great. We do them all the time. I mean, and I'm playing, like, an AI as well.
+Cien - LaunchLemonade: Thank you for sharing!
+Cien - LaunchLemonade: It's always nice to share, to see what people are using… are using their AI platform for.
+Cien - LaunchLemonade: AI has changed my life, dramatically so. So, before I became an entrepreneur myself, I had a 9-to-5 job. I was a product leader within the fintech and financial services space.
+Cien - LaunchLemonade: And I was delivering AI solutions, but the AI solutions that I delivered were in, finance, whether they're credit models.
+Cien - LaunchLemonade: fraud models, identity models. But early on.
+Cien - LaunchLemonade: I understood that if you used a lot of data, and you used it well, you're going to improve customer experiences, and you're going to make better business decisions.
+Cien - LaunchLemonade: And so, when ChatGPT and all of these language models came out, I was like, it's my time to shine! And I also went through, midlife crisis, so I quit my job, I… I tried a couple of different things, and I was like, right, let's start this entrepreneurship thing.
+Cien - LaunchLemonade: And by building systems around me and capitalizing on AI, because it was so, you know, cost-effective to experiment and start things.
+Cien - LaunchLemonade: I became a founder.
+Cien - LaunchLemonade: And I started getting paid to speak.
+Cien - LaunchLemonade: I also became a consultant, so I still consult for financial services for regulated businesses who need secure agents. I even launched newsletters, a podcast, and I still coach. And so, what AI did for me was that it allowed me to become more of me.
+Cien - LaunchLemonade: So, from spending so much time at work, because I love my job, I… all of a sudden, I was doing things for myself.
+Cien - LaunchLemonade: And that unlocked a lot of things for me.
+Cien - LaunchLemonade: And more significantly, I've started building better relationships with people. There's a little bit of a paradox there, but, 3 weeks ago, I was in the Philippines to celebrate my dad's 75th birthday.
+Cien - LaunchLemonade: And all of a sudden, you know, like, I realized, like, wow, I am able to, you know, be there. I moved out 20 years ago.
+Cien - LaunchLemonade: I'm old. But I moved out 20 years ago, and when I was out there with my dad and my mom, just, you know, like, eating, like, having breakfast and lunch together, I was like, wow, building systems and using this thing in the right way would allow you to unlock more time with people.
+Cien - LaunchLemonade: Like I said, I've been able to build not only better relationships with my loved ones, but also customers and audiences. So, connection has been the biggest luxury thing for me that I've been able to achieve.
+Cien - LaunchLemonade: My name is Shen, and I've been helping businesses get not only the best AI agents, but the most secure ones as well. I help them, even though they're non-technical, become technically adept into what AI can do, from understanding what sovereign or private AI is.
+Cien - LaunchLemonade: How do you get your agents to collaborate with each other? And then for entrepreneurs and consultancies, how do you monetize or unlock more time with this? My mission is simple, no one gets left behind.
+Cien - LaunchLemonade: And by implementing these systems, bootstrap, I started from $0 when I started LaunchLemonade. Actually, no, that's a lie. $100. I had $100 for a WordPress website and kind of, like, building my MVP.
+Cien - LaunchLemonade: More recently, with that, with that, idea and $100, we have now actually 18,000 sign-ups, so we've brought thousands of users to our platform just using a lot of AI. We've processed millions of conversations and millions of agent runs on the platform.
+Cien - LaunchLemonade: And we have made, you know, like, a revenue stream that came from nothing.
+Cien - LaunchLemonade: And I was able to achieve that by having a really clear goal in mind, and then deploying agents within the business where I need them, including customer-facing one, whether that's managing my customer service, or maybe just building agents that would serve my customers. So I'm going to show you how to do that today.
+Cien - LaunchLemonade: But how do customer-facing agents actually help businesses today? You know, we talk about agents, we talk about bots, but how are they implemented, and how do they actually change businesses?
+Cien - LaunchLemonade: So, here are some statistics. There's a company called Curve Project, and there's been a 17.5% increase in their average order value.
+Cien - LaunchLemonade: So, just using agents to onboard and help upsell their products. I was working for a company, this was in 2017,
+Cien - LaunchLemonade: And, we implemented a chatbot in the web app and the mobile app.
+Cien - LaunchLemonade: And after implementing that chatbot and a couple of other, dynamic pricing models, we increased each order value, or plan setup value, by 3 pounds, so about $5, and they had 7 million customers. So you do the maths.
+Cien - LaunchLemonade: If we increased an average set of plan by about 3 pounds or $5 for hundreds of thousands for millions of customers, that's a lot of money.
+Cien - LaunchLemonade: For Salesforce, they said in 2025, and they projected that it would grow to 50% this year, 30% of customer service cases are handled at Salesforce.
+Cien - LaunchLemonade: And then according to Nuuly, which is, again, another business, they have an estimated 359,000 salary savings in 6 months, just by implementing a chatbot. Again, that's a lot of money saved.
+Cien - LaunchLemonade: More statistics! I've got more! This is, you know, like, we're building the case for customer-facing agents.
+Cien - LaunchLemonade: According to Gorgeous, I think that's how you pronounce this brand, 14% of AI shopping assistants, so even in that, field, resulted in attributed order within the platform. So they had more upsells using agents.
+Cien - LaunchLemonade: And according to Newman, they saved 19,000 hours saved annually implementing a chatbot.
+Cien - LaunchLemonade: And for Chalky, which is an AI agent-powered learning platform, 87% of total conversation volume has been resolved by AI alone.
+Cien - LaunchLemonade: And then from my personal experience as well, working with clients and customers who have implemented customer-facing agents, one of my clients who has become my friend, actually, because she was one of my earliest, earliest customers.
+Cien - LaunchLemonade: She closed a deal that was at… that, and her AI chatbot that she added on her legal training platform, generated an extra £25,000 within the deal of just implementing that.
+Cien - LaunchLemonade: We have a coach who generated an extra revenue of $50,000, and we've launched over 150 MVPs across our clients who wanted to build agents that are monetizing for them as well.
+Ella Molony Cook: What about the flip side, when an agent goes rogue, and it's a client-facing agent?
+Cien - LaunchLemonade: We have seen those as well. So, we have seen prompt attacks and prompt hacks, where, you know, like, a malicious user would try to inject a malicious prompt, and they're usually naughty prompts. Like, you know, they would… it's… this is the most common prompt attack, is
+Cien - LaunchLemonade: they would manipulate a chatbot to make it sound sexy, so when it responds to them, it responds to them in a kind of, like, a naughty way. That's the most common prompt hack, and if you don't have the right protections in place in your system, it could,
+Cien - LaunchLemonade: It could basically become a bug within your entire system, which could, yeah, which could basically cause issues.
+Cien - LaunchLemonade: Issues in your platform. That's just one…
+Ella Molony Cook: you to say that. I was like, where is she going with this?
+Cien - LaunchLemonade: But that, that is one of the, kind of, like, most common malicious, prompt injections that people attempt. And there are others as well, like trying to steal your credit, info, your credit card info, things like that.
+Cien - LaunchLemonade: I'm being blurred out by my… by my camera. I'm not human.
+Cien - LaunchLemonade: But yeah, there are, there are other things, but there are protections that you can implement in place in your customer-facing agents, like, there are solutions that basically protect your systems from prompt injections.
+Cien - LaunchLemonade: Okay, any other questions?
+Cien - LaunchLemonade: Alright.
+Cien - LaunchLemonade: So.
+Cien - LaunchLemonade: Customer-facing agents and bots are not only saving businesses money, but are also helping them generate added income, especially for, kind of, like, small to medium-sized professional services firms who have frameworks, you know, loads of strategy thinking.
+Cien - LaunchLemonade: And they turn that knowledge and frameworks into customer-facing bots that do the work for them. It's added revenue, kind of like a top-of-the-funnel activity, but with, revenue attributed to it.
+Cien - LaunchLemonade: But how do you make them? Okay, so before we dive into actually showing you how to build them, there's a concept that I am introducing today, but we will be deep diving into this in the accelerator, but I just want to kind of, like, introduce some concepts to you guys.
+Cien - LaunchLemonade: When we hire human teammates, these are some of the things that we look at in their CV, or when we interview them.
+Cien - LaunchLemonade: we look at their educational background. So, you know, like, in the States, I like to think of, you know, the Ivy League schools. Like, did you go to an Ivy League school, or which school did you go to?
+Cien - LaunchLemonade: And then we look at their subject matter expertise, so their experiences. Like, what are they good at? Are they amazing at digital marketing, or social media, or some sort of operations?
+Cien - LaunchLemonade: What tools are they good at using? Is it Adobe? Is it Excel?
+Cien - LaunchLemonade: What are their responsibilities going to be?
+Cien - LaunchLemonade: And what do they… kind of, like, what is their understanding of our industry and their company knowledge?
+Cien - LaunchLemonade: What NDAs and contracts do we have to set in place for this worker to work for us? And what are there going to be… their day-to-day tasks going to be?
+Cien - LaunchLemonade: And last but not the least, what is their salary budget? So what is the budget for… for this… this human to, come in and work for us?
+Cien - LaunchLemonade: So, if this is…
+Cien - LaunchLemonade: What we look at when we hire human teammates. What do we look at when we hire AI teammates?
+Cien - LaunchLemonade: So, who wants to make a guess? If you would like to guess, one of the things that we'll look at when we hire AI agents, if this is what human, kind of, like, think, or these are the things that we look at for our human hires.
+Cien - LaunchLemonade: Have a go at the chat.
+Cien - LaunchLemonade: what are the things that we look for, or we look at, when we start, kind of, like, hiring AI teammates or AI agents?
+Cien - LaunchLemonade: Don't be shy.
+Cien - LaunchLemonade: Education, training for the models, yes.
+Cien - LaunchLemonade: Are we ensuring they understand the process? Company knowledge, tasks, budget, accuracy of info, these are great ones.
+Cien - LaunchLemonade: Budget tokens. What, Indra? You took my course already, girl. How did you know this?
+Cien - LaunchLemonade: Okay.
+Cien - LaunchLemonade: Someone is an AI expert here already, in disguise.
+Cien - LaunchLemonade: Okay, so if those are the things that we look at when we hire human teammates, these are some of the things that we look at when we're hiring AI agents. And again.
+Cien - LaunchLemonade: If you're feeling a little bit overwhelmed with this list, don't you worry, we're gonna be deep diving into this, and we're gonna be providing it in a time-rich platform.
+Cien - LaunchLemonade: But just a little flavor of, kind of, like, when we… when we learn about AI agents, these are some of the things that we also have to understand.
+Cien - LaunchLemonade: And you're gonna say, this, Shen, this is too technical for me, I'm gonna stop you there. These are just some words that you've never heard of, but they're not, you know, they're not crazy technical. These are concepts that you can understand.
+Cien - LaunchLemonade: who here… I think, Indra… I'm gonna… I'm gonna, call you out. Can you… are you able to explain to me, without asking Claude, or ChatGPT, or Google.
+Cien - LaunchLemonade: What all of these are.
+Cien - LaunchLemonade: Are you able to tell us
+Cien - LaunchLemonade: What all of these things are.
+Indra K.: Maybe.
+Indra K.: Maybe, to some degree, yeah. But I feel like the definitions are constantly changing, so that's why it's always a maybe.
+Cien - LaunchLemonade: Choose one that I can deep dive into.
+Indra K.: Let's go, let's go with… since I said tokens, let's go with tokens. I mean, do you want my definition, or are you gonna deep dive into it?
+Cien - LaunchLemonade: Go for it.
+Indra K.: So, tokens… tokens have lots of different meanings, but in the context of…
+Indra K.: In the context of AI and LLMs, it's a unit of work that you pay for, or indirectly or directly, and that's, to me, what it is. It's like, it's… I'm paying for a chunk of processing.
+Cien - LaunchLemonade: Absolutely. So, if, by human teammates, we look at their budget, like, what's your base salary gonna be, maybe they'll have a commission, you know, like, all of these things, within the world of AI, when we're budgeting for AI, we're gonna look at token consumption and token pricing.
+Cien - LaunchLemonade: But that's essentially what it is. So if you're… if you're feeling a little bit overwhelmed with kind of like a technical definition of what a token is, just think, okay, if I'm gonna deploy.
+Cien - LaunchLemonade: an AI agent, and it's gonna serve thousands or hundreds of thousands of people, and it's gonna be used by my team so many times, I'm gonna look at the token budget. Like, what…
+Cien - LaunchLemonade: what amount of tokens will we have to consume, or will… and also the agent have to produce in order to provide that service? Because
+Cien - LaunchLemonade: We'll learn later on during the accelerator program that LLMs have different token pricing, there's a different mechanism of how they measure tokens as well, so it's what… it's a… it's a thing that we have to learn a little bit, especially if we're going to rely on AI to serve
+Cien - LaunchLemonade: Our customers, or… or to build our solutions out.
+Cien - LaunchLemonade: Now, these things… these things, some of them might be new to you, but they're very easy to understand. But basically, what these are is
+Cien - LaunchLemonade: When we talk about agents, Agentic solutions, most of us still think that it's just the ChatGPT6 Astra or the Fable 5.1, the models themselves, but
+Cien - LaunchLemonade: Today, you know, the term agent has existed for decades. I interviewed a guy who invented
+Cien - LaunchLemonade: the Apple iPhone, so he thought of the Apple iPhone. He has a documentary in Netflix, actually, and my podcast interview is in my YouTube channel.
+Cien - LaunchLemonade: But he has been using the word agent since the 90s, you know? Like, the concept of agents have existed for a while. They were built differently.
+Cien - LaunchLemonade: And they were trained differently, like, whether it was using rule-based logic or machine learning. But today, when we talk about agents, it's not just the LLM,
+Cien - LaunchLemonade: But it's the language model, like a GPT-6, GPT-5.6, or a Claude OPUS 5.5, And THEN… a harness.
+Cien - LaunchLemonade: This is the harness, or what I like to call an office, that allows the LLM to connect and use these things.
+Cien - LaunchLemonade: Okay? And we're… again, we're gonna be deep diving into harnesses and Agentic offices, in the accelerator session, so do join that one.
+Cien - LaunchLemonade: But when we talk about AI agents and teammates.
+Cien - LaunchLemonade: It's an LLM that lives in a harness that's allowed to use these elements Including MCPs, or tools.
+Cien - LaunchLemonade: Policies, it follows policies and rules.
+Cien - LaunchLemonade: And so… and so on and so forth.
+Ella Molony Cook: I have a question. How long did it actually take you to build the first MVP of the LaunchLemonade?
+Ella Molony Cook: harness.
+Cien - LaunchLemonade: two weeks.
+Cien - LaunchLemonade: By yourself? And then… I had a partner. It was the two of us.
+Ella Molony Cook: Your co-founder.
+Cien - LaunchLemonade: Yeah, yeah.
+Ella Molony Cook: Yeah.
+Cien - LaunchLemonade: It took us 2 weeks from inception to talking about it on TikTok and X.
+Cien - LaunchLemonade: On Twitter as well, yeah. And then, because it was so nascent, it was just, like, we were, you know, like, we were just, you know, selling, initially, and then as the customers came in, we added the features based on what the customers were asking for.
+Ella Molony Cook: Nice. We have a couple of AI experts, actually, on this conversation, too, so I'm excited for Q&A once you run through this.
+Cien - LaunchLemonade: Yeah, I mean, you know, ask them as they come. When you think of the question, just unmute yourself or type it in, but later is okay as well.
+Cien - LaunchLemonade: So when I talk about AI agents, I'm actually talking about AI teammates. Like, which AI, which tasks
+Cien - LaunchLemonade: can we delegate, to, to AI? Now, give me one second, because it's getting dark, I just have to switch my lights off.
+Ella Molony Cook: Guys, any questions?
+Cien - LaunchLemonade: Clippy and Microsoft, the original consumer-facing agent. That is true, we want Clippy back.
+Micah: Actually, I have a quick question. Obviously, you can have these harnesses in place, but, you know, I think
+Micah: at least what I've heard is that most developers have the skills to bypass the harness infrastructure, so unless there's additional safeguards, sometimes you're still running the risk
+Micah: them being able to bypass the guardrails that are in place if they have ill intent. And the only way to prevent that is from, like, creating encryption or making sure that you're, you know, keeping sensitive data out of
+Micah: You know, not being able to be accessed, but that obviously then undermines the value of the tool itself.
+Micah: Have you come across that, and what's… what would you recommend as a good balance between, sort of, creating things that are clunky and don't work well together and slow down
+Micah: efficiency versus making sure that folks can… don't just bypass things because they get frustrated, like when they go to the, you know, open version of ChatGPT or whatever, because they don't like the enterprise rules, or they don't want to see their employer, you know, have their employer see what they're prompting.
+Cien - LaunchLemonade: You're asking the right person, because I experienced all of that. So, a lot of my clients are in regulated spaces.
+Cien - LaunchLemonade: So whether they're regulated by the FCA, I've had to apply for Texas RAMP, which is the Texas, kind of like, version of GDPR. And we've had to prioritize that because we think that that's more important than some of the crazy features that are out there, so…
+Cien - LaunchLemonade: I think that understanding your audience will allow you to build the right things. And because I understood that the audience that I want to cater for needs security.
+Cien - LaunchLemonade: Encrypt data that is encrypted end-to-end, at rest.
+Cien - LaunchLemonade: and are auditable as well, then we build our… around that. Not, and we don't react to… to kind of, like, maybe a breach or, a, a security failure, so,
+Cien - LaunchLemonade: if that is a priority, then you build around that and make that the core value proposition, and then build… build your features around it, is… is what I did.
+Cien - LaunchLemonade: So, prioritizing what is it that my customer wants, and how do I serve that, and then making sure that I solve the problem that I want to solve for them.
+Cien - LaunchLemonade: Okay, so as a, a nutshell, you can add those features in. You can,
+Cien - LaunchLemonade: encrypt your data end-to-end and at rest. You can add a lot of prompt injection security features in. You can even build a sandbox, but even a sandbox now, as, you know, the chat GPT agent rogue incident, it proved that it wasn't enough.
+Cien - LaunchLemonade: And GPT-6 was still able to infiltrate, the Australian government, statistic, website, I think, and, Hugging Face as well, which now has a.
+Ella Molony Cook: I wonder what Australia did, you know? Like, why are we getting targeted?
+Cien - LaunchLemonade: they… I don't think it was a target, but there was a press release announcement by your government, actually, which is quite… so it was really interesting. They didn't even know.
+Ella Molony Cook: That was a joke. That was a joke, but it was just funny.
+Cien - LaunchLemonade: Okay. It was really funny. I don't even… I don't wanna… yeah, but anyway.
+Micah: Actually, to that point really quickly, if the people who are creating these things don't know why they're going rogue.
+Micah: How can we then basically go to our clients, or whomever and assure them that if they are going to allow agents, that they're also not going to go rogue? Because if the people who are creating them don't know the reason, or at least not telling us, how can we effectively then make sure that we're coming up with a good solution to prevent it from happening?
+Cien - LaunchLemonade: So it depends… so you can choose the model. So there are different models, right? And the models that were able to do that are the latest models. So you got the Fable 5.1 and the 6 Astra are kind of like the models that we think and are proven that can
+Cien - LaunchLemonade: go rogue. Now, the older models, if we're wanting to build specific solutions for our clients, there's a lot of tests and study on the other models that just follow your rule set. You can build a harness, which, you know, like, we can, again, there are different harnesses, you can white-label harness, you can build your own harness.
+Cien - LaunchLemonade: That, one, chooses a model that, is reliable, and two, you can set it… set your harness up so your data is encrypted.
+Cien - LaunchLemonade: And you've got audit trails, so you can track what your agents are doing. And these… these… that technology is already being built. It's still developing, and it's still new. That's what we're building, but that technology is already being made available.
+Cien - LaunchLemonade: Alright, so when we talk about customer-facing agents, the best example that, again, has so many case studies and research done already are customer service agents.
+Cien - LaunchLemonade: So…
+Cien - LaunchLemonade: Given that these are the things that we have to consider when we're building customer service agents, as I mentioned, we have to consider what LLMs we're going to be using.
+Cien - LaunchLemonade: It will have to be, because they're customer-facing, and they will answer questions, thinking about our customer psychology, the LLM should be quick, cost-effective, and efficient, because they're going to be serving thousands, if not hundreds of thousands of users.
+Cien - LaunchLemonade: And then when we talk about the agent's knowledge, what does the agent need to know in order to answer, you know, like, specific questions about your business, not just from the internet or its training data. So it could be website data, company data.
+Cien - LaunchLemonade: And if we talk about… if we talk about the tools that the agent needs, it might need an internal… a connection to your internal database, perhaps… or maybe not, because we don't… because we want to protect that data. So these are the choices we have to make.
+Cien - LaunchLemonade: In terms of policies, should we, should it not respond to any questions outside of its remit? Should it have a budget?
+Cien - LaunchLemonade: And then we decide, should it remember, conversations over time, or do we want it to start fresh conversations each time, so thinking about the experience of our customer.
+Cien - LaunchLemonade: And then for guardrails, authentication and verification should be protected from prompt injections, for example.
+Cien - LaunchLemonade: And then when it comes to system prompt, or the agent instructions, what are the things that we want to add in there? Is it the tone of voice? Is it that it's going to be helpful?
+Cien - LaunchLemonade: Is it going to be that it's a little bit funny, or will it just answer questions about a certain aspect of your business?
+Cien - LaunchLemonade: And then, when it comes to tokens, should we give it a budget? Will it have a limit in terms of the length of responses, or the amount of tokens that it processes?
+Cien - LaunchLemonade: So these are some of the things that we have to consider when you're building your agents, and you might be building it from scratch.
+Cien - LaunchLemonade: Any questions Okay.
+Cien - LaunchLemonade: So let's make a customer-facing chatbot that resolves questions for your website visitors. So I'm going to show you… this is a demo, using my platform, but the steps that I'm going to be doing here, you can implement on your own. So the elements that I'm going to be showing, you can write those elements down if you're going to code it yourself, maybe you're gonna vibe code it yourself.
+Cien - LaunchLemonade: Or you're gonna use another platform. But these… but basically, the steps that I'm gonna show you are steps that you normally would do
+Cien - LaunchLemonade: When you're building, customer-facing.
+Cien - LaunchLemonade: chatbots. And I'm going to show you one as well. If you want to monetize that chatbot that you build, how you can do that easily as well.
+Cien - LaunchLemonade: Okay, so I'm gonna move my screen, change my screen of what I'm gonna be sharing, to this screen.
+Cien - LaunchLemonade: So, here's an example of a customer service chatbot. This chatbot has helped me generate so many customers. This chatbot has been around for 3 years.
+Cien - LaunchLemonade: And I haven't changed it for a year, actually, I must update it. But basically, all it will ask you is, you can
+Cien - LaunchLemonade: Type your email on there, and then now I have my customer, my potential lead's email.
+Cien - LaunchLemonade: And then it will, present it with options around, like, what do you want to talk about? Is it gonna be speaking opportunities, it's gonna be about LaunchLemonade, or do you want to book a consulting? And let me tell you, my calendar is always busy.
+Cien - LaunchLemonade: So, by customizing the agent, it's able to, you know, ask very relevant questions about my business.
+Cien - LaunchLemonade: That's just an example. But how do you build this?
+Cien - LaunchLemonade: So… on LaunchLemonade.
+Cien - LaunchLemonade: you can build, AI agents that do exactly that. So, for example, I want to build a customer service agent for my website. So, thinking about the elements that we talked about earlier, whether it was the LLM, the, the knowledge, and so on and so forth, that's what we're going to be doing.
+Cien - LaunchLemonade: So, on my platform, I'm going to be creating a new assistant, so I'm going to click New, New Assistant.
+Cien - LaunchLemonade: And then, I have here the elements of the things that I talked about earlier. So first, for example, this is going to be my customer service agent.
+Cien - LaunchLemonade: And I'll just add a quick description, helps answer… Questions about Cien Salon.
+Cien - LaunchLemonade: The website, maybe.
+Cien - LaunchLemonade: And then I'm going to choose the model, okay? So, we have now, over the last 2 years, if you're a Time Rich member, I'm sure you've used a Claude or ChatGPT or Gemini before. And you know that some models are faster than the others. So, within the ChatGPT world, for example.
+Cien - LaunchLemonade: There is Pro, Codex, there's Sol, Terra, and these models are usually kind of like the reasoning models, which means they're quite big and they're quite slow.
+Cien - LaunchLemonade: And because this is a customer service agent, I'm going to use a light model, and my favorite light model is usually a Gemini flash.
+Cien - LaunchLemonade: So, Gemini has the 3.7 Flash series, which is, I think, one of the best for customer service agents.
+Cien - LaunchLemonade: If you're a clawed or anthropic… anthropic… anthropic fan.
+Cien - LaunchLemonade: you're gonna want to use the Haiku model.
+Cien - LaunchLemonade: So, that's gonna be Anthropic.
+Cien - LaunchLemonade: But my favorite is a flash model, because it's quite reliable, I've used it so many times, and it's fast.
+Cien - LaunchLemonade: Thus, the word flash.
+Cien - LaunchLemonade: Okay, now that I've built that, I'm gonna then, add its system prompt, or instructions. So here, I'm gonna say, you are Shan Salon…
+Cien - LaunchLemonade: dot com's customer service agent.
+Cien - LaunchLemonade: And you will answer…
+Cien - LaunchLemonade: questions based on what's in your knowledge base. So I'm gonna just keep it very simple.
+Cien - LaunchLemonade: Answer questions about my offering and products.
+Ella Molony Cook: While you're doing that, I think it's really good to anchor into…
+Ella Molony Cook: that this can also be used if you have… we all have IP, we all have expertise. This can also be used as a product that is your top of funnel that has your IP and your expertise inside of here. So I think it's really cool how Shen's platform is very… it's only focused on agents, and you have
+Ella Molony Cook: multiple LLMs, as we've just gone through, but the other part that I think is really cool as well is you can also plug in a locally run model. So, this whole platform
+Ella Molony Cook: is very, very affordable, and the part that I love is, like, a woman founded it. Like, can we just, like, women, can we just, like, put some… a round of applause in the chat for Shen? Like, can we just…
+Ella Molony Cook: note for a second that she's given us a way to monetize agents, our IP, our knowledge, for, like, $30 a month.
+Ella Molony Cook: With multiple LLMs. Like, it's insane to me what you've built.
+Ella Molony Cook: So proud.
+Cien - LaunchLemonade: Thank you so much. Okay, thank you, thank you, I'm blushing, I'm blushing. But it's really important for me to… for us to monetize, and that's why we built the platform, because I want everyone to be able to take equity from this thing, not just the giants. Okay.
+Cien - LaunchLemonade: So, I've given a very simple prompt. You are my customer service agent, and I said in the end, do not answer questions about anything else apart from what's inside ShenSalon.com.
+Cien - LaunchLemonade: But I'm gonna cheat. I'm actually cheating, because I'm gonna click improve this prompt. Now, in the world of AI, they like, you know, these language models like, kind of like, this type of formatting, and when you're generating, like, an MD file, you know, they have a specific format that they like, and it's usually
+Cien - LaunchLemonade: Comes with, kind of like, these, symbols.
+Cien - LaunchLemonade: And they like it when you give them a specific role.
+Cien - LaunchLemonade: Instruct what their behaviors be, outline the tasks.
+Cien - LaunchLemonade: Add boundaries, so it doesn't do anything, like, do not provide information or answer questions unrelated to Shenzalone.com, for example. And then when you're specific about the output format. Now.
+Cien - LaunchLemonade: Normally, I would edit this and improve this for, like, you know, the next couple of hours and do some tests. But because this is just a quick demo, we'll stop there.
+Cien - LaunchLemonade: But the thing that you should be doing is testing, the instructions are good enough, and then editing it as well, so that you're customizing your own custom… your own customer experience.
+Cien - LaunchLemonade: Okay.
+Cien - LaunchLemonade: I'm gonna add a simple welcome message. Hey, how can I help you today?
+Cien - LaunchLemonade: And this is gonna be…
+Ella Molony Cook: I don't know that.
+Ella Molony Cook: You have more personality than that.
+Cien - LaunchLemonade: Hey, Zesty!
+Cien - LaunchLemonade: I do. So I usually go, hey, Zesty.
+Cien - LaunchLemonade: Because my, you know, like, lemons zest. Anyway, all right.
+Cien - LaunchLemonade: So, you're gonna add your welcome message, and then once that's on.
+Cien - LaunchLemonade: You can then add its, superpowers, as I like to call it. So it will have internet search, but because this is my customer service agent that will only use my company knowledge, I'm going to switch that off. I'm not going to allow it to use internet search.
+Cien - LaunchLemonade: And then this is the last, step when we're building and testing this agent.
+Cien - LaunchLemonade: So I'm going to then add its knowledge base. So we're using a system here called RAG, or Retrieval Augmented Generation.
+Cien - LaunchLemonade: But because, and how it does it is you can either…
+Cien - LaunchLemonade: use our scraping tool, so we can scrape websites, so I'm gonna say ShenSalon.com.
+Cien - LaunchLemonade: Click fetch, and it's going now to scrape
+Cien - LaunchLemonade: the contents of my website, so you can answer questions about my website. I can add other websites and web pages on here, so I'm gonna add each web page of my website, and I'm gonna save it to the knowledge base.
+Cien - LaunchLemonade: So this is me customizing what my agent knows. So instead of just using its training dataset, so imagine you've got your frameworks. So if you want to sell your frameworks into an agent, if you've got PDFs and presentations.
+Cien - LaunchLemonade: You can connect it using, to an agent using retrieval augmented generation.
+Cien - LaunchLemonade: Okay, so that is what you're adding here, and you can add as much documents as you want.
+Cien - LaunchLemonade: I have so many on here, I've got loads of agents, but I'm just showing you how to customize your agent's knowledge. It could be by attaching files, or using web scraping tools, and whatnot. Or you can upload different types of documents as well.
+Cien - LaunchLemonade: Any questions so far?
+Cien - LaunchLemonade: Okay.
+Cien - LaunchLemonade: Now that we've added, like, let's say you've added hundreds or, you know, multiple documents on here.
+Cien - LaunchLemonade: You can give it more superpowers, or we can stop there, because the agent's purpose is just to answer questions on my website. We can stop there.
+Cien - LaunchLemonade: Now, what I usually do is test the agent.
+Cien - LaunchLemonade: Who is Shen Salon? So, I would test the agent first before I deploy it and actually make it customer-facing. So, who is… what does Shen do, for example?
+Cien - LaunchLemonade: So I'm gonna run multiple tests, and if it gets the answer wrong, I'm just gonna go back to the instructions, or attach more knowledge, so that my agent will answer my customer's question the right way.
+Cien - LaunchLemonade: Okay.
+Cien - LaunchLemonade: Now that we've set that up, let's say we're happy. We're happy with it.
+Cien - LaunchLemonade: We're then going to embed it on our website as a customer service agent.
+Cien - LaunchLemonade: So all I have to do is go to embeds here on the left side.
+Cien - LaunchLemonade: And I already started creating one, but you can add a new embed, Name your embed, ShenBot.
+Cien - LaunchLemonade: Zesty, how are ya?
+Cien - LaunchLemonade: And then just follow the steps. So, I'm gonna choose the agent that I'm gonna embed on the website.
+Cien - LaunchLemonade: So I'm gonna choose the customer service agent.
+Cien - LaunchLemonade: I'm gonna choose the colors, or choose my own color here for what the agent will look like.
+Cien - LaunchLemonade: And I'm gonna choose where to place it. Is it gonna be the bottom right?
+Cien - LaunchLemonade: on the left, top right, so you can choose, and then I'm gonna add my logo on here, so I can add a logo on here as well.
+Cien - LaunchLemonade: And then once that's done.
+Cien - LaunchLemonade: You can then, choose how many messages per visitor, so these are the policies. What are your limits going to be?
+Cien - LaunchLemonade: And then once that's done, once you've chosen how many chats you want to process per month, you will then get an installation code.
+Cien - LaunchLemonade: which you'll apply to your either WordPress, a lovable, or Squarespace.
+Cien - LaunchLemonade: So, the code you just add in the heading of each website. So if you've built Squarespace or WordPress before, or if you've got a website builder, you just give them the snippet of the code.
+Cien - LaunchLemonade: And they'll be able to add it in your Squarespace, WordPress, or Lovable site.
+Cien - LaunchLemonade: And that's it. Those are the simple steps that you have to make. We've got a learning platform and a YouTube video on this.
+Cien - LaunchLemonade: And yeah, it's, it's really quite simple. Like, I've built so many of these, chatbots,
+Cien - LaunchLemonade: Yeah, okay. Now, I'm conscious of the time.
+Cien - LaunchLemonade: Let's say you want to monetize from an AI agent. I actually have a pre-built one.
+Cien - LaunchLemonade: So, I built an agent that will use my LinkedIn connections for people, so I'm going to drop the link here.
+Cien - LaunchLemonade: So if you click that link, you're going to land on this,
+Cien - LaunchLemonade: stand that I made literally 10 minutes before the session.
+Cien - LaunchLemonade: So, imagine you can have different agents here, and what I did was I made it customer-facing.
+Cien - LaunchLemonade: And what it does is basically find you people that you need, or solutions that you need. So, for example, what do you need help with? I need investors.
+Cien - LaunchLemonade: And my agent, just from that.
+Cien - LaunchLemonade: will find you, PEEP investors from the database that I've sent it. So it's now given me a list of investors. I can click that link.
+Cien - LaunchLemonade: It'll find me that investor.
+Cien - LaunchLemonade: Yes. So, how did I build this? So, on my LaunchLemonade.
+Cien - LaunchLemonade: I already pre-built this, I'm gonna show you… I'm just gonna show you how. I have this agent called Find Me.
+Cien - LaunchLemonade: And I gave it instructions.
+Cien - LaunchLemonade: to generate leads, specializing in identifying potential contacts from a database of professionals. So I gave it…
+Cien - LaunchLemonade: And what it knows, a document that has my connections of over 20,000 LinkedIn leads.
+Cien - LaunchLemonade: And that's it. And then when I wanted to monetize it.
+Cien - LaunchLemonade: I went into stands on the left side.
+Cien - LaunchLemonade: And I built this stand, and just added. I linked my bank account so I can connect, collect money from my users. I linked my Find Me agent.
+Cien - LaunchLemonade: And I add… and you can add your own URL domain as well.
+Cien - LaunchLemonade: But… The most important thing is you can literally
+Cien - LaunchLemonade: Price your agents up based on, you know, like, how much do you want to sell your agents?
+Cien - LaunchLemonade: And then you release it as a stand.
+Ella Molony Cook: Can you talk us through some of the best case studies?
+Ella Molony Cook: Just quickly…
+Cien - LaunchLemonade: I have one that I remembered, so that I have, you know, like, we've processed thousands of white labels, or we used to call it white label, but we've rebranded it as a lemonade stand.
+Cien - LaunchLemonade: But my favorite, favorite example is one of my earliest, earliest users, which is PetBizAI.app.
+Cien - LaunchLemonade: And she specializes in providing marketing for pet business owners.
+Cien - LaunchLemonade: And she's built all of these agents, for her clients.
+Cien - LaunchLemonade: And she charges them. If they just want to use her tools, they can just use her tools. You can upgrade here and sign up.
+Cien - LaunchLemonade: Or if they want her to do the actual marketing and lead the strategy, then they upgrade, so basically they upgrade to her consulting.
+Cien - LaunchLemonade: And some of our users have generated thousands, added year just by
+Cien - LaunchLemonade: Chucking their frameworks and strategies in an agent, and then selling it out.
+Ella Molony Cook: Okay, ladies and gentlemen, raise your hand if you have a question. We have 6 minutes.
+Ella Molony Cook: Speed fire crap, rapid questions.
+Micah: I have a quick question. So, once we get to the monetization part.
+Micah: You know, some people want to do, like, the app stores, and I know there are, you know, rev share agreements and restrictions and other things that you have to go through. If you do it this route, you can still monetize without having to basically go through the app stores, is that correct? Unless you want the obvious… the additional visibility, or I guess.
+Micah: Accessibility, that somebody wouldn't have to just come to your website.
+Micah: together.
+Cien - LaunchLemonade: No, yeah, this is… Stripe is already connected in there, so you just add your bank details through Stripe.
+Cien - LaunchLemonade: And then… and then Stripe processes all of our payments, and there's a rev share of 10% to us, and 90% to you, currently.
+Cien - LaunchLemonade: And Stripe just processes all of that. So the… the… that pays for our… for the API costs, and managing your customer data within our platform as well.
+Cien - LaunchLemonade: And then how did you decide…
+Micah: Oh, sorry, I was gonna say, and how do you decide how much to charge?
+Cien - LaunchLemonade: We've… we've mostly left that to our customers. We have someone who's charging… the biggest that I've seen is $2,500 per year, was the plan.
+Cien - LaunchLemonade: And I have seen, I've seen, I've seen the payments getting processed for, for that. So imagine if you have, like.
+Ella Molony Cook: Was it a white male?
+Cien - LaunchLemonade: No, it was a woman who built it.
+Ella Molony Cook: God.
+Cien - LaunchLemonade: Yeah, and she has a niche product. It was… Something spiritual.
+Cien - LaunchLemonade: Yeah.
+Cien - LaunchLemonade: I was so proud, I was like, wow, this is amazing.
+Ella Molony Cook: Yeah, no worries.
+Cien - LaunchLemonade: And there are a lot of training services as well, and we've got clients in the States and in Europe who basically provide training, and then they just build, kind of, like, the training assistants in the stand, and provide it to their clients.
+Cien - LaunchLemonade: So there's a lot of, a lot of things that, that our clients have been doing. We even have, like, a, healthcare professional who's a consultant as well. So we've got a few, few examples that were quite interesting to see,
+Cien - LaunchLemonade: Okay, yes, are there any other questions? I actually have my…
+Cien - LaunchLemonade: a slide that says, join Time Rich's Accelerator program. I have a slide… I'm just gonna quickly show that slide. So, yes, if you could join the Accelerator program, I'll be doing more of these, and deep dive into the harness as well.
+Cien - LaunchLemonade: I'm gonna share the link here to my free newsletter, but most importantly, thank you to Whisper Flow, as well, for, helping us today, and giving everyone 3 months
+Cien - LaunchLemonade: Worth of, of, use. Whisper Flow's great. I've been using Whisper Flow for a year, for a year now.
+Ella Molony Cook: So everyone coming into the Accelerator, they're going to get 3 months of LaunchLemonade's, platform.
+Cien - LaunchLemonade: And… Yes.
+Ella Molony Cook: we're going to be doing a specific onboarding session that's just for Shen's platform, and then we're also going to be doing training your agent on other platforms as well, and then we're going to be doing a multi-agent build at the last build session. So we're going to have breakout rooms as well, like, if that's
+Ella Molony Cook: too advanced, we're gonna have breakout rooms so that we can… you can jump into the right level for you. So, we have two grants that are coming up, which is really exciting. One includes a Web Summit Lisbon ticket, that'll go out in the email after this as well, but we do have two minutes left, so anyone that has a burning question…
+Ella Molony Cook: Or just wants to share their thoughts on where… how they would actually monetize their IP.
+Ella Molony Cook: Indra, love you.
+Indra K.: I'm happy to go.
+Indra K.: Hey, big fan. Explained a lot of things that are really hard to explain really easily, and some things that I haven't heard people talk about, like security and things like that, so thank you for that.
+Indra K.: I am just, in my brain, thinking through, like, the different aspects of what I can turn in… things that I've wanted to turn into agents, and I didn't quite know how to…
+Indra K.: create such a sophisticated agent, so I'm just so excited. I'm just so excited, that's what I will say. So no questions, just a big, giant, like, shout out, so… and with some, like, ideas of where I'm going.
+Cien - LaunchLemonade: Love.
+Ella Molony Cook: So, my last thought is, we want to do more immersive, in-real-life events, Shen and I. So, we're going to keep you guys in the loop of that, because I think right now, like, I just love Shen so much, because she…
+Ella Molony Cook: literally in 60 min- like, 50 minutes, because I took 10 at the start, just crushed that. So, first of all, thank you. Second of all, we've dropped your LinkedIn profile, but if there's any other links that you want to send out, please let me know. But otherwise, community, thank you so much for showing up today. Your time is such an asset, and we appreciate your time spent with us.
+Ella Molony Cook: And any questions, we will be able to find Shen online. She's visible on all platforms because of her age, and no, I'm just sending so much love and gratitude to Shen for also preparing this, because you've been flying around speaking on all different types of stages, so thank you.
+Cien - LaunchLemonade: Thank you so much for having me, I'm so excited to, yeah, be part of the community, and you'll see more of me soon.
+Ella Molony Cook: Yay! Bye, guys! Have a good one!
+Cien - LaunchLemonade: Guys!
