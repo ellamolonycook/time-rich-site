@@ -1782,20 +1782,38 @@ console.log('\nThe photo: an upload, or a Drive link that is really a file');
 
   // 4. Over the cap, measured after decoding: base64 is a third bigger, so
   //    capping the string would turn away files that are inside the limit.
+  //
+  //    The cap on an upload is 1MB, not the 5MB a member may pick: the page
+  //    shrinks the photo to an 800px JPEG first, which lands near 150KB.
+  //    The small number is what keeps the request inside the free plan's
+  //    10ms of CPU, since every uploaded byte is decoded and hashed here.
   resetMembers(); listAda();
-  const big = Buffer.alloc(5 * 1024 * 1024 + 1024, 0x41);
+  const big = Buffer.alloc(1024 * 1024 + 1024, 0x41);
   big[0] = 0xff; big[1] = 0xd8; big[2] = 0xff;
   res = await submitQuestionnaire(upload({ photo_upload: big.toString('base64'), photo_upload_type: 'image/jpeg' }), photoEnv);
-  check('over 5MB: refused 400', res.status === 400, res.status);
-  check('over 5MB: nothing stored', mem.uploads.length === 0, mem.uploads);
+  check('over 1MB decoded: refused 400', res.status === 400, res.status);
+  check('over 1MB decoded: nothing stored', mem.uploads.length === 0, mem.uploads);
+  check('over 1MB decoded: told what to pick instead',
+    (await res.clone().json()).error === 'Please choose a JPG, PNG or WebP under 5MB.');
 
-  // And one just under it is fine, which is what proves the cap is not
-  // being applied to the base64.
+  // A photo the size the page actually produces sails through. This is also
+  // what proves the cap is not being applied to the base64: 900KB of bytes
+  // is about 1.2MB once encoded, which is over 1MB and must still be fine.
   resetMembers(); listAda();
-  const justUnder = Buffer.alloc(5 * 1024 * 1024 - 64, 0x41);
-  justUnder[0] = 0xff; justUnder[1] = 0xd8; justUnder[2] = 0xff;
-  res = await submitQuestionnaire(upload({ photo_upload: justUnder.toString('base64'), photo_upload_type: 'image/jpeg' }), photoEnv);
-  check('just under 5MB: accepted and stored', res.status === 200 && mem.uploads.length === 1, res.status);
+  const shrunk = Buffer.alloc(900 * 1024, 0x41);
+  shrunk[0] = 0xff; shrunk[1] = 0xd8; shrunk[2] = 0xff;
+  res = await submitQuestionnaire(upload({ photo_upload: shrunk.toString('base64'), photo_upload_type: 'image/jpeg' }), photoEnv);
+  check('a shrunk photo under 1MB: accepted and stored',
+    res.status === 200 && mem.uploads.length === 1, res.status);
+
+  // The old 5MB upload is exactly what the free plan cannot afford, so it
+  // is refused now rather than timing the request out.
+  resetMembers(); listAda();
+  const wasAllowed = Buffer.alloc(5 * 1024 * 1024 - 64, 0x41);
+  wasAllowed[0] = 0xff; wasAllowed[1] = 0xd8; wasAllowed[2] = 0xff;
+  res = await submitQuestionnaire(upload({ photo_upload: wasAllowed.toString('base64'), photo_upload_type: 'image/jpeg' }), photoEnv);
+  check('a full-size 5MB upload is no longer accepted',
+    res.status === 400 && mem.uploads.length === 0, res.status);
 
   // 5. The Drive route only takes a Drive *file*. A Google Doc was one of
   //    the two that failed, and it is refused rather than quietly dropped:
@@ -1863,7 +1881,11 @@ console.log('\nLinkedIn has to be a LinkedIn link');
     'https://www.linkedin.com.evil.test/in/x',
     'https://www.linkedin.com/feed/',
     'https://www.linkedin.com/',
-    'http://www.linkedin.com/in/x',
+    // Supplying the missing scheme must not rescue a host that is wrong:
+    // this becomes https://www.linkedin/in/x and is refused all the same.
+    'www.linkedin/in/x',
+    'linkedin/in/x',
+    'notlinkedin.com/in/x',
     '',
   ]) {
     resetMembers(); listAda();
@@ -1884,6 +1906,13 @@ console.log('\nLinkedIn has to be a LinkedIn link');
     ['https://linkedin.com/in/x', 'https://linkedin.com/in/x'],
     ['https://uk.linkedin.com/in/x', 'https://uk.linkedin.com/in/x'],
     ['https://www.linkedin.com/company/acme', 'https://www.linkedin.com/company/acme'],
+    // Pasted out of the browser bar, with no scheme at all.
+    ['www.linkedin.com/in/x', 'https://www.linkedin.com/in/x'],
+    ['linkedin.com/company/acme', 'https://linkedin.com/company/acme'],
+    // Pasted out of an old bookmark: upgraded rather than turned away, and
+    // the tracking it picked up on the way is still dropped.
+    ['http://linkedin.com/in/x?trk=1', 'https://linkedin.com/in/x'],
+    ['http://www.linkedin.com/in/x', 'https://www.linkedin.com/in/x'],
   ]) {
     resetMembers(); listAda();
     const res = await submitQuestionnaire({ ...ADA, linkedin: given });

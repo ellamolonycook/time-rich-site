@@ -385,6 +385,12 @@ var Q_STORE_KEY = "tr_superhuman_questionnaire_v1";
 // never leaves the phone when it is too big to store.
 var Q_PHOTO_MAX_BYTES = 5 * 1024 * 1024;
 var Q_PHOTO_TYPES = ["image/jpeg", "image/png", "image/webp"];
+
+// What the photo is reduced to before it is sent. See qShrinkPhoto for why
+// it is reduced at all: the 5MB above is still the cap on what may be
+// picked, but it is never what travels.
+var Q_PHOTO_MAX_EDGE = 800;
+var Q_PHOTO_QUALITY = 0.85;
 var Q_PHOTO_MESSAGE = "Please choose a JPG, PNG or WebP under 5MB.";
 var Q_DRIVE_MESSAGE = "Please paste a link to the photo file in Google Drive, not a doc.";
 var Q_LINKEDIN_MESSAGE =
@@ -811,8 +817,17 @@ function qLinkedInUrl(value) {
   var v = String(value == null ? "" : value).trim();
   if (!v) return null;
 
+  // A scheme is supplied when there is none and upgraded when it is http:
+  // people paste "www.linkedin.com/in/name" out of the browser bar and
+  // "http://..." out of an old bookmark all the time, and neither is a
+  // different page. The host is never guessed at, though, so
+  // "www.linkedin/in/x" just becomes "https://www.linkedin/in/x" and is
+  // still turned away below.
+  var withScheme = /^[a-z][a-z0-9+.-]*:\/\//i.test(v) ? v : "https://" + v;
+
   var url;
-  try { url = new URL(v); } catch (err) { return null; }
+  try { url = new URL(withScheme); } catch (err) { return null; }
+  if (url.protocol === "http:") url.protocol = "https:";
   if (url.protocol !== "https:") return null;
 
   var host = url.hostname.toLowerCase();
@@ -1243,6 +1258,97 @@ function qBuildTextField(spec) {
   return field;
 }
 
+// Redraws the chosen file as a JPEG no more than Q_PHOTO_MAX_EDGE on its
+// longest side, and hands back { dataUrl, type, size } -- or null, if any
+// step of that fails.
+//
+// This exists for the worker's sake rather than the member's. The forms
+// worker is on Cloudflare's free plan, which allows 10ms of CPU per
+// request, and an original phone photo -- 3 to 5MB, a third bigger again
+// once it is base64 -- gets parsed, decoded, copied byte by byte and hashed
+// before Notion is even called. That does not fit in 10ms. The request
+// fails, and because the photo travels with the rest of the answers, the
+// member loses the whole questionnaire over it. Sending a smaller photo is
+// what keeps the form working at all.
+//
+// 800px is more than the directory renders a face at, and 0.85 is about
+// where a portrait stops looking re-saved. Together they turn a 4MB photo
+// into something near 150KB.
+function qShrinkPhoto(file, done) {
+  var settled = false;
+  function finish(value) {
+    if (settled) return;              // onload and onerror can both arrive
+    settled = true;
+    done(value);
+  }
+
+  function draw(source, width, height) {
+    try {
+      if (!width || !height) return finish(null);
+
+      // Never upscale. A photo already smaller than the limit is re-encoded
+      // where it is, rather than blown up to 800px for bytes and no detail.
+      var scale = Math.min(1, Q_PHOTO_MAX_EDGE / Math.max(width, height));
+      var canvas = document.createElement("canvas");
+      canvas.width = Math.max(1, Math.round(width * scale));
+      canvas.height = Math.max(1, Math.round(height * scale));
+
+      var ctx = canvas.getContext("2d");
+      if (!ctx) return finish(null);
+      ctx.drawImage(source, 0, 0, canvas.width, canvas.height);
+
+      canvas.toBlob(function (blob) {
+        if (!blob) return finish(null);
+        var reader = new FileReader();
+        reader.onload = function () {
+          var dataUrl = String(reader.result || "");
+          finish(dataUrl ? { dataUrl: dataUrl, type: "image/jpeg", size: blob.size } : null);
+        };
+        reader.onerror = function () { finish(null); };
+        reader.readAsDataURL(blob);
+      }, "image/jpeg", Q_PHOTO_QUALITY);
+    } catch (err) {
+      finish(null);
+    }
+  }
+
+  // createImageBitmap is the one that can be told in so many words to honour
+  // the EXIF orientation tag, so a photo taken in portrait arrives upright
+  // instead of on its side.
+  if (typeof createImageBitmap === "function") {
+    var attempt;
+    try {
+      attempt = createImageBitmap(file, { imageOrientation: "from-image" });
+    } catch (err) {
+      attempt = null;
+    }
+    if (attempt && typeof attempt.then === "function") {
+      attempt.then(function (bitmap) {
+        draw(bitmap, bitmap.width, bitmap.height);
+        // The bitmap holds the decoded photo, which is the big allocation
+        // here. drawImage above is synchronous, so it is safe to let go of.
+        if (bitmap && typeof bitmap.close === "function") bitmap.close();
+      }, function () { finish(null); });
+      return;
+    }
+  }
+
+  // The fallback, for a browser without it. An <img> is drawn with the
+  // orientation already applied in everything still current, so this is the
+  // same answer by a longer road.
+  var url = URL.createObjectURL(file);
+  var el = new Image();
+  el.onload = function () {
+    draw(el, el.naturalWidth, el.naturalHeight);
+    URL.revokeObjectURL(url);
+  };
+  el.onerror = function () {
+    URL.revokeObjectURL(url);
+    finish(null);
+  };
+  el.src = url;
+}
+
 // The photo screen. An upload, then a Drive link under it, and whichever
 // one is filled in wins -- the upload if both are.
 //
@@ -1301,46 +1407,49 @@ function qBuildPhotoField(spec) {
     label.textContent = "Choose a different photo";
   }
 
-  remove.addEventListener("click", function () {
+  // One way to put the screen back to empty, used by Remove and by every
+  // way a file can turn out to be unusable.
+  function clearPick(message) {
     qPhoto = null;
     input.value = "";
     paintPreview();
-    qShowError("");
-  });
+    qShowError(message || "");
+  }
+
+  remove.addEventListener("click", function () { clearPick(""); });
 
   input.addEventListener("change", function () {
     var file = input.files && input.files[0];
     if (!file) return;
 
-    // Both checks before the read: an 8MB HEIC should never be decoded just
-    // to be thrown away.
+    // Both checks before anything is decoded, and both against the file as
+    // picked rather than as sent: an 8MB HEIC should never be read just to
+    // be thrown away, and a huge photo is still refused up front even
+    // though what we would send is small.
     if (Q_PHOTO_TYPES.indexOf(file.type) === -1 || file.size > Q_PHOTO_MAX_BYTES) {
-      qPhoto = null;
-      input.value = "";
-      paintPreview();
-      qShowError(Q_PHOTO_MESSAGE);
+      clearPick(Q_PHOTO_MESSAGE);
       return;
     }
 
-    var reader = new FileReader();
-    reader.onload = function () {
+    qShrinkPhoto(file, function (shrunk) {
+      // A browser too old for any of this, or a file that decodes to
+      // nothing: the same message, and they cannot continue with it.
+      if (!shrunk) {
+        clearPick(Q_PHOTO_MESSAGE);
+        return;
+      }
       qPhoto = {
-        dataUrl: String(reader.result || ""),
+        dataUrl: shrunk.dataUrl,
+        // The name they picked, which is only ever a label. What is sent is
+        // the re-encoded JPEG, whatever the original was called.
         name: file.name,
-        type: file.type,
-        size: file.size
+        type: shrunk.type,
+        size: shrunk.size
       };
       // An upload wins, so the link stops mattering the moment one lands.
       paintPreview();
       qShowError("");
-    };
-    reader.onerror = function () {
-      qPhoto = null;
-      input.value = "";
-      paintPreview();
-      qShowError(Q_PHOTO_MESSAGE);
-    };
-    reader.readAsDataURL(file);
+    });
   });
 
   // -- or a Drive link --

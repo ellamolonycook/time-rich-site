@@ -3605,6 +3605,20 @@ async function syncDirectoryProfile(env, properties, upload) {
 // ---------------------------------------------------------------------------
 const DIRECTORY_BUCKET = "portal-directory";
 const DIRECTORY_PHOTO_MAX_BYTES = 5 * 1024 * 1024;
+
+// The cap for a photo that came up with the form, which is a much smaller
+// number than the one above and deliberately a separate constant: that one
+// still governs the Drive download, where the bytes arrive on Cloudflare's
+// side and never cost us the CPU of decoding base64.
+//
+// An upload does cost that. This worker is on the free plan, which allows
+// 10ms of CPU per request, and every uploaded byte is parsed, decoded,
+// copied into a Uint8Array and hashed before Notion is even called. The
+// page shrinks photos to an 800px JPEG first, which lands at roughly
+// 100-250KB, so 1MB is several times the headroom needed and still far
+// inside the budget. A request that blows the budget fails, and the member
+// loses the whole questionnaire rather than just the photo.
+const DIRECTORY_UPLOAD_MAX_BYTES = 1024 * 1024;
 const DIRECTORY_PHOTO_TYPES = { "image/jpeg": "jpg", "image/png": "png", "image/webp": "webp" };
 
 // Sets the photo columns on `row` and returns what happened.
@@ -3731,8 +3745,19 @@ function isDrivePhotoLink(link) {
 // parsed and used https, so "https://www.linkedin/in/laurafelker" -- a host
 // that does not resolve -- was saved as though it were a profile.
 function linkedinUrl(value) {
+  const typed = String(value == null ? "" : value).trim();
+  if (!typed) return null;
+
+  // People paste "www.linkedin.com/in/name" out of a browser bar and
+  // "http://..." out of an old bookmark, constantly. Neither is a different
+  // page, so the scheme is supplied or upgraded rather than refused. What
+  // this does not do is guess at the host: "www.linkedin/in/x" becomes
+  // "https://www.linkedin/in/x" and is still turned away below.
+  const withScheme = /^[a-z][a-z0-9+.-]*:\/\//i.test(typed) ? typed : "https://" + typed;
+
   let url;
-  try { url = new URL(String(value == null ? "" : value).trim()); } catch { return null; }
+  try { url = new URL(withScheme); } catch { return null; }
+  if (url.protocol === "http:") url.protocol = "https:";
   if (url.protocol !== "https:") return null;
 
   const host = url.hostname.toLowerCase();
@@ -3772,21 +3797,26 @@ function sniffImage(bytes) {
 
 // Turns the base64 the page sends into { bytes, type, ext }, or null.
 //
-// The 5MB cap is applied to the decoded length, not the base64, because the
+// The cap is applied to the decoded length, not the base64, because the
 // base64 is about a third bigger and capping that would quietly reject
 // files that are inside the limit. The length is worked out from the string
 // before decoding, so an oversized payload is never held twice.
+//
+// The size is checked before the character test on purpose. Both are linear,
+// but on the free plan's 10ms budget there is no reason to walk six megabytes
+// of someone's base64 only to find out it was too big to use anyway.
 function decodeUploadedPhoto(raw) {
   const b64 = String(raw == null ? "" : raw).trim();
   if (!b64) return null;
-  if (!/^[A-Za-z0-9+/]+={0,2}$/.test(b64) || b64.length % 4 !== 0) return null;
+  if (b64.length % 4 !== 0) return null;
 
   const padding = b64.endsWith("==") ? 2 : (b64.endsWith("=") ? 1 : 0);
-  if ((b64.length / 4) * 3 - padding > DIRECTORY_PHOTO_MAX_BYTES) return null;
+  if ((b64.length / 4) * 3 - padding > DIRECTORY_UPLOAD_MAX_BYTES) return null;
+  if (!/^[A-Za-z0-9+/]+={0,2}$/.test(b64)) return null;
 
   let binary;
   try { binary = atob(b64); } catch { return null; }
-  if (binary.length > DIRECTORY_PHOTO_MAX_BYTES) return null;
+  if (binary.length > DIRECTORY_UPLOAD_MAX_BYTES) return null;
 
   const bytes = new Uint8Array(binary.length);
   for (let i = 0; i < binary.length; i++) bytes[i] = binary.charCodeAt(i);

@@ -981,8 +981,13 @@ nav{background:rgba(255,252,235,.93) !important;border-bottom:1px solid var(--li
   function applyLinkedInUrl(value) {
     var v = String(value == null ? '' : value).trim();
     if (!v) return null;
+    // Missing scheme is supplied, http: is upgraded: both are how people
+    // paste a profile, and neither is a different page. The host is still
+    // never guessed at, so "www.linkedin/in/x" remains a refusal.
+    var withScheme = /^[a-z][a-z0-9+.-]*:\/\//i.test(v) ? v : 'https://' + v;
     var url;
-    try { url = new URL(v); } catch (err) { return null; }
+    try { url = new URL(withScheme); } catch (err) { return null; }
+    if (url.protocol === 'http:') url.protocol = 'https:';
     if (url.protocol !== 'https:') return null;
     var host = url.hostname.toLowerCase();
     if (host !== 'linkedin.com' && host.slice(-13) !== '.linkedin.com') return null;
