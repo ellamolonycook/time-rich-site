@@ -217,9 +217,16 @@
                  relationship with all three, which is what that value is
                  for.
 
-                 LaunchLemonade is the one card that is not a link itself:
-                 it carries a real Sign up button with the voucher, and a
-                 link cannot sit inside another link. -->
+                 None of the three is a link itself any more. Each one
+                 carries its own button -- Sign up, Sign up, Download -- and
+                 a link cannot sit inside another link, so the card is a div
+                 and the button is the only thing in it that goes anywhere.
+
+                 Stanley and Wispr both need a code entering by hand, and
+                 neither puts it where you would expect: Stanley's goes in
+                 behind "Add promotion code" on the payment page, Wispr's at
+                 the foot of Settings and not at checkout at all. That is
+                 what the numbered steps and the tip under them are for. -->
             <section class="space-y-4" aria-labelledby="partners-heading">
               <div class="space-y-2">
                 <h2 id="partners-heading" class="trp-section-title">Your partner offers</h2>
@@ -228,23 +235,43 @@
 
               <ul class="trp-partners">
                 <li>
-                  <a class="glass-card trp-partner" href="https://x.getstanley.ai/r/mz4y9g"
-                     target="_blank" rel="noopener sponsored">
+                  <div class="glass-card trp-partner">
                     <span class="trp-partner-mark">
                       <img class="trp-powered-pos" src="../brand/partners/stanley-logo.png" alt="Stanley" width="765" height="203" loading="lazy" decoding="async"/>
                       <img class="trp-powered-rev" src="../brand/partners/stanley-logo-dark.png" alt="Stanley" width="765" height="203" loading="lazy" decoding="async"/>
                     </span>
-                    <span class="trp-partner-line">6 months of Stanley free with code TIMERICH6. Your AI head of content: drafts from your calls, learns your voice, posts for you.</span>
-                  </a>
+                    <h3 class="trp-partner-title">Stanley &middot; 6 months free</h3>
+                    <span class="trp-partner-line">Your AI head of content. The code goes in at checkout.</span>
+                    <ol class="trp-partner-steps">
+                      <li>Click Sign up and create your account.</li>
+                      <li>Choose your plan and go to checkout.</li>
+                      <li>On the payment page, click <strong>Add promotion code</strong>.</li>
+                      <li>Enter <strong>TIMERICH6</strong> and finish checkout.</li>
+                    </ol>
+                    <p class="trp-partner-tip">Check the total shows 6 months free before you confirm.</p>
+                    <a class="trp-btn trp-btn-primary trp-partner-btn"
+                       href="https://x.getstanley.ai/r/mz4y9g"
+                       target="_blank" rel="noopener sponsored">Sign up</a>
+                  </div>
                 </li>
                 <li>
-                  <a class="glass-card trp-partner" href="https://ref.wisprflow.ai/ella-cook-vt27"
-                     target="_blank" rel="noopener sponsored">
+                  <div class="glass-card trp-partner">
                     <span class="trp-partner-mark">
                       <img src="../os/img/wispr-flow.png" alt="Wispr Flow" width="256" height="256" loading="lazy" decoding="async"/>
                     </span>
-                    <span class="trp-partner-line">6 months of Wispr Flow Pro, the voice dictation app the accelerator runs on.</span>
-                  </a>
+                    <h3 class="trp-partner-title">Wispr Flow &middot; 6 months Pro</h3>
+                    <span class="trp-partner-line">Only works if you're new to Wispr Flow or on the free plan.</span>
+                    <ol class="trp-partner-steps">
+                      <li>Download it on your Mac or PC (not your phone).</li>
+                      <li>Open it and go to <strong>Settings &rarr; Plans and Billing</strong>.</li>
+                      <li>Scroll to the very bottom and click the promo code link.</li>
+                      <li>Enter <strong>TIMERICH6</strong>.</li>
+                    </ol>
+                    <p class="trp-partner-tip">Only enter the code there. It won't work at checkout.</p>
+                    <a class="trp-btn trp-btn-primary trp-partner-btn"
+                       href="https://ref.wisprflow.ai/ella-cook-vt27"
+                       target="_blank" rel="noopener sponsored">Download Wispr Flow</a>
+                  </div>
                 </li>
                 <li>
                   <div class="glass-card trp-partner">
