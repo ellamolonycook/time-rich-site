@@ -975,6 +975,26 @@ nav{background:rgba(255,252,235,.93) !important;border-bottom:1px solid var(--li
       '&body=' + encodeURIComponent(body);
   }
 
+  // Returns the cleaned profile link, or null. Kept beside the form rather
+  // than shared with the questionnaire: the two pages ship separately and
+  // neither loads the other's script.
+  function applyLinkedInUrl(value) {
+    var v = String(value == null ? '' : value).trim();
+    if (!v) return null;
+    // Missing scheme is supplied, http: is upgraded: both are how people
+    // paste a profile, and neither is a different page. The host is still
+    // never guessed at, so "www.linkedin/in/x" remains a refusal.
+    var withScheme = /^[a-z][a-z0-9+.-]*:\/\//i.test(v) ? v : 'https://' + v;
+    var url;
+    try { url = new URL(withScheme); } catch (err) { return null; }
+    if (url.protocol === 'http:') url.protocol = 'https:';
+    if (url.protocol !== 'https:') return null;
+    var host = url.hostname.toLowerCase();
+    if (host !== 'linkedin.com' && host.slice(-13) !== '.linkedin.com') return null;
+    if (!/^\/(in|company)\/[^/]/.test(url.pathname)) return null;
+    return url.origin + url.pathname.replace(/\/+$/, '');
+  }
+
   applyForm.addEventListener('submit', function(e){
     e.preventDefault();
     formError.textContent = '';
@@ -983,6 +1003,23 @@ nav{background:rgba(255,252,235,.93) !important;border-bottom:1px solid var(--li
       applyForm.reportValidity();
       return;
     }
+    // LinkedIn, by the same rule as the questionnaire. type="url" only
+    // asks the browser whether it parses, which is how a link typed as
+    // "https://www.linkedin/in/name" -- a host that does not exist -- gets
+    // through. The host has to be linkedin.com or something under it, and
+    // the path a profile or a company page.
+    var linkedinField = applyForm.elements['linkedin'];
+    var linkedin = applyLinkedInUrl(linkedinField && linkedinField.value);
+    if (!linkedin) {
+      formError.textContent =
+        'Please paste your full LinkedIn profile link, like https://www.linkedin.com/in/yourname';
+      if (linkedinField) { linkedinField.focus(); linkedinField.scrollIntoView({ behavior: 'smooth', block: 'center' }); }
+      return;
+    }
+    // Saved cleaned: the tracking parameters people copy out of the app
+    // (?isSelfProfile=true and friends) do not belong on a stored profile.
+    if (linkedinField) linkedinField.value = linkedin;
+
     var painCount = checkedCount('pain');
     if (painCount < 1 || painCount > 3) {
       formError.textContent = 'Pick 1 to 3 things that are slowing your revenue down.';
