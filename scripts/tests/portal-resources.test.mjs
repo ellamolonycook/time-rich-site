@@ -47,9 +47,12 @@ const PARTNERS = [
   },
   {
     name: 'LaunchLemonade',
-    href: 'https://launchlemonade.app',
+    href: 'https://studio.launchlemonade.app/signup?voucher=ACCELERATOR',
     logo: '../brand/partners/launchlemonade-logo.jpg',
     line: '3 months of LaunchLemonade included.',
+    // The one card that is not a link itself: it links out through its own
+    // Sign up button, which carries the voucher.
+    button: true,
   },
 ];
 
@@ -75,12 +78,15 @@ console.log('\nResources: your partner offers');
     const card = cards[i] || doc.createElement('a');
     const img = card.querySelector('img:not(.trp-powered-rev)') || doc.createElement('img');
     const line = card.querySelector('.trp-partner-line') || doc.createElement('span');
+    const link = partner.button
+      ? card.querySelector('a.trp-partner-btn') || doc.createElement('a')
+      : card;
     check(partner.name + ': links out to the right place',
-      card.getAttribute('href') === partner.href, card.getAttribute('href'));
+      link.getAttribute('href') === partner.href, link.getAttribute('href'));
     check(partner.name + ': opens in a new tab, declared as sponsored',
-      card.getAttribute('target') === '_blank' &&
-      card.getAttribute('rel') === 'noopener sponsored',
-      card.getAttribute('target') + ' / ' + card.getAttribute('rel'));
+      link.getAttribute('target') === '_blank' &&
+      link.getAttribute('rel') === 'noopener sponsored',
+      link.getAttribute('target') + ' / ' + link.getAttribute('rel'));
     check(partner.name + ': shows its logo',
       img !== null && img.getAttribute('src') === partner.logo, img && img.getAttribute('src'));
     check(partner.name + ': the logo is named, not left as empty alt',
@@ -92,6 +98,31 @@ console.log('\nResources: your partner offers');
     check(partner.name + ': and the line Ella wrote for it',
       line.textContent === partner.line, line.textContent);
   });
+
+  // LaunchLemonade: title, the three redeem steps and a Sign up button, and
+  // no link wrapped around the card, since a link cannot hold another link.
+  const lemon = cards[2] || doc.createElement('div');
+  const title = lemon.querySelector('.trp-partner-title');
+  check('LaunchLemonade: titled with the offer',
+    title !== null && title.textContent === 'LaunchLemonade · 3 months Pro',
+    title && title.textContent);
+  const steps = [...lemon.querySelectorAll('.trp-partner-steps li')].map((li) => li.textContent);
+  check('LaunchLemonade: the three redeem steps, in order',
+    JSON.stringify(steps) === JSON.stringify([
+      'Click Sign up.',
+      'Create your account (no card needed).',
+      'Pro is active for 3 months.',
+    ]), steps);
+  const signUp = lemon.querySelector('a.trp-partner-btn');
+  check('LaunchLemonade: the button says Sign up and uses the site button style',
+    signUp !== null && signUp.textContent.trim() === 'Sign up' &&
+    signUp.classList.contains('trp-btn') && signUp.classList.contains('trp-btn-primary'),
+    signUp && signUp.textContent);
+  check('LaunchLemonade: the card itself is not a link',
+    lemon.tagName === 'DIV' && lemon.querySelectorAll('a').length === 1, lemon.tagName);
+  check('the built stylesheet carries the LaunchLemonade card rules',
+    BUILT.includes('.trp-partner-title{') && BUILT.includes('.trp-partner-steps{') &&
+    BUILT.includes('.trp-partner-btn{'));
 
   // Stanley is the only one with a reversed file, and it swaps on the dark
   // theme the way the header lockup does.

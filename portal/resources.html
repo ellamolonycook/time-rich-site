@@ -215,7 +215,11 @@
 
                  rel="sponsored" because the accelerator has a commercial
                  relationship with all three, which is what that value is
-                 for. -->
+                 for.
+
+                 LaunchLemonade is the one card that is not a link itself:
+                 it carries a real Sign up button with the voucher, and a
+                 link cannot sit inside another link. -->
             <section class="space-y-4" aria-labelledby="partners-heading">
               <div class="space-y-2">
                 <h2 id="partners-heading" class="trp-section-title">Your partner offers</h2>
@@ -243,13 +247,21 @@
                   </a>
                 </li>
                 <li>
-                  <a class="glass-card trp-partner" href="https://launchlemonade.app"
-                     target="_blank" rel="noopener sponsored">
+                  <div class="glass-card trp-partner">
                     <span class="trp-partner-mark">
                       <img src="../brand/partners/launchlemonade-logo.jpg" alt="LaunchLemonade" width="1280" height="628" loading="lazy" decoding="async"/>
                     </span>
+                    <h3 class="trp-partner-title">LaunchLemonade · 3 months Pro</h3>
                     <span class="trp-partner-line">3 months of LaunchLemonade included.</span>
-                  </a>
+                    <ol class="trp-partner-steps">
+                      <li>Click Sign up.</li>
+                      <li>Create your account (no card needed).</li>
+                      <li>Pro is active for 3 months.</li>
+                    </ol>
+                    <a class="trp-btn trp-btn-primary trp-partner-btn"
+                       href="https://studio.launchlemonade.app/signup?voucher=ACCELERATOR"
+                       target="_blank" rel="noopener sponsored">Sign up</a>
+                  </div>
                 </li>
               </ul>
             </section>
