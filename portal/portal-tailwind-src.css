@@ -720,280 +720,326 @@
   }
 
   /* -- the dashboard ------------------------------------------------------
-     Four bands down the page: the welcome bar, the one thing to do next,
-     three tiles, then the full list beside everything a member sets up once.
-     Each band is its own rule here rather than a string of Tailwind in the
-     page, so the shapes this page shares with Curriculum and Live Sessions
-     cannot drift apart by a padding.
+     One column, in the order the redesign draws it: the greeting and the
+     set-up bar, Step 1 (the list, with the next row highlighted), Step 2
+     (connect Notion), then the way into the curriculum. The next call, the
+     one-time setup and the partner offers follow, in the same shapes.
 
-     Everything is one column under 1024px, in the order it is written. */
-  .trp-dash { display: grid; gap: 20px; }
-  @media (min-width: 1024px) { .trp-dash { gap: 24px; } }
-
-  /* 1. the welcome bar */
-  .trp-dash-bar {
-    display: flex;
-    flex-wrap: wrap;
-    align-items: flex-start;
-    justify-content: space-between;
-    gap: 16px 24px;
-    padding-top: 8px;
-  }
-  /* The greeting grows a line when the member's name arrives: at 375px
-     "Good to see you." is one line and "Good to see you, Ella." is two, and
-     that second line pushed the whole page down 58px on first load. Two
-     lines are held open from the start, so the name lands in space that was
-     already there.
-
-     Only below 640px. Above it the greeting has never needed a second line,
-     and reserving one would leave a gap under the heading. */
-  .trp-dash-greet { min-width: 0; }
-  @media (max-width: 639px) {
-    .trp-dash-greet h1 { min-height: 2.2em; }
-  }
-  /* The pill is where the cohort is, not where the member is, so it is a
-     quiet outline rather than a fill competing with the heading. */
-  .trp-dash-pill {
-    flex: none;
-    margin: 6px 0 0;
-    display: inline-flex;
-    align-items: center;
-    min-height: 36px;
-    padding: 8px 18px;
-    border: 1px solid var(--trp-rule-2);
-    border-radius: 99px;
-    font-family: var(--trp-label);
-    font-size: 12px;
-    letter-spacing: .06em;
-    color: var(--trp-ink);
-    white-space: nowrap;
-  }
-  /* At 320px "Kickoff Mon 26 Oct · 9 days to go" is 5px wider than the
-     column, and a pill that cannot wrap pushes the whole page sideways. */
-  @media (max-width: 400px) {
-    /* flex: none above means it will not shrink on its own, so the cap is
-       explicit: wrap inside the pill rather than widen the page. */
-    .trp-dash-pill { white-space: normal; text-align: center; line-height: 1.5; max-width: 100%; }
-  }
-
-  /* 2. your next step */
-  .trp-nextstep {
-    display: grid;
-    gap: 20px 32px;
-    padding: 28px 30px;
-  }
-  @media (min-width: 900px) {
-    /* The step takes the room; the counts sit in a fixed column so the
-       bar is the same width whatever the step is called. */
-    .trp-nextstep { grid-template-columns: minmax(0, 1fr) 240px; align-items: start; }
-  }
-  .trp-nextstep-main { min-width: 0; }
-  .trp-nextstep-title {
-    margin: 8px 0 0;
-    font-size: 23px;
-    line-height: 1.25;
-  }
-  @media (min-width: 900px) { .trp-nextstep-title { font-size: 26px; } }
-  .trp-nextstep-body {
-    margin: 10px 0 0;
-    font-size: 15px;
-    line-height: 1.6;
-    color: var(--trp-muted);
-    white-space: pre-line;
-    overflow-wrap: anywhere;
-  }
-  .trp-nextstep-acts {
-    margin-top: 20px;
-    display: flex;
-    flex-wrap: wrap;
-    gap: 10px;
-  }
-  .trp-nextstep-go { margin-top: 18px; display: inline-flex; gap: 6px; }
-  .trp-nextstep-side {
+     Nothing here splits into columns. The source order is the order on a
+     phone and on a desktop. */
+  .trp-dash {
     display: flex;
     flex-direction: column;
-    gap: 10px;
+    gap: clamp(48px, 7vw, 72px);
+    padding-bottom: 24px;
   }
-  @media (min-width: 900px) {
-    /* A hairline between the two halves, on the side the counts are. */
-    .trp-nextstep-side { padding-left: 32px; border-left: 1px solid var(--trp-rule); }
+
+  /* 1. the greeting */
+  .trp-dash-hero {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    padding-top: clamp(40px, 6vw, 64px);
   }
-  .trp-nextstep-count {
+  .trp-dash-kicker {
     margin: 0;
-    font-size: 20px;
+    font-size: 12px;
     font-weight: 600;
-    line-height: 1.2;
-  }
-  .trp-nextstep-note {
-    margin: 0;
-    font-family: var(--trp-label);
-    font-size: 11px;
     letter-spacing: .08em;
     text-transform: uppercase;
-    color: var(--trp-dim);
+    color: var(--trp-muted);
+  }
+  .trp-dash-hero .trp-title {
+    font-size: clamp(34px, 5.4vw, 54px);
+    line-height: 1.06;
+    letter-spacing: -.025em;
+    font-weight: 600;
+  }
+  /* The name grows the heading by a line on a phone. Hold that line open
+     so it does not push the list down when the payload arrives. */
+  @media (max-width: 639px) {
+    .trp-dash-hero h1 { min-height: 2.2em; }
+  }
+  .trp-dash-meter {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    flex-wrap: wrap;
+  }
+  .trp-dash-meter .trp-progress-track {
+    flex: 0 1 320px;
+    width: 320px;
+    max-width: 100%;
+    height: 8px;
+    margin-top: 0;
+    background: rgb(var(--c-sagelt));
+  }
+  .trp-dash-meter .trp-progress-fill { background: #424B36; }
+  .trp-dash-meter-label {
+    margin: 0;
+    font-size: 15px;
+    color: var(--trp-muted);
+  }
+  .trp-dash-meter-label strong {
+    color: var(--trp-ink);
+    font-weight: 600;
   }
 
-  /* 3. the three tiles */
-  .trp-dash-tiles { display: grid; gap: 20px; }
-  @media (min-width: 900px) {
-    .trp-dash-tiles { grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 24px; }
+  /* 2 and 3. a step */
+  .trp-dash-block { display: flex; flex-direction: column; gap: 18px; }
+  .trp-dash-stephead {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    flex-wrap: wrap;
   }
-  .trp-tile {
+  .trp-dash-stepn {
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: .08em;
+    text-transform: uppercase;
+    background: #424B36;
+    color: #FFFDFB;
+    border-radius: 999px;
+    padding: 6px 12px;
+  }
+  .trp-dash-stepmeta {
+    font-size: 12px;
+    font-weight: 600;
+    letter-spacing: .08em;
+    text-transform: uppercase;
+    color: var(--trp-muted);
+  }
+  .trp-dash-h {
+    margin: 0;
+    font-size: clamp(28px, 4.2vw, 40px);
+    letter-spacing: -.022em;
+    line-height: 1.08;
+    font-weight: 600;
+  }
+  .trp-dash-lede {
+    margin: 0;
+    max-width: 60ch;
+    font-size: 17px;
+    line-height: 1.6;
+    color: var(--trp-muted);
+  }
+
+  /* The list. A white card, one row per step. The next row is the only
+     one with a fill and a ring. */
+  .trp-dash-card {
+    background: rgb(var(--c-surface));
+    border: 1px solid var(--trp-rule);
+    border-radius: 20px;
+    padding: 8px;
+  }
+  .trp-dsteps { list-style: none; margin: 0; padding: 0; }
+  .trp-dstep {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    border-radius: 14px;
+    padding: 16px;
+    min-height: 56px;
+  }
+  .trp-dstep:hover { background: rgb(var(--c-sagelt)); }
+  .trp-dstep.is-next {
+    background: #F1F1E4;
+    box-shadow: inset 0 0 0 2px #424B36;
+  }
+  .trp-dstep.is-next:hover { background: #F1F1E4; }
+  .trp-dstep .trp-check-box {
+    width: 32px;
+    height: 32px;
+    background: rgb(var(--c-surface));
+    border: 2px solid rgb(66 75 54 / .45);
+    color: #424B36;
+    font-size: 13px;
+    font-weight: 700;
+  }
+  .trp-dstep .trp-check-box::before { inset: -6px; }
+  .trp-dstep .trp-check-box svg { width: 14px; height: 14px; }
+  .trp-dstep .trp-check-box:not(.is-on) svg { display: none; }
+  .trp-dstep .trp-check-box.is-on .trp-dstep-num { display: none; }
+  .trp-dstep .trp-check-box.is-on {
+    background: #424B36;
+    border-color: #424B36;
+    color: #FFFDFB;
+  }
+  .trp-dstep-copy {
+    flex: 1 1 auto;
+    min-width: 0;
     display: flex;
     flex-direction: column;
-    height: 100%;
-    padding: 24px 26px;
+    gap: 2px;
   }
-  .trp-tile-title { margin: 8px 0 0; font-size: 18px; line-height: 1.3; }
-  .trp-tile-big { margin: 10px 0 0; display: flex; align-items: baseline; gap: 10px; }
-  .trp-tile-n { font-size: 40px; font-weight: 700; line-height: 1; }
-  .trp-tile-of { font-size: 14px; color: var(--trp-muted); }
-  .trp-tile .trp-progress-track { margin-top: 16px; }
-  /* margin-top: auto pins the way out to the foot of the tile, so three
-     tiles of different lengths still line their links up. */
-  .trp-tile-go {
-    margin-top: auto;
-    padding-top: 18px;
-    display: inline-flex;
-    align-items: center;
-    gap: 6px;
-    font-size: 14px;
-    font-weight: 500;
-    color: var(--trp-ink);
-    text-decoration: underline;
-    text-underline-offset: 3.5px;
-    text-decoration-color: var(--trp-rule-2);
-    transition: text-decoration-color var(--trp-t) ease;
-  }
-  .trp-tile-go:hover { text-decoration-color: var(--trp-ink); }
-
-  /* The partner tile: three names, each with the line Resources uses. */
-  .trp-ptile-list { list-style: none; margin: 16px 0 0; padding: 0; display: grid; gap: 12px; }
-  .trp-ptile-list li { display: grid; gap: 2px; }
-  .trp-ptile-name { font-size: 14px; font-weight: 600; }
-  .trp-ptile-line { font-size: 13px; line-height: 1.5; color: var(--trp-muted); }
-
-  /* The next session tile keeps its own title size rather than the tile's,
-     because it is the only one of the three with a name to read. */
-  .trp-tile.trp-next { padding: 24px 26px; }
-  .trp-tile .trp-next-title { font-size: 20px; }
-  .trp-tile .trp-next-acts { padding-top: 18px; }
-
-  /* 4. the two columns */
-  .trp-dash-cols { display: grid; gap: 20px; align-items: start; }
-  @media (min-width: 1024px) {
-    .trp-dash-cols {
-      grid-template-columns: minmax(0, 1.5fr) minmax(0, 1fr);
-      gap: 24px;
-    }
-  }
-  .trp-dash-aside { display: grid; gap: 20px; align-content: start; }
-
-  /* The compact list: titles and ticks, with the rest one press away. */
-  .trp-dlist { padding: 26px 28px 22px; }
-  .trp-dsteps { list-style: none; margin: 16px 0 0; padding: 0; }
-  .trp-dstep {
-    display: grid;
-    grid-template-columns: auto minmax(0, 1fr);
-    align-items: start;
-    gap: 0 14px;
-    padding: 4px 0;
-  }
-  .trp-dstep + .trp-dstep { border-top: 1px solid var(--trp-rule); }
-  .trp-dstep-head {
-    grid-column: 2;
-    display: flex;
-    align-items: center;
-    flex-wrap: wrap;
-    gap: 8px;
-    width: 100%;
-    /* 44px of target without a 44px box: the row is 15px of text with the
-       padding doing the rest. */
-    min-height: 44px;
-    padding: 0;
-    font: inherit;
-    font-size: 15px;
-    line-height: 1.45;
-    text-align: left;
-    color: var(--trp-ink);
-    background: transparent;
-    border: 0;
-    cursor: pointer;
-  }
-  .trp-dstep-head[disabled] { cursor: default; }
-  .trp-dstep-name { min-width: 0; }
-  .trp-dstep.is-done .trp-dstep-name { color: var(--trp-dim); text-decoration: line-through; }
-  /* The one row to do next, named so it can be found without counting. */
-  .trp-dstep-next {
-    flex: none;
-    font-family: var(--trp-label);
-    font-size: 10px;
+  .trp-dstep-name {
+    font-size: 16px;
     font-weight: 600;
-    letter-spacing: .12em;
-    text-transform: uppercase;
-    padding: 2px 8px;
-    border-radius: 99px;
-    color: var(--trp-accent);
-    border: 1px solid rgb(var(--c-olive) / .38);
-    white-space: nowrap;
+    line-height: 1.35;
+    color: var(--trp-ink);
   }
-  .trp-dstep-caret {
-    flex: none;
-    width: 16px;
-    height: 16px;
-    margin-left: auto;
-    color: var(--trp-dim);
-    transition: transform var(--trp-t) ease;
-  }
-  .trp-dstep.is-open .trp-dstep-caret { transform: rotate(180deg); }
-  .trp-dstep-body { grid-column: 2; padding: 0 0 14px; }
+  .trp-dstep.is-done .trp-dstep-name { color: var(--trp-muted); }
   .trp-dstep-text {
-    margin: 0 0 10px;
-    font-size: 14px;
-    line-height: 1.55;
+    font-size: 14.5px;
+    line-height: 1.45;
     color: var(--trp-muted);
     white-space: pre-line;
     overflow-wrap: anywhere;
   }
-  .trp-dlist-foot {
-    margin-top: 16px;
-    padding-top: 14px;
-    border-top: 1px solid var(--trp-rule);
-    display: flex;
-    flex-wrap: wrap;
-    align-items: center;
-    justify-content: space-between;
-    gap: 8px 16px;
-  }
-  .trp-dlist-more { margin: 0; font-size: 13px; color: var(--trp-dim); }
-  .trp-dlist-go {
-    display: inline-flex;
-    align-items: center;
-    gap: 6px;
+  .trp-dstep-open {
+    flex: none;
     font-size: 14px;
-    font-weight: 500;
+    font-weight: 600;
     color: var(--trp-ink);
     text-decoration: underline;
-    text-underline-offset: 3.5px;
-    text-decoration-color: var(--trp-rule-2);
+    text-underline-offset: 3px;
   }
-  .trp-dlist-go:hover { text-decoration-color: var(--trp-ink); }
+  .trp-dstep-tag {
+    flex: none;
+    font-size: 12px;
+    font-weight: 600;
+    letter-spacing: .06em;
+    text-transform: uppercase;
+    border-radius: 999px;
+    padding: 5px 10px;
+    background: #7B6CF6;
+    color: #FFFFFF;
+  }
 
-  /* The Set up once card, in the narrow column. Same card, less of it: the
-     two steps sit on one line each instead of three, and the numbers go,
-     because a list of two does not need counting. */
-  .trp-dash-aside .trp-setup { padding: 22px 24px 20px; }
-  .trp-dash-aside .trp-setup-step {
-    grid-template-columns: minmax(0, 1fr) auto;
-    gap: 8px 12px;
-    padding: 12px 0;
+  /* Step 2. The three tools are cards, not pills. The disclosure itself
+     is unchanged: <details>, the caret, the steps inside. */
+  .trp-dash .trp-connect { padding: 0; background: transparent; border: 0; }
+  .trp-dash-accs { display: flex; flex-direction: column; gap: 10px; }
+  .trp-dash .trp-acc {
+    margin: 0;
+    background: rgb(var(--c-surface));
+    border: 1px solid var(--trp-rule);
+    border-radius: 16px;
+    overflow: hidden;
   }
-  .trp-dash-aside .trp-step-number { display: none; }
-  .trp-dash-aside .trp-setup-actions { gap: 8px; }
-  .trp-dash-aside .trp-setup-actions .trp-btn { padding: 8px 14px; min-height: 38px; font-size: 13px; }
-  @media (max-width: 480px) {
-    .trp-dash-aside .trp-setup-step { grid-template-columns: minmax(0, 1fr); }
-    .trp-dash-aside .trp-setup-actions { justify-content: flex-start; }
+  .trp-dash .trp-acc-head {
+    padding: 18px 20px;
+    min-height: 56px;
+    font-size: 17px;
+  }
+  .trp-dash .trp-acc-head:hover { background: rgb(var(--c-sagelt)); }
+  .trp-dash .trp-acc-caret { color: #424B36; }
+  .trp-dash .trp-acc-body { padding: 0 20px 20px; }
+  .trp-dash .trp-connect-note { margin: 0; }
+
+  /* The way on, once the two steps are in view. */
+  .trp-dash-ready {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 16px;
+    align-items: center;
+    justify-content: space-between;
+    background: #D8D9B9;
+    border: 1px solid rgb(103 118 46 / .22);
+    border-radius: 20px;
+    padding: 22px 24px;
+  }
+  .trp-dash-ready-title {
+    margin: 0;
+    font-size: 20px;
+    letter-spacing: -.02em;
+    font-weight: 600;
+  }
+  .trp-dash-ready-line {
+    display: block;
+    margin: 4px 0 0;
+    font-size: 15px;
+    color: var(--trp-muted);
+  }
+  .trp-dash-cta {
+    display: inline-flex;
+    align-items: center;
+    background: #424B36;
+    color: #FFFDFB;
+    text-decoration: none;
+    border-radius: 12px;
+    padding: 0 20px;
+    min-height: 48px;
+    font-size: 14px;
+    font-weight: 600;
+  }
+  .trp-dash-cta:hover { background: #333A28; color: #FFFDFB; }
+
+  /* Under the two steps: the next call, set up once, the partner offers. */
+  .trp-dash-more { display: flex; flex-direction: column; gap: 20px; }
+  .trp-dash-session,
+  .trp-dash-partners {
+    background: rgb(var(--c-surface));
+    border: 1px solid var(--trp-rule);
+    border-radius: 20px;
+    padding: 22px 24px;
+  }
+  .trp-dash-session .trp-next-title { margin: 8px 0 0; font-size: 22px; line-height: 1.25; }
+  .trp-dash-session .trp-next-when { margin: 6px 0 0; font-size: 14px; letter-spacing: .04em; text-transform: uppercase; color: var(--trp-muted); }
+  .trp-dash-session .trp-next-acts { margin-top: 16px; }
+  .trp-dash-partners .trp-dash-h { font-size: 22px; }
+  .trp-dash-partners .trp-ptile-list { margin-top: 16px; }
+
+  /* On the dark theme the olive fills become the cream ink, the same way
+     a primary button does, or a green pill disappears into the ground. */
+  :root[data-theme='dark'] .trp-dash-meter .trp-progress-fill,
+  :root[data-theme='dark'] .trp-dash-stepn,
+  :root[data-theme='dark'] .trp-dash-cta,
+  :root[data-theme='dark'] .trp-dstep .trp-check-box.is-on {
+    background: rgb(var(--c-ink));
+    color: rgb(var(--c-bg));
+    border-color: rgb(var(--c-ink));
+  }
+  :root[data-theme='dark'] .trp-dash-cta:hover { background: rgb(var(--c-mid)); color: rgb(var(--c-bg)); }
+  :root[data-theme='dark'] .trp-dstep.is-next {
+    background: rgb(var(--c-sagelt));
+    box-shadow: inset 0 0 0 2px rgb(var(--c-ink));
+  }
+  :root[data-theme='dark'] .trp-dstep.is-next:hover { background: rgb(var(--c-sagelt)); }
+  :root[data-theme='dark'] .trp-dstep .trp-check-box {
+    background: transparent;
+    border-color: rgb(var(--c-rule) / .45);
+    color: rgb(var(--c-ink));
+  }
+  :root[data-theme='dark'] .trp-dash-ready {
+    background: rgb(var(--c-surface));
+    border-color: var(--trp-rule);
+  }
+  :root[data-theme='dark'] .trp-dstep-tag {
+    background: rgb(var(--c-plum));
+    color: rgb(var(--c-bg));
+  }
+  :root[data-theme='dark'] .trp-dash .trp-acc-caret { color: rgb(var(--c-ink)); }
+  @media (prefers-color-scheme: dark) {
+    :root[data-theme='system'] .trp-dash-meter .trp-progress-fill,
+    :root[data-theme='system'] .trp-dash-stepn,
+    :root[data-theme='system'] .trp-dash-cta,
+    :root[data-theme='system'] .trp-dstep .trp-check-box.is-on {
+      background: rgb(var(--c-ink));
+      color: rgb(var(--c-bg));
+      border-color: rgb(var(--c-ink));
+    }
+    :root[data-theme='system'] .trp-dash-cta:hover { background: rgb(var(--c-mid)); color: rgb(var(--c-bg)); }
+    :root[data-theme='system'] .trp-dstep.is-next {
+      background: rgb(var(--c-sagelt));
+      box-shadow: inset 0 0 0 2px rgb(var(--c-ink));
+    }
+    :root[data-theme='system'] .trp-dstep.is-next:hover { background: rgb(var(--c-sagelt)); }
+    :root[data-theme='system'] .trp-dstep .trp-check-box {
+      background: transparent;
+      border-color: rgb(var(--c-rule) / .45);
+      color: rgb(var(--c-ink));
+    }
+    :root[data-theme='system'] .trp-dash-ready {
+      background: rgb(var(--c-surface));
+      border-color: var(--trp-rule);
+    }
+    :root[data-theme='system'] .trp-dstep-tag {
+      background: rgb(var(--c-plum));
+      color: rgb(var(--c-bg));
+    }
+    :root[data-theme='system'] .trp-dash .trp-acc-caret { color: rgb(var(--c-ink)); }
   }
 
   /* -- the build library --------------------------------------------------
