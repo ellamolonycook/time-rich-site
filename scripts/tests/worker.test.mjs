@@ -918,8 +918,6 @@ function asStored(props) {
 
 // The host a stubbed call went to, compared exactly rather than by substring.
 const hostOf = (u) => { try { return new URL(String(u)).hostname; } catch { return ''; } };
-// The host a stubbed call went to, compared exactly rather than by substring.
-const hostOf = (u) => { try { return new URL(String(u)).hostname; } catch { return ''; } };
 const mem = {
   members: [],        // portal_members rows: { email, role, active }
   directory: {},      // portal_directory rows by email
