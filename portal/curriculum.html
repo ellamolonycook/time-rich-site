@@ -69,7 +69,142 @@
        twice. -->
   <link rel="preload" href="../brand/fonts/SpaceGrotesk-Variable.woff2" as="font" type="font/woff2" crossorigin/>
   <link rel="preload" href="../brand/fonts/Inter-Variable.woff2" as="font" type="font/woff2" crossorigin/>
-  <link rel="stylesheet" href="portal-content.css">
+  <link rel="stylesheet" href="portal-content.css?v=20261021">
+  <!-- The Curriculum's own layout: four week cards you tap between and one
+       panel for the week that is picked (canvas board 3). Every rule is
+       scoped under .trp-cw and every colour comes from the --trp-* palette
+       in portal-content.css, so the dark theme follows without rules of its
+       own. The menu and the footer are the shared ones and are not touched. -->
+  <style>
+    .trp-cw { max-width: 1120px; margin: 0 auto; padding: clamp(36px, 6vw, 64px) 24px 24px; display: flex; flex-direction: column; gap: 32px; }
+    @media (max-width: 640px) { .trp-cw { padding-left: 16px; padding-right: 16px; } }
+
+    .trp-cw-head { display: flex; flex-wrap: wrap; align-items: flex-end; gap: 24px 48px; }
+    .trp-cw-head-copy { flex: 999 1 520px; min-width: 0; display: flex; flex-direction: column; gap: 16px; }
+    .trp-cw-head .trp-headbar { flex: 1 1 240px; max-width: 300px; }
+    .trp-cw-eyebrow { font-size: 12px; font-weight: 600; letter-spacing: .08em; text-transform: uppercase; color: var(--trp-soft); }
+    .trp-cw-h1 { font-family: var(--trp-display); font-weight: 600; font-size: clamp(34px, 5.4vw, 54px); line-height: 1.06; letter-spacing: -.025em; margin: 0; color: var(--trp-deep); }
+    .trp-cw-lede { font-size: 18px; line-height: 1.6; color: var(--trp-soft); margin: 0; max-width: 56ch; }
+
+    /* "Your progress" in the quiet grey, not the accent */
+    .trp-cw-head .trp-headbar .trp-tag { color: var(--trp-soft); }
+
+    /* The menu's Accelerator tab is this page's parent, so it carries
+       aria-current="true" rather than "page" (that one is for the page you
+       are on). It is still the section you are in, so it gets the same
+       filled pill the shared stylesheet gives "page". */
+    .trp-nav-link[aria-current='true'],
+    .trp-nav-link[aria-current='true']:hover,
+    .trp-nav-link[aria-current='true']:focus-visible {
+      background: rgb(var(--c-green));
+      color: rgb(var(--c-bg));
+      font-weight: 500;
+    }
+
+    /* the four weeks */
+    .trp-cw-weeks { display: grid; grid-template-columns: repeat(auto-fit, minmax(230px, 1fr)); gap: 14px; }
+    .trp-cw-week { display: flex; flex-direction: column; align-items: flex-start; gap: 10px; min-height: 200px; padding: 22px; border-radius: 20px; border: 1px solid var(--trp-line); background: rgb(var(--c-surface)); color: var(--trp-deep); font: inherit; text-align: left; cursor: pointer; transition: box-shadow .18s ease, background-color .18s ease; }
+    .trp-cw-week:hover { box-shadow: 0 18px 40px -28px rgba(26, 24, 22, .45); }
+    .trp-cw-week:focus-visible { outline: 2px solid var(--trp-green); outline-offset: 3px; }
+    .trp-cw-week[aria-selected="true"] { background: #424B36; border-color: #424B36; color: #FFFDFB; }
+    .trp-cw-week-top { display: flex; justify-content: space-between; align-items: center; gap: 8px; width: 100%; }
+    .trp-cw-week-num { font-family: var(--trp-display); font-weight: 600; font-size: 40px; letter-spacing: -.03em; line-height: 1; }
+    .trp-cw-week-title { font-family: var(--trp-display); font-weight: 600; font-size: 20px; letter-spacing: -.02em; line-height: 1.2; }
+    .trp-cw-week-dates { font-size: 14px; line-height: 1.5; opacity: .8; }
+
+    .trp-cw-pill { display: inline-flex; align-items: center; font-size: 11px; font-weight: 600; letter-spacing: .06em; text-transform: uppercase; border-radius: 999px; padding: 5px 10px; background: var(--trp-sagelt); color: var(--trp-soft); white-space: nowrap; }
+    .trp-cw-pill.is-open { background: var(--trp-sage); color: var(--trp-green); }
+    .trp-cw-week[aria-selected="true"] .trp-cw-pill.is-open { background: #D8D9B9; color: #1A1816; }
+    .trp-cw-week[aria-selected="true"] .trp-cw-pill:not(.is-open) { background: rgba(255, 253, 251, .16); color: #FFFDFB; }
+
+    .trp-cw-pillar { display: inline-flex; font-size: 12px; font-weight: 600; letter-spacing: .08em; text-transform: uppercase; border-radius: 999px; padding: 5px 10px; background: var(--trp-sagelt); color: var(--trp-green); }
+    .trp-cw-pillar.is-systems { background: var(--trp-sage); }
+    .trp-cw-pillar.is-visibility { background: var(--trp-sagelt); }
+    .trp-cw-week[aria-selected="true"] .trp-cw-pillar { background: rgba(255, 253, 251, .16); color: #FFFDFB; }
+    /* On the dark theme the card is the same colour as the sage, so every
+       tag on an unpicked card gets one light tint and they all read as
+       pills, the same as Foundations and Visibility. */
+    :root[data-theme='dark'] .trp-cw-week:not([aria-selected="true"]) .trp-cw-pillar { background: rgba(244, 241, 230, .12); }
+    @media (prefers-color-scheme: dark) {
+      :root[data-theme='system'] .trp-cw-week:not([aria-selected="true"]) .trp-cw-pillar { background: rgba(244, 241, 230, .12); }
+    }
+
+    /* the panel for the picked week */
+    .trp-cw-panel { background: rgb(var(--c-surface)); border: 1px solid var(--trp-line); border-radius: 24px; padding: clamp(20px, 4vw, 36px); display: flex; flex-direction: column; gap: 22px; }
+    .trp-cw-panel:focus-visible { outline: 2px solid var(--trp-green); outline-offset: 3px; }
+    .trp-cw-panel-head { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: flex-start; gap: 16px; }
+    .trp-cw-panel-copy { display: flex; flex-direction: column; gap: 8px; max-width: 60ch; min-width: 0; }
+    .trp-cw-label { font-size: 12px; font-weight: 600; letter-spacing: .08em; text-transform: uppercase; color: var(--trp-soft); }
+    .trp-cw-h2 { font-family: var(--trp-display); font-weight: 600; font-size: clamp(26px, 3.8vw, 36px); letter-spacing: -.02em; line-height: 1.1; margin: 0; color: var(--trp-deep); }
+    .trp-cw-outcome { font-size: 16.5px; line-height: 1.6; color: var(--trp-soft); margin: 0; }
+    .trp-cw-count { font-size: 14px; color: var(--trp-soft); margin: 0; }
+    .trp-cw-actions { display: flex; flex-wrap: wrap; gap: 10px; align-items: flex-start; }
+    .trp-cw-join { display: flex; flex-direction: column; gap: 6px; }
+    .trp-cw-join .trp-join-note { margin: 0; font-size: 12.5px; color: var(--trp-soft); }
+
+    .trp-cw-btn { display: inline-flex; align-items: center; justify-content: center; gap: 8px; min-height: 48px; padding: 0 20px; border-radius: 999px; border: 0; font: inherit; font-size: 14px; font-weight: 600; text-decoration: none; white-space: nowrap; cursor: pointer; transition: background-color .18s ease; }
+    .trp-cw-btn.is-primary { background: var(--trp-green); color: var(--trp-offwhite); }
+    .trp-cw-btn.is-primary:hover { background: var(--trp-mid); }
+    .trp-cw-btn.is-soft { background: var(--trp-sagelt); color: var(--trp-deep); }
+    .trp-cw-btn.is-soft:hover { background: var(--trp-sage); }
+    .trp-cw-btn.is-off { background: var(--trp-sagelt); color: var(--trp-soft); cursor: not-allowed; opacity: .75; }
+    .trp-cw-btn.is-sm { min-height: 44px; padding: 0 16px; font-size: 13px; }
+    .trp-cw-btn:focus-visible { outline: 2px solid var(--trp-deep); outline-offset: 2px; }
+
+    /* this week's live sessions */
+    .trp-cw-sessions { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 14px; }
+    .trp-cw-session { background: var(--trp-sage); border-radius: 16px; padding: 18px; display: flex; align-items: flex-start; gap: 14px; }
+    .trp-cw-session.is-friday { background: var(--trp-sagelt); }
+    .trp-cw-session-copy { flex: 1 1 auto; min-width: 0; display: flex; flex-direction: column; gap: 4px; }
+    .trp-cw-session-when { font-size: 12px; font-weight: 600; letter-spacing: .08em; text-transform: uppercase; color: var(--trp-soft); }
+        .trp-cw-session-title { font-size: 16px; font-weight: 600; color: var(--trp-deep); }
+    .trp-cw-session .trp-cw-btn { margin-top: 8px; align-self: flex-start; background: rgb(var(--c-surface)); color: var(--trp-deep); }
+
+    /* the lessons */
+    .trp-cw-group { font-size: 12px; font-weight: 600; letter-spacing: .08em; text-transform: uppercase; color: var(--trp-soft); margin: 6px 0 -2px; }
+    .trp-cw-lessons { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 8px; }
+    .trp-cw-lesson { display: grid; grid-template-columns: auto minmax(0, 1fr) auto; align-items: center; gap: 12px 16px; border: 1px solid var(--trp-line); border-radius: 14px; padding: 14px 16px; }
+    .trp-cw-lesson-copy { min-width: 0; display: flex; flex-direction: column; gap: 2px; }
+    .trp-cw-lesson-title { display: flex; flex-wrap: wrap; align-items: center; gap: 6px 10px; font-size: 16px; font-weight: 600; color: var(--trp-deep); }
+    .trp-cw-lesson-body { font-size: 14px; line-height: 1.5; color: var(--trp-soft); white-space: pre-line; }
+    .trp-cw-lesson:has(.trp-check-box.is-on) .trp-cw-lesson-title { color: var(--trp-soft); }
+    .trp-cw-empty { margin: 0; font-size: 15px; color: var(--trp-soft); }
+
+    /* The tick button doubles as the lesson number: the number until it is
+       done, a tick after. It is still the shared .trp-check-box from
+       portal-live.js, so a tick still saves to the member's account. */
+    .trp-cw .trp-check-box { width: 32px; height: 32px; border: 0; background: var(--trp-sagelt); color: var(--trp-green); }
+    .trp-cw .trp-check-box::before { inset: -6px; }
+    .trp-cw .trp-check-box svg { display: none; }
+    .trp-cw .trp-check-box.is-on { background: var(--trp-green); color: var(--trp-offwhite); }
+    .trp-cw .trp-check-box.is-on svg { display: block; }
+    .trp-cw .trp-check-box.is-on .trp-cw-n { display: none; }
+    .trp-cw-n { font-weight: 700; font-size: 13px; }
+    .trp-cw-session .trp-check-box { background: rgb(var(--c-surface)); }
+
+    .trp-cw-tag { align-self: flex-start; display: inline-flex; font-size: 11px; font-weight: 600; letter-spacing: .06em; text-transform: uppercase; border-radius: 999px; padding: 3px 8px; background: var(--trp-sagelt); color: var(--trp-green); }
+
+    /* the weeks and the panel, once drawn, keep the page's spacing */
+    .trp-cw [data-curriculum-live]:not([hidden]) { display: flex; flex-direction: column; gap: 32px; }
+    .trp-cw-session .trp-check-box { box-shadow: inset 0 0 0 1.5px var(--trp-line); }
+
+    /* On a phone the weeks sit two by two and the lesson's button drops
+       under its words, so the number stays beside the title. */
+    @media (max-width: 640px) {
+      .trp-cw-weeks { grid-template-columns: 1fr 1fr; gap: 10px; }
+      .trp-cw-week { min-height: 0; padding: 16px; gap: 8px; border-radius: 18px; }
+      .trp-cw-week-num { font-size: 28px; }
+      .trp-cw-week-title { font-size: 16px; }
+      .trp-cw-week-dates { font-size: 12.5px; }
+      .trp-cw-pill, .trp-cw-pillar { font-size: 10px; padding: 4px 8px; }
+      .trp-cw-lesson { grid-template-columns: auto minmax(0, 1fr); align-items: start; }
+      .trp-cw-lesson > .trp-cw-btn { grid-column: 2; justify-self: start; }
+      .trp-cw-actions { width: 100%; }
+    }
+
+    /* the loading placeholder is the same shapes, inked out */
+    .trp-cw .trp-skel .trp-cw-week { cursor: default; }
+  </style>
 
   
 
@@ -80,7 +215,7 @@
   <script src="portal-config.js" defer></script>
   <script src="portal-access.js" defer></script>
   <script src="portal-live.js"></script>
-  <script src="portal-chrome.js" defer></script>
+  <script src="portal-chrome.js?v=20261021" defer></script>
 
   <!-- Warm the next page while the pointer is still travelling to the link.
        "moderate" is roughly 200ms of hover, which is long enough that a
@@ -207,114 +342,69 @@
   </nav>
 
   <!-- MAIN APP AREA -->
-  <div class="flex-1 flex">
-    
-    <!-- LEFT SIDEBAR -->
-    
-    <!-- CENTER SCROLLABLE CONTENT -->
-    <main class="flex-1 relative bg-transparent">
-<div class="relative z-10 px-3 sm:px-6 lg:px-12 py-8 lg:py-12 w-full flex justify-center overflow-x-hidden">
-          <div class="w-full max-w-[1200px] mx-auto space-y-8 lg:space-y-10">
-          
-          <!-- The page header, with the member's own count and bar on the
-               right of it from the large breakpoint up. The bar is filled by
-               the renderer below, off the same numbers the dashboard uses. -->
-          <header class="flex flex-col lg:flex-row lg:items-end gap-6 lg:gap-12">
-            <div class="flex-1 min-w-0">
-              <span class="trp-kicker">Program overview</span>
-              <h1 class="trp-title">Curriculum<span class="trp-stop">.</span></h1>
-              <p class="trp-lede">Each week opens on Monday. Start here is open now.</p>
-            </div>
-            <!-- Held open rather than hidden. At 375px this bar sits on its
-                 own line under the heading, so appearing from nothing moved
-                 the first week card down 67px. -->
-            <div class="trp-headbar w-full lg:w-[260px] shrink-0" data-curriculum-bar>
-              <div class="trp-skel" aria-hidden="true">
-                <div class="trp-headbar-top">
-                  <p class="trp-tag"><span class="trp-bar">Your progress</span></p>
-                  <p class="trp-headbar-count"><span class="trp-bar">1 of 9 done</span></p>
-                </div>
-                <div class="trp-progress-track"></div>
-              </div>
-            </div>
-          </header>
+  <main class="flex-1 relative bg-transparent">
+    <div class="trp-cw">
 
-          <div data-curriculum-live hidden></div>
-          <!-- The renderer below replaces this. It only stands in while the
-               payload is on its way or missing, so it stays to one line
-               rather than a fake set of weeks. -->
-          <!-- The placeholder the renderer replaces. It is built from the
-               real week-card classes and holds the words a week card holds,
-               inked out, so the box is already the right height and the
-               footer under it does not move when the payload lands. -->
-          <div data-curriculum-static class="trp-sched">
-            <div class="trp-skel" aria-hidden="true">
-                <div class="glass-card is-static trp-check">
-                  <div class="trp-check-head">
-                    <div>
-                      <p class="trp-tag"><span class="trp-bar">Week 01</span></p>
-                      <h2 class="trp-check-heading"><span class="trp-bar">Diagnose and train</span></h2>
-                    </div>
-                    <p class="trp-check-count"><span class="trp-bar">1 of 9 done</span></p>
-                  </div>
-                  <ul class="trp-checks">
-                    <li class="trp-check-row">
-                      <span class="trp-check-gap"></span>
-                      <span class="trp-check-label"><span class="trp-bar">Welcome to the Superhuman Accelerator</span><span class="trp-check-body"><span class="trp-bar">Over the next 4 weeks you'll build a real part of your business on AI, live, with founders who have done it.</span></span></span>
-                    </li>
-                    <li class="trp-check-row">
-                      <span class="trp-check-gap"></span>
-                      <span class="trp-check-label"><span class="trp-bar">Make your copy of the Business COMPASS</span><span class="trp-check-body"><span class="trp-bar">Click to make your own copy. Keep it open: the voice prompts below fill it in.</span></span></span>
-                    </li>
-                    <li class="trp-check-row">
-                      <span class="trp-check-gap"></span>
-                      <span class="trp-check-label"><span class="trp-bar">Install Wispr Flow</span><span class="trp-check-body"><span class="trp-bar">Your accelerator includes 6 months of Wispr Flow Pro. Install it and sign in.</span></span></span>
-                    </li>
-                    <li class="trp-check-row">
-                      <span class="trp-check-gap"></span>
-                      <span class="trp-check-label"><span class="trp-bar">Turn it on</span><span class="trp-check-body"><span class="trp-bar">Hold fn on Mac (Ctrl + Opt if your Mac has no fn key) or Ctrl + Win on Windows.</span></span></span>
-                    </li>
-                    <li class="trp-check-row">
-                      <span class="trp-check-gap"></span>
-                      <span class="trp-check-label"><span class="trp-bar">Say it: One-liners</span><span class="trp-check-body"><span class="trp-bar">Click into your COMPASS under 1. One-liners, hold fn and say what you do.</span></span></span>
-                    </li>
-                    <li class="trp-check-row">
-                      <span class="trp-check-gap"></span>
-                      <span class="trp-check-label"><span class="trp-bar">Say it: Who I serve</span><span class="trp-check-body"><span class="trp-bar">Click into your COMPASS under 2. Who I serve, hold fn and say who they are.</span></span></span>
-                    </li>
-                    <li class="trp-check-row">
-                      <span class="trp-check-gap"></span>
-                      <span class="trp-check-label"><span class="trp-bar">Say it: What I sell</span><span class="trp-check-body"><span class="trp-bar">Click into your COMPASS under 3. What I sell, hold fn and say what your offers are.</span></span></span>
-                    </li>
-                    <li class="trp-check-row">
-                      <span class="trp-check-gap"></span>
-                      <span class="trp-check-label"><span class="trp-bar">Answer the onboarding questions</span><span class="trp-check-body"><span class="trp-bar">Your answers shape the curriculum, your hot seat room and your profile.</span></span></span>
-                    </li>
-                    <li class="trp-check-row">
-                      <span class="trp-check-gap"></span>
-                      <span class="trp-check-label"><span class="trp-bar">Join the Superhuman WhatsApp group</span><span class="trp-check-body"><span class="trp-bar">Where the cohort talks between sessions.</span></span></span>
-                    </li>
-                  </ul>
-                </div>
-              <div class="glass-card is-static trp-coming mt-5">
-                <div class="trp-check-head">
-                  <div><h2 class="trp-check-heading"><span class="trp-bar">Coming up</span></h2></div>
-                  <p class="trp-check-count"><span class="trp-bar">3 weeks</span></p>
-                </div>
-                <ul class="trp-coming-rows">
-                  <li class="trp-coming-row"><span class="trp-coming-n"><span class="trp-bar">W02</span></span><span class="trp-coming-title"><span class="trp-bar">Week 2: Your AI Operating System</span></span><span class="trp-coming-when"><span class="trp-bar">Opens Mon 2 Nov</span></span></li>
-                  <li class="trp-coming-row"><span class="trp-coming-n"><span class="trp-bar">W03</span></span><span class="trp-coming-title"><span class="trp-bar">Week 3: Storytelling for GTM</span></span><span class="trp-coming-when"><span class="trp-bar">Opens Mon 9 Nov</span></span></li>
-                  <li class="trp-coming-row"><span class="trp-coming-n"><span class="trp-bar">W04</span></span><span class="trp-coming-title"><span class="trp-bar">Week 4: Unfair AI Advantage</span></span><span class="trp-coming-when"><span class="trp-bar">Opens Mon 16 Nov</span></span></li>
-                </ul>
-              </div>
+      <!-- The page header, with the member's own count and bar beside it.
+           The bar is filled by the renderer below, off the same numbers the
+           dashboard uses. -->
+      <header class="trp-cw-head">
+        <div class="trp-cw-head-copy">
+          <span class="trp-cw-eyebrow">Four weeks &middot; Mondays build &middot; Fridays hot seat &middot; 12pm ET</span>
+          <h1 class="trp-cw-h1">Sales. Systems. Visibility.</h1>
+          <p class="trp-cw-lede">One part of your business running on AI by 20 November. Each week opens on Monday.</p>
+        </div>
+        <!-- Held open rather than hidden, so the weeks under it do not move
+             when it fills in. -->
+        <div class="trp-headbar" data-curriculum-bar>
+          <div class="trp-skel" aria-hidden="true">
+            <div class="trp-headbar-top">
+              <p class="trp-tag"><span class="trp-bar">Your progress</span></p>
+              <p class="trp-headbar-count"><span class="trp-bar">1 of 9 done</span></p>
             </div>
-            <p class="trp-skel-say" role="status">Loading your curriculum&hellip;</p>
+            <div class="trp-progress-track"></div>
           </div>
-</div>
+        </div>
+      </header>
+
+      <div data-curriculum-live hidden></div>
+
+      <!-- The placeholder the renderer replaces. It is built from the real
+           week-card and lesson classes and holds the words they hold, inked
+           out, so the boxes are already the right size and the footer does
+           not move when the payload lands. -->
+      <div data-curriculum-static>
+        <div class="trp-skel" aria-hidden="true">
+          <div class="trp-cw-weeks">
+            <div class="trp-cw-week"><span class="trp-cw-week-num"><span class="trp-bar">01</span></span><span class="trp-cw-pillar"><span class="trp-bar">Foundations</span></span><span class="trp-cw-week-title"><span class="trp-bar">Diagnose + Become Superhuman</span></span><span class="trp-cw-week-dates"><span class="trp-bar">Prep is open now. Live from Mon 26 Oct.</span></span></div>
+            <div class="trp-cw-week"><span class="trp-cw-week-num"><span class="trp-bar">02</span></span><span class="trp-cw-pillar"><span class="trp-bar">Systems</span></span><span class="trp-cw-week-title"><span class="trp-bar">Your AI Operating System</span></span><span class="trp-cw-week-dates"><span class="trp-bar">Opens Mon 2 Nov</span></span></div>
+            <div class="trp-cw-week"><span class="trp-cw-week-num"><span class="trp-bar">03</span></span><span class="trp-cw-pillar"><span class="trp-bar">Visibility</span></span><span class="trp-cw-week-title"><span class="trp-bar">Storytelling for GTM</span></span><span class="trp-cw-week-dates"><span class="trp-bar">Opens Mon 9 Nov</span></span></div>
+            <div class="trp-cw-week"><span class="trp-cw-week-num"><span class="trp-bar">04</span></span><span class="trp-cw-pillar"><span class="trp-bar">Sales</span></span><span class="trp-cw-week-title"><span class="trp-bar">Unfair AI Advantage</span></span><span class="trp-cw-week-dates"><span class="trp-bar">Opens Mon 16 Nov</span></span></div>
+          </div>
+          <div class="trp-cw-panel" style="margin-top: 32px">
+            <div class="trp-cw-panel-copy">
+              <span class="trp-cw-label"><span class="trp-bar">Week 01 &middot; Foundations</span></span>
+              <h2 class="trp-cw-h2"><span class="trp-bar">Diagnose and train</span></h2>
+              <p class="trp-cw-outcome"><span class="trp-bar">Find where your time goes and set up the tools the whole accelerator runs on.</span></p>
+            </div>
+            <ul class="trp-cw-lessons">
+              <li class="trp-cw-lesson"><span class="trp-bar is-tick"></span><span class="trp-cw-lesson-copy"><span class="trp-cw-lesson-title"><span class="trp-bar">Welcome to the Superhuman Accelerator</span></span><span class="trp-cw-lesson-body"><span class="trp-bar">Over the next 4 weeks you'll build a real part of your business on AI.</span></span></span></li>
+              <li class="trp-cw-lesson"><span class="trp-bar is-tick"></span><span class="trp-cw-lesson-copy"><span class="trp-cw-lesson-title"><span class="trp-bar">Make your copy of the Business COMPASS</span></span><span class="trp-cw-lesson-body"><span class="trp-bar">Click to make your own copy. Keep it open.</span></span></span></li>
+              <li class="trp-cw-lesson"><span class="trp-bar is-tick"></span><span class="trp-cw-lesson-copy"><span class="trp-cw-lesson-title"><span class="trp-bar">Install Wispr Flow</span></span><span class="trp-cw-lesson-body"><span class="trp-bar">Your accelerator includes 6 months of Wispr Flow Pro.</span></span></span></li>
+              <li class="trp-cw-lesson"><span class="trp-bar is-tick"></span><span class="trp-cw-lesson-copy"><span class="trp-cw-lesson-title"><span class="trp-bar">Turn it on</span></span><span class="trp-cw-lesson-body"><span class="trp-bar">Hold fn on Mac or Ctrl + Win on Windows.</span></span></span></li>
+              <li class="trp-cw-lesson"><span class="trp-bar is-tick"></span><span class="trp-cw-lesson-copy"><span class="trp-cw-lesson-title"><span class="trp-bar">Say it: One-liners</span></span><span class="trp-cw-lesson-body"><span class="trp-bar">Hold fn and say what you do.</span></span></span></li>
+              <li class="trp-cw-lesson"><span class="trp-bar is-tick"></span><span class="trp-cw-lesson-copy"><span class="trp-cw-lesson-title"><span class="trp-bar">Say it: Who I serve</span></span><span class="trp-cw-lesson-body"><span class="trp-bar">Hold fn and say who they are.</span></span></span></li>
+              <li class="trp-cw-lesson"><span class="trp-bar is-tick"></span><span class="trp-cw-lesson-copy"><span class="trp-cw-lesson-title"><span class="trp-bar">Say it: What I sell</span></span><span class="trp-cw-lesson-body"><span class="trp-bar">Hold fn and say what your offers are.</span></span></span></li>
+              <li class="trp-cw-lesson"><span class="trp-bar is-tick"></span><span class="trp-cw-lesson-copy"><span class="trp-cw-lesson-title"><span class="trp-bar">Answer the onboarding questions</span></span><span class="trp-cw-lesson-body"><span class="trp-bar">Your answers shape the curriculum and your hot seat room.</span></span></span></li>
+              <li class="trp-cw-lesson"><span class="trp-bar is-tick"></span><span class="trp-cw-lesson-copy"><span class="trp-cw-lesson-title"><span class="trp-bar">Join the Superhuman WhatsApp group</span></span><span class="trp-cw-lesson-body"><span class="trp-bar">Where the cohort talks between sessions.</span></span></span></li>
+            </ul>
+          </div>
+        </div>
+        <p class="trp-skel-say" role="status">Loading your curriculum&hellip;</p>
       </div>
-    
-      </main> <!-- CLOSE main -->
-    </div> <!-- CLOSE h-screen container -->
+
+    </div>
+  </main>
 
   <footer class="shrink-0 px-4 sm:px-6 lg:px-8 py-2 border-t border-brand-ink/10 text-[12px] text-brand-ink/70">
     <!-- One quiet line. The second "Powered by Stanley" lockup that used to
@@ -350,79 +440,6 @@
     </p>
   </footer>
 
-  <script>
-    // === SMOOTH PAGE TRANSITIONS ===
-    // Internal .html links fade the page out before navigating. The fade is
-    // decoration; the navigation is the job, so every path below ends in a
-    // navigation even when the animation never runs or is cut short.
-    (function () {
-      var FADE_MS = 150;
-
-      var reduced = false;
-      try {
-        reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-      } catch (e) { /* no matchMedia: treat as no preference */ }
-
-      // Coming back via the Back button can restore this page from the bfcache
-      // with the fade still applied, which shows a blank screen.
-      //
-      // Only this script's own fade is undone. Every portal page sets its own
-      // entrance transform inline on <body>, so clearing that unconditionally
-      // would kill the page's open animation on a normal load.
-      var LEAVING = 'data-trp-leaving';
-      window.addEventListener('pageshow', function () {
-        if (!document.body.hasAttribute(LEAVING)) return;
-        document.body.removeAttribute(LEAVING);
-        document.body.style.opacity = '';
-        document.body.style.transform = '';
-      });
-
-      document.addEventListener('DOMContentLoaded', function () {
-        document.querySelectorAll('a[href]').forEach(function (link) {
-          var href = link.getAttribute('href');
-          if (!href) return;
-          if (href.indexOf('http') === 0 || href.charAt(0) === '#' || href.indexOf('mailto') === 0) return;
-          if (href.slice(-5) !== '.html') return;
-          // A link meant for another tab keeps its default behaviour.
-          if (link.target && link.target !== '_self') return;
-
-          link.addEventListener('click', function (e) {
-            // Cmd/Ctrl/Shift/Alt click and middle click open a new tab.
-            // Hijacking those would quietly break them.
-            if (e.button !== 0 || e.metaKey || e.ctrlKey || e.shiftKey || e.altKey) return;
-
-            e.preventDefault();
-
-            // Anyone who asked for less motion simply goes.
-            if (reduced) { window.location.href = href; return; }
-
-            var done = false;
-            function go() {
-              if (done) return;
-              done = true;
-              window.location.href = href;
-            }
-
-            try {
-              document.body.setAttribute(LEAVING, '');
-              document.body.style.opacity = '0';
-              document.body.style.transform = 'scale(0.98)';
-              // Whichever comes first wins.
-              document.body.addEventListener('transitionend', go, { once: true });
-            } catch (err) {
-              go();                 // styling failed, so just navigate
-              return;
-            }
-
-            setTimeout(go, FADE_MS);
-            // A short backstop: transitionend does not fire in a backgrounded
-            // tab, and a click must never end on a page left faded out.
-            setTimeout(go, FADE_MS + 250);
-          });
-        });
-      });
-    })();
-  </script>
 
 
 
@@ -430,15 +447,41 @@
     /* Curriculum, drawn from portal_get. Weeks come from `weeks` in id order,
        with each week's sessions grouped under it by week_id.
 
-       A week that has opened is the shared checklist card from
-       portal-live.js -- the same card the dashboard draws, so the two pages
-       cannot drift apart. Every week that has not opened is one row in a
-       single "Coming up" card beside them.
+       The page is four week cards you tap between and one panel for the
+       week that is picked (canvas board 3). Only the drawing changed: the
+       data, the open/locked rule and every tick come from portal-live.js
+       exactly as before.
 
-       The one-line fallback above is hidden as soon as weeks land. */
+       - Week 0 ("Start here") is not a card of its own. Its items show at
+         the top of Week 1, the same grouping learningCard() uses.
+       - A week is open when portal_get says `unlocked` (set from
+         release_at). Week 1 also counts as open while only Start here is,
+         so the prep work is reachable before kickoff.
+       - Each lesson's number circle is the shared tick button, so marking
+         a lesson done still writes to the member's account.
+
+       The placeholder above is hidden as soon as weeks land. */
     (function () {
       var L = window.TRLive;
       if (!L) return;
+
+      /* The canvas names a pillar for each week. It is presentation only,
+         keyed by week number, and a week the payload does not have is
+         simply not drawn. */
+      var PILLARS = { 1: 'Foundations', 2: 'Systems', 3: 'Visibility', 4: 'Sales' };
+      var BONUS_RE = /^bonus:\s*/i;
+
+      var selected = null;     // the week id the member picked, kept across redraws
+
+      function pad(n) { return n < 10 ? '0' + n : String(n); }
+
+      /* Week titles are stored the way the curriculum writes them,
+         "Week 1: Diagnose + Become Superhuman". The card and the panel
+         already say the number, so the "Week 1: " is dropped there. */
+      function weekTitle(week) {
+        var t = L.str(week && week.title).replace(/^week\s*\d+\s*:\s*/i, '');
+        return t || L.weekLabel(week);
+      }
 
       /* ---- the member's own bar, in the page header ---------------------- */
 
@@ -468,72 +511,306 @@
         L.show(root, true);
       }
 
-      /* ---- the page ------------------------------------------------------
-         An open week is the shared checklist card, the same one the
-         dashboard draws. Every week that has not opened is one row inside a
-         single "Coming up" card beside them, instead of a full-size card of
-         its own with nothing in it.
+      /* ---- which weeks, and which is open --------------------------------- */
 
-         Nothing here decides when a week opens: that is the `unlocked` flag
-         on the payload, which portal_get sets from release_at. A week moves
-         out of Coming up and into a checklist card of its own on the morning
-         it opens, with no change here and none to the data. */
+      function prepWeek(data) {
+        return L.weeks(data).filter(function (w) { return L.num(w.id) === 0 && w.unlocked === true; })[0] || null;
+      }
+
+      function isOpen(week, prep) {
+        return week.unlocked === true || (L.num(week.id) === 1 && !!prep);
+      }
+
+      function defaultWeek(cards, prep) {
+        var open = cards.filter(function (w) { return isOpen(w, prep); });
+        return L.num((open.length ? open[open.length - 1] : cards[0]).id);
+      }
+
+      /* ---- a week card ---------------------------------------------------- */
+
+      function weekCard(week, prep, isSel) {
+        var n = L.num(week.id);
+        var open = isOpen(week, prep);
+        var opens = L.etDate(week.release_at);
+
+        var card = L.el('button', 'trp-cw-week');
+        card.type = 'button';
+        card.id = 'cw-tab-' + n;
+        card.setAttribute('role', 'tab');
+        card.setAttribute('aria-selected', isSel ? 'true' : 'false');
+        card.setAttribute('aria-controls', 'cw-panel');
+        card.tabIndex = isSel ? 0 : -1;
+        card.setAttribute('data-week', String(n));
+
+        var top = L.el('span', 'trp-cw-week-top');
+        top.appendChild(L.el('span', 'trp-cw-week-num', pad(n)));
+        top.appendChild(L.el('span', 'trp-cw-pill' + (open ? ' is-open' : ''),
+          open ? 'Open' : (opens || 'Soon')));
+        card.appendChild(top);
+
+        var pillar = PILLARS[n];
+        if (pillar) card.appendChild(L.el('span', 'trp-cw-pillar is-' + pillar.toLowerCase(), pillar));
+
+        card.appendChild(L.el('span', 'trp-cw-week-title', weekTitle(week)));
+
+        var dates;
+        if (week.unlocked === true) dates = opens ? opens + ' · open now' : 'Open now';
+        else if (open) dates = 'Prep is open now.' + (opens ? ' Live from ' + opens + '.' : '');
+        else dates = opens ? 'Opens ' + opens : 'Opens soon';
+        card.appendChild(L.el('span', 'trp-cw-week-dates', dates));
+
+        return card;
+      }
+
+      /* ---- the panel ------------------------------------------------------ */
+
+      function nextSessionIn(list, now) {
+        for (var i = 0; i < list.length; i++) {
+          if (L.toDate(list[i].starts_at) && !L.isSessionPast(list[i], now)) return list[i];
+        }
+        return null;
+      }
+
+      function lessonRow(item, n) {
+        var name = L.str(item && item.title) || 'Untitled';
+        var row = L.el('li', 'trp-cw-lesson');
+
+        if (L.itemKey(item)) {
+          var box = L.checkBox(
+            function () { return L.isItemDone(item); },
+            function () { return L.toggleItem(item); },
+            name);
+          box.appendChild(L.el('span', 'trp-cw-n', String(n)));
+          box.setAttribute('data-cw-focus', 'item-' + L.itemKey(item));
+          row.appendChild(box);
+        } else {
+          var mark = L.el('span', 'trp-check-box', '');
+          mark.appendChild(L.el('span', 'trp-cw-n', String(n)));
+          mark.setAttribute('aria-hidden', 'true');
+          row.appendChild(mark);
+        }
+
+        var copy = L.el('span', 'trp-cw-lesson-copy');
+        var title = L.el('span', 'trp-cw-lesson-title', name);
+        if (item && item.kind === 'skill') title.appendChild(L.el('span', 'trp-cw-tag', 'Skill'));
+        copy.appendChild(title);
+        // body is text, never markup: el() writes textContent, and the
+        // class keeps the line breaks written into it.
+        var body = L.str(item && item.body);
+        if (body) copy.appendChild(L.el('span', 'trp-cw-lesson-body', body));
+        row.appendChild(copy);
+
+        var open = L.linkTo(item && item.url, 'Open', 'trp-cw-btn is-primary is-sm');
+        if (open) {
+          open.setAttribute('aria-label', 'Open ' + name);
+          row.appendChild(open);
+        }
+        return row;
+      }
+
+      function sessionTile(session, now) {
+        var name = L.str(session && session.title) || 'Session';
+        var bonus = BONUS_RE.test(name);
+        var shown = bonus ? name.replace(BONUS_RE, '') : name;
+        var when = L.etDate(session && session.starts_at);
+        var at = L.etTime(session && session.starts_at);
+
+        var tile = L.el('div', 'trp-cw-session' + (/^Fri/.test(when) ? ' is-friday' : ''));
+
+        var box = L.checkBox(
+          function () { return L.isSessionMarked(session); },
+          function () { return L.toggleSession(session); },
+          name);
+        box.setAttribute('data-cw-focus', 'session-' + L.sessionKey(session));
+        if (L.sessionKey(session)) tile.appendChild(box);
+
+        var copy = L.el('div', 'trp-cw-session-copy');
+        copy.appendChild(L.el('span', 'trp-cw-session-when',
+          when ? (at ? when + ' · ' + at + ' ET' : when) : 'Date to come'));
+        var title = L.el('span', 'trp-cw-session-title', shown);
+        copy.appendChild(title);
+        if (bonus) copy.appendChild(L.el('span', 'trp-cw-tag', 'Bonus'));
+
+        // The recording, once the call has run: the same rule the old rows
+        // had, and watching it marks the session.
+        if (L.isSessionPast(session, now)) {
+          var rec = L.linkTo(session.recording_url, 'Watch recording', 'trp-cw-btn is-sm');
+          if (rec) {
+            rec.setAttribute('aria-label', 'Watch recording of ' + name);
+            rec.addEventListener('click', function () {
+              Promise.resolve(L.markSession(session)).then(function () { if (box.refresh) box.refresh(); });
+            });
+            copy.appendChild(rec);
+          }
+        }
+        tile.appendChild(copy);
+        return tile;
+      }
+
+      function panel(data, week, prep) {
+        var n = L.num(week.id);
+        var open = isOpen(week, prep);
+        var now = new Date();
+        var pillar = PILLARS[n];
+
+        var box = L.el('section', 'trp-cw-panel');
+        box.id = 'cw-panel';
+        box.setAttribute('role', 'tabpanel');
+        box.setAttribute('aria-labelledby', 'cw-tab-' + n);
+        box.tabIndex = 0;
+
+        /* what goes in the count: the lessons and live sessions the member
+           can actually see and tick on this week */
+        var groups = [];
+        if (n === 1 && prep) groups.push({ label: 'Start here', items: L.items(prep) });
+        if (week.unlocked === true) {
+          groups.push({ label: groups.length ? weekTitle(week) : '', items: L.items(week) });
+        }
+        var sessionList = week.unlocked === true ? L.sessionsForWeek(data, week.id) : [];
+
+        var done = 0, total = 0;
+        groups.forEach(function (g) {
+          g.items.forEach(function (it) { total += 1; if (L.isItemDone(it)) done += 1; });
+        });
+        sessionList.forEach(function (s) { total += 1; if (L.isSessionMarked(s)) done += 1; });
+
+        // header: the week, its outcome, and the next call's two buttons
+        var head = L.el('div', 'trp-cw-panel-head');
+        var copy = L.el('div', 'trp-cw-panel-copy');
+        copy.appendChild(L.el('span', 'trp-cw-label', 'Week ' + pad(n) + (pillar ? ' · ' + pillar : '')));
+        copy.appendChild(L.el('h2', 'trp-cw-h2', weekTitle(week)));
+        if (L.str(week.summary)) copy.appendChild(L.el('p', 'trp-cw-outcome', L.str(week.summary)));
+        if (total) copy.appendChild(L.el('p', 'trp-cw-count', done + ' of ' + total + ' done'));
+        head.appendChild(copy);
+
+        var next = nextSessionIn(L.sessionsForWeek(data, week.id), now);
+        if (next && open) {
+          var actions = L.el('div', 'trp-cw-actions');
+          var cal = L.calendarLink(next, 'Add to calendar', 'trp-cw-btn is-soft');
+          if (cal) actions.appendChild(cal);
+
+          // The same 30-minutes-before rule every page uses.
+          var join = L.joinControl(next, now, { onClass: 'trp-cw-btn is-primary', offClass: 'trp-cw-btn is-off' });
+          join.control.textContent = 'Join live on Zoom';
+          if (join.open) {
+            join.control.addEventListener('click', function () { L.markSession(next); });
+          }
+          var joinWrap = L.el('div', 'trp-cw-join');
+          joinWrap.appendChild(join.control);
+          if (join.note) joinWrap.appendChild(join.note);
+          actions.appendChild(joinWrap);
+          head.appendChild(actions);
+        }
+        box.appendChild(head);
+
+        if (sessionList.length) {
+          var tiles = L.el('div', 'trp-cw-sessions');
+          sessionList.forEach(function (s) { tiles.appendChild(sessionTile(s, now)); });
+          box.appendChild(tiles);
+        }
+
+        if (!open) {
+          var opens = L.etDate(week.release_at);
+          box.appendChild(L.el('p', 'trp-cw-empty', 'Lessons open ' + (opens || 'soon') + '.'));
+          return box;
+        }
+
+        groups.forEach(function (g) {
+          if (!g.items.length) return;
+          if (g.label && groups.length > 1) box.appendChild(L.el('h3', 'trp-cw-group', g.label));
+          var ul = L.el('ul', 'trp-cw-lessons');
+          g.items.forEach(function (it, i) { ul.appendChild(lessonRow(it, i + 1)); });
+          box.appendChild(ul);
+        });
+
+        if (n === 1 && prep && week.unlocked !== true) {
+          var start = L.etDate(week.release_at);
+          box.appendChild(L.el('p', 'trp-cw-empty',
+            'Week 1 sessions and materials open ' + (start || 'soon') + '.'));
+        } else if (!total) {
+          box.appendChild(L.el('p', 'trp-cw-empty', 'Nothing here yet.'));
+        }
+
+        return box;
+      }
+
+      /* ---- the page ------------------------------------------------------ */
+
+      var lastData = null;
 
       function render(data) {
         var live = document.querySelector('[data-curriculum-live]');
         var statik = document.querySelector('[data-curriculum-static]');
         if (!live) return;
 
-        var list = L.weeks(data);
-        if (!list.length) return;          // no weeks: leave the fallback up
+        var all = L.weeks(data);
+        var cards = all.filter(function (w) { return L.num(w.id) >= 1; });
+        if (!cards.length) return;          // no weeks: leave the placeholder up
+        lastData = data;
 
-        var hasFirst = list.some(function (w) { return Number(w.id) === 1; });
-        var hasPrep = list.some(function (w) { return Number(w.id) === 0 && w.unlocked === true; });
-        var open = list.filter(function (w) {
-          if (Number(w.id) === 0 && hasFirst) return false;
-          return w && (w.unlocked === true || (Number(w.id) === 1 && hasPrep));
-        });
+        var prep = prepWeek(data);
+        var ids = cards.map(function (w) { return L.num(w.id); });
+        if (selected === null || ids.indexOf(selected) === -1) selected = defaultWeek(cards, prep);
+        var week = cards[ids.indexOf(selected)];
+
+        // keep focus where it was across a redraw (a tick redraws the page)
+        var focusKey = document.activeElement && document.activeElement.getAttribute
+          ? document.activeElement.getAttribute('data-cw-focus') : null;
 
         L.clear(live);
 
-        var grid = L.el('div', 'trp-curriculum');
-
-        var column = L.el('div', 'trp-curriculum-open');
-        open.forEach(function (week) {
-          column.appendChild(L.learningCard(data, week, { sessions: true }));
+        var tabs = L.el('div', 'trp-cw-weeks');
+        tabs.setAttribute('role', 'tablist');
+        tabs.setAttribute('aria-label', 'Weeks');
+        cards.forEach(function (w) {
+          var card = weekCard(w, prep, L.num(w.id) === selected);
+          card.setAttribute('data-cw-focus', 'tab-' + L.num(w.id));
+          card.addEventListener('click', function () { pick(L.num(w.id)); });
+          tabs.appendChild(card);
         });
-        if (!open.length) {
-          var none = L.el('div', 'glass-card is-static trp-check');
-          none.appendChild(L.el('p', 'trp-check-empty', 'Your first week opens soon.'));
-          column.appendChild(none);
-        }
-        grid.appendChild(column);
+        // Arrow keys move between the weeks, as tabs do.
+        tabs.addEventListener('keydown', function (e) {
+          var at = ids.indexOf(selected);
+          var to = -1;
+          if (e.key === 'ArrowRight' || e.key === 'ArrowDown') to = (at + 1) % ids.length;
+          else if (e.key === 'ArrowLeft' || e.key === 'ArrowUp') to = (at - 1 + ids.length) % ids.length;
+          else if (e.key === 'Home') to = 0;
+          else if (e.key === 'End') to = ids.length - 1;
+          if (to < 0) return;
+          e.preventDefault();
+          pick(ids[to]);
+        });
+        live.appendChild(tabs);
 
-        var coming = L.comingCard(data);
-        if (coming) {
-          var side = L.el('div', 'trp-curriculum-side');
-          side.appendChild(coming);
-          grid.appendChild(side);
-        } else {
-          grid.classList.add('is-alone');
-        }
-
-        live.appendChild(grid);
+        live.appendChild(panel(data, week, prep));
 
         L.show(live, true);
         L.show(statik, false);
 
         renderBar(document.querySelector('[data-curriculum-bar]'), data);
+
+        if (focusKey) {
+          var back = live.querySelector('[data-cw-focus="' + focusKey + '"]');
+          if (back) back.focus();
+        }
+      }
+
+      function pick(id) {
+        selected = id;
+        render(lastData || window.TR_PORTAL_DATA);
+        var tab = document.getElementById('cw-tab-' + id);
+        if (tab) tab.focus();
       }
 
       document.addEventListener('trportal:data', function (event) {
         render(event && event.detail);
       });
 
-      /* A tick changes the count in a card header and the bar in the page
+      /* A tick changes the count in the panel and the bar in the page
          header, so both are redrawn from the state the tick just wrote. */
       document.addEventListener('trportal:progress', function () {
         if (window.TR_PORTAL_DATA) render(window.TR_PORTAL_DATA);
+        else if (lastData) render(lastData);
       });
     })();
   </script>

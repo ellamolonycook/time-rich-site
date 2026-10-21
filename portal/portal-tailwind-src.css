@@ -1110,6 +1110,19 @@
     color: var(--trp-muted);
   }
   .trp-partner-steps li + li { margin-top: 4px; }
+  /* The line under the steps that says where the code does not go. Small
+     and quiet, and no box: it is an aside to the steps, not a warning
+     panel. The negative margin pulls it up out of the card's 16px flex gap
+     so it reads as attached to the list above it rather than as the next
+     thing down. LaunchLemonade has no tip and needs none -- its offer has
+     no code to mistype. */
+  .trp-partner-tip {
+    margin: -8px 0 0;
+    font-size: 13px;
+    line-height: 1.5;
+    color: var(--trp-muted);
+  }
+
   .trp-partner-btn {
     align-self: flex-start;
     margin-top: auto;

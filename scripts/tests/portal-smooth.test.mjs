@@ -159,11 +159,13 @@ console.log('\nEvery area the payload fills holds its space open');
     docs.dashboard.querySelector('[data-dash-step].trp-nextstep') !== null &&
     docs.dashboard.querySelector('[data-dash-list].trp-dlist') !== null &&
     docs.dashboard.querySelector('[data-dash-next].trp-next') !== null);
-  check('the curriculum placeholder uses the real week card',
-    docs.curriculum.querySelector('[data-curriculum-static] .trp-check .trp-checks .trp-check-row') !== null);
+  // The redesigned curriculum: four week cards and the picked week's panel.
+  check('the curriculum placeholder uses the real week cards and lesson rows',
+    docs.curriculum.querySelectorAll('[data-curriculum-static] .trp-cw-weeks .trp-cw-week').length === 4 &&
+    docs.curriculum.querySelector('[data-curriculum-static] .trp-cw-panel .trp-cw-lessons .trp-cw-lesson') !== null);
   check('and holds as many rows as Week 1 has steps',
-    docs.curriculum.querySelectorAll('[data-curriculum-static] .trp-check-row').length === 9,
-    docs.curriculum.querySelectorAll('[data-curriculum-static] .trp-check-row').length);
+    docs.curriculum.querySelectorAll('[data-curriculum-static] .trp-cw-lesson').length === 9,
+    docs.curriculum.querySelectorAll('[data-curriculum-static] .trp-cw-lesson').length);
   check('the prompts placeholder holds one card per card the page draws',
     docs.prompts.querySelectorAll('#prompt-cards .trp-pcard').length === 16,
     docs.prompts.querySelectorAll('#prompt-cards .trp-pcard').length);

@@ -1,0 +1,731 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <link rel="icon" type="image/png" sizes="32x32" href="/rocketship-icon-32.png" />
+  <link rel="apple-touch-icon" sizes="180x180" href="/rocketship-icon-180.png" />
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="robots" content="noindex" />
+  <title>Content Workshop &middot; Time Rich</title>
+  <meta name="description" content="Everything you need for the Time Rich content workshop: every code, prompt and link, in five steps. Build your content system in one evening." />
+  <link rel="canonical" href="https://timerich.ai/contentworkshop" />
+  <meta name="theme-color" content="#FFFDFB" />
+  <meta property="og:type" content="website" />
+  <meta property="og:site_name" content="Time Rich" />
+  <meta property="og:url" content="https://timerich.ai/contentworkshop" />
+  <meta property="og:title" content="Content Workshop &middot; Time Rich" />
+  <meta property="og:description" content="Everything you need for the Time Rich content workshop: every code, prompt and link, in five steps. Build your content system in one evening." />
+  <meta property="og:image" content="https://timerich.ai/og-time-rich.png" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta property="og:image:width" content="1200" />
+  <meta property="og:image:height" content="630" />
+  <meta name="twitter:image" content="https://timerich.ai/og-time-rich.png" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Space+Grotesk:wght@500;600&display=swap" rel="stylesheet" />
+<style>
+body{margin:0;background:#FFFDFB}
+a{color:#424B36}a:hover{color:#333A28}
+.copybtn:hover{background:#333A28 !important}
+.copylt:hover{background:#E5E6CF !important}
+.ghostbtn:hover{background:rgba(216,217,185,.16)}
+.stepdot:hover{background:#E5E6CF}
+.checkrow:hover{background:#E5E6CF}
+.ctabtn:hover{background:#333A28 !important}
+.joinbtn:hover{border-color:#424B36 !important;box-shadow:0 16px 34px -24px rgba(26,24,22,.4)}
+.annc:hover{background:#333A28 !important}
+.stepnav::-webkit-scrollbar{display:none}
+.social:hover{border-color:#7B6CF6 !important;color:#1A1816 !important}
+@container page (max-width: 560px){.donect{display:none !important}.stepshort{display:none}.heroside{padding:18px 20px !important}}
+</style></head>
+<body>
+<div style="font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; color: #1A1816; background: #FFFDFB; min-height: 100vh; container-type: inline-size; container-name: page">
+
+<div style="position: sticky; top: 0; z-index: 10">
+<a href="#win" class="annc" style="display: block; background: #424B36; color: #FFFDFB; text-decoration: none; text-align: center; font-size: 13.5px; line-height: 1.4; padding: 9px 16px">Tonight: <strong style="font-weight: 600">win 1 of 5 Accelerator seats</strong> →</a>
+<nav aria-label="Workshop steps" style="background: rgba(255,253,251,.96); border-bottom: 1px solid rgba(26,24,22,.12)">
+<div style="max-width: 1120px; margin: 0 auto; padding: 0 24px; display: flex; align-items: center; gap: 16px; min-height: 60px">
+<span style="flex: 0 0 auto; font-weight: 500; font-size: 18px; letter-spacing: -.03em; line-height: 1">Time Rich<span style="color: #424B36">.</span></span>
+<div class="stepnav" id="stepnav" style="flex: 1 1 auto; min-width: 0; display: flex; align-items: center; gap: 4px; overflow-x: auto; scrollbar-width: none; padding: 8px 0">
+</div>
+<span class="donect" style="flex: 0 0 auto; font-family: 'Inter', sans-serif; font-size: 12px; font-weight: 600; letter-spacing: .08em; text-transform: uppercase; color: #57534E; white-space: nowrap"><span id="donecount">0</span>/6 done</span>
+</div>
+</nav>
+</div>
+
+<section style="padding: clamp(40px, 7cqi, 72px) 0">
+<div style="max-width: 1120px; margin: 0 auto; padding: 0 24px; display: flex; flex-wrap: wrap; gap: 40px; align-items: flex-end">
+<div style="flex: 999 1 540px; min-width: 0">
+<span style="display: block; font-family: 'Inter', sans-serif; font-size: 12px; letter-spacing: .08em; font-weight: 600; text-transform: uppercase; color: #57534E; margin-bottom: 20px">Live build night · New York</span>
+<h1 style="font-family: 'Space Grotesk', system-ui, sans-serif; font-weight: 600; font-size: clamp(36px, 6cqi, 58px); line-height: 1.06; letter-spacing: -.022em; margin: 0 0 20px; text-wrap: balance">Build your content system. Tonight.</h1>
+<p style="font-size: 17px; line-height: 1.6; color: #57534E; margin: 0; max-width: 56ch">Five steps, start to finish. Keep this page open all night: every code, prompt and link is here. Tick each step off as you go.</p>
+</div>
+<div class="heroside" style="flex: 1 1 320px; background: #D8D9B9; border: 1px solid rgba(103,118,46,.22); border-radius: 20px; padding: 22px 24px; display: flex; flex-direction: column; gap: 14px">
+<span style="font-family: 'Inter', sans-serif; font-size: 12px; letter-spacing: .08em; font-weight: 600; text-transform: uppercase; color: #57534E">Mon 26 Oct · 5:30pm · Chelsea Pier 75, NYC</span>
+<div style="display: flex; flex-direction: column; gap: 10px">
+<div style="display: flex; gap: 14px; align-items: baseline"><span style="flex: 0 0 52px; font-family: 'Inter', sans-serif; font-size: 13px; font-weight: 700">5:30</span><span style="font-size: 15px; line-height: 1.45">Doors open and intro</span></div>
+<div style="display: flex; gap: 14px; align-items: baseline"><span style="flex: 0 0 52px; font-family: 'Inter', sans-serif; font-size: 13px; font-weight: 700">6:15</span><span style="font-size: 15px; line-height: 1.45">The build: Steps 1 to 4</span></div>
+<div style="display: flex; gap: 14px; align-items: baseline"><span style="flex: 0 0 52px; font-family: 'Inter', sans-serif; font-size: 13px; font-weight: 700">8:00</span><span style="font-size: 15px; line-height: 1.45">Q&amp;A, share your post, mingle</span></div>
+</div>
+<div style="border-top: 1px solid rgba(103,118,46,.22); padding-top: 14px; display: flex; flex-direction: column; gap: 10px"><div style="font-size: 14px; line-height: 1.5; color: #57534E">Hosted by <strong style="color: #1A1816; font-weight: 600">Ella Molony Cook</strong> and <strong style="color: #1A1816; font-weight: 600">Mika Reyes</strong>. Powered by</div><div style="display: flex; flex-wrap: wrap; gap: 8px"><span style="display: inline-flex; align-items: center; gap: 8px; background: #FFFDFB; border: 1px solid rgba(26,24,22,.1); border-radius: 999px; padding: 5px 12px 5px 5px"><img src="/os/img/stanley.png" alt="" width="26" height="26" style="width: 26px; height: 26px; border-radius: 50%; background: #EEEBFF; object-fit: contain; display: block"><span style="font-size: 14px; font-weight: 600; color: #1A1816">Stanley</span></span><span style="display: inline-flex; align-items: center; gap: 8px; background: #FFFDFB; border: 1px solid rgba(26,24,22,.1); border-radius: 999px; padding: 5px 12px 5px 5px"><img src="/os/img/wispr-flow.png" alt="" width="26" height="26" style="width: 26px; height: 26px; border-radius: 50%; background: #1A1816; object-fit: contain; display: block"><span style="font-size: 14px; font-weight: 600; color: #1A1816">Wispr Flow</span></span></div></div>
+</div>
+</div>
+</section>
+
+<main style="max-width: 1120px; margin: 0 auto; padding: 0 24px 24px; display: flex; flex-direction: column; gap: clamp(56px, 8cqi, 80px)">
+
+<section aria-labelledby="essentials" style="display: flex; flex-direction: column; gap: 16px">
+<h2 id="essentials" style="font-family: 'Inter', sans-serif; font-size: 12px; letter-spacing: .08em; font-weight: 600; text-transform: uppercase; color: #57534E; margin: 0">Tonight's essentials</h2>
+<div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(min(240px, 100%), 1fr)); gap: 16px">
+
+<div style="background: #FFFFFF; border: 1px solid rgba(26,24,22,.12); border-radius: 16px; padding: 20px; display: flex; flex-direction: column; gap: 12px">
+<span style="font-family: 'Inter', sans-serif; font-size: 12px; letter-spacing: .08em; font-weight: 600; text-transform: uppercase; color: #57534E; display: inline-flex; align-items: center; gap: 8px; min-height: 22px"><svg aria-hidden="true" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#424B36" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" style="display: block"><path d="M5 12.5a10 10 0 0 1 14 0"></path><path d="M8.5 16a5 5 0 0 1 7 0"></path><circle cx="12" cy="19.5" r="0.8" fill="#424B36"></circle><path d="M1.5 9a15 15 0 0 1 21 0"></path></svg>Wi-Fi</span>
+<div style="font-size: 15px">Pick this network. No password needed.</div>
+<div style="display: flex; align-items: center; justify-content: space-between; gap: 10px; background: #D8D9B9; border-radius: 12px; padding: 8px 8px 8px 14px; margin-top: auto">
+<span style="font-family: 'Inter', sans-serif; font-size: 16px; font-weight: 700; min-width: 0; overflow-wrap: anywhere" id="wifivalue">P57_wifi_public</span>
+<button type="button" class="copybtn" data-copy="wifi" style="flex: 0 0 auto; font: 500 13px 'Inter', sans-serif; letter-spacing: .06em; text-transform: uppercase; background: #424B36; color: #FFFFFF; border: 0; border-radius: 10px; padding: 0 16px; min-height: 44px; cursor: pointer">Copy</button>
+</div>
+</div>
+
+<div style="background: #FFFFFF; border: 1px solid rgba(26,24,22,.12); border-radius: 16px; padding: 20px; display: flex; flex-direction: column; gap: 12px">
+<span style="font-family: 'Inter', sans-serif; font-size: 12px; letter-spacing: .08em; font-weight: 600; text-transform: uppercase; color: #57534E; display: inline-flex; align-items: center; gap: 8px"><img src="/os/img/wispr-flow.png" alt="" width="22" height="22" style="width: 22px; height: 22px; border-radius: 6px; display: block">Wispr Flow · 6 months Pro</span>
+<div style="font-size: 15px">Wispr it instead of typing it. <a href="#step-0" style="font-weight: 500; white-space: nowrap">How to redeem ↓</a> · <a href="https://app.notion.com/p/superhumanos/Superhuman-Hacks-Wispr-Flow-400ca5ebe5578194a147f07bd667c21a" target="_blank" rel="noopener" style="font-weight: 500; white-space: nowrap">Setup guide and prompts ↗</a></div>
+<div style="display: flex; align-items: center; justify-content: space-between; gap: 10px; background: #D8D9B9; border-radius: 12px; padding: 8px 8px 8px 14px; margin-top: auto">
+<span style="font-family: 'Inter', sans-serif; font-size: 16px; font-weight: 700" id="wisprcode">TIMERICH6</span>
+<button type="button" class="copybtn" data-copy="wispr" style="flex: 0 0 auto; font: 500 13px 'Inter', sans-serif; letter-spacing: .06em; text-transform: uppercase; background: #424B36; color: #FFFFFF; border: 0; border-radius: 10px; padding: 0 16px; min-height: 44px; cursor: pointer">Copy</button>
+</div>
+</div>
+
+<div style="background: #FFFFFF; border: 1px solid rgba(26,24,22,.12); border-radius: 16px; padding: 20px; display: flex; flex-direction: column; gap: 12px">
+<span style="font-family: 'Inter', sans-serif; font-size: 12px; letter-spacing: .08em; font-weight: 600; text-transform: uppercase; color: #57534E; display: inline-flex; align-items: center; gap: 8px"><img src="/os/img/stanley.png" alt="" width="22" height="22" style="width: 22px; height: 22px; border-radius: 6px; background: #EEEBFF; display: block">Stanley · 1 month free</span>
+<div style="font-size: 15px">Your AI head of content. <a href="#step-0" style="font-weight: 500; white-space: nowrap">How to redeem ↓</a></div>
+<div style="display: flex; align-items: center; justify-content: space-between; gap: 10px; background: #D8D9B9; border-radius: 12px; padding: 8px 8px 8px 14px; margin-top: auto">
+<span style="font-family: 'Inter', sans-serif; font-size: 16px; font-weight: 700; min-width: 0; overflow-wrap: anywhere" id="stanleycode">STANLEY1MONTH</span>
+<button type="button" class="copybtn" data-copy="stanley" style="flex: 0 0 auto; font: 500 13px 'Inter', sans-serif; letter-spacing: .06em; text-transform: uppercase; background: #424B36; color: #FFFFFF; border: 0; border-radius: 10px; padding: 0 16px; min-height: 44px; cursor: pointer">Copy</button>
+</div>
+</div>
+
+</div>
+</section>
+
+<section id="step-0" aria-labelledby="h0" style="display: flex; flex-direction: column; gap: 20px">
+<div style="display: flex; align-items: center; gap: 12px; flex-wrap: wrap">
+<span style="font-family: 'Inter', sans-serif; font-size: 12px; font-weight: 700; letter-spacing: .1em; background: #424B36; color: #FFFDFB; border-radius: 999px; padding: 6px 12px">STEP 0</span>
+<span style="font-family: 'Inter', sans-serif; font-size: 12px; letter-spacing: .1em; text-transform: uppercase; color: #57534E">Before we start · 10 min</span>
+</div>
+<h2 id="h0" style="font-family: 'Space Grotesk', system-ui, sans-serif; font-weight: 600; font-size: clamp(28px, 4.4cqi, 40px); letter-spacing: -.022em; line-height: 1.08; margin: 0">Set up your tools</h2>
+<p style="font-size: 17px; line-height: 1.6; color: #57534E; margin: 0; max-width: 62ch">Done at home already? Tick it off and help the person next to you. Not yet? We'll walk you through it now.</p>
+
+<div style="display: flex; flex-direction: column; gap: 16px">
+<div id="setuplist" style="background: #D8D9B9; border: 1px solid rgba(103,118,46,.22); border-radius: 16px; padding: 8px; display: grid; grid-template-columns: repeat(auto-fit, minmax(min(260px, 100%), 1fr))">
+</div>
+<div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(min(300px, 100%), 1fr)); gap: 16px">
+<div style="background: #FFFFFF; border: 1px solid rgba(26,24,22,.12); border-radius: 16px; padding: 22px; display: flex; flex-direction: column; gap: 12px">
+<h3 style="font-family: 'Space Grotesk', system-ui, sans-serif; font-weight: 600; font-size: 20px; letter-spacing: -.03em; margin: 0; display: flex; align-items: center; gap: 10px"><img src="/os/img/wispr-flow.png" alt="" width="32" height="32" style="width: 32px; height: 32px; border-radius: 8px; display: block"><span style="display: flex; flex-direction: column; gap: 2px">Redeem Wispr Flow<span style="font-family: Inter, sans-serif; font-size: 13px; font-weight: 500; letter-spacing: 0; color: #57534E">6 months Pro · code TIMERICH6</span></span></h3>
+<div style="font-size: 14px; line-height: 1.5; color: #57534E">Only works if you're new to Wispr Flow or on the free plan.</div>
+<ol style="margin: 0; padding-left: 20px; display: flex; flex-direction: column; gap: 8px; font-size: 16px; line-height: 1.5">
+<li>Download it on your Mac or PC at <a href="https://wisprflow.ai">wisprflow.ai</a>. Not on your phone.</li>
+<li>Open it and go to <strong style="font-weight: 600">Settings → Plans and Billing</strong>.</li>
+<li>Scroll to the very bottom and click the promo code link.</li>
+<li>Enter <strong style="font-family: 'Inter', sans-serif">TIMERICH6</strong>.</li>
+</ol>
+<div style="font-size: 14px; line-height: 1.5; background: #E5E6CF; border-radius: 12px; padding: 10px 12px">Only enter the code in that spot. It won't work at checkout or on the payment screen.</div>
+</div>
+<div style="background: #FFFFFF; border: 1px solid rgba(123,108,246,.35); border-radius: 16px; padding: 22px; display: flex; flex-direction: column; gap: 12px">
+<h3 style="font-family: 'Space Grotesk', system-ui, sans-serif; font-weight: 600; font-size: 20px; letter-spacing: -.03em; margin: 0; display: flex; align-items: center; gap: 10px"><img src="/os/img/stanley.png" alt="" width="32" height="32" style="width: 32px; height: 32px; border-radius: 8px; background: #EEEBFF; display: block"><span style="display: flex; flex-direction: column; gap: 2px">Redeem Stanley<span style="font-family: Inter, sans-serif; font-size: 13px; font-weight: 500; letter-spacing: 0; color: #57534E">1 month free · code STANLEY1MONTH</span></span></h3>
+<div style="font-size: 14px; line-height: 1.5; color: #57534E">Stanley is your AI head of content. The code goes in at checkout.</div>
+<ol style="margin: 0; padding-left: 20px; display: flex; flex-direction: column; gap: 8px; font-size: 16px; line-height: 1.5">
+<li>Open <a href="https://x.getstanley.ai/r/mz4y9g">the Stanley sign-up link</a> and create your account.</li>
+<li>Choose your plan and go to checkout.</li>
+<li>On the payment page, click <strong style="font-weight: 600">Add promotion code</strong>.</li>
+<li>Enter <strong style="font-weight: 700">STANLEY1MONTH</strong> and finish checkout.</li>
+</ol>
+<div style="font-size: 14px; line-height: 1.5; background: #EEEBFF; border-radius: 12px; padding: 10px 12px">Check the total shows 1 month free before you confirm.</div>
+</div>
+</div>
+</div>
+</section>
+
+<section id="step-1" aria-labelledby="h1s" style="display: flex; flex-direction: column; gap: 20px">
+<div style="display: flex; align-items: center; gap: 12px; flex-wrap: wrap">
+<span style="font-family: 'Inter', sans-serif; font-size: 12px; font-weight: 700; letter-spacing: .1em; background: #424B36; color: #FFFDFB; border-radius: 999px; padding: 6px 12px">STEP 1</span>
+<span style="font-family: 'Inter', sans-serif; font-size: 12px; letter-spacing: .1em; text-transform: uppercase; color: #57534E">Led by Mika</span>
+</div>
+<h2 id="h1s" style="font-family: 'Space Grotesk', system-ui, sans-serif; font-weight: 600; font-size: clamp(28px, 4.4cqi, 40px); letter-spacing: -.022em; line-height: 1.08; margin: 0">Build your content strategy brain</h2>
+<p style="font-size: 17px; line-height: 1.6; color: #57534E; margin: 0; max-width: 62ch">Open Claude or ChatGPT and paste the prompt. It asks you questions one at a time. Wispr your answers instead of typing, and you leave with your content strategy file. Built on principles from Hannah Zhang (@itshannahzhang), product marketer and creator.</p>
+
+<div style="background: #333A28; color: #FFFDFB; border-radius: 20px; padding: clamp(16px, 3cqi, 24px); display: flex; flex-direction: column; gap: 14px">
+<div style="display: flex; align-items: center; justify-content: space-between; gap: 12px; flex-wrap: wrap">
+<span style="font-family: 'Inter', sans-serif; font-size: 12px; letter-spacing: .08em; font-weight: 600; text-transform: uppercase; color: #D8D9B9">Prompt · Content strategy interview</span>
+<div style="display: flex; gap: 8px; flex-wrap: wrap">
+<a href="https://claude.ai/new" class="ghostbtn" style="display: inline-flex; align-items: center; color: #FFFDFB; text-decoration: none; border: 1px solid rgba(216,217,185,.4); border-radius: 10px; padding: 0 14px; font-size: 14px; font-weight: 500; min-height: 44px">Open Claude</a>
+<a href="https://chatgpt.com/" class="ghostbtn" style="display: inline-flex; align-items: center; color: #FFFDFB; text-decoration: none; border: 1px solid rgba(216,217,185,.4); border-radius: 10px; padding: 0 14px; font-size: 14px; font-weight: 500; min-height: 44px">Open ChatGPT</a>
+<button type="button" class="copylt" data-copy="p1" style="font: 500 13px 'Inter', sans-serif; letter-spacing: .06em; text-transform: uppercase; background: #D8D9B9; color: #1A1816; border: 0; border-radius: 10px; padding: 0 16px; min-height: 44px; cursor: pointer">Copy prompt</button>
+</div>
+</div>
+<pre style="margin: 0; white-space: pre-wrap; font-family: 'Inter', sans-serif; font-size: 15.5px; line-height: 1.65; color: #FFFDFB; background: rgba(255,253,251,.07); border-radius: 12px; padding: 18px" id="mikaprompt"></pre>
+<div style="font-size: 14px; line-height: 1.5; color: #D8D9B9">Tip: hold your Wispr key and talk like you're telling a friend. Wispr it, don't type it. Messy is fine.</div>
+</div>
+</section>
+
+<section id="step-2" aria-labelledby="h2s" style="display: flex; flex-direction: column; gap: 20px">
+<div style="display: flex; align-items: center; gap: 12px; flex-wrap: wrap">
+<span style="font-family: 'Inter', sans-serif; font-size: 12px; font-weight: 700; letter-spacing: .1em; background: #424B36; color: #FFFDFB; border-radius: 999px; padding: 6px 12px">STEP 2</span>
+<span style="font-family: 'Inter', sans-serif; font-size: 12px; letter-spacing: .1em; text-transform: uppercase; color: #57534E">Led by Mika</span>
+</div>
+<h2 id="h2s" style="font-family: 'Space Grotesk', system-ui, sans-serif; font-weight: 600; font-size: clamp(28px, 4.4cqi, 40px); letter-spacing: -.022em; line-height: 1.08; margin: 0">Give Stanley your context</h2>
+<p style="font-size: 17px; line-height: 1.6; color: #57534E; margin: 0; max-width: 62ch">Stanley writes in your voice once it knows you. Three moves, all inside Stanley:</p>
+<div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(min(240px, 100%), 1fr)); gap: 16px">
+<button type="button" data-ctx="0" aria-pressed="false" style="">
+<span data-ctxbox="0"></span>
+<h3 style="font-family: 'Space Grotesk', system-ui, sans-serif; font-weight: 600; font-size: 20px; letter-spacing: -.03em; margin: 4px 0 0; text-align: left">Drop in your strategy</h3>
+<div style="font-size: 15.5px; line-height: 1.55; color: #57534E; text-align: left">Go to Brain → Files and click + to add the strategy file from Step 1.</div>
+</button>
+<button type="button" data-ctx="1" aria-pressed="false" style="">
+<span data-ctxbox="1"></span>
+<h3 style="font-family: 'Space Grotesk', system-ui, sans-serif; font-weight: 600; font-size: 20px; letter-spacing: -.03em; margin: 4px 0 0; text-align: left">Connect your tools</h3>
+<div style="font-size: 15.5px; line-height: 1.55; color: #57534E; text-align: left">In Connectors, add Slack, your calendar, email, your meetings (Wispr Flow) and the platforms you already post to.</div>
+</button>
+<button type="button" data-ctx="2" aria-pressed="false" style="">
+<span data-ctxbox="2"></span>
+<h3 style="font-family: 'Space Grotesk', system-ui, sans-serif; font-weight: 600; font-size: 20px; letter-spacing: -.03em; margin: 4px 0 0; text-align: left">Add your past content (optional)</h3>
+<div style="font-size: 15.5px; line-height: 1.55; color: #57534E; text-align: left">Existing posts, newsletters, your website, or other people's posts you take inspiration from. More context, better tone.</div>
+</button>
+</div>
+</section>
+
+<section id="step-3" aria-labelledby="h3k" style="display: flex; flex-direction: column; gap: 20px">
+<div style="display: flex; align-items: center; gap: 12px; flex-wrap: wrap">
+<span style="font-family: 'Inter', sans-serif; font-size: 12px; font-weight: 700; letter-spacing: .1em; background: #424B36; color: #FFFDFB; border-radius: 999px; padding: 6px 12px">STEP 3</span>
+<span style="font-family: 'Inter', sans-serif; font-size: 12px; letter-spacing: .1em; text-transform: uppercase; color: #57534E">Led by Mika</span>
+</div>
+<h2 id="h3k" style="font-family: 'Space Grotesk', system-ui, sans-serif; font-weight: 600; font-size: clamp(28px, 4.4cqi, 40px); letter-spacing: -.022em; line-height: 1.08; margin: 0">Create a skill that writes your posts</h2>
+<p style="font-size: 17px; line-height: 1.6; color: #57534E; margin: 0; max-width: 62ch">In Stanley, go to Brain → Skills, click + and name the new skill <strong style="font-weight: 600; color: #1A1816">linkedin-content</strong>. Paste the skill below. From then on it collects your context, interviews you, offers five angles and five hooks, drafts in your voice and scores the post for shareability and curiosity.</p>
+<div style="background: #333A28; color: #FFFDFB; border-radius: 20px; padding: clamp(16px, 3cqi, 24px); display: flex; flex-direction: column; gap: 14px">
+<div style="display: flex; align-items: center; justify-content: space-between; gap: 12px; flex-wrap: wrap">
+<span style="font-family: 'Inter', sans-serif; font-size: 12px; letter-spacing: .08em; font-weight: 600; text-transform: uppercase; color: #D8D9B9">Skill · linkedin-content</span>
+<button type="button" class="copylt" data-copy="sk" style="font: 500 13px 'Inter', sans-serif; letter-spacing: .06em; text-transform: uppercase; background: #D8D9B9; color: #1A1816; border: 0; border-radius: 10px; padding: 0 16px; min-height: 44px; cursor: pointer">Copy skill</button>
+</div>
+<pre id="skilltext" tabindex="0" style="margin: 0; white-space: pre-wrap; font-family: 'Inter', sans-serif; font-size: 14.5px; line-height: 1.6; color: #FFFDFB; background: rgba(255,253,251,.07); border-radius: 12px; padding: 18px; max-height: 320px; overflow: auto"># Create LinkedIn Content
+
+Help the user turn a topic into a short LinkedIn post in approximately 10 minutes.
+
+Use relevant context files and available connectors to understand their content strategy, audience, voice, and existing content. Keep the workflow conversational and concise.
+
+Do not write the full post until the user has selected an angle and hook, unless they explicitly ask to skip ahead.
+
+## 1. Read context and get the topic
+
+Find and read the relevant content strategy file first. Follow its references to audience and voice guidance where available.
+
+Review three to five relevant past posts. Prefer examples with performance data or explicit user approval. Learn from their openings, specificity, rhythm, and storytelling without copying them.
+
+Distinguish measured performance from editorial judgment. Never describe a post as high-performing without evidence.
+
+Use the topic or notes the user provided. Ask for a topic only if none was supplied.
+
+If a context source is unavailable, acknowledge the gap briefly and proceed with accessible material. Ask only for information necessary to continue; do not let research consume the session.
+
+## 2. Run a short interview
+
+Budget approximately three minutes for context gathering and the interview combined.
+
+Ask up to three questions together, covering what is still missing:
+
+- Who is this for, and what should they think, feel, or do afterward?
+- What is the main takeaway or opinion?
+- What story, example, observation, or result supports it?
+
+Adapt the questions to the topic. Invite rough bullets or conversational answers. Do not repeat questions already answered in the user's notes or context.
+
+Use at most one brief follow-up round with one or two questions to uncover specifics or clarify the claim. Examples:
+
+- What happened that made you realize this?
+- What was different from what you expected?
+- Can you give one concrete example?
+- Is that something you observed or your interpretation?
+- What would be overstating your point?
+
+Do not force a personal story, framework, lesson, or dramatic turning point. An opinion, observation, announcement, or useful explanation can stand on its own.
+
+Stop when there is enough substance. Reflect the core point in one sentence before presenting angles. Clearly label proposed interpretations; do not add a separate confirmation round.
+
+## 3. Present five angles and flows
+
+Budget approximately two minutes, including the user's choice.
+
+Offer five genuinely different approaches. Vary the central argument, reader payoff, or narrative approach, rather than rephrasing the same idea.
+
+For each option, provide:
+
+- A short name and the point the reader takes away.
+- A one-line flow: opening → development or evidence → ending.
+
+Keep each option to two short lines. Use available material and identify any missing evidence instead of inventing it.
+
+Recommend one angle with a one-sentence reason.
+
+Wait for the user to choose, combine, or revise an angle.
+
+## 4. Present five hooks and recommend length
+
+Budget approximately two minutes, including the user's choice.
+
+Write five distinct hooks for the selected angle, each one or two short lines.
+
+Use effective patterns from the user's existing content where available. Adapt the pattern to the topic without copying old wording or claiming unsupported performance.
+
+Each hook should:
+
+- Make the topic relevant to the intended audience.
+- Introduce a specific situation, tension, observation, or promise.
+- Give a clear reason to keep reading.
+- Create curiosity the body will satisfy.
+- Match the user's voice.
+
+Avoid vague cliffhangers, fabricated numbers, fake controversy, unsupported claims, and recycled “nobody talks about this” openings.
+
+Recommend one hook with a brief reason.
+
+In the same message, suggest the shortest suitable length:
+
+- 80–120 words for a compact observation or opinion.
+- 120–180 words by default.
+- 180–250 words when the story or explanation needs room.
+
+These are editorial guidelines, not performance guarantees. If the user selects only a hook, use the recommended length.
+
+Wait for the user's hook selection before drafting.
+
+## 5. Draft and remove AI-writing patterns
+
+Budget approximately three minutes for drafting, editing, and scoring combined.
+
+Use the selected angle, flow, hook, and length. Keep one main point. Deliver the hook's promise with concrete support and minimal setup.
+
+Apply the following principles while writing, then silently edit the draft before showing it:
+
+- Preserve the user's vocabulary, opinions, humor, uncertainty, and natural rhythm.
+- Use plain words, concrete details, and direct verbs.
+- Cut generic introductions, filler, corporate language, and inflated importance.
+- Avoid stock phrases such as “delve,” “game changer,” “in today's world,” and “it's worth noting.”
+- Avoid formulaic contrasts such as “It's not about X. It's about Y.”
+- Cut fake-insight setups such as “Here's what nobody tells you.”
+- Avoid forced groups of three, identical paragraph shapes, excessive em dashes, and stacked dramatic fragments.
+- Let evidence demonstrate the point rather than declaring it important or surprising.
+- Keep useful nuance, honest uncertainty, and distinctive sentences.
+- Cut fake-profound endings and unnecessary recaps.
+- Never invent experiences, dialogue, emotions, results, or facts to make writing feel human.
+
+Treat these as editing principles, not a mechanical blacklist. Preserve natural expression and accurate meaning.
+
+Use plain text and natural paragraph breaks suitable for LinkedIn. Include lists only when helpful. Follow known preferences for emojis and hashtags; otherwise omit them.
+
+Do not require a named framework, “TAKEAWAY:” label, personal tagline, or CTA. End naturally. Include a question or CTA only when it serves the post.
+
+## 6. Score and deliver
+
+Evaluate the draft for the intended audience:
+
+**Shareability: 1–5**
+
+Would this reader send it to someone or share it publicly because it is useful, relatable, or expresses something they care about?
+
+**Curiosity: 1–5**
+
+Does the opening create a specific reason to continue, and does the body reward that interest?
+
+Use this scale:
+
+- 1: Weak.
+- 2: Needs substantial work.
+- 3: Solid but ordinary.
+- 4: Strong.
+- 5: Exceptional for this audience.
+
+Scores are editorial judgments, not predictions of reach. Do not inflate them.
+
+If either score is 3 or lower, make one focused revision before presenting the draft. If improvement requires missing facts, identify the gap instead of inventing them. Avoid repeated revision loops.
+
+Return:
+
+1. The finished post, ready to copy.
+2. Word count and intended audience.
+3. Shareability score with one short reason.
+4. Curiosity score with one short reason.
+
+Keep the assessment brief and outside the post.
+
+## Working rules
+
+- Target a 10-minute session, including user replies, without promising an exact duration.
+- Keep explanations short and batch questions.
+- If time runs short, reduce optional follow-ups and commentary. Do not silently select an angle or hook.
+- Respect requests to skip, combine, or revisit stages.
+- Preserve the chosen direction during revisions unless the user requests a change.
+- Never publish or schedule without explicit user instruction.
+</pre>
+<div style="font-size: 14px; line-height: 1.5; color: #D8D9B9">Screenshots of each Stanley screen are in <a href="https://app.notion.com/p/Content-Creation-Workshop-10-26-3ff800cb4dd480ddb2f4e0bb54cb43fe" style="color: #FFFDFB">Mika's workshop notes</a>.</div>
+</div>
+</section>
+
+<section id="step-4" aria-labelledby="h3s" style="display: flex; flex-direction: column; gap: 20px">
+<div style="display: flex; align-items: center; gap: 12px; flex-wrap: wrap">
+<span style="font-family: 'Inter', sans-serif; font-size: 12px; font-weight: 700; letter-spacing: .1em; background: #424B36; color: #FFFDFB; border-radius: 999px; padding: 6px 12px">STEP 4</span>
+<span style="font-family: 'Inter', sans-serif; font-size: 12px; letter-spacing: .1em; text-transform: uppercase; color: #57534E">Led by Mika</span>
+</div>
+<h2 id="h3s" style="font-family: 'Space Grotesk', system-ui, sans-serif; font-weight: 600; font-size: clamp(28px, 4.4cqi, 40px); letter-spacing: -.022em; line-height: 1.08; margin: 0">Create your first post</h2>
+<p style="font-size: 17px; line-height: 1.6; color: #57534E; margin: 0; max-width: 62ch">Choose a topic based on your business goal, then call your skill with one line about it. Answer its interview questions with Wispr and refine the draft. Posting tonight is optional. Drafting is the win.</p>
+
+<div id="funneltabs" role="tablist" aria-label="Funnel stage" style="display: flex; gap: 8px; flex-wrap: wrap">
+</div>
+<div style="background: #D8D9B9; border: 1px solid rgba(103,118,46,.22); border-radius: 16px; padding: 22px; display: flex; flex-direction: column; gap: 14px">
+<div style="font-size: 16px; line-height: 1.5"><strong style="font-weight: 600" id="stagetitle"></strong> <span style="color: #57534E" id="stagehelp"></span></div>
+<div id="topicchips" style="display: flex; flex-wrap: wrap; gap: 10px">
+</div>
+</div>
+
+<div style="background: #333A28; color: #FFFDFB; border-radius: 20px; padding: clamp(16px, 3cqi, 24px); display: flex; flex-direction: column; gap: 14px">
+<div style="display: flex; align-items: center; justify-content: space-between; gap: 12px; flex-wrap: wrap">
+<span style="font-family: 'Inter', sans-serif; font-size: 12px; letter-spacing: .08em; font-weight: 600; text-transform: uppercase; color: #D8D9B9">Say this to Stanley</span>
+<button type="button" class="copylt" data-copy="p2" style="font: 500 13px 'Inter', sans-serif; letter-spacing: .06em; text-transform: uppercase; background: #D8D9B9; color: #1A1816; border: 0; border-radius: 10px; padding: 0 16px; min-height: 44px; cursor: pointer">Copy prompt</button>
+</div>
+<pre style="margin: 0; white-space: pre-wrap; font-family: 'Inter', sans-serif; font-size: 15.5px; line-height: 1.65; color: #FFFDFB; background: rgba(255,253,251,.07); border-radius: 12px; padding: 18px">Use my linkedin-content skill. My topic: [one line about your topic]</pre>
+</div>
+
+<div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(min(260px, 100%), 1fr)); gap: 16px">
+<div style="background: #E5E6CF; border-radius: 16px; padding: 18px 20px; font-size: 15.5px; line-height: 1.55"><strong style="font-weight: 600">Our demo post</strong> is about tonight. Tag Stanley, Wispr Flow, Mika and Ella.</div>
+<div style="background: #E5E6CF; border-radius: 16px; padding: 18px 20px; font-size: 15.5px; line-height: 1.55"><strong style="font-weight: 600">Group photo</strong> goes into your Stanley photos folder, ready for your post.</div>
+</div>
+</section>
+
+<section id="step-5" aria-labelledby="h4s" style="display: flex; flex-direction: column; gap: 20px">
+<div style="display: flex; align-items: center; gap: 12px; flex-wrap: wrap">
+<span style="font-family: 'Inter', sans-serif; font-size: 12px; font-weight: 700; letter-spacing: .1em; background: #424B36; color: #FFFDFB; border-radius: 999px; padding: 6px 12px">STEP 5</span>
+<span style="font-family: 'Inter', sans-serif; font-size: 12px; letter-spacing: .1em; text-transform: uppercase; color: #57534E">Led by Ella · 15 min</span>
+</div>
+<h2 id="h4s" style="font-family: 'Space Grotesk', system-ui, sans-serif; font-weight: 600; font-size: clamp(28px, 4.4cqi, 40px); letter-spacing: -.022em; line-height: 1.08; margin: 0">Turn on your rituals</h2>
+<p style="font-size: 17px; line-height: 1.6; color: #57534E; margin: 0; max-width: 62ch">LinkedIn only, to keep it simple. Switch on two or three and Stanley runs them for you.</p>
+<div id="ritualcards" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(min(260px, 100%), 1fr)); gap: 16px">
+</div>
+</section>
+
+<section id="win" aria-labelledby="winh" style="position: relative; background: #424B36; color: #FFFDFB; border-radius: 24px; padding: clamp(24px, 5cqi, 48px); display: flex; flex-direction: column; gap: 28px">
+<span style="position: absolute; right: clamp(12px, 3cqi, 28px); top: -14px; transform: rotate(6deg); background: #7B6CF6; color: #FFFFFF; font-family: 'Inter', sans-serif; font-size: 11px; letter-spacing: .12em; text-transform: uppercase; padding: 9px 13px; border-radius: 999px; box-shadow: 0 10px 24px -12px rgba(26,24,22,.45); white-space: nowrap">5 SEATS TO WIN</span>
+<div style="display: flex; flex-wrap: wrap; gap: 32px; align-items: flex-start">
+<div style="flex: 999 1 460px; min-width: 0; display: flex; flex-direction: column; gap: 14px">
+<span style="font-family: 'Inter', sans-serif; font-size: 12px; letter-spacing: .08em; font-weight: 600; text-transform: uppercase; color: #D8D9B9">Superhuman Accelerator · Win a seat</span>
+<h2 id="winh" style="font-family: 'Space Grotesk', system-ui, sans-serif; font-weight: 600; font-size: clamp(28px, 4.4cqi, 40px); letter-spacing: -.022em; line-height: 1.08; margin: 0; color: #FFFDFB; text-wrap: balance">Win 1 of 5 seats in the Superhuman Accelerator</h2>
+<p style="font-size: 17px; line-height: 1.6; margin: 0; color: #E5E6CF; max-width: 56ch">Gifted to tonight's room by Stanley and Wispr Flow. Four weeks, live, building your AI system with Ella and founders who are in it too. Starts Monday 26 October.</p>
+<a href="https://timerich.ai/accelerator" class="ctabtn" style="align-self: flex-start; display: inline-flex; align-items: center; background: #FFFDFB; color: #1A1816; text-decoration: none; font-weight: 500; font-size: 13px; letter-spacing: .06em; text-transform: uppercase; border-radius: 10px; padding: 0 20px; min-height: 48px; margin-top: 6px">See the accelerator</a>
+</div>
+<div style="flex: 1 1 340px; min-width: 0; background: rgba(255,253,251,.08); border: 1px solid rgba(216,217,185,.28); border-radius: 16px; padding: 22px; display: flex; flex-direction: column; gap: 14px">
+<span style="font-family: 'Inter', sans-serif; font-size: 12px; letter-spacing: .08em; font-weight: 600; text-transform: uppercase; color: #D8D9B9">How to enter</span>
+<ol style="list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 14px">
+<li style="display: flex; gap: 12px; align-items: flex-start"><span style="flex: 0 0 auto; width: 24px; height: 24px; margin-top: 1px; border-radius: 50%; background: #D8D9B9; color: #333A28; font-size: 12px; font-weight: 700; display: inline-flex; align-items: center; justify-content: center">1</span><span style="font-size: 16px; line-height: 1.5">Post on LinkedIn about building in public. The post you draft in Step 3 counts.</span></li>
+<li style="display: flex; gap: 12px; align-items: flex-start"><span style="flex: 0 0 auto; width: 24px; height: 24px; margin-top: 1px; border-radius: 50%; background: #D8D9B9; color: #333A28; font-size: 12px; font-weight: 700; display: inline-flex; align-items: center; justify-content: center">2</span><span style="font-size: 16px; line-height: 1.5">Tag Ella Molony Cook, Mika Reyes, Stanley and Wispr Flow.</span></li>
+<li style="display: flex; gap: 12px; align-items: flex-start"><span style="flex: 0 0 auto; width: 24px; height: 24px; margin-top: 1px; border-radius: 50%; background: #D8D9B9; color: #333A28; font-size: 12px; font-weight: 700; display: inline-flex; align-items: center; justify-content: center">3</span><span style="font-size: 16px; line-height: 1.5">Winners announced <span id="winnerswhen"></span>.</span></li>
+</ol>
+<div style="display: flex; align-items: center; justify-content: space-between; gap: 10px; flex-wrap: wrap; background: rgba(255,253,251,.07); border-radius: 12px; padding: 8px 8px 8px 14px">
+<span style="font-size: 14px; color: #E5E6CF">Copy the tags for your post</span>
+<button type="button" class="copylt" data-copy="tags" style="font: 500 13px 'Inter', sans-serif; letter-spacing: .06em; text-transform: uppercase; background: #D8D9B9; color: #1A1816; border: 0; border-radius: 10px; padding: 0 16px; min-height: 44px; cursor: pointer">Copy tags</button>
+</div>
+</div>
+</div>
+</section>
+
+<section aria-labelledby="community" style="display: flex; flex-direction: column; gap: 20px">
+<span style="font-family: 'Inter', sans-serif; font-size: 12px; letter-spacing: .08em; font-weight: 600; text-transform: uppercase; color: #57534E">After tonight</span>
+<h2 id="community" style="font-family: 'Space Grotesk', system-ui, sans-serif; font-weight: 600; font-size: clamp(28px, 4.4cqi, 40px); letter-spacing: -.022em; line-height: 1.08; margin: 0">Stay in the room</h2>
+<p style="font-size: 17px; line-height: 1.6; color: #57534E; margin: 0; max-width: 62ch">Join our WhatsApp communities for the next events, wins and intros.</p>
+<div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(min(280px, 100%), 1fr)); gap: 16px">
+<a href="https://chat.whatsapp.com/H495V76Eewx2dFxDnfr6VF?mode=gi_t" class="joinbtn" style="display: flex; align-items: center; gap: 16px; text-decoration: none; color: #1A1816; background: #D8D9B9; border: 1px solid rgba(103,118,46,.22); border-radius: 16px; padding: 20px 22px; transition: border-color .18s ease, box-shadow .18s ease">
+<span style="flex: 0 0 auto; width: 44px; height: 44px; border-radius: 50%; background: #424B36; display: inline-flex; align-items: center; justify-content: center">
+<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#FFFDFB" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 11.5a8.4 8.4 0 0 1-12.4 7.4L3 21l2.1-5.4A8.4 8.4 0 1 1 21 11.5z"></path></svg>
+</span>
+<span style="flex: 1 1 auto; min-width: 0; display: flex; flex-direction: column; gap: 2px">
+<span style="font-family: 'Space Grotesk', system-ui, sans-serif; font-weight: 600; font-size: 19px; letter-spacing: -.03em">Time Rich Women</span>
+<span style="font-size: 14px; color: #57534E">WhatsApp community</span>
+</span>
+<span style="flex: 0 0 auto; font-size: 13px; font-weight: 500; letter-spacing: .06em; text-transform: uppercase; color: #424B36">Join →</span>
+</a>
+<a href="https://chat.whatsapp.com/JARlXqDh2kd2JPs4vRvXbp?mode=gi_t" class="joinbtn" style="display: flex; align-items: center; gap: 16px; text-decoration: none; color: #1A1816; background: #D8D9B9; border: 1px solid rgba(103,118,46,.22); border-radius: 16px; padding: 20px 22px; transition: border-color .18s ease, box-shadow .18s ease">
+<span style="flex: 0 0 auto; width: 44px; height: 44px; border-radius: 50%; background: #424B36; display: inline-flex; align-items: center; justify-content: center">
+<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#FFFDFB" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 11.5a8.4 8.4 0 0 1-12.4 7.4L3 21l2.1-5.4A8.4 8.4 0 1 1 21 11.5z"></path></svg>
+</span>
+<span style="flex: 1 1 auto; min-width: 0; display: flex; flex-direction: column; gap: 2px">
+<span style="font-family: 'Space Grotesk', system-ui, sans-serif; font-weight: 600; font-size: 19px; letter-spacing: -.03em">NYC Founders, Creators &amp; Investors</span>
+<span style="font-size: 14px; color: #57534E">WhatsApp community</span>
+</span>
+<span style="flex: 0 0 auto; font-size: 13px; font-weight: 500; letter-spacing: .06em; text-transform: uppercase; color: #424B36">Join →</span>
+</a>
+</div>
+</section>
+
+</main>
+
+<footer style="border-top: 1px solid rgba(26,24,22,.12); margin-top: 48px">
+<div style="max-width: 1120px; margin: 0 auto; padding: 32px 24px 48px; display: flex; flex-direction: column; gap: 24px">
+<div style="display: flex; flex-wrap: wrap; gap: 24px; justify-content: space-between; align-items: center">
+<div style="display: flex; flex-direction: column; gap: 10px"><span style="font-family: 'Inter', sans-serif; font-size: 12px; font-weight: 600; letter-spacing: .08em; text-transform: uppercase; color: #57534E">Follow Time Rich</span><div style="display: flex; flex-wrap: wrap; gap: 8px"><a href="https://timerichclub.com" class="social" style="display: inline-flex; align-items: center; min-height: 44px; padding: 0 16px; border: 1px solid rgba(26,24,22,.16); border-radius: 999px; color: #424B36; text-decoration: none; font-size: 14px; font-weight: 500">Substack</a><a href="https://www.linkedin.com/in/ellamolonycook/" class="social" style="display: inline-flex; align-items: center; min-height: 44px; padding: 0 16px; border: 1px solid rgba(26,24,22,.16); border-radius: 999px; color: #424B36; text-decoration: none; font-size: 14px; font-weight: 500">LinkedIn</a><a href="https://www.instagram.com/timerichtalk" class="social" style="display: inline-flex; align-items: center; min-height: 44px; padding: 0 16px; border: 1px solid rgba(26,24,22,.16); border-radius: 999px; color: #424B36; text-decoration: none; font-size: 14px; font-weight: 500">Instagram</a></div></div>
+<div style="display: flex; flex-direction: column; gap: 10px"><span style="font-family: 'Inter', sans-serif; font-size: 12px; font-weight: 600; letter-spacing: .08em; text-transform: uppercase; color: #57534E">Partners</span><div style="display: flex; flex-wrap: wrap; gap: 8px"><span style="display: inline-flex; align-items: center; gap: 8px; background: #FFFDFB; border: 1px solid rgba(26,24,22,.1); border-radius: 999px; padding: 5px 12px 5px 5px"><img src="/os/img/stanley.png" alt="" width="26" height="26" style="width: 26px; height: 26px; border-radius: 50%; background: #EEEBFF; object-fit: contain; display: block"><span style="font-size: 14px; font-weight: 600; color: #1A1816">Stanley</span></span><span style="display: inline-flex; align-items: center; gap: 8px; background: #FFFDFB; border: 1px solid rgba(26,24,22,.1); border-radius: 999px; padding: 5px 12px 5px 5px"><img src="/os/img/wispr-flow.png" alt="" width="26" height="26" style="width: 26px; height: 26px; border-radius: 50%; background: #1A1816; object-fit: contain; display: block"><span style="font-size: 14px; font-weight: 600; color: #1A1816">Wispr Flow</span></span></div></div>
+</div>
+<div style="display: flex; flex-wrap: wrap; gap: 12px; justify-content: space-between; font-size: 14px; color: #57534E; border-top: 1px solid rgba(26,24,22,.08); padding-top: 18px">
+<span>Time Rich Club · New York</span>
+<span>Stuck? Wave at a host, or ask the person next to you.</span>
+</div>
+</div>
+</footer>
+
+</div>
+<script>
+(function () {
+  'use strict';
+
+  /* ====================================================================
+     THE TWO OPEN ANSWERS. Each one is a single edit here, nowhere else.
+     While either value below still has [square brackets] in it, the page
+     keeps <meta name="robots" content="noindex"> in the head.
+
+     The codes are final and live in the markup above, not here: Wispr Flow
+     TIMERICH6 (6 months Pro) and Stanley STANLEY1MONTH (1 month free).
+     Each copy button reads the code off the page, so editing it in the
+     markup is enough.
+     ==================================================================== */
+  var WORKSHOP = {
+
+    /* 1. The Step 1 prompt. Shown in the dark panel and copied by its button. */
+    mikaPrompt: "Mika shares this prompt live at the workshop. It will be right here when you need it.",
+
+    /* 2. When and where the five Accelerator winners are announced. */
+    winnersWhen: "Tuesday 27 Oct at 12pm ET"
+  };
+
+  /* ==================================================================== */
+
+  var one = function (sel) { return document.querySelector(sel); };
+  var all = function (sel) { return Array.prototype.slice.call(document.querySelectorAll(sel)); };
+  var esc = function (s) {
+    return String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+  };
+
+  var state = { copied: null, stage: 0, done: {}, context: {}, rituals: { 0: true } };
+
+  var SETUP = [
+    'Laptop and charger',
+    'ChatGPT or Claude installed and signed in',
+    'LinkedIn signed in on your laptop',
+    'Phone with iMessage or WhatsApp (for Stanley)'
+  ];
+
+  var STEP_NAMES = ['Set up', 'Strategy', 'Context', 'Skill', 'First post', 'Rituals'];
+
+  /* Step 2's three moves. The third is the one the page marks optional, so
+     Step 2 counts as done once the two required ones are ticked. */
+  var CONTEXT = [{ required: true }, { required: true }, { required: false }];
+
+  var STAGES = [
+    { name: 'Top: be discovered', title: 'Top of funnel.', help: 'Help new people discover you. Pick one:', topics: ['Relatable frustration: plenty of ideas, until you open a blank draft', 'Opinion: your best content is hiding in your clients’ questions', 'Personal story: why I waited so long to share my work publicly'] },
+    { name: 'Middle: be trusted', title: 'Middle of funnel.', help: 'Build trust in your expertise. Pick one:', topics: ['How-to: turn one customer conversation into five post ideas', 'Teardown: how I’d rewrite a weak LinkedIn hook, and why', 'Lesson learned: what changed when I started interviewing clients before writing'] },
+    { name: 'Bottom: be chosen', title: 'Bottom of funnel.', help: 'Help someone choose you. Pick one:', topics: ['Client result: how I helped a client get a clear result', 'Your process: what the first week of working with me looks like', 'Buying decision: when to hire someone like me versus do it yourself'] },
+    { name: 'Workshop recap', title: 'Workshop recap.', help: 'Share your experience tonight. Pick one:', topics: ['Takeaway: one thing from today’s workshop I’ll try this week', 'What you created: the post idea I came in with, and what I left with', 'Tag the hosts and tools: Wispr Flow, Stanley, Mika Reyes and Ella Molony Cook'] }
+  ];
+
+  var RITUALS = [
+    { name: 'Repurpose Winners', desc: 'Takes your best-performing posts and turns them into fresh ones.' },
+    { name: 'Repackage Old Posts', desc: 'Brings back old posts that still hold up, rewritten for today.' },
+    { name: 'Good Morning', desc: 'A daily read of what’s moving in your world, with post ideas. Start here if you have no posts yet.' }
+  ];
+
+  /* ---- the open answers, written into the page ------------------------ */
+  one('#mikaprompt').textContent = WORKSHOP.mikaPrompt;
+  one('#winnerswhen').textContent = WORKSHOP.winnersWhen;
+
+  /* ---- copy buttons --------------------------------------------------- */
+  /* Everything copied here is also on the page, so each button reads its
+     own text back out of the DOM rather than keeping a second copy. */
+  var fromPage = function (sel) { return function () { return one(sel).textContent; }; };
+
+  var COPY = {
+    wifi: { idle: 'Copy', text: fromPage('#wifivalue') },
+    wispr: { idle: 'Copy', text: fromPage('#wisprcode') },
+    stanley: { idle: 'Copy', text: fromPage('#stanleycode') },
+    tags: { idle: 'Copy tags', text: function () { return '@Ella Molony Cook @Mika Reyes @Stanley @Wispr Flow'; } },
+    p1: { idle: 'Copy prompt', text: function () { return WORKSHOP.mikaPrompt; }, done: 'p1' },
+    p2: { idle: 'Copy prompt', text: function () { return 'Use my linkedin-content skill. My topic: '; }, done: 'p2' },
+    sk: { idle: 'Copy skill', text: fromPage('#skilltext'), done: 'sk' }
+  };
+
+  all('[data-copy]').forEach(function (btn) {
+    btn.addEventListener('click', function () {
+      var key = btn.getAttribute('data-copy');
+      var spec = COPY[key];
+      /* writeText rejects rather than throws when the clipboard is blocked,
+         so catch both ways out. The label still confirms either way. */
+      try {
+        var w = navigator.clipboard.writeText(spec.text());
+        if (w && w.catch) { w.catch(function () {}); }
+      } catch (e) {}
+      state.copied = key;
+      if (spec.done) { state.done[spec.done] = true; }
+      render();
+      setTimeout(function () {
+        if (state.copied === key) { state.copied = null; render(); }
+      }, 1600);
+    });
+  });
+
+  /* ---- the styles that change with state ------------------------------ */
+  function badgeStyle(ok) {
+    return 'width: 26px; height: 26px; border-radius: 50%; display: inline-flex; align-items: center; justify-content: center; font-family: Inter, sans-serif; font-size: 12px; font-weight: 700; '
+      + (ok ? 'background: #424B36; color: #FFFDFB' : 'background: #D8D9B9; color: #333A28');
+  }
+  function boxStyle(on) {
+    return 'flex: 0 0 auto; width: 24px; height: 24px; border-radius: 50%; display: inline-flex; align-items: center; justify-content: center; font-weight: 700; font-size: 13px; '
+      + (on ? 'background: #424B36; color: #FFFDFB; border: 2px solid #424B36' : 'background: #FFFDFB; color: transparent; border: 2px solid rgba(66,75,54,.45)');
+  }
+  function ctxCardStyle(on) {
+    return 'background: #D8D9B9; border-radius: 16px; padding: 22px; display: flex; flex-direction: column; align-items: flex-start; gap: 8px; width: 100%; min-height: 44px; font: inherit; color: #1A1816; cursor: pointer; transition: border-color .18s ease, box-shadow .18s ease; '
+      + (on ? 'border: 2px solid #424B36; box-shadow: 0 16px 34px -24px rgba(26,24,22,.4)' : 'border: 1px solid rgba(103,118,46,.22)');
+  }
+  function ctxBoxStyle() {
+    return 'flex: 0 0 auto; width: 32px; height: 32px; border-radius: 50%; background: #424B36; color: #FFFDFB; display: inline-flex; align-items: center; justify-content: center; font-family: \'Inter\', sans-serif; font-size: 13px; font-weight: 700';
+  }
+  function tabStyle(sel) {
+    return 'font: 500 15px Inter, sans-serif; border-radius: 999px; padding: 0 18px; min-height: 44px; cursor: pointer; '
+      + (sel ? 'background: #424B36; color: #FFFDFB; border: 1px solid #424B36' : 'background: #FFFDFB; color: #1A1816; border: 1px solid rgba(66,75,54,.35)');
+  }
+  function cardStyle(on) {
+    return 'display: flex; flex-direction: column; align-items: flex-start; gap: 10px; cursor: pointer; border-radius: 16px; padding: 22px; min-height: 44px; font: inherit; color: #1A1816; transition: border-color .18s ease, box-shadow .18s ease; '
+      + (on ? 'background: #D8D9B9; border: 2px solid #424B36; box-shadow: 0 16px 34px -24px rgba(26,24,22,.4)' : 'background: #FFFFFF; border: 1px solid rgba(26,24,22,.12)');
+  }
+  function pillStyle(on) {
+    return 'flex: 0 0 auto; font-family: Inter, sans-serif; font-size: 11px; font-weight: 700; letter-spacing: .1em; text-transform: uppercase; border-radius: 999px; padding: 6px 12px; '
+      + (on ? 'background: #424B36; color: #FFFDFB' : 'background: #E5E6CF; color: #57534E');
+  }
+
+  /* ---- the repeated bits, built once ---------------------------------
+     Built here and then only patched by render(), so clicking a toggle
+     never replaces the element under the pointer, and a keyboard user
+     keeps focus on the row they just pressed. */
+  one('#stepnav').innerHTML = STEP_NAMES.map(function (n, i) {
+    return '<a href="#step-' + i + '" class="stepdot" style="flex: 0 0 auto; display: flex; align-items: center; gap: 8px; text-decoration: none; color: #1A1816; padding: 8px 12px 8px 8px; border-radius: 999px; min-height: 28px">'
+      + '<span data-badge="' + i + '"></span>'
+      + '<span class="stepshort" style="font-size: 14px; font-weight: 500; white-space: nowrap">' + esc(n) + '</span>'
+      + '</a>';
+  }).join('');
+
+  one('#setuplist').innerHTML = SETUP.map(function (label, i) {
+    return '<button type="button" class="checkrow" data-setup="' + i + '" aria-pressed="false" style="width: 100%; display: flex; align-items: center; gap: 12px; text-align: left; background: transparent; border: 0; border-radius: 12px; padding: 12px; min-height: 44px; cursor: pointer; font: 16px \'Inter\', sans-serif; line-height: 1.45; color: #1A1816">'
+      + '<span data-box="' + i + '"></span>'
+      + '<span>' + esc(label) + '</span>'
+      + '</button>';
+  }).join('');
+
+  one('#funneltabs').innerHTML = STAGES.map(function (s, i) {
+    return '<button type="button" role="tab" data-stage="' + i + '" aria-selected="false" style="">' + esc(s.name) + '</button>';
+  }).join('');
+
+  one('#ritualcards').innerHTML = RITUALS.map(function (r, i) {
+    return '<button type="button" data-ritual="' + i + '" aria-pressed="false" style="">'
+      + '<span style="display: flex; align-items: center; justify-content: space-between; gap: 12px; width: 100%">'
+      + '<span style="font-family: \'Space Grotesk\', system-ui, sans-serif; font-weight: 600; font-size: 20px; letter-spacing: -.03em; text-align: left">' + esc(r.name) + '</span>'
+      + '<span data-pill="' + i + '"></span>'
+      + '</span>'
+      + '<span style="font-size: 15.5px; line-height: 1.55; text-align: left; color: #57534E">' + esc(r.desc) + '</span>'
+      + '</button>';
+  }).join('');
+
+  /* ---- toggles -------------------------------------------------------- */
+  function delegate(sel, attr, fn) {
+    one(sel).addEventListener('click', function (e) {
+      var btn = e.target && e.target.closest ? e.target.closest('[' + attr + ']') : null;
+      if (!btn) { return; }
+      fn(Number(btn.getAttribute(attr)));
+      render();
+    });
+  }
+
+  delegate('#setuplist', 'data-setup', function (i) { state.done['s' + i] = !state.done['s' + i]; });
+  delegate('#funneltabs', 'data-stage', function (i) { state.stage = i; });
+  delegate('#ritualcards', 'data-ritual', function (i) { state.rituals[i] = !state.rituals[i]; });
+  document.addEventListener('click', function (e) {
+    var btn = e.target && e.target.closest ? e.target.closest('[data-ctx]') : null;
+    if (!btn) { return; }
+    var i = Number(btn.getAttribute('data-ctx'));
+    state.context[i] = !state.context[i];
+    render();
+  });
+
+  /* ---- which steps count as done --------------------------------------
+     One trigger each: Step 1 is the prompt copy, Step 2 is its own ticks. */
+  function stepDone() {
+    var setupAll = SETUP.every(function (_, i) { return !!state.done['s' + i]; });
+    var contextAll = CONTEXT.every(function (c, i) { return !c.required || !!state.context[i]; });
+    var ritualsOn = RITUALS.filter(function (_, i) { return !!state.rituals[i]; }).length;
+    return [setupAll, !!state.done.p1, contextAll, !!state.done.sk, !!state.done.p2, ritualsOn >= 2];
+  }
+
+  /* ---- render: patch what the state changed, nothing else ------------- */
+  function render() {
+    var dn = stepDone();
+
+    STEP_NAMES.forEach(function (n, i) {
+      var badge = one('[data-badge="' + i + '"]');
+      badge.setAttribute('style', badgeStyle(dn[i]));
+      badge.textContent = dn[i] ? '✓' : String(i);
+    });
+    one('#donecount').textContent = dn.filter(Boolean).length;
+
+    SETUP.forEach(function (label, i) {
+      var on = !!state.done['s' + i];
+      one('[data-setup="' + i + '"]').setAttribute('aria-pressed', on ? 'true' : 'false');
+      var box = one('[data-box="' + i + '"]');
+      box.setAttribute('style', boxStyle(on));
+      box.textContent = on ? '✓' : '';
+    });
+
+    CONTEXT.forEach(function (c, i) {
+      var on = !!state.context[i];
+      var card = one('[data-ctx="' + i + '"]');
+      card.setAttribute('aria-pressed', on ? 'true' : 'false');
+      card.setAttribute('style', ctxCardStyle(on));
+      var box = one('[data-ctxbox="' + i + '"]');
+      box.setAttribute('style', ctxBoxStyle());
+      box.textContent = on ? '✓' : String(i + 1);
+    });
+
+    STAGES.forEach(function (s, i) {
+      var sel = state.stage === i;
+      var tab = one('[data-stage="' + i + '"]');
+      tab.setAttribute('aria-selected', sel ? 'true' : 'false');
+      tab.setAttribute('style', tabStyle(sel));
+    });
+    var st = STAGES[state.stage];
+    one('#stagetitle').textContent = st.title;
+    one('#stagehelp').textContent = st.help;
+    one('#topicchips').innerHTML = st.topics.map(function (t) {
+      return '<span style="border: 1px dashed rgba(66,75,54,.45); border-radius: 12px; padding: 10px 14px; font-size: 15px; background: #FFFDFB">' + esc(t) + '</span>';
+    }).join('');
+
+    RITUALS.forEach(function (r, i) {
+      var on = !!state.rituals[i];
+      var card = one('[data-ritual="' + i + '"]');
+      card.setAttribute('aria-pressed', on ? 'true' : 'false');
+      card.setAttribute('style', cardStyle(on));
+      var pill = one('[data-pill="' + i + '"]');
+      pill.setAttribute('style', pillStyle(on));
+      pill.textContent = on ? 'On ✓' : 'Off';
+    });
+
+    all('[data-copy]').forEach(function (btn) {
+      var key = btn.getAttribute('data-copy');
+      btn.textContent = state.copied === key ? 'Copied ✓' : COPY[key].idle;
+    });
+  }
+
+  render();
+})();
+</script>
+</body>
+</html>

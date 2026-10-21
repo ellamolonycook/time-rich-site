@@ -304,12 +304,38 @@ console.log('\nThe three tiles');
     /Claim in Resources/.test(tiles[2].querySelector('.trp-tile-go').textContent) &&
     tiles[2].querySelector('.trp-tile-go').getAttribute('href') === 'resources.html');
 
-  // The lines are Resources' lines. Two files, one set of words.
+  // These used to be Resources' lines, checked word for word against that
+  // page: two files, one set of words.
+  //
+  // They have different jobs now. The Resources cards carry numbered steps
+  // for claiming each offer, so their line shrank to a strapline sitting
+  // above those steps -- "Your AI head of content. The code goes in at
+  // checkout." On the dashboard there are no steps and no room for any, so
+  // this tile still has to say what the offer actually is in one sentence.
+  //
+  // So the two are pinned separately rather than against each other. The
+  // drift this was written to catch is still caught; it is just caught in
+  // two places. What must still agree is the offer itself, which is the
+  // last block below.
   const lines = [...tiles[2].querySelectorAll('.trp-ptile-line')].map((n) => n.textContent);
-  const onResources = [...new JSDOM(RESOURCES).window.document.querySelectorAll('.trp-partner-line')]
-    .map((n) => n.textContent);
-  check('each line is word for word the one on Resources',
-    lines.length === 3 && lines.join('|') === onResources.join('|'), { lines, onResources });
+  check('the tile says what each offer is, in one sentence',
+    JSON.stringify(lines) === JSON.stringify([
+      '6 months of Stanley free with code TIMERICH6. Your AI head of content: drafts from your calls, learns your voice, posts for you.',
+      '6 months of Wispr Flow Pro, the voice dictation app the accelerator runs on.',
+      '3 months of LaunchLemonade included.',
+    ]), lines);
+
+  // The wording is each page's own; the offer is not. If the length of a
+  // deal or the code ever changes on one page and not the other, a member
+  // reads one number here and a different one when they go to claim it.
+  const resourcesDoc = new JSDOM(RESOURCES).window.document;
+  const resourcesText = resourcesDoc.querySelector('[aria-labelledby="partners-heading"]').textContent;
+  for (const term of ['6 months', 'TIMERICH6', '3 months']) {
+    check('"' + term + '" is on both the dashboard tile and Resources',
+      lines.join(' ').includes(term) === resourcesText.includes(term) &&
+      resourcesText.includes(term),
+      { dashboard: lines.join(' ').includes(term), resources: resourcesText.includes(term) });
+  }
 }
 
 console.log('\nThe compact Start here list');
