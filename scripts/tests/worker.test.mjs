@@ -225,7 +225,7 @@ console.log('\nOther routes are untouched');
     // link that goes, with nothing of the tracking left on it.
     const dumped = JSON.stringify(pageBody());
     check('/accelerator: the cleaned link is what gets written',
-      dumped.includes('https://www.linkedin.com/in/acc') && !dumped.includes('isSelfProfile'));
+      (dumped.match(/https:\/\/[^"\\\s]+/g) || []).some((u) => u === 'https://www.linkedin.com/in/acc') && !dumped.includes('isSelfProfile'));
   }
 
   const opt = await worker.fetch(new Request('https://w.dev/superhuman', { method: 'OPTIONS', headers: { Origin: 'https://timerich.ai' } }), env);
@@ -916,6 +916,10 @@ function asStored(props) {
   return out;
 }
 
+// The host a stubbed call went to, compared exactly rather than by substring.
+const hostOf = (u) => { try { return new URL(String(u)).hostname; } catch { return ''; } };
+// The host a stubbed call went to, compared exactly rather than by substring.
+const hostOf = (u) => { try { return new URL(String(u)).hostname; } catch { return ''; } };
 const mem = {
   members: [],        // portal_members rows: { email, role, active }
   directory: {},      // portal_directory rows by email
@@ -1747,7 +1751,7 @@ console.log('\nThe photo: an upload, or a Drive link that is really a file');
   // There is no URL to remember, so the content is the identity.
   check('upload: photo_source_url records the content, not a link',
     /^upload:[0-9a-f]{64}$/.test(row.photo_source_url || ''), row.photo_source_url);
-  check('upload: Drive is never called', !mem.calls.some((c) => String(c).includes('drive.google.com')));
+  check('upload: Drive is never called', !mem.calls.some((c) => hostOf(c.url) === 'drive.google.com'));
   check('upload: nobody is told anything failed', photoAlerts().length === 0, mem.slack);
 
   // Notion is told the bytes are already stored rather than given a link.
@@ -1841,7 +1845,7 @@ console.log('\nThe photo: an upload, or a Drive link that is really a file');
   row = mem.directory['ada@example.com'];
   check('an upload wins over a link in the same submit',
     /^upload:/.test(row.photo_source_url || '') &&
-    !mem.calls.some((c) => String(c).includes('drive.google.com')), row.photo_source_url);
+    !mem.calls.some((c) => hostOf(c.url) === 'drive.google.com'), row.photo_source_url);
 }
 
 console.log('\nLinkedIn has to be a LinkedIn link');
