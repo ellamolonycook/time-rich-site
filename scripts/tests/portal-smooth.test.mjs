@@ -129,10 +129,9 @@ console.log('\nEvery area the payload fills holds its space open');
   // nothing and pushes the page down. Each of these carries a placeholder
   // built from the real classes instead.
   const RESERVED = [
-    ['dashboard', '[data-dash-step]', 'the next step card'],
-    ['dashboard', '[data-dash-next]', 'the next session tile'],
-    ['dashboard', '[data-dash-sessions]', 'the sessions tile'],
-    ['dashboard', '[data-dash-list]', 'the Start here list'],
+    ['dashboard', '[data-dash-meter]', 'the set-up bar under the greeting'],
+    ['dashboard', '[data-dash-next]', 'the next session card'],
+    ['dashboard', '[data-dash-list]', 'the Set up list'],
     ['dashboard', '[data-portal-setup]', 'the Set up once card'],
     ['dashboard', '[data-dash-countdown]', 'the countdown pill'],
     ['curriculum', '[data-curriculum-static]', 'the weeks'],
@@ -156,9 +155,15 @@ console.log('\nEvery area the payload fills holds its space open');
   // them the right height. A box of grey rectangles at a guessed height is
   // the thing this replaced.
   check('the dashboard placeholder uses the real card classes',
-    docs.dashboard.querySelector('[data-dash-step].trp-nextstep') !== null &&
-    docs.dashboard.querySelector('[data-dash-list].trp-dlist') !== null &&
-    docs.dashboard.querySelector('[data-dash-next].trp-next') !== null);
+    docs.dashboard.querySelector('[data-dash-list].trp-dash-card') !== null &&
+    docs.dashboard.querySelector('[data-dash-next].trp-dash-session') !== null &&
+    docs.dashboard.querySelector('[data-dash-meter].trp-dash-meter') !== null);
+  // And the real rows inside them, which is what makes the box the right
+  // height: six step rows and a bar with a fill, not a guessed rectangle.
+  check('and the real rows, so the box opens at the height the list needs',
+    docs.dashboard.querySelectorAll('[data-dash-list] .trp-dsteps .trp-dstep').length === 6 &&
+    docs.dashboard.querySelector('[data-dash-meter] .trp-progress-track .trp-progress-fill') !== null,
+    docs.dashboard.querySelectorAll('[data-dash-list] .trp-dstep').length);
   // The redesigned curriculum: four week cards and the picked week's panel.
   check('the curriculum placeholder uses the real week cards and lesson rows',
     docs.curriculum.querySelectorAll('[data-curriculum-static] .trp-cw-weeks .trp-cw-week').length === 4 &&
@@ -173,11 +178,13 @@ console.log('\nEvery area the payload fills holds its space open');
   // Every placeholder is out of the reading order: there is nothing in one
   // to read, and the live region beside it says what is happening.
   const skels = PAGES.flatMap((p) => [...docs[p].querySelectorAll('.trp-skel')].map((n) => [p, n]));
-  // Thirteen across the five pages that wait on data. Members waits on
+  // Eleven across the five pages that wait on data. Members waits on
   // nothing, so it has none; the count is asserted so that deleting a
-  // placeholder cannot quietly pass this.
-  check('thirteen placeholders, and every one hidden from assistive tech',
-    skels.length === 13 && skels.every(([, n]) => n.getAttribute('aria-hidden') === 'true'),
+  // placeholder cannot quietly pass this. It was thirteen before the
+  // dashboard redesign, which folded the next-step card and the sessions
+  // tile into the bar under the greeting.
+  check('eleven placeholders, and every one hidden from assistive tech',
+    skels.length === 11 && skels.every(([, n]) => n.getAttribute('aria-hidden') === 'true'),
     { count: skels.length,
       unlabelled: skels.filter(([, n]) => n.getAttribute('aria-hidden') !== 'true').map(([p]) => p) });
 

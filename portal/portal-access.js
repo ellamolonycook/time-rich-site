@@ -962,7 +962,10 @@
       return;
     }
 
-    if (!hasCode()) { signedOut(); return; }
+    if (!hasCode()) {
+      signedOut();
+      return;
+    }
 
     /* Draw from the cache first if there is one, so a member moving through
        the nav sees the page they asked for straight away rather than a

@@ -213,172 +213,66 @@
     <!-- LEFT SIDEBAR -->
     
     <!-- CENTER SCROLLABLE CONTENT -->
-    <main class="flex-1 relative bg-transparent">
+    <!-- min-w-0 because this is a flex item, and a flex item's default
+         min-width: auto is its content's minimum, not zero. The set-up bar
+         carries a 320px progress track, so without this the page could not
+         lay out narrower than about 350px and scrolled sideways on a 320px
+         screen. -->
+    <main class="flex-1 min-w-0 relative bg-transparent">
 
-      <div class="relative z-10 px-6 sm:px-8 py-8 lg:py-12 max-w-[1200px] mx-auto transition-all duration-150 ease-[cubic-bezier(0.16,1,0.3,1)]">
+      <div class="relative z-10 px-4 sm:px-6 lg:px-8 pb-16 max-w-[1120px] mx-auto">
 
         <div class="trp-dash">
 
-          <!-- 1. WELCOME BAR. The greeting on the left, where the cohort is
-                  on the right. The pill is filled by the script because it
-                  counts from the first session's Eastern date, which only
-                  the payload knows. -->
-          <header class="trp-dash-bar">
-            <div class="trp-dash-greet">
-              <span class="trp-kicker">Superhuman Accelerator</span>
-              <h1 class="trp-title">Good to see you<span data-portal-name-wrap hidden>, <span data-portal-name></span></span><span class="trp-stop">.</span></h1>
-            </div>
-            <!-- Held open rather than hidden: appearing from nothing, the
-                 pill pushed the whole page down 58px at 375px, where it sits
-                 on its own line under the greeting. -->
-            <p class="trp-dash-pill" data-dash-countdown><span class="trp-skel" aria-hidden="true"><span class="trp-bar">Kickoff Mon 26 Oct &middot; 9 days to go</span></span></p>
-          </header>
-
-          <!-- 2. YOUR NEXT STEP. One thing to do, which is the whole point
-                  of this page. Drawn from the same items and in the same
-                  order the Curriculum shows them. -->
-          <!-- The placeholder stands at the height the card will be: the same
-               classes, and the words it will hold, inked out. The renderer
-               clears it, so the card replaces the placeholder rather than
-               appearing under it. -->
-          <section data-dash-step class="glass-card is-static trp-nextstep" aria-label="Your next step">
-            <div class="trp-skel trp-nextstep-main" aria-hidden="true">
-              <p class="trp-tag"><span class="trp-bar">Your next step &middot; 1 of 9</span></p>
-              <h2 class="trp-nextstep-title"><span class="trp-bar">Make your copy of the Business COMPASS</span></h2>
-              <p class="trp-nextstep-body"><span class="trp-bar">Click to make your own copy. Keep it open.</span></p>
-              <div class="trp-nextstep-acts">
-                <span class="trp-bar is-btn"></span>
-                <span class="trp-bar is-btn"></span>
+          <!-- The greeting, the kickoff line and how many set-up steps are
+               done. The line and the bar are filled by the script: the date
+               comes from the first session, and the count from the same
+               steps the Curriculum shows. -->
+          <header class="trp-dash-hero">
+            <p class="trp-dash-kicker" data-dash-countdown><span class="trp-skel" aria-hidden="true"><span class="trp-bar">Superhuman Accelerator &middot; Kickoff Mon 26 Oct, 12pm ET &middot; 9 days to go</span></span></p>
+            <h1 class="trp-title">Good to see you<span data-portal-name-wrap hidden>, <span data-portal-name></span></span>.</h1>
+            <div class="trp-dash-meter" data-dash-meter>
+              <div class="trp-skel" aria-hidden="true">
+                <div class="trp-progress-track"><div class="trp-progress-fill" style="width:16%"></div></div>
+                <p class="trp-dash-meter-label"><span class="trp-bar">1 of 9 set-up steps done</span></p>
               </div>
             </div>
-            <div class="trp-skel trp-nextstep-side" aria-hidden="true">
-              <p class="trp-nextstep-count"><span class="trp-bar">1 of 9 done</span></p>
-              <div class="trp-progress-track"></div>
-              <p class="trp-nextstep-note"><span class="trp-bar">Start here &middot; finish before kickoff</span></p>
+          </header>
+
+          <!-- STEP 1. Every Start here item, in the Curriculum's order. The
+               first one not ticked is the highlighted row. -->
+          <section data-dash-setup class="trp-dash-block" aria-labelledby="setup-heading">
+            <div class="trp-dash-stephead">
+              <span class="trp-dash-stepn">Step 1</span>
+              <span class="trp-dash-stepmeta">Before kickoff &middot; 30 min</span>
+            </div>
+            <h2 id="setup-heading" class="trp-dash-h">Set up</h2>
+            <p class="trp-dash-lede">Tick each one off. Your next step is highlighted.</p>
+            <div data-dash-list class="trp-dash-card">
+              <div class="trp-skel" aria-hidden="true">
+                <ul class="trp-dsteps">
+                  <li class="trp-dstep"><span class="trp-check-gap"></span><span class="trp-dstep-copy"><span class="trp-bar">Welcome to the Superhuman Accelerator</span></span></li>
+                  <li class="trp-dstep is-next"><span class="trp-check-gap"></span><span class="trp-dstep-copy"><span class="trp-bar">Make your copy of the Business COMPASS</span></span><span class="trp-dstep-tag">Next</span></li>
+                  <li class="trp-dstep"><span class="trp-check-gap"></span><span class="trp-dstep-copy"><span class="trp-bar">Install Wispr Flow</span></span></li>
+                  <li class="trp-dstep"><span class="trp-check-gap"></span><span class="trp-dstep-copy"><span class="trp-bar">Turn it on</span></span></li>
+                  <li class="trp-dstep"><span class="trp-check-gap"></span><span class="trp-dstep-copy"><span class="trp-bar">Say it: One-liners</span></span></li>
+                  <li class="trp-dstep"><span class="trp-check-gap"></span><span class="trp-dstep-copy"><span class="trp-bar">Say it: Who I serve</span></span></li>
+                </ul>
+              </div>
             </div>
           </section>
 
-          <!-- 3. THREE TILES. The next call, how far through the member is,
-                  and what comes free with their place. -->
-          <div class="trp-dash-tiles">
-            <div data-dash-next class="glass-card is-static is-deep trp-tile trp-next">
-              <div class="trp-skel" aria-hidden="true">
-                <p class="trp-tag"><span class="trp-bar">Next live session</span></p>
-                <h2 class="trp-next-title"><span class="trp-bar">Open Business Surgery</span></h2>
-                <p class="trp-next-when"><span class="trp-bar">MON 26 OCT &middot; 12PM ET</span></p>
-                <div class="trp-next-acts"><span class="trp-bar is-btn"></span></div>
-                <p class="trp-join-note"><span class="trp-bar">Opens 30 minutes before the start.</span></p>
-              </div>
+          <!-- STEP 2. The same three guides, as cards rather than pills. -->
+          <section class="trp-dash-block trp-connect" aria-labelledby="connect-heading">
+            <div class="trp-dash-stephead">
+              <span class="trp-dash-stepn">Step 2</span>
+              <span class="trp-dash-stepmeta">Once &middot; 10 min</span>
             </div>
-            <div data-dash-sessions class="glass-card is-static trp-tile">
-              <div class="trp-skel" aria-hidden="true">
-                <p class="trp-tag"><span class="trp-bar">Your progress</span></p>
-                <p class="trp-tile-big"><span class="trp-bar is-big"></span></p>
-                <div class="trp-progress-track"></div>
-                <p class="trp-tile-go"><span class="trp-bar">Open curriculum</span></p>
-              </div>
-            </div>
+            <h2 id="connect-heading" class="trp-dash-h">Connect your Notion to your AI</h2>
+            <p class="trp-dash-lede">Point your AI at your own pages once and it stops guessing. Open the one you use.</p>
+            <div class="trp-dash-accs">
 
-            <!-- The partner lines are the ones on Resources, word for word.
-                 A test compares the two files so they cannot drift; this
-                 tile is the trailer, Resources is the page. -->
-            <section class="glass-card is-static trp-tile trp-ptile" aria-labelledby="dash-partners">
-              <p class="trp-tag">Your partner offers</p>
-              <h2 id="dash-partners" class="trp-tile-title">Included with your place</h2>
-              <ul class="trp-ptile-list">
-                <li>
-                  <span class="trp-ptile-name">Stanley</span>
-                  <span class="trp-ptile-line">6 months of Stanley free with code TIMERICH6. Your AI head of content: drafts from your calls, learns your voice, posts for you.</span>
-                </li>
-                <li>
-                  <span class="trp-ptile-name">Wispr Flow</span>
-                  <span class="trp-ptile-line">6 months of Wispr Flow Pro, the voice dictation app the accelerator runs on.</span>
-                </li>
-                <li>
-                  <span class="trp-ptile-name">LaunchLemonade</span>
-                  <span class="trp-ptile-line">3 months of LaunchLemonade included.</span>
-                </li>
-              </ul>
-              <a class="trp-tile-go" href="resources.html">Claim in Resources <span aria-hidden="true">&rarr;</span></a>
-            </section>
-          </div>
-
-          <!-- 4. TWO COLUMNS. The whole Start here list on the left, kept to
-                  titles so it stays scannable, and everything a member sets
-                  up once on the right. -->
-          <div class="trp-dash-cols">
-
-            <div data-dash-list class="glass-card is-static trp-dlist">
-              <div class="trp-skel" aria-hidden="true">
-                <div class="trp-check-head">
-                  <div>
-                    <p class="trp-tag"><span class="trp-bar">Week 01 &middot; Start here</span></p>
-                    <h2 class="trp-check-heading"><span class="trp-bar">Your steps</span></h2>
-                  </div>
-                  <p class="trp-check-count"><span class="trp-bar">1 of 9 done</span></p>
-                </div>
-                <ul class="trp-dsteps">
-                    <li class="trp-dstep">
-                      <span class="trp-check-gap"></span>
-                      <span class="trp-dstep-head"><span class="trp-bar">Welcome to the Superhuman Accelerator</span></span>
-                    </li>
-                    <li class="trp-dstep">
-                      <span class="trp-check-gap"></span>
-                      <span class="trp-dstep-head"><span class="trp-bar">Make your copy of the Business COMPASS</span></span>
-                    </li>
-                    <li class="trp-dstep">
-                      <span class="trp-check-gap"></span>
-                      <span class="trp-dstep-head"><span class="trp-bar">Install Wispr Flow</span></span>
-                    </li>
-                    <li class="trp-dstep">
-                      <span class="trp-check-gap"></span>
-                      <span class="trp-dstep-head"><span class="trp-bar">Turn it on</span></span>
-                    </li>
-                    <li class="trp-dstep">
-                      <span class="trp-check-gap"></span>
-                      <span class="trp-dstep-head"><span class="trp-bar">Say it: One-liners</span></span>
-                    </li>
-                    <li class="trp-dstep">
-                      <span class="trp-check-gap"></span>
-                      <span class="trp-dstep-head"><span class="trp-bar">Say it: Who I serve</span></span>
-                    </li>
-                </ul>
-                <div class="trp-dlist-foot">
-                  <p class="trp-dlist-more"><span class="trp-bar">+ 3 more steps</span></p>
-                  <p class="trp-dlist-go"><span class="trp-bar">See all in Curriculum</span></p>
-                </div>
-              </div>
-            </div>
-
-            <div class="trp-dash-aside">
-
-              <!-- Filled by portal-setup.js. The aside's own rules make it
-                   the compact two-row version of the same card. -->
-              <section data-portal-setup class="glass-card is-static trp-setup" aria-label="Set up once">
-                <div class="trp-skel" aria-hidden="true">
-                  <div class="trp-setup-heading">
-                    <h2><span class="trp-bar">Set up once</span></h2>
-                    <span><span class="trp-bar">0 of 2 complete</span></span>
-                  </div>
-                  <ol class="trp-setup-steps">
-                    <li class="trp-setup-step">
-                      <div class="trp-setup-copy"><h3><span class="trp-bar">Add every session to your calendar</span></h3></div>
-                      <div class="trp-setup-actions"><span class="trp-bar is-btn"></span><span class="trp-bar is-btn"></span></div>
-                    </li>
-                    <li class="trp-setup-step">
-                      <div class="trp-setup-copy"><h3><span class="trp-bar">Duplicate your Superhuman OS</span></h3></div>
-                      <div class="trp-setup-actions"><span class="trp-bar is-btn"></span><span class="trp-bar is-btn"></span></div>
-                    </li>
-                  </ol>
-                  <p class="trp-setup-status"><span class="trp-bar">Mark each step done when you have finished.</span></p>
-                </div>
-              </section>
-
-            <section class="glass-card is-static is-sage trp-connect" aria-labelledby="connect-heading">
-              <h2 id="connect-heading" class="trp-connect-title">Connect your Notion to your AI</h2>
-              <p class="trp-connect-lede">Point your AI at your own pages once, and it stops guessing. Pick the tool you use.</p>
-
-          <details class="trp-acc is-pill">
+          <details class="trp-acc">
             <summary class="trp-acc-head">
               <span class="trp-acc-title">In Claude</span>
               <svg class="trp-acc-caret" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7"></path></svg>
@@ -402,7 +296,7 @@
             </div>
           </details>
 
-          <details class="trp-acc is-pill">
+          <details class="trp-acc">
             <summary class="trp-acc-head">
               <span class="trp-acc-title">In Grok Bot</span>
               <svg class="trp-acc-caret" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7"></path></svg>
@@ -440,7 +334,7 @@ Confirm you can open all 8.</pre>
             </div>
           </details>
 
-          <details class="trp-acc is-pill">
+          <details class="trp-acc">
             <summary class="trp-acc-head">
               <span class="trp-acc-title">In ChatGPT</span>
               <svg class="trp-acc-caret" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7"></path></svg>
@@ -466,22 +360,68 @@ Confirm you can open all 8.</pre>
             </div>
           </details>
 
-              <p class="trp-connect-note">Use the links from your own duplicated workbook, not ours.</p>
+            </div>
+            <p class="trp-connect-note">Use the links from your own duplicated workbook, not ours.</p>
+          </section>
+
+          <section class="trp-dash-ready" aria-labelledby="ready-heading">
+            <div>
+              <h2 id="ready-heading" class="trp-dash-ready-title" data-dash-ready-title>All set up?</h2>
+              <p class="trp-dash-ready-line" data-dash-ready-line>Week 1 opens on kickoff day. Preview it in the curriculum.</p>
+            </div>
+            <a class="trp-dash-cta" href="curriculum.html">Open the curriculum <span aria-hidden="true">&rarr;</span></a>
+          </section>
+
+          <!-- The call, the one-time setup and the partner offers. They sit
+               under the two steps so the top of the page stays the set-up
+               list. -->
+          <div class="trp-dash-more">
+            <div data-dash-next class="trp-dash-session">
+              <div class="trp-skel" aria-hidden="true">
+                <p class="trp-tag"><span class="trp-bar">Next live session</span></p>
+                <h2 class="trp-next-title"><span class="trp-bar">Open Business Surgery</span></h2>
+                <p class="trp-next-when"><span class="trp-bar">Mon 26 Oct &middot; 12pm ET</span></p>
+                <div class="trp-next-acts"><span class="trp-bar is-btn"></span></div>
+                <p class="trp-join-note"><span class="trp-bar">Opens 30 minutes before the start.</span></p>
+              </div>
+            </div>
+
+            <section data-portal-setup class="glass-card is-static trp-setup" aria-label="Set up once">
+              <div class="trp-skel" aria-hidden="true">
+                <div class="trp-setup-heading">
+                  <h2><span class="trp-bar">Set up once</span></h2>
+                  <span><span class="trp-bar">0 of 1 complete</span></span>
+                </div>
+                <ol class="trp-setup-steps">
+                  <li class="trp-setup-step">
+                    <div class="trp-setup-copy"><h3><span class="trp-bar">Add every session to your calendar</span></h3></div>
+                    <div class="trp-setup-actions"><span class="trp-bar is-btn"></span><span class="trp-bar is-btn"></span></div>
+                  </li>
+                </ol>
+              </div>
             </section>
 
-              <!-- NEED A HAND. The two ways out of a stuck moment, on one
-                   line rather than in a card of its own height. -->
-              <section class="glass-card is-static trp-aside" aria-labelledby="help-heading">
-                <h2 id="help-heading" class="trp-aside-title">Need a hand?</h2>
-                <p class="trp-aside-links">
-                  <!-- Href comes from the week 0 link item; the whole row is
-                       hidden when there is none. -->
-                  <a data-portal-community hidden class="trp-aside-link">WhatsApp community</a>
-                  <a href="mailto:emc@timerichclub.com" class="trp-aside-link">emc@timerichclub.com</a>
-                </p>
-              </section>
-
-            </div>
+            <!-- The partner lines are the ones on Resources, word for word.
+                 A test compares the two files so they cannot drift. -->
+            <section class="trp-dash-partners trp-ptile" aria-labelledby="dash-partners">
+              <p class="trp-tag">Your partner offers</p>
+              <h2 id="dash-partners" class="trp-dash-h">Included with your place</h2>
+              <ul class="trp-ptile-list">
+                <li>
+                  <span class="trp-ptile-name">Stanley</span>
+                  <span class="trp-ptile-line">6 months of Stanley free with code TIMERICH6. Your AI head of content: drafts from your calls, learns your voice, posts for you.</span>
+                </li>
+                <li>
+                  <span class="trp-ptile-name">Wispr Flow</span>
+                  <span class="trp-ptile-line">6 months of Wispr Flow Pro, the voice dictation app the accelerator runs on.</span>
+                </li>
+                <li>
+                  <span class="trp-ptile-name">LaunchLemonade</span>
+                  <span class="trp-ptile-line">3 months of LaunchLemonade included.</span>
+                </li>
+              </ul>
+              <a class="trp-tile-go" href="resources.html">Claim in Resources <span aria-hidden="true">&rarr;</span></a>
+            </section>
           </div>
 
         </div>
@@ -531,36 +471,17 @@ Confirm you can open all 8.</pre>
     /* Dashboard, drawn from portal_get. Every block hides itself when the
        data it needs is not there, so a member never meets a placeholder.
 
-       The page is one question answered five ways: what do I do next. The
-       next step card answers it outright, the tiles say what is coming and
-       what is already paid for, and the list on the left is the same steps
-       in full. Nothing is drawn twice: the long week card and the second
-       progress card that used to sit here are gone, and so is the Resume
-       curriculum link that said the same thing as the tile under it.
-
-       Every card is a component class -- .trp-tile, .trp-nextstep,
-       .trp-dstep -- so this page and the ones that draw the same shapes
-       cannot drift apart by a padding or a font weight. */
+       The page is the set-up list. The line under the greeting says when
+       kickoff is, the bar says how many steps are done, and the first
+       unticked row is the one highlighted. The next call, the one-time
+       setup and the partner offers sit under that, because they are not
+       the thing to do next. */
     (function () {
       var L = window.TRLive;
       if (!L) return;
 
       var TZ = 'America/New_York';
       var DAY = 86400000;
-
-      function arrow() {
-        var a = L.el('span', '', '\u2192');
-        a.setAttribute('aria-hidden', 'true');
-        return a;
-      }
-
-      function goLink(href, text, cls) {
-        var a = L.el('a', cls || 'trp-tile-go');
-        a.href = href;
-        a.appendChild(document.createTextNode(text + ' '));
-        a.appendChild(arrow());
-        return a;
-      }
 
       /* A thin bar with the numbers already on it. Used by the next step
          card and by the sessions tile, which is why it takes its label
@@ -629,9 +550,12 @@ Confirm you can open all 8.</pre>
 
         if (days > 0) {
           var when = L.etDate(first.starts_at);
-          return 'Kickoff ' + when + ' \u00b7 ' + days + (days === 1 ? ' day to go' : ' days to go');
+          var time = L.etTime(first.starts_at);
+          var kick = 'Kickoff ' + when + (time ? ', ' + time + ' ET' : '');
+          return 'Superhuman Accelerator \u00b7 ' + kick + ' \u00b7 ' +
+            days + (days === 1 ? ' day to go' : ' days to go');
         }
-        if (days === 0) return 'Kickoff today';
+        if (days === 0) return 'Superhuman Accelerator \u00b7 Kickoff today';
 
         /* Past kickoff the pill stops counting and says where the cohort is.
            The week number is the count of weeks that have opened, which is
@@ -639,7 +563,7 @@ Confirm you can open all 8.</pre>
         var program = L.scheduleProgress(data, now);
         var total = program.weeksTotal || 4;
         var n = Math.min(total, Math.max(1, program.weeksDone));
-        return 'Week ' + n + ' of ' + total;
+        return 'Superhuman Accelerator \u00b7 Week ' + n + ' of ' + total;
       }
 
       function renderCountdown(root, data, now) {
@@ -650,70 +574,35 @@ Confirm you can open all 8.</pre>
         L.show(root, true);
       }
 
-      /* ---- 2. your next step ----------------------------------------------
-         One item, the first one not ticked. Ticking it redraws the card from
-         the state the tick just wrote, so the next one takes its place
-         without a reload. */
-      function renderStep(root, data) {
+      /* ---- 2. the bar under the greeting -----------------------------------
+         One number: how many of the set-up steps are ticked. The sessions
+         have their own page, so they are not counted here. */
+      function renderMeter(root, data) {
         var state = stepState(data);
         L.clear(root);
-        root.className = 'glass-card is-static trp-nextstep';
-
+        root.className = 'trp-dash-meter';
         if (!state.total) { L.show(root, false); return; }
 
-        var main = L.el('div', 'trp-nextstep-main');
-        var side = L.el('div', 'trp-nextstep-side');
-
-        if (state.index === -1) {
-          main.appendChild(L.el('p', 'trp-tag', 'Your next step'));
-          main.appendChild(L.el('h2', 'trp-nextstep-title', 'You\u2019re ready for kickoff.'));
-          main.appendChild(L.el('p', 'trp-nextstep-body',
-            'Everything on your Start here list is done.'));
-          main.appendChild(goLink('curriculum.html', 'Open curriculum', 'trp-nextstep-go'));
-        } else {
-          var item = state.list[state.index];
-          main.appendChild(L.el('p', 'trp-tag',
-            'Your next step \u00b7 ' + (state.index + 1) + ' of ' + state.total));
-          main.appendChild(L.el('h2', 'trp-nextstep-title', L.str(item.title) || 'Untitled'));
-
-          var body = L.str(item.body);
-          if (body) main.appendChild(L.el('p', 'trp-nextstep-body', body));
-
-          var acts = L.el('div', 'trp-nextstep-acts');
-          // No url means there is nothing to open, so there is no button.
-          var open = L.linkTo(item.url, 'Open', 'trp-btn trp-btn-pastel');
-          if (open) {
-            open.setAttribute('aria-label', 'Open ' + (L.str(item.title) || 'this step'));
-            acts.appendChild(open);
-          }
-
-          /* The same write every tick on the site makes: TRLive.toggleItem,
-             which calls TRPortal.setProgress and announces the change. The
-             listener at the foot of this file redraws on that announcement,
-             which is what moves the card on. */
-          var mark = L.el('button', 'trp-btn trp-btn-outline', 'Mark done');
-          mark.type = 'button';
-          mark.setAttribute('aria-label', 'Mark done: ' + (L.str(item.title) || 'this step'));
-          mark.addEventListener('click', function () {
-            if (mark.disabled) return;
-            mark.disabled = true;
-            Promise.resolve(L.toggleItem(item)).then(function () { mark.disabled = false; },
-              function () { mark.disabled = false; });
-          });
-          acts.appendChild(mark);
-          main.appendChild(acts);
-        }
-
-        side.appendChild(L.el('p', 'trp-nextstep-count',
-          state.done + ' of ' + state.total + ' done'));
-        side.appendChild(bar(state.done, state.total,
-          'Start here: ' + state.done + ' of ' + state.total + ' done'));
-        side.appendChild(L.el('p', 'trp-nextstep-note',
-          'Start here \u00b7 finish before kickoff'));
-
-        root.appendChild(main);
-        root.appendChild(side);
+        root.appendChild(bar(state.done, state.total,
+          'Set-up steps: ' + state.done + ' of ' + state.total + ' done'));
+        var label = L.el('p', 'trp-dash-meter-label');
+        label.appendChild(L.el('strong', '', state.done + ' of ' + state.total));
+        label.appendChild(document.createTextNode(' set-up steps done'));
+        root.appendChild(label);
         L.show(root, true);
+      }
+
+      /* The band under the list. It says the list is finished in the same
+         words the old next-step card used, and otherwise points at Week 1. */
+      function renderReady(state) {
+        var title = document.querySelector('[data-dash-ready-title]');
+        var line = document.querySelector('[data-dash-ready-line]');
+        if (!title || !line || !state.total) return;
+        var done = state.index === -1;
+        title.textContent = done ? 'You\u2019re ready for kickoff.' : 'All set up?';
+        line.textContent = done
+          ? 'Everything on your Start here list is done.'
+          : 'Week 1 opens on kickoff day. Preview it in the curriculum.';
       }
 
       /* ---- 3a. the next live session --------------------------------------
@@ -725,7 +614,7 @@ Confirm you can open all 8.</pre>
          start and shuts it when the call ends. */
       function renderNext(root, data, now) {
         L.clear(root);
-        root.className = 'glass-card is-static is-deep trp-tile trp-next';
+        root.className = 'trp-dash-session';
 
         var at = now || new Date();
         var next = L.nextSession(data, at);
@@ -775,136 +664,55 @@ Confirm you can open all 8.</pre>
         L.show(root, false);
       }
 
-      /* ---- 3b. sessions attended ------------------------------------------
-         Sessions only. The materials have their own count on the next step
-         card above, and one number per thing is the rule this page is built
-         on. */
-      function renderSessions(root, data) {
-        var list = L.sessions(data).filter(function (s) { return L.sessionKey(s); });
-        L.clear(root);
-        root.className = 'glass-card is-static trp-tile';
-
-        if (!list.length) { L.show(root, false); return; }
-
-        var done = 0;
-        for (var i = 0; i < list.length; i++) {
-          if (L.isSessionMarked(list[i])) done += 1;
-        }
-
-        root.appendChild(L.el('p', 'trp-tag', 'Your progress'));
-        var big = L.el('p', 'trp-tile-big');
-        big.appendChild(L.el('span', 'trp-tile-n', String(done)));
-        big.appendChild(L.el('span', 'trp-tile-of',
-          'of ' + list.length + ' sessions'));
-        root.appendChild(big);
-        root.appendChild(bar(done, list.length,
-          'Sessions attended: ' + done + ' of ' + list.length));
-        root.appendChild(goLink('curriculum.html', 'Open curriculum'));
-        L.show(root, true);
-      }
-
-      /* ---- 4. the compact Start here list ---------------------------------
-         Titles and ticks, because a page of bodies is what the Curriculum is
-         for. A row opens on its own title: the body and the link are there,
-         one press away, without leaving the dashboard. */
-      var SHOWN = 6;
-      var rowSeq = 0;
-
-      function stepRow(item, isNext) {
+      /* ---- the set-up list --------------------------------------------------
+         Every step, title and body together. The circle ticks it. The first
+         one still open is the highlighted row, and a step with a link gets
+         an Open control that does not tick it. */
+      function stepRow(item, index, isNext) {
         var name = L.str(item && item.title) || 'Untitled';
-        var row = L.el('li', 'trp-dstep');
+        var row = L.el('li', 'trp-dstep' + (isNext ? ' is-next' : ''));
+        if (L.isItemDone(item)) row.classList.add('is-done');
 
-        row.appendChild(L.checkBox(
+        var box = L.checkBox(
           function () { return L.isItemDone(item); },
           function () { return L.toggleItem(item); },
-          name));
+          name);
+        box.appendChild(L.el('span', 'trp-dstep-num', String(index + 1)));
+        row.appendChild(box);
 
+        var copy = L.el('div', 'trp-dstep-copy');
+        copy.appendChild(L.el('span', 'trp-dstep-name', name));
         var body = L.str(item && item.body);
-        var link = L.linkTo(item && item.url, 'Open', 'trp-slink');
-        var hasMore = Boolean(body || link);
+        if (body) copy.appendChild(L.el('span', 'trp-dstep-text', body));
+        row.appendChild(copy);
 
-        var head = L.el('button', 'trp-dstep-head');
-        head.type = 'button';
-        head.appendChild(L.el('span', 'trp-dstep-name', name));
-        if (isNext) head.appendChild(L.el('span', 'trp-dstep-next', 'Next'));
-
-        if (hasMore) {
-          rowSeq += 1;
-          var id = 'dstep-' + rowSeq;
-          var panel = L.el('div', 'trp-dstep-body');
-          panel.id = id;
-          panel.hidden = true;
-          if (body) panel.appendChild(L.el('p', 'trp-dstep-text', body));
-          if (link) panel.appendChild(link);
-
-          head.appendChild(caret());
-          head.setAttribute('aria-expanded', 'false');
-          head.setAttribute('aria-controls', id);
-          head.addEventListener('click', function () {
-            var open = head.getAttribute('aria-expanded') === 'true';
-            head.setAttribute('aria-expanded', open ? 'false' : 'true');
-            panel.hidden = open;
-            row.classList.toggle('is-open', !open);
-          });
-          row.appendChild(head);
-          row.appendChild(panel);
-        } else {
-          // Nothing to open, so the title is not a control that pretends to.
-          head.disabled = true;
-          row.appendChild(head);
+        var link = L.linkTo(item && item.url, 'Open', 'trp-dstep-open');
+        if (link) {
+          link.setAttribute('aria-label', 'Open ' + name);
+          row.appendChild(link);
         }
-
+        if (isNext) row.appendChild(L.el('span', 'trp-dstep-tag', 'Next'));
         return row;
-      }
-
-      function caret() {
-        var ns = 'http://www.w3.org/2000/svg';
-        var svg = document.createElementNS(ns, 'svg');
-        svg.setAttribute('class', 'trp-dstep-caret');
-        svg.setAttribute('viewBox', '0 0 24 24');
-        svg.setAttribute('fill', 'none');
-        svg.setAttribute('stroke', 'currentColor');
-        svg.setAttribute('stroke-width', '1.5');
-        svg.setAttribute('aria-hidden', 'true');
-        var path = document.createElementNS(ns, 'path');
-        path.setAttribute('stroke-linecap', 'round');
-        path.setAttribute('stroke-linejoin', 'round');
-        path.setAttribute('d', 'M19 9l-7 7-7-7');
-        svg.appendChild(path);
-        return svg;
       }
 
       function renderList(root, data) {
         var state = stepState(data);
+        var section = document.querySelector('[data-dash-setup]');
         L.clear(root);
-        root.className = 'glass-card is-static trp-dlist';
+        root.className = 'trp-dash-card';
 
-        if (!state.total) { L.show(root, false); return; }
-
-        var head = L.el('div', 'trp-check-head');
-        var left = L.el('div', '');
-        left.appendChild(L.el('p', 'trp-tag', 'Week 01 \u00b7 Start here'));
-        left.appendChild(L.el('h2', 'trp-check-heading', 'Your steps'));
-        head.appendChild(left);
-        head.appendChild(L.el('p', 'trp-check-count',
-          state.done + ' of ' + state.total + ' done'));
-        root.appendChild(head);
+        if (!state.total) {
+          if (section) L.show(section, false);
+          return;
+        }
 
         var ul = L.el('ul', 'trp-dsteps');
-        state.list.slice(0, SHOWN).forEach(function (item, i) {
-          ul.appendChild(stepRow(item, i === state.index));
+        state.list.forEach(function (item, i) {
+          ul.appendChild(stepRow(item, i, i === state.index));
         });
         root.appendChild(ul);
-
-        var foot = L.el('div', 'trp-dlist-foot');
-        var rest = state.total - SHOWN;
-        if (rest > 0) {
-          foot.appendChild(L.el('p', 'trp-dlist-more',
-            '+ ' + rest + (rest === 1 ? ' more step' : ' more steps')));
-        }
-        foot.appendChild(goLink('curriculum.html', 'See all in Curriculum', 'trp-dlist-go'));
-        root.appendChild(foot);
-
+        if (section) L.show(section, true);
+        renderReady(state);
         L.show(root, true);
       }
 
@@ -921,15 +729,13 @@ Confirm you can open all 8.</pre>
         L.show(nameWrap, Boolean(name && L.str(name.textContent)));
 
         var pill = document.querySelector('[data-dash-countdown]');
-        var step = document.querySelector('[data-dash-step]');
+        var meter = document.querySelector('[data-dash-meter]');
         var next = document.querySelector('[data-dash-next]');
-        var sess = document.querySelector('[data-dash-sessions]');
         var list = document.querySelector('[data-dash-list]');
 
         if (pill) renderCountdown(pill, data, at);
-        if (step) renderStep(step, data);
+        if (meter) renderMeter(meter, data);
         if (next) renderNext(next, data, at);
-        if (sess) renderSessions(sess, data);
         if (list) renderList(list, data);
       }
 
@@ -937,7 +743,7 @@ Confirm you can open all 8.</pre>
       window.TRDashboard = {
         paint: paint,
         renderNext: renderNext,
-        renderStep: renderStep,
+        renderMeter: renderMeter,
         renderList: renderList,
         countdownText: countdownText,
         stepState: stepState
@@ -947,18 +753,15 @@ Confirm you can open all 8.</pre>
         paint(event && event.detail);
       });
 
-      /* A tick anywhere on the page changes what the next step is and what
-         the counts read, so both are redrawn from the state the tick just
-         wrote. The tiles are left alone unless the tick was a session. */
+      /* A tick changes which row is next and what the bar reads, so both
+         are redrawn from the state the tick just wrote. */
       document.addEventListener('trportal:progress', function () {
         var data = window.TR_PORTAL_DATA;
         if (!data) return;
-        var step = document.querySelector('[data-dash-step]');
+        var meter = document.querySelector('[data-dash-meter]');
         var list = document.querySelector('[data-dash-list]');
-        var sess = document.querySelector('[data-dash-sessions]');
-        if (step) renderStep(step, data);
+        if (meter) renderMeter(meter, data);
         if (list) renderList(list, data);
-        if (sess) renderSessions(sess, data);
       });
     })();
   </script>

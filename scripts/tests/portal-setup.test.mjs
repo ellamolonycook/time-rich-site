@@ -35,6 +35,11 @@ for (const extra of [{setup_step:'role'},{item_id:1},{session_id:2},{done:'true'
 responseOk=false;
 check('Worker rejects invalid member token',(await post({token:'bad',setup_step:'notion',done:true})).status===401);
 
+/* The card draws one step. "Duplicate your Superhuman OS" used to sit beside
+   it, saying the same thing as Step 1's "Duplicate the Superhuman Workbook"
+   under a second name and marked Coming soon. The DB and the worker still
+   carry the notion step -- the checks above pin that -- so an older member's
+   saved tick is not lost; the card simply no longer asks for it. */
 function boot(state={calendar:false,notion:false}, success=true) {
   const dom=new JSDOM('<section data-portal-setup hidden></section>',{runScripts:'dangerously',url:'https://timerich.ai/portal/dashboard.html'});
   const w=dom.window;
@@ -46,26 +51,36 @@ function boot(state={calendar:false,notion:false}, success=true) {
 const flush=()=>new Promise(resolve=>setTimeout(resolve,0));
 let w=boot(),d=w.document;
 check('exactly one subscribe button with the requested URL',d.querySelectorAll('a[href="https://www.addevent.com/calendar/z0j4nlqbgt6b"]').length===1 && d.querySelectorAll('a').length===1);
-check('missing Notion URL reads "Coming soon", not a variable name',
-  d.body.textContent.includes('Coming soon') &&
-  d.querySelector('.trp-setup-actions button[disabled]'));
-check('and its button says so too, still disabled',
-  d.querySelector('.trp-setup-actions button[disabled]').textContent === 'Coming soon',
-  d.querySelector('.trp-setup-actions button[disabled]').textContent);
+check('the calendar row is the only row, and it counts as one',
+  d.querySelectorAll('.trp-setup-step').length===1 &&
+  d.querySelector('.trp-setup-heading span').textContent==='0 of 1 complete',
+  d.querySelector('.trp-setup-heading span').textContent);
+// Step 1 already carries "Duplicate the Superhuman Workbook". The same task
+// under a second name, on a second card, is the thing this card lost.
+check('it does not ask for the Superhuman OS a second time',
+  !d.body.textContent.includes('Superhuman OS') &&
+  d.querySelector('[data-setup-step="notion"]')===null,
+  (d.body.textContent.match(/.{0,30}Superhuman OS.{0,30}/) || [])[0]);
+check('and nothing on the card reads "Coming soon"',
+  !d.body.textContent.includes('Coming soon') &&
+  d.querySelector('.trp-setup-actions button[disabled]')===null);
 // A placeholder in brackets is somebody's TODO leaking onto the page.
 check('no bracket placeholder renders anywhere on the card',
   !d.body.textContent.includes('['),
   (d.body.textContent.match(/.{0,30}\[.{0,30}/) || [])[0]);
 d.querySelector('[data-setup-step="calendar"]').click();await flush();
-check('calendar done state shown after save',d.querySelector('[data-setup-step="calendar"]').getAttribute('aria-pressed')==='true');
-d.querySelector('[data-setup-step="notion"]').click();await flush();
-check('both done collapses to Setup complete',d.querySelector('h2').textContent==='Setup complete' && !d.querySelector('ol'));
+check('the one step done collapses to Setup complete',d.querySelector('h2').textContent==='Setup complete' && !d.querySelector('ol'));
 d.querySelector('button').click();
-check('completed steps can be reviewed',d.querySelectorAll('[aria-pressed="true"]').length===2);
-d.querySelector('[data-setup-step="notion"]').click();await flush();
-check('undo reopens setup',d.querySelector('h2').textContent==='Set up once');w.close();
-w=boot({calendar:true,notion:true});
+check('completed steps can be reviewed',d.querySelectorAll('[aria-pressed="true"]').length===1);
+check('and the row shows the save that happened',d.querySelector('[data-setup-step="calendar"]').getAttribute('aria-pressed')==='true');
+d.querySelector('[data-setup-step="calendar"]').click();await flush();
+check('undo reopens setup',d.querySelector('h2').textContent==='Set up once' && d.querySelector('.trp-setup-heading span').textContent==='0 of 1 complete');w.close();
+w=boot({calendar:true});
 check('fresh page renders persisted completion',w.document.querySelector('h2').textContent==='Setup complete');w.close();
+// An older member who ticked the Notion step before it went is not held
+// open by a step the card no longer draws.
+w=boot({calendar:true,notion:false});
+check('a left-over notion flag does not keep the card open',w.document.querySelector('h2').textContent==='Setup complete');w.close();
 w=boot(undefined,false);d=w.document;d.querySelector('[data-setup-step="calendar"]').click();await flush();
 check('failed save leaves the step incomplete and offers retry',d.querySelector('[data-setup-step="calendar"]').getAttribute('aria-pressed')==='false' && d.querySelector('[role="status"]').textContent.includes('try again'));w.close();
 w=boot();
