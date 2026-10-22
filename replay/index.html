@@ -166,6 +166,9 @@ dialog.ep::backdrop { background: rgba(20, 22, 17, .78); backdrop-filter: blur(4
 .ep-box h3 { margin: 0 0 4px; font-size: 12px; font-weight: 600; letter-spacing: .1em; text-transform: uppercase; color: var(--soft); }
 .ep-box p { margin: 0; font-size: 15px; }
 .ep-actions { display: flex; flex-wrap: wrap; gap: 10px; }
+.ep-box a { color: var(--ink); font-size: 15px; font-weight: 500; text-underline-offset: 3px; }
+.ep-box a:hover { color: var(--green); }
+.ep-box small { display: block; font-size: 13.5px; color: var(--soft); }
 .ep-prompt { grid-column: 1 / -1; border: 1px solid var(--line); border-radius: 18px; padding: clamp(18px, 3vw, 24px); display: flex; flex-direction: column; gap: 12px; }
 .ep-prompt-head { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 12px; }
 .ep-prompt h3 { margin: 0; font-family: var(--display); font-weight: 600; font-size: 20px; letter-spacing: -.01em; }
@@ -266,6 +269,10 @@ dialog.ep::backdrop { background: rgba(20, 22, 17, .78); backdrop-filter: blur(4
  * into `vimeo` once the video is uploaded with embedding allowed on
  * timerich.ai. An entry with vimeo: null shows as "Coming soon".
  *
+ * `resources` lists what was shared in the call as [title, source, url].
+ * `vimeoHash` is only needed for an unlisted video: the part after the
+ * ID in its share link (vimeo.com/ID/HASH).
+ *
  * Everything on the page is built with textContent from this list, so
  * nothing here is ever read as markup.
  * ===================================================================== */
@@ -303,6 +310,7 @@ var EPISODES = [
   {
     id: 'e03', ep: 3, series: 'AI Build Sessions', cover: 'c-sage',
     title: 'Your LinkedIn Content Engine', date: '2026-09-29', minutes: 61, vimeo: '1236334903',
+    resources: [['12+ LinkedIn skills for your AI', 'Substack', 'https://www.timerichclub.com/p/12-linkedin-skills-for-your-ai']],
     transcript: '2026-09-29-your-linkedin-content-engine-f875e069ca29.txt',
     prompt: ['Audit my LinkedIn headline and About section against my ideal client. I\u2019ll paste them in.', 'Build me a story bank: 10 stories, products and testimonials I can post about.', 'Draft my first post in my voice, messy over polished, with a hook in the first line.'],
     hook: 'Time Rich founder Ella Molony Cook on using AI skills, a story bank and the right tools to build a LinkedIn presence that grows your authority and sales.',
@@ -333,6 +341,7 @@ var EPISODES = [
   {
     id: 'e05', ep: 5, series: 'AI Build Sessions', cover: 'c-sage',
     title: 'Build Agents That Earn', date: '2026-10-20', minutes: 57, vimeo: '1238094358',
+    resources: [['Superhuman Hacks: Wispr Flow free guide', 'Notion', 'https://superhumanos.notion.site/Superhuman-Hacks-Wispr-Flow-free-guide-400ca5ebe55781f59f9ee69c08c680f0']],
     transcript: '2026-10-20-build-agents-that-earn-90195f746d25.txt',
     prompt: ['Suggest 3 customer-facing agents my business could run, and which one could make money.', 'For the best one, write its brief: model, knowledge, tools, policies, guardrails and token budget.', 'Write its instructions and a welcome message in my voice.'],
     hook: 'LaunchLemonade founder Cien Solon shows how customer-facing AI agents save time and make money, and builds one live with Time Rich founder Ella Molony Cook.',
@@ -479,6 +488,15 @@ var SERIES = ['AI Build Sessions', 'Leading with AI', 'Female Founder Circle'];
     return a;
   }
 
+  function link(label, note, href) {
+    var p = el('p');
+    var a = el('a', '', label);
+    a.href = href; a.target = '_blank'; a.rel = 'noopener';
+    p.appendChild(a);
+    p.appendChild(el('small', '', note));
+    return p;
+  }
+
   /* The prompt to use with a transcript: the same opening for every
      episode, then that episode's own asks. */
   function promptFor(e) {
@@ -499,7 +517,8 @@ var SERIES = ['AI Build Sessions', 'Leading with AI', 'Female Founder Circle'];
     var screen = el('div', 'ep-screen');
     if (e.vimeo && /^\d+$/.test(e.vimeo)) {
       var f = document.createElement('iframe');
-      f.src = 'https://player.vimeo.com/video/' + e.vimeo + '?dnt=1&title=0&byline=0&portrait=0&autoplay=1';
+      f.src = 'https://player.vimeo.com/video/' + e.vimeo + '?dnt=1&title=0&byline=0&portrait=0&autoplay=1' +
+        (e.vimeoHash && /^[0-9a-f]+$/.test(e.vimeoHash) ? '&h=' + e.vimeoHash : '');
       f.title = e.title;
       f.allow = 'autoplay; fullscreen; picture-in-picture';
       f.setAttribute('allowfullscreen', '');
@@ -541,6 +560,14 @@ var SERIES = ['AI Build Sessions', 'Leading with AI', 'Female Founder Circle'];
     who.appendChild(el('h3', '', 'Speakers'));
     e.speakers.forEach(function (s) { who.appendChild(el('p', '', s)); });
     side.appendChild(who);
+    // What was shared in the chat on the day, then the sponsor codes,
+    // which live on the content workshop page so there is one place to
+    // keep them current.
+    var res = el('div', 'ep-box');
+    res.appendChild(el('h3', '', 'Resources'));
+    (e.resources || []).forEach(function (r) { res.appendChild(link(r[0], r[1], r[2])); });
+    res.appendChild(link('Stanley + Wispr Flow member discounts', 'Codes on the content workshop page', 'https://timerich.ai/contentworkshop'));
+    side.appendChild(res);
     var acts = el('div', 'ep-actions');
     acts.appendChild(transcriptLink(e, 'pill is-green'));
     side.appendChild(acts);
