@@ -1,7 +1,8 @@
 // Time Rich Members page tests.
 //
-// The cohort directory is parked: the page is a Coming soon card until the
+// The cohort directory is parked: the page is a Coming soon preview until the
 // directory opens, so what this suite pins is that the page says so, that it
+// sends the member to the Superhuman WhatsApp group in the meantime, that it
 // no longer reaches for the Worker or offers a search box, and that it is
 // still a portal page (header, nav, footer) rather than a bare notice.
 //
@@ -58,31 +59,71 @@ console.log('\nTime Rich Members page — Coming soon');
   const main = page.doc.querySelector('main');
   const text = main.textContent.replace(/\s+/g, ' ').trim();
 
-  check('the page says it opens soon, in the words from the brief',
-    text.includes('Time Rich Members opens soon.') &&
-    text.includes('Your cohort will be here once it does.'), text);
-
-  // One card, not a page of them, and it is the portal's own card.
-  const cards = [...main.querySelectorAll('.glass-card')];
-  check('one card holds it', cards.length === 1, cards.length);
-  // Guarded: with no card the two lines below would throw, and a suite that
+  const section = main.querySelector('section.members-preview');
+  check('one preview section holds it', section !== null);
+  // Guarded: with no section the lines below would throw, and a suite that
   // dies halfway reports far less than it knows.
-  const card = cards[0] || page.doc.createElement('div');
-  const tag = card.querySelector('.trp-tag') || page.doc.createElement('p');
-  check('and it is a surface rather than a target, like every other static card',
-    /\bis-static\b/.test(card.className), card.className);
-  check('it is labelled Coming soon', tag.textContent === 'Coming soon', tag.textContent);
+  const scope = section || page.doc.createElement('section');
 
-  // The heading is still the page's, with the brand stop in its own span.
+  const badge = scope.querySelector('.members-preview-badge') || page.doc.createElement('span');
+  check('it is labelled Coming soon', badge.textContent.trim() === 'Coming soon', badge.textContent);
+
+  // The heading is still the page's own, with the brand stop in its own span.
   const h1 = page.doc.querySelector('main h1') || page.doc.createElement('h1');
   const stop = h1.querySelector('.trp-stop');
-  check('the page is still called Time Rich Members',
-    h1.textContent.trim().replace(/\.$/, '') === 'Time Rich Members', h1.textContent.trim());
+  check('the heading says the directory is on its way',
+    /directory is on its way/.test(h1.textContent), h1.textContent.trim());
   check('and it ends with the brand stop',
     stop !== null && stop.textContent === '.', stop && stop.textContent);
   check('the section is labelled by the sentence, not left unnamed',
     main.querySelector('section[aria-labelledby="members-soon"]') !== null &&
     page.doc.getElementById('members-soon') !== null);
+
+  // Until the directory opens the cohort is on WhatsApp, and it is the
+  // Superhuman group, not the Time Rich Club one, which is a different room.
+  check('the copy sends the member to WhatsApp in the meantime',
+    text.includes('the cohort lives on WhatsApp'), text);
+
+  const links = [...scope.querySelectorAll('a[href]')];
+  const wa = links.filter((a) => /chat\.whatsapp\.com/.test(a.getAttribute('href')));
+  check('exactly one WhatsApp link, and it is the Superhuman group',
+    wa.length === 1 && /E5GU1dvuHhFDI77yO88OIw/.test(wa[0].getAttribute('href')),
+    wa.map((a) => a.getAttribute('href')));
+  const join = wa[0] || page.doc.createElement('a');
+  check('the button says which group it is',
+    join.textContent.replace(/\s+/g, ' ').trim() === 'Join the Superhuman WhatsApp',
+    join.textContent.trim());
+  check('it opens in a new tab, with the tab it came from sealed off',
+    join.getAttribute('target') === '_blank' &&
+    /\bnoopener\b/.test(join.getAttribute('rel') || '') &&
+    /\bnoreferrer\b/.test(join.getAttribute('rel') || ''),
+    [join.getAttribute('target'), join.getAttribute('rel')]);
+  check('and the quiet line says when the group opens',
+    text.includes('The group opens on Saturday 24 October.'), text);
+
+  const club = links.filter((a) => a.textContent.trim() === 'Back to Club');
+  check('Back to Club goes to the Club page',
+    club.length === 1 && club[0].getAttribute('href') === '/club',
+    club.map((a) => a.getAttribute('href')));
+
+  // The four blank cards are a picture of the directory, not content: a
+  // screen reader reading out twelve empty lines would be noise.
+  const grid = scope.querySelector('.members-preview-grid') || page.doc.createElement('div');
+  check('the skeleton grid is hidden from screen readers',
+    grid.getAttribute('aria-hidden') === 'true', grid.getAttribute('aria-hidden'));
+  check('and it is a grid of cards rather than one empty box',
+    grid.querySelectorAll('.members-preview-card').length === 4,
+    grid.querySelectorAll('.members-preview-card').length);
+
+  // Purple is the Soon colour in this portal. The badge may use it; the
+  // blank avatars are decoration and may not.
+  const styles = [...HTML.matchAll(/<style>([\s\S]*?)<\/style>/g)].map((m) => m[1]).join('\n');
+  const avatarRules = styles
+    .split('}')
+    .filter((rule) => /members-preview-avatar/.test(rule.split('{')[0] || ''));
+  check('no plum in the avatar rules: purple is reserved for Soon',
+    avatarRules.length > 0 && avatarRules.every((rule) => !/plum/.test(rule)),
+    avatarRules.filter((rule) => /plum/.test(rule)));
 }
 
 console.log('\nTime Rich Members page — what is gone');
