@@ -212,8 +212,8 @@ a{color:#424B36}a:hover{color:#333A28}
 <div style="display: flex; align-items: center; justify-content: space-between; gap: 12px; flex-wrap: wrap">
 <span style="font-family: 'Inter', sans-serif; font-size: 12px; letter-spacing: .08em; font-weight: 600; text-transform: uppercase; color: #D8D9B9">Prompt · Content strategy interview</span>
 <div style="display: flex; gap: 8px; flex-wrap: wrap">
-<a href="https://claude.ai/new" class="ghostbtn" style="display: inline-flex; align-items: center; color: #FFFDFB; text-decoration: none; border: 1px solid rgba(216,217,185,.4); border-radius: 10px; padding: 0 14px; font-size: 14px; font-weight: 500; min-height: 44px">Open Claude</a>
-<a href="https://chatgpt.com/" class="ghostbtn" style="display: inline-flex; align-items: center; color: #FFFDFB; text-decoration: none; border: 1px solid rgba(216,217,185,.4); border-radius: 10px; padding: 0 14px; font-size: 14px; font-weight: 500; min-height: 44px">Open ChatGPT</a>
+<a href="https://claude.ai/new" data-ai="claude" target="_blank" rel="noopener" class="ghostbtn" style="display: inline-flex; align-items: center; color: #FFFDFB; text-decoration: none; border: 1px solid rgba(216,217,185,.4); border-radius: 10px; padding: 0 14px; font-size: 14px; font-weight: 500; min-height: 44px">Open Claude</a>
+<a href="https://chatgpt.com/" data-ai="chatgpt" target="_blank" rel="noopener" class="ghostbtn" style="display: inline-flex; align-items: center; color: #FFFDFB; text-decoration: none; border: 1px solid rgba(216,217,185,.4); border-radius: 10px; padding: 0 14px; font-size: 14px; font-weight: 500; min-height: 44px">Open ChatGPT</a>
 <button type="button" class="copylt" data-copy="p1" style="font: 500 13px 'Inter', sans-serif; letter-spacing: .06em; text-transform: uppercase; background: #D8D9B9; color: #1A1816; border: 0; border-radius: 10px; padding: 0 16px; min-height: 44px; cursor: pointer">Copy prompt</button>
 </div>
 </div>
@@ -856,6 +856,54 @@ Start the interview now.`,
       setTimeout(function () {
         if (state.copied === key) { state.copied = null; render(); }
       }, 1600);
+    });
+  });
+
+  /* ---- Open Claude / Open ChatGPT, with the prompt already in the box ----
+     Both AIs read a ?q= on their new-chat URL and drop it into the message
+     box, so the button carries Mika's prompt with it. The prompt is long, so
+     past MAX_URL the button falls back to the plain new-chat page. Either
+     way the click also copies the prompt, ticks the Step 1 row and says so,
+     so if an AI ever ignores ?q= the member just pastes. Real links, opened
+     by the browser: no window.open for a popup blocker to stop. */
+  var AIS = {
+    claude: { home: 'https://claude.ai/new', q: 'https://claude.ai/new?q=' },
+    chatgpt: { home: 'https://chatgpt.com/', q: 'https://chatgpt.com/?q=' }
+  };
+  var MAX_URL = 8000;
+  function aiHref(ai, text) {
+    var full = ai.q + encodeURIComponent(text);
+    return full.length <= MAX_URL ? full : ai.home;
+  }
+
+  var toastNode = null, toastTimer = null;
+  function toast(msg) {
+    if (!toastNode) {
+      toastNode = document.createElement('div');
+      toastNode.id = 'cwtoast';
+      toastNode.setAttribute('role', 'status');
+      toastNode.setAttribute('aria-live', 'polite');
+      toastNode.style.cssText = 'position: fixed; left: 50%; bottom: 24px; transform: translateX(-50%); z-index: 50; max-width: calc(100% - 32px); background: #1A1816; color: #FFFDFB; font: 500 15px Inter, sans-serif; border-radius: 12px; padding: 12px 16px; box-shadow: 0 16px 34px -18px rgba(26,24,22,.6)';
+      document.body.appendChild(toastNode);
+    }
+    toastNode.textContent = msg;
+    toastNode.hidden = false;
+    clearTimeout(toastTimer);
+    toastTimer = setTimeout(function () { toastNode.hidden = true; }, 4000);
+  }
+
+  all('[data-ai]').forEach(function (a) {
+    var ai = AIS[a.getAttribute('data-ai')];
+    if (!ai) { return; }
+    a.href = aiHref(ai, WORKSHOP.mikaPrompt);
+    a.addEventListener('click', function () {
+      try {
+        var w = navigator.clipboard.writeText(WORKSHOP.mikaPrompt);
+        if (w && w.catch) { w.catch(function () {}); }
+      } catch (e) {}
+      state.done.p1 = true;
+      render();
+      toast('Prompt copied too. If the box is empty, paste it in.');
     });
   });
 

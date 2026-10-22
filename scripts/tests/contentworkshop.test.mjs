@@ -304,6 +304,32 @@ console.log('\n/contentworkshop — copying actually copies, and says so');
   check('the idle label was not blank to begin with', idle.length > 0, idle);
 }
 
+console.log('\n/contentworkshop — Open Claude / Open ChatGPT carry the Step 1 prompt');
+{
+  const { dom, document, copied } = load();
+  const prompt = document.getElementById('mikaprompt').textContent;
+  const claude = document.querySelector('a[data-ai="claude"]');
+  const gpt = document.querySelector('a[data-ai="chatgpt"]');
+  check('there is an Open Claude button', !!claude && /Open Claude/.test(claude.textContent));
+  check('there is an Open ChatGPT button', !!gpt && /Open ChatGPT/.test(gpt.textContent));
+  check('Open Claude opens a new chat with the prompt filled in',
+    claude.href.startsWith('https://claude.ai/new?q=') &&
+    new URL(claude.href).searchParams.get('q') === prompt, claude.href.slice(0, 80));
+  check('Open ChatGPT opens a new chat with the prompt filled in',
+    gpt.href.startsWith('https://chatgpt.com/?q=') &&
+    new URL(gpt.href).searchParams.get('q') === prompt, gpt.href.slice(0, 80));
+  check('both stay under the 8000-character URL ceiling',
+    claude.href.length <= 8000 && gpt.href.length <= 8000, [claude.href.length, gpt.href.length]);
+  check('both open in a new tab, noopener',
+    [claude, gpt].every((a) => a.target === '_blank' && /noopener/.test(a.rel)));
+  claude.addEventListener('click', (e) => e.preventDefault(), { once: true });
+  claude.click();
+  check('clicking also copies the prompt, in case an AI ignores ?q=', copied[0] === prompt);
+  check('and it says so', /Prompt copied/.test((document.getElementById('cwtoast') || {}).textContent || ''));
+  const p1row = document.querySelector('[data-item="p1"]');
+  check('and ticks the Step 1 copy row', !!p1row && p1row.getAttribute('aria-pressed') === 'true');
+}
+
 console.log('\n/contentworkshop — the build is four numbered dropdowns');
 {
   const { document } = load();
