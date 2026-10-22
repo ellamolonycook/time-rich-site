@@ -924,7 +924,8 @@ const mem = {
   stored: null,       // the questionnaire row already in Notion, if any
   notionSaveOk: true,
   supabaseUp: true,
-  backfillPages: [],  // pages of Notion rows the backfill reads
+  backfillPages: [],  // Notion rows the backfill reads, in pages
+  notionPageSizes: [], // the page_size of every backfill query
   drive: {},          // Drive files by id: { type, bytes, declared?, status? }
   driveHits: [],
   uploads: [],
@@ -954,10 +955,17 @@ const memFetch = async (url, init = {}) => {
 
   if (url.startsWith('https://api.notion.com/v1/databases/db-shq/query')) {
     if (body && body.filter) return ok({ results: mem.stored ? [mem.stored] : [] }); // findRowByEmail
-    const index = body && body.start_cursor ? Number(body.start_cursor) : 0;          // backfill paging
-    const results = mem.backfillPages[index] || [];
-    const more = index + 1 < mem.backfillPages.length;
-    return ok({ results, has_more: more, next_cursor: more ? String(index + 1) : null });
+    /* The backfill asks for one batch at a time now, so the stub pages by row
+       rather than by canned page: start_cursor is an offset into the flat
+       list and page_size is honoured, which is what lets a test see that the
+       Worker really does stop at `limit`. */
+    const rows = mem.backfillPages.flat();
+    const from = body && body.start_cursor ? Number(body.start_cursor) : 0;
+    const size = Math.max(1, Number((body && body.page_size) || 100));
+    const results = rows.slice(from, from + size);
+    const more = from + results.length < rows.length;
+    mem.notionPageSizes.push(size);
+    return ok({ results, has_more: more, next_cursor: more ? String(from + results.length) : null });
   }
   if (url.startsWith('https://api.notion.com/v1/pages')) {
     if (!mem.notionSaveOk) return new Response('{"message":"bad"}', { status: 400 });
@@ -1053,6 +1061,7 @@ function resetMembers() {
   mem.notionSaveOk = true;
   mem.supabaseUp = true;
   mem.backfillPages = [];
+  mem.notionPageSizes = [];
   mem.drive = { [ADA_PHOTO_ID]: jpeg() };
   mem.driveHits = [];
   mem.uploads = [];
@@ -1099,10 +1108,27 @@ async function submitQuestionnaire(body, env = memEnv) {
   return res;
 }
 
-function backfill(token, env = memEnv) {
+function backfill(token, { env = memEnv, query = '' } = {}) {
   const headers = { 'Content-Type': 'application/json' };
   if (token !== undefined) headers.Authorization = 'Bearer ' + token;
-  return worker.fetch(new Request('https://w.dev/portal-directory-sync', { method: 'POST', headers, body: '{}' }), env);
+  return worker.fetch(new Request('https://w.dev/portal-directory-sync' + query, { method: 'POST', headers, body: '{}' }), env);
+}
+
+/* Calls the endpoint over and over with the cursor it hands back, which is
+   what scripts/directory-sync.mjs does. Returns the totals and how many
+   calls it took. */
+async function backfillToEnd(token, query = '') {
+  const totals = { processed: 0, listed: 0, skipped: 0, failed: 0, photo_failed: 0 };
+  let cursor = null, calls = 0, last = null;
+  for (;;) {
+    const q = (query ? query + '&' : '?') + (cursor ? 'cursor=' + encodeURIComponent(cursor) : '');
+    last = await (await backfill(token, { query: q })).json();
+    calls++;
+    for (const key of Object.keys(totals)) totals[key] += last[key];
+    cursor = last.next_cursor;
+    if (!cursor || calls > 20) break;
+  }
+  return { ...totals, calls, last };
 }
 
 const ADA = {
@@ -1921,8 +1947,13 @@ console.log('\nLinkedIn has to be a LinkedIn link');
   }
 }
 
-console.log('\nTime Rich Members — backfill');
+console.log('\nTime Rich Members — backfill, one batch at a time');
 {
+  // Cloudflare's free plan stops a Worker at about 50 outside calls, and one
+  // questionnaire row costs roughly five. Doing the whole database in a
+  // single run killed the tail of the list: seven of thirty-three failed on
+  // 21 Oct 2025 with "Too many subrequests by single Worker invocation". So
+  // the endpoint does a batch and hands back the cursor for the next one.
   const row = (name, email) => ({
     properties: asStored({
       Name: { title: [{ text: { content: name } }] },
@@ -1930,40 +1961,128 @@ console.log('\nTime Rich Members — backfill');
       Bio: { rich_text: [{ text: { content: name + ' hook' } }] },
     }),
   });
-  resetMembers();
-  mem.members = [
-    { email: 'ada@example.com', role: 'buyer', active: true },
-    { email: 'sam@example.com', role: 'second_seat', active: true },
-    { email: 'kenneth@example.com', role: 'team', active: true },
-  ];
-  mem.backfillPages = [
-    [row('Ada', 'ada@example.com'), row('Kenneth', 'kenneth@example.com')],
-    [row('Sam', 'Sam@Example.com'), row('Amb', 'amb@example.com')],
-  ];
+  const seed = (n) => {
+    resetMembers();
+    mem.members = [
+      { email: 'ada@example.com', role: 'buyer', active: true },
+      { email: 'sam@example.com', role: 'second_seat', active: true },
+      { email: 'kenneth@example.com', role: 'team', active: true },
+    ];
+    mem.backfillPages = [[
+      row('Ada', 'ada@example.com'), row('Kenneth', 'kenneth@example.com'),
+      row('Sam', 'Sam@Example.com'), row('Amb', 'amb@example.com'),
+    ].slice(0, n === undefined ? 4 : n)];
+  };
 
+  seed();
   const missing = await backfill(undefined);
   const wrong = await backfill('not-the-secret');
-  const unset = await backfill('sync-secret', { ...memEnv, DIRECTORY_SYNC_SECRET: '' });
+  const unset = await backfill('sync-secret', { env: { ...memEnv, DIRECTORY_SYNC_SECRET: '' } });
   const bodies = [await missing.text(), await wrong.text(), await unset.text()];
   check('no token, a wrong token, or no secret configured: all 403',
     missing.status === 403 && wrong.status === 403 && unset.status === 403);
   check('and the three refusals are byte-identical', bodies.every((b) => b === bodies[0]), bodies);
   check('nothing is synced on a refusal', Object.keys(mem.directory).length === 0);
 
-  const res = await backfill('sync-secret');
-  const counts = await res.json();
-  check('the right secret runs it', res.status === 200 && counts.ok === true, counts);
-  check('it reads every page of the questionnaire', counts.processed === 4, counts);
-  check('rows with no photo link count as missing, not as photo failures', counts.photo_failed === 0, counts);
+  /* ---- a batch stops at the limit and says where it got to ---- */
+
+  seed();
+  const first = await (await backfill('sync-secret', { query: '?limit=2' })).json();
+  check('a limit of 2 processes exactly two rows',
+    first.ok === true && first.processed === 2, first);
+  check('and asks Notion for exactly that many, rather than filtering after',
+    mem.notionPageSizes[mem.notionPageSizes.length - 1] === 2, mem.notionPageSizes);
+  check('it hands back a cursor, because there is more to do',
+    typeof first.next_cursor === 'string' && first.next_cursor.length > 0, first.next_cursor);
+  check('only the rows in that batch were synced',
+    Boolean(mem.directory['ada@example.com']) && !mem.directory['sam@example.com'],
+    Object.keys(mem.directory));
+
+  const second = await (await backfill('sync-secret', { query: '?limit=2&cursor=' + first.next_cursor })).json();
+  check('the cursor picks up where the last batch stopped',
+    second.processed === 2 && Boolean(mem.directory['sam@example.com']), second);
+  check('and the last batch reports null rather than leaving the key out',
+    'next_cursor' in second && second.next_cursor === null, second.next_cursor);
+
+  /* ---- the loop, which is what scripts/directory-sync.mjs runs ---- */
+
+  seed();
+  const all = await backfillToEnd('sync-secret', '?limit=2');
+  check('looping on the cursor covers every row', all.processed === 4, all);
+  check('in as many batches as the limit implies', all.calls === 2, all.calls);
   check('buyers and second seats are listed, team and non-members skipped',
-    counts.listed === 2 && counts.skipped === 2 && counts.failed === 0 &&
+    all.listed === 2 && all.skipped === 2 && all.failed === 0 &&
     Boolean(mem.directory['ada@example.com']) && Boolean(mem.directory['sam@example.com']) &&
-    !mem.directory['kenneth@example.com'] && !mem.directory['amb@example.com'], counts);
+    !mem.directory['kenneth@example.com'] && !mem.directory['amb@example.com'], all);
+  check('rows with no photo link count as missing, not as photo failures',
+    all.photo_failed === 0, all);
 
   const before = JSON.stringify(mem.directory, (k, v) => (k === 'updated_at' ? undefined : v));
-  const again = await (await backfill('sync-secret')).json();
+  const again = await backfillToEnd('sync-secret', '?limit=2');
   const after = JSON.stringify(mem.directory, (k, v) => (k === 'updated_at' ? undefined : v));
   check('running it twice leaves the same rows', again.listed === 2 && before === after);
+
+  /* ---- the default, and the guards on what can be asked for ---- */
+
+  seed();
+  await backfill('sync-secret');
+  check('with no limit it uses the Worker\'s own default of 8',
+    mem.notionPageSizes[mem.notionPageSizes.length - 1] === 8, mem.notionPageSizes);
+
+  for (const [what, query, want] of [
+    ['a limit of 0', '?limit=0', 8],
+    ['a negative limit', '?limit=-5', 8],
+    ['a limit that is not a number', '?limit=lots', 8],
+    ['a fractional limit', '?limit=3.9', 3],
+    ['a limit past the ceiling', '?limit=5000', 50],
+  ]) {
+    seed();
+    await backfill('sync-secret', { query });
+    check(what + ' asks Notion for ' + want,
+      mem.notionPageSizes[mem.notionPageSizes.length - 1] === want,
+      mem.notionPageSizes);
+  }
+
+  /* ---- a database smaller than one batch is one call ---- */
+
+  seed(1);
+  const single = await (await backfill('sync-secret')).json();
+  check('a database that fits in one batch finishes in one call',
+    single.processed === 1 && single.next_cursor === null, single);
+
+  /* ---- an empty database ---- */
+
+  resetMembers();
+  mem.backfillPages = [[]];
+  const empty = await (await backfill('sync-secret')).json();
+  check('nothing to do is a clean finish, not a cursor that loops',
+    empty.ok === true && empty.processed === 0 && empty.next_cursor === null, empty);
+}
+
+console.log('\nTime Rich Members — the loop script');
+{
+  // The endpoint only does a batch, so something has to keep calling it.
+  const script = readFileSync(new URL('../directory-sync.mjs', import.meta.url), 'utf8');
+  check('scripts/directory-sync.mjs exists and is documented at the top',
+    script.length > 0 && script.indexOf('DIRECTORY_SYNC_SECRET') < script.indexOf('const'));
+  check('it reads the secret from the environment rather than an argument',
+    /process\.env\.DIRECTORY_SYNC_SECRET/.test(script) &&
+    !/--secret/.test(script));
+  check('it sends that secret as a bearer token',
+    /Authorization: 'Bearer ' \+ secret/.test(script));
+  check('it loops on next_cursor and stops when it comes back null',
+    /body\.next_cursor/.test(script) && /if \(!cursor\) break;/.test(script));
+  check('it passes the cursor back as a query parameter',
+    /searchParams\.set\('cursor', cursor\)/.test(script));
+  check('and the limit too, when one was asked for',
+    /searchParams\.set\('limit', limit\)/.test(script));
+  check('it prints the totals at the end',
+    /processed/.test(script) && /listed/.test(script) &&
+    /skipped/.test(script) && /photo failed/.test(script));
+  check('a failure says how to resume rather than starting over',
+    /Resume with --cursor=/.test(script));
+  check('and the secret is never printed',
+    !/console\.(log|error)\([^)]*secret/.test(script));
 }
 
 console.log('\nTime Rich Members — read endpoint');

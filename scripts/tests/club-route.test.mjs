@@ -186,5 +186,146 @@ console.log('\nThe way in, and the way back');
     CLUB.length > 0 && APPLY.includes("'/portal/club.html'"));
 }
 
+/* ---- the day/night toggle, on Club ------------------------------------- */
+
+// Iltifat's sun/moon pill worked on every portal page except this one. The
+// pill is drawn by portal-chrome.js and fires a `change` on the hidden
+// <select>; the thing that listens for that change and writes the choice was
+// copied into the foot of seven pages by hand, and Club never got the copy.
+// So on Club, and only on Club, clicking the pill did nothing at all.
+//
+// The listener is one shared file now. This runs it for real, on the Club
+// page, rather than reading the source for it.
+console.log('\nThe day/night toggle works on Club');
+{
+  const CHROME = read('portal/portal-chrome.js');
+  const THEME = read('portal/portal-theme.js');
+
+  /* The Club page in a window, with the two scripts it loads evaluated in
+     the order the browser runs them. Storage is a plain object the test can
+     look inside, which is also how the reload below is done. */
+  function club(store = {}) {
+    const dom = new JSDOM(CLUB, {
+      url: 'https://timerich.ai/portal/club.html',
+      runScripts: 'outside-only',
+      beforeParse(win) {
+        Object.defineProperty(win, 'localStorage', {
+          value: {
+            getItem: (k) => (k in store ? store[k] : null),
+            setItem: (k, v) => { store[k] = String(v); },
+            removeItem: (k) => { delete store[k]; },
+          },
+        });
+      },
+    });
+    const win = dom.window;
+    win.matchMedia = () => ({ matches: false, addEventListener() {}, removeEventListener() {} });
+    win.posted = [];
+    win.parent = { postMessage: (data, origin) => win.posted.push({ data, origin }) };
+
+    // The pre-paint script in <head> runs first, as it does in the browser.
+    const prepaint = [...win.document.querySelectorAll('script:not([src])')]
+      .find((t) => t.textContent.includes("getItem('tr_portal_theme')"));
+    win.eval(prepaint.textContent);
+
+    win.eval(THEME);
+    win.eval(CHROME);
+    win.document.dispatchEvent(new win.Event('DOMContentLoaded'));
+    return { win, document: win.document, store };
+  }
+
+  check('Club loads the shared theme file rather than a copy of its own',
+    /<script src="portal-theme\.js" defer><\/script>/.test(CLUB) &&
+    !/localStorage\.setItem\('tr_portal_theme'/.test(CLUB));
+  check('and it still sets the theme before first paint, inline',
+    CLUB.indexOf("getItem('tr_portal_theme')") < CLUB.indexOf('<body'));
+
+  const { win, document, store } = club();
+  const pill = document.querySelector('button.trp-day-night');
+  check('the pill is drawn on Club, the same as everywhere else', pill !== null);
+  check('and it starts on the stored default',
+    document.documentElement.getAttribute('data-theme') === 'system',
+    document.documentElement.getAttribute('data-theme'));
+
+  pill.dispatchEvent(new win.MouseEvent('click', { bubbles: true }));
+  check('clicking it switches Club to dark',
+    document.documentElement.getAttribute('data-theme') === 'dark',
+    document.documentElement.getAttribute('data-theme'));
+  check('and the choice is written under the key every page reads',
+    store.tr_portal_theme === 'dark', store);
+  check('the hidden select carries the same value, so the two cannot drift',
+    document.querySelector('[data-theme-select]').value === 'dark');
+
+  pill.dispatchEvent(new win.MouseEvent('click', { bubbles: true }));
+  check('clicking again switches it back',
+    document.documentElement.getAttribute('data-theme') === 'light' &&
+    store.tr_portal_theme === 'light',
+    [document.documentElement.getAttribute('data-theme'), store.tr_portal_theme]);
+
+  // The reload: the same storage, a brand new page.
+  pill.dispatchEvent(new win.MouseEvent('click', { bubbles: true }));
+  const after = club(store);
+  check('the choice survives a reload',
+    after.document.documentElement.getAttribute('data-theme') === 'dark',
+    after.document.documentElement.getAttribute('data-theme'));
+  check('and the pill comes back showing it',
+    after.document.querySelector('button.trp-day-night').getAttribute('aria-checked') === 'true');
+
+  // The same storage key is what keeps Club in step with the rest.
+  check('every portal page reads and writes the one key',
+    ['dashboard', 'curriculum', 'sessions', 'resources', 'prompts', 'members', 'index']
+      .every((p) => read('portal/' + p + '.html').includes("getItem('tr_portal_theme')")) &&
+    /var KEY = 'tr_portal_theme';/.test(read('portal/portal-theme.js')));
+}
+
+console.log('\nThe frame follows the choice made inside it');
+{
+  // /club paints the iframe element itself in the theme's ground colour, so a
+  // dark-theme member does not get a white rectangle while the Club home
+  // loads. That colour was read once, when the frame was made, so a choice
+  // made inside the frame afterwards left it stale. The framed page posts the
+  // new theme up; the outer page repaints.
+  const THEME = read('portal/portal-theme.js');
+  check('the framed page tells its parent when the theme changes',
+    /window\.top !== window\.self/.test(THEME) &&
+    /postMessage\(\{ type: 'trportal:theme', theme: value \}, window\.location\.origin\)/.test(THEME));
+  check('and only to its own origin', /window\.location\.origin\)/.test(THEME));
+
+  check('the outer page listens for exactly that message',
+    /data\.type !== 'trportal:theme'/.test(APPLY));
+  check('and refuses one from anywhere else',
+    /if \(event\.origin !== window\.location\.origin\) return;/.test(APPLY));
+  check('repainting the frame rather than reading storage again',
+    /function paint\(theme\)/.test(APPLY) &&
+    /frame\.style\.background = dark \? '#1C1D1A' : '#FFFDFB';/.test(APPLY));
+  check('the first paint still comes from what was stored',
+    /paint\(stored\(\)\);/.test(APPLY));
+
+  // Driven: a member with a session, the frame up, then the message.
+  const dom = open(session());
+  const win = dom.window;
+  await tick();
+  const frame = win.document.getElementById('trp-club-frame');
+  check('the frame starts on the light ground',
+    /255, ?253, ?251|#FFFDFB/i.test(frame.style.background), frame.style.background);
+
+  const post = (theme, origin) => win.dispatchEvent(new win.MessageEvent('message', {
+    data: { type: 'trportal:theme', theme: theme },
+    origin: origin,
+  }));
+
+  post('dark', 'https://timerich.ai');
+  check('the message from inside the frame repaints it dark',
+    /28, ?29, ?26|#1C1D1A/i.test(frame.style.background), frame.style.background);
+
+  post('light', 'https://evil.example');
+  check('a message from another origin is ignored',
+    /28, ?29, ?26|#1C1D1A/i.test(frame.style.background), frame.style.background);
+
+  post('light', 'https://timerich.ai');
+  check('and switching back repaints it light',
+    /255, ?253, ?251|#FFFDFB/i.test(frame.style.background), frame.style.background);
+}
+
 console.log('\n' + pass + ' passed, ' + fail + ' failed');
 process.exit(fail ? 1 : 0);

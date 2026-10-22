@@ -7,14 +7,14 @@
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="robots" content="noindex" />
   <title>Content Workshop &middot; Time Rich</title>
-  <meta name="description" content="Everything you need for the Time Rich content workshop: every code, prompt and link, in five steps. Build your content system in one evening." />
+  <meta name="description" content="Everything you need for the Time Rich content workshop: every code, prompt and link. Set up, then four steps. Build your content system in one evening." />
   <link rel="canonical" href="https://timerich.ai/contentworkshop" />
   <meta name="theme-color" content="#FFFDFB" />
   <meta property="og:type" content="website" />
   <meta property="og:site_name" content="Time Rich" />
   <meta property="og:url" content="https://timerich.ai/contentworkshop" />
   <meta property="og:title" content="Content Workshop &middot; Time Rich" />
-  <meta property="og:description" content="Everything you need for the Time Rich content workshop: every code, prompt and link, in five steps. Build your content system in one evening." />
+  <meta property="og:description" content="Everything you need for the Time Rich content workshop: every code, prompt and link. Set up, then four steps. Build your content system in one evening." />
   <meta property="og:image" content="https://timerich.ai/og-time-rich.png" />
   <meta name="twitter:card" content="summary_large_image" />
   <meta property="og:image:width" content="1200" />
@@ -35,8 +35,46 @@ a{color:#424B36}a:hover{color:#333A28}
 .joinbtn:hover{border-color:#424B36 !important;box-shadow:0 16px 34px -24px rgba(26,24,22,.4)}
 .annc:hover{background:#333A28 !important}
 .stepnav::-webkit-scrollbar{display:none}
-.social:hover{border-color:#7B6CF6 !important;color:#1A1816 !important}
-@container page (max-width: 560px){.donect{display:none !important}.stepshort{display:none}.heroside{padding:18px 20px !important}}
+.social:hover{border-color:#CCEEA0 !important;color:#1A1816 !important}
+@container page (max-width: 560px){.donect{display:none !important}.stepshort{display:none}.heroside{padding:18px 20px !important}.countlong{display:none}}
+@container page (min-width: 561px){.countshort{display:none}}
+
+/* ---- the numbered step dropdowns ------------------------------------
+   Each step is a <details>: the browser opens and closes it, so it works
+   with no JavaScript at all and a keyboard gets it for free. The script
+   only fills in the tickable rows and reads the counts back out. */
+.stepbox{background:#FFFFFF;border:1px solid rgba(26,24,22,.12);border-radius:20px;overflow:hidden}
+.stepbox[open]{border-color:rgba(66,75,54,.4);box-shadow:0 16px 34px -28px rgba(26,24,22,.4)}
+.stepbox[data-done="yes"]{background:#F7F8EE;border-color:rgba(103,118,46,.4)}
+.stepsum{display:flex;align-items:center;gap:14px;padding:16px 18px;min-height:44px;cursor:pointer;list-style:none;user-select:none}
+.stepsum::-webkit-details-marker{display:none}
+.stepsum:hover{background:#F2F3E4}
+.stepsum:focus-visible{outline:2px solid #424B36;outline-offset:-2px}
+.stepbadge{flex:0 0 auto;width:32px;height:32px;border-radius:50%;display:inline-flex;align-items:center;justify-content:center;font-family:'Inter',sans-serif;font-size:14px;font-weight:700;background:#D8D9B9;color:#333A28}
+.stepbox[data-done="yes"] .stepbadge{background:#424B36;color:#FFFDFB}
+.stepsumtext{flex:1 1 auto;min-width:0;display:flex;flex-direction:column;gap:3px}
+.stepkicker{font-family:'Inter',sans-serif;font-size:11px;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:#57534E}
+.steptitle{font-family:'Space Grotesk',system-ui,sans-serif;font-weight:600;font-size:clamp(19px,2.6cqi,24px);letter-spacing:-.03em;line-height:1.15}
+.stepcount{flex:0 0 auto;font-family:'Inter',sans-serif;font-size:12px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:#57534E;white-space:nowrap}
+.stepchev{flex:0 0 auto;color:#57534E;transition:transform .18s ease}
+.stepbox[open] .stepchev{transform:rotate(180deg)}
+@media(prefers-reduced-motion:reduce){.stepchev{transition:none}}
+.stepbody{display:flex;flex-direction:column;gap:18px;padding:4px 18px 22px}
+
+/* ---- the tickable rows inside a step -------------------------------- */
+.itemlist{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:10px}
+.itemrow{width:100%;display:flex;align-items:flex-start;gap:12px;text-align:left;background:#FFFDFB;border:1px solid rgba(26,24,22,.12);border-radius:14px;padding:14px;min-height:44px;cursor:pointer;font:inherit;color:#1A1816;transition:border-color .18s ease,background .18s ease}
+.itemrow:hover{background:#F2F3E4}
+.itemrow:focus-visible{outline:2px solid #424B36;outline-offset:2px}
+.itemrow[aria-pressed="true"]{background:#E5E6CF;border-color:rgba(103,118,46,.45)}
+.itemtext{flex:1 1 auto;min-width:0;display:flex;flex-direction:column;gap:4px}
+.itemname{font-size:16.5px;font-weight:600;line-height:1.4}
+.itemhelp{font-size:15px;line-height:1.5;color:#57534E}
+.itemopt{font-family:'Inter',sans-serif;font-size:11px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:#57534E}
+.shot{margin:10px 0 0;display:block;width:100%}
+.shot a{display:block;border-radius:12px;overflow:hidden;border:1px solid rgba(26,24,22,.14);background:#FFFFFF}
+.shot img{display:block;width:100%;height:auto}
+.shotcap{display:block;margin-top:6px;font-size:13px;line-height:1.45;color:#57534E}
 </style></head>
 <body>
 <div style="font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; color: #1A1816; background: #FFFDFB; min-height: 100vh; container-type: inline-size; container-name: page">
@@ -58,7 +96,7 @@ a{color:#424B36}a:hover{color:#333A28}
 <div style="flex: 999 1 540px; min-width: 0">
 <span style="display: block; font-family: 'Inter', sans-serif; font-size: 12px; letter-spacing: .08em; font-weight: 600; text-transform: uppercase; color: #57534E; margin-bottom: 20px">Live build night · New York</span>
 <h1 style="font-family: 'Space Grotesk', system-ui, sans-serif; font-weight: 600; font-size: clamp(36px, 6cqi, 58px); line-height: 1.06; letter-spacing: -.022em; margin: 0 0 20px; text-wrap: balance">Build your content system. Tonight.</h1>
-<p style="font-size: 17px; line-height: 1.6; color: #57534E; margin: 0; max-width: 56ch">Five steps, start to finish. Keep this page open all night: every code, prompt and link is here. Tick each step off as you go.</p>
+<p style="font-size: 17px; line-height: 1.6; color: #57534E; margin: 0; max-width: 56ch">Set up first, then four steps, start to finish. Keep this page open all night: every code, prompt and link is here. Tick each step off as you go.</p>
 </div>
 <div class="heroside" style="flex: 1 1 320px; background: #D8D9B9; border: 1px solid rgba(103,118,46,.22); border-radius: 20px; padding: 22px 24px; display: flex; flex-direction: column; gap: 14px">
 <span style="font-family: 'Inter', sans-serif; font-size: 12px; letter-spacing: .08em; font-weight: 600; text-transform: uppercase; color: #57534E">Mon 26 Oct · 5:30pm · Chelsea Pier 75, NYC</span>
@@ -89,7 +127,7 @@ a{color:#424B36}a:hover{color:#333A28}
 
 <div style="background: #FFFFFF; border: 1px solid rgba(26,24,22,.12); border-radius: 16px; padding: 20px; display: flex; flex-direction: column; gap: 12px">
 <span style="font-family: 'Inter', sans-serif; font-size: 12px; letter-spacing: .08em; font-weight: 600; text-transform: uppercase; color: #57534E; display: inline-flex; align-items: center; gap: 8px"><img src="/os/img/wispr-flow.png" alt="" width="22" height="22" style="width: 22px; height: 22px; border-radius: 6px; display: block">Wispr Flow · 6 months Pro</span>
-<div style="font-size: 15px">Wispr it instead of typing it. <a href="#step-0" style="font-weight: 500; white-space: nowrap">How to redeem ↓</a> · <a href="https://app.notion.com/p/superhumanos/Superhuman-Hacks-Wispr-Flow-400ca5ebe5578194a147f07bd667c21a" target="_blank" rel="noopener" style="font-weight: 500; white-space: nowrap">Setup guide and prompts ↗</a></div>
+<div style="font-size: 15px">Voice dictation and Notetaker. Wispr it instead of typing it. <a href="#step-0" style="font-weight: 500; white-space: nowrap">How to redeem ↓</a> · <a href="https://app.notion.com/p/superhumanos/Superhuman-Hacks-Wispr-Flow-400ca5ebe5578194a147f07bd667c21a" target="_blank" rel="noopener" style="font-weight: 500; white-space: nowrap">Setup guide and prompts ↗</a></div>
 <div style="display: flex; align-items: center; justify-content: space-between; gap: 10px; background: #D8D9B9; border-radius: 12px; padding: 8px 8px 8px 14px; margin-top: auto">
 <span style="font-family: 'Inter', sans-serif; font-size: 16px; font-weight: 700" id="wisprcode">TIMERICH6</span>
 <button type="button" class="copybtn" data-copy="wispr" style="flex: 0 0 auto; font: 500 13px 'Inter', sans-serif; letter-spacing: .06em; text-transform: uppercase; background: #424B36; color: #FFFFFF; border: 0; border-radius: 10px; padding: 0 16px; min-height: 44px; cursor: pointer">Copy</button>
@@ -108,10 +146,15 @@ a{color:#424B36}a:hover{color:#333A28}
 </div>
 </section>
 
+<!-- ============================================================
+     BEFORE YOU START. Always open, never a dropdown: it is the one
+     thing everybody needs in the first ten minutes and a closed box
+     would have the room hunting for the Wi-Fi.
+     ============================================================ -->
 <section id="step-0" aria-labelledby="h0" style="display: flex; flex-direction: column; gap: 20px">
 <div style="display: flex; align-items: center; gap: 12px; flex-wrap: wrap">
-<span style="font-family: 'Inter', sans-serif; font-size: 12px; font-weight: 700; letter-spacing: .1em; background: #424B36; color: #FFFDFB; border-radius: 999px; padding: 6px 12px">STEP 0</span>
-<span style="font-family: 'Inter', sans-serif; font-size: 12px; letter-spacing: .1em; text-transform: uppercase; color: #57534E">Before we start · 10 min</span>
+<span style="font-family: 'Inter', sans-serif; font-size: 12px; font-weight: 700; letter-spacing: .1em; background: #424B36; color: #FFFDFB; border-radius: 999px; padding: 6px 12px">BEFORE YOU START</span>
+<span style="font-family: 'Inter', sans-serif; font-size: 12px; letter-spacing: .1em; text-transform: uppercase; color: #57534E">10 min</span>
 </div>
 <h2 id="h0" style="font-family: 'Space Grotesk', system-ui, sans-serif; font-weight: 600; font-size: clamp(28px, 4.4cqi, 40px); letter-spacing: -.022em; line-height: 1.08; margin: 0">Set up your tools</h2>
 <p style="font-size: 17px; line-height: 1.6; color: #57534E; margin: 0; max-width: 62ch">Done at home already? Tick it off and help the person next to you. Not yet? We'll walk you through it now.</p>
@@ -119,17 +162,18 @@ a{color:#424B36}a:hover{color:#333A28}
 <div style="display: flex; flex-direction: column; gap: 16px">
 <div id="setuplist" style="background: #D8D9B9; border: 1px solid rgba(103,118,46,.22); border-radius: 16px; padding: 8px; display: grid; grid-template-columns: repeat(auto-fit, minmax(min(260px, 100%), 1fr))">
 </div>
+</div>
 <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(min(300px, 100%), 1fr)); gap: 16px">
 <div style="background: #FFFFFF; border: 1px solid rgba(26,24,22,.12); border-radius: 16px; padding: 22px; display: flex; flex-direction: column; gap: 12px">
 <h3 style="font-family: 'Space Grotesk', system-ui, sans-serif; font-weight: 600; font-size: 20px; letter-spacing: -.03em; margin: 0; display: flex; align-items: center; gap: 10px"><img src="/os/img/wispr-flow.png" alt="" width="32" height="32" style="width: 32px; height: 32px; border-radius: 8px; display: block"><span style="display: flex; flex-direction: column; gap: 2px">Redeem Wispr Flow<span style="font-family: Inter, sans-serif; font-size: 13px; font-weight: 500; letter-spacing: 0; color: #57534E">6 months Pro · code TIMERICH6</span></span></h3>
-<div style="font-size: 14px; line-height: 1.5; color: #57534E">Only works if you're new to Wispr Flow or on the free plan.</div>
+<div style="font-size: 14px; line-height: 1.5; color: #57534E">The code only works in the desktop app, and does nothing if you already pay for Wispr.</div>
 <ol style="margin: 0; padding-left: 20px; display: flex; flex-direction: column; gap: 8px; font-size: 16px; line-height: 1.5">
-<li>Download it on your Mac or PC at <a href="https://wisprflow.ai">wisprflow.ai</a>. Not on your phone.</li>
+<li>Install Wispr Flow on your laptop through <a href="https://ref.wisprflow.ai/ella-cook-vt27" target="_blank" rel="noopener sponsored">wisprflow.ai</a>.</li>
 <li>Open it and go to <strong style="font-weight: 600">Settings → Plans and Billing</strong>.</li>
-<li>Scroll to the very bottom and click the promo code link.</li>
-<li>Enter <strong style="font-family: 'Inter', sans-serif">TIMERICH6</strong>.</li>
+<li>Scroll to the very bottom and click the promo link.</li>
+<li>Enter <strong style="font-family: 'Inter', sans-serif">TIMERICH6</strong> for 6 months Pro.</li>
 </ol>
-<div style="font-size: 14px; line-height: 1.5; background: #E5E6CF; border-radius: 12px; padding: 10px 12px">Only enter the code in that spot. It won't work at checkout or on the payment screen.</div>
+<div style="font-size: 14px; line-height: 1.5; background: #E5E6CF; border-radius: 12px; padding: 10px 12px">No laptop? Use the free phone app tonight and add the code on your laptop later.</div>
 </div>
 <div style="background: #FFFFFF; border: 1px solid rgba(123,108,246,.35); border-radius: 16px; padding: 22px; display: flex; flex-direction: column; gap: 12px">
 <h3 style="font-family: 'Space Grotesk', system-ui, sans-serif; font-weight: 600; font-size: 20px; letter-spacing: -.03em; margin: 0; display: flex; align-items: center; gap: 10px"><img src="/os/img/stanley.png" alt="" width="32" height="32" style="width: 32px; height: 32px; border-radius: 8px; background: #EEEBFF; display: block"><span style="display: flex; flex-direction: column; gap: 2px">Redeem Stanley<span style="font-family: Inter, sans-serif; font-size: 13px; font-weight: 500; letter-spacing: 0; color: #57534E">1 month free · code STANLEY1MONTH</span></span></h3>
@@ -143,17 +187,27 @@ a{color:#424B36}a:hover{color:#333A28}
 <div style="font-size: 14px; line-height: 1.5; background: #EEEBFF; border-radius: 12px; padding: 10px 12px">Check the total shows 1 month free before you confirm.</div>
 </div>
 </div>
-</div>
 </section>
 
-<section id="step-1" aria-labelledby="h1s" style="display: flex; flex-direction: column; gap: 20px">
-<div style="display: flex; align-items: center; gap: 12px; flex-wrap: wrap">
-<span style="font-family: 'Inter', sans-serif; font-size: 12px; font-weight: 700; letter-spacing: .1em; background: #424B36; color: #FFFDFB; border-radius: 999px; padding: 6px 12px">STEP 1</span>
-<span style="font-family: 'Inter', sans-serif; font-size: 12px; letter-spacing: .1em; text-transform: uppercase; color: #57534E">Led by Mika</span>
-</div>
-<h2 id="h1s" style="font-family: 'Space Grotesk', system-ui, sans-serif; font-weight: 600; font-size: clamp(28px, 4.4cqi, 40px); letter-spacing: -.022em; line-height: 1.08; margin: 0">Build your content strategy brain</h2>
+<!-- ============================================================
+     THE BUILD: Step 1 to Step 4, each a numbered dropdown that is
+     also a checklist. The <details> shell and the rich panels are
+     written here; the tickable rows and their screenshots are
+     rendered into [data-items] by the script at the foot of the
+     page, which is also what counts them and opens the next step.
+     ============================================================ -->
+<details class="stepbox" id="step-1" data-step="1" open>
+<summary class="stepsum" data-sum="1">
+<span class="stepbadge" data-stepbadge="1"></span>
+<span class="stepsumtext">
+<span class="stepkicker">Step 1 · Led by Mika</span>
+<span class="steptitle" id="h1s">Content strategy brain</span>
+</span>
+<span class="stepcount" data-stepcount="1"></span>
+<svg class="stepchev" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6"></path></svg>
+</summary>
+<div class="stepbody">
 <p style="font-size: 17px; line-height: 1.6; color: #57534E; margin: 0; max-width: 62ch">Open Claude or ChatGPT and paste the prompt. It asks you questions one at a time. Wispr your answers instead of typing, and you leave with your content strategy file. Built on principles from Hannah Zhang (@itshannahzhang), product marketer and creator.</p>
-
 <div style="background: #333A28; color: #FFFDFB; border-radius: 20px; padding: clamp(16px, 3cqi, 24px); display: flex; flex-direction: column; gap: 14px">
 <div style="display: flex; align-items: center; justify-content: space-between; gap: 12px; flex-wrap: wrap">
 <span style="font-family: 'Inter', sans-serif; font-size: 12px; letter-spacing: .08em; font-weight: 600; text-transform: uppercase; color: #D8D9B9">Prompt · Content strategy interview</span>
@@ -166,41 +220,44 @@ a{color:#424B36}a:hover{color:#333A28}
 <pre style="margin: 0; white-space: pre-wrap; font-family: 'Inter', sans-serif; font-size: 15.5px; line-height: 1.65; color: #FFFDFB; background: rgba(255,253,251,.07); border-radius: 12px; padding: 18px; max-height: 340px; overflow-y: auto" id="mikaprompt" tabindex="0" aria-label="The Step 1 prompt"></pre>
 <div style="font-size: 14px; line-height: 1.5; color: #D8D9B9">Tip: hold your Wispr key and talk like you're telling a friend. Wispr it, don't type it. Messy is fine.</div>
 </div>
-</section>
-
-<section id="step-2" aria-labelledby="h2s" style="display: flex; flex-direction: column; gap: 20px">
-<div style="display: flex; align-items: center; gap: 12px; flex-wrap: wrap">
-<span style="font-family: 'Inter', sans-serif; font-size: 12px; font-weight: 700; letter-spacing: .1em; background: #424B36; color: #FFFDFB; border-radius: 999px; padding: 6px 12px">STEP 2</span>
-<span style="font-family: 'Inter', sans-serif; font-size: 12px; letter-spacing: .1em; text-transform: uppercase; color: #57534E">Led by Mika</span>
+<!-- TODO screenshots: nothing has been supplied for this step yet.
+     Drop the files into contentworkshop/img/ named step1-1.png,
+     step1-2.png and so on, then add a shot/alt pair to the matching
+     item in the STEPS table at the foot of this page. They will be
+     drawn under the sub-step they belong to. -->
+<ol class="itemlist" data-items="1"></ol>
 </div>
-<h2 id="h2s" style="font-family: 'Space Grotesk', system-ui, sans-serif; font-weight: 600; font-size: clamp(28px, 4.4cqi, 40px); letter-spacing: -.022em; line-height: 1.08; margin: 0">Give Stanley your context</h2>
+</details>
+
+<details class="stepbox" id="step-2" data-step="2">
+<summary class="stepsum" data-sum="2">
+<span class="stepbadge" data-stepbadge="2"></span>
+<span class="stepsumtext">
+<span class="stepkicker">Step 2 · Led by Mika</span>
+<span class="steptitle" id="h2s">Give Stanley your context</span>
+</span>
+<span class="stepcount" data-stepcount="2"></span>
+<svg class="stepchev" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6"></path></svg>
+</summary>
+<div class="stepbody">
 <p style="font-size: 17px; line-height: 1.6; color: #57534E; margin: 0; max-width: 62ch">Stanley writes in your voice once it knows you. Three moves, all inside Stanley:</p>
-<div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(min(240px, 100%), 1fr)); gap: 16px">
-<button type="button" data-ctx="0" aria-pressed="false" style="">
-<span data-ctxbox="0"></span>
-<h3 style="font-family: 'Space Grotesk', system-ui, sans-serif; font-weight: 600; font-size: 20px; letter-spacing: -.03em; margin: 4px 0 0; text-align: left">Drop in your strategy</h3>
-<div style="font-size: 15.5px; line-height: 1.55; color: #57534E; text-align: left">Go to Brain → Files and click + to add the strategy file from Step 1.</div>
-</button>
-<button type="button" data-ctx="1" aria-pressed="false" style="">
-<span data-ctxbox="1"></span>
-<h3 style="font-family: 'Space Grotesk', system-ui, sans-serif; font-weight: 600; font-size: 20px; letter-spacing: -.03em; margin: 4px 0 0; text-align: left">Connect your tools</h3>
-<div style="font-size: 15.5px; line-height: 1.55; color: #57534E; text-align: left">In Connectors, add Slack, your calendar, email, your meetings (Wispr Flow) and the platforms you already post to.</div>
-</button>
-<button type="button" data-ctx="2" aria-pressed="false" style="">
-<span data-ctxbox="2"></span>
-<h3 style="font-family: 'Space Grotesk', system-ui, sans-serif; font-weight: 600; font-size: 20px; letter-spacing: -.03em; margin: 4px 0 0; text-align: left">Add your past content (optional)</h3>
-<div style="font-size: 15.5px; line-height: 1.55; color: #57534E; text-align: left">Existing posts, newsletters, your website, or other people's posts you take inspiration from. More context, better tone.</div>
-</button>
+<ol class="itemlist" data-items="2"></ol>
 </div>
-</section>
+</details>
 
-<section id="step-3" aria-labelledby="h3k" style="display: flex; flex-direction: column; gap: 20px">
-<div style="display: flex; align-items: center; gap: 12px; flex-wrap: wrap">
-<span style="font-family: 'Inter', sans-serif; font-size: 12px; font-weight: 700; letter-spacing: .1em; background: #424B36; color: #FFFDFB; border-radius: 999px; padding: 6px 12px">STEP 3</span>
-<span style="font-family: 'Inter', sans-serif; font-size: 12px; letter-spacing: .1em; text-transform: uppercase; color: #57534E">Led by Mika</span>
-</div>
-<h2 id="h3k" style="font-family: 'Space Grotesk', system-ui, sans-serif; font-weight: 600; font-size: clamp(28px, 4.4cqi, 40px); letter-spacing: -.022em; line-height: 1.08; margin: 0">Create a skill that writes your posts</h2>
-<p style="font-size: 17px; line-height: 1.6; color: #57534E; margin: 0; max-width: 62ch">In Stanley, go to Brain → Skills, click + and name the new skill <strong style="font-weight: 600; color: #1A1816">linkedin-content</strong>. Paste the skill below. From then on it collects your context, interviews you, offers five angles and five hooks, drafts in your voice and scores the post for shareability and curiosity.</p>
+<details class="stepbox" id="step-3" data-step="3">
+<summary class="stepsum" data-sum="3">
+<span class="stepbadge" data-stepbadge="3"></span>
+<span class="stepsumtext">
+<span class="stepkicker">Step 3 · Led by Mika</span>
+<span class="steptitle" id="h3k">The linkedin-content skill</span>
+</span>
+<span class="stepcount" data-stepcount="3"></span>
+<svg class="stepchev" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6"></path></svg>
+</summary>
+<div class="stepbody">
+<p style="font-size: 17px; line-height: 1.6; color: #57534E; margin: 0; max-width: 62ch">A skill is a saved set of instructions Stanley follows every time you ask. This one collects your context, interviews you, offers five angles and five hooks, drafts in your voice and scores the post for shareability and curiosity.</p>
+<ol class="itemlist" data-items="3"></ol>
 <div style="background: #333A28; color: #FFFDFB; border-radius: 20px; padding: clamp(16px, 3cqi, 24px); display: flex; flex-direction: column; gap: 14px">
 <div style="display: flex; align-items: center; justify-content: space-between; gap: 12px; flex-wrap: wrap">
 <span style="font-family: 'Inter', sans-serif; font-size: 12px; letter-spacing: .08em; font-weight: 600; text-transform: uppercase; color: #D8D9B9">Skill · linkedin-content</span>
@@ -365,18 +422,22 @@ Keep the assessment brief and outside the post.
 - Preserve the chosen direction during revisions unless the user requests a change.
 - Never publish or schedule without explicit user instruction.
 </pre>
-<div style="font-size: 14px; line-height: 1.5; color: #D8D9B9">Screenshots of each Stanley screen are in <a href="https://app.notion.com/p/Content-Creation-Workshop-10-26-3ff800cb4dd480ddb2f4e0bb54cb43fe" style="color: #FFFDFB">Mika's workshop notes</a>.</div>
 </div>
-</section>
+</div>
+</details>
 
-<section id="step-4" aria-labelledby="h3s" style="display: flex; flex-direction: column; gap: 20px">
-<div style="display: flex; align-items: center; gap: 12px; flex-wrap: wrap">
-<span style="font-family: 'Inter', sans-serif; font-size: 12px; font-weight: 700; letter-spacing: .1em; background: #424B36; color: #FFFDFB; border-radius: 999px; padding: 6px 12px">STEP 4</span>
-<span style="font-family: 'Inter', sans-serif; font-size: 12px; letter-spacing: .1em; text-transform: uppercase; color: #57534E">Led by Mika</span>
-</div>
-<h2 id="h3s" style="font-family: 'Space Grotesk', system-ui, sans-serif; font-weight: 600; font-size: clamp(28px, 4.4cqi, 40px); letter-spacing: -.022em; line-height: 1.08; margin: 0">Create your first post</h2>
+<details class="stepbox" id="step-4" data-step="4">
+<summary class="stepsum" data-sum="4">
+<span class="stepbadge" data-stepbadge="4"></span>
+<span class="stepsumtext">
+<span class="stepkicker">Step 4 · Led by Mika</span>
+<span class="steptitle" id="h3s">Your first post</span>
+</span>
+<span class="stepcount" data-stepcount="4"></span>
+<svg class="stepchev" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6"></path></svg>
+</summary>
+<div class="stepbody">
 <p style="font-size: 17px; line-height: 1.6; color: #57534E; margin: 0; max-width: 62ch">Choose a topic based on your business goal, then call your skill with one line about it. Answer its interview questions with Wispr and refine the draft. Posting tonight is optional. Drafting is the win.</p>
-
 <div id="funneltabs" role="tablist" aria-label="Funnel stage" style="display: flex; gap: 8px; flex-wrap: wrap">
 </div>
 <div style="background: #D8D9B9; border: 1px solid rgba(103,118,46,.22); border-radius: 16px; padding: 22px; display: flex; flex-direction: column; gap: 14px">
@@ -384,7 +445,6 @@ Keep the assessment brief and outside the post.
 <div id="topicchips" style="display: flex; flex-wrap: wrap; gap: 10px">
 </div>
 </div>
-
 <div style="background: #333A28; color: #FFFDFB; border-radius: 20px; padding: clamp(16px, 3cqi, 24px); display: flex; flex-direction: column; gap: 14px">
 <div style="display: flex; align-items: center; justify-content: space-between; gap: 12px; flex-wrap: wrap">
 <span style="font-family: 'Inter', sans-serif; font-size: 12px; letter-spacing: .08em; font-weight: 600; text-transform: uppercase; color: #D8D9B9">Say this to Stanley</span>
@@ -392,26 +452,42 @@ Keep the assessment brief and outside the post.
 </div>
 <pre style="margin: 0; white-space: pre-wrap; font-family: 'Inter', sans-serif; font-size: 15.5px; line-height: 1.65; color: #FFFDFB; background: rgba(255,253,251,.07); border-radius: 12px; padding: 18px">Use my linkedin-content skill. My topic: [one line about your topic]</pre>
 </div>
-
+<!-- TODO screenshots: nothing has been supplied for this step yet.
+     Drop the files into contentworkshop/img/ named step4-1.png,
+     step4-2.png and so on, then add a shot/alt pair to the matching
+     item in the STEPS table at the foot of this page. They will be
+     drawn under the sub-step they belong to. -->
+<ol class="itemlist" data-items="4"></ol>
 <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(min(260px, 100%), 1fr)); gap: 16px">
 <div style="background: #E5E6CF; border-radius: 16px; padding: 18px 20px; font-size: 15.5px; line-height: 1.55"><strong style="font-weight: 600">Our demo post</strong> is about tonight. Tag Stanley, Wispr Flow, Mika and Ella.</div>
 <div style="background: #E5E6CF; border-radius: 16px; padding: 18px 20px; font-size: 15.5px; line-height: 1.55"><strong style="font-weight: 600">Group photo</strong> goes into your Stanley photos folder, ready for your post.</div>
 </div>
-</section>
-
-<section id="step-5" aria-labelledby="h4s" style="display: flex; flex-direction: column; gap: 20px">
-<div style="display: flex; align-items: center; gap: 12px; flex-wrap: wrap">
-<span style="font-family: 'Inter', sans-serif; font-size: 12px; font-weight: 700; letter-spacing: .1em; background: #424B36; color: #FFFDFB; border-radius: 999px; padding: 6px 12px">STEP 5</span>
-<span style="font-family: 'Inter', sans-serif; font-size: 12px; letter-spacing: .1em; text-transform: uppercase; color: #57534E">Led by Ella · 15 min</span>
 </div>
-<h2 id="h4s" style="font-family: 'Space Grotesk', system-ui, sans-serif; font-weight: 600; font-size: clamp(28px, 4.4cqi, 40px); letter-spacing: -.022em; line-height: 1.08; margin: 0">Turn on your rituals</h2>
+</details>
+
+<!-- ============================================================
+     AFTER TONIGHT. The last dropdown, and the one nobody has to
+     finish in the room: the rituals run from here on.
+     ============================================================ -->
+<details class="stepbox" id="step-5" data-step="5">
+<summary class="stepsum" data-sum="5">
+<span class="stepbadge" data-stepbadge="5"></span>
+<span class="stepsumtext">
+<span class="stepkicker">After tonight · Led by Ella</span>
+<span class="steptitle" id="h4s">Turn on your rituals</span>
+</span>
+<span class="stepcount" data-stepcount="5"></span>
+<svg class="stepchev" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6"></path></svg>
+</summary>
+<div class="stepbody">
 <p style="font-size: 17px; line-height: 1.6; color: #57534E; margin: 0; max-width: 62ch">LinkedIn only, to keep it simple. Switch on two or three and Stanley runs them for you.</p>
 <div id="ritualcards" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(min(260px, 100%), 1fr)); gap: 16px">
 </div>
-</section>
+</div>
+</details>
 
 <section id="win" aria-labelledby="winh" style="position: relative; background: #424B36; color: #FFFDFB; border-radius: 24px; padding: clamp(24px, 5cqi, 48px); display: flex; flex-direction: column; gap: 28px">
-<span style="position: absolute; right: clamp(12px, 3cqi, 28px); top: -14px; transform: rotate(6deg); background: #7B6CF6; color: #FFFFFF; font-family: 'Inter', sans-serif; font-size: 11px; letter-spacing: .12em; text-transform: uppercase; padding: 9px 13px; border-radius: 999px; box-shadow: 0 10px 24px -12px rgba(26,24,22,.45); white-space: nowrap">5 SEATS TO WIN</span>
+<span style="position: absolute; right: clamp(12px, 3cqi, 28px); top: -14px; transform: rotate(6deg); background: #CCEEA0; color: #2C3422; font-family: 'Inter', sans-serif; font-size: 11px; letter-spacing: .12em; text-transform: uppercase; padding: 9px 13px; border-radius: 999px; box-shadow: 0 10px 24px -12px rgba(26,24,22,.45); white-space: nowrap">5 SEATS TO WIN</span>
 <div style="display: flex; flex-wrap: wrap; gap: 32px; align-items: flex-start">
 <div style="flex: 999 1 460px; min-width: 0; display: flex; flex-direction: column; gap: 14px">
 <span style="font-family: 'Inter', sans-serif; font-size: 12px; letter-spacing: .08em; font-weight: 600; text-transform: uppercase; color: #D8D9B9">Superhuman Accelerator · Win a seat</span>
@@ -431,6 +507,24 @@ Keep the assessment brief and outside the post.
 <button type="button" class="copylt" data-copy="tags" style="font: 500 13px 'Inter', sans-serif; letter-spacing: .06em; text-transform: uppercase; background: #D8D9B9; color: #1A1816; border: 0; border-radius: 10px; padding: 0 16px; min-height: 44px; cursor: pointer">Copy tags</button>
 </div>
 </div>
+</div>
+
+<!-- The second prize, directly under the five seats and a different shape
+     from them: five seats go to five people, this one goes to the best post.
+     Its own band across the foot of the card so the two are not read as the
+     same thing.
+
+     The six months here is the prize and nothing else. Everyone in the room
+     gets one month on STANLEY1MONTH, which is what the code card at the top
+     of the page says, and the test suite holds those two numbers apart.
+
+     The draw date comes from WORKSHOP.winnersWhen, the same value the "How
+     to enter" list above reads. It is said twice on this page now, and a
+     date that is right in one place and stale in the other is worse than
+     either -- so there is still only one of it. -->
+<div id="vipprize" style="display: flex; align-items: flex-start; gap: 14px; background: rgba(255,253,251,.08); border: 1px solid rgba(216,217,185,.28); border-left: 4px solid #CCEEA0; border-radius: 16px; padding: 18px 20px">
+<img src="/os/img/stanley.png" alt="" width="32" height="32" style="flex: 0 0 auto; width: 32px; height: 32px; border-radius: 8px; background: #EEEBFF; object-fit: contain; display: block"/>
+<span style="font-size: 16.5px; line-height: 1.55; color: #FFFDFB; min-width: 0">Best post wins: a VIP setup by the Stanley team: brain, voice and rituals built with you ($1,000 value), plus 6 months of Stanley Premium. We draw the winner on <span id="vipwhen"></span>.</span>
 </div>
 </section>
 
@@ -601,7 +695,7 @@ After the block, tell me to paste the worksheet into my Notion page.
 Start the interview now.`,
 
     /* 2. When and where the five Accelerator winners are announced. */
-    winnersWhen: "Tuesday 27 Oct at 12pm ET"
+    winnersWhen: "Tuesday 27 October at 12pm ET"
   };
 
   /* ==================================================================== */
@@ -612,8 +706,38 @@ Start the interview now.`,
     return String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
   };
 
-  var state = { copied: null, stage: 0, done: {}, context: {}, rituals: { 0: true } };
+  /* ---- what the page remembers ---------------------------------------
+     One map of ticks, keyed by item, shared by the setup rows at the top
+     and by every sub-step inside the dropdowns. The copy buttons write
+     into the same map, under the key their item carries, so there is one
+     answer to "is this done?" and not two.
 
+     Kept in localStorage so a refresh in the middle of the night does not
+     lose the evening. Every touch is wrapped: a private window, or blocked
+     site data, must leave the page working and simply not remember. */
+  var STORE = 'tr_contentworkshop';
+
+  var state = { copied: null, stage: 0, done: {}, rituals: { 0: true } };
+
+  function load() {
+    try {
+      var saved = JSON.parse(window.localStorage.getItem(STORE) || 'null');
+      if (!saved || typeof saved !== 'object') { return; }
+      if (saved.done && typeof saved.done === 'object') { state.done = saved.done; }
+      if (saved.rituals && typeof saved.rituals === 'object') { state.rituals = saved.rituals; }
+      if (typeof saved.stage === 'number') { state.stage = saved.stage; }
+    } catch (e) { /* nothing remembered, which is not a broken page */ }
+  }
+
+  function save() {
+    try {
+      window.localStorage.setItem(STORE, JSON.stringify({
+        done: state.done, rituals: state.rituals, stage: state.stage
+      }));
+    } catch (e) { /* the evening still works, it just will not survive a refresh */ }
+  }
+
+  var SETUP_KEYS = ['s0', 's1', 's2', 's3'];
   var SETUP = [
     'Laptop and charger',
     'ChatGPT or Claude installed and signed in',
@@ -623,9 +747,65 @@ Start the interview now.`,
 
   var STEP_NAMES = ['Set up', 'Strategy', 'Context', 'Skill', 'First post', 'Rituals'];
 
-  /* Step 2's three moves. The third is the one the page marks optional, so
-     Step 2 counts as done once the two required ones are ticked. */
-  var CONTEXT = [{ required: true }, { required: true }, { required: false }];
+  /* ---- the sub-steps, one list per dropdown ---------------------------
+     `key`   the tick's name in state.done. Three of them -- p1, sk, p2 --
+             are also what a copy button writes, so copying the prompt
+             ticks that row and nothing else.
+     `opt`   shown as optional and not required for the step to complete,
+             but still counted in "2 of 3 done".
+     `shot`  a file in contentworkshop/img/, drawn under the row it
+             belongs to. `alt` is what it says with images off.
+
+     Steps 1 and 4 have no screenshots yet: nothing was supplied for them.
+     Add a file to contentworkshop/img/ and a `shot`/`alt` pair here. */
+  var STEPS = [
+    { n: 1, items: [
+      { key: 'p1', name: 'Copy the prompt and open Claude or ChatGPT',
+        help: 'The buttons above open either one in a new tab.' },
+      { key: 'i1b', name: 'Answer its questions out loud with Wispr',
+        help: 'Hold your Wispr key and talk like you are telling a friend. Messy is fine.' },
+      { key: 'i1c', name: 'Save the worksheet it hands you at the end',
+        help: 'It comes back as one block you can paste straight into Notion.' }
+    ] },
+    { n: 2, items: [
+      { key: 'i2a', name: 'Drop in your strategy',
+        help: 'Go to Brain → Files and click + to add the strategy file from Step 1.',
+        shot: 'step2-1.png', w: 503, h: 403,
+        alt: "Stanley's Brain panel: the Files section is open with a + button beside it, and two files listed under it." },
+      { key: 'i2b', name: 'Connect your tools',
+        help: 'In Connectors, add Slack, your calendar, email, the platforms you already post to, and Wispr Flow Notetaker for your meetings. Record, with everyone’s OK.',
+        shot: 'step2-2.png', w: 1146, h: 907,
+        alt: "Stanley's Connectors screen, with the apps grouped into Core, Meetings, Newsletters and Other. Connected ones carry a green tick." },
+      { key: 'i2c', name: 'Add your past content', opt: true,
+        help: "Existing posts, newsletters, your website, or other people's posts you take inspiration from. More context, better tone.",
+        shot: 'step2-3.png', w: 298, h: 195,
+        alt: 'A folder of past posts, one folder per post, named by topic.' }
+    ] },
+    { n: 3, items: [
+      { key: 'sk', name: 'Copy the skill',
+        help: 'The whole thing, from the panel below.' },
+      { key: 'i3b', name: 'In Stanley, go to Brain → Skills, click + and name it linkedin-content',
+        help: 'The name matters: it is what you call in Step 4.',
+        shot: 'step3-1.png', w: 509, h: 437,
+        alt: "Stanley's Brain panel: the Skills section is open with a skill named linkedin-content under it." },
+      { key: 'i3c', name: 'Paste the skill in and save it',
+        help: 'From then on it collects your context, interviews you, offers angles and hooks, and scores the draft.' }
+    ] },
+    { n: 4, items: [
+      { key: 'i4a', name: 'Pick a topic that matches your goal',
+        help: 'Use the funnel tabs above and take one of the three.' },
+      { key: 'p2', name: 'Copy the line and say it to Stanley',
+        help: 'One line about your topic is all it needs to start.' },
+      { key: 'i4c', name: 'Answer its interview, then refine the draft',
+        help: 'Posting tonight is optional. Drafting is the win.' }
+    ] }
+  ];
+
+  /* How many rituals count as "switched on". The member picks which two. */
+  var RITUALS_NEEDED = 2;
+
+  var ITEMS_BY_STEP = {};
+  STEPS.forEach(function (step) { ITEMS_BY_STEP[step.n] = step.items; });
 
   var STAGES = [
     { name: 'Top: be discovered', title: 'Top of funnel.', help: 'Help new people discover you. Pick one:', topics: ['Relatable frustration: plenty of ideas, until you open a blank draft', 'Opinion: your best content is hiding in your clients’ questions', 'Personal story: why I waited so long to share my work publicly'] },
@@ -643,6 +823,7 @@ Start the interview now.`,
   /* ---- the open answers, written into the page ------------------------ */
   one('#mikaprompt').textContent = WORKSHOP.mikaPrompt;
   one('#winnerswhen').textContent = WORKSHOP.winnersWhen;
+  one('#vipwhen').textContent = WORKSHOP.winnersWhen;
 
   /* ---- copy buttons --------------------------------------------------- */
   /* Everything copied here is also on the page, so each button reads its
@@ -684,15 +865,8 @@ Start the interview now.`,
       + (ok ? 'background: #424B36; color: #FFFDFB' : 'background: #D8D9B9; color: #333A28');
   }
   function boxStyle(on) {
-    return 'flex: 0 0 auto; width: 24px; height: 24px; border-radius: 50%; display: inline-flex; align-items: center; justify-content: center; font-weight: 700; font-size: 13px; '
+    return 'flex: 0 0 auto; width: 24px; height: 24px; border-radius: 50%; display: inline-flex; align-items: center; justify-content: center; font-weight: 700; font-size: 13px; margin-top: 1px; '
       + (on ? 'background: #424B36; color: #FFFDFB; border: 2px solid #424B36' : 'background: #FFFDFB; color: transparent; border: 2px solid rgba(66,75,54,.45)');
-  }
-  function ctxCardStyle(on) {
-    return 'background: #D8D9B9; border-radius: 16px; padding: 22px; display: flex; flex-direction: column; align-items: flex-start; gap: 8px; width: 100%; min-height: 44px; font: inherit; color: #1A1816; cursor: pointer; transition: border-color .18s ease, box-shadow .18s ease; '
-      + (on ? 'border: 2px solid #424B36; box-shadow: 0 16px 34px -24px rgba(26,24,22,.4)' : 'border: 1px solid rgba(103,118,46,.22)');
-  }
-  function ctxBoxStyle() {
-    return 'flex: 0 0 auto; width: 32px; height: 32px; border-radius: 50%; background: #424B36; color: #FFFDFB; display: inline-flex; align-items: center; justify-content: center; font-family: \'Inter\', sans-serif; font-size: 13px; font-weight: 700';
   }
   function tabStyle(sel) {
     return 'font: 500 15px Inter, sans-serif; border-radius: 999px; padding: 0 18px; min-height: 44px; cursor: pointer; '
@@ -708,9 +882,9 @@ Start the interview now.`,
   }
 
   /* ---- the repeated bits, built once ---------------------------------
-     Built here and then only patched by render(), so clicking a toggle
-     never replaces the element under the pointer, and a keyboard user
-     keeps focus on the row they just pressed. */
+     Built here and then only patched by render(), so ticking a row never
+     replaces the element under the pointer, and a keyboard user keeps
+     focus on the row they just pressed. */
   one('#stepnav').innerHTML = STEP_NAMES.map(function (n, i) {
     return '<a href="#step-' + i + '" class="stepdot" style="flex: 0 0 auto; display: flex; align-items: center; gap: 8px; text-decoration: none; color: #1A1816; padding: 8px 12px 8px 8px; border-radius: 999px; min-height: 28px">'
       + '<span data-badge="' + i + '"></span>'
@@ -724,6 +898,39 @@ Start the interview now.`,
       + '<span>' + esc(label) + '</span>'
       + '</button>';
   }).join('');
+
+  /* One <li> per sub-step: the tickable row, and under it the screenshot of
+     the screen that row is talking about. The image is a link to the file
+     itself, so a tap opens it full size. */
+  function itemMarkup(item) {
+    /* The card's full width on a phone, which is where this page is read,
+       but never wider than the file itself: these are small captures and a
+       503px screenshot stretched across a 1120px desktop card is a blur.
+       w and h are the file's own pixels, so nothing shifts as it loads. */
+    var shot = item.shot
+      ? '<figure class="shot" style="max-width: ' + item.w + 'px">'
+        + '<a href="img/' + esc(item.shot) + '" target="_blank" rel="noopener">'
+        + '<img src="img/' + esc(item.shot) + '" alt="' + esc(item.alt || '') + '"'
+        + ' width="' + item.w + '" height="' + item.h + '" loading="lazy" decoding="async">'
+        + '</a>'
+        + '<figcaption class="shotcap">Tap to open it full size.</figcaption>'
+        + '</figure>'
+      : '';
+    return '<li>'
+      + '<button type="button" class="itemrow" data-item="' + esc(item.key) + '" aria-pressed="false">'
+      + '<span data-itembox="' + esc(item.key) + '"></span>'
+      + '<span class="itemtext">'
+      + '<span class="itemname">' + esc(item.name) + (item.opt ? ' <span class="itemopt">Optional</span>' : '') + '</span>'
+      + '<span class="itemhelp">' + esc(item.help) + '</span>'
+      + '</span>'
+      + '</button>'
+      + shot
+      + '</li>';
+  }
+
+  STEPS.forEach(function (step) {
+    one('[data-items="' + step.n + '"]').innerHTML = step.items.map(itemMarkup).join('');
+  });
 
   one('#funneltabs').innerHTML = STAGES.map(function (s, i) {
     return '<button type="button" role="tab" data-stage="' + i + '" aria-selected="false" style="">' + esc(s.name) + '</button>';
@@ -744,32 +951,87 @@ Start the interview now.`,
     one(sel).addEventListener('click', function (e) {
       var btn = e.target && e.target.closest ? e.target.closest('[' + attr + ']') : null;
       if (!btn) { return; }
-      fn(Number(btn.getAttribute(attr)));
+      fn(btn.getAttribute(attr));
       render();
     });
   }
 
-  delegate('#setuplist', 'data-setup', function (i) { state.done['s' + i] = !state.done['s' + i]; });
-  delegate('#funneltabs', 'data-stage', function (i) { state.stage = i; });
+  delegate('#setuplist', 'data-setup', function (i) {
+    var key = SETUP_KEYS[Number(i)];
+    state.done[key] = !state.done[key];
+  });
+  delegate('#funneltabs', 'data-stage', function (i) { state.stage = Number(i); });
   delegate('#ritualcards', 'data-ritual', function (i) { state.rituals[i] = !state.rituals[i]; });
+
+  /* The sub-step rows live inside the dropdowns, so this one is delegated
+     from the document rather than from a single container. */
   document.addEventListener('click', function (e) {
-    var btn = e.target && e.target.closest ? e.target.closest('[data-ctx]') : null;
+    var btn = e.target && e.target.closest ? e.target.closest('[data-item]') : null;
     if (!btn) { return; }
-    var i = Number(btn.getAttribute('data-ctx'));
-    state.context[i] = !state.context[i];
+    var key = btn.getAttribute('data-item');
+    state.done[key] = !state.done[key];
     render();
   });
 
+  /* A step dot in the top bar points at a dropdown that may be closed.
+     Following the link would scroll to a shut box, so open it first. */
+  one('#stepnav').addEventListener('click', function (e) {
+    var link = e.target && e.target.closest ? e.target.closest('a[href^="#"]') : null;
+    if (!link) { return; }
+    var box = document.querySelector(link.getAttribute('href'));
+    if (box && box.tagName === 'DETAILS') { box.open = true; }
+  });
+
   /* ---- which steps count as done --------------------------------------
-     One trigger each: Step 1 is the prompt copy, Step 2 is its own ticks. */
+     One rule for the whole page: a step is done when every sub-step that
+     is not marked optional is ticked. Set-up is its four rows, and the
+     rituals are the two the member has to switch on.
+
+     The copy buttons feed the same map of ticks, under the key their own
+     row carries, so copying the Step 1 prompt ticks that row and nothing
+     else -- the trigger that used to complete the whole step. */
+  function itemsDone(items) {
+    var done = 0;
+    items.forEach(function (item) { if (state.done[item.key]) { done++; } });
+    return done;
+  }
+
+  function stepReady(items) {
+    return items.every(function (item) { return item.opt || !!state.done[item.key]; });
+  }
+
+  function ritualsOn() {
+    return RITUALS.filter(function (_, i) { return !!state.rituals[i]; }).length;
+  }
+
+  /* Index 0 is set-up, 1 to 4 are the build, 5 is the rituals. */
   function stepDone() {
-    var setupAll = SETUP.every(function (_, i) { return !!state.done['s' + i]; });
-    var contextAll = CONTEXT.every(function (c, i) { return !c.required || !!state.context[i]; });
-    var ritualsOn = RITUALS.filter(function (_, i) { return !!state.rituals[i]; }).length;
-    return [setupAll, !!state.done.p1, contextAll, !!state.done.sk, !!state.done.p2, ritualsOn >= 2];
+    return [
+      SETUP_KEYS.every(function (key) { return !!state.done[key]; }),
+      stepReady(ITEMS_BY_STEP[1]),
+      stepReady(ITEMS_BY_STEP[2]),
+      stepReady(ITEMS_BY_STEP[3]),
+      stepReady(ITEMS_BY_STEP[4]),
+      ritualsOn() >= RITUALS_NEEDED
+    ];
+  }
+
+  /* The dropdown's own header: the number or a tick, and "2 of 3 done". */
+  function paintHeader(n, done, count, total, word) {
+    var box = document.getElementById('step-' + n);
+    var badge = one('[data-stepbadge="' + n + '"]');
+    var label = one('[data-stepcount="' + n + '"]');
+    if (box) { box.setAttribute('data-done', done ? 'yes' : 'no'); }
+    if (badge) { badge.textContent = done ? '✓' : String(n); }
+    if (label) {
+      label.innerHTML = '<span class="countlong">' + count + ' of ' + total + ' ' + word + '</span>'
+        + '<span class="countshort">' + count + '/' + total + '</span>';
+    }
   }
 
   /* ---- render: patch what the state changed, nothing else ------------- */
+  var wasDone = null;
+
   function render() {
     var dn = stepDone();
 
@@ -781,22 +1043,24 @@ Start the interview now.`,
     one('#donecount').textContent = dn.filter(Boolean).length;
 
     SETUP.forEach(function (label, i) {
-      var on = !!state.done['s' + i];
+      var on = !!state.done[SETUP_KEYS[i]];
       one('[data-setup="' + i + '"]').setAttribute('aria-pressed', on ? 'true' : 'false');
       var box = one('[data-box="' + i + '"]');
       box.setAttribute('style', boxStyle(on));
       box.textContent = on ? '✓' : '';
     });
 
-    CONTEXT.forEach(function (c, i) {
-      var on = !!state.context[i];
-      var card = one('[data-ctx="' + i + '"]');
-      card.setAttribute('aria-pressed', on ? 'true' : 'false');
-      card.setAttribute('style', ctxCardStyle(on));
-      var box = one('[data-ctxbox="' + i + '"]');
-      box.setAttribute('style', ctxBoxStyle());
-      box.textContent = on ? '✓' : String(i + 1);
+    STEPS.forEach(function (step) {
+      step.items.forEach(function (item) {
+        var on = !!state.done[item.key];
+        one('[data-item="' + item.key + '"]').setAttribute('aria-pressed', on ? 'true' : 'false');
+        var box = one('[data-itembox="' + item.key + '"]');
+        box.setAttribute('style', boxStyle(on));
+        box.textContent = on ? '✓' : '';
+      });
+      paintHeader(step.n, dn[step.n], itemsDone(step.items), step.items.length, 'done');
     });
+    paintHeader(5, dn[5], ritualsOn(), RITUALS.length, 'on');
 
     STAGES.forEach(function (s, i) {
       var sel = state.stage === i;
@@ -825,8 +1089,25 @@ Start the interview now.`,
       var key = btn.getAttribute('data-copy');
       btn.textContent = state.copied === key ? 'Copied ✓' : COPY[key].idle;
     });
+
+    /* A step that has just been finished hands over to the next one. Only
+       on the change, so a member who shuts a finished step again does not
+       have it reopened under them on the next tick. The first render has
+       nothing to compare against, so it opens nothing. */
+    if (wasDone) {
+      dn.forEach(function (done, i) {
+        if (done && !wasDone[i]) {
+          var next = document.getElementById('step-' + (i + 1));
+          if (next && next.tagName === 'DETAILS') { next.open = true; }
+        }
+      });
+    }
+    wasDone = dn;
+
+    save();
   }
 
+  load();
   render();
 })();
 </script>

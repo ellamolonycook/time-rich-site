@@ -453,10 +453,4 @@ body { animation: trp-fade-in 180ms ease-out both; }
 .trp-day-night[aria-checked=true] .trp-day-night-thumb{transform:translateX(38px)}
 .trp-day-night:hover{border-color:var(--trp-rule-2)}
 .trp-day-night:focus-visible{outline:2px solid rgb(var(--c-olive));outline-offset:3px}
-.trp-stanley-clean{position:relative;display:inline-block;width:114px;height:38px;overflow:hidden;vertical-align:middle;flex:none;filter:grayscale(1) brightness(.5);transition:filter .2s}
-.trp-powered .trp-stanley-clean img,.trp-credit .trp-stanley-clean img{position:absolute;display:block;width:146px;height:89px;max-width:none;left:-16px;top:-25px;object-fit:contain;opacity:1}
-.trp-powered:hover .trp-stanley-clean,.trp-credit:hover .trp-stanley-clean{filter:brightness(.8)}
-:root[data-theme=dark] .trp-stanley-clean{filter:grayscale(1) brightness(.9)}
-:root[data-theme=dark] .trp-powered:hover .trp-stanley-clean,:root[data-theme=dark] .trp-credit:hover .trp-stanley-clean{filter:none}
-@media(prefers-color-scheme:dark){:root[data-theme=system] .trp-stanley-clean{filter:grayscale(1) brightness(.9)}}
-@media(prefers-reduced-motion:reduce){.trp-day-night-thumb,.trp-stanley-clean{transition:none}}
+@media(prefers-reduced-motion:reduce){.trp-day-night-thumb{transition:none}}
