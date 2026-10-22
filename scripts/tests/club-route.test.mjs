@@ -171,8 +171,8 @@ console.log('\nLeaving the portal from inside the frame');
   check('the token is cleared before either of those',
     /clearCode\(\);/.test(ACCESS) && ACCESS.indexOf('function signOut()') < ACCESS.indexOf('clearMembersLinkCache();'));
 
-  check('the page fade stands down when framed, so it cannot move the frame',
-    /if \(window\.top !== window\.self\) return;/.test(CLUB));
+  check('Club links use native navigation without a competing scripted fade',
+    !CLUB.includes('data-trp-leaving'));
 }
 
 console.log('\nThe way in, and the way back');

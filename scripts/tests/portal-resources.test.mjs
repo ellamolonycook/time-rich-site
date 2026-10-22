@@ -10,6 +10,12 @@
 // the right places and are marked as sponsored, the logos are shown as the
 // partners ship them rather than knocked back to grey, and nothing on the
 // page still asks anyone to download or install a skill.
+//
+// Each card also carries the steps for claiming its offer. Two of the three
+// hand over a code to type in by hand, and neither puts it where you would
+// expect -- Stanley's goes in behind "Add promotion code" on the payment
+// page, Wispr's at the foot of Settings and not at checkout at all -- so
+// the steps and the code are pinned here as closely as the links are.
 import { JSDOM, VirtualConsole } from 'jsdom';
 import { readFileSync } from 'node:fs';
 
@@ -32,24 +38,64 @@ const doc = new JSDOM(HTML, {
   virtualConsole: new VirtualConsole(),
 }).window.document;
 
+// All three cards have the same shape now: a logo, a title, one line, the
+// numbered steps to claim the offer, an optional tip under them, and a
+// single button. None of them is a link itself -- the button is, and a link
+// cannot sit inside another link.
+//
+// Stanley and Wispr both hand over a code to type in by hand, and neither
+// puts it where you would expect, so the steps and the tip are the offer
+// here as much as the link is. LaunchLemonade's voucher travels in its URL,
+// so it needs no code and no tip.
 const PARTNERS = [
   {
     name: 'Stanley',
     href: 'https://x.getstanley.ai/r/mz4y9g',
     logo: '../brand/partners/stanley-logo.png',
-    line: '6 months of Stanley free with code TIMERICH6. Your AI head of content: drafts from your calls, learns your voice, posts for you.',
+    title: 'Stanley \u00b7 6 months free',
+    line: 'Your AI head of content. The code goes in at checkout.',
+    steps: [
+      'Click Sign up and create your account.',
+      'Choose your plan and go to checkout.',
+      'On the payment page, click Add promotion code.',
+      'Enter TIMERICH6 and finish checkout.',
+    ],
+    tip: 'Check the total shows 6 months free before you confirm.',
+    button: 'Sign up',
+    code: 'TIMERICH6',
   },
   {
     name: 'Wispr Flow',
     href: 'https://ref.wisprflow.ai/ella-cook-vt27',
     logo: '../os/img/wispr-flow.png',
-    line: '6 months of Wispr Flow Pro, the voice dictation app the accelerator runs on.',
+    title: 'Wispr Flow \u00b7 6 months Pro',
+    line: "Only works if you're new to Wispr Flow or on the free plan.",
+    steps: [
+      'Download it on your Mac or PC (not your phone).',
+      'Open it and go to Settings \u2192 Plans and Billing.',
+      'Scroll to the very bottom and click the promo code link.',
+      'Enter TIMERICH6.',
+    ],
+    tip: "Only enter the code there. It won't work at checkout.",
+    button: 'Download Wispr Flow',
+    code: 'TIMERICH6',
   },
   {
     name: 'LaunchLemonade',
-    href: 'https://launchlemonade.app',
+    href: 'https://studio.launchlemonade.app/signup?voucher=ACCELERATOR',
     logo: '../brand/partners/launchlemonade-logo.jpg',
+    title: 'LaunchLemonade \u00b7 3 months Pro',
     line: '3 months of LaunchLemonade included.',
+    steps: [
+      'Click Sign up.',
+      'Create your account (no card needed).',
+      'Pro is active for 3 months.',
+    ],
+    // Its voucher rides in the signup URL, so there is nothing to mistype
+    // and nothing to warn about.
+    tip: null,
+    button: 'Sign up',
+    code: null,
   },
 ];
 
@@ -75,12 +121,13 @@ console.log('\nResources: your partner offers');
     const card = cards[i] || doc.createElement('a');
     const img = card.querySelector('img:not(.trp-powered-rev)') || doc.createElement('img');
     const line = card.querySelector('.trp-partner-line') || doc.createElement('span');
+    const link = card.querySelector('a.trp-partner-btn') || doc.createElement('a');
     check(partner.name + ': links out to the right place',
-      card.getAttribute('href') === partner.href, card.getAttribute('href'));
+      link.getAttribute('href') === partner.href, link.getAttribute('href'));
     check(partner.name + ': opens in a new tab, declared as sponsored',
-      card.getAttribute('target') === '_blank' &&
-      card.getAttribute('rel') === 'noopener sponsored',
-      card.getAttribute('target') + ' / ' + card.getAttribute('rel'));
+      link.getAttribute('target') === '_blank' &&
+      link.getAttribute('rel') === 'noopener sponsored',
+      link.getAttribute('target') + ' / ' + link.getAttribute('rel'));
     check(partner.name + ': shows its logo',
       img !== null && img.getAttribute('src') === partner.logo, img && img.getAttribute('src'));
     check(partner.name + ': the logo is named, not left as empty alt',
@@ -91,7 +138,53 @@ console.log('\nResources: your partner offers');
       img.getAttribute('width') + 'x' + img.getAttribute('height'));
     check(partner.name + ': and the line Ella wrote for it',
       line.textContent === partner.line, line.textContent);
+
+    const title = card.querySelector('.trp-partner-title');
+    check(partner.name + ': titled with the offer',
+      title !== null && title.textContent === partner.title, title && title.textContent);
+
+    const steps = [...card.querySelectorAll('.trp-partner-steps li')].map((li) => li.textContent);
+    check(partner.name + ': the redeem steps, in order',
+      JSON.stringify(steps) === JSON.stringify(partner.steps), steps);
+
+    const tip = card.querySelector('.trp-partner-tip');
+    if (partner.tip) {
+      check(partner.name + ': the tip under the steps',
+        tip !== null && tip.textContent === partner.tip, tip && tip.textContent);
+    } else {
+      check(partner.name + ': no tip, because there is no code to get wrong',
+        tip === null, tip && tip.textContent);
+    }
+
+    // The code is the whole offer for two of them, so it has to be on the
+    // card rather than only in the link.
+    if (partner.code) {
+      check(partner.name + ': the code is on the card, in the steps',
+        card.textContent.includes(partner.code) &&
+        steps.some((t) => t.includes(partner.code)), steps);
+    }
+
+    check(partner.name + ': the button says what it does, in the site style',
+      link.textContent.trim() === partner.button &&
+      link.classList.contains('trp-btn') && link.classList.contains('trp-btn-primary'),
+      link.textContent.trim());
+
+    // A link cannot sit inside a link, which is why none of these is one.
+    check(partner.name + ': the card is not a link, and holds exactly one',
+      card.tagName === 'DIV' && card.querySelectorAll('a').length === 1,
+      card.tagName + '/' + card.querySelectorAll('a').length);
   });
+
+  // The card rules have to be in the build, not just the source, or the
+  // three cards arrive unstyled.
+  check('the built stylesheet carries the partner card rules',
+    BUILT.includes('.trp-partner-title{') && BUILT.includes('.trp-partner-steps{') &&
+    BUILT.includes('.trp-partner-btn{') && BUILT.includes('.trp-partner-tip{'));
+
+  // The buttons sit on the card's floor, so three cards of different
+  // heights still line their buttons up on a desktop row.
+  check('and pins the buttons to the foot of the card',
+    SRC.includes('.trp-partner-btn {') && /\.trp-partner-btn \{[^}]*margin-top: auto;/.test(SRC));
 
   // Stanley is the only one with a reversed file, and it swaps on the dark
   // theme the way the header lockup does.
