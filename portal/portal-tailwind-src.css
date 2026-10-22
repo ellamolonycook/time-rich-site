@@ -903,8 +903,11 @@
     text-transform: uppercase;
     border-radius: 999px;
     padding: 5px 10px;
-    background: #7B6CF6;
-    color: #FFFFFF;
+    /* Brand green, the same pair of colours the open week card carries on
+       the Curriculum. Purple is not available here: it says "not yet" and
+       nothing else, and this tag says the opposite. */
+    background: rgb(var(--c-green));
+    color: #FFFDFB;
   }
 
   /* Step 2. The three tools are cards, not pills. The disclosure itself
@@ -981,11 +984,43 @@
   .trp-dash-partners .trp-dash-h { font-size: 22px; }
   .trp-dash-partners .trp-ptile-list { margin-top: 16px; }
 
+  /* The partner lines. A name on its own line, the line Resources uses
+     under it, and a gap between partners -- without these three the names
+     run straight into their lines ("Stanley 6 months of Stanley free").
+     They live here rather than in the old three-tile block, because this
+     card is the only thing left that carries them. */
+  .trp-ptile-list { list-style: none; margin: 0; padding: 0; display: grid; gap: 14px; }
+  .trp-ptile-list li { display: grid; gap: 3px; }
+  .trp-ptile-name {
+    font-size: 14px;
+    font-weight: 600;
+    line-height: 1.35;
+    color: var(--trp-ink);
+  }
+  .trp-ptile-line {
+    font-size: 13.5px;
+    line-height: 1.55;
+    color: var(--trp-muted);
+  }
+  /* The same text link as a step's Open, so a link reads the same wherever
+     it sits on this page. Both inks are tokens, so the dark theme needs
+     nothing of its own. */
+  .trp-tile-go {
+    display: inline-block;
+    margin-top: 18px;
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--trp-ink);
+    text-decoration: underline;
+    text-underline-offset: 3px;
+  }
+
   /* On the dark theme the olive fills become the cream ink, the same way
      a primary button does, or a green pill disappears into the ground. */
   :root[data-theme='dark'] .trp-dash-meter .trp-progress-fill,
   :root[data-theme='dark'] .trp-dash-stepn,
   :root[data-theme='dark'] .trp-dash-cta,
+  :root[data-theme='dark'] .trp-dstep-tag,
   :root[data-theme='dark'] .trp-dstep .trp-check-box.is-on {
     background: rgb(var(--c-ink));
     color: rgb(var(--c-bg));
@@ -1006,15 +1041,12 @@
     background: rgb(var(--c-surface));
     border-color: var(--trp-rule);
   }
-  :root[data-theme='dark'] .trp-dstep-tag {
-    background: rgb(var(--c-plum));
-    color: rgb(var(--c-bg));
-  }
   :root[data-theme='dark'] .trp-dash .trp-acc-caret { color: rgb(var(--c-ink)); }
   @media (prefers-color-scheme: dark) {
     :root[data-theme='system'] .trp-dash-meter .trp-progress-fill,
     :root[data-theme='system'] .trp-dash-stepn,
     :root[data-theme='system'] .trp-dash-cta,
+    :root[data-theme='system'] .trp-dstep-tag,
     :root[data-theme='system'] .trp-dstep .trp-check-box.is-on {
       background: rgb(var(--c-ink));
       color: rgb(var(--c-bg));
@@ -1034,10 +1066,6 @@
     :root[data-theme='system'] .trp-dash-ready {
       background: rgb(var(--c-surface));
       border-color: var(--trp-rule);
-    }
-    :root[data-theme='system'] .trp-dstep-tag {
-      background: rgb(var(--c-plum));
-      color: rgb(var(--c-bg));
     }
     :root[data-theme='system'] .trp-dash .trp-acc-caret { color: rgb(var(--c-ink)); }
   }

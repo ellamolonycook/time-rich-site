@@ -7,27 +7,21 @@
   var data, editing = false, saving = false;
   var CALENDAR = 'https://www.addevent.com/calendar/z0j4nlqbgt6b';
 
-  function templateUrl() {
-    var config = window.TR_PORTAL_CONFIG || {};
-    var configured = L.safeUrl(config.notionTemplateUrl);
-    if (configured) return configured.href;
-    var match = null;
-    L.weeks(data).some(function (week) {
-      if (!week.unlocked) return false;
-      return L.items(week).some(function (item) {
-        var url = L.safeUrl(item.url);
-        if (url && /(^|\.)notion\.(site|so)$/.test(url.hostname) && /superhuman\s+os/i.test(item.title || '')) {
-          match = url.href; return true;
-        }
-        return false;
-      });
-    });
-    return match;
+  /* One row. "Duplicate your Superhuman OS" used to sit under this one, but
+     Step 1 already carries "Duplicate the Superhuman Workbook" -- the same
+     task under a second name, and the only one of the two marked Coming
+     soon. The counts below are read off this list so they cannot drift
+     from it again. */
+  var STEPS = [
+    {key: 'calendar', title: 'Add every session to your calendar', url: CALENDAR, action: 'Add all sessions'}
+  ];
+  function doneCount(state) {
+    return STEPS.reduce(function (n, step) { return n + Number(state[step.key] === true); }, 0);
   }
 
   function render(focusStep, message) {
     var state = data.member && data.member.setup || {};
-    var complete = state.calendar === true && state.notion === true;
+    var complete = doneCount(state) === STEPS.length;
     L.clear(root);
     root.className = 'glass-card is-static trp-setup';
     root.hidden = false;
@@ -39,7 +33,7 @@
       review.setAttribute('aria-expanded', String(editing));
       review.addEventListener('click', function () { editing = !editing; render(); root.querySelector('button').focus(); });
       heading.appendChild(review);
-    } else heading.appendChild(L.el('span', '', (Number(state.calendar === true) + Number(state.notion === true)) + ' of 2 complete'));
+    } else heading.appendChild(L.el('span', '', doneCount(state) + ' of ' + STEPS.length + ' complete'));
     root.appendChild(heading);
     if (complete && !editing) {
       heading.setAttribute('role', 'status');
@@ -47,28 +41,19 @@
       return;
     }
     var steps = L.el('ol', 'trp-setup-steps');
-    var notion = templateUrl();
-    [{key: 'calendar', title: 'Add every session to your calendar', url: CALENDAR, action: 'Add all sessions'},
-     {key: 'notion', title: 'Duplicate your Superhuman OS', url: notion, action: 'Duplicate in Notion'}].forEach(function (step, index) {
+    STEPS.forEach(function (step, index) {
       var row = L.el('li', 'trp-setup-step');
       var done = state[step.key] === true;
       row.classList.toggle('is-done', done);
       row.appendChild(L.el('span', 'trp-step-number', '0' + (index + 1)));
       var copy = L.el('div', 'trp-setup-copy');
       copy.appendChild(L.el('h3', '', step.title));
-      // No template link yet. A member should read "Coming soon", never the
-      // name of the variable somebody still has to fill in.
-      if (!step.url) copy.appendChild(L.el('p', 'trp-setup-placeholder', 'Coming soon'));
       row.appendChild(copy);
       var actions = L.el('div', 'trp-setup-actions');
+      // Every step here carries a real link, so there is no "Coming soon"
+      // branch to fall through to.
       var link = L.linkTo(step.url, step.action, 'trp-btn trp-btn-outline');
       if (link) actions.appendChild(link);
-      else {
-        // Labelled for what it is rather than for what it will do one day,
-        // and still disabled, because there is nowhere to send anyone yet.
-        var pending = L.el('button', 'trp-btn trp-btn-outline', 'Coming soon');
-        pending.type = 'button'; pending.disabled = true; actions.appendChild(pending);
-      }
       var tick = L.el('button', 'trp-setup-tick', done ? 'Done' : 'Mark done');
       tick.type = 'button'; tick.dataset.setupStep = step.key;
       tick.setAttribute('aria-pressed', String(done));
@@ -85,7 +70,7 @@
           if (ok) {
             data.member = data.member || {}; data.member.setup = data.member.setup || {};
             data.member.setup[step.key] = !done;
-            if (data.member.setup.calendar && data.member.setup.notion) editing = false;
+            if (doneCount(data.member.setup) === STEPS.length) editing = false;
           }
           render(step.key, ok ? 'Saved to your account.' : 'Could not save. Please try again.');
         });

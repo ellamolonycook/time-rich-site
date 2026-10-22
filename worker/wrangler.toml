@@ -45,7 +45,7 @@ id = "a4db5f2916e0496f8851947b5a043e7a"
 [vars]
 # Locked to the live domain so only timerich.ai can submit the application form.
 # Use "*" only when testing locally.
-ALLOWED_ORIGIN = "https://timerich.ai,https://www.timerich.ai"
+ALLOWED_ORIGIN = "https://timerich.ai,https://www.timerich.ai,http://timerich.ai,http://www.timerich.ai"
 
 # AI Revenue Accelerator application (POST /accelerator) -> its own Notion database.
 # Same NOTION_TOKEN integration must be connected to this database too.

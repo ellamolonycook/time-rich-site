@@ -213,7 +213,12 @@
     <!-- LEFT SIDEBAR -->
     
     <!-- CENTER SCROLLABLE CONTENT -->
-    <main class="flex-1 relative bg-transparent">
+    <!-- min-w-0 because this is a flex item, and a flex item's default
+         min-width: auto is its content's minimum, not zero. The set-up bar
+         carries a 320px progress track, so without this the page could not
+         lay out narrower than about 350px and scrolled sideways on a 320px
+         screen. -->
+    <main class="flex-1 min-w-0 relative bg-transparent">
 
       <div class="relative z-10 px-4 sm:px-6 lg:px-8 pb-16 max-w-[1120px] mx-auto">
 
@@ -385,15 +390,11 @@ Confirm you can open all 8.</pre>
               <div class="trp-skel" aria-hidden="true">
                 <div class="trp-setup-heading">
                   <h2><span class="trp-bar">Set up once</span></h2>
-                  <span><span class="trp-bar">0 of 2 complete</span></span>
+                  <span><span class="trp-bar">0 of 1 complete</span></span>
                 </div>
                 <ol class="trp-setup-steps">
                   <li class="trp-setup-step">
                     <div class="trp-setup-copy"><h3><span class="trp-bar">Add every session to your calendar</span></h3></div>
-                    <div class="trp-setup-actions"><span class="trp-bar is-btn"></span><span class="trp-bar is-btn"></span></div>
-                  </li>
-                  <li class="trp-setup-step">
-                    <div class="trp-setup-copy"><h3><span class="trp-bar">Duplicate your Superhuman OS</span></h3></div>
                     <div class="trp-setup-actions"><span class="trp-bar is-btn"></span><span class="trp-bar is-btn"></span></div>
                   </li>
                 </ol>
