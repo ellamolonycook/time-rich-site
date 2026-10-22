@@ -696,6 +696,20 @@ console.log('\n/contentworkshop — the ritual toggles');
   check('switching one back off un-completes it', count() === '0', count());
 }
 
+console.log('\n/contentworkshop — Mika\'s socials in the footer');
+{
+  const { document } = load();
+  const box = document.getElementById('followmika');
+  check('the footer has a Follow Mika Reyes group', !!box && /Follow Mika Reyes/.test(box.textContent));
+  const hrefs = box ? [...box.querySelectorAll('a')].map((a) => a.getAttribute('href')) : [];
+  check('with her LinkedIn and Instagram, as she asked',
+    hrefs.length === 2 && hrefs[0] === 'https://linkedin.com/in/itsmikareyes' &&
+    hrefs[1] === 'https://instagram.com/its.mikareyes', hrefs);
+  check('opening in a new tab, so the workshop page stays open',
+    box && [...box.querySelectorAll('a')].every((a) => a.target === '_blank' && /noopener/.test(a.rel)));
+  check('and it sits inside the footer', !!box && !!box.closest('footer'));
+}
+
 console.log('\n/contentworkshop — phone first');
 {
   check('the viewport meta is there', HTML.includes('width=device-width'));
