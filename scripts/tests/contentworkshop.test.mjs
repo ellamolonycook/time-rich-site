@@ -166,22 +166,19 @@ console.log('\n/contentworkshop — the prizes, and who gets what');
     [document.getElementById('vipwhen').textContent,
      document.getElementById('winnerswhen').textContent]);
 
-  // The six months is the prize and nothing else. Everyone in the room gets
-  // one month, and that is what the code card has to keep saying -- the two
-  // numbers sitting on one page is exactly how this goes wrong.
+  // Everyone in the room gets 6 months of Stanley free on TIMERICH6, and the
+  // code card, the redeem card and the steps all have to say the same thing.
   const offer = document.getElementById('stanleycode').closest('div[style]').parentElement;
-  check('the Stanley code on the page is still STANLEY1MONTH',
-    document.getElementById('stanleycode').textContent === 'STANLEY1MONTH');
-  check('and the offer beside it still reads 1 month free',
-    /1 month free/.test(offer.textContent), offer.textContent.replace(/\s+/g, ' ').trim());
-  check('the redeem card says 1 month free too',
-    /Check the total shows 1 month free/.test(HTML));
-  check('six months of Stanley is claimed once, in the VIP prize only',
-    (HTML.match(/6 months of Stanley/g) || []).length === 1 &&
-    !/Stanley[^<]{0,40}6 months (free|Premium)?\s*·/i.test(HTML),
-    (HTML.match(/6 months of Stanley/g) || []).length);
-  check('and no 6-months-free Stanley offer crept back in',
-    !/Stanley · 6 months/i.test(HTML) && !HTML.includes('STANLEY6'));
+  check('the Stanley code on the page is TIMERICH6',
+    document.getElementById('stanleycode').textContent === 'TIMERICH6');
+  check('and the offer beside it reads 6 months free',
+    /6 months free/.test(offer.textContent), offer.textContent.replace(/\s+/g, ' ').trim());
+  check('the redeem card says 6 months free too',
+    /Check the total shows 6 months free/.test(HTML));
+  check('the redeem steps tell people to enter TIMERICH6 for Stanley',
+    /Enter <strong[^>]*>TIMERICH6<\/strong> and finish checkout/.test(HTML));
+  check('no STANLEY1MONTH or "1 month free" is left anywhere',
+    !HTML.includes('STANLEY1MONTH') && !/1 month free/i.test(HTML));
 }
 
 console.log('\n/contentworkshop — how Wispr Flow is described');
@@ -267,10 +264,11 @@ console.log('\n/contentworkshop — the copy buttons');
   // The codes are final. These are what the room types in, so pin the text.
   check('the Wispr code on the page is TIMERICH6',
     document.getElementById('wisprcode').textContent === 'TIMERICH6');
-  check('the Stanley code on the page is STANLEY1MONTH',
-    document.getElementById('stanleycode').textContent === 'STANLEY1MONTH');
-  check('the Stanley offer reads 1 month free', HTML.includes('1 month free'));
-  check('no stale 6-months-free Stanley offer is left', !HTML.includes('6 months free'));
+  check('the Stanley code on the page is TIMERICH6',
+    document.getElementById('stanleycode').textContent === 'TIMERICH6');
+  check('the Stanley offer reads 6 months free', HTML.includes('Stanley · 6 months free'));
+  check('no stale STANLEY1MONTH or 1-month Stanley offer is left',
+    !HTML.includes('STANLEY1MONTH') && !HTML.includes('1 month free'));
 }
 
 console.log('\n/contentworkshop — copying actually copies, and says so');
@@ -280,7 +278,7 @@ console.log('\n/contentworkshop — copying actually copies, and says so');
   const idle = btn.textContent;
 
   clickCopy(document, 'stanley');
-  check('clicking copies the Stanley code', copied[0] === 'STANLEY1MONTH', copied);
+  check('clicking copies the Stanley code', copied[0] === 'TIMERICH6', copied);
   check('the label turns to Copied', /Copied/.test(btn.textContent), btn.textContent);
 
   // The label is meant to go back by itself, after about two seconds.
