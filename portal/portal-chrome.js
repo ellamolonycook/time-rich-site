@@ -36,17 +36,6 @@
       media.addEventListener('change', paint);
       paint();
     });
-    document.querySelectorAll('.trp-powered, .trp-credit').forEach(function (credit) {
-      if (!credit.querySelector('img[alt="Stanley"]')) return;
-      credit.querySelectorAll('img').forEach(function (img) { img.remove(); });
-      var frame = document.createElement('span');
-      frame.className = 'trp-stanley-clean';
-      var image = document.createElement('img');
-      image.src = 'assets/stanley-clean.png';
-      image.alt = 'Stanley';
-      frame.append(image);
-      credit.append(frame);
-    });
   }
 
   // Native details remain usable without animation. Only one connection guide

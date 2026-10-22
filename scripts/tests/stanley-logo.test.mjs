@@ -18,7 +18,7 @@
 // the footer. It is shown at every width, wording and all: the quiet line
 // has room for it in a way the masthead did not.
 import { JSDOM } from 'jsdom';
-import { readFileSync } from 'node:fs';
+import { readFileSync, existsSync, readdirSync } from 'node:fs';
 
 const read = (p) => readFileSync(new URL('../../' + p, import.meta.url), 'utf8');
 
@@ -73,9 +73,15 @@ for (const page of PAGES) {
     lockups.length === page.spots && lockups.every((a) => /\bsponsored\b/.test(a.getAttribute('rel') || '')),
     lockups.map((a) => a.getAttribute('rel')));
 
+  // On /accelerator the wording is inside the link. In the portal it moved
+  // out to the .trp-credits group it shares with Wispr Flow, so it is said
+  // once over the pair rather than once per sponsor.
   check('each reads "Powered by" before the logo',
-    lockups.length === page.spots && lockups.every((a) => /powered by/i.test(a.textContent)),
-    lockups.map((a) => a.textContent.replace(/\s+/g, ' ').trim()));
+    lockups.length === page.spots && lockups.every((a) => {
+      const scope = page.themed ? a.closest('.trp-credits') : a;
+      return scope !== null && /powered by/i.test(scope.textContent);
+    }),
+    lockups.map((a) => (a.closest('.trp-credits') || a).textContent.replace(/\s+/g, ' ').trim()));
 
   /* ---- the image ---- */
 
@@ -192,17 +198,21 @@ console.log('\n/portal — where the lockups sit');
       Boolean(rightGroup.querySelector('[data-portal-signout]')));
 
     // It sits on the footer line itself rather than in a band under it, so
-    // the footer is still one line, and it is the last thing on it.
+    // the footer is still one line, and the group it shares with Wispr Flow
+    // is the last thing on it.
     const footLine = document.querySelector('footer .trp-foot');
+    const group = document.querySelector('footer .trp-credits');
     check(page.path + ': the lockup is on the footer line, not below it',
       footLine !== null && footLine.contains(inFooter[0]));
-    check(page.path + ': it is the last item on that line',
-      footLine !== null && footLine.lastElementChild === inFooter[0],
+    check(page.path + ': it is inside the sponsor group',
+      group !== null && group.contains(inFooter[0]));
+    check(page.path + ': and that group is the last item on the line',
+      footLine !== null && footLine.lastElementChild === group,
       footLine && footLine.lastElementChild && footLine.lastElementChild.className);
     check(page.path + ': with a separator before it, like every other item',
-      inFooter[0].previousElementSibling !== null &&
-      inFooter[0].previousElementSibling.className.includes('trp-foot-sep'),
-      inFooter[0].previousElementSibling && inFooter[0].previousElementSibling.className);
+      group !== null && group.previousElementSibling !== null &&
+      group.previousElementSibling.className.includes('trp-foot-sep'),
+      group && group.previousElementSibling && group.previousElementSibling.className);
 
     // The one credit on the page cannot be hidden at any width.
     check(page.path + ': it is shown at every width, phone included',
@@ -218,8 +228,131 @@ console.log('\n/portal — where the lockups sit');
     // The wording is read on this line at every width: the footer has room
     // for it, unlike the masthead it came from.
     check(page.path + ': the "Powered by" wording is drawn, not clipped',
-      inFooter[0].querySelector('.trp-powered-label') !== null);
+      group !== null && group.querySelector('.trp-powered-label') !== null);
   }
+}
+
+/* ---- Wispr Flow, the second sponsor -------------------------------------- */
+
+// Wispr Flow is the official voice partner, and its credit sits beside
+// Stanley's in the same group on every page that carries one. Its artwork is
+// a near-black rounded tile rather than a wordmark, so without the words
+// beside it the footer showed a stray black square with nothing to name it.
+console.log('\nWispr Flow — the second credit');
+{
+  // One referral URL, everywhere. It has been written two different ways
+  // already, and a credit pointing somewhere else is a credit nobody is
+  // paid for -- so the sweep at the foot of this file checks the whole
+  // portal rather than just the footers.
+  const WISPR = 'https://ref.wisprflow.ai/ella-cook-vt27';
+  const TILE = 'os/img/wispr-flow.png';
+
+  for (const page of PAGES.filter((p) => p.path.startsWith('portal/'))) {
+    const document = doc(page.path);
+    const credits = [...document.querySelectorAll('a.trp-credit')];
+
+    check(page.path + ': exactly one Wispr Flow credit', credits.length === 1, credits.length);
+    if (credits.length !== 1) continue;
+    const credit = credits[0];
+
+    check(page.path + ': pointed at the partner URL',
+      credit.getAttribute('href') === WISPR, credit.getAttribute('href'));
+    check(page.path + ': opening in a new tab, marked sponsored',
+      credit.getAttribute('target') === '_blank' &&
+      /\bnoopener\b/.test(credit.getAttribute('rel') || '') &&
+      /\bsponsored\b/.test(credit.getAttribute('rel') || ''),
+      credit.getAttribute('rel'));
+
+    const img = credit.querySelector('img');
+    check(page.path + ': it draws the repo\'s own Wispr mark',
+      img !== null && (img.getAttribute('src') || '').endsWith(TILE),
+      img && img.getAttribute('src'));
+    check(page.path + ': with width and height, so nothing shifts as it loads',
+      img !== null && img.getAttribute('width') === '256' && img.getAttribute('height') === '256',
+      img && img.getAttribute('width') + 'x' + img.getAttribute('height'));
+    check(page.path + ': the tile is decorative; the words beside it are the name',
+      img !== null && img.getAttribute('alt') === '' &&
+      credit.textContent.replace(/\s+/g, ' ').trim() === 'Wispr Flow',
+      credit.textContent.trim());
+
+    // Both sponsors in one group, in order, with the wording over the pair.
+    const group = credit.closest('.trp-credits');
+    check(page.path + ': it sits with Stanley in one credit group',
+      group !== null && group.querySelector('a.trp-powered') !== null);
+    check(page.path + ': Stanley first, Wispr Flow second',
+      group !== null &&
+      [...group.querySelectorAll('a')].map((a) => a.className.split(' ')[0])
+        .join(',') === 'trp-powered,trp-credit',
+      group && [...group.querySelectorAll('a')].map((a) => a.className));
+  }
+
+  // The tile file itself.
+  const bytes = readFileSync(new URL('../../' + TILE, import.meta.url));
+  check(TILE + ' is there and is a PNG',
+    bytes.length > 0 && bytes.subarray(1, 4).toString('latin1') === 'PNG');
+  check(TILE + ' is the 256x256 the markup declares',
+    bytes.readUInt32BE(16) === 256 && bytes.readUInt32BE(20) === 256,
+    bytes.readUInt32BE(16) + 'x' + bytes.readUInt32BE(20));
+}
+
+/* ---- one Wispr Flow URL, across the whole portal ------------------------- */
+
+// Every link to Wispr Flow is the same referral URL. It has been written two
+// different ways already -- the Club footer carried one and the new footers
+// another -- and a credit pointed anywhere else is traffic nobody is paid
+// for. So this sweeps the folder rather than the six footers, and takes in
+// /contentworkshop, which carries its own download link.
+console.log('\nevery Wispr Flow link is the one referral URL');
+{
+  const WISPR = 'https://ref.wisprflow.ai/ella-cook-vt27';
+  const FILES = readdirSync(new URL('../../portal/', import.meta.url))
+    .filter((f) => /\.(html|js)$/.test(f))
+    .map((f) => ['portal/' + f, read('portal/' + f)])
+    .concat([['contentworkshop/index.html', read('contentworkshop/index.html')]]);
+
+  check('there are files to sweep', FILES.length > 10, FILES.length);
+
+  // Every wisprflow.ai URL anywhere in those files, however it was written.
+  const found = FILES.flatMap(([file, body]) =>
+    [...body.matchAll(/https?:\/\/[^"'\s<>)]*wisprflow\.ai[^"'\s<>)]*/g)]
+      .map((m) => [file, m[0]]));
+
+  check('the portal links to Wispr Flow at all', found.length > 0, found.length);
+  check('and every one of those links is the referral URL',
+    found.every(([, url]) => url === WISPR),
+    found.filter(([, url]) => url !== WISPR));
+
+  // Named, rather than left to the sweep above, because this is the one that
+  // was changed by hand and changed back.
+  for (const [file, body] of FILES) {
+    if (!body.includes('trp-credit"')) continue;
+    const document = new JSDOM(body).window.document;
+    const credit = document.querySelector('a.trp-credit');
+    check(file + ': the footer credit points at the referral URL',
+      credit !== null && credit.getAttribute('href') === WISPR,
+      credit && credit.getAttribute('href'));
+  }
+}
+
+/* ---- no runtime swap ----------------------------------------------------- */
+
+// The footer credit used to be rebuilt by portal-chrome.js: it threw away the
+// real artwork and put back a cropped crop of a second file, greyed out and
+// positioned with fixed negative offsets, which on the live portal read as an
+// oversized grey mark that did not line up with the text beside it. The
+// markup is the markup now.
+console.log('\nthe artwork is never swapped at runtime');
+{
+  const chrome = read('portal/portal-chrome.js');
+  const content = read('portal/portal-content.css');
+  check('portal-chrome.js no longer rewrites the credit',
+    !chrome.includes('trp-stanley-clean') && !chrome.includes('stanley-clean.png'));
+  check('and it no longer reaches into .trp-powered or .trp-credit at all',
+    !chrome.includes('.trp-powered') && !chrome.includes('.trp-credit'));
+  check('the .trp-stanley-clean rules are gone with it',
+    !content.includes('trp-stanley-clean'));
+  check('and so is the cropped file nothing else used',
+    !existsSync(new URL('../../portal/assets/stanley-clean.png', import.meta.url)));
 }
 
 /* ---- the files the markup points at ------------------------------------- */

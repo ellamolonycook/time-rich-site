@@ -4098,11 +4098,30 @@ async function secretsMatch(given, expected) {
   return diff === 0;
 }
 
-// POST /portal-directory-sync  (Authorization: Bearer <DIRECTORY_SYNC_SECRET>)
+// How many questionnaire rows one call of the backfill will process, and the
+// most it will accept being asked for.
 //
-// Backfill: runs the same sync over every row of the Superhuman Questionnaire
-// database, for members who answered before the directory existed. Safe to
-// run any number of times; each row ends in the same state.
+// Cloudflare's free plan allows about 50 outside calls per Worker invocation.
+// One row costs roughly five of them -- the member lookup, the existing
+// directory row, the upsert, and for a new photo a download from Drive and an
+// upload to Storage -- on top of the single Notion query that fetches the
+// batch. Eight rows is about forty calls, which leaves room for a slow row
+// without the run hitting the ceiling. Before this, every row went in one
+// invocation and the tail of the list died with "Too many subrequests by
+// single Worker invocation": seven of thirty-three on 21 Oct 2025.
+const DIRECTORY_SYNC_BATCH = 8;
+const DIRECTORY_SYNC_MAX_BATCH = 50;
+
+// POST /portal-directory-sync?cursor=<notion cursor>&limit=<n>
+//   (Authorization: Bearer <DIRECTORY_SYNC_SECRET>)
+//
+// Backfill: runs the same sync over the Superhuman Questionnaire database, for
+// members who answered before the directory existed. Safe to run any number of
+// times; each row ends in the same state.
+//
+// One call does one batch and hands back `next_cursor`, which is Notion's own
+// cursor for the row after the last one processed. Call again with it until
+// `next_cursor` comes back null. scripts/directory-sync.mjs is that loop.
 async function handleDirectoryBackfill(request, env, cors) {
   const deny = () => json({ error: "Forbidden" }, 403, cors);
   if (!env.DIRECTORY_SYNC_SECRET) return deny();
@@ -4116,30 +4135,41 @@ async function handleDirectoryBackfill(request, env, cors) {
     return json({ ok: false, error: "The directory sync is not configured" }, 503, cors);
   }
 
+  const params = new URL(request.url).searchParams;
+  const asked = Number(params.get("limit"));
+  const limit = Number.isFinite(asked) && asked >= 1
+    ? Math.min(Math.floor(asked), DIRECTORY_SYNC_MAX_BATCH)
+    : DIRECTORY_SYNC_BATCH;
+  const cursor = (params.get("cursor") || "").trim();
+
   const counts = { processed: 0, listed: 0, skipped: 0, failed: 0, photo_failed: 0 };
-  let cursor = null;
-  do {
-    const res = await fetch(`https://api.notion.com/v1/databases/${dbId}/query`, {
-      method: "POST",
-      headers: { ...authHeaders(env), "Content-Type": "application/json" },
-      body: JSON.stringify(cursor ? { page_size: 100, start_cursor: cursor } : { page_size: 100 }),
-    });
-    if (!res.ok) return json({ ok: false, error: "Could not read the questionnaire", ...counts }, 502, cors);
 
-    const data = await res.json();
-    for (const row of data.results || []) {
-      counts.processed++;
-      try {
-        const result = await syncDirectoryProfile(env, row.properties || {});
-        counts[result.outcome]++;
-        if (result.photo === "failed") counts.photo_failed++;
-      } catch (err) {
-        counts.failed++;
-        console.error("[members] backfill row failed:", String(err && err.message));
-      }
+  // page_size is the batch: Notion hands back at most `limit` rows, so the
+  // loop below cannot run longer than the budget allows.
+  const res = await fetch(`https://api.notion.com/v1/databases/${dbId}/query`, {
+    method: "POST",
+    headers: { ...authHeaders(env), "Content-Type": "application/json" },
+    body: JSON.stringify(cursor ? { page_size: limit, start_cursor: cursor } : { page_size: limit }),
+  });
+  if (!res.ok) {
+    return json({ ok: false, error: "Could not read the questionnaire", ...counts, next_cursor: null }, 502, cors);
+  }
+
+  const data = await res.json();
+  for (const row of data.results || []) {
+    counts.processed++;
+    try {
+      const result = await syncDirectoryProfile(env, row.properties || {});
+      counts[result.outcome]++;
+      if (result.photo === "failed") counts.photo_failed++;
+    } catch (err) {
+      counts.failed++;
+      console.error("[members] backfill row failed:", String(err && err.message));
     }
-    cursor = data.has_more && data.next_cursor ? data.next_cursor : null;
-  } while (cursor);
+  }
 
-  return json({ ok: true, ...counts }, 200, cors);
+  // Null, not absent, when there is nothing left: the caller's loop ends on
+  // the value rather than on a missing key.
+  const next = data.has_more && data.next_cursor ? data.next_cursor : null;
+  return json({ ok: true, ...counts, next_cursor: next }, 200, cors);
 }

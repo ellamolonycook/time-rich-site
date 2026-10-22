@@ -80,19 +80,60 @@ for (const path of PAGES) {
     community.filter((el) => /\btrp-foot-sep\b/.test(el.className || '')).length === 1 &&
     community.filter((el) => el.tagName === 'A').length === 1);
 
-  // The Stanley credit came back down from the header, where it had been
+  // The sponsor credit came back down from the header, where it had been
   // since the duplicate was removed. It is on the line itself rather than in
   // a band under it, so the footer is still one wrapping row, and it is the
   // last item on it with its own separator in front.
-  const lockups = [...footer.querySelectorAll('.trp-powered')];
-  check('the Stanley credit is on the line, exactly once',
-    lockups.length === 1, lockups.length);
+  //
+  // It is a pair now: Stanley, the presenting sponsor, and Wispr Flow, the
+  // voice partner, inside one .trp-credits group so "Powered by" is said once
+  // over both of them.
+  const groups = [...footer.querySelectorAll('.trp-credits')];
+  check('the sponsor credit is on the line, exactly once',
+    groups.length === 1, groups.length);
   check('and it is inside the row rather than under it',
-    lockups.length === 1 && row.contains(lockups[0]));
+    groups.length === 1 && row.contains(groups[0]));
+  check('it is the last item on the line',
+    groups.length === 1 && row.lastElementChild === groups[0],
+    row.lastElementChild && row.lastElementChild.className);
+
+  const credits = groups.length ? [...groups[0].querySelectorAll('a')] : [];
+  check('it holds two links, Stanley then Wispr Flow',
+    credits.length === 2 &&
+    credits[0].getAttribute('href') === 'https://x.getstanley.ai/r/mz4y9g' &&
+    credits[1].getAttribute('href') === 'https://ref.wisprflow.ai/ella-cook-vt27',
+    credits.map((a) => a.getAttribute('href')));
+  check('both open in a new tab and are marked sponsored',
+    credits.length === 2 && credits.every((a) => a.getAttribute('target') === '_blank' &&
+      /\bnoopener\b/.test(a.getAttribute('rel') || '') &&
+      /\bsponsored\b/.test(a.getAttribute('rel') || '')),
+    credits.map((a) => a.getAttribute('rel')));
+  check('"Powered by" is said once, over the pair rather than inside a link',
+    groups.length === 1 &&
+    groups[0].querySelectorAll('.trp-powered-label').length === 1 &&
+    credits.every((a) => a.querySelector('.trp-powered-label') === null));
+
+  // Wispr's mark is a near-black tile, not a wordmark, so on its own it reads
+  // as a stray black square. The words beside it are what name it. Stanley's
+  // own file carries its name already.
+  check('the Wispr Flow mark is named in words beside it',
+    credits.length === 2 && credits[1].textContent.replace(/\s+/g, ' ').trim() === 'Wispr Flow',
+    credits.length === 2 && credits[1].textContent.trim());
+  check('and its image is decorative, so the name is not read out twice',
+    credits.length === 2 && credits[1].querySelector('img') !== null &&
+    credits[1].querySelector('img').getAttribute('alt') === '',
+    credits.length === 2 && credits[1].querySelector('img') &&
+    credits[1].querySelector('img').getAttribute('alt'));
+
+  // The script that used to swap the Stanley artwork for a cropped, greyed
+  // copy is gone. If it ever comes back, so does the misaligned logo.
+  check('nothing on the page swaps the artwork at runtime',
+    !read('portal/portal-chrome.js').includes('stanley-clean') &&
+    !read('portal/portal-content.css').includes('stanley-clean'));
 
   const text = row.textContent.replace(/\s+/g, ' ').trim();
   check('the line still reads as the brief sets it, with the credit last',
-    /^© 2026 Time Rich · Privacy · Terms · WhatsApp community · Need help\? emc@timerichclub\.com · Powered by$/.test(text),
+    /^© 2026 Time Rich · Privacy · Terms · WhatsApp community · Need help\? emc@timerichclub\.com · Powered by · Wispr Flow$/.test(text),
     text);
 }
 

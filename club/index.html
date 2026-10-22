@@ -79,6 +79,30 @@
     if (frame && frame.parentNode) frame.parentNode.removeChild(frame);
   }
 
+  /* The stored choice, as the portal writes it. */
+  function stored() {
+    try { return window.localStorage.getItem(THEME) || 'system'; } catch (e) { return 'system'; }
+  }
+
+  /* The frame element's own ground, under the Club home until it paints.
+     Read once when the frame is made, and again whenever the member changes
+     the theme inside it -- the toggle lives in the framed page, so without
+     the message below this colour would be whatever it was at load. */
+  function paint(theme) {
+    if (!frame) return;
+    var dark = theme === 'dark' || (theme !== 'light' &&
+      window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches);
+    frame.style.background = dark ? '#1C1D1A' : '#FFFDFB';
+  }
+
+  window.addEventListener('message', function (event) {
+    // Same origin only, and only the one message this page knows about.
+    if (event.origin !== window.location.origin) return;
+    var data = event.data;
+    if (!data || data.type !== 'trportal:theme') return;
+    paint(data.theme === 'light' || data.theme === 'dark' ? data.theme : 'system');
+  });
+
   function mount() {
     if (settled) return;
 
@@ -90,11 +114,7 @@
     /* The frame's own background, so a dark-theme member does not get a
        white rectangle for the moment before the Club home paints. Same two
        grounds the portal uses, picked by the same stored preference. */
-    var theme = 'system';
-    try { theme = window.localStorage.getItem(THEME) || 'system'; } catch (e) {}
-    var dark = theme === 'dark' || (theme !== 'light' &&
-      window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches);
-    frame.style.background = dark ? '#1C1D1A' : '#FFFDFB';
+    paint(stored());
 
     var timer = window.setTimeout(showApply, FRAME_TIMEOUT_MS);
     frame.addEventListener('load', function () {

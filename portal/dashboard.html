@@ -168,7 +168,7 @@
     <!-- Right: the theme control, a thin divider, the member and Sign out.
          The sponsor credit is no longer here; it sits beside the wordmark on
          the left, which is the only place it appears on the page. -->
-    <div class="flex items-center gap-2 sm:gap-3 shrink-0">
+    <div class="trp-head-right">
       <!-- Filled in by portal-chrome.js, and only while a session is live or
            about to start. Stays hidden the rest of the time. -->
       <a data-portal-join hidden class="hidden xl:inline-flex items-center px-3.5 py-1.5 rounded-full bg-brand-green text-brand-bg text-[11px] font-medium tracking-[0.04em] whitespace-nowrap hover:bg-brand-green/90 transition-colors"></a>
@@ -450,16 +450,28 @@ Confirm you can open all 8.</pre>
       <span class="trp-foot-sep" aria-hidden="true">&middot;</span>
       <span>Need help? <a href="mailto:emc@timerichclub.com" class="trp-foot-link">emc@timerichclub.com</a></span>
       <span class="trp-foot-sep" aria-hidden="true">&middot;</span>
-      <!-- The anchor sponsor. This used to sit beside the wordmark; the
-           masthead is now the wordmark, the menu and the member's own
-           controls, so the credit reads better on the quiet line down here.
-           Still exactly one lockup per page, and still the two files, the
-           dark one swapping in on the dark theme. -->
-      <a class="trp-powered trp-powered-foot" href="https://x.getstanley.ai/r/mz4y9g" target="_blank" rel="noopener sponsored">
+      <!-- The two sponsors, read as one credit: "Powered by" is said once over
+           the pair. Stanley is the presenting sponsor, Wispr Flow the official
+           voice partner. Both are the real marks in their own colours, at the
+           line's own height -- the script that used to swap in a cropped,
+           greyed-out Stanley is gone, and so is the bare Wispr tile that read
+           as a stray black square with nothing to name it.
+
+           Stanley ships two files because its wordmark is black and vanishes on
+           the dark theme; both sit in the markup and the theme picks, since an
+           img's src is not something CSS can swap. -->
+      <span class="trp-credits">
         <span class="trp-powered-label">Powered by</span>
-        <img class="trp-powered-pos" src="../brand/partners/stanley-logo.png" alt="Stanley" width="765" height="203" loading="lazy" decoding="async"/>
-        <img class="trp-powered-rev" src="../brand/partners/stanley-logo-dark.png" alt="Stanley" width="765" height="203" loading="lazy" decoding="async"/>
-      </a>
+        <a class="trp-powered trp-powered-foot" href="https://x.getstanley.ai/r/mz4y9g" target="_blank" rel="noopener sponsored">
+          <img class="trp-powered-pos" src="../brand/partners/stanley-logo.png" alt="Stanley" width="765" height="203" loading="lazy" decoding="async"/>
+          <img class="trp-powered-rev" src="../brand/partners/stanley-logo-dark.png" alt="Stanley" width="765" height="203" loading="lazy" decoding="async"/>
+        </a>
+        <span class="trp-credit-dot" aria-hidden="true">&middot;</span>
+        <a class="trp-credit" href="https://ref.wisprflow.ai/ella-cook-vt27" target="_blank" rel="noopener sponsored">
+          <img class="trp-credit-tile" src="../os/img/wispr-flow.png" alt="" width="256" height="256" loading="lazy" decoding="async"/>
+          <span class="trp-credit-name">Wispr Flow</span>
+        </a>
+      </span>
     </p>
   </footer>
 
@@ -810,27 +822,10 @@ Confirm you can open all 8.</pre>
     })();
   </script>
 
-  <script>
-    // Keeps every theme control on the page in step with what was stored,
-    // and writes the choice back. The attribute itself is set in <head>.
-    (function () {
-      var KEY = 'tr_portal_theme';
-      var selects = document.querySelectorAll('[data-theme-select]');
-      if (!selects.length) return;
-
-      var current = document.documentElement.getAttribute('data-theme') || 'system';
-      Array.prototype.forEach.call(selects, function (sel) {
-        sel.value = current;
-        sel.addEventListener('change', function () {
-          var value = sel.value === 'light' || sel.value === 'dark' ? sel.value : 'system';
-          document.documentElement.setAttribute('data-theme', value);
-          try { window.localStorage.setItem(KEY, value); } catch (e) { /* choice lasts the session */ }
-          // any other control on the page follows
-          Array.prototype.forEach.call(selects, function (other) { other.value = value; });
-        });
-      });
-    })();
-  </script>
+  <!-- The light/dark choice, shared by every portal page. The pre-paint
+       script in <head> sets the attribute; this keeps the controls in step
+       with it and writes a new choice back. -->
+  <script src="portal-theme.js" defer></script>
 
 </body>
 </html>
