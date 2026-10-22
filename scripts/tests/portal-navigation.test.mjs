@@ -40,6 +40,31 @@ for (const page of pages) {
     linksChecked++;
   }
   if (page === 'club') assert.equal(d.querySelector('base').target, '_top');
+
+  /* The light/dark choice is one shared file, loaded by every portal page.
+     It was copied into the foot of seven of the eight instead, and Club was
+     the one that never got the copy -- so its toggle dispatched a `change`
+     nobody listened for and clicking it did nothing. A page that carries its
+     own copy again, or stops loading the shared one, is that bug coming back. */
+  const theme = [...d.querySelectorAll('script[src]')]
+    .filter((t) => /portal-theme\.js/.test(t.getAttribute('src')));
+  assert.equal(theme.length, 1, page + ': should load portal-theme.js exactly once');
+  assert(theme[0].hasAttribute('defer'), page + ': portal-theme.js should be deferred');
+
+  const inline = [...d.querySelectorAll('script:not([src])')].map((t) => t.textContent);
+  const writers = inline.filter((t) => /localStorage\.setItem\('tr_portal_theme'/.test(t));
+  assert.equal(writers.length, 0, page + ': the theme is written by the shared file, not inline');
+
+  // The pre-paint reader does stay inline: over the network it would land
+  // after the first paint and the wrong theme would flash.
+  const prepaint = inline.filter((t) => /localStorage\.getItem\('tr_portal_theme'\)/.test(t));
+  assert.equal(prepaint.length, 1, page + ': should set the theme before first paint, inline');
+  assert(d.head.contains(d.querySelector('script:not([src])')),
+    page + ': the pre-paint script should be the first thing in <head>');
+
+  // And every page offers the control the shared file wires up.
+  assert(d.querySelector('[data-theme-select]'), page + ': missing the theme control');
+
   dom.window.close();
 }
-console.log('Passed: ' + linksChecked + ' desktop/mobile/submenu links, rapid and modified clicks, and Club frame target.');
+console.log('Passed: ' + linksChecked + ' desktop/mobile/submenu links, rapid and modified clicks, Club frame target, and the shared theme script on all ' + pages.length + ' pages.');

@@ -693,30 +693,89 @@
     color: var(--trp-muted);
     white-space: nowrap;
   }
+  /* Their own colours, at the height of the line they sit on. They used to
+     be held back to 85% so the credit never competed with the Time Rich
+     wordmark; the wordmark is not beside them any more, and a sponsor's mark
+     at four-fifths strength is not that sponsor's mark. */
   .trp-powered img {
     display: block;
-    height: 24px;
+    height: 20px;
     width: auto;
-    opacity: .85;
-    transition: opacity var(--trp-t) ease;
   }
-  .trp-powered:hover img { opacity: 1; }
+
+  /* -- the second sponsor, and the pair ------------------------------------
+     Wispr Flow is the voice partner. Its mark is a near-black rounded tile
+     with white bars in it, not a wordmark on transparent like Stanley's, so
+     on its own it read as a stray black square with nothing to name it. It
+     is shown with the words beside it, which is how Wispr's own brand draws
+     it, and the hairline ring keeps the tile's edge findable on the dark
+     theme where the ground is nearly its colour. */
+  .trp-credit {
+    display: inline-flex;
+    align-items: center;
+    flex: none;
+    white-space: nowrap;
+    gap: 7px;
+    text-decoration: none;
+    color: inherit;
+  }
+  .trp-credit img {
+    height: 18px;
+    width: auto;
+    display: block;
+  }
+  /* The same 44px target Stanley's lockup carries, centred on the artwork
+     without growing it. Two sponsor links on one quiet line, both reachable
+     with a thumb. */
+  .trp-credit { position: relative; }
+  .trp-credit::before {
+    content: '';
+    position: absolute;
+    top: -13px;
+    right: -6px;
+    bottom: -13px;
+    left: -6px;
+    border-radius: 8px;
+  }
+  .trp-credit-tile {
+    border-radius: 5px;
+    box-shadow: 0 0 0 1px rgb(var(--c-rule) / .12);
+  }
+  :root[data-theme='dark'] .trp-credit-tile { box-shadow: 0 0 0 1px rgb(var(--c-rule) / .22); }
+  @media (prefers-color-scheme: dark) {
+    :root[data-theme='system'] .trp-credit-tile { box-shadow: 0 0 0 1px rgb(var(--c-rule) / .22); }
+  }
+  .trp-credit-name {
+    font-size: 13px;
+    font-weight: 500;
+    line-height: 1;
+    color: var(--trp-text);
+    white-space: nowrap;
+  }
+  .trp-credit:hover .trp-credit-name { color: var(--trp-ink); }
+
+  /* The two sit in one group so "Powered by" is said once over the pair.
+     align-items: center is what lines both marks up with the label and with
+     the footer text beside them. */
+  .trp-credits {
+    display: inline-flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 9px;
+    line-height: 1;
+  }
+  .trp-credit-dot {
+    color: var(--trp-muted);
+    line-height: 1;
+  }
 
   /* The light file is the default; the dark theme swaps in the reversed one. */
-  /* .trp-credit is the Club footer's version of the same lockup, so it
-     picks the same file. Written here rather than copied again: the pair of
-     files and the rule that chooses between them belong together. */
-  .trp-powered .trp-powered-rev,
-  .trp-credit .trp-powered-rev { display: none; }
-  :root[data-theme='dark'] .trp-powered .trp-powered-pos,
-  :root[data-theme='dark'] .trp-credit .trp-powered-pos { display: none; }
-  :root[data-theme='dark'] .trp-powered .trp-powered-rev,
-  :root[data-theme='dark'] .trp-credit .trp-powered-rev { display: block; }
+  .trp-powered .trp-powered-rev { display: none; }
+  :root[data-theme='dark'] .trp-powered .trp-powered-pos { display: none; }
+  :root[data-theme='dark'] .trp-powered .trp-powered-rev { display: block; }
   @media (prefers-color-scheme: dark) {
-    :root[data-theme='system'] .trp-powered .trp-powered-pos,
-    :root[data-theme='system'] .trp-credit .trp-powered-pos { display: none; }
-    :root[data-theme='system'] .trp-powered .trp-powered-rev,
-    :root[data-theme='system'] .trp-credit .trp-powered-rev { display: block; }
+    :root[data-theme='system'] .trp-powered .trp-powered-pos { display: none; }
+    :root[data-theme='system'] .trp-powered .trp-powered-rev { display: block; }
   }
 
   /* -- the dashboard ------------------------------------------------------
@@ -1216,7 +1275,10 @@
      the wording stays at every width -- there is room for it down here,
      unlike in the masthead it came from. */
   .trp-powered-foot { gap: 7px; }
-  .trp-powered-foot img { height: 15px; }
+  .trp-powered-foot img { height: 18px; }
+  /* The artwork is 18px down here rather than 20, so the overlay opens by
+     one more pixel each side and the target is 44 again. */
+  .trp-powered-foot::before { top: -13px; bottom: -13px; }
 
   .trp-powered-head img { height: 20px; }
   @media (min-width: 640px) {
@@ -1247,9 +1309,13 @@
      Right-aligned inside that width, so the divider to its left is the edge
      that stays put. A name longer than the reservation still widens it, by
      the few pixels it overruns. */
+  /* Left-aligned, so the slack in that reservation falls on the far side of
+     the name rather than between the name and the hairline beside it. It was
+     right-aligned, which parked up to 30px of empty box against the divider
+     and left it visibly closer to the pill than to the name it divides. */
   [data-portal-name] {
     min-width: 4.5rem;
-    text-align: right;
+    text-align: left;
   }
 
   .trp-head-div {
@@ -1258,6 +1324,27 @@
     flex: none;
     background: var(--trp-rule-2);
   }
+
+  /* -- the header's right-hand group --------------------------------------
+     The day/night pill, the hairline, the member's name and Sign out, on one
+     line, centred on each other, with the same gap between each pair. It was
+     a pair of Tailwind gap utilities written out on every page, which is one
+     place per page for them to drift apart. */
+  .trp-head-right {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    flex: none;
+  }
+  /* A phone has the wordmark, the menu button and this group to fit in about
+     340px, so the group closes up rather than wrapping. */
+  @media (max-width: 639px) {
+    .trp-head-right { gap: 8px; }
+  }
+  /* The hairline is 1px of ink. A full gap on each side of it reads as a
+     hole rather than as a divider, so it is pulled in -- by the same amount
+     on both sides, which is the whole point of it. */
+  .trp-head-right .trp-head-div { margin-inline: -2px; }
 
   /* -- the header --------------------------------------------------------
      Pinned to the top, 56px on a phone and 64px above that. A solid page
@@ -1779,47 +1866,8 @@
   }
   .trp-soon-lg { font-size: 11px; padding: 5px 12px; }
 
-  /* -- the footer credit --
-     .trp-partner was already a column-flex card on the Resources page, so
-     this one is its own name. */
-  .trp-credit {
-    display: inline-flex;
-    align-items: center;
-    flex: none;
-    white-space: nowrap;
-    gap: 9px;
-    min-height: 44px;
-    text-decoration: none;
-    color: inherit;
-  }
-  /* Both partners at the same height, in their own colours. Wispr's mark is
-     a dark rounded tile with white bars inside it, not a wordmark on
-     transparent like Stanley's -- held at 60% it read as a grey box, which
-     is what this fixes. Full strength, and a hairline ring on the dark
-     theme so the tile's own edge is still findable against the ground. */
-  .trp-credit img {
-    height: 20px;
-    width: auto;
-    display: block;
-  }
-  .trp-credit-tile {
-    border-radius: 5px;
-    box-shadow: 0 0 0 1px rgb(var(--c-rule) / .12);
-  }
-  :root[data-theme='dark'] .trp-credit-tile { box-shadow: 0 0 0 1px rgb(var(--c-rule) / .22); }
-  @media (prefers-color-scheme: dark) {
-    :root[data-theme='system'] .trp-credit-tile { box-shadow: 0 0 0 1px rgb(var(--c-rule) / .22); }
-  }
-  .trp-credit-label { white-space: nowrap; }
-
-  /* The two credits sit in one group, so "Powered by" is said once. */
-  .trp-credits {
-    display: flex;
-    align-items: center;
-    flex-wrap: wrap;
-    gap: 14px;
-  }
-
+  /* The sponsor pair is laid out once, up beside .trp-powered: the Club
+     footer and every other footer now draw the same lockup. */
 
   /* -- the checklist card -------------------------------------------------
      The shape a member meets on the dashboard and again on the Curriculum:

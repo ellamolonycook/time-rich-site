@@ -221,9 +221,11 @@ console.log('\nThe header sits on the same pixel on every page');
     PAGES.filter((p) => shape(docs[p]) !== base));
 
   // The member's name is empty until the payload lands, and it sits in the
-  // group at the end of the header.
+  // group at the end of the header. Left-aligned, so the slack in that
+  // reservation falls on the far side of the name rather than between the
+  // name and the hairline divider beside it.
   check('the name slot holds a name’s width open',
-    /\[data-portal-name\] \{\s*min-width: 4\.5rem;\s*text-align: right;\s*\}/.test(SRC));
+    /\[data-portal-name\] \{\s*min-width: 4\.5rem;\s*text-align: left;\s*\}/.test(SRC));
 }
 
 /* ---- 4. the fonts -------------------------------------------------------- */

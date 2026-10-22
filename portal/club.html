@@ -82,6 +82,10 @@
   <script src="portal-access.js" defer></script>
   <script src="portal-live.js"></script>
   <script src="portal-chrome.js?v=20261021" defer></script>
+  <!-- The light/dark choice, shared by every portal page. The pre-paint
+       script in <head> sets the attribute; this keeps the controls in step
+       with it and writes a new choice back. -->
+  <script src="portal-theme.js" defer></script>
 
   <!-- Warm the next page while the pointer is still travelling to the link.
        "moderate" is roughly 200ms of hover, which is long enough that a
@@ -168,7 +172,7 @@
     <!-- Right: the theme control, a thin divider, the member and Sign out.
          The sponsor credit is no longer here; it sits beside the wordmark on
          the left, which is the only place it appears on the page. -->
-    <div class="flex items-center gap-2 sm:gap-3 shrink-0">
+    <div class="trp-head-right">
       <!-- Filled in by portal-chrome.js, and only while a session is live or
            about to start. Stays hidden the rest of the time. -->
       <a data-portal-join hidden class="hidden xl:inline-flex items-center px-3.5 py-1.5 rounded-full bg-brand-green text-brand-bg text-[11px] font-medium tracking-[0.04em] whitespace-nowrap hover:bg-brand-green/90 transition-colors"></a>
@@ -385,18 +389,26 @@
       <p>&copy; 2026 Time Rich</p>
 
       <p class="flex flex-wrap items-center gap-x-3 gap-y-2">
-        <!-- Both partners, at one height. The credit used to sit beside the
-             wordmark in the header; it reads better down here with Wispr
-             than as a third thing in the masthead. "Powered by" is said
-             once, over the pair. -->
+        <!-- The two sponsors, read as one credit: "Powered by" is said once over
+             the pair. Stanley is the presenting sponsor, Wispr Flow the official
+             voice partner. Both are the real marks in their own colours, at the
+             line's own height -- the script that used to swap in a cropped,
+             greyed-out Stanley is gone, and so is the bare Wispr tile that read
+             as a stray black square with nothing to name it.
+
+             Stanley ships two files because its wordmark is black and vanishes on
+             the dark theme; both sit in the markup and the theme picks, since an
+             img's src is not something CSS can swap. -->
         <span class="trp-credits">
-          <span class="trp-credit-label">Powered by</span>
-          <a class="trp-credit" href="https://x.getstanley.ai/r/mz4y9g" target="_blank" rel="noopener sponsored">
+          <span class="trp-powered-label">Powered by</span>
+          <a class="trp-powered trp-powered-foot" href="https://x.getstanley.ai/r/mz4y9g" target="_blank" rel="noopener sponsored">
             <img class="trp-powered-pos" src="../brand/partners/stanley-logo.png" alt="Stanley" width="765" height="203" loading="lazy" decoding="async"/>
             <img class="trp-powered-rev" src="../brand/partners/stanley-logo-dark.png" alt="Stanley" width="765" height="203" loading="lazy" decoding="async"/>
           </a>
+          <span class="trp-credit-dot" aria-hidden="true">&middot;</span>
           <a class="trp-credit" href="https://ref.wisprflow.ai/ella-cook-vt27" target="_blank" rel="noopener sponsored">
-            <img class="trp-credit-tile" src="../os/img/wispr-flow.png" alt="Wispr Flow" width="256" height="256" loading="lazy" decoding="async"/>
+            <img class="trp-credit-tile" src="../os/img/wispr-flow.png" alt="" width="256" height="256" loading="lazy" decoding="async"/>
+            <span class="trp-credit-name">Wispr Flow</span>
           </a>
         </span>
         <span aria-hidden="true">&middot;</span>
