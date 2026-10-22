@@ -1,0 +1,456 @@
+Time Rich Replay
+IP & AI Assets Workshop: Own Your AI Assets | 21 Oct 2026
+Transcript generated automatically from the recording, so expect the odd misheard word.
+
+Ella Molony Cook: at intellectual property inside of our business, but I want to open up the conversation quickly.
+Ella Molony Cook: Let me just make sure that this is recording. Yep.
+Ella Molony Cook: Two, introduce myself.
+Ella Molony Cook: Most of you all know me, but if you don't, I am an Australian dyslexic high school dropout that loves being busy.
+Ella Molony Cook: I realize that it's actually a challenge for me to slow down.
+Ella Molony Cook: And so I'm really excited to crush Q4 and actually take a break off technology. We've spent the entire summer inside of Time Rich Club diving into AI, and we're going to be switching gears from a resource perspective, over the next couple of weeks, because we have our accelerator that's going live on Monday. We'll go more into that soon, but
+Ella Molony Cook: Time Rich is a media platform where we have a newsletter and a podcast, but then we also have the community, which is the club, and it's full of ambitious leaders, founders, and investors. And the whole idea around Time Rich is I really do believe that with a mixture of focusing on building your authority.
+Ella Molony Cook: Building your systems, and actually being able to scale, that you should be able to become time-rich, which means that we have full ownership of our time to then be able to focus on what's actually important in your life.
+Ella Molony Cook: relationships, being able to invest back into your own physical health, mental health, so on, so forth. And as a burnt-out entrepreneur, multiple times, I think it's really important that we have a community that's led with vulnerability and resources for the underestimated entrepreneurs.
+Ella Molony Cook: So, it's really interesting, because I think we've gone into AI so much that
+Ella Molony Cook: there's been this inflection point, and I think we can all see that over this last 12-month period, it's really been focused on, like, pick
+Ella Molony Cook: which harness you want to use? What is your interface? And that's been a real struggle for people, because there's so many different ways that you can be leveraging AI, but I really do see the future
+Ella Molony Cook: Especially now with these… this technology moving so quickly, that it's just going to become easier and easier, and it's going to become simpler and simpler, which means…
+Ella Molony Cook: what is really important is your system around AI, and we've been talking a lot around the delegation mindset, right? It's around how you're getting into these really good habits inside of the morning of what is the highest priority as me as a leader, I should be focusing on, and then where does the middle layer of the action that agents can be supporting with
+Ella Molony Cook: And then where do I actually need humans to actually humanize parts of my business? Because that's going to be about… give my… my…
+Ella Molony Cook: Startup or business more opportunities to actually thrive in this new world.
+Ella Molony Cook: And so with that, I'm really excited, because I've actually… I was always a granola girly. I originally started out using Whisperflow when it was just the ability to talk.
+Ella Molony Cook: to it?
+Ella Molony Cook: But they've come out this year with an AI Notetaker, and I've been playing around with it a lot, and it's actually way better than granola, and there's a couple of reasons why. Because now I'm able to do both. So what I've done for the Time Rich community is we're giving 3 months away, thanks to Whisper Flow, but I've also given you an AI prompt system on how to actually transfer your AI notes over.
+Ella Molony Cook: And then how you can actually get really great outcomes really quickly with connecting it to AI and making sure that you have your follow-up process set, it's extracting your content, all of your intellectual property that you're speaking to it on a day-to-day basis. How do you actually extract that for content, for your SOPs, so on and so forth.
+Ella Molony Cook: So we've put together a prompt system, that's also going to be inside of the accelerator.
+Ella Molony Cook: So here, we have 3 months unlocked for y'all, and I'm really grateful for that. So, inside of the community, what we're going to be really diving deep into is authority over the next couple of months. So, I've just brought on Vika Victoria as our Chief Storytelling Officer, and I really think as we're going into the holiday season, we need to be focusing on our ability to
+Ella Molony Cook: communicate, our ability to storytell, our ability to sell. And so we're going to be going into… the Time Rich Club series is going to be going into, like, how do you position yourself in authority? Which I'm really excited about.
+Ella Molony Cook: If you're in New York City, Jess…
+Ella Molony Cook: Save the date for the 9th, we're gonna be sending that out inside of the community really soon. This is going to be our official launch, and this is gonna be a really great panel, and then obviously being able to network, and it's gonna be at the NED, so I'm really excited about that. So, we have the last opportunity, it's the last couple of days of the fellowship, if you want to apply. Very excited about this.
+Ella Molony Cook: The accelerator is 4 weeks to become visible and increase your revenue and build your AI operating system. And then I want to talk about how me and Marchas actually met, because it's a bit of an interesting story.
+Ella Molony Cook: I don't normally post photos on the internet of me crying, especially… especially without makeup. I was like, gosh, I'm really being vulnerable. But…
+Ella Molony Cook: I was having such a rough day, and I was like, you know what? I committed to myself to building in public in this new chapter, and I… I didn't really build in public in my last couple of companies, because I was just so focused on the building. Whereas now, I'm like, no, I do want to show other individuals that
+Ella Molony Cook: It's lonely, it's tough, it's isolating, and…
+Ella Molony Cook: guys, like, whatever you see on the internet, you have no idea what that person's going through. And this really created a movement. Like, I didn't realize, like, how much…
+Ella Molony Cook: especially LinkedIn is craving that authenticity, and so out of this one LinkedIn post, I felt so loved and so seen, but I actually found a business best friend, which is Machus. And he reached out to me, and I was just so grateful, and he was like, let's catch up and go for a coffee in New York.
+Ella Molony Cook: So it ended up turning into a 3-hour meeting.
+Ella Molony Cook: he then introduced me to a couple of incredible exited founders, startups, that then we're now talking around advisory opportunities, we're collaborating on, obviously, the accelerator, we're figuring out how we can support each other in a deeper way, and I just wanted to say that, like, how powerful is the internet? You know what I mean? Like, yes, AI is cool, but it's like.
+Ella Molony Cook: we now have the ability to show up and make ourself visible, and you never know what one single post, the amount of opportunities and the richness of friendships and community it can build. And so, I just wanted to first say.
+Ella Molony Cook: thank you, all of you, for showing up and giving me your time. It means so much to me, and we're going to crush the next 60 minutes, because matas, he's really focused on the intersection of being an entrepreneur, an investor, but also an IP consultant and advisor. And so, he is going to be going through all the ways that we are building assets
+Ella Molony Cook: with AI, and how we can be able to position that to investors, and also how we need to protect our assets inside of our company as well.
+Ella Molony Cook: So, without further ado, my dear friend, Michelle.
+Mátyás Kolsofszki: My own? Can you guys see me, hear me, all that?
+Ella Molony Cook: We got you. Loud and clear.
+Mátyás Kolsofszki: I have a less cool background than Ella, but good to meet you all.
+Mátyás Kolsofszki: And
+Mátyás Kolsofszki: You know, Ella was mentioning how important it is to do appropriate communication, you know, use AI to accelerate your road to success, but obviously the foundation is the most important, huh? Because if you don't have a strong foundation, if you don't know what you actually have, and what you own.
+Mátyás Kolsofszki: and what you need to own to succeed, then you will have problems in the future. So everything I'm going to be talking about is related to your foundation, and
+Mátyás Kolsofszki: First, to me, you are all startup entrepreneurs, and second, to that, you are
+Mátyás Kolsofszki: running an AI company, so I'm gonna be mixing the two, meaning that you're gonna get some general knowledge about, you know, intangible assets. I love that it's IA, actually, so it's AI mirrored, so you will remember it.
+Mátyás Kolsofszki: The point is that you need… how to be of value, so I'm going to be starting with that, how you can protect what you may have, and I would love to hear your thoughts and opinions.
+Mátyás Kolsofszki: Ella, how we do the Q&A, is it gonna be interruptions while I'm speaking, or do you just wanna leave it in the end, or what's the preferred…
+Mátyás Kolsofszki: kind of structure.
+Ella Molony Cook: Because it's a small group, if there is a question, drop it in the chat, and we'll bring it up, and then we'll do Q&A properly at the end.
+Mátyás Kolsofszki: Cool, and how much time do I have from now?
+Ella Molony Cook: 45 minutes max?
+Mátyás Kolsofszki: Okay. So, guys, it's gonna be a little too much, I know, but the point is, the most important, actually, today is awareness. So, if you leave this call, and all of you have things to think about, and are running back to the office to fix, then…
+Mátyás Kolsofszki: I have succeeded, so that's my goal, is today, and… I am…
+Mátyás Kolsofszki: Please let me know when you see my screen.
+Mátyás Kolsofszki: Should be shared now.
+Mátyás Kolsofszki: Is it on?
+Ella Molony Cook: Yes, sir.
+Mátyás Kolsofszki: It should be an awakening orange. Okay, so, yeah, that's me. Very quickly, as Ella mentioned, I'm founder of this company, I'm co-founder of a few other companies.
+Mátyás Kolsofszki: One thing that may resonate with you guys, a couple of years ago, I was the CEO of a big data fusion and a modeling and simulation company.
+Mátyás Kolsofszki: We developed something similar to Palantir, working with the defense industry globally and civilian.
+Mátyás Kolsofszki: sectors, you know, made me quite close to… brought me quite close to AI in its very early stages. Since then, that time, remember 7 years ago, I think that was, it was much different than what it is today.
+Mátyás Kolsofszki: And what my company does, and what we are doing, is, you know, we build companies, that's my passion. That's why I called my company 384K Ventures. Many of you may wonder why there is the name.
+Mátyás Kolsofszki: So, 384,000 in kilometers, because I'm European, so I use a proper metric scale, is the distance between Earth and the Moon.
+Mátyás Kolsofszki: So, when I wanted to express what my passion is, then I felt like, you know, I like to work with impossible challenges. So, hence the name. And, really what I do, I build projects, I build, build companies, and I also work with very large companies.
+Mátyás Kolsofszki: To, you know, to leverage my expertise in, you know, transactions and… and, intangible assets in every way.
+Mátyás Kolsofszki: And let's start with my favorite quote, and this is for you all to keep in mind, because I would really love to, you know, know all of you, how you think about this. So, if you don't have competitive advantages, don't compete. That's very true. So, I'm sure you all think you have competitive advantages as of now.
+Mátyás Kolsofszki: You may communicate it in a way that you think is the best, but your word is going to change very much when you start scaling up, you start acquiring customers, you actually start really competing against others.
+Mátyás Kolsofszki: And then it will really matter if you can back it up.
+Mátyás Kolsofszki: By actual competitive advantages. That you can defend, that you can, that you can,
+Mátyás Kolsofszki: transact, you can… you can transfer these to other companies, you can sell them, you can buy, you can develop them further. This is not very important, so I'm just dropping over. Why are we talking about intangible assets? It's because
+Mátyás Kolsofszki: Most company… company value in the 21st century is associated with
+Mátyás Kolsofszki: assets that are not visible. You know, in the S&P 500, I think it's estimated what it is, 92% on the slide, so that it should be.
+Mátyás Kolsofszki: That is related to intangible assets, as opposed to, you know, 30, 40 years ago, 50 years ago, it has to… it was only 17%, and this is now growing not only in North America, but in Europe, I think it's around 80%, in Asia, it's quickly growing up to the same levels, so… and it's also a massive market, you know, you can see it's, 10 trillion,
+Mátyás Kolsofszki: dollars of investments going into companies like yourselves and other companies that are developing such assets.
+Mátyás Kolsofszki: So…
+Mátyás Kolsofszki: investors care about this very much. They care about, and you guys, I think some of you already have probably acquired funding, and you will be, trying to acquire different, you know, funding from different people, and you will always be asking… ask the question, you know, why are you unique?
+Mátyás Kolsofszki: you know, how you safeguard my investment, why will you succeed, and that will all be backed up by, you know, whatever you own, and whatever others don't know about you, whatever your secrets are, your competitive advantages.
+Mátyás Kolsofszki: So, they do care about your technology, your data, you know, they do care about how you protect your market position, your brand, it's very important. I'm sure you have some cool names. I'm not sure how many of you actually trademarked it and protected it otherwise, but I'm sure you did some work at least, on that.
+Mátyás Kolsofszki: And…
+Ella Molony Cook: Wait, hold on, no. I think a lot of people don't trademark things, we just move very quickly as entrepreneurs, because we're trying.
+Mátyás Kolsofszki: Yeah, I will get back to that. So this is just a brief in the beginning, just to explain, because, you know, AI brought us something beautiful that is also terrifying. So, this is speed.
+Mátyás Kolsofszki: what AI brought is that you can do things very quickly, which is awesome. All of you are, you know,
+Mátyás Kolsofszki: Running ahead at, you know, light speed, and that's fantastic.
+Mátyás Kolsofszki: remember, at the same time, that speed is also making it difficult to be grounded for a moment and protect your most important assets. And, Ella, could I come back to the brand a little bit later? Because I have a dedicated slide to that?
+Ella Molony Cook: Of course.
+Mátyás Kolsofszki: So, you know,
+Mátyás Kolsofszki: I'm sure you heard about this, but let's just talk about it. So, all your innovations, you know, all your know-how, all your secrets, you know, the confidential information that is valuable, are…
+Mátyás Kolsofszki: you know, so-called innovation assets. Then you have all the market assets that is visible to your customers, to your partners, that is your brand.
+Mátyás Kolsofszki: You know, at the end of the day, we all know there was very…
+Mátyás Kolsofszki: very visible names that we see every day. We remember those companies that, and products that we buy, because of their brand, yeah? And your customer relationship, by the way, that's also belonging to this. And then you have quite a few business assets, which is often overlooked. So, I'll give you an example, you know, your contracts, if you have negotiated for half a year.
+Mátyás Kolsofszki: terms and conditions after a very rigorous, tedious process with a supplier or with a customer that you can then streamline and acquire more customers, that is an extremely important asset to your company.
+Mátyás Kolsofszki: Because in order for me to get into competition with you, I would need to do the same, yeah? But you have not done this, so I cannot spend the time, so you have a competitive advantage that's very difficult for me to overcome.
+Mátyás Kolsofszki: So, always appreciate your business assets, okay? Your partnerships, and also, of course, your reputation.
+Mátyás Kolsofszki: And finally, you know, the digital assets, which you all have. You have your software, you have your source code, you have maybe some algorithms, you have some databases, which is growing. Whether you own it or not, it's unclear to me. You may think it is, but, you know, let's look into the details. You have your AI assets, your prompts. There are many things that you may, own, or you may… you think you own, and
+Mátyás Kolsofszki: Let's go further and actually dive into the details.
+Mátyás Kolsofszki: And, of course, there are
+Mátyás Kolsofszki: quite a few other things, and I'm not sure if you're familiar with this kind of
+Mátyás Kolsofszki: the universe of intangible assets, but if we just spend a moment on
+Mátyás Kolsofszki: even your user interface, by the way, how your AI solution would look like could be protected by a design, yeah?
+Mátyás Kolsofszki: If you have experimented for, again, half a year with 10 pilot customers, and you came up with the right way, where you place your search bar and what information you show in a user interface, that even can be protected.
+Mátyás Kolsofszki: Why?
+Mátyás Kolsofszki: Because that may be your competitive advantage, and if I, as your competitor, cannot copy the same design, I am forced to use a less efficient design, then you can, you know, you can actually keep a market position that I cannot achieve, yeah? So, the…
+Mátyás Kolsofszki: opportunities for you to protect yourself is literally limitless. Now you just need to understand what you really, truly want to protect, and that all burns down
+Mátyás Kolsofszki: to the differentiated factors, these competitive advantages that makes you unique, that makes people buy from you, and that makes you more efficient, cheaper, and able to generate more revenue, okay?
+Mátyás Kolsofszki: I'm not sure, Ella if you will distribute the slides or not, but anyway, you did a recording so people can revisit this. I'm gonna go into some of these assets later on, but to move on…
+Mátyás Kolsofszki: And to show you this, there are a couple of things that are very well known. So if you go out, and you use an AI, ChatGPT, or Cloud, or any of those, and you try to understand what Apple, or Tesla, or even OpenAI actually has as a registrable,
+Mátyás Kolsofszki: visible, intangible assets, and you can find their patents, those are registered in the database, yeah? Same with trademarks, you can find their designs, and you can find their copyrights. They are registered because
+Mátyás Kolsofszki: If you are infringing upon them, they will tell you, well, you're infringing upon my rights, you should have known this, we send you a warning, if you keep on infringing, we're gonna sue you.
+Mátyás Kolsofszki: You all heard about these cases when Apple suing Samsung for billions of dollars, and so on. That's very,
+Mátyás Kolsofszki: It's a very easy way. However, most of your value is actually on the right side of this, of this,
+Mátyás Kolsofszki: list, which is the things that you don't know. You can find some of this information, technological information mainly, and design information, and brand information about companies, but you can't find
+Mátyás Kolsofszki: Anything, anywhere, hopefully, about their data, what data do they own, what algorithms they have, what supply chain do they use, how they, you know, price their products in the end, what contracts do they have, and so on.
+Mátyás Kolsofszki: Okay, so these are called invisible and non-registerable assets, because you cannot, file a patent to protect this, in most of the cases at least, to otherwise protect them, so you need to keep them confidential.
+Mátyás Kolsofszki: Okay? So there are two sets of asset types. One is that you can protect through, for example, U.S.
+Mátyás Kolsofszki: Patent and Trademark Office.
+Mátyás Kolsofszki: to protect something and to receive a limited time where you can sue others if they would be using the same technology or brand differentiators. And on the other side, you have those assets that you can keep secret forever, if you are able to.
+Mátyás Kolsofszki: But you need to understand what those are, and not to release them or relieve them when you are communicating with others, or you are selling your product.
+Mátyás Kolsofszki: I wanted to… Prepare a slide for you guys about, you know, just for consideration that
+Mátyás Kolsofszki: relating to this previous slide, on all those registrable asset types, and the confidential or hidden asset types, you know, if you look at your AI
+Mátyás Kolsofszki: assets. Again, this is way more than your source code, and you go through this list, you know, the training data, the source code, you know, the modules you use, your algorithms, the agents, how you fine-tune this, because I guess some of you, or most of you, use known
+Mátyás Kolsofszki: platforms, and then you just tweak it in a way that is best for your sake. That tweak is an asset itself, and then here you can see how you may classify this, okay? So if you just mention a couple of them, a source code.
+Mátyás Kolsofszki: For example, could actually be copyrighted, and it's definitely a trade secret, you don't want to reveal that.
+Mátyás Kolsofszki: the algorithms you may be using, they could be potentially patented, but when you patent something, as I said, they are visible, so if somebody asks and read it, and it's for you, probably very difficult to prove if somebody is using it, so rather just keep it secret, instead of actually going out with them. Your AI agents.
+Mátyás Kolsofszki: Could also be secret.
+Mátyás Kolsofszki: And your database is definitely, could be, also trade secret, and your reputation and brand assets could be,
+Mátyás Kolsofszki: trademarks.
+Mátyás Kolsofszki: I try to indicate the value, maybe that's not…
+Mátyás Kolsofszki: a little bit boring that it's only 4 and 5 stars, but really, these are all very important, and respective to your companies and the state of, you know, maturity, I recommend to do an exercise like this, you know, that you list your assets, okay? You…
+Mátyás Kolsofszki: Understand, and, you know, you list how you…
+Mátyás Kolsofszki: could be, and you want to protect this, do you want it to be… are you okay with them being on a visible side, meaning that it will be published? For example, if you share it through a patent, and then others can read it, are you able to then identify infringement? If not, they'd rather just keep it on the not visible side and hidden. And then…
+Mátyás Kolsofszki: score your own strategic values in. This is just my examples here, but I'm pretty sure each of you would go to this exercise, you would have a different number of stars to each and every line, because, you know, your businesses are different, and I recommend to go through this exercise.
+Mátyás Kolsofszki: With that said, I also tried to create, like, a value stack.
+Mátyás Kolsofszki: To kind of put them into 3 different layers when it comes to the, you know, the world of AI. And obviously, everything is visible on the top, so…
+Mátyás Kolsofszki: you know, your chatbots, your user interface, your AI assistants, these are the least protectable, or it's most difficult to, you know, hide them. Your middle layer includes those
+Mátyás Kolsofszki: you know, prompts and fine-tunings, as we discussed, integrations, that is also very important for you. You know, somewhere in between, you can protect them very well. And definitely the foundational layer, in your case is probably a little bit different, but just think it through.
+Mátyás Kolsofszki: That's really your core, unique, competitive advantages. That is usually the data.
+Mátyás Kolsofszki: Usually, your understanding of, of the industry you're working in, the domain-specific,
+Mátyás Kolsofszki: knowledge and understanding, or sets of know-how in every aspect of your business, as all belonging to here, okay? So, you would want to create some kind of, you know, your own pyramid, at least to have the top and the bottom that, you know, to…
+Mátyás Kolsofszki: Kind of understand what are the things that you will need to share, and it will be visible, so therefore you, you can take care of its protection on those, you know, visible protection methods, and what are the things that you can
+Mátyás Kolsofszki: Hide, and then you would be using those protection methods on the non-visible side.
+Mátyás Kolsofszki: Anybody has any question, you guys…
+Mátyás Kolsofszki: Stop me, I'm not seeing any chats on my screen, only your wonderful faces, so you will need to, need to indicate if you have any questions.
+Mátyás Kolsofszki: I don't want to spend much time on this, I'm not sure how much are you familiar with the traditional protection measures, like patents, but, you know, what a patent does is that you disclose an inventive technical solution, for example.
+Mátyás Kolsofszki: Your algorithmic, you know, solution, or a method, how you
+Mátyás Kolsofszki: achieve something with your AI systems, and that could get, you know, it will go through a process, to be scrutinized by the USPTO if you file it in the US, and once it's granted, giving you the right for 20 years.
+Mátyás Kolsofszki: To, once you identify that somebody is, unlawfully using your technology, invention, you can sue them and win the case and, basically,
+Mátyás Kolsofszki: close that segment of the market to others, okay? So that would be, for patents. And this is a really high barrier to entry for others. Once you have protected something.
+Mátyás Kolsofszki: that you, you actually, invented, and it's very useful to you, then it's a very powerful protection measures. I'm not sure if you are familiar with it, but the internet.
+Mátyás Kolsofszki: In 1990?
+Mátyás Kolsofszki: Well, you probably wouldn't… you were not born yet, but 1991, when they have invented the internet, there was a…
+Mátyás Kolsofszki: Suggestion to patent it, they could have, and they decided not to.
+Mátyás Kolsofszki: Can you imagine? There would have been a 20 euro right for somebody to make money on the internet. I mean, the internet, the World Wide Web.
+Mátyás Kolsofszki: So that's, that's how powerful this is. And now, Ella, we are back to the brands, okay? So at the end of the day, you guys are gonna be…
+Mátyás Kolsofszki: You know, a part of a…
+Mátyás Kolsofszki: you know, a large market space, you're offering your solutions, and you want to be recognized, and you want to be known, and that is your brand, okay? So, it's very important that you develop a strong brand, and you protect it.
+Mátyás Kolsofszki: I'm not sure… I mean, I'm sure you all have your domain names under some name, maybe it's the same name as your company names. I don't know if your company name is the same as your product name.
+Mátyás Kolsofszki: But, you know, brand assets protect both, but you definitely want to protect your product, yeah? So if you have a solution, if you have your colors, if you have your names, if you have your logo, if you have a combination of these, you can all protect it. You can even protect,
+Mátyás Kolsofszki: voices, noises, smells, you can protect whatever you like, as long as there is a unique product identifier for your SaaS, okay? And the good thing with brand protection is once you have done it, then you can keep on maintaining it until the end of time.
+Mátyás Kolsofszki: Because it will serve you well, and you can renew the protection all over, okay? Any questions to the brands now, since we have gotten back to them?
+Ella Molony Cook: Yeah, I want a tangible step. I've never patent trademarked anything in my life, so I'm curious, like, what do you advise?
+Ella Molony Cook: your startups that you're working with? Like, what is step one?
+Mátyás Kolsofszki: Yeah, so step one is, I mean, look, the brand…
+Mátyás Kolsofszki: Brand protection is a very important thing, and it's extremely painful, if you don't take care of it in the beginning. You know, you come up with a name, you fall in love with, you didn't do a clearance search, it's called, you know, clearance, meaning that, you know, you didn't clear that that brand asset, that name, is not owned by somebody, yeah?
+Mátyás Kolsofszki: And if you didn't do that, and then two years later, somebody will send you a letter that, well, you're actually using my name.
+Mátyás Kolsofszki: and this is the trademark that I have on this name, then it would be a very painful process to rebrand your company. You have a reputation of damage to your customers and suppliers and investors.
+Mátyás Kolsofszki: Plus, you have, you know, suddenly a confusion of who you are, because you have been someone, but you can't use it anymore.
+Mátyás Kolsofszki: The good news for all of you, this is a free thing. You can go into the USPTO.GOV, so the United States Patent and Trademark Office.gov, and then you can search yourself. You can search for the name that you currently use and see, is anybody, you know, already protecting that with a trademark.
+Mátyás Kolsofszki: Good news is, again, even if you find, because you will find similar names, it doesn't mean that they are infringing up, or you would be infringing upon them. For example, if you have a name of, what should be used, if I have a name of 384K Ventures, and somebody has protected that.
+Mátyás Kolsofszki: for, I don't know, fertilizer production, I wouldn't care about it, because I'm not in that business whatsoever, so I don't mind, yeah?
+Mátyás Kolsofszki: But you want to still do this search. So, your question… the answer to your question, Ella is that you want to do a clearance search. You can also pay, you know, an expert to do that for you. It will not cost you more than, let's say, $1,000.
+Mátyás Kolsofszki: if you pay a trademark attorney, they have tools that are more sophisticated than the USPTO tool.
+Mátyás Kolsofszki: You just tell them what markets? Are you… are you a global company? Are you planning to be a global company? Are you planning to be a local company? I'm in the US. And then when you define your global markets, they can go and search for it. You also want to make sure that the name you have, or the brand you have, is not meaning something nasty in another language.
+Mátyás Kolsofszki: Which sometimes people also end up with. They didn't think about it in Chinese, or, I don't know, Indian, that means something that they… you don't want it to be meaning, but when you enter the market, they tell you that this is the most ridiculous name, and then again, you need to rebrand.
+Mátyás Kolsofszki: So these are the smallest steps you can do in the beginning.
+Mátyás Kolsofszki: Did I answer the question related to the brand protection part?
+Ella Molony Cook: Yes.
+Mátyás Kolsofszki: And then you will go ahead and protect, and the trademark application is not very expensive, you know? You need to use a trademark atone. By the way, you can use it yourself, but just in case, since you need to define the classification groups.
+Mátyás Kolsofszki: for example, you need to say, okay, your company, your AI company, software company, doing this and this, you specify what the brand is for, and then you pay a few thousand dollars, and then you're in, and you can get it,
+Mátyás Kolsofszki: Trademark.
+Mátyás Kolsofszki: Okay? It's an important one.
+Mátyás Kolsofszki: And then use it. Now, good news for you guys. From today, all of you can go into your websites and products and…
+Mátyás Kolsofszki: On the upper right corner of your company names, you can put a capital T and capital M.
+Mátyás Kolsofszki: Okay? Which means trademark, which means that you're in progress.
+Mátyás Kolsofszki: of obtaining a registered trademark, which will look like an R in a circle, you've probably seen it on products, yeah? But you are, by U.S. law, you are, actually, eligible to use the capital T and capital M already from now on. Therefore, you notified me
+Mátyás Kolsofszki: That you intend to protect this name, And if I, afterwards.
+Mátyás Kolsofszki: try to do the same, then you can have, you know, the first mover's advantage, so it's a valuable thing to do. You want to notify your audience at all times that you are very aware of your values, and you are protecting them, so put the capital T and capital M on the upper right corner of your product names, and if you like your company name.
+Mátyás Kolsofszki: To be at least somewhat protected while you're doing these clearance searches and doing the work on your brand.
+Mátyás Kolsofszki: strategy.
+Ella Molony Cook: Matris, we have a question for you in the chat.
+Mátyás Kolsofszki: I think I've seen, like, 10 questions, but go on.
+Mátyás Kolsofszki: Do we want me to read them? Hold on.
+Ella Molony Cook: I can read it out for you. I've looked into patents in the US. It's $329, but often legals advise you for $1.2K. My question is, what
+Ella Molony Cook: patents are worth it. I am going to follow through and track infringement, which then implies lawsuits. How do you evaluate which you protect if you are a serial entrepreneur slash innovator?
+Mátyás Kolsofszki: Thanks for the question. So, let me just say this, you have, an obligation as the founder and CEO of a company.
+Mátyás Kolsofszki: to do one of two things. You need to protect yourself, you're asking about protection, but you also need to achieve freedom to operate. Two is not the same.
+Mátyás Kolsofszki: If I don't have a patent, I can still go out and sell this product, but I can be sued if I sell the same phone as Apple. Dave, you assume, yeah? That means I don't have a freedom to operate.
+Mátyás Kolsofszki: Okay? Even if I try to protect this, it doesn't, save me from a lawsuit. So, obviously, the question was.
+Mátyás Kolsofszki: Infringement, yes, you need to go after other people and sue them.
+Mátyás Kolsofszki: So, that's the only worth of a patent. If you can track it, and then you can identify it, you can always find litigation funds, you know? Law firms usually come and back you up, and, because if they see that you have a valuable patent, you know, and you win the case, it won't cost you
+Mátyás Kolsofszki: a dime.
+Mátyás Kolsofszki: you can get there, okay? So if you have a good asset. However, the amount of money you put in there, I would like to highlight that is only the official fee.
+Mátyás Kolsofszki: Now, you would want to use a very good patent lawyer to file a patent, don't do it yourself, and don't definitely use AI, because it's not there yet, okay? So use a patent lawyer, which will set you back
+Mátyás Kolsofszki: anywhere from…
+Mátyás Kolsofszki: let's say, just to manage expectations, $5,000 to $10,000, and then you made a good deal. If you contact me, I set you up with people that are reasonable.
+Mátyás Kolsofszki: But the point is that you need an expert that can define the scope very well.
+Mátyás Kolsofszki: Okay?
+Ella Molony Cook: And how long does that take, and what does the process look like?
+Mátyás Kolsofszki: Oh, well, if you… it's, 6.30pm here. If you send me an email after this that you really needed, then it can be done in 24 hours.
+Mátyás Kolsofszki: It's all about the information you have. If you have what you want the patent, the attorneys can work very quickly. Now, that's the filing date, yeah? How long does it take to get it granted by the USPTO? Currently, that is about 3 years, 2 and a half?
+Mátyás Kolsofszki: Okay? So it takes a long time.
+Ella Molony Cook: Oh my god.
+Mátyás Kolsofszki: But that's a good thing, because while it's not granted, nobody knows.
+Mátyás Kolsofszki: And the infringement, you can go back in time and sue people from the date you filed, not from the date you… that is granted, okay? So that's wonderful for you. Nobody will know whether your patent is granted or not, so everybody would be, like, uncertain.
+Mátyás Kolsofszki: Which is a good thing for you. And remember, there's also another instrument on the USPTO side, it's called a Provisional Patent Application, another name, PPA.
+Mátyás Kolsofszki: If you are in an urgent situation, you need to go into a meeting in 2 hours. You know that you have to disclose something that is very valuable to you. Just put it into a document, use this instrument, send it into USPTO, and that will give you a priority date on that information that you will be sharing 2 hours later. So you're not losing
+Mátyás Kolsofszki: Novelty, over that invention.
+Mátyás Kolsofszki: Can I move on?
+Mátyás Kolsofszki: Or, I mean, if you guys have 2 hours, that's fine by me, but otherwise, you never get over the whole thing. But I appreciate the questions. Hold on.
+Mátyás Kolsofszki: you know, copyright, I'm not gonna spend so much time on it, but you need to make sure, to all your developers you ever work with, I'm talking about human people.
+Mátyás Kolsofszki: you need to assign everything they create, this copyright, and by law, is owned by me, because I created it, so you need to make sure that your contracts with these people, which I sincerely hope you have, it's explicitly said that all the work you've created here, copyright included, is owned by me, because I paid your…
+Mátyás Kolsofszki: You know, salary or contract development fee, okay?
+Mátyás Kolsofszki: So, be very cautious about that, because otherwise these guys can run around and reuse the code, and they will reuse the code, or parts of the code, or put it on GitHub, and then you have a problem with that.
+Mátyás Kolsofszki: Any questions about copyright?
+Mátyás Kolsofszki: The coolest thing for you is the trade secrets. Let's spend a second on this one. So, Trade Secret…
+Mátyás Kolsofszki: Tate secrets are the intellectual property of confidential information, which means that all the things that you have in the company
+Mátyás Kolsofszki: that… It's not available to the public, and to your knowledge, it's… nobody knows but you.
+Mátyás Kolsofszki: And it's very valuable to you, that is a trade secret.
+Mátyás Kolsofszki: And in the US now, there is a very wonderful program called the Defend Trade Secret Act, DTSA in short, which provides an extremely great and functioning, you know, legal framework to protect companies against trade secret misappropriation.
+Mátyás Kolsofszki: Meaning that your coder we just talked about left the company, took a USB drive or whatever,
+Mátyás Kolsofszki: Medium to actually steal your code, then you can go after them, and not only that they're gonna be ending up in jail, like, quite severely, but if they have shared it with a competitor, you can sue them, and then you will be paid very large sums.
+Mátyás Kolsofszki: So I'm not sure if you're familiar with the case where Tesla was suing VIMO when it was a very similar situation, when an employee actually have taken some self-driving data from Tesla to Waimo. That was, you know, nobody knows the exact sum, but it was a multi-billion settlement in there, yeah?
+Mátyás Kolsofszki: So your trade secrets are very valuable. People will try to get your data.
+Mátyás Kolsofszki: try to get your source code, try to get your algorithms, and you have a fiduciary duty in your companies to A avoid accidental loss of trade secret information, meaning you have to have your policies, governance, and systems in place that people will not accidentally, you know, share your secrets.
+Mátyás Kolsofszki: B, you have to have all your systems and policies and governance to make sure that should somebody on purposely hack into you or steal your stuff, then you can go after them immediately.
+Mátyás Kolsofszki: I'm not sure, was there any questions, or… I saw some messages pumping up.
+Mátyás Kolsofszki: Very quickly, I'm not gonna spend much time on this, but just to define a trade ticket, so there are three criterias, okay? Number one.
+Mátyás Kolsofszki: it only can be known to a limited number of people. If you have 20 employees and all of them have access to something.
+Mátyás Kolsofszki: and you have shared it all over, then it's likely not a trade secret, okay? It needs to have a commercial value, which means you need to be able to articulate how much it's worth, and what I mean is, like, is it a million dollars, $100,000? 10 million dollars? You need to be able to understand its value. And number three.
+Mátyás Kolsofszki: And this is a legal term, you need to be able to prove that you have implemented a reasonable protection measures to protect this.
+Mátyás Kolsofszki: Technical, you know, you have encryption, two-factor authentication, other means of protection, surveillance, legal, you have your employee employment agreements, done, properly, and other contracts.
+Mátyás Kolsofszki: At the administrative, you do train and inform your employees about it, you do appropriate onboarding interview and offboarding interview.
+Mátyás Kolsofszki: By the way, when you hire somebody, make sure that they declare that they don't contaminate your company and operations with anything they bring from the previous employer. Even though it would be lovely for you to receive some secrets or code, don't ever take it in, because then you are probably done, at some point in the future.
+Mátyás Kolsofszki: We have a question.
+Ella Molony Cook: Fresh.
+Mátyás Kolsofszki: Sort.
+Mátyás Kolsofszki: Go on.
+Ella Molony Cook: I'll let you read it, actually. This one's for you to read.
+Mátyás Kolsofszki: Cool.
+Ella Molony Cook: Meeting?
+Mátyás Kolsofszki: Yep.
+Mátyás Kolsofszki: I have a lot in this thread. Is it the last one? A little bit of…
+Ella Molony Cook: Yeah.
+Mátyás Kolsofszki: Industry goes on?
+Mátyás Kolsofszki: Yeah, it's good. You don't… you can't patent data, so you don't have that problem. You can only patent technical inventions, you know, data is not technical invention, so you have to keep it secret, so you don't have a threat about that. Did I answer the question?
+Ella Molony Cook: Yes.
+Mátyás Kolsofszki: The interface you can patent, but not the data itself. I'm gonna run through this, run through this…
+Mátyás Kolsofszki: So, how do you… how are you good…
+Mátyás Kolsofszki: category of your assets, yeah? If you don't know what you have, then you can't protect it, so that's a very obvious one, yeah? So you need to identify your assets.
+Mátyás Kolsofszki: you need to understand if the ownership to everything, not just what you have inside the company, but, you know, if your customer is providing you data, do you own them, do you have a proper contract? Ownership is extremely important. Comes back at due diligence, by the way.
+Mátyás Kolsofszki: Do you have all the documentation? Do you have assignments from your founders, you know? Three guys came up with a company idea, they set up the company, they never signed the shareholders agreement, they never assigned the actual
+Mátyás Kolsofszki: you know, intangible assets to the company. You have to take care of that. You have to make sure that everybody
+Mátyás Kolsofszki: Property assigned, whatever they came up with, including yourself, by the way.
+Mátyás Kolsofszki: Then you are a good caretaker of the company.
+Mátyás Kolsofszki: Because it's not you who owns this, but the company. So whatever comes in here, it needs to be transferred to the company. It's not automatic, okay? Unless you have an employment contract with the company that you work for, your own company, saying that everything you come up with is owned by the company, it's not automatic.
+Mátyás Kolsofszki: So please remember that. You need to have a strategy.
+Mátyás Kolsofszki: Okay, and you need to have appropriate standards and governance. And, you know, just follow the steps, you know, you need to identify when you create a list.
+Mátyás Kolsofszki: Then you need to pick the prioritization. You remember we did that a couple of slides ago. Then you need to define how you protect them. You need to analyze, you know, what others do, and go after them if they infringe upon you, or otherwise do something against you, and then you commercialize them.
+Mátyás Kolsofszki: Why did I write commercialization here?
+Mátyás Kolsofszki: is because I wanted to emphasize that we are not only talking about you making money on that asset.
+Mátyás Kolsofszki: What we are talking about.
+Mátyás Kolsofszki: directly selling it as part of your product, but we are talking about you potentially utilizing that asset in other ways. And I have 3 slides
+Mátyás Kolsofszki: If we get there, hopefully, to show you all the possible ways how you can utilize intangible assets, including out-licensing, franchising, and other means, joint ventures, where these things could be extremely useful for you, but only if you are aware of what these are.
+Ella Molony Cook: Do you want to speedrun through them? And then we'll go to the question?
+Mátyás Kolsofszki: yeah, I can go through the question.
+Mátyás Kolsofszki: Hold on,
+Ella Molony Cook: I can answer it. So, how do you clearly identify what you actually own? With things increasingly supported by AI? How do you protect IP in that ecosystem? Great question.
+Mátyás Kolsofszki: Yeah, I mean, look,
+Mátyás Kolsofszki: you know, if you write a prompt to AI, yeah, the prompt is really valuable, not the thing that the AI vomits at back at you, yeah? Because you really have… that prompt, that logic that you put in, the question itself,
+Mátyás Kolsofszki: you know, detailed analysis, you ask the AI to perform, you could have asked them in person to do that. If I gave you 10,000 humans, they would do the same task, yeah? But you have a system to do that, but it's… it's… it's… what you get out of it is the value, not necessarily what AI provides you, yeah?
+Mátyás Kolsofszki: So you own that result, Okay? If that's the question, did I answer that?
+Ella Molony Cook: No, I don't think he did. So, I think the question is more around, like.
+Ella Molony Cook: what are we actually protecting? Like, I think I still have that same question of, like, I don't fully understand intellectual property inside of… like, I understand it, but at the same time, I'm also like, give me some, like, tangible examples, so my mind can, like.
+Mátyás Kolsofszki: Okay, so let's look at the superhuman accelerator.
+Mátyás Kolsofszki: Do you have a name. Do you want other people to use superhuman and accelerators?
+Mátyás Kolsofszki: would you… would you mind if 5 other superhuman accelerators would pop up in New York? Same name? I guess you would. So you want to protect that name, yeah? So that's clear.
+Mátyás Kolsofszki: You have some, you have a structure to this accelerator program that you develop yourself. With AI or without AI is irrelevant, but you have developed it yourself, yeah? You… you have certain, you know, you have, I don't know how many people are connected to this, probably you have sent out… you have a list of 10, I don't know, thousand people?
+Mátyás Kolsofszki: I have no idea who those people are, but if I'm a competing accelerator, I would love to know the people you reach out to, because they could be also in my accelerator. So that's your trade secret.
+Mátyás Kolsofszki: Okay.
+Ella Molony Cook: Hmm…
+Mátyás Kolsofszki: Then you have… then you have more information, because these people have shared their progress with you.
+Mátyás Kolsofszki: you maybe use AI to kind of fine-tune the program towards the people related to
+Mátyás Kolsofszki: their respective maturity levels and so on. That is a massive, you know, trait ticket again, because that gives you competitive advantage going forward. When you do more and more programs, you would become better and better to, accommodating the needs of your audience.
+Mátyás Kolsofszki: Zoom to go more on this?
+Ella Molony Cook: Yeah, what else? Like, I'm genuinely curious. Like, that, that to me, oh, I understand.
+Mátyás Kolsofszki: I don't know if you have… I don't know if you use… I think you use some agents, so you probably have, some automation that you have written some prompts to.
+Mátyás Kolsofszki: Is that known to other people, or you actually worked on it quite a bit to make it sure that it works the way it works?
+Mátyás Kolsofszki: So that's also your… At least confidential information.
+Ella Molony Cook: What is something that most people don't realize, obviously, out of what you just mentioned, that actually is their greatest asset?
+Mátyás Kolsofszki: It's usually the data.
+Mátyás Kolsofszki: And usually, how they… the process of how they understand the data. I'm not sure if you guys know the data pyramid, so it's data, information, knowledge, and wisdom, yeah?
+Mátyás Kolsofszki: So, raw data is, like.
+Mátyás Kolsofszki: whatever. But when you create… that's why it's a pyramid, so the highest value is, you know, when you are basically able to predict when you… that's a wisdom. So you go from data to information, so people usually are not appreciating enough that just processing raw data the way it's useful to them
+Mátyás Kolsofszki: And make it into information is already something very valuable, yeah?
+Mátyás Kolsofszki: And then everybody in the company knows about it, for example, and they go to their next employer, and they tell that, well, this is how we used to do it in this other company. And that's exactly what you don't want it to be, known to other people.
+Mátyás Kolsofszki: Okay, so the creation of value going from data to information
+Mátyás Kolsofszki: And then you create knowledge bases based on information, you know, through a time lapse. So, you know, have several years of data. And then you have this database with tagged elements, with correlations between data items.
+Mátyás Kolsofszki: With, you know, that you're able to simulate now, and you're able to even forecast, that's what's the massive value that you all have, and you all will have in the future more and more.
+Mátyás Kolsofszki: Did I answer that question?
+Ella Molony Cook: Yeah.
+Ella Molony Cook: One last thing Jess just said is, so it's really… it's less around the AI output, and it's more around what you create with it, and then how you use it
+Ella Molony Cook: That you can protect.
+Mátyás Kolsofszki: Correct.
+Mátyás Kolsofszki: Correct. Because you're all unique, yeah? Your business exists because you're unique.
+Mátyás Kolsofszki: Now, I don't know your businesses. I would love to, but I don't know. And you have some…
+Mátyás Kolsofszki: Some, some uniqueness in that, some competitive advantage, that either because you are a domain expert, or some… some new way of, you know, you're doing something, and…
+Mátyás Kolsofszki: And how you use AI to support that, that's irrelevant, as long as you know that what you're doing is actually unique and protectable. If it's all public storage.
+Mátyás Kolsofszki: And you may say, yeah, I don't do anything that is not known to the world, but I'm the one that knows the 10,000 companies that's gonna buy this product. Then you have that as your competitive advantage.
+Mátyás Kolsofszki: So there's always something. If you don't have accommodative advantages.
+Mátyás Kolsofszki: you don't have IP, then you're not in business.
+Mátyás Kolsofszki: For a long time.
+Mátyás Kolsofszki: You're gonna be all too busy.
+Mátyás Kolsofszki: Oh, you really aren't.
+Mátyás Kolsofszki: Or you will be sued, and then you will have even a worse scenario.
+Mátyás Kolsofszki: Did I answer this one?
+Ella Molony Cook: Yeah, thank you.
+Mátyás Kolsofszki: So, look, there is a process here, let me not go through very detail, but just, you know, this is… I can provide you guys this. Just follow the steps, I provided you some
+Mátyás Kolsofszki: a short description of what to do. This will get you to where you want to be.
+Mátyás Kolsofszki: Okay, going from understanding what your portfolio is, understanding the value, create the priorities, understand ownership, and so on, and then get to your, you know, appropriate management standards.
+Mátyás Kolsofszki: I'm cautious about the time.
+Mátyás Kolsofszki: I'm not gonna go through this just to tell you that there is a way how you can
+Mátyás Kolsofszki: You can look at business information and technical information and go through decision-making points based on your strategic values and strategic goals, and decide whether you want to make something publicly available, thereby removing the opportunity for anybody else to keep it secret or patented.
+Mátyás Kolsofszki: Or keep it confidential, classified as a trade secret, or patented otherwise.
+Mátyás Kolsofszki: Okay. That's really good.
+Ella Molony Cook: That slide.
+Mátyás Kolsofszki: Sorry?
+Ella Molony Cook: That's really, like, that visual layout is really helpful.
+Mátyás Kolsofszki: Yeah, I hope you can use it. Now, just very quickly about the threats that you guys have, this, and even more things are around you internally and externally, yeah? So…
+Mátyás Kolsofszki: And again, accidents and purposeful misappropriation.
+Mátyás Kolsofszki: So you want to make sure that, you know, to deal with the internet threats with policies and governance and contracts and education.
+Mátyás Kolsofszki: Because, you know, people sign all the contacts all the time, but if they don't know what it means, then they will accidentally not follow it, and then you have a problem, yeah? So you need to create awareness, you need to make sure that people have appropriate, you know, access rights on a need-to-know basis, I love this phrase, need-to-know means need to know. If somebody doesn't need to know something.
+Mátyás Kolsofszki: Then they don't have to have access to something, yeah?
+Mátyás Kolsofszki: So, be very cautious about that, okay? And then, on the external side, you have all the intrusions and other types of, you know, attacks that you will suffer, or have suffered, or, you know, is a threat.
+Mátyás Kolsofszki: Including reverse engineering, you know, your product may be reverse engineered. If you're doing a valuable business, then people will try to reverse engineer it. How can you stop them doing that?
+Mátyás Kolsofszki: Please be very cautious about your business collaborations, the bottom one there. That's usually how, people, you know, get,
+Mátyás Kolsofszki: I mean, that's how misappropriation happens, because you may have a very strict system inside to protect your own company, but then you're working with some suppliers that they don't have the same system, and you share something with them, and then they, you know, people that want to steer from you, they come to you through your suppliers. Okay, so that's very important that you are
+Mátyás Kolsofszki: you are cautious about that.
+Mátyás Kolsofszki: your vacuum, you can also have this one, so…
+Mátyás Kolsofszki: couple of things that is important. So, when you have, in your AI contracts, and let's say you're selling your product, you know, to your suppliers, contractors, and AI providers, because again, I assume you all use some kind of third-party AI system, so…
+Mátyás Kolsofszki: You know, who owns the code?
+Mátyás Kolsofszki: That your contractor's developing,
+Mátyás Kolsofszki: is, you know, is the inventions we talked about, are they assigned to the company? You know, can they use your data for training? What do they retain? You know, have you guys heard this very wonderful phrase of ZDR?
+Mátyás Kolsofszki: And it's called Zero Data Retention.
+Mátyás Kolsofszki: Have any of you heard about AWS Bedrock.
+Mátyás Kolsofszki: You don't know what that is. I explained quickly. So, AWS Bedrock is a new solution, Microsoft and Google has it already. Now, corporations are not comfortable using
+Mátyás Kolsofszki: directly the products of companies like OpenAI and Anthropic. Because, you know, I mean, even though they say so, when you have an enterprise version, nobody trusts them, rightfully so. So AWS created an isolated solution where you can put an AI company,
+Mátyás Kolsofszki: that AI solution, so OpenAI would put the ChatGPT in this isolated cloud environment, you would be using the solution from this cloud environment, and you have all the rights to delete.
+Mátyás Kolsofszki: you know, modified the retention policies and everything, and OpenAI have nothing to do with that. So basically, it's starting a decentralization of
+Mátyás Kolsofszki: the use of enterprise AI solutions into proprietary cloud environments, because, you know, people started to get, and rightfully so, you know,
+Mátyás Kolsofszki: finding it problematic to use just, you know, generic solutions. And your customers may be asking you the same questions, you know? How are you going to be treating my data, and how are you going to treating my prompts, and what kind of retention policies you have? So, you can look into AWS Bedrock after this call, and you can find out if that's something that you would be able to utilize on your own
+Mátyás Kolsofszki: run.
+Mátyás Kolsofszki: and from the supplier end of the… whichever AI provider you use, to make sure that you are trustworthy to your, to your customers.
+Mátyás Kolsofszki: Anyway, we have this slide, so I don't need to go too in details and everything, but remember, your customers would also have a lot of things to say, not just your suppliers. You know, they want to know all this information, so I'm not sure if you have experienced any kind of
+Mátyás Kolsofszki: bottlenecks when you're dealing with your customers, so if you already have customers, but be aware that, you know, this information is very important to take care of. You need a very robust terms and conditions to your solutions.
+Mátyás Kolsofszki: To make sure that, you can actually, rightfully collect the data, own intellectual property, and have the confidentiality related to whatever you may be sharing.
+Mátyás Kolsofszki: I'm not gonna go through this, we don't have time, but I have a couple of… I mean, I have a little bit of information on how you can evaluate these assets. Obviously, you can use the cost approach. If you invested in $10,000 to create something, then it could be said that it's worth $10,000, yeah?
+Mátyás Kolsofszki: What happened?
+Mátyás Kolsofszki: Oh, I'm pissed off because of the… yeah, we are over time. I'm sorry.
+Ella Molony Cook: Okay, Laksha, do you want to ask the question?
+Attendee: Yeah, no worries, I can just ask, yeah.
+Attendee: No, I was just gonna ask if, like, data that you collect, especially with AI,
+Attendee: somewhere or some place where I can, like, mitigate and kind of just understand, if that is data that I can collect, or potentially even, use within the company, because it's associated with other, frontier LLM models.
+Mátyás Kolsofszki: Okay, so where do you collect this data from again?
+Attendee: It's within the UI of these Frontier LLM models, so…
+Mátyás Kolsofszki: to my data? Is it my data?
+Attendee: Yeah, it's your data.
+Attendee: But it's still within the application's UI, but it's very strongly associated with, the Frontier LLM models as well.
+Mátyás Kolsofszki: Okay, so you, you have a contract with me, yeah, as a customer?
+Attendee: Yeah.
+Ella Molony Cook: I love that you're challenging him to, like.
+Mátyás Kolsofszki: No, no, no, because, you know, this is a little bit weird, so you asked how do you make… I mean, you have to, as I just said it, you have to have the contract that enables you to
+Mátyás Kolsofszki: Collect, store, process, and… and all this other,
+Attendee: Okay.
+Mátyás Kolsofszki: segments of data, okay? That is absolutely vital, because I would have come back to this later on in the due diligence part, investors now. You know, there was an AI boom going up this. Now.
+Mátyás Kolsofszki: If the crash ever happens, that's gonna be because now everybody understands that
+Mátyás Kolsofszki: 99.9% of the data, including the biggest companies, was collected unlawfully, by the way.
+Attendee: Yo, okay.
+Mátyás Kolsofszki: kind of controls. So those companies that are doing this correctly, from scratch.
+Mátyás Kolsofszki: You're gonna be… this is… this is what you're just gonna say in an investor meeting, two slides, this is my company, this is what I'm achieving, and by the way, all my data is legally and properly corrected, and it's okay, how much you want?
+Mátyás Kolsofszki: Because there is very few companies that are doing this properly. So just, systemize your…
+Mátyás Kolsofszki: You know, your approach to this, have the proper contracts, and then you're gonna be definitely, winning the game against others who are just, you know, widely
+Mátyás Kolsofszki: Obtaining data and, unlawfully, you know, processing.
+Attendee: Yeah.
+Mátyás Kolsofszki: Do you have users outside the US?
+Attendee: Yeah, yeah, we're basically.
+Mátyás Kolsofszki: We have users in Europe.
+Attendee: We have users in the US and the Europe, yeah.
+Mátyás Kolsofszki: Okay, do you… are you compliant with GDPR?
+Attendee: Yes, yes.
+Mátyás Kolsofszki: Are you compliant?
+Attendee: As far as the app goes, we are compliant with, both of the laws, but yeah, just check.
+Mátyás Kolsofszki: Do you have the right to be forgotten, be it into your design of the app and the software?
+Attendee: Maybe not. Might have to check that.
+Mátyás Kolsofszki: I was sure about that, so do you know what that means?
+Mátyás Kolsofszki: Right? To be forgotten means that I, as a user from Europe, can request at any time that you can… you delete everything you bought me.
+Attendee: your system.
+Mátyás Kolsofszki: You need to be able to perform that technologically.
+Mátyás Kolsofszki: Most companies don't be at that end, and you just can't perform it, because even though I tell you, it's embedded so many places, and then I can sue you like some guys did that from Austria, I think it was from Vienna, who sued Google, because they couldn't prove that, all of his information was on Facebook.
+Attendee: Excuse me.
+Mátyás Kolsofszki: All of his information was,
+Mátyás Kolsofszki: deleted. It was a couple of billions in fines.
+Attendee: Wow.
+Mátyás Kolsofszki: So, right to be forgotten, that's very important for me.
+Attendee: Thank you.
+Ella Molony Cook: I mean, my head is spinning, so…
+Mátyás Kolsofszki: I told you, and we are not doing everything, but again, that's my gift to you today, guys, that, two things. Look into AWS Bedrock and similar solutions, because your customers will be soon, if they haven't yet, ask you about safe,
+Mátyás Kolsofszki: you know, operational solutions for zero data retention and other things. Second one is take care of your contracts, related to, you know, your data collection, processing.
+Mátyás Kolsofszki: And other activities that you do, because then you will be very attractive to investors today, because they know now that it's how important it is.
+Ella Molony Cook: If there's any more questions, is there… I want to wrap up in the next few.
+Mátyás Kolsofszki: Oh, yeah.
+Ella Molony Cook: couple minutes. It's so funny, because my trust goes to me, yeah, I don't know if I'll do 50 minutes long. I was like, okay, well, like, I'll fill in the start, you know? And look at you going over time!
+Mátyás Kolsofszki: Well, Luke, there were questions.
+Ella Molony Cook: Like a 2-hour presentation! Whew!
+Mátyás Kolsofszki: I told you it could be going long, but I mean, look, that's the point.
+Ella Molony Cook: the 30 minutes.
+Mátyás Kolsofszki: I just invite everybody to start working on your portfolios, okay? So, identify your assets. It will make you feel very good that suddenly you understand
+Mátyás Kolsofszki: what actually you have already bid. It's amazing.
+Ella Molony Cook: Totally, totally.
+Mátyás Kolsofszki: related.
+Ella Molony Cook: I think start at the slide with the mind map, though. That really helps people's brains that don't understand this as well as you do.
+Ella Molony Cook: Sure. Because then we have an overarching theme, you know what I'm saying? But guys, any other questions for…
+Ella Molony Cook: matas. Otherwise, thank you so much for doing this for us.
+Attendee: Thank you so much.
+Attendee: I… I do, I do, I think just one of the… as I've been talking to patent lawyers, too, even, like, if you disclose something or speak about something publicly, you only have a year to patent it. There are definitely, like, timelines that, as innovators… that's what I've been told, I don't know if that's what you…
+Attendee: understand, but I think for innovators, like, all of this is really important and kind of gives me a lot of anxiety, about, like, if you first speak about it in a public setting, even a name for a copyright or a trademark, I don't know enough yet, and that's why I'm hungry for knowledge, but any other… not in this forum, but just for future.
+Mátyás Kolsofszki: Yeah, and look, I mean, that's why I suggest, if you talk to the different experts, they will all tell you, they can… you can always spend the money on patent lawyers, yeah, they will never tell you, don't spend your money here.
+Mátyás Kolsofszki: But that's why you need to be in charge of what you're actually going to protect. So your job is to develop that portfolio. I always tell this to people, that find a company.
+Mátyás Kolsofszki: that you… your role model company, the company that you love, the company's in a much more mature state than you are, but you want to get that. And look at how they… they are, you know, they have their brands, do they have patents? Do they have, you know, what do they have? What do you know about them? And then you can imagine.
+Mátyás Kolsofszki: how you will be looking like when you get there, and how you build that up. And then you can start writing up all your assets. You know, I sometimes sit down with people, they tell me they have 275 assets, and that's awesome. We go through and usually it ends up with 18, but they're still great that they try to, you know, classify all these things.
+Mátyás Kolsofszki: That's when it starts. Everything else, communication, blah blah blah blah blah. It's very nice, you know, it will give you a… maybe you can even get the Series A funding, but you will be burst.
+Mátyás Kolsofszki: And you will die if you don't have a foundation to it. So get your asset portfolio up and running as soon as you can.
+Mátyás Kolsofszki: And then, reach out to me.
+Mátyás Kolsofszki: If you need anything, or we have questions, happy to answer.
+Mátyás Kolsofszki: Cool.
+Ella Molony Cook: You're a legend. I know you've had a huge day, so thank you for sharing your knowledge, wisdom, and energy with us.
+Ella Molony Cook: we're just grateful, you know? We're… we're a bunch of ambitious humans out here needing to understand how to get situated. So, thank you, sending lots of love for everyone that stayed on this long, because I know we've gone.
+Mátyás Kolsofszki: Pull you guys for overtime, yeah.
+Ella Molony Cook: And what we will do… so we've… the only thing that I want to share is that we've changed the process with Time Rich. You have to be the Time Rich member, which is $8 per month, in order to get the recording and the slides.
+Ella Molony Cook: So, if you're not inside of that, please join us. Otherwise, this is our last event around AI for 2026. We're gonna be moving in
+Ella Molony Cook: next month, all around authority, public speaking, communication with Vika, and we're gonna be doing a series around that, so…
+Ella Molony Cook: yay for different topics, but also just super grateful for all of the love around the accelerator. Gonna be drawing some winners this weekend, that's gonna be joining us from the fellowship, and
+Ella Molony Cook: Yeah, sending you guys lots of love.
+Ella Molony Cook: Bye, guys!
