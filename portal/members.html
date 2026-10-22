@@ -70,6 +70,108 @@
   <link rel="preload" href="../brand/fonts/SpaceGrotesk-Variable.woff2" as="font" type="font/woff2" crossorigin/>
   <link rel="preload" href="../brand/fonts/Inter-Variable.woff2" as="font" type="font/woff2" crossorigin/>
   <link rel="stylesheet" href="portal-content.css">
+  <style>
+    .members-preview {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr);
+      gap: 3rem;
+      align-items: center;
+      min-height: min(31rem, calc(100dvh - 13rem));
+    }
+
+    .members-preview-copy { max-width: 30rem; }
+
+    .members-preview-badge {
+      display: inline-flex;
+      align-items: center;
+      min-height: 28px;
+      padding: 4px 12px;
+      border-radius: 999px;
+      background: var(--trp-plumbg);
+      color: var(--trp-plum);
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: .1em;
+      text-transform: uppercase;
+    }
+
+    .members-preview-title {
+      margin: 20px 0 18px;
+      font-family: var(--trp-display);
+      font-size: clamp(2.5rem, 4.4vw, 4.5rem);
+      font-weight: 600;
+      letter-spacing: -.045em;
+      line-height: 1.07;
+      color: var(--trp-deep);
+    }
+
+    .members-preview-copy p {
+      max-width: 29rem;
+      margin: 0;
+      color: var(--trp-soft);
+      font-size: 17px;
+      line-height: 1.65;
+    }
+
+    .members-preview-actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+      margin-top: 26px;
+    }
+
+    .members-preview-actions .trp-btn { display: inline-flex; align-items: center; }
+    .members-preview-actions .members-preview-club { background: var(--trp-sagelt); color: var(--trp-deep); }
+    .members-preview-actions .members-preview-club:hover { background: var(--trp-sage); }
+
+    .members-preview-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 14px;
+    }
+
+    .members-preview-card {
+      min-height: 152px;
+      padding: 18px;
+      border: 1px solid var(--trp-line);
+      border-radius: 18px;
+      background: var(--trp-offwhite);
+    }
+
+    .members-preview-avatar {
+      width: 48px;
+      height: 48px;
+      margin-bottom: 13px;
+      border-radius: 50%;
+      background: var(--trp-sage);
+    }
+
+    .members-preview-card:nth-child(2n) .members-preview-avatar { background: var(--trp-plumbg); }
+
+    .members-preview-line {
+      height: 10px;
+      margin-top: 9px;
+      border-radius: 999px;
+      background: var(--trp-sagelt);
+    }
+
+    .members-preview-line.is-long { width: 78%; }
+    .members-preview-line.is-medium { width: 100%; }
+    .members-preview-line.is-short { width: 61%; }
+
+    @media (min-width: 900px) {
+      .members-preview { grid-template-columns: minmax(0, .92fr) minmax(0, 1fr); gap: clamp(3rem, 7vw, 7rem); }
+    }
+
+    @media (max-width: 480px) {
+      .members-preview { min-height: auto; gap: 2.5rem; }
+      .members-preview-title { font-size: 2.45rem; }
+      .members-preview-copy p { font-size: 16px; }
+      .members-preview-grid { gap: 10px; }
+      .members-preview-card { min-height: 126px; padding: 14px; }
+      .members-preview-avatar { width: 40px; height: 40px; margin-bottom: 10px; }
+    }
+  </style>
   <!-- The session gate. Config first, then the library; both deferred so
        the DOM is ready when the script mounts. No valid code redirects to
        index.html, because this page has no login form of its own. -->
@@ -198,25 +300,25 @@
           <div class="w-full space-y-16 max-w-[1200px]">
           
 
-    <header class="space-y-3">
-      <span class="trp-kicker">Directory</span>
-      <h1 class="trp-title">Time Rich Members<span class="trp-stop">.</span></h1>
-    </header>
+    <section class="members-preview" aria-labelledby="members-soon">
+      <div class="members-preview-copy">
+        <span class="members-preview-badge">Coming soon</span>
+        <h1 id="members-soon" class="members-preview-title">The members directory is on its way<span class="trp-stop">.</span></h1>
+        <p>Soon you will see who else is in the room, what they build and how to reach them. Until then, the cohort lives on WhatsApp.</p>
+        <div class="members-preview-actions">
+          <a href="https://chat.whatsapp.com/H495V76Eewx2dFxDnfr6VF?mode=gi_t" target="_blank" rel="noopener noreferrer" class="trp-btn trp-btn-primary">
+            Join the WhatsApp
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M5 12h14m-6-6 6 6-6 6"/></svg>
+          </a>
+          <a href="/club" class="trp-btn members-preview-club">Back to Club</a>
+        </div>
+      </div>
 
-    <!-- Coming soon. The cohort directory that used to stand here, with its
-         search, its grid, its profile modal and the fetch that filled them,
-         is not deleted so much as parked: it is all in git at the commit
-         before this change, so one `git show` of that revision brings the
-         page back whole when the directory opens.
-
-         The page keeps its header, its nav and its footer, so a member who
-         clicks Members lands somewhere that looks like the portal and reads
-         one sentence, rather than on a page that searches an empty list. -->
-    <section class="mt-8" aria-labelledby="members-soon">
-      <div class="glass-card is-static p-7 lg:p-8 space-y-3">
-        <p class="trp-tag">Coming soon</p>
-        <h2 id="members-soon" class="trp-section-title">Time Rich Members opens soon.</h2>
-        <p class="trp-lede">Your cohort will be here once it does.</p>
+      <div class="members-preview-grid" aria-hidden="true">
+        <div class="members-preview-card"><div class="members-preview-avatar"></div><div class="members-preview-line is-long"></div><div class="members-preview-line is-medium"></div><div class="members-preview-line is-short"></div></div>
+        <div class="members-preview-card"><div class="members-preview-avatar"></div><div class="members-preview-line is-long"></div><div class="members-preview-line is-medium"></div><div class="members-preview-line is-short"></div></div>
+        <div class="members-preview-card"><div class="members-preview-avatar"></div><div class="members-preview-line is-long"></div><div class="members-preview-line is-medium"></div><div class="members-preview-line is-short"></div></div>
+        <div class="members-preview-card"><div class="members-preview-avatar"></div><div class="members-preview-line is-long"></div><div class="members-preview-line is-medium"></div><div class="members-preview-line is-short"></div></div>
       </div>
     </section>
 </div>
