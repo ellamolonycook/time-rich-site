@@ -1755,6 +1755,9 @@
     display: block;
     transition: opacity 200ms ease;
   }
+  /* An event poster is square and carries its own type, so it is shown
+     whole rather than cropped to the 4:3 room shot. */
+  .trp-row-shot.is-poster { aspect-ratio: 1 / 1; }
   a.trp-row:hover .trp-row-shot img { opacity: .82; }
   @media (max-width: 599px) { .trp-row-shot { display: none; } }
   @media (min-width: 900px) { .trp-row-shot { width: 168px; } }
