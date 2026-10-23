@@ -1707,7 +1707,7 @@ const PORTAL_LOGIN_WINDOW_SECONDS = 10 * 60;   // 10 minutes
 const PORTAL_LOGIN_MAX_ATTEMPTS = 10;          // per IP, per window
 const PORTAL_PROGRESS_MAX_WRITES = 60;         // per IP, per window
 const PORTAL_LOGIN_NOT_FOUND =
-  "We couldn't find that email. Use the email you joined with, or contact emc@timerich.ai.";
+  "We couldn't find that email. Use the email you joined with, or contact emc@timerichclub.com.";
 
 function portalLoginIp(request) {
   return request.headers.get("CF-Connecting-IP")

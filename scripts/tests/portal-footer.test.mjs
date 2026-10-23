@@ -171,11 +171,22 @@ console.log('\nthe rule that keeps a separator off the head of a wrapped line');
 /* ---- the support address ------------------------------------------------ */
 
 // Support moved to emc@timerichclub.com. The old address is not forwarded, so
-// a single mailto left behind anywhere in the portal is a member writing into
+// a support mailto left behind anywhere in the portal is a member writing into
 // a mailbox nobody reads. This sweeps the whole folder rather than the five
 // footers, because the address is also on the sign-in page, in the dashboard
 // help link, in the bad-code message in portal-access.js and twice in the
 // Resources questions.
+//
+// One address is deliberately not support. The Club page's "Want to partner on
+// an event?" line goes to Ella's own emc@timerich.ai, which is what she asked
+// for: an event partnership is a note to her, not a support request. So the
+// sweep no longer bans the old address outright. It pins it to that one link
+// and fails on a second one anywhere, which is the thing that actually goes
+// wrong. emc@timerichclub.com does not contain emc@timerich.ai as a substring,
+// so the two counts never overlap.
+const PARTNER_FILE = 'club.html';
+const PARTNER_LINK = 'mailto:emc@timerich.ai';
+const PARTNER_TEXT = 'Want to partner on an event?';
 console.log('\nthe support address, everywhere in portal/');
 {
   const dir = new URL('../../portal/', import.meta.url);
@@ -183,11 +194,33 @@ console.log('\nthe support address, everywhere in portal/');
 
   check('there are portal files to sweep', files.length > 10, files.length);
 
+  const count = (body, needle) => body.split(needle).length - 1;
+
   const stale = files
     .map((f) => [f, readFileSync(new URL(f, dir), 'utf8')])
-    .filter(([, body]) => body.includes('emc@timerich.ai'));
-  check('not one file still carries emc@timerich.ai', stale.length === 0,
+    .filter(([f, body]) => body.includes('emc@timerich.ai') && f !== PARTNER_FILE);
+  check('no file but the Club page carries emc@timerich.ai', stale.length === 0,
     stale.map(([f]) => f));
+
+  // And on the Club page it is the partnership link and only that: one
+  // occurrence, inside one mailto. A support line that crept back in would
+  // show up as a second occurrence.
+  const club = readFileSync(new URL(PARTNER_FILE, dir), 'utf8');
+  check('on the Club page it is the event-partnership link, exactly once',
+    count(club, 'emc@timerich.ai') === 1 && count(club, PARTNER_LINK) === 1,
+    [count(club, 'emc@timerich.ai'), count(club, PARTNER_LINK)]);
+
+  // Walk the rendered page too, so the address is still the partnership
+  // question and has not been reused as the page's help link.
+  {
+    const d = new JSDOM(club).window.document;
+    const partner = [...d.querySelectorAll('a[href^="mailto:"]')]
+      .filter((a) => a.getAttribute('href') === PARTNER_LINK);
+    const label = partner.length === 1
+      ? partner[0].textContent.split(/\s+/).join(' ').trim() : '';
+    check('and it reads as the partnership question, not as support',
+      label === PARTNER_TEXT, label);
+  }
 
   // And the new one is actually there, or the sweep above would pass on a
   // portal with no support address at all.
