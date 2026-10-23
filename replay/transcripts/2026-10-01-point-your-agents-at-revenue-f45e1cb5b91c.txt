@@ -1,0 +1,421 @@
+Time Rich Replay
+Grokbot AI Agent Build: Point Your Agents At Revenue | 1 Oct 2026
+Transcript generated automatically from the recording, so expect the odd misheard word.
+
+Ella Molony Cook: Now, let's bring in some energy. I've… I've got…
+Ella Molony Cook: Three beautiful women's faces, and a lot of dark black boxes. It's freaking me out. Let me know that you're human. Let's get in the chat. What are you struggling with with AI? Where is the roadblocks? What are you leaning into? Put it in the chat, I want to see it.
+Ella Molony Cook: As you guys are doing this, I am going to show you a couple of things.
+Ella Molony Cook: Hello, hello!
+Ella Molony Cook: So, Grok bought the extra… interesting thing about this, and I'm gonna just… as people are rolling in, because we're still early in the conversation.
+Ella Molony Cook: What it's done is every single agent has its own computer screen. So I'm going to show you something a little bit spicy, which, you know, I tend to do that a lot on these calls.
+Ella Molony Cook: here's my… the back of my LinkedIn, but I can actually pull this up
+Ella Molony Cook: and actually help the agent, be able to train the agent, right? So I can teach it a task. That is why GrokBot is so powerful, is because you… every single agent has its own little computer screen.
+Ella Molony Cook: And so, when it was signing into my LinkedIn, it needed an action, where it actually needed a code from me, and it needed me to press my little thing, you guys know where, you know, tooth that Fenta authentication.
+Ella Molony Cook: And anyway, the moral of the story of what I want to go into Grokbot today, because if you're someone that has been like, Ella, Claude is really confusing, has a lot of things going on.
+Ella Molony Cook: Grokbot could be a solution for you. I just started on the $30 a month plan, and today alone.
+Ella Molony Cook: We've done a lot, and I've also got something funny where we've created, like, a video. So, this is gonna be interesting, but let's go into what is in the chat for a second.
+Ella Molony Cook: Okay.
+Ella Molony Cook: We've got a couple more faces, thank you, I appreciate it. I use Claude Chat and Replit, and want to understand how to set up agents that are effective and efficient. Love that.
+Ella Molony Cook: Working consistently from day to day, got that. This week, I'm on the struggle bus with getting my AI not to make assumptions on my behalf.
+Ella Molony Cook: That's a really good topic, and I really want to dive into that today, actually. What's the difference between Grokbot and Claude of setting up agents? I will show you that. Stay tuned.
+Ella Molony Cook: Get AI to do more so I can do less. Period. That's what we're here for. Anything else that is specific with revenue, I want you guys to put in the chat.
+Ella Molony Cook: How are you guys thinking about leveraging AI, pointing in the direction of making more money, of building new product offers? This is really what I want to go into today, because
+Ella Molony Cook: It's amazing that it can draft an email, but in order for us to really become time rich, we do need to have other humans involved. AI is not at the point of superintelligence. It's heading in that direction, which is scary, but at the same time, we need to be able to increase our revenue so that we can hire AAA players.
+Ella Molony Cook: that actually have expertise, so that we can layer in our AI with that expertise.
+Ella Molony Cook: Yeah? Let's do it. Okay, so I just want to set up the container for today, so I'm just gonna reshare my screen, give me 2 seconds…
+Ella Molony Cook: Drop a 1 if it is the first time of you coming into a time-rich workshop.
+Ella Molony Cook: Let's see, we've got a couple of ones, amazing.
+Ella Molony Cook: Welcome. I'm so excited.
+Ella Molony Cook: First of all, if you're not inside of our Time Rich Women WhatsApp group, we're going to drop in that link in the chat. We love to be able to support women. We are a community that is for both sexes, but I just love being an advocate of ambitious women getting more time back and increasing their revenue.
+Ella Molony Cook: I am Ella. I exited my first company in the health and wellness space back in Australia in 2021. I am dyslexic. It is my biggest superpower because I ship things.
+Ella Molony Cook: before it is perfect. And I think that's the coolest part about AI, is, like, why I've been… become such a superhuman user, is because the speed of execution and the amount of feedback loop that I can go through
+Ella Molony Cook: it's actually helped me work through a lot of things that I would normally struggle with, because I can build things and see it visually, and I'm a visual learner. So, whatever your unique skill set is, that is where you actually want to lean in on training your agent. Because if you're average at something.
+Ella Molony Cook: AI's not really going to solve that. It's just going to continue to be average. That's why we want to make sure that we have the right individuals in our sphere from who we're learning from.
+Ella Molony Cook: I am an investor in Anthropic. Doesn't mean that I'm, like, a promoter of Claude at all. I actually think that there has been other tools that have come out that have helped me a lot more recently, and I'm like, this is interesting, I wonder if Claudette is going to go down that route.
+Ella Molony Cook: Now, I love doing these workshops. I do a lot of them. This month is the last time I'm going to be doing free workshops.
+Ella Molony Cook: for this year. And I want to be able to ensure that you all have an opportunity to become superhuman with AI.
+Ella Molony Cook: So at the end of today, I'm going to give you an opportunity for us to work together. Does that sound good? Because I wanna make sure in the sixty minutes, I set you up so you can walk away, build your Grokbot Claude agent.
+Ella Molony Cook: have the right framework of how you're going to store your memory. I'm going to give you as much value as I can, and I might move a little bit quicker, but this recording is going to be recorded for my Time Rich members, and I'm going to show you how you can become a Time Rich member. It's, like, literally $7 per month, so I've made it accessible for everyone. This is my beautiful mother. Isn't she stunning?
+Ella Molony Cook: Grokbot made this. My mom has officially joined the Time Rich team. Can we give some snaps? She's not on the call, but…
+Ella Molony Cook: What I wanted to say is, please connect with her on LinkedIn. I am building up her connections. She is a superhuman when it comes, not only to AI now, because I've made her do all of my workshops, but also, what I think is really powerful is…
+Ella Molony Cook: my mom has been a person that has always come and asked me for questions, and I'm like, Mom, you now have an AI agent in your pocket, that if you have these random questions that pop into your brain, don't come to me! And that has helped our relationship a lot, because she is so curious, and I think…
+Ella Molony Cook: The part of individuals where you're ambitious, you're curious, and you're not afraid to give it a crack.
+Ella Molony Cook: That is where I think magic starts to happen. It's when you start to say, oh, but I need to architect a prompt. I need it to be perfect in order… it's like, no, that's… it's… this technology works with human language. So if my mother, my beautiful mother, can do it.
+Ella Molony Cook: We all are going to be building agents, okay?
+Ella Molony Cook: Now, I think a lot of us feels a little bit frustrated.
+Ella Molony Cook: You can't hear me. Can everyone else hear me?
+Ella Molony Cook: Yeah, okay, great. Perfect. Thank you.
+Ella Molony Cook: There's been a lot of things of how we feel around AI, and I will say that
+Ella Molony Cook: I come from exiting my first company that was 100% bootstrapped. So I did not have a beautiful VC cushion of capital to go and hire AAA players. I had offshore talent in the Philippines and I had a really great system that I built. That is the same mindset that I went with AI. AI is incredible, but if you do not have your data organized and you do not have a system around this.
+Ella Molony Cook: It actually can be really painful.
+Ella Molony Cook: Like, to the point where you can do so much work, and it's like, what is the point of this work if it actually doesn't have the right data points around your business and your North Star? So what we're going to be doing today is I'm going to be giving you a compass, and this is a prompt that you're going to put into Claude.
+Ella Molony Cook: whatever AI tool you use, I just… I say that because it comes straight to my mind.
+Ella Molony Cook: This is also a skill that you can embed, and so in our last workshop, we went through how to put in a skill if you don't understand. I'll show you very quickly, it's not hard, it's just uploading a zip file.
+Ella Molony Cook: Now, the important part around building your compass is
+Ella Molony Cook: we all kind of skip this part, and so what I want to kind of open up this container with is, like.
+Ella Molony Cook: How serious are you about growing your business?
+Ella Molony Cook: Because I can tell you, your competitor is going to sit their ass down and do the work of the annoying part, which is the data management. And I am so speedy that I have to update this
+Ella Molony Cook: so much more frequently, because when you're in the inception phase of building a business, this time-rich community has only been around for 6 months. I left my last
+Ella Molony Cook: company earlier this year, and we were running a Founders AI Lab that was 98% men. And I saw the AI transformation, I was like, I want to build a community that is built on ambitious individuals of all different shapes and sizes, because what I realize is there's a wealth transfer happening right now. And if you don't take the time, we all have a million excuses, but if we don't take the time to actually implement this.
+Ella Molony Cook: I feel like, what is the point of me spending an hour of my time? And then also, I think about the outcome for you.
+Ella Molony Cook: Right? As the individual that, you know, you've shown up and you've given me your time, and I really respect that, and that is why I believe right now it's gonna get easier. We have hit
+Ella Molony Cook: the hardest part with AI, and I'm seeing these new tools come out, and I think Grokbot is going to be one of them. I think Elon Musk is going to pour a lot of money into this.
+Ella Molony Cook: And I'm going to keep my subscription. Like, sometimes I will demo tools to try it out to show you guys, and I will literally say, I'm not going to keep this. I'm very transparent around my tech stack.
+Ella Molony Cook: What we are going to do is drop 3 tools inside of the chat, which is Stanley, Bordy, and Granola. These are 3 essentials inside of my tech stack.
+Ella Molony Cook: I am not affiliate with any of these. I just love them. And the reason why I want to bring this up is because right now we're at this pick your harness, pick whatever your interface is, right? Whatever you want to inject information.
+Ella Molony Cook: And in the future, it's really going to be just tell it what you want. And so that's where I think right now is a really interesting inflection point of don't be afraid to try other tools, but then disregard them, right? If it's… everyone has a different style, this might be like, Ella, this doesn't look like it's for me, perfect. But I do think it's important to understand, like.
+Ella Molony Cook: How should we be thinking about delegating?
+Ella Molony Cook: And this is a part where I think a lot of people are getting a little bit confused.
+Ella Molony Cook: AI is going to be incredible for this, the doing. It's never going to understand what it's like to have the human experience of connecting dots, right? It can connect tools, for sure, but the critical thinking part is a muscle where we want to use AI to make us smarter.
+Ella Molony Cook: So how we do that is the way where we add in prompts of, like.
+Ella Molony Cook: Actually, you know, give me harsh feedback.
+Ella Molony Cook: Like, put in… put in a transcription that where you ran, I do this all the time, and I'm like, yeah, you were right. I tried to fit too much in, and I rushed at the end, totally. But this is the part where it's like, you want to be focusing on the thinking and the connecting dots where you're able to provide more value, where you're able to actually understand
+Ella Molony Cook: where should my time be going as a leader inside of my organization? And where should I be waking up every single morning and talking to your AI bots to be like, okay, this is on the agenda?
+Ella Molony Cook: Right? And this is the part where if we do not set up our mindset and have this transformational shift.
+Ella Molony Cook: I mean, your AI, you will be delegating that to a human, that's going to be costing you.
+Ella Molony Cook: 6 to 7 figures, depending on the thing, where you should have been delegating that to your AI. So this is something that we have to instill into our culture of our company. And the important thing about this is, like, let's do a time-rich audit right now.
+Ella Molony Cook: I want you to drop in the chat.
+Ella Molony Cook: How where where inside of AI have you actually used it this week to focus on lead generation or revenue?
+Ella Molony Cook: Let's put… put a number of… Hours.
+Ella Molony Cook: How many hours have you spent?
+Ella Molony Cook: Delegating to AI around revenue.
+Ella Molony Cook: Or outreach.
+Ella Molony Cook: 2.
+Ella Molony Cook: Be honest, I'm gonna… I wanna see zeros, because there's gonna be zeros.
+Ella Molony Cook: 2, 4 h.
+Ella Molony Cook: Not bad.
+Ella Molony Cook: 3?
+Ella Molony Cook: Okay.
+Ella Molony Cook: No one wants to earn them their zero up.
+Ella Molony Cook: Thank you. Thank you.
+Ella Molony Cook: We have the most powerful tool. And we're not focusing it on increasing our revenue. Tell me how that makes fucking sense.
+Ella Molony Cook: And this is something where I, right now, am like.
+Ella Molony Cook: Okay.
+Ella Molony Cook: as individuals that you are showing up here and dedicating your time, I want you to be making a shit ton of money. And the only way that we got into business, or being a creator, or being a coach, or whatever your industry or sector is.
+Ella Molony Cook: is because we wanted to be able to have a lifestyle where we get to own our time.
+Ella Molony Cook: And so what I want us to do is actually take a harsh look at ourself and say, okay, what do I need to do on a daily basis with AI to ensure that I'm increasing my revenue month over month?
+Ella Molony Cook: Because I can tell you every shiny new tool, but if you're not pointing that tool in the right direction, what the heck is the point?
+Ella Molony Cook: So…
+Ella Molony Cook: Christy Johnson, When you wake up in the morning, whatever your ritual is, I want you to ask yourself these questions.
+Ella Molony Cook: What can my agent do for me that is going to give the highest ROI inside of my business? If it's operations and you've got incredible cash flow, amazing. If it's how can I make my client experience a better experience, amazing.
+Ella Molony Cook: But for a lot of us, we're not looking at our numbers enough and we're not saying, actually, I need to be audacious.
+Ella Molony Cook: And I think that's really the conversation that I wanted to open up this container with. Okay.
+Ella Molony Cook: This is what my good friend Instinct does for me, and I want to screenshot this, steal this, but I want to just lay this out as a framework.
+Ella Molony Cook: Inbox, yes, it's going in there 3 times a day, right? It's always pinging me about things. CRM, any new contact introductions, it's pulling all of this data, and it's making sure that it's going into the right tab, right? So…
+Ella Molony Cook: Super connectors. If you get introduced by people, make sure you're pulling that data in. This is a couple of prompts. It's a connection tool. It's not hard.
+Ella Molony Cook: Please make sure that you mute yourself if anyone's unmuted.
+Ella Molony Cook: Outreach. So yesterday, I did a really great customized outreach, and that was, for me, right, really important that I make sure that
+Ella Molony Cook: Every single individual that came to a workshop in the last 3 months got this opportunity that I'm not going to do ever again.
+Ella Molony Cook: Right? But I wanted to make sure that it wasn't just a blasted out email. It drafted, it sent 459 emails.
+Ella Molony Cook: I can still hear that person unmuted, so I'm going to find you.
+Ella Molony Cook: Here you are.
+Ella Molony Cook: So now that we understand the delegation mindset.
+Ella Molony Cook: And the importance of making sure that we're focusing it on revenue. Gosh, I've missed you.
+Ella Molony Cook: Here you are, John.
+Ella Molony Cook: Gonna call you out, John. Let's mute that.
+Ella Molony Cook: Why can't I mute you?
+Ella Molony Cook: John, if you can please mute yourself, that would really help me out. Okay.
+Ella Molony Cook: Once the replay of this workshop.
+Ella Molony Cook: It's $7 a month to be a Time Rich Club member. What that means inside of Substack, I am putting
+Ella Molony Cook: Literally my life's work of systems, agents, operations, everything that I'm doing on a daily basis.
+Ella Molony Cook: in a weekly newsletter to my paid subscribers. This includes every workshop that I host, the recording of it. And the reason why I do that is because I want to be able to run these for free, and I want to be able to give as much value as possible.
+Ella Molony Cook: But, I also want to make sure that you appreciate this work. A lot of people get replays and they never watch them back, okay? So, inside of this workbook that I'm about to drop in, you are going to get a template. Once this workshop is open, make sure within the next 24 hours you do this before you go and set up this agent.
+Ella Molony Cook: So I want you to think about what are the tasks that you're doing on a daily and weekly basis?
+Ella Molony Cook: Start granola-ing, AI note-taking, whisper-flowing, you know all of these tools by now. It's anything where you can voice to text it, the AIs have it included, but I want you to just download. Like, you don't have… I don't… I don't ever want you to type anything in. We are princesses where we don't need to type anymore, because it's going to be a lot more efficient. Now, this compass that we're going to build, we're going to be doing the same thing.
+Ella Molony Cook: And I'm going to show you why in a second, and this is going to be helping with our memory layout.
+Ella Molony Cook: What I want you to do is put an hourly rate on your time. The important part about this hourly rate is look at the admin, the housework, and the things that you're doing that could be done and executed and delegated, either by a human.
+Ella Molony Cook: Or an agent. I don't…
+Ella Molony Cook: care how you delegate it, but there is time that you can be bringing back into your sphere. Give you an example. You can now connect, like, AI to DoorDash, right? You can now grocery order. There's no excuses for getting 2 hours back in your day, where you can start to be able to increase revenue and build out your Agentic workflows.
+Ella Molony Cook: Perfect.
+Ella Molony Cook: Da-da-da. Okay.
+Ella Molony Cook: Perfect. Now, what we're going to be doing is we're going to get into two things. And I just want to… I want you to drop a one in a chat, in the chat, if you are an entrepreneur.
+Ella Molony Cook: Drop a two in the chat if you are a coach. Drop a three in the chat if you are an investor.
+Ella Molony Cook: If you were a four, like a a mixture of all, drop a four.
+Ella Molony Cook: Okay, we got a lot of founders.
+Ella Molony Cook: I love it. Mixture of all.
+Ella Molony Cook: Love it, Justin.
+Ella Molony Cook: Okay.
+Ella Molony Cook: Katherine's a four. We got a one plus a two.
+Ella Molony Cook: We've got our investor queens inside of here, great.
+Ella Molony Cook: Thank you.
+Ella Molony Cook: This is the part where I think a lot of us miss, is we need to ensure that we have the right system architecture where the context of our business is easily found. I'm using Notion for that. Others use Obsidian if you're a little bit more tech-forward. There's other people that use Google Docs. I don't care what you use, it just has to interconnect
+Ella Molony Cook: into your AI.
+Ella Molony Cook: But the part that's really important is being able to create rituals, being able to create scheduled tasks.
+Ella Molony Cook: That you do not need to trigger. And this is where the human workflow of execution and having a human in the loop, it is important to have a project management tool inside of this process, and I've chosen Notion for that. And so inside of the accelerator, I'm going to show this right now, because I think it's really important, is we have built this really cool thing where we're… we're still building it, because I have a little bit more that I am
+Ella Molony Cook: doing on that side. But let me just pull this up. But hi, beautiful people.
+Ella Molony Cook: Okay, cool. So this is what I use.
+Ella Molony Cook: And so everyone that comes inside of the accelerator gets this, because what I think is really important is
+Ella Molony Cook: Notion can be moved into a million different ways, and I don't love that about this tool, but if you have a set structure, and your agents are able to come in here, and then your humans, your interns, your team members, your executives have one centralized hub.
+Ella Molony Cook: Figure out what that is for your business, because it's going to make the output and managing the output of agents a lot easier.
+Ella Molony Cook: So what I'm going to be giving you is this compass.
+Ella Molony Cook: And this is going to be inside of a Google Doc. This is where, inside of this Google Doc, you are going to be outlining this with everything about your business, from your ICP, your one-liners, it's going to go through who you solve, serve, right?
+Ella Molony Cook: If you have an AI note-taker, you can ask it to pull out this context. It's inside of this skill that you are going to get access to. So, let me just show you… we're gonna drop that in the chat right now. So this is how you get this out of it.
+Ella Molony Cook: We're going to give you a Substack link. You do not have to be a free member, you do not have to be a paid member to get this resource, but what you're going to do is you're going to click grab it. It's going to take you to a Google Doc. Inside of this, sorry, inside of this Google folder, there's going to be a skill.
+Ella Molony Cook: You can either use the skill or the workbook. It doesn't bother me, but I gave it to you in two formats. When you download this, there's two ways that you can operate with this. Can you guys see my Claude?
+Ella Molony Cook: Give me a thumbs up, someone. Jess?
+Ella Molony Cook: Can you see Claude? No. Okay.
+Attendee: You… you can… we can see the drive, but not the clot.
+Ella Molony Cook: Okay, okay.
+Ella Molony Cook: Perfect, thank you. Okay, amazing. So, inside of here, we are going to make sure that we come down and just understand that we have our own skills.
+Ella Molony Cook: Right? And then we have discovery skills. I'm not going to go into this because I went into this in the workshop, but all you're going to do is press add, upload the skill, drag it in, boom, she's in there.
+Ella Molony Cook: This means that all you need to do is actually mention, and I say this in the document, mention Compass Superhuman. It's going to activate that skill, or you can do a forward slash.
+Ella Molony Cook: You're going to make sure before you do the time audit that you go and do your compass, because now your AI is going to have context, right? This is the brain function.
+Ella Molony Cook: So I wanted to make this super easy for everyone so that everyone has this resource. Perfecto.
+Ella Molony Cook: Very small. No.
+Ella Molony Cook: Oh, I think we're talking about something else. Okay, cool. So, I wanted to just talk about, because we've been talking about revenue.
+Ella Molony Cook: I want to just talk about a couple of things that I've done this week to make sure that I'm focusing on revenue, so that this might instill some ideas. If an idea pops into your mouth, your mouth, your mind, drop it in the chat, okay?
+Ella Molony Cook: I want us to think about where are you going to be leveraging AI to increase your revenue this week?
+Ella Molony Cook: Drop it in the chat. So what I've done, and actually one of my intelligent interns have helped me out with this, and this is what I think is really important is like the same way that you onboard a human.
+Ella Molony Cook: An intern, an executive, is not so much executive, but is the same way you onboard a agent. So you need to make sure that when you are thinking about the context of what you're adding in there, do get detailed, but then know we will divide this up for different agents. So, for an example.
+Ella Molony Cook: When I'm talking about my outreach agent, what it needs to understand is my offers, my North Star. How do I work with different types of brands that are going to sponsor my media part of my business? So now, what it's done is it's narrowed it down. Like, this would have taken me prior to AI.
+Ella Molony Cook: a good amount of fuel power when it comes to actual humans helping me sort through this data. So, what's really cool about this is it then starts to get really detailed. I get it to highlight things. Now, not only does Claude have access to this, but whatever I'm using as my text agent.
+Ella Molony Cook: I really encourage you all to have an agent that you have in your text or your WhatsApp. Unfortunately, Grokbot, or you have to kind of set this up manually through WhatsApp, but that's why I like Instinct or Muse. Muse is through Meta, and it's a new AI EA agent that's come out.
+Ella Molony Cook: But the moral of the story here, this data is useless unless we're doing outbound campaigns.
+Ella Molony Cook: And so what I wanted to then share with you is a couple of other ideas before we get into Grokbot.
+Ella Molony Cook: is I actually pulled every single individual that has commented on my LinkedIn post, or has liked the last, yes, views.
+Ella Molony Cook: liked my last post on LinkedIn. This also gets me to go through and, like, look at who have I not spoken to inside of my LinkedIn. So all of this data should be pooled, and you should be nurturing that and having conversations around the data that you have.
+Ella Molony Cook: It is Instinct, Ariana. Instinct actually isn't live in the public yet, it's on beta, but if you join the Accelerator, I will give it to you, because it's incredible. I've gotten a lot of people obsessed with it. And Muse and Instinct are both free. That's the cool part about it.
+Ella Molony Cook: So… What do we do first, guys, when we're setting up an agent?
+Ella Molony Cook: Drop it in the chat. What's our first step?
+Ella Molony Cook: Compass. That's a good one.
+Ella Molony Cook: 100%.
+Ella Molony Cook: Give it context.
+Ella Molony Cook: build out guidance. All of this is correct.
+Ella Molony Cook: injecting the prompt. You don't want to say injecting it, because it actually could mean that you're trying to, like, scam someone. They call it prompt injections, but we are prompting, yes.
+Ella Molony Cook: Core instructions. Love it.
+Ella Molony Cook: Yes, all of that. So, how I like to think about it is.
+Ella Molony Cook: First of all.
+Ella Molony Cook: I want to really make sure that I'm segmenting what is important to me, because I am not putting a bunch of tasks into one agent, right? You can see here how I've assigned them quite efficiently. I have my projects, same as I do inside of Claude, right? I'm really big on projects inside of Claude, just to kind of show you the difference of the structure.
+Ella Molony Cook: Because I think inside of here, this has the same format inside of here. If I come into library, I then have projects.
+Ella Molony Cook: So you can get the same structure. But what I like about here is the fact that I can be able to move a lot quicker.
+Ella Molony Cook: Because what I feel, and this is just my perspective, is this is actually giving me… so this is an email that I'm drafting to send to Vika. We're doing a workshop together next Tuesday. I would love for you guys all to be there.
+Ella Molony Cook: It's actually giving me the action, and what I like about this is I have never, with Claude, actually gotten it to export, a CSV from Luma. Just never… it's just a little bit annoying. I have to go more into Claude Code. It's not something that's easy for it to do. I would always use the Chrome extension. So, the cool thing about this, right, is
+Ella Molony Cook: Every single individual agent has its own computer that it's running 24-7, which means that it's just a lot more efficient for it to be able to actually see the parts where it gets stuck, because AI is not great at times. It, like, literally will just get blocked at things.
+Ella Molony Cook: And now I can come in to the computer and actually start to see something and help it go through it. So, some of the things where, in the past, where it has that bot verification and you haven't been able to integrate that because there hasn't been a connector, now there's none of those issues with GrokBot.
+Ella Molony Cook: Now, the thing that I will say that is not as great on Grokbot is the fact that, and I'm still kind of figuring out how this all works.
+Ella Molony Cook: So they have templates, which I really like. The library, the images, but then let's actually come in here. Let's go into settings.
+Ella Molony Cook: I wanted to show you one other thing, which I'm not seeing it… Where did you go?
+Ella Molony Cook: That's not as organic to me yet. You can kind of tell, right?
+Ella Molony Cook: I've lost him.
+Ella Molony Cook: It will come back to me.
+Ella Molony Cook: Productivity Finance. No.
+Ella Molony Cook: But it's really simple. Let me just see… one more… plugins. Yes, okay, skills. So, the one thing that I will say that Claude does a really good job at is
+Ella Molony Cook: Inside, you have a lot of pre-built skills. So for someone that is maybe not… you kind of want some structure already, I would say that what this is really great for is having agents that you can easily build.
+Ella Molony Cook: But you want to be able to come in here and build your… your kind of, like, skill set for AI. Meaning, the part where you're doing it on a daily basis, sending an email, right? You want to come in here and create a new skill, and you want to make sure that you're doing this on a reoccurring basis. So you do need to choose a harness.
+Ella Molony Cook: and think about separately. Like, say, for instance, I'm gonna have GrokBot, and I'm gonna have Claude. I will keep certain skills inside of Claude, and certain skills inside of Grok.
+Ella Molony Cook: So you have to start thinking about these things, because that is where having the memory layer is really important. And I don't… again, I am vetting out tools. This is… this is new for everyone. Everyone's…
+Ella Molony Cook: building memory layers to support us in this journey, but we have to kind of trial and test and do our own due diligence. So that's going to be important.
+Ella Molony Cook: So let's have fun and let's build an agent. Does anyone have a pressing issue that they have been struggling with in building an AI agent? Because I would love to actually build something and solve someone's problem.
+Ella Molony Cook: Don't all jump up at once, I'm not scary.
+Ella Molony Cook: Come on!
+Ella Molony Cook: Ladies.
+Ella Molony Cook: Who's got an issue?
+Ella Molony Cook: I need an agent to help find me leads for my professional speaking. Okay, let's do it. Ariana, do you want to come off mute?
+Attendee: Sure. Hi, Ella, how are you?
+Ella Molony Cook: Good! Where are you calling in from?
+Attendee: New York.
+Attendee: I just hopped on because Maggie just sent me a text, so…
+Ella Molony Cook: Oh, amazing. Love Maggie. And what kind of.
+Attendee: speaking.
+Ella Molony Cook: Thank you.
+Attendee: I'm a 34-plus year trial lawyer who's now transitioning to be a professional speaker and coach for people who are at an inflection point.
+Attendee: They are stuck, they're not sure how to make a move, and I teach them the building of the resilience muscle so that they can just train it and keep moving forward. I've exited twice, I've managed some of the largest firms in the country, and I've also built and sold a data hosting and management company.
+Ella Molony Cook: Oh my gosh, wow. I mean, we're a superwoman. Congratulations on going into speaking. So I'm curious, what where are you targeting specifically New York City? Talk me through a little bit more.
+Attendee: Sure, I don't feel wed to any particular location. I'm located in New York. I'm in the city all the time, although I live on the North Shore of Long Island. I have a home in Florida, and I spend a fair amount of time in California, and I've also spoken around the world.
+Attendee: mostly as a lawyer in my practicing capacity, and now I'm looking to be on stages and in communities and at universities and colleges for purposes of bringing that message and showing people that their life is destined for greatness.
+Ella Molony Cook: Oh, period. Love that. Okay, so what we're gonna do is we're gonna do this together. What harness have… what platform have you been using?
+Attendee: So, that was me who commented before, Ella. I have both chat and Claude, both paid subscriptions. I've been disappointed with Claude, I'm sorry, probably because I spent more time in chat.
+Attendee: And, I have one primary project that really manages this whole brand for me, and then, of course, I have other projects for other purposes.
+Ella Molony Cook: Okay, perfect. I just dropped in, actually, a conversation that I'm having with our beautiful Vika, who's a public speaking and storytelling master, so if you can join that, I would love to introduce both of you ladies.
+Ella Molony Cook: What I am going to do is we're going to do this in Grok, because I do agree with you, I think Claude is not the best when it comes to… and I think the part that excites me about Grok is that agents can talk to one another. And I think that's the part about a cycle where if you are doing outbound, you also want to have the follow-up process, and you want to be able to have Agentic workflows that
+Ella Molony Cook: are in sync, right? And I think this is going to be interesting. So, what we're going to do is I'm going to just click over here, we're going to name this, Outreach Speaking.
+Attendee: So Ella, can I ask you a question?
+Ella Molony Cook: Yeah.
+Attendee: Or, I guess I have a question. That's one of the things we learn about as a speaker. Is it possible to do this in chat? I have some principles about Grok, including because I own a law firm, that's just not an accessible tool right now, for a variety of security reasons.
+Ella Molony Cook: Totally understand. I'm gonna do it in Grok, but just for this setup, because I have already kind of said to my community that I'm gonna use Grok today, but you can do it in Claude. But the… I mean, sorry, chat. I can do it in Claude if that's easier for you, but I…
+Ella Molony Cook: Yeah.
+Ella Molony Cook: Is that okay?
+Attendee: Yeah.
+Ella Molony Cook: Okay, amazing. Have you… when you are doing outbound communication with speaking opportunities, what does that look like for you?
+Attendee: It takes a variety of medium media in that
+Attendee: sometimes it's reaching out directly to whoever the direct contact is, whether it's at a university or a college, or at an event space that is looking for speakers. For example, I've been a keynote for Tech Up for Women multiple times.
+Attendee: You reach out directly to the, ED…
+Attendee: I think if we want to keep this simple for today, because I'm mindful of your time.
+Attendee: let's just think about universities and colleges. How do you identify who is the
+Attendee: Person, or what is the department?
+Attendee: To whom or to which one would reach out directly with a proposal to grab that.
+Ella Molony Cook: I'm just gonna add a couple of things inside of here. So I didn't really, it didn't catch you.
+Ella Molony Cook: Let me see this guy.
+Ella Molony Cook: I would like for you to pull a list of decision makers that can help me become visible to the right ICP when it comes to speaking at colleges and universities inside of the United States.
+Ella Molony Cook: Please make sure that we actually build out keywords around what does this
+Ella Molony Cook: school focus on. Make sure that you pull in data from not just the company LinkedIn, but the individual's LinkedIn, their email address. Pull as much data that you can inside of this, and then assess what would be my next steps inside of this workflow.
+Ella Molony Cook: Perfect. So we're gonna let it do its thing for a second, and we're gonna come back to this. Now, the important part that I think is…
+Ella Molony Cook: It's a little bit unique, is…
+Ella Molony Cook: you can also, and this is what I've actually been doing, because I'm… I am speaking at an AI conference this month, and I'm like, okay, I would love to get on more stages. How can I also have an agent that is going out and filling forms out for me?
+Ella Molony Cook: as well, because obviously there's… when you… I started pulling all of these lists, and I was like, okay, some of them just have really generic emails, or some of them are not as active on LinkedIn, depending if they're, like, an event coordinator, like, they're more… you know what I mean? So… but they always have a form. So that's another part, is, like, you can scrape all of this data, but then I think the great part is about actually building a custom agent
+Ella Molony Cook: that understands how to fill out the form exactly how you would. So that does take some trial and error, because we've been going through that process of being like, some of my talks will look, like, a little bit different depending on, you know, what is the conversation, right? If I'm talking about more about mindset.
+Ella Molony Cook: transformation, or literal AI, and so, what I've realized is I've gotten it to segment all of the data. I will go through it and make sure that I'm happy with the vertical that it's talking on. So this is the part where it's like, I'm never just letting AI go and do things on my behalf. I'm really making sure that I step-by-step build out this workflow so that at each
+Ella Molony Cook: part, it's like I'm getting a double check-in from myself, also what I feel comfortable with.
+Ella Molony Cook: And I think on your part that I think would be really interesting as well is.
+Ella Molony Cook: making sure that you find, different event producers. I know that there's, like, different networks and also speaker communities that can also refer you business.
+Ella Molony Cook: So that can also be another avenue, but I think, like, I do want to do a workshop around this, because one of the individuals that is coming into the accelerator, he has done some really cool custom things with AI to get him on stages. And I think sometimes you really need to stand out from the crowd and provide extra value right now. So I'm gonna bring him in for a workshop, so I'll make sure that you guys are…
+Ella Molony Cook: in the loop of that one. So let it… let it do its thing.
+Ella Molony Cook: I think right now, if you're not working on your communication skills.
+Ella Molony Cook: you are not going to be as agile in this new world. Because right now, with what's happening in this movement of
+Ella Molony Cook: We need people to come in and make us feel safe, make us feel seen, make us feel heard. So I think it's incredible that you've gone into this journey and I'm really excited to follow you.
+Attendee: Oh, well, thank you.
+Ella Molony Cook: Amazing. Okay.
+Attendee: Right.
+Ella Molony Cook: No, I appreciate you for coming in. So, I want to let our Grok bot go through. It's gonna take him a second. He goes, I'm starting to pull a big sheet, so I'm gonna send this to you after the workshop.
+Ella Molony Cook: But there's two more things that I want to share that I think is quite interesting with Grokbot.
+Ella Molony Cook: Again, not affiliated to this guy, Elon's crazy, we love him, but I think the one part that he did do well on is this visualization piece. So, what you can do inside of here is obviously that video I showed you of my mom, that was done through Rockbot, and it's kind of funny, because it's like, I got her, like, a new headshot. Doesn't she look… she's glowing.
+Ella Molony Cook: And so with this tool, you can actually connect in HeyGen, which does the kind of next version on AI clones and all of that jazz, UGC content. So I do think that it's going to be interesting to see how, kind of, they play a different part, because that's something that I didn't have access to inside of Claude.
+Ella Molony Cook: So your guys' steps, just so that we all understand, right, is we want to make sure that your compass is set up so that you're able to make sure that when you're going in, whatever platform you're using, that it has enough context on you guys, and then figuring out what project management tool you want to use. So, for example, right, with a lot of data, I don't use Notion. So even though I'm an avid Notion user.
+Ella Molony Cook: There's a lot of times where I am using Google Spreadsheet for masses amount of data that I obviously showed you that I'm sorting through with sponsorships and LinkedIn and so on and so forth.
+Ella Molony Cook: Okay. So, I just want to kind of bring into the picture for a second, though.
+Ella Molony Cook: With AI, where are you playing it small?
+Ella Molony Cook: And where are you not actually leveraging it to do the outbound communication? Like, I love that we just spoke about speaking on stages.
+Ella Molony Cook: Right? Like, you… we each have a secret, special source, whether it's energy, whether it's our IP, whether it's, you know, an experience that we've gone through, where we can start being audacious and being like, you know what, I am gonna shoot my shot. And AI is making that a lot easier for us to identify and target
+Ella Molony Cook: who we should be targeting inside of our business, where we can be gaining more visibility.
+Ella Molony Cook: So that's my motto. So…
+Ella Molony Cook: Do we feel a little bit inspired to like get get in and get our compass done if you haven't already got that set up.
+Ella Molony Cook: I hope so.
+Ella Molony Cook: Yes? No? Maybe?
+Ella Molony Cook: Yes? Okay, Millie, good. Okay, because I want to just anchor in for a second. What is the cost of you not
+Ella Molony Cook: going all-in with leveraging AI. For the parts of the business that you want to be able to hand off and get support, and get extra hands helping you.
+Ella Molony Cook: what is the cost? Like, actually think about this for a second, because I know we can all put it off.
+Ella Molony Cook: Just sitting down and doing, I can't do it for you.
+Ella Molony Cook: Some people can, but I think it's very dangerous to let other people have control over your IP.
+Ella Molony Cook: Time, money, joy. So accurate.
+Ella Molony Cook: So I want to do something for a second. Just like close down your eyes.
+Ella Molony Cook: and just take a deep breath.
+Ella Molony Cook: And I just want you to imagine.
+Ella Molony Cook: that you actually have support. You have a system that is operating.
+Ella Molony Cook: as you sleep. You wake up in the morning, you have an agent that you're delegating, it's booking you new leads, you have new revenue coming in, you actually feel like, oh my gosh, I'm building so much momentum inside of my business, I can make that extra hire.
+Ella Molony Cook: To be able to give my clients, my customers, my partnerships, myself.
+Ella Molony Cook: Better experience of quality of life.
+Ella Molony Cook: And I think right now is the greatest time to be an entrepreneur. I know right now is the greatest time to be an entrepreneur. So take a deep breath.
+Ella Molony Cook: Exhale all of the anxiety.
+Ella Molony Cook: And come back to this moment.
+Ella Molony Cook: because I know we can all feel overwhelmed.
+Ella Molony Cook: with AI.
+Ella Molony Cook: And I think…
+Ella Molony Cook: you will look at me, and you'll say, gosh, she has it all together, you know, she's got… she's got the things, she's got the notion, she's got…
+Ella Molony Cook: There is so many individuals that are going.
+Ella Molony Cook: 20 million miles an hour faster than me. But you know what I'm focused on is every single day getting 1% better with AI. Every day, it's a muscle that I'm building.
+Ella Molony Cook: And if you know, if you stopped going to the gym, it hurts the next day. It's the same thing with the compound of information and knowledge that they have around your business.
+Ella Molony Cook: You need to give it feedback, because you are the master of the ship that you are building. You have a vision that you want to put out into the world. You know how you want things done inside of your business. So anytime you're training an agent, or building a skill, or building a repeatable workflow, this is your IP.
+Ella Molony Cook: this becomes very valuable. So I want to just tell you one tiny, quick story that I got into a room where I met an
+Ella Molony Cook: very, very well-known investor, and he went in to build another company. And he has 5 humans that each have 1 agent. They, in the first year of business, is doing 20, sorry, 10 million revenue, and they are predicted to get into 100 million in revenue with a very small, lean team.
+Ella Molony Cook: very quickly, have not raised an external dollar of capital, because he's focused on excellence, and actually executing agents that are understanding how to execute the way that they know how things should be done. And so what I say to you today is.
+Ella Molony Cook: Don't try and do a million things at once. Focus on one agent, make sure it gives you an ROI of revenue or time back, and then go on to the next one.
+Ella Molony Cook: Because right now, if you overwhelm yourself too quickly, that's when things start to get really messy, and then you kind of just check out of this whole workflow.
+Ella Molony Cook: Does that resonate?
+Ella Molony Cook: So I have something exciting to share with you.
+Ella Molony Cook: And.
+Ella Molony Cook: This is the part where I would… I said to myself, how can I create a container
+Ella Molony Cook: Where we all, as a collective, get to win in this new era of creating content, of being an entrepreneur, of understanding how some of the most interesting individuals are using AI.
+Ella Molony Cook: And so this is why I built the AI Superhuman Accelerator, and I just want to run you through our incredible lineup of speakers.
+Ella Molony Cook: So, we have some individuals that are backed by A16Z that exited their last company at $50 million in revenue, that is now going back into building their next company. We have an individual that grew to over 400,000 followers by using an AI clone and a whole Agentic AI system.
+Ella Molony Cook: We have an individual that's teaching AI to Google, Kajabi, L'Oreal, some of the biggest corporate companies.
+Ella Molony Cook: around mindset, delegation, how to build your AI operating system. We're going to have an incredible, unique individual teach us how to use Claude to edit content.
+Ella Molony Cook: I'm not an expert at that at all. But what I want to say to you is if you have been putting this off, this quarter is the time for you to be held accountable. So what I have done, and I'm…
+Ella Molony Cook: can tell you I will never do this again, because also it's, like, a lot of coordination for me, but you buy one seat to the accelerator.
+Ella Molony Cook: You get one free.
+Ella Molony Cook: That means your co-founder, your business best friend, your operations manager is coming with you. Because what I believe right now is you need to have accountability, and you need to have conversations around AI. Doing it alone, it's actually a song and dance where AI is not going to push back at you unless you ask it to. It is a yes-man. It's delusional. But you need to be creating a structure and a
+Ella Molony Cook: system around AI, and that's what we're going to walk you through in these 4 weeks. So just to break down what this is, it's 75 minutes on a Monday.
+Ella Molony Cook: And then on a Friday, we're doing breakout rooms with experts and coaches and exited founders. Because what I know to be true is in that same week, you are going to have multiple questions, and I do not want that to let that linger until the following week. So, yes, it's a lot.
+Ella Molony Cook: But, what I know.
+Ella Molony Cook: it's going to be a lot next year if you don't actually stop, pause, and get this done before Christmas break comes, because it's crazy that it's, like, nearly Thanksgiving, and I'm just, like, this… this world is moving so quickly. So, what I have done, and this is a one-time offer that I want you guys to know, it's never gonna happen again.
+Ella Molony Cook: is that we have $500 off until this Sunday.
+Ella Molony Cook: And that means, right, that it is $31 per week.
+Ella Molony Cook: Okay? And you get to be around some of the most ambitious individuals building with AI. These are not creators that are just creating content around AI. These are entrepreneurs, builders that are in the trenches with us, figuring out.
+Ella Molony Cook: So I will ask you again, how serious are you about actually making sure that you become time rich, that you increase your revenue?
+Ella Molony Cook: And then you actually get to enjoy the journey of being an entrepreneur, because I spent too much burning myself into the ground, trying to think that I can do it all, when I know that, actually.
+Ella Molony Cook: we need… we need structure. We need a team, we need to delegate. It's not for… all for one person. So I've dropped that in the link.
+Ella Molony Cook: If you… Do not feel like it's for you.
+Ella Molony Cook: I think what I want you to do is make sure that you find an accountability buddy throughout this AI journey. Someone that you're going to swap notes with. Yes, I'm going to be running a lot of workshops over the next month, but after this month.
+Ella Molony Cook: I'm taking a break because I'm gonna talk about something else for a second too. But I love you all for showing up. I want to get into any questions, any thoughts, and I'm gonna get back into Grokbot as well to see what that man did for us.
+Ella Molony Cook: But before I do that, is there anything that has come up?
+Ella Molony Cook: In your psyche.
+Ella Molony Cook: A thought, a question, a concern.
+Ella Molony Cook: You can unmute yourself.
+Attendee: Ella, can I just ask you a quick question? Sorry, Ariana, I did what you told me I was not supposed to do. So, I guess where I get a bit overwhelmed or confused is, like, I pretty much use Claude, Replit, Chat.
+Attendee: And it feels like…
+Attendee: the more I add, the more I have to manage. So that's where I'm trying to understand, like, there's Grokbot, there's, like, it just feels like I don't know which tools to use, and I was hoping that I would be able to just…
+Attendee: like, stick with, kind of, those two, but I don't know if that's, like, the most efficient or smart, and this is where I just, like, I'm a little bit confused about how to set it up. That's part A, and then part B.
+Attendee: is, I think I've set up agents, like, I have one agent, I think it's an agent, goes through my emails to see, like, any follow-ups or any things that I have to do. So, I don't know if that's an agent I set up, and then I don't know how many agents you also can set up or do set up, so that was a lot.
+Ella Molony Cook: No, no, no. It's all very valid, and I think this is a part of the process where…
+Ella Molony Cook: no one can tell you what's gonna fit best for how you operate as an individual, and every platform has its pros and cons, and obviously where your data is going, and data security. I'm not an expert in that industry, but what I will say is.
+Ella Molony Cook: What you need to do is… is actually hone in on one.
+Ella Molony Cook: And because I feel like right now, you when we are context switching, you need to separate like what am I doing chat for that Claude can't. But like you are having two subscriptions, therefore you're kind of getting it's like sometimes can be a lot, especially when we're in the infancy of like building agents.
+Ella Molony Cook: So I would say pick a platform.
+Ella Molony Cook: stick with it, right? If you want to try others, amazing. But if it's… it also comes down to, right, I don't do any… I don't do much image generation. Chat's really good for that, right? So we all know that there's different things that things are good for.
+Ella Molony Cook: Now, there is a woman that has built a platform that actually what I like about this, and I think our lawyer in the room is gonna appreciate this too, where you can plug in a local model.
+Ella Molony Cook: And you're able to run things locally without having to pay for tokens and all these different things. So there is multiple use cases. If you want to keep it simple, stupid.
+Ella Molony Cook: Stick with one AI.
+Attendee: Okay.
+Ella Molony Cook: But what I will say is.
+Ella Molony Cook: When you're setting up agents, make sure that you get the output of the work put in a place where you're going to use it on a daily basis. So if you're someone that just loves to be emailed, if you want to use Notion, if you want to use Trello, Monday.com, find a project management tool and then make sure that your agent is actually clocking in, clocking out like a human would.
+Attendee: Okay.
+Ella Molony Cook: Because then all of a sudden, because otherwise it's like, well, I can't really see what's going on.
+Attendee: Yeah.
+Ella Molony Cook: And then it's like, well, did I set up an agent? But yes, you did, because the agent is executing on work. It's connected to a tool that's doing something for you.
+Attendee: So when an agent is, like, one agent, like, if I… is it basically you assign an agent to a task, it's… there's no crossover, it's not like an… you can assign an agent to, like, 4 different tasks?
+Ella Molony Cook: No, but what I will do, like, so with some of these more agentic tools, this one specific agent, right, it's in my text messages, does multiple things for me. But when you're using more of, like, the co-works, of the world.
+Ella Molony Cook: if you do it too many things at once, sometimes it's just not doing it as well as it should be, and it's not as fluid to respond back to it. That's why I like how Grokbot is set up, because it's more like I'm talking back to the agent instead of scheduling a task, where this agent can work without… that's what, like.
+Ella Molony Cook: Claude, code is, is, like, you're setting up an agent that has access to the internet and has access to your tools.
+Ella Molony Cook: So…
+Ella Molony Cook: you have done all of the right things, it's now just building the system around it to be like, how do I actually want to operate this so that I know what's happening on a… because one agent is amazing, but what's the… what's the power of all of this is actually then being able to hand off that agent to a human.
+Ella Molony Cook: Because then you're not the human that's responsible for the output.
+Attendee: Okay, got it. Thank you.
+Ella Molony Cook: Amazing.
+Ella Molony Cook: Any other questions?
+Ella Molony Cook: I'm so hungry, guys, and I have, like, best friends cooking me food, so if there's no other questions, I'm really gonna go and have dinner, but if there is a question, like, don't…
+Ella Molony Cook: Don't hold out on me.
+Attendee: I have one last question. Is it 497 for the two seats or when I clicked on it, it says 997. But if you put in the spicy, then you get the 500 off. Got it.
+Ella Molony Cook: You got me, girl. Spicy. Yes.
+Attendee: update.
+Ella Molony Cook: We get two seats for $4.97. This is ending on Sunday. It'll never come back this price ever. I promise you it's gonna be a lot more expensive. So if you wanna come in, come in.
+Ella Molony Cook: It's gonna be a great time. And the part that I'm really, really excited about is…
+Ella Molony Cook: the content side of things, because what I've realized with Notion specifically, and also now really getting my tone of voice skill to a place where I'm actually happy with it.
+Ella Molony Cook: is right now, I think, like, LinkedIn, and all of these individuals that are coming in have really great LinkedIn, like, we have multiple people that have huge audiences.
+Ella Molony Cook: And so I think what we can do as a community is also make sure that you guys are getting visibility throughout this accelerator, which I think is the part around building our brand and our authority, is I'm gonna make sure that we keep accountable on that because I have been going all in on LinkedIn and I've gotten three advisory board opportunities from one LinkedIn post.
+Ella Molony Cook: Like, that just doesn't happen unless you're putting yourself out there, and getting on stage is doing the audacious thing. So, these people are really audacious, and I've picked some really incredible individuals that have mastered their craft of speaking, entrepreneurship.
+Ella Molony Cook: We have a woman that's literally facilitating the TED AI speakers.
+Ella Molony Cook: And we're going to do a whole workshop around storytelling. Milly. Hi, Queen.
+Attendee: Hey, hey, good, how are you?
+Ella Molony Cook: Good.
+Attendee: I wanted to ask if you have, if Grok has a hand over your Notion. I might have missed that part. I'm sorry if you already said it. So in terms of editing, in terms of, you know, do you have, like, one agent that will do that, or multiple agents that have access to your Notion?
+Ella Molony Cook: I have multiple agents, because I like to, like.
+Ella Molony Cook: the only thing is, like, they're not able to, like, fully move files around. I still have to go in there and kind of tidy up their work. They don't make things, like, visually pretty. I have humans that do that. But, yes, they all have access to that, because that's where, for right now, I'm using that as my second brain, because
+Ella Molony Cook: it's just easier for individuals that I work with to give them a template. They can download it as a markdown file, and then all of a sudden they can put it straight into an agent if it… they don't want to connect it to Notion. So it's kind of a dual use for me of, like, a… a…
+Ella Molony Cook: an easily accessible, viable brain, both for humans and for AI. That's the way that I think about Notion now, because of the data that you can store in there, both with words and also numbers, if that makes sense.
+Attendee: Okay, so your Grok is going to use it more as a knowledge base.
+Attendee: Maybe.
+Ella Molony Cook: Yeah, knowledge base, and then also, execution of work. So, like, the… my copywriting agent is always gonna go in there and put into my content hub all of the output. I go in, edit it, make sure that my agent then goes back and actually understands the edit so it can update the skill.
+Ella Molony Cook: Because that's the important part, is like, I don't want to be sitting there into one thread, and then I'm trying to find the thread, and then all of a sudden, I'm like…
+Ella Molony Cook: I feel a little bit disorientated, so that's why notions like, how can the human go in and make sure that they have an easy, accessible place to give the agent feedback?
+Attendee: Okay.
+Attendee: Okay, that's clear. That's good. Love your work.
+Attendee: I'll be joining the community today. So yeah, really exciting. Oh, and you have physical events as well, correct?
+Ella Molony Cook: Yes, so we just got a partnership with the NED, which is a membership club in New York, so we're going to be doing, an AI women-focused workshop in New York.
+Ella Molony Cook: Woo! So, if you're inside of the accelerator, we're gonna have, like, a little bit of a VIP, experience there as well, which is gonna be really fun. And then we're also gonna be doing a sauna and ice bath event, because I believe that we need to look after ourself.
+Ella Molony Cook: And there's a really cool new location called the Altar. So I'm gonna keep everyone up to date with in real life events, but always down to collaborate.
+Attendee: Amazing. Thanks so much. I'll GM you.
+Ella Molony Cook: Thanks, Millie.
+Ella Molony Cook: Anyone else?
+Attendee: What time are the events happening every Monday when you're doing it, the accelerator?
+Ella Molony Cook: 12 p.m. EST.
+Attendee: 12 p.m. EST, and then Friday is what time?
+Ella Molony Cook: 12pm.
+Attendee: Got it. Thank you. Sorry.
+Ella Molony Cook: Yeah, no, you're good. Do you think this accelerator is appropriate for someone who is defining their target audience and offer for their biz? I'm generally looking to build a consultancy
+Ella Molony Cook: help local services for SMBs and automate biz ops with AI? Yes. As long as you are building and executing.
+Ella Molony Cook: Yes.
+Ella Molony Cook: Doesn't matter if you're a leader, creator, coach, entrepreneur, the same skill sets apply. I just don't want anyone that's not going to show up and do the work.
+Ella Molony Cook: Thank you!
+Ella Molony Cook: If there's anything else, you know where to find me.
+Ella Molony Cook: Otherwise, I appreciate you all for your time, and thank you so much, and much love. We'll see you on the Tuesday conversation if you're able to join. Otherwise.
+Ella Molony Cook: Please do this, because it's gonna… it's gonna help everyone just be able to…
+Ella Molony Cook: get their context and also have a conversation and sometimes things come up, right? So thank you, sending you so much love and chat soon. Bye guys.
