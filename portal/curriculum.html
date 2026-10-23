@@ -163,11 +163,34 @@
     /* the lessons */
     .trp-cw-group { font-size: 12px; font-weight: 600; letter-spacing: .08em; text-transform: uppercase; color: var(--trp-soft); margin: 6px 0 -2px; }
     .trp-cw-lessons { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 8px; }
-    .trp-cw-lesson { display: grid; grid-template-columns: auto minmax(0, 1fr) auto; align-items: center; gap: 12px 16px; border: 1px solid var(--trp-line); border-radius: 14px; padding: 14px 16px; }
+    /* Each lesson is a drop-down: the number and the title on one line,
+       the words and the button underneath, shown when the member opens it.
+       The tick stays outside the toggle, so ticking never opens a row. */
+    .trp-cw-lesson { border: 1px solid var(--trp-line); border-radius: 14px; background: rgb(var(--c-surface)); transition: border-color .18s ease; }
+    .trp-cw-lesson.is-open { border-color: var(--trp-green); }
+    .trp-cw-lesson-head { display: grid; grid-template-columns: auto minmax(0, 1fr); align-items: center; gap: 14px; padding: 8px 12px 8px 16px; }
+    .trp-cw-toggle { display: flex; align-items: center; justify-content: space-between; gap: 12px; width: 100%; min-height: 48px; padding: 0; border: 0; background: none; font: inherit; color: inherit; text-align: left; cursor: pointer; border-radius: 10px; }
+    .trp-cw-toggle:focus-visible { outline: 2px solid var(--trp-green); outline-offset: 2px; }
+    .trp-cw-chev { flex: none; width: 20px; height: 20px; color: var(--trp-soft); transition: transform .2s ease; }
+    .trp-cw-toggle[aria-expanded="true"] .trp-cw-chev { transform: rotate(180deg); }
     .trp-cw-lesson-copy { min-width: 0; display: flex; flex-direction: column; gap: 2px; }
     .trp-cw-lesson-title { display: flex; flex-wrap: wrap; align-items: center; gap: 6px 10px; font-size: 16px; font-weight: 600; color: var(--trp-deep); }
-    .trp-cw-lesson-body { font-size: 14px; line-height: 1.5; color: var(--trp-soft); white-space: pre-line; }
+    .trp-cw-detail { display: flex; flex-direction: column; align-items: flex-start; gap: 14px; padding: 0 20px 18px 62px; }
+    .trp-cw-lesson-body { font-size: 15px; line-height: 1.6; color: var(--trp-soft); white-space: pre-line; max-width: 68ch; }
+    .trp-cw-channel { font-weight: 600; color: var(--trp-deep); }
     .trp-cw-lesson:has(.trp-check-box.is-on) .trp-cw-lesson-title { color: var(--trp-soft); }
+    @media (prefers-reduced-motion: reduce) { .trp-cw-chev { transition: none; } }
+
+    /* A group the member can fold away, e.g. Preparation work. */
+    .trp-cw-fold { border-radius: 18px; background: var(--trp-sagelt); }
+    .trp-cw-fold > summary { display: flex; align-items: center; justify-content: space-between; gap: 12px; min-height: 60px; padding: 14px 18px; cursor: pointer; list-style: none; border-radius: 18px; }
+    .trp-cw-fold > summary::-webkit-details-marker { display: none; }
+    .trp-cw-fold > summary:focus-visible { outline: 2px solid var(--trp-green); outline-offset: 2px; }
+    .trp-cw-fold-title { display: flex; flex-direction: column; gap: 2px; min-width: 0; }
+    .trp-cw-fold-name { font-family: var(--trp-display); font-weight: 600; font-size: 19px; letter-spacing: -.01em; color: var(--trp-deep); }
+    .trp-cw-fold-count { font-size: 13.5px; color: var(--trp-soft); }
+    .trp-cw-fold[open] > summary .trp-cw-chev { transform: rotate(180deg); }
+    .trp-cw-fold > .trp-cw-lessons { padding: 0 10px 10px; }
     .trp-cw-empty { margin: 0; font-size: 15px; color: var(--trp-soft); }
 
     /* The tick button doubles as the lesson number: the number until it is
@@ -197,8 +220,8 @@
       .trp-cw-week-title { font-size: 16px; }
       .trp-cw-week-dates { font-size: 12.5px; }
       .trp-cw-pill, .trp-cw-pillar { font-size: 10px; padding: 4px 8px; }
-      .trp-cw-lesson { grid-template-columns: auto minmax(0, 1fr); align-items: start; }
-      .trp-cw-lesson > .trp-cw-btn { grid-column: 2; justify-self: start; }
+      .trp-cw-detail { padding: 0 16px 16px; }
+      .trp-cw-detail .trp-cw-btn { width: 100%; }
       .trp-cw-actions { width: 100%; }
     }
 
@@ -583,9 +606,77 @@
         return null;
       }
 
-      function lessonRow(item, n) {
+      /* Which rows the member has opened, kept across redraws: a tick
+         redraws the page, and a row should not snap shut under them. Until
+         they open or close anything, the first step not yet ticked is open,
+         so the page always shows what to do next. */
+      var opened = {};
+      var touched = false;
+
+      function rowKey(item, n) {
+        return L.itemKey(item) ? 'item-' + L.itemKey(item) : 'row-' + n + '-' + L.str(item && item.title);
+      }
+
+      var CHEV = 'M6 9l6 6 6-6';
+      function chevron() {
+        var ns = 'http://www.w3.org/2000/svg';
+        var svg = document.createElementNS(ns, 'svg');
+        svg.setAttribute('class', 'trp-cw-chev');
+        svg.setAttribute('viewBox', '0 0 24 24');
+        svg.setAttribute('fill', 'none');
+        svg.setAttribute('stroke', 'currentColor');
+        svg.setAttribute('stroke-width', '2');
+        svg.setAttribute('stroke-linecap', 'round');
+        svg.setAttribute('stroke-linejoin', 'round');
+        svg.setAttribute('aria-hidden', 'true');
+        var path = document.createElementNS(ns, 'path');
+        path.setAttribute('d', CHEV);
+        svg.appendChild(path);
+        return svg;
+      }
+
+      /* The button says what it does, read from where it goes, instead of
+         a bare "Open". Anything not listed keeps "Open". */
+      var BUTTONS = [
+        [/addevent\.com|cal\.ae/, 'Add to my calendar'],
+        [/join\.slack\.com/, 'Join the Slack'],
+        [/chat\.whatsapp\.com/, 'Join the WhatsApp group'],
+        [/wisprflow\.ai/, 'Get Wispr Flow'],
+        [/launchlemonade\.app/, 'Claim 3 months of LaunchLemonade'],
+        [/docs\.google\.com\/.*\/copy/, 'Make my copy'],
+        [/timerich\.ai\/superhuman/, 'Answer the questions'],
+        [/linkedin\.com/, 'Connect on LinkedIn'],
+        [/notion\.site|notion\.so/, 'Open the guide']
+      ];
+      function buttonLabel(item) {
+        var url = L.str(item && item.url);
+        for (var i = 0; i < BUTTONS.length; i++) if (BUTTONS[i][0].test(url)) return BUTTONS[i][1];
+        return item && item.kind === 'skill' ? 'Download' : 'Open';
+      }
+
+      /* The words under a lesson, still plain text: a line that is only a
+         Slack channel (#introductions) or a short heading ("TRC Club Code")
+         is set in bold so the list scans. Everything goes in through
+         textContent. */
+      function bodyText(body) {
+        var p = L.el('p', 'trp-cw-lesson-body');
+        body.split('\n').forEach(function (line, i) {
+          if (i) p.appendChild(document.createTextNode('\n'));
+          // a channel name, or a short heading line such as "TRC Club Code"
+          if (/^#[a-z0-9-]+$/.test(line.trim()) || /^[A-Z][A-Za-z ]{2,30}$/.test(line.trim())) {
+            p.appendChild(L.el('strong', 'trp-cw-channel', line.trim()));
+          }
+          else p.appendChild(document.createTextNode(line));
+        });
+        return p;
+      }
+
+      function lessonRow(item, n, isNext) {
         var name = L.str(item && item.title) || 'Untitled';
-        var row = L.el('li', 'trp-cw-lesson');
+        var key = rowKey(item, n);
+        var isOpenRow = touched ? !!opened[key] : !!isNext;
+        var row = L.el('li', 'trp-cw-lesson' + (isOpenRow ? ' is-open' : ''));
+        var head = L.el('div', 'trp-cw-lesson-head');
 
         if (L.itemKey(item)) {
           var box = L.checkBox(
@@ -594,30 +685,89 @@
             name);
           box.appendChild(L.el('span', 'trp-cw-n', String(n)));
           box.setAttribute('data-cw-focus', 'item-' + L.itemKey(item));
-          row.appendChild(box);
+          head.appendChild(box);
         } else {
           var mark = L.el('span', 'trp-check-box', '');
           mark.appendChild(L.el('span', 'trp-cw-n', String(n)));
           mark.setAttribute('aria-hidden', 'true');
-          row.appendChild(mark);
+          head.appendChild(mark);
         }
 
+        var detailId = 'cw-detail-' + key.replace(/[^a-z0-9_-]/gi, '-');
+        var toggle = L.el('button', 'trp-cw-toggle');
+        toggle.type = 'button';
+        toggle.setAttribute('aria-expanded', isOpenRow ? 'true' : 'false');
+        toggle.setAttribute('aria-controls', detailId);
+        toggle.setAttribute('data-cw-focus', 'toggle-' + key);
         var copy = L.el('span', 'trp-cw-lesson-copy');
         var title = L.el('span', 'trp-cw-lesson-title', name);
         if (item && item.kind === 'skill') title.appendChild(L.el('span', 'trp-cw-tag', 'Skill'));
         copy.appendChild(title);
+        toggle.appendChild(copy);
+        toggle.appendChild(chevron());
+        head.appendChild(toggle);
+        row.appendChild(head);
+
         // body is text, never markup: el() writes textContent, and the
         // class keeps the line breaks written into it.
+        var detail = L.el('div', 'trp-cw-detail');
+        detail.id = detailId;
         var body = L.str(item && item.body);
-        if (body) copy.appendChild(L.el('span', 'trp-cw-lesson-body', body));
-        row.appendChild(copy);
-
-        var open = L.linkTo(item && item.url, 'Open', 'trp-cw-btn is-primary is-sm');
+        if (body) detail.appendChild(bodyText(body));
+        var open = L.linkTo(item && item.url, buttonLabel(item), 'trp-cw-btn is-primary is-sm');
         if (open) {
-          open.setAttribute('aria-label', 'Open ' + name);
-          row.appendChild(open);
+          open.setAttribute('aria-label', buttonLabel(item) + ': ' + name);
+          detail.appendChild(open);
         }
+        detail.hidden = !isOpenRow;
+        row.appendChild(detail);
+
+        toggle.addEventListener('click', function () {
+          var now = toggle.getAttribute('aria-expanded') !== 'true';
+          if (!touched) {
+            // keep whatever the member could see open, then apply this click
+            touched = true;
+            var shown = document.querySelectorAll('.trp-cw-toggle[aria-expanded="true"]');
+            for (var i = 0; i < shown.length; i++) {
+              opened[shown[i].getAttribute('data-cw-focus').replace(/^toggle-/, '')] = true;
+            }
+          }
+          opened[key] = now;
+          toggle.setAttribute('aria-expanded', now ? 'true' : 'false');
+          detail.hidden = !now;
+          row.classList.toggle('is-open', now);
+        });
         return row;
+      }
+
+      /* Start here is split in two: the first few steps stay in view, and
+         everything stored from sort 100 up sits in a "Preparation work"
+         drop-down, with its own count, so the week does not open on a wall
+         of fourteen steps. */
+      var FOLD_FROM = 100;
+      var folded = {};   // group name -> open or not, kept across redraws
+
+      function foldGroup(name, items, startAt, nextKey) {
+        var fold = document.createElement('details');
+        fold.className = 'trp-cw-fold';
+        var done = items.filter(function (it) { return L.isItemDone(it); }).length;
+        if (Object.prototype.hasOwnProperty.call(folded, name)) fold.open = folded[name];
+        fold.addEventListener('toggle', function () { folded[name] = fold.open; });
+        var sum = document.createElement('summary');
+        var t = L.el('span', 'trp-cw-fold-title');
+        t.appendChild(L.el('span', 'trp-cw-fold-name', name));
+        t.appendChild(L.el('span', 'trp-cw-fold-count',
+          items.length + (items.length === 1 ? ' step' : ' steps') + ' · ' + done + ' done'));
+        sum.appendChild(t);
+        sum.appendChild(chevron());
+        fold.appendChild(sum);
+        var ul = L.el('ul', 'trp-cw-lessons');
+        items.forEach(function (it, i) {
+          var k = rowKey(it, startAt + i);
+          ul.appendChild(lessonRow(it, startAt + i, k === nextKey));
+        });
+        fold.appendChild(ul);
+        return fold;
       }
 
       function sessionTile(session, now) {
@@ -674,7 +824,7 @@
         /* what goes in the count: the lessons and live sessions the member
            can actually see and tick on this week */
         var groups = [];
-        if (n === 1 && prep) groups.push({ label: 'Start here', items: L.items(prep) });
+        if (n === 1 && prep) groups.push({ label: 'Start here', items: L.items(prep), fold: true });
         if (week.unlocked === true) {
           groups.push({ label: groups.length ? weekTitle(week) : '', items: L.items(week) });
         }
@@ -727,12 +877,25 @@
           return box;
         }
 
+        // the first step not yet ticked, across every group on the panel
+        var nextKey = null;
+        groups.forEach(function (g) {
+          g.items.forEach(function (it, i) {
+            if (nextKey === null && L.itemKey(it) && !L.isItemDone(it)) nextKey = rowKey(it, i + 1);
+          });
+        });
+
         groups.forEach(function (g) {
           if (!g.items.length) return;
           if (g.label && groups.length > 1) box.appendChild(L.el('h3', 'trp-cw-group', g.label));
-          var ul = L.el('ul', 'trp-cw-lessons');
-          g.items.forEach(function (it, i) { ul.appendChild(lessonRow(it, i + 1)); });
-          box.appendChild(ul);
+          var top = g.fold ? g.items.filter(function (it) { return L.num(it && it.sort) < FOLD_FROM; }) : g.items;
+          var rest = g.fold ? g.items.filter(function (it) { return L.num(it && it.sort) >= FOLD_FROM; }) : [];
+          if (top.length) {
+            var ul = L.el('ul', 'trp-cw-lessons');
+            top.forEach(function (it, i) { ul.appendChild(lessonRow(it, i + 1, rowKey(it, i + 1) === nextKey)); });
+            box.appendChild(ul);
+          }
+          if (rest.length) box.appendChild(foldGroup('Preparation work', rest, top.length + 1, nextKey));
         });
 
         if (n === 1 && prep && week.unlocked !== true) {
