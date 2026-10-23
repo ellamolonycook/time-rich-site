@@ -209,36 +209,73 @@
         <div class="min-w-0">
           <p class="trp-eyebrow">Time Rich Club &middot; Members</p>
           <h1 data-club-greet class="trp-club-h1 mt-5">Welcome back.</h1>
+          <!-- Ella's letter, in her words. The sign-off is its own block
+               rather than a last line of the paragraph, so it reads as a
+               signature and not as another sentence of the letter. -->
           <p class="trp-club-intro mt-7 max-w-[34rem]">
-            Where founders, creators and investors invest in themselves, their
-            relationships and a system that makes them Time Rich. Build
-            alongside people who are building too.
+            I believe it's the greatest time in history to be ambitious while
+            being Time Rich. But being ambitious is lonely, so I want us to
+            have an ecosystem of resources, community, and a safe space to
+            show up and be vulnerable. It's a place where founders, creators,
+            media leaders and investors invest in themselves, their
+            relationships and their delegation system to become Time Rich,
+            and the club's values are leading with vulnerability and a
+            give-first mindset.
+          </p>
+          <p class="trp-club-sign">
+            Love, Ella
+            <span class="trp-club-sign-role">Chief Energy Officer</span>
           </p>
           <hr class="trp-hero-rule"/>
         </div>
 
-        <aside aria-labelledby="ethos-heading">
-          <p class="trp-eyebrow" id="ethos-heading">The Time Rich ethos</p>
+        <!-- The five pillars, in the rail beside the letter. Same numbered
+             list the ethos used, so nothing new had to be invented for it,
+             with the membership line and the Slack door under them. -->
+        <aside aria-labelledby="pillars-heading">
+          <p class="trp-eyebrow" id="pillars-heading">Time Rich Club</p>
           <ol class="trp-ethos mt-5">
             <li>
               <span class="trp-ethos-n" aria-hidden="true">01</span>
-              <span>Delegate before you scale.</span>
+              <span>Invest in YOU</span>
             </li>
             <li>
               <span class="trp-ethos-n" aria-hidden="true">02</span>
-              <span>Build the system once. Let it run.</span>
+              <span>Become visible + build authority</span>
             </li>
             <li>
               <span class="trp-ethos-n" aria-hidden="true">03</span>
-              <span>Show up in public. Grow in public.</span>
+              <span>Build the delegate system</span>
+            </li>
+            <li>
+              <span class="trp-ethos-n" aria-hidden="true">04</span>
+              <span>Building wealth</span>
+            </li>
+            <li>
+              <span class="trp-ethos-n" aria-hidden="true">05</span>
+              <span>Enjoying the journey</span>
             </li>
           </ol>
+
+          <p class="trp-pillar-note">Club of 63K ambitious legends&hellip;</p>
+
+          <!-- The Slack, in the same row component as the WhatsApp
+               communities further down the page. -->
+          <div class="trp-rows mt-6">
+            <a class="trp-row" href="https://join.slack.com/t/timerichclub/shared_invite/zt-4dry4ppfn-yV~VNRrHW_z3K3AFtbnOJQ" target="_blank" rel="noopener noreferrer">
+              <span class="min-w-0">
+                <span class="trp-row-t">Time Rich Club</span>
+                <span class="trp-row-d">Members Only Slack</span>
+              </span>
+              <span class="trp-row-side">Join <span aria-hidden="true">&rarr;</span></span>
+            </a>
+          </div>
         </aside>
       </section>
 
       <!-- ---- your programs -------------------------------------------- -->
       <section class="trp-sec" aria-labelledby="programs-heading">
-        <h2 id="programs-heading" class="trp-club-h2">Your programs</h2>
+        <h2 id="programs-heading" class="trp-club-h2">Let's get into good trouble!</h2>
 
         <div class="mt-7 grid lg:grid-cols-2 gap-5 items-stretch">
 
@@ -268,13 +305,64 @@
                there is nowhere for it to go yet. -->
           <div class="trp-prog trp-prog-off">
             <p class="trp-eyebrow">Time Rich Club</p>
-            <h3 class="trp-club-h3 text-[21px] sm:text-[24px] mt-4">Private conversations, firesides and your network</h3>
-            <p class="mt-4 text-[15px] leading-[1.7] text-brand-muted">
-              Investing, building your brand, time hacks and running your life
-              on AI. Fireside chats with family offices and exited founders.
+            <!-- The subtitle line is gone: the eyebrow above is the card's
+                 title and these two lines are what the Club actually is. -->
+            <p class="trp-prog-lead mt-5">
+              Private conversations, masterclasses, curated networking &amp;
+              pitch events.
+            </p>
+            <p class="trp-prog-lead mt-3">
+              Fireside chats with investors, exited founders &amp; industry
+              leaders.
             </p>
             <span class="trp-soon trp-soon-lg self-start mt-auto">Coming soon</span>
           </div>
+        </div>
+      </section>
+
+      <!-- ---- trc mentors ------------------------------------------------
+           Four cards. Ella is the only one with a bio so far, so she takes
+           the full width and the three name-only cards sit three-up under
+           her rather than leaving three tall empty boxes beside a long one.
+           Every card has a photo slot ready: drop an
+           <img class="trp-mentor-photo" .../> in as the first child and the
+           card lays itself out around it. -->
+      <section class="trp-sec" aria-labelledby="mentors-heading">
+        <h2 id="mentors-heading" class="trp-club-h2">TRC Mentors</h2>
+
+        <div class="mt-7 grid gap-5 sm:grid-cols-2 lg:grid-cols-3 items-stretch">
+
+          <article class="trp-mentor sm:col-span-2 lg:col-span-3">
+            <h3 class="trp-mentor-n">Ella Molony Cook</h3>
+            <p class="trp-mentor-role">Chief Energy Officer</p>
+            <p class="trp-mentor-bio">
+              Four companies. One exit. An early bet on Anthropic. Ella Molony
+              Cook has spent almost a decade building businesses, and now
+              she's helping other founders &amp; leaders figure out how to
+              build their delegation system. After exiting her first company
+              in 2021, Ella went on to build a global private capital network
+              &amp; Founder AI Lab before founding Time Rich, where she's
+              turned her attention to a problem most founders know very well:
+              <em>how do you grow a business without everything running
+              through you</em>? Her answer is to build a delegation system
+              that lets you and AI take on some of the load.
+            </p>
+          </article>
+
+          <article class="trp-mentor">
+            <h3 class="trp-mentor-n">ViKA Victoria</h3>
+            <p class="trp-mentor-role">Chief Storytelling Officer</p>
+          </article>
+
+          <article class="trp-mentor">
+            <h3 class="trp-mentor-n">Cien Solon</h3>
+            <p class="trp-mentor-role">Chief AI Officer</p>
+          </article>
+
+          <article class="trp-mentor">
+            <h3 class="trp-mentor-n">Indra K.</h3>
+          </article>
+
         </div>
       </section>
 
@@ -345,15 +433,94 @@
             </span>
             <span class="trp-row-side">Join <span aria-hidden="true">&rarr;</span></span>
           </a>
-
-          <div class="trp-row">
-            <span class="min-w-0">
-              <span class="trp-row-t">Time Rich Slack</span>
-              <span class="trp-row-d">Your cohort, in one place</span>
-            </span>
-            <span class="trp-row-side"><span class="trp-soon">Coming soon</span></span>
-          </div>
         </div>
+      </section>
+
+      <!-- ---- 250+ time rich experiences ---------------------------------
+           Text only for now. Every card has an image slot ready: drop an
+           <img class="trp-exp-shot" .../> in as the first child of the
+           article and the card lays itself out around it, the same way the
+           mentor cards take a photo. -->
+      <section class="trp-sec" aria-labelledby="experiences-heading">
+        <div class="trp-sec-head">
+          <h2 id="experiences-heading" class="trp-club-h2">250+ Time Rich Experiences</h2>
+          <a class="trp-sec-link" href="https://timerich.ai/eventportfolio" target="_blank" rel="noopener noreferrer">
+            See every event <span aria-hidden="true">&rarr;</span>
+          </a>
+        </div>
+
+        <p class="trp-club-intro mt-6 max-w-[34rem]">
+          Founders, investors and women building wealth. We curate experiences
+          for connection.
+        </p>
+
+        <p class="trp-exp-stat">250+ events</p>
+
+        <ul class="trp-tags" aria-label="What we run">
+            <li>Founders</li>
+            <li>Wealth</li>
+            <li>Women-focused</li>
+            <li>AI</li>
+            <li>Wellness &amp; Longevity</li>
+            <li>Pitch events</li>
+            <li>Storytelling</li>
+        </ul>
+
+        <div class="mt-9 grid gap-5 sm:grid-cols-2 lg:grid-cols-4 items-stretch">
+
+          <article class="trp-exp">
+            <h3 class="trp-exp-t">Women in AI Pitch Tank</h3>
+            <p class="trp-exp-m">Pitch event &middot; May 2025 &middot; Online &middot; 384 registered</p>
+            <p class="trp-exp-d">A reverse pitch. Three women in venture took the mic and founders heard what they actually back.</p>
+          </article>
+
+          <article class="trp-exp">
+            <h3 class="trp-exp-t">Founders, Angels &amp; VCs: The New Era of Direct Investing</h3>
+            <p class="trp-exp-m">Investors &middot; Jun 2025 &middot; Online &middot; 1,282 registered</p>
+            <p class="trp-exp-d">Two days on fundraising, institutional access and founder partnerships. Our largest room to date.</p>
+          </article>
+
+          <article class="trp-exp">
+            <h3 class="trp-exp-t">Private Markets Poker Night with Jamie Gold</h3>
+            <p class="trp-exp-m">Investors &middot; Nov 2025 &middot; New York</p>
+            <p class="trp-exp-d">Cards as the icebreaker for a room of allocators and Series A+ founders.</p>
+          </article>
+
+          <article class="trp-exp">
+            <h3 class="trp-exp-t">Creative Capital Family Office Dinner</h3>
+            <p class="trp-exp-m">Investors &middot; Mar 2026 &middot; New York</p>
+            <p class="trp-exp-d">A private table of family offices, built around one thesis for the night.</p>
+          </article>
+
+          <article class="trp-exp">
+            <h3 class="trp-exp-t">Investor Happy Hour with Upgrade Labs</h3>
+            <p class="trp-exp-m">Wellness &amp; Longevity &middot; Feb 2025 &middot; Austin</p>
+            <p class="trp-exp-d">A longevity lab and the Texas venture community in one room.</p>
+          </article>
+
+          <article class="trp-exp">
+            <h3 class="trp-exp-t">AI Revenue Growth: Female Founder Circle</h3>
+            <p class="trp-exp-m">Women &middot; Jul 2026 &middot; Online</p>
+            <p class="trp-exp-d">Ella on the founder journey across eight companies, and how to grow revenue with AI.</p>
+          </article>
+
+          <article class="trp-exp">
+            <h3 class="trp-exp-t">Time Rich Summer: Picnic in Central Park</h3>
+            <p class="trp-exp-m">Women &middot; Aug 2026 &middot; New York</p>
+            <p class="trp-exp-d">An afternoon on the grass for women and queer founders, investors and creators.</p>
+          </article>
+
+          <article class="trp-exp">
+            <h3 class="trp-exp-t">Founders &amp; Funders, Williamsburg Walk</h3>
+            <p class="trp-exp-m">Founders &middot; Sep 2025 &middot; Brooklyn</p>
+            <p class="trp-exp-d">A morning walk over the bridge. No badges, no pitch decks, just the conversation.</p>
+          </article>
+
+        </div>
+
+        <p class="trp-sec-note">
+          <a href="mailto:emc@timerich.ai">Want to partner on an event?</a>
+        </p>
       </section>
 
       <!-- ---- follow along ----------------------------------------------- -->

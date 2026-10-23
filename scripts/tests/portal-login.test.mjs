@@ -10,7 +10,7 @@
 import worker from '../../worker/src/index.js';
 
 const NOT_FOUND =
-  "We couldn't find that email. Use the email you joined with, or contact emc@timerich.ai.";
+  "We couldn't find that email. Use the email you joined with, or contact emc@timerichclub.com.";
 
 const ORIGIN = 'https://timerich.ai';
 

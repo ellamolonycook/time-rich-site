@@ -1869,6 +1869,189 @@
   }
   .trp-soon-lg { font-size: 11px; padding: 5px 12px; }
 
+  /* -- the letter's sign-off ----------------------------------------------
+     "Love, Ella" and the role under it. Set in the display face at body
+     size so it reads as a signature rather than as another sentence of the
+     letter above it, and the role drops to the muted label voice. */
+  .trp-club-sign {
+    margin-top: 22px;
+    font-family: var(--trp-face);
+    font-size: 16px;
+    line-height: 1.5;
+    color: var(--trp-ink);
+  }
+  .trp-club-sign-role {
+    display: block;
+    font-family: var(--trp-label);
+    font-size: 13px;
+    color: var(--trp-muted);
+  }
+
+  /* The membership line under the five pillars. It sits past the list's
+     last hairline, so it needs its own air above it. */
+  .trp-pillar-note {
+    margin-top: 20px;
+    font-size: 15px;
+    line-height: 1.6;
+    color: var(--trp-ink);
+  }
+
+  /* -- the Club programme card's copy ------------------------------------
+     This card lost its heading: the eyebrow is its title now and these two
+     lines are the card. A step up from the 15px body they replace, so the
+     card still carries its half of the row beside the Accelerator. */
+  .trp-prog-lead {
+    font-size: 17px;
+    line-height: 1.6;
+    color: var(--trp-muted);
+    max-width: 30rem;
+  }
+
+  /* -- the mentor cards ---------------------------------------------------
+     Same hairline-and-radius card as the programmes, at a quieter padding.
+     .trp-mentor-photo is the slot: it is styled and unused, so a headshot
+     dropped in as the first child needs no other change. */
+  .trp-mentor {
+    border: 1px solid var(--trp-hair);
+    border-radius: var(--trp-radius);
+    padding: 26px 24px;
+  }
+  @media (min-width: 640px) { .trp-mentor { padding: 30px 28px; } }
+
+  .trp-mentor-photo {
+    display: block;
+    width: 64px;
+    height: 64px;
+    border-radius: 999px;
+    object-fit: cover;
+    margin-bottom: 18px;
+  }
+
+  .trp-mentor-n {
+    font-family: var(--trp-face);
+    font-size: 19px;
+    font-weight: 500;
+    letter-spacing: -.02em;
+    line-height: 1.2;
+    color: var(--trp-ink);
+  }
+  @media (min-width: 640px) { .trp-mentor-n { font-size: 21px; } }
+
+  .trp-mentor-role {
+    margin-top: 7px;
+    font-family: var(--trp-label);
+    font-size: 11px;
+    font-weight: 500;
+    letter-spacing: .14em;
+    text-transform: uppercase;
+    color: var(--trp-accent);
+  }
+
+  .trp-mentor-bio {
+    margin-top: 16px;
+    font-size: 15px;
+    line-height: 1.7;
+    color: var(--trp-muted);
+    max-width: 44rem;
+  }
+  .trp-mentor-bio em { font-style: italic; }
+
+  /* -- the experiences section -------------------------------------------
+     A count, a row of what we run, then the cards. */
+  .trp-exp-stat {
+    margin-top: 26px;
+    font-family: var(--trp-face);
+    font-size: 30px;
+    font-weight: 500;
+    letter-spacing: -.025em;
+    line-height: 1;
+    color: var(--trp-ink);
+  }
+
+  .trp-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-top: 20px;
+    padding: 0;
+    list-style: none;
+  }
+  .trp-tags li {
+    font-family: var(--trp-label);
+    font-size: 11px;
+    font-weight: 500;
+    letter-spacing: .1em;
+    text-transform: uppercase;
+    color: var(--trp-muted);
+    border: 1px solid var(--trp-hair);
+    border-radius: 999px;
+    padding: 6px 12px;
+  }
+
+  /* One event. Text only for now; .trp-exp-shot is the image slot, styled
+     and waiting, so a poster dropped in as the first child of the article
+     sits above the title at the same 4:3 the cards are built around. */
+  .trp-exp {
+    display: flex;
+    flex-direction: column;
+    border: 1px solid var(--trp-hair);
+    border-radius: var(--trp-radius);
+    padding: 22px 20px;
+  }
+  @media (min-width: 640px) { .trp-exp { padding: 24px 22px; } }
+
+  .trp-exp-shot {
+    display: block;
+    width: 100%;
+    aspect-ratio: 4 / 3;
+    object-fit: cover;
+    border-radius: 12px;
+    margin-bottom: 18px;
+  }
+
+  .trp-exp-t {
+    font-family: var(--trp-face);
+    font-size: 17px;
+    font-weight: 500;
+    letter-spacing: -.015em;
+    line-height: 1.25;
+    color: var(--trp-ink);
+  }
+
+  .trp-exp-m {
+    margin-top: 10px;
+    font-family: var(--trp-label);
+    font-size: 11px;
+    font-weight: 500;
+    letter-spacing: .08em;
+    text-transform: uppercase;
+    line-height: 1.5;
+    color: var(--trp-accent);
+  }
+
+  .trp-exp-d {
+    margin-top: 12px;
+    font-size: 14px;
+    line-height: 1.6;
+    color: var(--trp-muted);
+  }
+
+  /* A quiet line closing a section off, with the link underlined so it is
+     plainly a link and not just the sentence. */
+  .trp-sec-note {
+    margin-top: 28px;
+    font-size: 15px;
+    color: var(--trp-muted);
+  }
+  .trp-sec-note a {
+    color: var(--trp-ink);
+    text-decoration: underline;
+    text-underline-offset: 2px;
+    text-decoration-color: rgb(var(--c-rule) / .3);
+    transition: text-decoration-color var(--trp-t) ease;
+  }
+  .trp-sec-note a:hover { text-decoration-color: var(--trp-ink); }
+
   /* The sponsor pair is laid out once, up beside .trp-powered: the Club
      footer and every other footer now draw the same lockup. */
 
