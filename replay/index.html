@@ -196,9 +196,15 @@ dialog.ep::backdrop { background: rgba(20, 22, 17, .78); backdrop-filter: blur(4
 @media (max-width: 760px) { .gate .wrap { grid-template-columns: 1fr; } .gate .dvd-stack { display: none; } }
 
 /* ---- Ella's letter --------------------------------------------------- */
-.letter { padding: clamp(36px, 6vw, 64px) 0 8px; }
-.letter-card { background: var(--sage-lt); border-radius: 22px; padding: clamp(22px, 4vw, 44px); display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: clamp(24px, 4vw, 56px); }
-@media (max-width: 860px) { .letter-card { grid-template-columns: 1fr; } }
+.letter { padding: clamp(48px, 7vw, 80px) 0 8px; }
+.letter-card { background: var(--sage-lt); border-radius: 22px; padding: clamp(22px, 4vw, 44px); display: grid; grid-template-columns: minmax(220px, 340px) minmax(0, 1fr); gap: clamp(24px, 4vw, 48px); align-items: start; }
+.letter-photo { width: 100%; height: auto; aspect-ratio: 900 / 1198; object-fit: cover; border-radius: 16px; display: block; }
+.letter-card .favours { grid-column: 1 / -1; flex-direction: row; flex-wrap: wrap; }
+.letter-card .favour { flex: 1 1 260px; }
+@media (max-width: 760px) {
+  .letter-card { grid-template-columns: 1fr; }
+  .letter-photo { max-width: 320px; }
+}
 .letter .eyebrow { color: var(--green); }
 .letter-copy { display: flex; flex-direction: column; gap: 14px; min-width: 0; }
 .letter-copy h2 { font-family: var(--display); font-weight: 600; font-size: clamp(26px, 3.6vw, 36px); line-height: 1.08; letter-spacing: -.02em; margin: 0; }
@@ -279,49 +285,6 @@ dialog.ep::backdrop { background: rgba(20, 22, 17, .78); backdrop-filter: blur(4
 </section>
 
 <main hidden data-main>
-  <!-- Ella's letter to members, word for word, with the how-to for each
-       of the three favours beside it. -->
-  <section class="letter" aria-labelledby="letter-title">
-    <div class="wrap">
-      <div class="letter-card">
-        <div class="letter-copy">
-          <span class="eyebrow">A letter from Ella</span>
-          <h2 id="letter-title">Thank you</h2>
-          <p>Thank you for being part of such an impactful time in my life. Without you, Time Rich wouldn&rsquo;t have made the impact it has. I&rsquo;ll do everything in my power to keep showing up and give you the best experience learning to build your authority, your delegation system, and your wealth.</p>
-          <p>I believe it&rsquo;s the greatest time in history to be ambitious while being Time Rich! Being ambitious is lonely, and I want us to have an ecosystem of resources, community, and a safe space to show up and be vulnerable.</p>
-          <p>I&rsquo;m asking you for 3 favors. They help us spread the word.</p>
-          <p class="letter-sign">Much Love,<br/><a href="https://www.linkedin.com/in/ellamolonycook/" target="_blank" rel="noopener">Ella Molony Cook</a><br/>Founder, Time Rich</p>
-        </div>
-        <ol class="favours" aria-label="The 3 favors">
-          <li class="favour">
-            <h3>Leave a testimonial on Substack</h3>
-            <ol>
-              <li>Subscribe at <a href="https://www.timerichclub.com/subscribe" target="_blank" rel="noopener">timerichclub.com</a>. Substack then asks why you subscribed.</li>
-              <li>Write two or three lines on what changed for you with Time Rich.</li>
-              <li>Already subscribed? Reply to any Time Rich email with those lines.</li>
-            </ol>
-          </li>
-          <li class="favour">
-            <h3>Write a recommendation on my LinkedIn profile</h3>
-            <ol>
-              <li>Open <a href="https://www.linkedin.com/in/ellamolonycook/" target="_blank" rel="noopener">Ella&rsquo;s LinkedIn</a> and press Connect. LinkedIn only lets you recommend people you&rsquo;re connected with.</li>
-              <li>Once you&rsquo;re connected, go back to her profile and press More, then Recommend.</li>
-              <li>Choose how you know Ella, write a few lines, and press Send.</li>
-            </ol>
-          </li>
-          <li class="favour">
-            <h3>Invite someone into the Substack community</h3>
-            <ol>
-              <li>Open the <a href="https://www.timerichclub.com/leaderboard" target="_blank" rel="noopener">Time Rich leaderboard</a> and copy your own invite link.</li>
-              <li>Send it to someone who should be in the room.</li>
-              <li>If they become a paid member, you get a free month inside the Time Rich Club. Substack tracks it for you.</li>
-            </ol>
-          </li>
-        </ol>
-      </div>
-    </div>
-  </section>
-
   <!-- Filled in from EPISODES below: the newest episode that can be played. -->
   <section class="now" aria-labelledby="now-title" data-now hidden></section>
 
@@ -381,6 +344,50 @@ dialog.ep::backdrop { background: rgba(20, 22, 17, .78); backdrop-filter: blur(4
       </div>
     </section>
   </div>
+
+  <!-- Support Ella + Time Rich Club: Ella's photo and letter, word for
+       word, then the how-to for each of the three favours. -->
+  <section class="letter" aria-labelledby="letter-title">
+    <div class="wrap">
+      <div class="letter-card">
+        <img class="letter-photo" src="/brand/img/ella-support.jpg" alt="Ella Molony Cook, founder of Time Rich" width="900" height="1198" loading="lazy" decoding="async"/>
+        <div class="letter-copy">
+          <span class="eyebrow">A letter from Ella</span>
+          <h2 id="letter-title">Support Ella + Time Rich Club</h2>
+          <p>Thank you for being part of such an impactful time in my life. Without you, Time Rich wouldn&rsquo;t have made the impact it has. I&rsquo;ll do everything in my power to keep showing up and give you the best experience learning to build your authority, your delegation system, and your wealth.</p>
+          <p>I believe it&rsquo;s the greatest time in history to be ambitious while being Time Rich! Being ambitious is lonely, and I want us to have an ecosystem of resources, community, and a safe space to show up and be vulnerable.</p>
+          <p>I&rsquo;m asking you for 3 favors. They help us spread the word.</p>
+          <p class="letter-sign">Much Love,<br/><a href="https://www.linkedin.com/in/ellamolonycook/" target="_blank" rel="noopener">Ella Molony Cook</a><br/>Founder, Time Rich</p>
+        </div>
+        <ol class="favours" aria-label="The 3 favors">
+          <li class="favour">
+            <h3>Leave a testimonial on Substack</h3>
+            <ol>
+              <li>Subscribe at <a href="https://www.timerichclub.com/subscribe" target="_blank" rel="noopener">timerichclub.com</a>. Substack then asks why you subscribed.</li>
+              <li>Write two or three lines on what changed for you with Time Rich.</li>
+              <li>Already subscribed? Reply to any Time Rich email with those lines.</li>
+            </ol>
+          </li>
+          <li class="favour">
+            <h3>Write a recommendation on my LinkedIn profile</h3>
+            <ol>
+              <li>Open <a href="https://www.linkedin.com/in/ellamolonycook/" target="_blank" rel="noopener">Ella&rsquo;s LinkedIn</a> and press Connect. LinkedIn only lets you recommend people you&rsquo;re connected with.</li>
+              <li>Once you&rsquo;re connected, go back to her profile and press More, then Recommend.</li>
+              <li>Choose how you know Ella, write a few lines, and press Send.</li>
+            </ol>
+          </li>
+          <li class="favour">
+            <h3>Invite someone into the Substack community</h3>
+            <ol>
+              <li>Open the <a href="https://www.timerichclub.com/leaderboard" target="_blank" rel="noopener">Time Rich leaderboard</a> and copy your own invite link.</li>
+              <li>Send it to someone who should be in the room.</li>
+              <li>If they become a paid member, you get a free month inside the Time Rich Club. Substack tracks it for you.</li>
+            </ol>
+          </li>
+        </ol>
+      </div>
+    </div>
+  </section>
 </main>
 
 <footer class="foot">
