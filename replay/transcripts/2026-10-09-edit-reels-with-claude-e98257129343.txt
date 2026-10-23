@@ -1,0 +1,325 @@
+Time Rich Replay
+AI Video Workshop: Edit Reels With Claude | 9 Oct 2026
+Transcript generated automatically from the recording, so expect the odd misheard word.
+
+Ella Molony Cook: Actually, before I get into Terry Rice, I want to tell you a couple of things that I want to give you guys. So there is some essential tools. I want to just kind of drop this in the chat. I have been using that actually Terry and I talk about a lot, which is Bordy. If you guys haven't used Bordy, it's my AI super connector. He is free for the first year. Love that guy. Granola and Stanley. So these are links that I'm putting
+Ella Molony Cook: in because these are tools that I'm using every single day. And then I want to give you two resources just to start the call off with a lot of value. And the reason why I do this is.
+Ella Molony Cook: what I realize right now, especially in the age of AI, it's… it's really focused about how are we going to build our distribution channels, and with that, obviously, there is a lot going on with
+Ella Molony Cook: Claude, and being able to do so many different things, and I think right now, what we need to do is make sure that we as a community are sharing resources. So I put 12 skills in the chat, where you can actually plug that into whatever AI tool you're using, and they're going to be focused on LinkedIn. And the reason why I wanted to do that on today's conversation, because
+Ella Molony Cook: Terry is not only Cool.
+Ella Molony Cook: Marco's doing the utmost. Terry is not only an incredible individual that has
+Ella Molony Cook: keynote speaking, he's got an AI trainer for all different types of enterprise clients, including Google, L'Oreal, Kajabi, the list goes on. So he has an incredible story, which he'll share a little bit of, but the reason why I loved this guy so much is because
+Ella Molony Cook: He's become such a vulnerable creator on LinkedIn. And I think right now, and we've been talking a lot about this inside of the Time Rich community, it's like we need to have systems in place in order to get our story out there. And I know video editing, especially for our community, has come up a lot. And so when Terry said, like, I'd love to do a workshop for the community, we spoke about video editing with Claude.
+Ella Molony Cook: So what he's gonna do today is go through, an overview. He's not gonna actually execute the whole thing, because we would need a little bit more time than that. And then at the end, we're gonna do Q&A, and then we're going to go into the upcoming accelerator, and we're gonna give you a spicy, really large discount for the next 48 hours. So if you can put your cameras on, drop in the chat.
+Ella Molony Cook: Right now, your LinkedIn profile, what you focus on, let's start networking, let's bring a little bit of energy, and I'm gonna hand it over to Terry.
+Terry Rice: Cool, thanks for handing that over. So…
+Terry Rice: I'll probably introduce myself a little bit more. I also have 5 kids, and they're all under 10 years old. So, everything that you said that I do, I do that on the side. And I see your faces, yeah, I know, it's a lot, right?
+Terry Rice: But for me, it's crazy because due to AI, first of all, I can raise all of them, and I can actually still coach my daughter's flag football team. I leave at two o'clock twice a week to go teach her team.
+Terry Rice: Because of AI. So I'm not one of those geeky people who are like, oh, yeah. Let's just go build a bunch of random stuff. I use AI to give me more time back in my actual life.
+Terry Rice: So what I also want to do is share more about my actual life. Ella gave you a bit of a warm-up, but I'm gonna give you a story here. There's gonna be some ups and downs, but don't worry, it's gonna end well, so far.
+Terry Rice: On my end, I worked in corporate for about ten years. I was at Adobe as well as Facebook and a few agencies, primarily in a customer facing role as a consultant. Unfortunately, I got fired from Facebook because I was abusing alcohol about twelve years ago, and that was a very difficult time in my life.
+Terry Rice: Fortunately, it also forced me to reinvent myself, in a way that initially was just kind of, like, kind of replicating what I had in corporate, chasing logos and ego, and within 2 years of getting fired, I was on stage at South by Southwest and Good Morning America, so on and so forth.
+Terry Rice: But what I realized is I was just still trying to replace something, which was my identity. And once I finally got clear on who I was and how I wanted to show up.
+Terry Rice: That's when the world really opened up to me. So…
+Terry Rice: I want to talk to you about, yes, how to do cool stuff with AI and how to make videos and all that stuff, too. But the thing is, if you don't have, like, soul to put in the content, it's not gonna work too well. So it requires a deep amount of introspection, which might be painful, which might be lengthy, but once you do.
+Terry Rice: the creation of content feels effortless. It feels more like an integration to your life, not an interruption to your life, right? So, if you really believe in what you're talking about, if you really get distilled down who you are at a basic level, whether you do, like, an Ikigai exercise, or however you want to find yourself.
+Terry Rice: That's when you're more locked in in your content. Because I found before, like I've gone through classes like this. I, you know, I've done the workshops and stuff, and it's like I knew how to push the buttons.
+Terry Rice: But, like, when I was about to hit record or even push post, like, I was like, oh, man, I don't even feel like responding to comments about this stuff. It was that bad. So I wanna make sure first that we lock in on who we are, not just the mechanics behind it. Otherwise, it does not work out too well.
+Terry Rice: So I'm gonna share another story with you. Okay?
+Terry Rice: A few months ago, this brand reached out to me and said, hey, Terry, we have this new app, we want you to test out and make it real for us. You know, how does that sound?
+Terry Rice: And I was like, okay. That would be great. Except the last time this company, Hume Health, reached out to me to make a reel, I botched it. I took so long. We went through so many revisions because I didn't know what the hell I was doing. I had no plan whatsoever. So this time, I was like, I am not gonna mess this up. Right?
+Terry Rice: So the very first thing is I created a brief before I actually made the video.
+Terry Rice: Yes or no in the in the chat. For those of you that are making videos, any kind of video content, do you make a brief first, or you just wing it like I normally do? So I can tell you right now, winging it does not work. Alright. So hello is actually making a brief. Good call.
+Terry Rice: Who else? Who's making a brief? You make a script? Cool, you wing it too, Jenny? Yeah, how's that working? Not creating content consistently, so not sure. Brief and script. Okay, brief every time.
+Terry Rice: Yeah. I mean, it took me a long time to realize why people have reefs. So I'll say that, yes, it is very important to do that because
+Terry Rice: Even the structure of your post is going to be informed by the brief, right? You want to have some kind of good verbal or visual hook initially when you're creating a reel. If that's not in the brief, you don't have that content, right? So, by design, you have your hook in the brief, you have the full pitch in the brief, you have every shot that has to be taken in the brief as well.
+Terry Rice: So, with that, I'm gonna walk you through the process that I took for actually creating that reel, from end to end, and I will then go through a deck where I show you the process more in depth, but I want to show you it really does take about 5 minutes to actually put the pieces in place. It's actually developing the pieces first that really matters.
+Terry Rice: Alright, so… What I'm gonna do is pretty scary. I'm going to share my screen.
+Terry Rice: I might share my right screen, I might share the wrong screen. Ella's gonna let me know if I have the right one up, and if I do, I'm gonna keep on talking. So, do the scary thing, hit the button, Ella, how is…
+Ella Molony Cook: Yep, I can see the Google Drive.
+Terry Rice: Okay, cool. So right now, you see a Google Drive, right? And this is gonna be after I actually shot the content, but it's actually gonna start with this
+Terry Rice: Brief, which is up here.
+Terry Rice: This is the brief that I used to create my, to create my reel in the first place, and then from here… sorry, this is the brief that I used to
+Terry Rice: put into Claude to create the video. I apologize. This is the prompt that I put into Claude to make the video. Take a step back.
+Terry Rice: So if you see, this is all you have to do. Once you have the brief.
+Terry Rice: Create the content, I'm gonna upload this to my Google Drive.
+Terry Rice: I then tell Claude, here's all this stuff. This is the actual information to make the video. I'm saying, get the footage from here, my Google Drive.
+Terry Rice: After that, you're gonna reference, some prior editions that I've cut before. This is what the sponsor is saying. It's non-negotiable. You can't mess this part up whatsoever, or have to redo it over and over again.
+Terry Rice: This exact line must be included. I'm not gonna go through the whole thing, but it's showing me exactly, it's telling Claude exactly what to do in order to build this brief, this video, based on the brief that we recorded before.
+Terry Rice: So let me stop for a minute. Is anyone lost? Like, what the hell is this guy talking about already, right? So I had the brief created.
+Terry Rice: I shot the video, actually my wife did it, because I would have messed that up. I then uploaded all the videos to my Google Drive, and then I just went into Claude, and I said, okay, get these videos from here, and edit to these exact specifications. Let me stop here, because that's kind of the end of it. But where are we… where does that seem confusing or too good to be true?
+Terry Rice: You're a little lost. Would you hop off for a second? Yeah. Yeah. Go ahead.
+Terry Rice: Great.
+Attendee: Oh, yeah.
+Terry Rice: And I'm gonna go more in depth, but go ahead, yeah.
+Attendee: No, that's okay, and it's Belen. Totally fine to call me Belen, I prefer Belen. This is so fascinating, and exactly what I'm trying to figure out. What is the workflow? Like, you have your clips, and you just are always uploading to Google Drive? Like, that's where I find a lot of friction, because I've just been having challenges, like uploading, say, 20 raw clips to my Google Drive on my phone, and so then I'm just like, oh, this is annoying.
+Terry Rice: Yeah. Yeah. So a few things. This is all done through trial and error. The first few times I did this, like, it was ridiculous. I was, like, emailing myself files and things like that. Like, this is, like it takes once you know how to do it, it takes, like, ten minutes. It took me about ten days to figure it out, though.
+Terry Rice: So, file management is going to be very, very important, right? You want to have a system for doing this. And what I've done is I am using Google Drive, like I just told you, right? But the thing is, I'm using the desktop version of Google Drive.
+Terry Rice: Right? So, first of all, that makes it easier for Claude, and Claude's an LLM, I apologize, for those who didn't know. Claude's similar to, like, ChatGPT, or maybe, Gemini, I've used that before. So, so that's what I'm doing. And then I just get in the habit of either using iCloud.
+Terry Rice: and downloading it from there, and going to my Google Drive, or I am, yes, going from my phone and uploading that to Google Drive. So, does that make sense, the way I'm getting the content there in the first place? Okay, great.
+Terry Rice: Once you do that, folks, that's really the most important part. And the content can even look kind of sloppy because often when you're shooting a reel, you might have, like, three or four or five takes. It doesn't really matter. The way it's gonna look, I'll show you in your Google Drive, is like this.
+Terry Rice: Right? This is a series I have for my app called Send It. And within here, you can see there's several different videos in here. I was, like, playing with my kids with my Legos or something like this.
+Terry Rice: There's several different videos in here that it's gonna know to take from in the brief. It is not gonna use all of these videos because some of these are gonna be retakes, some of these are gonna be mess up, so on and so forth.
+Terry Rice: But when I tell it, hey. Go into this folder and look for these videos and then follow this brief. That is what it is doing.
+Terry Rice: And then I'll show you the exact outcome of this mess over here that you just saw. Again, it's probably, like, 20 videos or so. If you go to my Instagram.
+Terry Rice: Not this one.
+Terry Rice: That is it.
+Terry Rice: Rach.
+Terry Rice: Is it this one? Yeah. It's here right here. Right? So you can look at it later, but that's what it built just from that spec.
+Terry Rice: Right? And I have my own look and feel. You can have your own look and feel. It's up to you.
+Terry Rice: And what I would recommend is if you find reels that you like, just download them and upload them to Claude and say, hey. I want more like this. Right? Get your own style, obviously, but you don't have to start from scratch either because all it's doing is following a pattern that you might give it.
+Terry Rice: And on my end, like I said, like, this took me, you know, hours to figure out, but now all I have to do is just dump all this footage in here.
+Terry Rice: Sorry, over here?
+Terry Rice: Same stuff, right? And it knows how to patch it together. So, let me stop for a minute, because I feel like I'm going too fast or either too slow, one or the other.
+Terry Rice: But does that make sense, like, conceptually?
+Ella Molony Cook: Do you have access to the prompt to share, Terry?
+Terry Rice: Yeah, I have the exact prompt, I can show it to you, but it's like, it's my prompt for my video, you know? So it's like, you're not gonna have access to the source files. You can look at it if you want, but actually, you know what's even more valuable? I got you, folks. I'm gonna go to the deck right now, because this gets technical real quick, and I don't want to have to…
+Terry Rice: be… overly technical right now, I have all these prompts here.
+Terry Rice: So if you want to build a brief, like, I'll give you the deck right now, like, I'll share it with you. If you want to build a brief, just copy this. There's a brief builder here, there's one to help you with the captions. Even if you want to do a weekly analytics report, you can do all that stuff as well. So I didn't want to skip to that too fast, but…
+Terry Rice: All the, like, the really technical stuff that I'm talking about, I have all these prompts in there, and you can copy and paste them. Is that fair?
+Terry Rice: Okay, cool. So what I'm gonna do is this. I'm gonna put a bunch of information about me in there right now. Yeah, you got it. And then here's a link to the deck as well, alright? And, oh, you're asking if there's gonna be a recording, that lets me know you're actually enjoying this, great. So yes, there will be a recording. But what I would ask you to do, folks, this is what I did, like.
+Terry Rice: Just set aside like 90 minutes.
+Terry Rice: And just go through the process, but what's gonna get frustrating is you're gonna get the first version out, it's gonna look stupid. You do the second version, it's gonna look a little bit better. You gotta keep on iterating and iterating and iterating.
+Terry Rice: Which I guess it already means. And then after a while, after, like, you know, ninety minutes or two hours or four hours or whatever, you'll find a template you like.
+Terry Rice: And then you'll say, okay. If you're doing Claude, save this as a skill. And then going forward, it's gonna know this is your look and feel. That's your font. That's your template. Here's how your captions look, so and so forth.
+Terry Rice: And, yes, you're gonna have a new brief every time, but then maybe you have a different approach to how you're creating your brief as well. Right? You have to a standard approach for how you create your brief as well where you have your shot list, what materials you need, so on and so forth. So that's the way I would think about it.
+Terry Rice: I'm gonna pause for a minute. You're saying it's not available in the UK? Thank you for telling me that. I don't think Muse is there yet, so what I'll do is I'll make sure there's a PDF version of that created. I might try to have Muse do it while we're on the call, if I get some time to stall, because I want to make sure you have this today. So thanks for telling me that. Yeah, Muse is not available, I believe, outside of the US, from what I understand right now.
+Terry Rice: So, Marco, thanks for flagging that, and I will make sure you get that today, like, literally while we're on here.
+Terry Rice: Why are you obsessed with Muse? Do you mind explaining why? I saw you say that.
+Attendee: Oh, sure. Well, it's very new, obviously, so I'm in a honeymoon phase. I love… I'm… I'm excited about…
+Attendee: the integration with Threads and with Instagram. So, for example, like.
+Attendee: were my bottleneck, and I'm not consistently creating, you know, I'm very just sort of in a discovery phase with content, but so yesterday I was like, you know, I had this thought, hey, can you post this to my threads instantly? Hey, can you post this to my threads instantly? Hey, can you schedule my next threads? Hey, hey, can you create a pipeline for me, and then prompt me when you don't have any more content done? And then it's, like, with Reels, so I'm just really, really curious about…
+Attendee: the low friction, like posting and scheduling to reels and to threads and Instagram. And then generally, though, because I'm trying various different AI agents, like personalized agents, there are so many, it's I'll go look at just my notifications on my phone. I mean, this is like, Oh, hey, by the way, did you approve this trend? Like, just like, kind of knows everything, which is kind of scary, but I'm so far finding it really helpful and really integrated, and I'm excited to keep exploring it.
+Attendee: What's…
+Terry Rice: I want to talk about that because there's so much cool stuff with Muse. I'll talk about a few use cases. It's already made me a lot of money, not just getting paid to talk about it, but just for my own speaking business, it's found me paid speaking gigs where people said yes to me and gave me money. But I want to talk about the use case we were discussing.
+Terry Rice: You can use you want to hear about that. You can use Muse to make reels, obviously, right? I'm using Claude right now for this demonstration. I'm trying to train Muse up better because I want to start doing it from there.
+Terry Rice: Why? Because Muse can directly integrate with your threads and your Instagram. Freaking awesome, right? It can also look for, like, trends and ideas for you to optimize your content. But here's the cheat code, right? Everybody listen up, right? Because when you first start doing this, like I said before, your first few reels aren't going to be that good.
+Terry Rice: I want you to use trial reels. Who's using trial reels? Just yes or no in the comments. Use trial reels, because those only go to folks who are not following you. So if you look silly, don't worry, you're not gonna embarrass yourself. So it's like free reach, a free way for you to experiment with this content, too.
+Terry Rice: And some folks, that's even some of the larger creators, that's how they're identifying signals for content that might go viral.
+Terry Rice: So on your end, if you're using Muse to eventually go ahead and create your content, you can also say, hey, look, let's just get dangerous with this, right? Let's try to make some reels to go ahead and get some money coming in, or some engagement, or whatever it is.
+Terry Rice: test it out in trial reels, and then once something actually hits, then you actually post it. Does that make sense, the way I'm describing it?
+Terry Rice: And that's what I've been doing, because a lot of my initial ones, they really did suck. Like, I was looking at the trial rail stats, and they were horrible compared to the baseline of what I was doing myself. But eventually, as I got better, I was like, okay, these are improving. So again, it makes sense to have that data, that pre and post data, but the cool thing is you don't have to embarrass yourself initially, either.
+Terry Rice: So let me stop here, and see if there's any questions, because I know I'm kind of rolling through this here.
+Ella Molony Cook: Olga, do you want to? Hey, Olga.
+Attendee: Yes, hi. So, I'm an AI consultant, I'm a prompt engineer. I find this fascinating, what you've done, so really amazing work. The reason I was asking to see the full prompt is because, in my experience, when you give multiple instructions like that, to the agent.
+Attendee: you experience context rot, and so that's why I was really just hoping to see the full prompt as opposed to clips of prompt, to see how you tackle the context rot, as well as which Claude model
+Attendee: Are you using for this?
+Terry Rice: Yeah, let's go back. Let's talk about that. So
+Terry Rice: On my end, there's two things Olga that might help. There's a skill that knows how to do this. And I think the.
+Attendee: Skill is really where a lot of Okay, got it.
+Terry Rice: Okay, so you're using shell.
+Attendee: Yeah, okay.
+Terry Rice: Yeah, so let…
+Attendee: Like, this is a lot for, like, a single prompt to handle.
+Terry Rice: Right.
+Attendee: Okay.
+Terry Rice: Yeah, I'll take a step back. So there's a.
+Terry Rice: And that'll be… I'll make sure that's in the deck, too. So, there's a foundational skill that knows how to build these things in general, right? It's gonna know things like.
+Terry Rice: oh, compress this video file, or else it's gonna break over here, and make sure that you're using, like, this type of tool to, like, buffer out the, you know, whatever sound or whatever. So you're gonna create a skill first, that's like a baseline for how to create this content, and then the brief is gonna be used in the context of a skill.
+Attendee: Yeah.
+Terry Rice: And what I also… awesome, awesome. And what I also want to say, folks, is this, and…
+Terry Rice: I'm saying I'm going through Claude to do this. However, Claude is also connected to a few other tools. It's also connected to Descript, which some of you might have heard of before, it's a video editing service.
+Terry Rice: It's also connected to Opus Clips, another service that can clip clips for you and put captions there. And then beyond that, it's also connected to Eleven Labs.
+Terry Rice: So if I have to do a voiceover for a reel, it can do that too. So Olga, this is good for you to know, I'm guessing, right? So at any moment, if I have, like, a reel, and it's like, hey, Terry, you flubbed this line, I can say, okay, yeah, I can either go re-record it, or have Eleven Labs do it instead, meaning my cloned voice will do it for me, right? And luckily, I kind of talk like a robot anyway, so you can't tell.
+Terry Rice: So, when you have all these connectors in your Claude.
+Terry Rice: or any notion, or sorry, any tool, that's how you become more powerful, because you can use all these third-party tools.
+Terry Rice: Does that make sense, so far?
+Terry Rice: Yeah, definitely.
+Attendee: That's… that makes… that makes a lot more sense. Thank you.
+Terry Rice: Yeah. Let me say one more other thing. Oh, you're in Hudson Yards? I gotta go there. Another thing is this.
+Terry Rice: Who here is using Notion as a second brain in their LLMs or between threads or anything? Who's using Notion as a second brain?
+Terry Rice: Marco, do you feel comfortable explaining what that is and why?
+Attendee: Probably better than my partner explains it. She does the notion, and I do the actual content production and editing.
+Attendee: Okay, so we have the… all the content management is in Notion. I use it for everything, but especially to manage LinkedIn, Instagram, Substack, and now that we want to enter YouTube, everything is organized there.
+Terry Rice: Everything you say sounds smarter than me. Anyway, so yeah, you're absolutely right. So you can use Notion as, like, your content marketing platform, you can have it as your content, depository, repository, like, where you're storing all your information. And what I like to do is actually have, like, tags to understand, like, what kind of content's performing.
+Terry Rice: As well as, like, some revenue behind that as well.
+Terry Rice: One thing I think all of us need to do is this. If you're using, let's say it's Muse, and you're using, you know, ChatGPT as well, you can have Notion connect to both of them.
+Terry Rice: they can both connect to the same Notion board. So therefore, you can talk back and forth. You know, if you want to do planning in Muse and then execute in Claude, that's fine. You'll just say, hey, check this Notion board for the latest updates. So…
+Terry Rice: For anyone who's not doing that, strongly consider it because then when you have content that's, you know, stored in one place or another, another LLM can easily grab it and go ahead and and create this content for you. Does that make sense? I wanna make sure that I'm not going too far ahead.
+Terry Rice: Alright.
+Terry Rice: Yeah, is it Amrito?
+Attendee: Yeah, this is a very short one. I use Notion, I use, obviously, the cloud.
+Attendee: And I can use other… I can use other places to store the content, right? So…
+Attendee: If I don't use Notion, can I have all the scripts and all the contents in, I don't know, MD documents in my cloud, on Google Drive, for example, and do all of that there? What is easier, basically? Is Notion, or is it just the cloud?
+Terry Rice: Just the cloud, I'd say. Yeah. It's and these are like, a lot of things I'm saying are tool agnostic. You can do the same thing with ChatGPT if you wanted to.
+Terry Rice: I think it's what you're used to, what you're comfortable with. And for me, one reason why I like using Notion is because it's pretty powerful, but you can also do a lot with the free version. And there's also agents within Notion that can do some work for you. I also use it as my CRM, so that's the reason why I'm using it anyways, but you can use any tool that can actually connect.
+Terry Rice: Alright, so what I'll do is I want to share the rest of the story here. So that's how I learned how to, create reels, is through trial and error. And then for that Muse one, like I said, I finally got it, I got it recorded, I had everything… share my screen… in Google Drive.
+Terry Rice: And you'll see, like, this is the prompt that I put in, right, the to to actually build it.
+Terry Rice: But you'll look, I'm going back and forth a lot. It's saying, okay, cool, here's what… here's all the videos that I'm seeing in here, this is, like, the takeaway, here's what you're saying, so on and so forth. In some cases, it's gonna say things like, there's a kid in the background, is that okay? I'm like, yeah, they're my kids, whatever, go ahead.
+Terry Rice: It's flagging all these things. Like, it's like you have two of the same things here. There's a brand Firestone visible. Your your your person paying you might not like that.
+Terry Rice: So anyways, it's going through all this stuff, and I'm just going back and forth saying, hey, look, we need a more definitive ending, it just ends with my keynote. Like, I am doing some editing here, obviously, and I was getting paid for it, so I didn't want to, you know, flub it.
+Terry Rice: But I think it took me, yeah, like four tries.
+Terry Rice: Because after v four, I was done.
+Terry Rice: So I was done after v four. But then what I do is I I did like, I said, what did you learn that can be saved as a skill or improve on an existing one?
+Terry Rice: So if I'm fighting that long with this thing to get the thing right, I'm like, look, something had to be… something had to be wrong, right? So if you're going back and forth with that and just tweaking things forever and ever, I just said, hey, look, what can I do? And it's like, well, here's what the issue was, like, these fixes will make things better. It's like.
+Terry Rice: There's an issue, like you were saying earlier, with the drive delivery.
+Terry Rice: more or less, it's just saying, like, here's ways you can fix it, and that's what I did as well. So, like I said, this is an iterative process, but if you're getting annoyed, stop and see if there's a way to avoid being annoyed again by just, like, fixing the process in general, and therefore, like, you just correct the behavior before you have to get there again.
+Terry Rice: But the one thing I did want to show you is this. The reel, got completed, and the cool thing is, I shot this, I'll just hit play right now, but I shot this while I was taking my kids to soccer practice.
+Terry Rice: So I had to be at soccer practice with my kids anyways. And I normally work out when I'm when I'm doing that anyways and, like, creating content. So I got paid to do something I was gonna do anyways. Right? Just go to go to soccer practice and go work out. And I was saying, oh, this app helped me figure out how to do it and eventually, you know, flip the tire, so and so forth.
+Terry Rice: And got paid for it. But the cool thing is, like I mentioned at the beginning of this talk, I actually got fired from Meta about 12 years ago, and now they pay me to flip a damn tire because I know how to make reels. So that's my redemption story, folks. Just knowing how to do this stuff is how I was able to get back in at Meta.
+Terry Rice: That is that. Let me pause now and see, again, what more questions you might have with this stuff.
+Attendee: Everyone's prepared to do this.
+Terry Rice: later on.
+Attendee: I have a small question, Terry.
+Attendee: Are you hearing me?
+Terry Rice: Hey, go for it.
+Attendee: so.
+Attendee: Cloud is editing the video in the end. You're not using Adobe Premium or, I don't know, another platform to
+Attendee: where it's managed by Cloud, right? So you're using… it's cloud editing. It's not another platform.
+Attendee: you know, handled by Claude.
+Terry Rice: No, actually, I'm using other connectors, too. So, I'm within Claude, but Claude can connect to other tools. Adobe has an Adobe for Creativity connector.
+Terry Rice: And through that, you have access to, like, Firefly and some of their other tools. So that's how… if you have to do some, like, more heavy-duty editing, you can just use that Adobe for Creativity connector as well. So, let me show you what that looks like real quick in my Claude, because…
+Attendee: So, yeah, or it would be good to, if you can mention, at least, you know, which are all the tools that you use, which one are connected to Claude, and then you use just the prompt. The prompt provides instructions, and how you have everything in storage in one place. Claude does the magic, but with a very good prompt after connecting everything, right?
+Attendee: Is that how it works or am I wrong?
+Terry Rice: No, you're right, the magic takes a while to develop, but yeah, that's pretty much it.
+Attendee: No, no, no. I know, but I know that it's a lot of trying, but.
+Terry Rice: Yeah, and these are the connectors that I use, I have to reconnect some of these, but…
+Terry Rice: There's quite a few. So to create my content, this Adobe one I'll go into for a minute. And these are all free, by the way. Adobe is there. Canva is there. Descript, I mentioned already. Eleven Labs.
+Terry Rice: Don't need any of these other ones… Yeah.
+Terry Rice: D O Opus
+Terry Rice: Stanley, oh yeah, even Stanley, right? Thanks for sponsoring this, Stanley. There's a Stanley connector, so after I write my reel, what I can do is say, now use the Stanley connector to write the prompt for this, or so the caption for this.
+Terry Rice: And Ella, if you want to briefly explain what Stanley is, that might help. But I'm doing everything end-to-end in here, so I'm writing the content… sorry, I'm creating the content, but then there's another tool called Stanley, which can actually write the capture for me as well. So everything end-to-end can be done because of all these connectors. Does that make sense?
+Terry Rice: China?
+Attendee: It makes sense.
+Terry Rice: Let me, let me…
+Terry Rice: Alright. Yeah. Folks, like, this is, like, one of the biggest things you can do because, like, I'll go up to the Adobe one. Right? Like.
+Terry Rice: If you get access to this, which is free, you have all these other tools.
+Terry Rice: That you can use.
+Terry Rice: See?
+Terry Rice: Acrobat, Photoshop, Lightroom, Illustrator, Firefly, Adobe Express, InStock, InDesign, and Stock, so any stock photo.
+Terry Rice: You just grab it automatically, you don't have to worry about it. Just by hitting one button here, right? And this is free. So, I would do this, I would actually go through
+Terry Rice: whatchamacallit, I would go through, just Claude in general.
+Terry Rice: explore the connectors, and look for anything that you're currently using, right? If you're already using, like, you know, Lovable or something like that, maybe you should go ahead and connect it, right? You know, look at the permissions and all that stuff, too, but the more that you can do within one platform, especially verbally, the better. I'm using several platforms, but I just talk to Claude, and it handles most of my work.
+Terry Rice: But that's what I…
+Ella Molony Cook: any other questions around the video editing process, we will make sure that we get that Muse, prompts into a PDF for anyone that's outside of the US. But before we switch gears, is there any other…
+Ella Molony Cook: Feel free, hold your peace.
+Ella Molony Cook: As far as Claude and editing.
+Terry Rice: I want to say one thing, if any people don't have a question.
+Terry Rice: if anyone's afraid to make reels, or they feel silly doing it, like, I hear you. What helped me is a few things. One is…
+Terry Rice: Movement. If you're just standing there talking, it feels kind of, you know, boring, but normally what I'll do is I'll make a reel while I'm, like, walking back from the gym, going home, and you just see, like, Brooklyn in the background, so it's distracting. So that's one thing. Also realize that
+Terry Rice: if it doesn't do that well, no one's gonna see it anyways, so you don't have to worry about it too much. But I think the more you experiment with that and just get comfortable making these videos, and maybe seeing it as, like, a mini-documentary or something like that, you might get more comfortable. But I'll stop talking now.
+Attendee: Very small question. Do you… do you create the videos only for Instagram, or also for TikTok, YouTube, and other platforms? Because I imagine that.
+Terry Rice: I.
+Attendee: Yeah, sorry, go ahead.
+Terry Rice: Thank you. Yeah. My main platform is LinkedIn, because I'm old and boring. But, yeah, I do put them on other platforms. What I like to do is I'll put other, like, reels on, like, YouTube shorts to see which how they perform.
+Terry Rice: And if they do well, then I'll put them, like, on Instagram or, LinkedIn. So I'm using other platforms like TikTok as well as YouTube Shorts to test out content as well to see what pops.
+Attendee: And I.
+Attendee: question.
+Attendee: And just for a quick overview, right, like, summary, because we've mentioned a lot of tools, the workflows, the Google Drive, the second brain.
+Attendee: I think that…
+Attendee: How would you compare, like, because if you do one, say, 5-minute video or 10-minute video. Do you ever do that, and then have Claude or AI edit and cut everything out versus many raw clips being sewn together? And have you been able to create a consistent process that can process?
+Attendee: different input types. Does that make sense a little bit?
+Attendee: What I'm asking?
+Terry Rice: What I can say is this, I've handed Claude a hot mess and it figured it out.
+Attendee: Yeah.
+Terry Rice: Because, like, if you're making reels, sometimes you're taking several cuts and it's like you're starting and you're stopping and things like that, and I've even combined like clips from other like videos and stuff like that and it will figure it out eventually. It's just like you really got to stick with it and that's what it's. That's the thing I think the more okay.
+Attendee: It sounds like iteration. Iterate, iterate, iterate, iterate.
+Terry Rice: But it's also this, it's like, you gotta talk to it and say, hey, look, go look on forums. Like, who's done case studies about how good they're doing, you know, with these videos? What templates are out there? Go to awesomeclaudskills.com
+Terry Rice: And see what's available there for templates too. Like you got to say, look for the shortcuts. And then even when you're doing that, one of the smartest things I did, I was like, okay, now that I have this template down.
+Terry Rice: Is there a model, because someone asked about models, is there a model that is, you know, that can also do this? So I originally planned everything in, like, I think it was, like, Opus 5.5 or something.
+Terry Rice: And then it told me, hey. If once you have this template down, Sonnet is actually faster and cheaper because it it just is. Right? You don't have to be that technical to, like, make these videos.
+Terry Rice: So, what I'm saying to you folks is, sure, plan all the heavy lifting, the really heavy design stuff, in, like, a more superior model. And again, the better… the more examples you give it, the better.
+Terry Rice: And even before you go ahead and make the video, just say, hey. Can you share a screenshot or two of what this is gonna look like? Just show the screenshots of the scene. Don't make the whole video because I don't wanna find out, like, twenty minutes later, this is horrible.
+Terry Rice: you want to do that, right? You want to actually look at some kind of, like, you know, visual representation first, and then go ahead and make it. So, that's how I approach it. But I see we have a question here.
+Attendee: Appreciate that, thanks.
+Terry Rice: Hey.
+Attendee: Sorry, and let me unmute myself. Hi, I'm Suo, nice to meet you. Hello. to you. So… I try…
+Attendee: Stanley a couple times since Ella spoke really highly of it, and then I think the issue I'm running into is… well, it only connects on Instagram and LinkedIn right now. I don't really get into X and Thread, so that's not really useful. But it's like writing…
+Attendee: the captions and description, and I'm an interior designer and a feng shui expert, so visual, I need visuals, right? So, I have, like.
+Attendee: been interviewed on podcasts, on a couple, you know, so I have a couple recordings of podcasts. I do a lot of workshop, both in person and
+Attendee: virtual, so I have recordings of those, and it doesn't… it's not able to take long form and make video clip, because I have content. And it's saying, like, that's not what it does. So, I would have to spend a lot of time to sort of go do my photos and video, and it makes…
+Attendee: Seems like it makes carousels pretty well, but I haven't… I've interacted with it for, like, maybe a week or so now, and it's… I'm just finding stumbling blocks.
+Ella Molony Cook: Suo, have you tried Opus Clip?
+Attendee: I have… I've heard of it, I have not tried it.
+Ella Molony Cook: So this one is probably more suited. So Stanley's never going to cut up content, I don't think anytime soon. But if you saw what Terry did and you were like, look.
+Ella Molony Cook: That's just not for me. I totally understand. Like, it's… this is not going to be every… for everyone, this process.
+Ella Molony Cook: unless you're taking content really seriously. It is going to be a time commitment. Opus Clip, all you're doing is you're uploading one long format, and then it's going to splice in your content down, and it's going to give you a rating, right? Like, when I say a lot, it's a lot. It's not perfect, but you can come in and kind of fix a couple of things inside of here. I don't love the video editing
+Ella Molony Cook: format inside of Opus Clip, but another hack that I do is on other… so this is funny, because this is actually Terry and I were recording this day. I actually didn't put any, captions, and then what I did is I used this other tool that's just called Captions.ai, and this is because I'm lazy. Like, when I say I want to be time rich, it's because I do not want to be spending much time.
+Ella Molony Cook: So this tool here, it actually makes it look really pretty, the captions overview with AI, but it's all I'm doing is just uploading the content.
+Ella Molony Cook: from Opus Clip to Captions.ai, and yes, it's, like, a little bit more expensive, because I'm paying now for two more tools.
+Ella Molony Cook: But that's because I actually get my interns to do this. Like, it's not a process that I'm sitting there and even doing. And that's why I personally think that you have to figure out, with this whole content machine that you're building, what is going to keep you consistent. Because really, at the end of the day, consistency is going to matter a lot more than
+Ella Molony Cook: anything else. So, that's… that's been my process with long-form content, is Opus Clip to either splice it up, or have the edits over it, and then Captions.ai for the… the actual.
+Ella Molony Cook: you know, captions.
+Attendee: And then you use, then Stanley to write the descriptions, like, separately for Instagram and LinkedIn, because it's a different audience.
+Ella Molony Cook: So what I like, and I'll just explain this for a quick second because I'm actually doing a presentation on this, is when you're thinking about building your content workflow, this does take up a lot of time because you're building a, you're building tone of voice skills, you're building all of these things.
+Ella Molony Cook: inside of Claude to make this workflow happen. And what I think right now, like, I use Notion, that's my project management tool, but what I've liked and I've tried out is, actually trying Grokbot out.
+Ella Molony Cook: at the moment and this has been something where I've just been using all of so in order to build my content hub in Grokbot I literally dropped all of my notion links so that understood my whole lay of the land of what I'm building and the one part that I tried out with this is actually my beautiful mother it's kind of creepy but she freaked out when she saw she had an American accent and she's Australian but I don't use ChatGPT so this was
+Ella Molony Cook: cool for me to have a product inside of my tech stack where I can generate images, and I can do a couple of those AI clone things, but the main priority for me for Grokbot was actually using the agents and getting my team in there, where we kind of have a bit of a workflow together. So, all I'm saying to you is I think the future right now of AI is it's been…
+Ella Molony Cook: For the lost.
+Ella Molony Cook: 12 months has been pick your interface, whether it's chat, co-work, Claude, whatever you're using, right? But I think in the future, with what we're saying with Muse and Instinct and Town and all of these other AIs, you're just going to be able to tell it what you want.
+Ella Molony Cook: And I think right now, we're hitting this inflection point, which AI is getting easier and easier to be able to use. So I wouldn't get caught up in the source of all of this, because I do think, like, with Muse and all of these new AI tools coming out, I'm like, okay.
+Ella Molony Cook: It's starting to get a lot easier for us where it doesn't matter as much around the nitty gritties. The they're going to figure out the AI is going to figure out and come back to us with the problems. So with Stanley, what I liked about this solution is you're actually able to have in the back end, which I'll show you, I'm actually voice noting it. I'm not sitting there typing on my computer.
+Ella Molony Cook: And so for me, someone that travels a lot, like I'm right now in Portugal.
+Ella Molony Cook: I don't want to have everything inside of Notion all the time, when I just want to be able to tell my AI in action, and it's going to go and do it. And in the back end, what this looks like, which I think is interesting, is if I want to create a workflow… let me just move that bad boy…
+Attendee: Yeah, just talk text, right? It was just like…
+Ella Molony Cook: Exactly. Just text it. I'm not going to bring up my text messages because God knows what's in there. But when you're connecting this, right, it's now starting to build out my brain, right? It's now starting to build out these files that I'm starting to know about, like the stories that I want to use, which inside of now what I like about this is they've just added the ability to add in team members.
+Ella Molony Cook: And so, in here, I can actually… what I used to spend hours setting up in Claude, as far as workflows, I came up inside of here, and it says, repurpose winners, so it goes back through, does a whole audit. All I have to do is turn on this button.
+Ella Molony Cook: So, obviously, Stanley is owned by Stan, which is backed by the largest creator in the world, Diary of a CEO, Steven Bartlett. So they're a co-founder of this product, and I do think there's something interesting with how easy it is. I'm not using it for Instagram right now, I'm not using it for anything else but LinkedIn, because that is my primary, like, platform that I'm focused on.
+Ella Molony Cook: And I I was gonna say one more thing that I think about this is like pick your lane.
+Ella Molony Cook: And then hone in on, like, what is the tech stack that I need around you? Terry and I can talk about a million different tech stacks, but at the end of the day, it's going to be really custom to how much time do you want to put into this, how much money do you want to spend, and what is the real outcome for the platform that you're creating content on?
+Attendee: Yeah, I'm mostly on ChatGPT, so I've tried also Claude, a few times, and it doesn't remember my previous conversation. I'm like, what do you mean?
+Attendee: ChatGPT remembers everything we talk about.
+Ella Molony Cook: Luckily, you're in the accelerator, and we're going to be fixing all of those problems, because we need that. We need to be able to have a centralized system, because we want to be able to change
+Ella Molony Cook: harnesses. We don't want to be stuck in one place, which I think is really important. Ella, what are you using to create those workflows and diagrams? I'm actually just using Claude, so we use Claude for all of that.
+Ella Molony Cook: It did take us a little bit, though, to get it to the point where I was, like, happy with it, but now that we have the output of what we like, it's really easy. But thank you for the feedback, I appreciate that. We spend a lot of time on our branding.
+Ella Molony Cook: So I'm really grateful for everyone showing up today. I know this was like a lot of content that we wanted to walk through. I think the part that I think is really exciting with AI is like we do whatever is in our imagination, we can create content at a lot cheaper than what it used to be. And so I think the part that's really important now is being able to have this system around the AI.
+Ella Molony Cook: And I love that a couple of people actually have been enjoying using Notion. I've built four companies, and honestly, Notion has always been my hub, because what I do find to be true for me is I like to have things organized. I'm dyslexic, so I'm a visual learner. So when it comes to me and having, like, my content hub.
+Ella Molony Cook: I need everything to be organized in a way where I have my whole business compass. So when I break down like everything to do with my business in one line, this is both for humans to understand as well as ai. And so what I think about whenever we're starting to build this structure, I think that you need to make sure that you have the place where AI can come in.
+Ella Molony Cook: And be able to keep everything organized, because you're able to build with speed and velocity. The organization piece is something that Terry and I kind of chat offline about a lot, because
+Ella Molony Cook: at the end of the day, like, AI needs data that is clean, concise, and knows where to access what pieces and parts of your business.
+Ella Molony Cook: And so that's why I actually built this accelerator, is I wanted to bring the best builders, the best founders that are using all of this stuff that we're talking about today in a real-life business. Because I think right now, I really believe that
+Ella Molony Cook: There is a wealth transfer that's happening, and yes, this we're talking about this for content creation, but if you think about it, we need to focus the most powerful technology in the world, how to increase our ability to have more time, increase our revenue, and increase our visibility visibility because distribution, sales, and having the right system around AI is what's going to
+Ella Molony Cook: set you up for a killer 2027. So what we're actually doing on today's call is we're going to give you a 24 hour.
+Ella Molony Cook: Yeah. Just turn on the memory layer. We're going to give you a 24 hour discount, and it's going to be called spicy. And this is $500 off. And the reason why I'm doing this is because I believe right now, if you haven't committed the time to set up your project properly, to set up your agents, to set up your memory layer, and you want to actually get your hand held throughout this process.
+Ella Molony Cook: We're doing a 75-minute build session on a Monday, and then we're doing breakout rooms on a Friday with different experts that you can come and speak to. So, an individual here, his name's Taylor, he actually exited his last company that he grew to over $50 million in revenue. He's now backed by A16Z. So, he is an individual that is building right now, built before AI, and now is
+Ella Molony Cook: building in the new world. And I think it's really interesting to speak to founders that have been through the full life cycle, as well as we have an individual that grew his AI clone to over 400K subscribers, and he has built a whole system around his content management tool. So we're gonna have people that are gonna be speaking around IP, data, security, storytelling, and really how
+Ella Molony Cook: having a whole operating system where you understand, okay, I now know that not only I can scale this with humans, but I can also scale my Agentic workflows as well.
+Ella Molony Cook: So that is what we have today to offer you guys. I'm really excited about this. I'm going to drop this in the chat. If you have any questions about anything that we spoke about today, all ears, we have another 10 minutes to kind of…
+Ella Molony Cook: chat.
+Terry Rice: Ella, you mentioned, our friend Taylor there, and it's funny because, folks, Taylor actually taught me how to do LinkedIn marketing back in the day. That's how he grew his business, through social media, like, he was so legit.
+Terry Rice: And he used to live with Jake and Ryan Paul. That's how he learned how to do viral marketing. And for me to be able to learn from this guy, like, X years ago was incredible. But he just is a very genuine person, but actually knows how to use social media to grow and sell companies. So when I saw him there, I was like, okay, this is… It's a nice homecoming.
+Ella Molony Cook: Yeah, and I have another,
+Ella Molony Cook: entrepreneur that I won't mention yet, but I'm trying to secure him in, so I'm actually adding more sessions. It's not going to… I keep on adding more sessions because we have an individual that's giving us, 3 months free of
+Ella Molony Cook: a multi-LLM that has the ability to also run local LLMs through her harness. And I think right now, like a lot of people are feeling like, okay, you know, I don't want to just be stuck in, you know, all of Claude models or chats models. How do I be able to have all of the models but in one harness? So everyone that signs up to the program is going to be three months free of this platform.
+Ella Molony Cook: And what I love about this, it's not a venture backed company. It's actually a bootstrapped founder that is female founded. And so she's working with really large financial institutions, helping them build agents locally, which I think is really, really cool. And so I'm I've added another session for her because I want her to be able to go in deeper on how to set up, a harness properly.
+Ella Molony Cook: So, yeah, it's gonna be fun. So, a part of the onboarding process for the accelerator is we ask you a lot of questions, because we actually build the curriculum around what you guys are needing, and make sure that you have
+Ella Molony Cook: the ability to ask questions. So Terry's going to be in a breakout room, and I think… I think about this as, like, the same week that you build something, you want to be able to ask that question and get that hot seat coaching, because you don't want to be stuck, and I think a lot of, like, programs that I'm seeing, it's like.
+Ella Molony Cook: you actually need to have a question answered, and it can't just be around building. So, that's been my priority, and I'm really… I'm really grateful for some of the individuals on the call have signed up, and we have some really epic, exciting surprises throughout the four weeks as well. So…
+Attendee: Okay, Ella, thank you.
+Terry Rice: You know what I want to do, Ella? I want to…
+Attendee: Oh, sorry, I just wanted to ask about the schedule. Is there a schedule for the four weeks or times and whatnot? Because I want to make sure I'm available… I'm about to sign up, but I have a lot going on with travel and some gigs, so I'd hate to sign up and then have to miss a lot of the sessions.
+Ella Molony Cook: So if you go onto the timerich.ai, it goes through all of the session dates, and they're all at 12pm EST. Yeah.
+Ella Molony Cook: They all will be recorded as well.
+Ella Molony Cook: What were we going to say, Terry?
+Terry Rice: I was going to talk about how you can use Muse to find paid speaking gigs.
+Terry Rice: If you guys are okay with that. So I'll tell a quick story, right? One benefit, I think, of AI is it allows you to fail faster. So, a few months ago, I set up this whole program where I had this AI program find speaking engagements where they're actually looking for speakers, like, literally to submit your application, we will consider you and perhaps hire you.
+Terry Rice: So I did that, I sent out, like, maybe 40 or 50 applications. I got nothing back but rejection. And at first, I was like, well, this sucks, this does not work. Then I realized, no, your talk sucks, because they looked at it and they said no. So you got that information a lot faster, as opposed to waiting for someone to come to your website and also not hire you.
+Terry Rice: So then I changed my talk based on some life experiences, did the same thing using Muse this time, and I said, hey, go find these opportunities for me and pitch them for me as well. So it found the opportunities that were paid speaking gigs that were a good fit for me and also applied to them for me, right, whether an email or filling out the application. I was like, okay, cool. Let's see what happens.
+Terry Rice: Within four days, I got three yeses. One from the NASDAQ Entrepreneurial Center, another from a company called Industry City here in Brooklyn, and local news as well. But the bigger thing is this. As of last week, I got my first yes on a paid one that I pitched.
+Terry Rice: This conference out in Las Vegas, I pitched them using this tool Muse. They replied to me. I had the phone call.
+Terry Rice: And I got on the phone call, like, not even thinking it was real. I'm like, how this actually happened? Right? So I was just very loose on it because I've never had cold outreach work ever. So I was like, hey. Let me just, you know, shoot my shot here, and it worked.
+Terry Rice: So, again, an immediate ROI from my time and the twenty bucks I spent on it. But the thing I wanna say is I learned quickly that the first one wasn't good. I don't know how long I would have waited not getting hired unless I had that that that system to do so.
+Terry Rice: So, when you're thinking about these tools, yes, we're going to give you guidance on it, but also think about your use cases, right? Like, use this as, like, an example of things you can do, but then based on your own curiosity and maybe
+Terry Rice: your own use case, you might find others as well, and then share them with the collective, right? Because I think that's the advantage, is when you find something cool, everyone else does as well, because we're all sharing it together.
+Attendee: Thanks for sharing that.
+Ella Molony Cook: What is the speaking gig?
+Terry Rice: It's in Las Vegas. It is for a healthcare company. That's as much as I'm going to say right now.
+Ella Molony Cook: Okay, Good!
+Terry Rice: Yeah.
+Ella Molony Cook: It's for two seats, so you get two seats for the price of one. So the reason why I'm doing that is because
+Ella Molony Cook: I believe with AI, you need an accountability buddy. Whether it's someone internally on your team, whether it's your best friend, whether it's your mother, like, I might talk to my mom about AI, but talking about it and having someone that's going through the same AI transformation journey with you, I think is really important, and that's why I wanted to make sure, like.
+Ella Molony Cook: we… we need to be talking about these things, because it's not native to a lot of us, but at the same time, it's something that we all need to invest Time and energy into, so that we can get time back. So…
+Ella Molony Cook: I hope that you're able to join.
+Ella Molony Cook: And then otherwise, guys, we are putting inside of the email the follow-up with Muse. We will get you out the deck as well, towards the later half of the day, and if there's anything that you want to hear from the Time Rich community, please let us know. We're doing a series of events coming up, with some other individuals, and we're going to be talking about
+Ella Molony Cook: AI with IP. We're going to be talking around multi-LLMs, we'll also be going around the delegation mindset, how to do outreach with AI for investors, and a lot of other stuff. So, keep up to date, and we really appreciate you joining us this Friday.
+Ella Molony Cook: We hope you have a beautiful weekend, and Terry, thank you so much for your time and energy. We really appreciate you showing us how you've been figuring this heck of a thing out with Claude, and is there any last word that you would love to share with the Time Rich community?
+Terry Rice: That sounds so finite, I thought I was gonna be in the community. I'll say this. Time-rich. The advantage of knowing how to use these tools, right, is not just, like, making more money, it actually is having more time for yourself and your family. I'll give you an example. I was updating my website, and I needed to have white logos for all the companies that I spoke at. So it had to be white logos, a very, like.
+Terry Rice: Specific font, right? Or look and feel.
+Terry Rice: However, my son needed help with his homework at the same time, so I'm like, shoot, am I gonna do homework, or am I gonna do work work?
+Terry Rice: What I did instead is I had Claude Cowork go find all those logos for me. I said, hey, look, I need these logos from these brands, you go find it for me. While it was doing that, I was helping my kid do algebra.
+Terry Rice: So, as you noticed, I was still doing work, but at least I wasn't up late at night doing this thing, like, looking for these icons, and I also wasn't rushing my son while I was trying to do his homework. So, for me, that's what it is. It's not just like, oh, I built this cool app. It's like.
+Terry Rice: I got my work done, but I also helped my kid do math without seeming too impatient. So that's time-rich for me, because I'm definitely not rich-rich with all these kids. But it is great being able to enjoy life, get your work done, be present at the same time.
+Ella Molony Cook: I love that. I love that. And guys, I just want to like preface that like.
+Ella Molony Cook: all of this stuff that we're going through, it is just around trial and error. Like, don't feel like Terry and I has some kind of secret source or secret weapon that you guys don't. I have spent countless weekends not going to the beach here in Portugal, but building and playing with new tools and figuring out, like, what do I want my tech stack to look like? I know it can feel overwhelming. My inbox is always open for questions.
+Ella Molony Cook: But I really appreciate your time, and have a beautiful Friday.
+Ella Molony Cook: Bye, guys!
