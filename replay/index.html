@@ -195,6 +195,51 @@ dialog.ep::backdrop { background: rgba(20, 22, 17, .78); backdrop-filter: blur(4
 @media (max-width: 1000px) { .gate .dvd-stack .dvd:nth-child(1) { display: none; } }
 @media (max-width: 760px) { .gate .wrap { grid-template-columns: 1fr; } .gate .dvd-stack { display: none; } }
 
+/* ---- Ella's letter --------------------------------------------------- */
+.letter { padding: clamp(36px, 6vw, 64px) 0 8px; }
+.letter-card { background: var(--sage-lt); border-radius: 22px; padding: clamp(22px, 4vw, 44px); display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: clamp(24px, 4vw, 56px); }
+@media (max-width: 860px) { .letter-card { grid-template-columns: 1fr; } }
+.letter .eyebrow { color: var(--green); }
+.letter-copy { display: flex; flex-direction: column; gap: 14px; min-width: 0; }
+.letter-copy h2 { font-family: var(--display); font-weight: 600; font-size: clamp(26px, 3.6vw, 36px); line-height: 1.08; letter-spacing: -.02em; margin: 0; }
+.letter-copy p { margin: 0; font-size: 16.5px; line-height: 1.65; }
+.letter-sign { font-size: 15px !important; line-height: 1.5 !important; }
+.letter-sign a { font-weight: 600; text-underline-offset: 3px; }
+.letter-sign a:hover { color: var(--green); }
+.favours { margin: 0; padding: 0; list-style: none; display: flex; flex-direction: column; gap: 14px; counter-reset: fav; min-width: 0; }
+.favour { background: var(--paper); border-radius: 16px; padding: 18px 20px; display: flex; flex-direction: column; gap: 10px; counter-increment: fav; }
+.favour h3 { margin: 0; display: flex; gap: 12px; align-items: baseline; font-family: var(--display); font-weight: 600; font-size: 19px; letter-spacing: -.01em; line-height: 1.25; }
+.favour h3::before { content: counter(fav); flex: none; width: 28px; height: 28px; border-radius: 50%; background: var(--green); color: var(--paper); font-family: var(--sans); font-size: 13px; font-weight: 700; display: inline-flex; align-items: center; justify-content: center; transform: translateY(-2px); }
+.favour ol { margin: 0; padding-left: 20px; font-size: 15px; line-height: 1.55; color: var(--soft); display: flex; flex-direction: column; gap: 4px; }
+.favour ol a { color: var(--ink); text-underline-offset: 3px; }
+.favour .pill { align-self: flex-start; min-height: 40px; font-size: 13.5px; }
+.favour small { font-size: 13.5px; color: var(--soft); }
+
+/* ---- member offers and events ------------------------------------------- */
+.block { padding: 36px 0 8px; }
+.block-head { display: flex; align-items: baseline; justify-content: space-between; gap: 12px; margin-bottom: 18px; }
+.block-head h2 { font-family: var(--display); font-weight: 600; font-size: clamp(22px, 3vw, 28px); letter-spacing: -.02em; margin: 0; }
+.block-head a { font-size: 14px; font-weight: 500; color: var(--green); text-underline-offset: 3px; white-space: nowrap; }
+.cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(300px, 100%), 1fr)); gap: 16px; }
+.offer { border: 1px solid var(--line); border-radius: 18px; padding: 20px 22px; display: flex; flex-direction: column; gap: 10px; }
+.offer-head { display: flex; align-items: center; gap: 12px; }
+.offer-head img { width: 36px; height: 36px; border-radius: 9px; object-fit: contain; background: var(--sage-lt); flex: none; }
+.offer h3 { margin: 0; font-family: var(--display); font-weight: 600; font-size: 19px; letter-spacing: -.01em; }
+.offer p { margin: 0; font-size: 15px; color: var(--soft); }
+.offer-code { display: flex; align-items: center; justify-content: space-between; gap: 12px; background: var(--sage-lt); border-radius: 12px; padding: 8px 8px 8px 16px; }
+.offer-code b { font-size: 16px; letter-spacing: .06em; }
+.offer-code .pill { min-height: 36px; padding: 0 14px; font-size: 13px; }
+.offer ol { margin: 0; padding-left: 20px; font-size: 14.5px; line-height: 1.55; color: var(--soft); }
+.offer ol a { color: var(--ink); text-underline-offset: 3px; }
+.cards.is-events { grid-template-columns: repeat(auto-fill, minmax(min(260px, 100%), 340px)); }
+.event { display: flex; flex-direction: column; gap: 12px; text-decoration: none; color: var(--ink); }
+.event img { width: 100%; height: auto; aspect-ratio: 1 / 1; object-fit: cover; border-radius: 18px; display: block; background: var(--sage-lt); transition: opacity .2s ease; }
+.event:hover img { opacity: .88; }
+.event:focus-visible { outline: 2px solid var(--ink); outline-offset: 4px; border-radius: 18px; }
+.event-meta { font-size: 13px; font-weight: 600; letter-spacing: .1em; text-transform: uppercase; color: var(--green); }
+.event-t { font-family: var(--display); font-weight: 600; font-size: 20px; letter-spacing: -.01em; line-height: 1.2; }
+.event-d { font-size: 15px; color: var(--soft); }
+
 /* ---- footer --------------------------------------------------------- */
 .foot { border-top: 1px solid var(--line); margin-top: 48px; }
 .foot .wrap { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 16px; padding-top: 28px; padding-bottom: 40px; font-size: 14px; color: var(--soft); }
@@ -234,6 +279,49 @@ dialog.ep::backdrop { background: rgba(20, 22, 17, .78); backdrop-filter: blur(4
 </section>
 
 <main hidden data-main>
+  <!-- Ella's letter to members, word for word, with the how-to for each
+       of the three favours beside it. -->
+  <section class="letter" aria-labelledby="letter-title">
+    <div class="wrap">
+      <div class="letter-card">
+        <div class="letter-copy">
+          <span class="eyebrow">A letter from Ella</span>
+          <h2 id="letter-title">Thank you</h2>
+          <p>Thank you for being part of such an impactful time in my life. Without you, Time Rich wouldn&rsquo;t have made the impact it has. I&rsquo;ll do everything in my power to keep showing up and give you the best experience learning to build your authority, your delegation system, and your wealth.</p>
+          <p>I believe it&rsquo;s the greatest time in history to be ambitious while being Time Rich! Being ambitious is lonely, and I want us to have an ecosystem of resources, community, and a safe space to show up and be vulnerable.</p>
+          <p>I&rsquo;m asking you for 3 favors. They help us spread the word.</p>
+          <p class="letter-sign">Much Love,<br/><a href="https://www.linkedin.com/in/ellamolonycook/" target="_blank" rel="noopener">Ella Molony Cook</a><br/>Founder, Time Rich</p>
+        </div>
+        <ol class="favours" aria-label="The 3 favors">
+          <li class="favour">
+            <h3>Leave a testimonial on Substack</h3>
+            <ol>
+              <li>Open <a href="https://substack.com/notes" target="_blank" rel="noopener">Substack Notes</a> and sign in.</li>
+              <li>Press New note and write two or three lines on what changed for you with Time Rich.</li>
+              <li>Type @timerichtalk to tag us, then press Post.</li>
+            </ol>
+          </li>
+          <li class="favour">
+            <h3>Write a recommendation on my LinkedIn profile</h3>
+            <ol>
+              <li>Open <a href="https://www.linkedin.com/in/ellamolonycook/" target="_blank" rel="noopener">Ella&rsquo;s LinkedIn</a> and press Connect. LinkedIn only lets you recommend people you&rsquo;re connected with.</li>
+              <li>Once you&rsquo;re connected, go back to her profile and press More, then Recommend.</li>
+              <li>Choose how you know Ella, write a few lines, and press Send.</li>
+            </ol>
+          </li>
+          <li class="favour">
+            <h3>Invite someone into the Substack community</h3>
+            <ol>
+              <li>Open any post on <a href="https://timerichclub.com" target="_blank" rel="noopener">timerichclub.com</a> and press Share.</li>
+              <li>Send the link to someone who should be in the room.</li>
+              <li>If they become a paid member, email their name to <a href="mailto:emc@timerichclub.com">emc@timerichclub.com</a> and you get a free month inside the Time Rich Club.</li>
+            </ol>
+          </li>
+        </ol>
+      </div>
+    </div>
+  </section>
+
   <!-- Filled in from EPISODES below: the newest episode that can be played. -->
   <section class="now" aria-labelledby="now-title" data-now hidden></section>
 
@@ -244,6 +332,54 @@ dialog.ep::backdrop { background: rgba(20, 22, 17, .78); backdrop-filter: blur(4
     </section>
     <div data-shelves></div>
     <noscript><p>Turn on JavaScript to browse and play the episodes.</p></noscript>
+
+    <!-- The same two offers and codes as the content workshop page. -->
+    <section class="block" aria-labelledby="offers-title">
+      <div class="block-head"><h2 id="offers-title">Member offers</h2></div>
+      <div class="cards">
+        <div class="offer">
+          <div class="offer-head"><img src="/os/img/wispr-flow.png" alt="" width="36" height="36"/><h3>Wispr Flow: 6 months Pro free</h3></div>
+          <p>Talk instead of type, in any app.</p>
+          <div class="offer-code"><b>TIMERICH6</b><button class="pill is-light" type="button" data-copy-code="TIMERICH6">Copy code</button></div>
+          <ol>
+            <li>Install Wispr Flow on your laptop through <a href="https://ref.wisprflow.ai/ella-cook-vt27" target="_blank" rel="noopener sponsored">this link</a>. The code only works in the desktop app.</li>
+            <li>In the app: Settings, then Plans and Billing, then Add promo code. Enter TIMERICH6, press Apply, then Redeem now.</li>
+            <li>Wispr asks for a card, but you won&rsquo;t be charged for the 6 months.</li>
+          </ol>
+        </div>
+        <div class="offer">
+          <div class="offer-head"><img src="/os/img/stanley.png" alt="" width="36" height="36"/><h3>Stanley: 6 months free</h3></div>
+          <p>Your AI head of content.</p>
+          <div class="offer-code"><b>TIMERICH6</b><button class="pill is-light" type="button" data-copy-code="TIMERICH6">Copy code</button></div>
+          <ol>
+            <li>Open <a href="https://x.getstanley.ai/r/mz4y9g" target="_blank" rel="noopener sponsored">the Stanley sign-up link</a> and create your account.</li>
+            <li>Enter TIMERICH6 at checkout.</li>
+            <li>Check the total shows 6 months free before you confirm.</li>
+          </ol>
+        </div>
+      </div>
+    </section>
+
+    <section class="block" aria-labelledby="events-title">
+      <div class="block-head">
+        <h2 id="events-title">Upcoming in New York</h2>
+        <a href="https://luma.com/timerich" target="_blank" rel="noopener">All events &rarr;</a>
+      </div>
+      <div class="cards is-events">
+        <a class="event" href="https://luma.com/contentsystem" target="_blank" rel="noopener">
+          <img src="/brand/img/event-ai-content-machine.jpg" alt="" width="1200" height="1200" loading="lazy" decoding="async"/>
+          <span class="event-meta">Wed 4 Nov &middot; The Ned</span>
+          <span class="event-t">AI Content System + Investor Fireside</span>
+          <span class="event-d">Build your content agents and leave with a week of posts scheduled.</span>
+        </a>
+        <a class="event" href="https://luma.com/nycwomen" target="_blank" rel="noopener">
+          <img src="/brand/img/event-womens-wealth.jpg" alt="" width="1200" height="1200" loading="lazy" decoding="async"/>
+          <span class="event-meta">Mon 9 Nov &middot; 6 to 9pm</span>
+          <span class="event-t">Women&rsquo;s Wealth Transfer</span>
+          <span class="event-d">An honest panel with women who have exited and invested, then drinks.</span>
+        </a>
+      </div>
+    </section>
   </div>
 </main>
 
@@ -580,7 +716,16 @@ var SERIES = ['AI Build Sessions', 'Leading with AI', 'Female Founder Circle'];
     side.appendChild(info);
     var who = el('div', 'ep-box');
     who.appendChild(el('h3', '', 'Speakers'));
-    e.speakers.forEach(function (s) { who.appendChild(el('p', '', s)); });
+    e.speakers.forEach(function (s) {
+      var ELLA = 'Ella Molony Cook';
+      if (s.indexOf(ELLA) !== 0) { who.appendChild(el('p', '', s)); return; }
+      var p = el('p');
+      var a = el('a', '', ELLA);
+      a.href = 'https://www.linkedin.com/in/ellamolonycook/'; a.target = '_blank'; a.rel = 'noopener';
+      p.appendChild(a);
+      p.appendChild(document.createTextNode(s.slice(ELLA.length)));
+      who.appendChild(p);
+    });
     side.appendChild(who);
     // What was shared in the chat on the day, then the sponsor codes,
     // which live on the content workshop page so there is one place to
@@ -588,8 +733,8 @@ var SERIES = ['AI Build Sessions', 'Leading with AI', 'Female Founder Circle'];
     var res = el('div', 'ep-box');
     res.appendChild(el('h3', '', 'Resources'));
     (e.resources || []).forEach(function (r) { res.appendChild(link(r[0], r[1], r[2])); });
-    res.appendChild(link('Wispr Flow: 3 months Pro free', 'Partner offer', 'https://wisprflow.ai/partner/timerich'));
-    res.appendChild(link('Stanley, your AI head of content', 'Partner offer', 'https://x.getstanley.ai/r/mz4y9g'));
+    res.appendChild(link('Wispr Flow: 6 months Pro free', 'Code TIMERICH6, in the desktop app', 'https://ref.wisprflow.ai/ella-cook-vt27'));
+    res.appendChild(link('Stanley: 6 months free', 'Code TIMERICH6, at checkout', 'https://x.getstanley.ai/r/mz4y9g'));
     side.appendChild(res);
     var acts = el('div', 'ep-actions');
     acts.appendChild(transcriptLink(e, 'pill is-green'));
@@ -635,6 +780,15 @@ var SERIES = ['AI Build Sessions', 'Leading with AI', 'Female Founder Circle'];
     dialog.addEventListener('cancel', function (ev) { ev.preventDefault(); close(); });   // Escape
     dialog.addEventListener('click', function (ev) { if (ev.target === dialog) close(); }); // backdrop
   }
+
+  /* The offer codes: copy on click. */
+  Array.prototype.forEach.call(document.querySelectorAll('[data-copy-code]'), function (b) {
+    b.addEventListener('click', function () {
+      var label = b.textContent;
+      var done = function () { b.textContent = 'Copied'; setTimeout(function () { b.textContent = label; }, 1800); };
+      if (navigator.clipboard && navigator.clipboard.writeText) navigator.clipboard.writeText(b.getAttribute('data-copy-code')).then(done, function () {});
+    });
+  });
 
   var started = false;
   function start() {
