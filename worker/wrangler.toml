@@ -18,6 +18,7 @@
 #   npx wrangler secret put DIRECTORY_SYNC_SECRET # guards POST /portal-directory-sync (the Members backfill)
 #   npx wrangler secret put SLACK_GRANTS_CHANNEL_ID    # e.g. C0123ABCD — grant application alerts
 #   npx wrangler secret put RESEND_API_KEY        # also powers POST /os-email (the /os gate)
+#   npx wrangler secret put ONBOARDING_FROM       # sender for the automatic onboarding emails (see below)
 #
 # After deploy, wrangler prints a URL like:
 #   https://time-rich-forms.<your-subdomain>.workers.dev
@@ -130,3 +131,28 @@ NOTION_SUPERHUMAN_QUESTIONNAIRE_DATABASE_ID = "a4b3fdd6-c528-47a8-8ff6-ab27924b2
 # (Resend -> Audiences -> the id in the URL). Leave it unset and the contact is
 # still created on the account, just not filed in an audience.
 # RESEND_OS_AUDIENCE_ID = ""
+
+# Automatic onboarding emails: the welcome, then the prep email two hours later.
+# Sent to a ThriveCart buyer and to a +1 added through /onboard, and only when
+# portal_upsert_member reports the member as newly created. Uses the existing
+# RESEND_API_KEY; the delay is Resend's own scheduled_at, so there is no cron.
+#
+# TWO THINGS TO SET, neither of them set here. The kill switch is the one that
+# matters: until it reads exactly "true", nothing is sent at all.
+#
+#   1. The sender. A verified Resend sender address, e.g.
+#      "Time Rich <hello@timerich.ai>":
+#
+#        npx wrangler secret put ONBOARDING_FROM
+#
+#      Leave it unset and the Worker falls back to PORTAL_PASSCODE_FROM, which
+#      is the sender the portal passcode emails already go out as.
+#
+#   2. The kill switch, below. It is deliberately a [vars] entry and not a
+#      secret: it is not sensitive, and it should be visible in this file which
+#      state it is in. It must read exactly "true" — "TRUE", "1" and anything
+#      else all mean off. Uncomment it only once Ella has approved the copy:
+#
+#        ONBOARDING_EMAILS_ENABLED = "true"
+#
+# ONBOARDING_EMAILS_ENABLED = "false"
