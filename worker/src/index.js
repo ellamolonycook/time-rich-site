@@ -2367,6 +2367,332 @@ function centsToAmount(raw) {
   return (Number(value) / 100).toFixed(2);
 }
 
+// ---------------------------------------------------------------------------
+// Automatic onboarding emails (welcome now, prep two hours later)
+//
+// A new member gets two emails: the welcome straight away, and the prep email
+// about two hours later. The second one is not a cron job — both are handed to
+// Resend in the same request, and the prep one carries `scheduled_at`, so
+// Resend holds it and sends it at that time.
+//
+// Who gets them is decided by portal_upsert_member, not by this file: it
+// returns created=false for a row that already existed, and the callers only
+// get here on created=true. That is what makes a webhook retry, a repeat
+// purchase and an existing member all silent. A refund or a test-mode order
+// never reaches the upsert in the first place.
+//
+// Nothing in here may throw: it runs inside ctx.waitUntil(), and a Resend
+// outage must not change the response ThriveCart or the onboarding form gets.
+// Nothing in here logs an email address either.
+//
+// Env:
+//   ONBOARDING_EMAILS_ENABLED  must be exactly "true" or nothing is sent.
+//                              Default off, so the copy ships dark.
+//   ONBOARDING_FROM            sender; falls back to PORTAL_PASSCODE_FROM.
+//   RESEND_API_KEY             the existing key the passcode emails use.
+// ---------------------------------------------------------------------------
+
+const ONBOARDING_PREP_DELAY_MS = 2 * 60 * 60 * 1000;
+const ONBOARDING_REPLY_TO = "emc@timerichclub.com";
+
+// Monday 26 October 2026, 12pm ET. ET is still daylight time that week (it
+// ends on 1 November), so noon is 16:00 UTC.
+const ONBOARDING_KICKOFF_MS = Date.UTC(2026, 9, 26, 16, 0, 0);
+
+// Every link either email is allowed to carry, named once so the copy below
+// and the tests both read from the same list.
+const ONBOARDING_LINKS = {
+  onboard: "https://timerich.ai/onboard/",
+  calendar: "https://www.addevent.com/calendar/z0j4nlqbgt6b",
+  questions: "https://timerich.ai/superhuman/",
+  portal: "https://timerich.ai/portal/",
+  ellaLinkedIn: "https://www.linkedin.com/in/ellamolonycook/",
+  wispr: "https://ref.wisprflow.ai/ella-cook-vt27",
+  wisprGuide: "https://superhumanos.notion.site/Wispr-Flow-setup-Superhuman-Accelerator-401ca5ebe5578114bfc3d3bc73be21bd",
+  toolsGuide: "https://superhumanos.notion.site/Connect-your-tools-to-your-AI-Superhuman-Accelerator-401ca5ebe557817aaa44ff89de92a091",
+  compass: "https://docs.google.com/document/d/1c50ST_FSASEOCIh1z3GQhkdNl9eqFjY0asvk-MC1X5s/copy",
+  whatsapp: "https://chat.whatsapp.com/E5GU1dvuHhFDI77yO88OIw?mode=gi_t",
+  slack: "https://join.slack.com/t/timerichclub/shared_invite/zt-4dry4ppfn-yV~VNRrHW_z3K3AFtbnOJQ",
+};
+
+function onboardingEmailsEnabled(env) {
+  return String(env && env.ONBOARDING_EMAILS_ENABLED) === "true";
+}
+
+function onboardingFrom(env) {
+  return String((env && (env.ONBOARDING_FROM || env.PORTAL_PASSCODE_FROM)) || "").trim();
+}
+
+// The name arrives from a ThriveCart order or the onboarding form, so it is
+// someone's input and goes through htmlEscape before it reaches any markup.
+function onboardingGreeting(fullName) {
+  const first = String(fullName == null ? "" : fullName).trim().split(/\s+/)[0] || "";
+  return first ? `Hi ${first},` : "Hi there,";
+}
+
+function htmlEscape(value) {
+  return String(value == null ? "" : value)
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;")
+    .replace(/'/g, "&#39;");
+}
+
+// A link is always hyperlinked words. The address itself never appears in the
+// HTML a member reads; the plain-text alternative has nowhere else to put it,
+// so there it follows the words in brackets.
+function onboardingLink(href, label) {
+  return `<a href="${htmlEscape(href)}" style="color:#424B36;text-decoration:underline;">${htmlEscape(label)}</a>`;
+}
+function onboardingLinkText(href, label) {
+  return `${label} (${href})`;
+}
+
+// One shell for both emails, so they arrive looking like the same pair.
+function onboardingHtmlDocument(title, bodyHtml) {
+  return `<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>${htmlEscape(title)}</title>
+</head>
+<body style="margin:0;padding:0;background:#FFFDFB;">
+<div style="max-width:560px;margin:0 auto;padding:32px 24px;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Helvetica,Arial,sans-serif;font-size:16px;line-height:1.6;color:#1A1816;">
+${bodyHtml}
+</div>
+</body>
+</html>`;
+}
+
+// The sign-off and the kickoff sentence both depend on whether the email lands
+// before or after Monday 26 October. The prep email is scheduled two hours
+// out, so each email is built against its own send time rather than against
+// "now": an order placed two hours before kickoff gets the pre-kickoff welcome
+// and the post-kickoff prep, which is correct for both.
+function onboardingAfterKickoff(at) {
+  return Number(at) >= ONBOARDING_KICKOFF_MS;
+}
+
+function onboardingSignOff(at) {
+  return onboardingAfterKickoff(at) ? "See you at the next session!" : "See you Monday!";
+}
+
+function buildOnboardingWelcomeEmail({ greeting, role, at }) {
+  const after = onboardingAfterKickoff(at);
+  const L = ONBOARDING_LINKS;
+  const isBuyer = role !== "second_seat";
+
+  const opening = after
+    ? "You're in! Welcome to the Superhuman Accelerator. We kicked off on Monday 26 October, and we're live on Zoom every Monday and Friday at 12pm ET until Friday 20 November. Catch up on the recordings in the "
+    : "You're in! Welcome to the Superhuman Accelerator. We kick off on Monday 26 October at 12pm ET, and we're live on Zoom every Monday and Friday at 12pm ET until Friday 20 November.";
+
+  const openingHtml = after
+    ? `<p>${opening}${onboardingLink(L.portal, "Time Rich Club")}.</p>`
+    : `<p>${opening}</p>`;
+  const openingText = after
+    ? opening + onboardingLinkText(L.portal, "Time Rich Club") + "."
+    : opening;
+
+  // A buyer is told about their +1; the +1 is told that they are one. The
+  // paragraph above already opens with "You're in!", so the +1's line does not
+  // say it a second time.
+  const seatHtml = isBuyer
+    ? `<p>Your seat includes a +1. Add them at ${onboardingLink(L.onboard, "timerich.ai/onboard")}: enter this email address, choose &quot;Add them now&quot; and enter their name and email.</p>`
+    : `<p>You've been added as a +1, so your seat is ready.</p>`;
+  const seatText = isBuyer
+    ? `Your seat includes a +1. Add them at ${onboardingLinkText(L.onboard, "timerich.ai/onboard")}: enter this email address, choose "Add them now" and enter their name and email.`
+    : `You've been added as a +1, so your seat is ready.`;
+
+  const signOff = onboardingSignOff(at);
+
+  const html = onboardingHtmlDocument(
+    "Welcome to the Superhuman Accelerator",
+    [
+      `<p>${htmlEscape(greeting)}</p>`,
+      openingHtml,
+      seatHtml,
+      `<p><strong>Your next steps</strong></p>`,
+      `<ol style="padding-left:20px;margin:0 0 16px;">`,
+      `<li style="margin-bottom:8px;"><strong>Add every live session to your calendar:</strong> ${onboardingLink(L.calendar, "add them here")}.</li>`,
+      `<li style="margin-bottom:8px;"><strong>Fill in your ${onboardingLink(L.questions, "onboarding questions")}</strong> (about 10 minutes).</li>`,
+      `<li style="margin-bottom:8px;"><strong>Log in to the ${onboardingLink(L.portal, "Time Rich Club")}</strong> with this email address. No password needed.</li>`,
+      `</ol>`,
+      `<p>Your prep work arrives in a couple of hours.</p>`,
+      `<p><strong>What we ask you to commit to</strong></p>`,
+      `<p>During the cohort: attend each session, share 1 LinkedIn post and 2 Instagram stories about your experience, tagging @timerichtalk.<br/>`,
+      `Before Friday 20 November: 1 video testimonial and 1 recommendation on ${onboardingLink(L.ellaLinkedIn, "Ella's LinkedIn profile")}.</p>`,
+      `<p>${htmlEscape(signOff)}</p>`,
+      `<p>Time Rich Team</p>`,
+    ].join("\n")
+  );
+
+  const text = [
+    greeting,
+    "",
+    openingText,
+    "",
+    seatText,
+    "",
+    "Your next steps",
+    `1. Add every live session to your calendar: ${onboardingLinkText(L.calendar, "add them here")}.`,
+    `2. Fill in your ${onboardingLinkText(L.questions, "onboarding questions")} (about 10 minutes).`,
+    `3. Log in to the ${onboardingLinkText(L.portal, "Time Rich Club")} with this email address. No password needed.`,
+    "",
+    "Your prep work arrives in a couple of hours.",
+    "",
+    "What we ask you to commit to",
+    "During the cohort: attend each session, share 1 LinkedIn post and 2 Instagram stories about your experience, tagging @timerichtalk.",
+    `Before Friday 20 November: 1 video testimonial and 1 recommendation on ${onboardingLinkText(L.ellaLinkedIn, "Ella's LinkedIn profile")}.`,
+    "",
+    signOff,
+    "",
+    "Time Rich Team",
+  ].join("\n");
+
+  return { subject: "You're in! Welcome to the Superhuman Accelerator", html, text };
+}
+
+function buildOnboardingPrepEmail({ greeting, at }) {
+  const after = onboardingAfterKickoff(at);
+  const L = ONBOARDING_LINKS;
+  const signOff = onboardingSignOff(at);
+
+  // The WhatsApp group is opened on the Saturday before kickoff, so that
+  // sentence is only true while kickoff is still ahead.
+  const whatsappTail = after ? "" : " We accept everyone on Saturday 24 October at 12pm ET.";
+
+  const html = onboardingHtmlDocument(
+    "Preparation to Become Superhuman",
+    [
+      `<p>${htmlEscape(greeting)}</p>`,
+      `<p>Set aside about an hour for these steps, so on Day 1 we build instead of setting up. Bring a pen and paper to every call.</p>`,
+      `<ol style="padding-left:20px;margin:0 0 16px;">`,
+      `<li style="margin-bottom:10px;"><strong>Use a paid AI plan with the desktop app:</strong> Claude Pro or ChatGPT Plus.</li>`,
+      `<li style="margin-bottom:10px;"><strong>Install Wispr Flow</strong> (6 months Pro on us). ${onboardingLink(L.wispr, "Download it here")} on your Mac or PC, then follow ${onboardingLink(L.wisprGuide, "this step-by-step guide")}. When the desktop app asks for a code, enter TIMERICH6. Wispr will ask for a card to activate it, but you won't be charged for the 6 months.</li>`,
+      `<li style="margin-bottom:10px;"><strong>Connect your tools to your AI.</strong> In Wispr Flow, open Settings, then MCP, and add it to Claude. For your other tools, ${onboardingLink(L.toolsGuide, "here is the guide")}.</li>`,
+      `<li style="margin-bottom:10px;"><strong>Record last week.</strong> Turn on Wispr Flow's notetaker and talk for 2 minutes about last week, day by day: what you did and where the hours went. We'll run the Time Rich Audit on it live.</li>`,
+      `<li style="margin-bottom:10px;"><strong>Your Business COMPASS</strong> is the most important setup of the week: it's the page your AI reads before it does anything for you. ${onboardingLink(L.compass, "Make your copy here")}, click into each section and talk it through with Wispr.</li>`,
+      `<li style="margin-bottom:10px;"><strong>Join the ${onboardingLink(L.whatsapp, "Superhuman WhatsApp group")}</strong> for announcements.${htmlEscape(whatsappTail)}</li>`,
+      `<li style="margin-bottom:10px;"><strong>Join the ${onboardingLink(L.slack, "Time Rich Club Slack")}</strong>, where the cohort, our experts and the team work together. Add your photo by the end of Wednesday 28 October. Please read the TRC Club Code pinned in #superhuman-accelerator.</li>`,
+      `</ol>`,
+      `<p>Every step is also in the ${onboardingLink(L.portal, "Time Rich Club")} under Start here.</p>`,
+      `<p>${htmlEscape(signOff)}</p>`,
+      `<p>Time Rich Team</p>`,
+    ].join("\n")
+  );
+
+  const text = [
+    greeting,
+    "",
+    "Set aside about an hour for these steps, so on Day 1 we build instead of setting up. Bring a pen and paper to every call.",
+    "",
+    "1. Use a paid AI plan with the desktop app: Claude Pro or ChatGPT Plus.",
+    `2. Install Wispr Flow (6 months Pro on us). ${onboardingLinkText(L.wispr, "Download it here")} on your Mac or PC, then follow ${onboardingLinkText(L.wisprGuide, "this step-by-step guide")}. When the desktop app asks for a code, enter TIMERICH6. Wispr will ask for a card to activate it, but you won't be charged for the 6 months.`,
+    `3. Connect your tools to your AI. In Wispr Flow, open Settings, then MCP, and add it to Claude. For your other tools, ${onboardingLinkText(L.toolsGuide, "here is the guide")}.`,
+    "4. Record last week. Turn on Wispr Flow's notetaker and talk for 2 minutes about last week, day by day: what you did and where the hours went. We'll run the Time Rich Audit on it live.",
+    `5. Your Business COMPASS is the most important setup of the week: it's the page your AI reads before it does anything for you. ${onboardingLinkText(L.compass, "Make your copy here")}, click into each section and talk it through with Wispr.`,
+    `6. Join the ${onboardingLinkText(L.whatsapp, "Superhuman WhatsApp group")} for announcements.${whatsappTail}`,
+    `7. Join the ${onboardingLinkText(L.slack, "Time Rich Club Slack")}, where the cohort, our experts and the team work together. Add your photo by the end of Wednesday 28 October. Please read the TRC Club Code pinned in #superhuman-accelerator.`,
+    "",
+    `Every step is also in the ${onboardingLinkText(L.portal, "Time Rich Club")} under Start here.`,
+    "",
+    signOff,
+    "",
+    "Time Rich Team",
+  ].join("\n");
+
+  return { subject: "Preparation to Become Superhuman", html, text };
+}
+
+// One POST to Resend. `scheduledAt` is what turns the prep email into a
+// send-later: Resend holds it and delivers at that ISO 8601 time, so there is
+// no cron and no second request two hours from now.
+async function sendOnboardingResendEmail(env, { from, to, message, idempotencyKey, scheduledAt }) {
+  const payload = {
+    from,
+    reply_to: ONBOARDING_REPLY_TO,
+    to: [to],
+    subject: message.subject,
+    html: message.html,
+    text: message.text,
+  };
+  if (scheduledAt) payload.scheduled_at = scheduledAt;
+
+  const response = await fetch("https://api.resend.com/emails", {
+    method: "POST",
+    headers: {
+      Authorization: `Bearer ${env.RESEND_API_KEY}`,
+      "Content-Type": "application/json",
+      // Keyed on the member id, so a replayed webhook that somehow got past
+      // the created=true gate still maps to the one email at Resend.
+      "Idempotency-Key": idempotencyKey,
+    },
+    body: JSON.stringify(payload),
+  });
+  if (!response.ok) throw new Error(`Resend send failed (${response.status})`);
+}
+
+// The whole thing, start to finish. Never throws and never logs an address.
+async function sendOnboardingEmails(env, { email, fullName, role, memberId }, tag, now = Date.now()) {
+  try {
+    if (!onboardingEmailsEnabled(env)) {
+      console.log(tag, 'onboarding: SKIPPED - ONBOARDING_EMAILS_ENABLED is not "true"');
+      return;
+    }
+    if (!env.RESEND_API_KEY) {
+      console.log(tag, "onboarding: SKIPPED - RESEND_API_KEY is not set on the worker");
+      return;
+    }
+    const from = onboardingFrom(env);
+    if (!from) {
+      console.log(tag, "onboarding: SKIPPED - neither ONBOARDING_FROM nor PORTAL_PASSCODE_FROM is set");
+      return;
+    }
+    const to = normKey(email);
+    if (!EMAIL_RE.test(to)) {
+      console.log(tag, "onboarding: SKIPPED - not a valid email");
+      return;
+    }
+    if (!memberId) {
+      console.log(tag, "onboarding: SKIPPED - no member id to key the send on");
+      return;
+    }
+
+    const greeting = onboardingGreeting(fullName);
+    const prepAt = Number(now) + ONBOARDING_PREP_DELAY_MS;
+
+    const welcome = buildOnboardingWelcomeEmail({ greeting, role, at: now });
+    const prep = buildOnboardingPrepEmail({ greeting, at: prepAt });
+
+    // Both go out in this one request. allSettled, not all: a failed welcome
+    // must not take the scheduled prep email down with it.
+    const results = await Promise.allSettled([
+      sendOnboardingResendEmail(env, {
+        from, to, message: welcome,
+        idempotencyKey: `onboarding-welcome/${memberId}`,
+      }),
+      sendOnboardingResendEmail(env, {
+        from, to, message: prep,
+        idempotencyKey: `onboarding-prep/${memberId}`,
+        scheduledAt: new Date(prepAt).toISOString(),
+      }),
+    ]);
+
+    console.log(tag, "onboarding: welcome", results[0].status === "fulfilled" ? "sent" : "FAILED",
+      "| prep scheduled", results[1].status === "fulfilled" ? "ok" : "FAILED");
+    for (const result of results) {
+      if (result.status === "rejected") {
+        console.error(tag, "onboarding: send failed",
+          result.reason && result.reason.message ? result.reason.message : "unknown error");
+      }
+    }
+  } catch (err) {
+    console.error(tag, "onboarding: emails failed", err && err.message ? err.message : "unknown error");
+  }
+}
+
 // ThriveCart Purchase Webhook (POST /thrivecart-webhook)
 // ---------------------------------------------------------------------------
 async function handleThriveCartWebhook(request, env, cors, ctx) {
@@ -2451,9 +2777,21 @@ async function handleThriveCartWebhook(request, env, cors, ctx) {
   // Portal access for the buyer. Only a live, paid order counts: ThriveCart
   // sends test-mode purchases to this same webhook with mode "test", and a
   // payload that does not say "live" at all is treated as a test too.
+  //
+  // A coupon order that comes to $0 is a real member and counts: nothing here
+  // looks at the total, only at refund / live / email.
+  //
+  // The onboarding emails hang off the same call. They go out only when the
+  // upsert reports created=true, so a ThriveCart retry on the same order, or
+  // somebody buying a second seat for themselves, is silent.
   const isLive = String(body.mode || "").trim().toLowerCase() === "live";
   if (!isRefund && isLive && email) {
-    const portalWork = upsertPortalMember(env, { email, fullName, role: "buyer", orderId }, "[TC]");
+    const portalWork = (async () => {
+      const member = await upsertPortalMember(env, { email, fullName, role: "buyer", orderId }, "[TC]");
+      if (member && member.created) {
+        await sendOnboardingEmails(env, { email, fullName, role: "buyer", memberId: member.id }, "[TC]");
+      }
+    })();
     if (ctx && typeof ctx.waitUntil === "function") ctx.waitUntil(portalWork);
     else await portalWork;
   } else if (!isRefund) {
@@ -2635,12 +2973,25 @@ async function handleOnboardSubmit(data, env, cors, ctx) {
   // named themselves, so a buyer row is never touched from this form.
   const buyerEmail = normKey(calProp(paidOrder.properties?.["Email"]) || email);
   if (choice === "named" && EMAIL_RE.test(attendeeEmail) && normKey(attendeeEmail) !== buyerEmail) {
-    const portalWork = upsertPortalMember(env, {
-      email: attendeeEmail,
-      fullName: `${attendeeFirstName} ${attendeeLastName}`,
-      role: "second_seat",
-      orderId: calProp(paidOrder.properties?.["Order ID"]),
-    }, "[onboard]");
+    const attendeeName = `${attendeeFirstName} ${attendeeLastName}`;
+    const portalWork = (async () => {
+      const member = await upsertPortalMember(env, {
+        email: attendeeEmail,
+        fullName: attendeeName,
+        role: "second_seat",
+        orderId: calProp(paidOrder.properties?.["Order ID"]),
+      }, "[onboard]");
+      // Same rule as the buyer's: only a brand new member is written to. A
+      // buyer who edits their +1 back to someone already on the cohort does
+      // not send that person a second welcome.
+      if (member && member.created) {
+        await sendOnboardingEmails(
+          env,
+          { email: attendeeEmail, fullName: attendeeName, role: "second_seat", memberId: member.id },
+          "[onboard]"
+        );
+      }
+    })();
     if (ctx && typeof ctx.waitUntil === "function") ctx.waitUntil(portalWork);
     else await portalWork;
   }
@@ -3394,15 +3745,20 @@ async function findPaidRow(env, dbId, property, value) {
 // ---------------------------------------------------------------------------
 const EMAIL_RE = /^[^@\s]+@[^@\s]+\.[^@\s]+$/;
 
+// Returns { id, created } when the row was written, or null when it was not.
+// `created` is the flag the onboarding emails hang off: the RPC reports false
+// for a row that already existed, so a webhook retry or a repeat purchase
+// updates the member in silence. The response is read for those two fields
+// only, and neither it nor the email is ever logged.
 async function upsertPortalMember(env, { email, fullName, role, orderId }, tag) {
   if (!env.SUPABASE_URL || !env.SUPABASE_SERVICE_ROLE_KEY) {
     console.log(tag, "portal: SKIPPED - Supabase is not configured on the worker");
-    return;
+    return null;
   }
   const cleanEmail = normKey(email);
   if (!EMAIL_RE.test(cleanEmail)) {
     console.log(tag, "portal: SKIPPED - not a valid email");
-    return;
+    return null;
   }
 
   const key = env.SUPABASE_SERVICE_ROLE_KEY;
@@ -3423,8 +3779,24 @@ async function upsertPortalMember(env, { email, fullName, role, orderId }, tag) 
       }),
     });
     console.log(tag, "portal: upsert", role, "status", res.status);
+    if (!res.ok) return null;
+
+    // portal_upsert_member returns {"ok":true,"id":<uuid>,"created":<bool>}.
+    // A body we cannot read is treated as "not created": sending nothing is
+    // the safe failure here, since the alternative is a duplicate welcome.
+    let result = null;
+    try {
+      result = await res.json();
+    } catch {
+      console.log(tag, "portal: upsert returned no readable body");
+      return null;
+    }
+    const id = result && result.id ? String(result.id) : "";
+    if (!id) return null;
+    return { id, created: result.created === true };
   } catch (err) {
     console.error(tag, "portal: upsert failed", err && err.message ? err.message : "unknown error");
+    return null;
   }
 }
 

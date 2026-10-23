@@ -87,6 +87,43 @@ the request body**. It covers:
   photo URLs, no `email` or `photo_source_url`, https links only, byte-identical
   403s for every refusal, and CORS for timerich.ai only.
 
+## `onboarding-emails.test.mjs`
+
+The two automatic emails a new Superhuman Accelerator member gets: the welcome
+straight away and the prep email two hours later. Both are handed to Resend in
+the same request — the prep one carries `scheduled_at` rather than waiting on a
+cron — so the suite asserts on the pair of POSTs the Worker would make to
+`https://api.resend.com/emails`, without touching the network.
+
+One fake stands in for Supabase, Notion and Resend. Supabase answers in the real
+`portal_upsert_member` shape, `{"ok":true,"id":...,"created":...}`, because
+`created` is the whole gate.
+
+- **Who gets them**: a live paid ThriveCart order from somebody new, and a +1
+  added through `/onboard`. A buyer is told about their +1; the +1 is told they
+  are one, and gets that line *instead of* the buyer's.
+- **Who does not**: an existing member (`created: false`), a refund, a test-mode
+  order, an order with no `mode`, a bad webhook secret, a buyer who has not
+  named their +1, and a buyer who names themselves. A $0 coupon order *does*
+  count.
+- **The kill switch**: `ONBOARDING_EMAILS_ENABLED` has to be exactly `"true"` —
+  `"TRUE"`, `"false"`, `"1"` and unset all send nothing.
+- **Timing**: the welcome has no `scheduled_at`, the prep is scheduled exactly
+  two hours out as an ISO 8601 instant, and the idempotency keys are
+  `onboarding-welcome/<member id>` and `onboarding-prep/<member id>`.
+- **The copy at kickoff** (Mon 26 Oct 2026, 16:00 UTC): "we kick off" vs "we
+  kicked off", "See you Monday!" vs "See you at the next session!", and the
+  WhatsApp step's Saturday sentence. Each email is built against *its own* send
+  time, so an order an hour before kickoff gets a pre-kickoff welcome and a
+  post-kickoff prep.
+- **Links**: every `href` is one of the eleven Ella gave us, no raw URL appears
+  in what the member reads, no link has empty text, and every link survives into
+  the plain-text alternative.
+- **Failure is quiet**: no Resend key, no sender, or a Resend 500 all still
+  return 200 to ThriveCart and the onboarding form, and nothing this feature
+  logs carries an email address. A name with markup in it is escaped, and an
+  order with no name falls back to "Hi there,".
+
 ## `form.test.mjs`
 
 Loads [`sh-apply/index.html`](../../sh-apply/index.html) into jsdom and actually
