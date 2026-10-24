@@ -1,0 +1,644 @@
+/* =====================================================================
+   The Club home, third pass.
+   ---------------------------------------------------------------------
+   club.html is the only page that loads this file. It is plain CSS, not
+   Tailwind, so it ships as written: there is no build step and nothing for
+   the portal-css check to compare. The header and footer keep the shared
+   trp- classes from portal.css; everything inside <main> is a tc- class
+   from here.
+
+   What changed from the second pass, which was hairlines on cream:
+     - the letter opens on a full-bleed dark ground with Ella and ViKA
+       beside it, so the page starts as a room rather than a document
+     - photographs run edge to edge in rails you can swipe, instead of
+       sitting in small framed grids
+     - the mentors are portrait cards with their bios, not name tags
+     - each section rises in once as it scrolls into view. Nothing loops,
+       which is still the portal's rule, and reduced motion gets none of it
+
+   Colours are the portal's own tokens, so both themes follow. The two dark
+   bands are the exception: they are the same near-black in either theme.
+   ===================================================================== */
+
+.tc {
+  --tc-hair: rgb(var(--c-rule) / .10);
+  --tc-soft: rgb(var(--c-ink) / .68);
+  --tc-night: #151511;
+  --tc-night-2: #1F1F1A;
+  --tc-cream: #F4F1E6;
+  --tc-lime: #CCEEA0;
+  --tc-r: 22px;
+  --tc-ease: cubic-bezier(.2, .7, .2, 1);
+  font-family: var(--trp-body);
+  color: rgb(var(--c-ink));
+}
+:root[data-theme='dark'] .tc { --tc-hair: rgb(var(--c-rule) / .16); }
+@media (prefers-color-scheme: dark) {
+  :root[data-theme='system'] .tc { --tc-hair: rgb(var(--c-rule) / .16); }
+}
+
+/* portal.css paints every heading in the ink colour. Here a heading takes
+   its section's colour instead, so one on a dark band comes out cream. */
+.tc h1, .tc h2, .tc h3 { color: inherit; }
+
+.tc-wrap { max-width: 1180px; margin: 0 auto; padding: 0 20px; }
+@media (min-width: 640px) { .tc-wrap { padding: 0 32px; } }
+
+.tc-sec { padding: 72px 0 0; }
+@media (min-width: 1024px) { .tc-sec { padding-top: 128px; } }
+
+/* -- type -- */
+.tc-eyebrow {
+  font-family: var(--trp-label);
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: .16em;
+  text-transform: uppercase;
+  color: rgb(var(--c-ink) / .55);
+}
+.tc-h2 {
+  font-family: var(--trp-face);
+  font-weight: 500;
+  font-size: clamp(32px, 5vw, 56px);
+  line-height: 1.02;
+  letter-spacing: -.035em;
+  margin-top: 14px;
+  text-wrap: balance;
+}
+.tc-lede {
+  margin-top: 20px;
+  max-width: 38rem;
+  font-size: 17px;
+  line-height: 1.65;
+  color: var(--tc-soft);
+  text-wrap: pretty;
+}
+.tc-head { display: flex; flex-wrap: wrap; align-items: end; justify-content: space-between; gap: 16px 32px; }
+.tc-link {
+  display: inline-flex; align-items: center; gap: 6px;
+  min-height: 44px;
+  font-size: 14px; font-weight: 500;
+  color: rgb(var(--c-ink));
+  text-decoration: underline;
+  text-decoration-color: rgb(var(--c-ink) / .25);
+  text-underline-offset: 5px;
+  transition: text-decoration-color .2s;
+}
+.tc-link:hover { text-decoration-color: currentColor; }
+
+/* -- buttons -- */
+.tc-btn {
+  display: inline-flex; align-items: center; justify-content: center; gap: 10px;
+  min-height: 48px; padding: 0 24px;
+  border-radius: 999px;
+  font-size: 14px; font-weight: 600; letter-spacing: .01em;
+  white-space: nowrap;
+  transition: background-color .2s, color .2s, border-color .2s;
+}
+.tc-btn span[aria-hidden] { transition: transform .25s var(--tc-ease); }
+.tc-btn:hover span[aria-hidden] { transform: translateX(3px); }
+.tc-btn-lime { background: var(--tc-lime); color: var(--tc-night); }
+.tc-btn-lime:hover { background: #DDF5BD; }
+.tc-btn-line { border: 1px solid rgb(var(--c-ink) / .3); color: rgb(var(--c-ink)); }
+.tc-btn-line:hover { border-color: rgb(var(--c-ink)); }
+
+/* =====================================================================
+   The letter
+   ===================================================================== */
+.tc-letter {
+  background: var(--tc-night);
+  color: var(--tc-cream);
+  overflow: hidden;
+}
+.tc-letter .tc-eyebrow { color: rgb(244 241 230 / .55); }
+.tc-letter-top { padding-top: 56px; padding-bottom: 22px; }
+@media (min-width: 900px) { .tc-letter-top { padding-top: 96px; padding-bottom: 28px; } }
+
+/* Two columns from 900px, stretched to the same height: the portrait's top
+   edge is the headline's and its foot is the signature's, whatever length
+   the letter runs to. */
+.tc-letter-grid {
+  display: grid;
+  gap: 40px;
+  padding-bottom: 64px;
+}
+@media (min-width: 900px) {
+  .tc-letter-grid {
+    grid-template-columns: minmax(0, 1.25fr) minmax(0, 1fr);
+    gap: 72px;
+    align-items: stretch;
+    padding-bottom: 112px;
+  }
+}
+
+.tc-open {
+  font-family: var(--trp-face);
+  font-weight: 500;
+  font-size: clamp(30px, 4.4vw, 52px);
+  line-height: 1.06;
+  letter-spacing: -.035em;
+  text-wrap: balance;
+}
+.tc-open em { font-style: normal; color: var(--tc-lime); }
+
+.tc-letter-body { margin-top: 32px; max-width: 36rem; }
+.tc-letter-body p {
+  font-size: 17px;
+  line-height: 1.75;
+  color: rgb(244 241 230 / .78);
+  text-wrap: pretty;
+}
+.tc-letter-body p + p { margin-top: 18px; }
+.tc-letter-body .tc-turn {
+  margin: 30px 0;
+  padding-left: 20px;
+  border-left: 2px solid var(--tc-lime);
+  font-family: var(--trp-face);
+  font-size: 24px;
+  line-height: 1.3;
+  letter-spacing: -.02em;
+  color: var(--tc-cream);
+}
+.tc-letter-body strong { color: var(--tc-cream); font-weight: 600; }
+
+/* Caveat, cut out of the accelerator page, where it was inlined for the
+   same signature. Only the sign-off uses it, so it is not preloaded. */
+@font-face {
+  font-family: 'Caveat';
+  font-style: normal;
+  font-weight: 500;
+  font-display: swap;
+  src: url('../brand/fonts/Caveat-500.woff2') format('woff2');
+}
+
+.tc-sign { margin-top: 40px; }
+.tc-sign-love { font-size: 17px; color: rgb(244 241 230 / .78); }
+.tc-sign-name {
+  margin-top: 6px;
+  font-family: 'Caveat', cursive;
+  font-size: 44px;
+  font-weight: 500;
+  line-height: 1;
+  letter-spacing: .01em;
+  color: var(--tc-cream);
+}
+.tc-sign-role { margin-top: 10px; font-size: 13px; color: rgb(244 241 230 / .55); }
+
+/* The portrait. On a phone it follows the letter at 4:5; beside it, it
+   fills the column the grid stretched to the letter's height. */
+.tc-portrait {
+  position: relative;
+  border-radius: var(--tc-r);
+  overflow: hidden;
+  aspect-ratio: 4 / 5;
+  background: var(--tc-night-2);
+}
+@media (min-width: 900px) {
+  .tc-portrait { aspect-ratio: auto; height: 100%; min-height: 0; }
+}
+.tc-portrait img { width: 100%; height: 100%; object-fit: cover; object-position: 50% 25%; }
+.tc-portrait figcaption {
+  position: absolute; left: 0; right: 0; bottom: 0;
+  padding: 48px 20px 18px;
+  font-size: 12px;
+  color: rgb(244 241 230 / .8);
+  background: linear-gradient(to top, rgb(0 0 0 / .55), transparent);
+}
+
+/* =====================================================================
+   A rail of photographs, edge to edge. It scrolls sideways under a finger
+   or a trackpad and snaps to each frame; nothing moves on its own.
+   ===================================================================== */
+.tc-rail {
+  display: flex;
+  gap: 12px;
+  overflow-x: auto;
+  scroll-snap-type: x mandatory;
+  scroll-padding: 0 20px;
+  padding: 0 20px;
+  scrollbar-width: none;
+  -webkit-overflow-scrolling: touch;
+}
+.tc-rail::-webkit-scrollbar { display: none; }
+@media (min-width: 640px) { .tc-rail { padding: 0 32px; scroll-padding: 0 32px; gap: 16px; } }
+@media (min-width: 1244px) {
+  .tc-rail {
+    padding-left: calc((100vw - 1180px) / 2 + 32px);
+    scroll-padding-left: calc((100vw - 1180px) / 2 + 32px);
+  }
+}
+.tc-rail > * { scroll-snap-align: start; flex: none; }
+
+.tc-film { background: var(--tc-night); padding-bottom: 56px; }
+@media (min-width: 900px) { .tc-film { padding-bottom: 96px; } }
+.tc-film .tc-rail { align-items: flex-start; gap: 14px; padding-bottom: 40px; }
+@media (min-width: 640px) { .tc-film .tc-rail { gap: 20px; } }
+
+/* One frame. Each modifier gives it its own shape, so the strip reads as a
+   spread of different pictures rather than one tile repeated. --tc-u is
+   the strip's unit height: 300px on a phone, 400px from tablet up. */
+.tc-film { --tc-u: 300px; }
+@media (min-width: 640px) { .tc-film { --tc-u: 400px; } }
+
+.tc-f { position: relative; margin: 0; overflow: hidden; }
+.tc-f img { width: 100%; height: 100%; object-fit: cover; display: block; }
+.tc-f figcaption {
+  position: absolute; left: 12px; bottom: 12px;
+  padding: 5px 10px;
+  border-radius: 999px;
+  background: rgb(21 21 17 / .7);
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
+  font-size: 11px; font-weight: 500; letter-spacing: .04em;
+  color: var(--tc-cream);
+}
+
+/* wide: a landscape, square-cornered like a print */
+.tc-f-wide  { height: var(--tc-u); aspect-ratio: 3 / 2; border-radius: 4px; }
+/* tall: a portrait with soft corners */
+.tc-f-tall  { height: calc(var(--tc-u) * .86); aspect-ratio: 2 / 3; border-radius: 24px; }
+/* sq: a square with a cream mount around it */
+.tc-f-sq    { height: calc(var(--tc-u) * .7); aspect-ratio: 1; padding: 8px; background: var(--tc-cream); border-radius: 6px; }
+.tc-f-sq img { border-radius: 2px; }
+.tc-f-sq figcaption { left: 20px; bottom: 20px; }
+/* arch: a portrait with a rounded top */
+.tc-f-arch  { height: calc(var(--tc-u) * .9); aspect-ratio: 3 / 4; border-radius: 999px 999px 18px 18px; }
+/* small: a little one, outlined in the lime */
+.tc-f-small { height: calc(var(--tc-u) * .5); aspect-ratio: 4 / 5; border-radius: 14px; outline: 1px solid var(--tc-lime); outline-offset: 5px; margin-left: 6px; margin-right: 6px; }
+
+/* Heights in the strip: some frames drop, so the tops do not line up. */
+.tc-f-low { margin-top: calc(var(--tc-u) * .16); }
+.tc-f-mid { margin-top: calc(var(--tc-u) * .08); }
+.tc-f-small { margin-top: calc(var(--tc-u) * .3); }
+
+/* =====================================================================
+   The five pillars
+   ===================================================================== */
+.tc-pillars {
+  margin-top: 40px;
+  display: grid;
+  border-top: 1px solid var(--tc-hair);
+}
+@media (min-width: 900px) {
+  .tc-pillars { grid-template-columns: repeat(5, minmax(0, 1fr)); border-top: 0; }
+}
+.tc-pillar {
+  display: flex; align-items: baseline; gap: 18px;
+  padding: 20px 0;
+  border-bottom: 1px solid var(--tc-hair);
+}
+@media (min-width: 900px) {
+  .tc-pillar {
+    flex-direction: column; gap: 40px;
+    padding: 28px 24px 32px 0;
+    border-bottom: 0;
+    border-top: 1px solid rgb(var(--c-ink) / .8);
+    margin-right: 16px;
+  }
+}
+.tc-pillar-n {
+  font-family: var(--trp-face);
+  font-size: 13px; font-weight: 500;
+  color: rgb(var(--c-ink) / .45);
+  font-variant-numeric: tabular-nums;
+}
+.tc-pillar-t {
+  font-family: var(--trp-face);
+  font-size: 22px;
+  font-weight: 500;
+  line-height: 1.15;
+  letter-spacing: -.02em;
+}
+
+/* =====================================================================
+   The community: the member count, then the doors in
+   ===================================================================== */
+.tc-community {
+  display: grid; gap: 40px;
+}
+@media (min-width: 900px) {
+  .tc-community { grid-template-columns: minmax(0, 1fr) minmax(0, 1.15fr); gap: 72px; align-items: end; }
+}
+.tc-stat {
+  font-family: var(--trp-face);
+  font-weight: 500;
+  font-size: clamp(72px, 13vw, 168px);
+  line-height: .9;
+  letter-spacing: -.06em;
+}
+.tc-stat-l { margin-top: 14px; font-size: 17px; color: var(--tc-soft); }
+.tc-trouble {
+  font-family: var(--trp-face);
+  font-size: 15px;
+  font-weight: 500;
+  margin: 28px 0 4px;
+  color: rgb(var(--c-ink) / .6);
+}
+
+.tc-doors { border-top: 1px solid var(--tc-hair); }
+.tc-door {
+  display: flex; align-items: center; justify-content: space-between; gap: 16px;
+  min-height: 72px;
+  padding: 16px 4px;
+  border-bottom: 1px solid var(--tc-hair);
+  transition: padding .3s var(--tc-ease), background-color .2s;
+}
+.tc-door:hover { padding-left: 12px; padding-right: 12px; background: rgb(var(--c-ink) / .03); }
+.tc-door-t { display: block; font-family: var(--trp-face); font-size: 19px; font-weight: 500; letter-spacing: -.01em; }
+.tc-door-d { display: block; margin-top: 2px; font-size: 13px; color: var(--tc-soft); }
+.tc-door-go { flex: none; font-size: 14px; font-weight: 600; white-space: nowrap; }
+.tc-door-go span { display: inline-block; transition: transform .25s var(--tc-ease); }
+.tc-door:hover .tc-door-go span { transform: translateX(3px); }
+.tc-door[hidden] { display: none; }
+
+/* =====================================================================
+   The two programmes
+   ===================================================================== */
+.tc-progs { margin-top: 40px; display: grid; gap: 16px; }
+@media (min-width: 900px) { .tc-progs { grid-template-columns: 1fr 1fr; gap: 20px; } }
+
+.tc-prog {
+  position: relative;
+  display: flex; flex-direction: column; align-items: flex-start;
+  min-height: 420px;
+  padding: 32px 28px;
+  border-radius: var(--tc-r);
+  overflow: hidden;
+  isolation: isolate;
+}
+@media (min-width: 640px) { .tc-prog { padding: 44px 40px; } }
+.tc-prog .tc-btn { margin-top: auto; }
+
+.tc-prog-on { background: var(--tc-night); color: var(--tc-cream); }
+/* On the dark theme the page is nearly the card's own colour, so the dark
+   cards take a hairline to keep their edge. */
+:root[data-theme='dark'] :is(.tc-prog-on, .tc-collection) { box-shadow: inset 0 0 0 1px var(--tc-hair); }
+@media (prefers-color-scheme: dark) {
+  :root[data-theme='system'] :is(.tc-prog-on, .tc-collection) { box-shadow: inset 0 0 0 1px var(--tc-hair); }
+}
+.tc-prog-on .tc-eyebrow { color: var(--tc-lime); }
+
+/* The Club card carries a photograph under a dark wash, so the two cards
+   read as a pair of nights out rather than one card and one blank. */
+.tc-prog-club { color: var(--tc-cream); background: var(--tc-night-2); }
+.tc-prog-club .tc-eyebrow { color: rgb(244 241 230 / .7); }
+.tc-prog-club > img {
+  position: absolute; inset: 0; z-index: -2;
+  width: 100%; height: 100%; object-fit: cover;
+}
+.tc-prog-club::before {
+  content: ''; position: absolute; inset: 0; z-index: -1;
+  background: linear-gradient(160deg, rgb(21 21 17 / .55), rgb(21 21 17 / .92) 70%);
+}
+.tc-prog-club .tc-btn-line { color: var(--tc-cream); border-color: rgb(244 241 230 / .45); }
+.tc-prog-club .tc-btn-line:hover { border-color: var(--tc-cream); }
+
+.tc-prog-t {
+  margin-top: 18px;
+  font-family: var(--trp-face);
+  font-size: clamp(30px, 3.6vw, 42px);
+  font-weight: 500;
+  line-height: 1.02;
+  letter-spacing: -.035em;
+}
+.tc-prog-d {
+  margin-top: 16px;
+  max-width: 28rem;
+  font-size: 16px;
+  line-height: 1.65;
+  color: rgb(244 241 230 / .78);
+}
+.tc-prog-d + .tc-prog-d { margin-top: 8px; }
+
+/* Progress, filled by the script at the foot of club.html. The class names
+   are the ones that script writes. */
+.tc-prog [data-club-progress] { margin: 28px 0 32px; width: 100%; max-width: 20rem; }
+.tc-prog [data-club-progress][hidden] { display: none; }
+.tc-prog .trp-prog-track { height: 4px; border-radius: 4px; background: rgb(244 241 230 / .16); overflow: hidden; }
+.tc-prog .trp-prog-fill { height: 100%; background: var(--tc-lime); border-radius: 4px; }
+.tc-prog .trp-prog-line { margin-top: 10px; font-size: 13px; color: rgb(244 241 230 / .7); }
+.tc-prog .trp-prog-when { margin-top: 0; }
+.tc-prog-on .tc-btn { margin-top: 32px; }
+.tc-prog-on [data-club-progress]:not([hidden]) + .tc-btn { margin-top: 0; }
+
+/* =====================================================================
+   The mentors. A portrait card each; the two sentences and the LinkedIn
+   link fold away under a <details>, so the section is four faces until a
+   member asks for more.
+   ===================================================================== */
+.tc-mentors {
+  margin-top: 48px;
+  display: grid;
+  gap: 28px 20px;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  align-items: start;
+}
+@media (min-width: 900px) { .tc-mentors { grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 24px; } }
+
+.tc-mentor-photo {
+  display: block;
+  width: 100%;
+  aspect-ratio: 4 / 5;
+  border-radius: var(--tc-r);
+  object-fit: cover;
+  object-position: 50% 20%;
+  background: rgb(var(--c-panel));
+}
+.tc-mentor-n {
+  margin-top: 16px;
+  font-family: var(--trp-face);
+  font-size: 20px;
+  font-weight: 500;
+  letter-spacing: -.02em;
+  line-height: 1.15;
+}
+@media (min-width: 640px) { .tc-mentor-n { font-size: 22px; } }
+.tc-mentor-role {
+  margin-top: 6px;
+  font-size: 11px; font-weight: 600;
+  letter-spacing: .12em; text-transform: uppercase;
+  color: rgb(var(--c-olive));
+}
+
+.tc-mentor-more { margin-top: 12px; border-top: 1px solid var(--tc-hair); }
+.tc-mentor-more summary {
+  display: flex; align-items: center; justify-content: space-between; gap: 8px;
+  min-height: 44px;
+  font-size: 14px; font-weight: 500;
+  cursor: pointer;
+  list-style: none;
+}
+.tc-mentor-more summary::-webkit-details-marker { display: none; }
+.tc-mentor-more summary::after {
+  content: '';
+  flex: none;
+  width: 8px; height: 8px;
+  margin-right: 4px;
+  border-right: 1.5px solid currentColor;
+  border-bottom: 1.5px solid currentColor;
+  transform: translateY(-2px) rotate(45deg);
+  transition: transform .25s var(--tc-ease);
+}
+.tc-mentor-more[open] summary::after { transform: translateY(2px) rotate(-135deg); }
+.tc-mentor-more summary:focus-visible { outline: 2px solid rgb(var(--c-olive)); outline-offset: 2px; border-radius: 6px; }
+
+.tc-mentor-body { padding: 2px 0 8px; }
+.tc-mentor-body p { font-size: 14.5px; line-height: 1.65; color: var(--tc-soft); }
+.tc-mentor-li {
+  display: inline-flex; align-items: center; gap: 8px;
+  min-height: 44px;
+  margin-top: 6px;
+  font-size: 14px; font-weight: 600;
+  text-decoration: underline;
+  text-decoration-color: rgb(var(--c-ink) / .25);
+  text-underline-offset: 5px;
+}
+.tc-mentor-li:hover { text-decoration-color: currentColor; }
+.tc-mentor-li svg { width: 18px; height: 18px; fill: none; stroke: currentColor; stroke-width: 1.5; stroke-linecap: round; stroke-linejoin: round; }
+
+/* =====================================================================
+   Upcoming events, and the Collection
+   ===================================================================== */
+.tc-events { margin-top: 40px; display: grid; gap: 16px; }
+@media (min-width: 720px) { .tc-events { grid-template-columns: 1fr 1fr; gap: 20px; } }
+
+.tc-event {
+  display: grid;
+  grid-template-columns: 112px minmax(0, 1fr);
+  gap: 20px; align-items: center;
+  padding: 14px;
+  border: 1px solid var(--tc-hair);
+  border-radius: var(--tc-r);
+  background: rgb(var(--c-surface));
+  transition: border-color .2s, transform .3s var(--tc-ease);
+}
+.tc-event:hover { border-color: rgb(var(--c-ink) / .35); }
+@media (min-width: 1024px) { .tc-event { grid-template-columns: 156px minmax(0, 1fr); gap: 24px; } }
+.tc-event img { width: 100%; aspect-ratio: 1; border-radius: 12px; object-fit: cover; }
+.tc-event-when {
+  font-size: 12px; font-weight: 600;
+  letter-spacing: .12em; text-transform: uppercase;
+  color: rgb(var(--c-olive));
+}
+.tc-event-t {
+  display: block;
+  margin-top: 8px;
+  font-family: var(--trp-face);
+  font-size: 20px; font-weight: 500;
+  line-height: 1.15; letter-spacing: -.02em;
+}
+.tc-event-d { display: block; margin-top: 8px; font-size: 14px; line-height: 1.55; color: var(--tc-soft); }
+
+.tc-collection {
+  margin-top: 20px;
+  display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 20px 32px;
+  padding: 32px 28px;
+  border-radius: var(--tc-r);
+  background: var(--tc-night);
+  color: var(--tc-cream);
+}
+@media (min-width: 640px) { .tc-collection { padding: 40px; } }
+.tc-collection .tc-eyebrow { color: var(--tc-lime); }
+.tc-collection-t {
+  margin-top: 10px;
+  font-family: var(--trp-face);
+  font-size: clamp(26px, 3vw, 34px);
+  font-weight: 500;
+  letter-spacing: -.03em;
+}
+.tc-collection-d { margin-top: 10px; max-width: 34rem; font-size: 15px; line-height: 1.65; color: rgb(244 241 230 / .75); }
+
+/* =====================================================================
+   Experiences: a rail of tall cards, the picture full height and the
+   words over the foot of it
+   ===================================================================== */
+.tc-tags { margin-top: 28px; display: flex; flex-wrap: wrap; gap: 8px; }
+.tc-tags li {
+  padding: 7px 14px;
+  border: 1px solid var(--tc-hair);
+  border-radius: 999px;
+  font-size: 13px;
+  color: var(--tc-soft);
+}
+
+.tc-exps { margin-top: 40px; padding-bottom: 8px; }
+.tc-exp {
+  position: relative;
+  width: 78vw; max-width: 320px;
+  aspect-ratio: 3 / 4;
+  border-radius: var(--tc-r);
+  overflow: hidden;
+  isolation: isolate;
+  color: var(--tc-cream);
+  background: var(--tc-night-2);
+}
+.tc-exp img {
+  position: absolute; inset: 0; z-index: -2;
+  width: 100%; height: 100%; object-fit: cover;
+  transition: transform .8s var(--tc-ease);
+}
+.tc-exp:hover img { transform: scale(1.04); }
+.tc-exp::after {
+  content: ''; position: absolute; inset: 0; z-index: -1;
+  background: linear-gradient(to top, rgb(15 15 12 / .92) 0%, rgb(15 15 12 / .55) 42%, transparent 70%);
+}
+.tc-exp-body { position: absolute; left: 0; right: 0; bottom: 0; padding: 22px; }
+.tc-exp-m {
+  font-size: 11px; font-weight: 600;
+  letter-spacing: .12em; text-transform: uppercase;
+  color: var(--tc-lime);
+}
+.tc-exp-t {
+  margin-top: 8px;
+  font-family: var(--trp-face);
+  font-size: 21px; font-weight: 500;
+  line-height: 1.12; letter-spacing: -.02em;
+}
+.tc-exp-d { margin-top: 8px; font-size: 13.5px; line-height: 1.5; color: rgb(244 241 230 / .78); }
+
+.tc-rail-hint { margin-top: 14px; font-size: 12px; color: rgb(var(--c-ink) / .45); }
+
+.tc-partner {
+  margin-top: 36px;
+  font-family: var(--trp-face);
+  font-size: 20px;
+  font-weight: 500;
+  letter-spacing: -.015em;
+}
+
+/* =====================================================================
+   Follow along
+   ===================================================================== */
+.tc-follow { padding-bottom: 88px; }
+@media (min-width: 1024px) { .tc-follow { padding-bottom: 128px; } }
+.tc-follow nav { margin-top: 28px; display: flex; flex-wrap: wrap; gap: 10px; }
+.tc-follow a {
+  display: inline-flex; align-items: center; gap: 10px;
+  min-height: 48px; padding: 0 20px;
+  border: 1px solid var(--tc-hair);
+  border-radius: 999px;
+  font-size: 14px; font-weight: 500;
+  transition: border-color .2s, background-color .2s;
+}
+.tc-follow a:hover { border-color: rgb(var(--c-ink) / .4); background: rgb(var(--c-ink) / .03); }
+.tc-follow svg { width: 18px; height: 18px; fill: none; stroke: currentColor; stroke-width: 1.5; stroke-linecap: round; stroke-linejoin: round; }
+
+/* =====================================================================
+   Focus, and the one entrance
+   ===================================================================== */
+.tc a:focus-visible { outline: 2px solid rgb(var(--c-olive)); outline-offset: 3px; border-radius: 8px; }
+.tc-letter a:focus-visible, .tc-prog a:focus-visible, .tc-collection a:focus-visible { outline-color: var(--tc-lime); }
+
+/* Only once the script has said it will watch for them, so a page with no
+   script, or one that fails, still shows every section. */
+@media (prefers-reduced-motion: no-preference) {
+  .tc-js [data-tc-rise] {
+    opacity: 0;
+    transform: translateY(24px);
+    transition: opacity .9s var(--tc-ease), transform .9s var(--tc-ease);
+  }
+  .tc-js [data-tc-rise].is-in { opacity: 1; transform: none; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .tc *, .tc *::before, .tc *::after { transition: none !important; }
+}
