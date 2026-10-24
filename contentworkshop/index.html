@@ -92,12 +92,35 @@ a{color:#424B36}a:hover{color:#333A28}
 .cw-acc-ol { margin: 0; padding-left: 20px; display: flex; flex-direction: column; gap: 6px; }
 .cw-acc-note { font-size: 14px; background: #E5E6CF; border-radius: 10px; padding: 10px 12px; color: #1A1816 !important; }
 @media (prefers-reduced-motion: reduce) { .cw-acc-chev { transition: none; } }
+/* The draw form: once at the top of the page, once inside the win card. */
+.drawband { background: #D8D9B9; border: 1px solid rgba(103,118,46,.22); border-radius: 20px; padding: clamp(20px, 4cqi, 32px); display: grid; grid-template-columns: repeat(auto-fit, minmax(min(340px, 100%), 1fr)); gap: 20px 32px; align-items: center; }
+.drawband h2 { font-family: 'Space Grotesk', system-ui, sans-serif; font-weight: 600; font-size: clamp(22px, 3cqi, 30px); letter-spacing: -.02em; line-height: 1.12; margin: 6px 0 10px; text-wrap: balance; }
+.drawband p { margin: 0; font-size: 15.5px; line-height: 1.55; color: #57534E; }
+.drawband p a { color: #424B36; font-weight: 500; }
+.drawkicker { font-family: 'Inter', sans-serif; font-size: 12px; letter-spacing: .08em; font-weight: 600; text-transform: uppercase; color: #57534E; }
+.drawform { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin: 0; }
+.drawform label { display: flex; flex-direction: column; gap: 4px; min-width: 0; }
+.drawform label.wide, .drawform button, .drawform .drawmsg { grid-column: 1 / -1; }
+.drawform label span { font-size: 13px; font-weight: 600; color: #1A1816; }
+.drawform input { font: 400 15px 'Inter', sans-serif; min-height: 46px; padding: 0 14px; border-radius: 10px; border: 1px solid rgba(26,24,22,.2); background: #FFFDFB; color: #1A1816; min-width: 0; width: 100%; box-sizing: border-box; }
+.drawform input:focus { outline: 2px solid #424B36; outline-offset: 1px; }
+.drawform button { font: 500 13px 'Inter', sans-serif; letter-spacing: .06em; text-transform: uppercase; min-height: 48px; border: 0; border-radius: 10px; background: #424B36; color: #FFFDFB; cursor: pointer; }
+.drawform button:disabled { opacity: .6; cursor: default; }
+.drawform .drawmsg { margin: 0; min-height: 1.4em; font-size: 14.5px; line-height: 1.45; color: #1A1816; }
+.drawform .drawmsg.is-err { color: #9A2B1E; }
+.drawform.is-dark label span { color: #E5E6CF; }
+.drawform.is-dark input { background: rgba(255,253,251,.95); }
+.drawform.is-dark button { background: #CCEEA0; color: #2C3422; }
+.drawform.is-dark .drawmsg { color: #FFFDFB; }
+.drawform.is-dark .drawmsg.is-err { color: #F5C6BE; }
+.drawtrap { position: absolute !important; left: -9999px !important; width: 1px !important; height: 1px !important; opacity: 0; }
+@media (max-width: 480px) { .drawform { grid-template-columns: 1fr; } }
 </style></head>
 <body>
 <div style="font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; color: #1A1816; background: #FFFDFB; min-height: 100vh; container-type: inline-size; container-name: page">
 
 <div style="position: sticky; top: 0; z-index: 10">
-<a href="#win" class="annc" style="display: block; background: #424B36; color: #FFFDFB; text-decoration: none; text-align: center; font-size: 13.5px; line-height: 1.4; padding: 9px 16px">Tonight: <strong style="font-weight: 600">win 1 of 5 Accelerator seats</strong> →</a>
+<a href="#win" class="annc" style="display: block; background: #424B36; color: #FFFDFB; text-decoration: none; text-align: center; font-size: 13.5px; line-height: 1.4; padding: 9px 16px">Tonight: <strong style="font-weight: 600">win a seat in the Accelerator</strong> →</a>
 <nav aria-label="Workshop steps" style="background: rgba(255,253,251,.96); border-bottom: 1px solid rgba(26,24,22,.12)">
 <div style="max-width: 1120px; margin: 0 auto; padding: 0 24px; display: flex; align-items: center; gap: 16px; min-height: 60px">
 <span style="flex: 0 0 auto; font-weight: 500; font-size: 18px; letter-spacing: -.03em; line-height: 1">Time Rich<span style="color: #424B36">.</span></span>
@@ -128,6 +151,23 @@ a{color:#424B36}a:hover{color:#333A28}
 </section>
 
 <main style="max-width: 1120px; margin: 0 auto; padding: 0 24px 24px; display: flex; flex-direction: column; gap: clamp(56px, 8cqi, 80px)">
+
+<section id="enter" aria-labelledby="enterh" class="drawband">
+<div>
+<span class="drawkicker">Win a seat in the Superhuman Accelerator</span>
+<h2 id="enterh">Submit your LinkedIn post URL to enter the draw!</h2>
+<p>Post on LinkedIn tonight, tag Ella Molony Cook, Mika Reyes, Stanley and Wispr Flow, then drop the link here. <a href="#win">How it works &darr;</a></p>
+</div>
+<form class="drawform" data-drawform novalidate>
+<label><span>Your name</span><input name="Name" type="text" autocomplete="name" required></label>
+<label><span>Email</span><input name="Email" type="email" autocomplete="email" required></label>
+<label class="wide"><span>LinkedIn post URL</span><input name="LinkedIn post" type="url" inputmode="url" placeholder="https://www.linkedin.com/posts/..." required></label>
+<input name="_gotcha" type="text" tabindex="-1" autocomplete="off" aria-hidden="true" class="drawtrap">
+<button type="submit">Enter the draw</button>
+<p class="drawmsg" role="status" aria-live="polite"></p>
+</form>
+</section>
+
 
 <section aria-labelledby="essentials" style="display: flex; flex-direction: column; gap: 16px">
 <h2 id="essentials" style="font-family: 'Inter', sans-serif; font-size: 12px; letter-spacing: .08em; font-weight: 600; text-transform: uppercase; color: #57534E; margin: 0">Tonight's essentials</h2>
@@ -490,11 +530,11 @@ Keep the assessment brief and outside the post.
 </details>
 
 <section id="win" aria-labelledby="winh" style="position: relative; background: #424B36; color: #FFFDFB; border-radius: 24px; padding: clamp(24px, 5cqi, 48px); display: flex; flex-direction: column; gap: 28px">
-<span style="position: absolute; right: clamp(12px, 3cqi, 28px); top: -14px; transform: rotate(6deg); background: #CCEEA0; color: #2C3422; font-family: 'Inter', sans-serif; font-size: 11px; letter-spacing: .12em; text-transform: uppercase; padding: 9px 13px; border-radius: 999px; box-shadow: 0 10px 24px -12px rgba(26,24,22,.45); white-space: nowrap">5 SEATS TO WIN</span>
+<span style="position: absolute; right: clamp(12px, 3cqi, 28px); top: -14px; transform: rotate(6deg); background: #CCEEA0; color: #2C3422; font-family: 'Inter', sans-serif; font-size: 11px; letter-spacing: .12em; text-transform: uppercase; padding: 9px 13px; border-radius: 999px; box-shadow: 0 10px 24px -12px rgba(26,24,22,.45); white-space: nowrap">1 SEAT TO WIN</span>
 <div style="display: flex; flex-wrap: wrap; gap: 32px; align-items: flex-start">
 <div style="flex: 999 1 460px; min-width: 0; display: flex; flex-direction: column; gap: 14px">
 <span style="font-family: 'Inter', sans-serif; font-size: 12px; letter-spacing: .08em; font-weight: 600; text-transform: uppercase; color: #D8D9B9">Superhuman Accelerator · Win a seat</span>
-<h2 id="winh" style="font-family: 'Space Grotesk', system-ui, sans-serif; font-weight: 600; font-size: clamp(28px, 4.4cqi, 40px); letter-spacing: -.022em; line-height: 1.08; margin: 0; color: #FFFDFB; text-wrap: balance">Win 1 of 5 seats in the Superhuman Accelerator</h2>
+<h2 id="winh" style="font-family: 'Space Grotesk', system-ui, sans-serif; font-weight: 600; font-size: clamp(28px, 4.4cqi, 40px); letter-spacing: -.022em; line-height: 1.08; margin: 0; color: #FFFDFB; text-wrap: balance">Win a seat in the Superhuman Accelerator</h2>
 <p style="font-size: 17px; line-height: 1.6; margin: 0; color: #E5E6CF; max-width: 56ch">Gifted to tonight's room by Stanley and Wispr Flow. Four weeks, live, building your AI system with Ella and founders who are in it too. Starts Monday 26 October.</p>
 <a href="https://timerich.ai/accelerator" class="ctabtn" style="align-self: flex-start; display: inline-flex; align-items: center; background: #FFFDFB; color: #1A1816; text-decoration: none; font-weight: 500; font-size: 13px; letter-spacing: .06em; text-transform: uppercase; border-radius: 10px; padding: 0 20px; min-height: 48px; margin-top: 6px">See the accelerator</a>
 </div>
@@ -503,17 +543,26 @@ Keep the assessment brief and outside the post.
 <ol style="list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 14px">
 <li style="display: flex; gap: 12px; align-items: flex-start"><span style="flex: 0 0 auto; width: 24px; height: 24px; margin-top: 1px; border-radius: 50%; background: #D8D9B9; color: #333A28; font-size: 12px; font-weight: 700; display: inline-flex; align-items: center; justify-content: center">1</span><span style="font-size: 16px; line-height: 1.5">Post on LinkedIn about building in public. The post you draft in Step 3 counts.</span></li>
 <li style="display: flex; gap: 12px; align-items: flex-start"><span style="flex: 0 0 auto; width: 24px; height: 24px; margin-top: 1px; border-radius: 50%; background: #D8D9B9; color: #333A28; font-size: 12px; font-weight: 700; display: inline-flex; align-items: center; justify-content: center">2</span><span style="font-size: 16px; line-height: 1.5">Tag Ella Molony Cook, Mika Reyes, Stanley and Wispr Flow.</span></li>
-<li style="display: flex; gap: 12px; align-items: flex-start"><span style="flex: 0 0 auto; width: 24px; height: 24px; margin-top: 1px; border-radius: 50%; background: #D8D9B9; color: #333A28; font-size: 12px; font-weight: 700; display: inline-flex; align-items: center; justify-content: center">3</span><span style="font-size: 16px; line-height: 1.5">Winners announced <span id="winnerswhen"></span>.</span></li>
+<li style="display: flex; gap: 12px; align-items: flex-start"><span style="flex: 0 0 auto; width: 24px; height: 24px; margin-top: 1px; border-radius: 50%; background: #D8D9B9; color: #333A28; font-size: 12px; font-weight: 700; display: inline-flex; align-items: center; justify-content: center">3</span><span style="font-size: 16px; line-height: 1.5">Submit your post&rsquo;s link below. The winner is announced <span id="winnerswhen"></span>.</span></li>
 </ol>
 <div style="display: flex; align-items: center; justify-content: space-between; gap: 10px; flex-wrap: wrap; background: rgba(255,253,251,.07); border-radius: 12px; padding: 8px 8px 8px 14px">
 <span style="font-size: 14px; color: #E5E6CF">Copy the tags for your post</span>
 <button type="button" class="copylt" data-copy="tags" style="font: 500 13px 'Inter', sans-serif; letter-spacing: .06em; text-transform: uppercase; background: #D8D9B9; color: #1A1816; border: 0; border-radius: 10px; padding: 0 16px; min-height: 44px; cursor: pointer">Copy tags</button>
 </div>
+<span style="font-family: 'Inter', sans-serif; font-size: 12px; letter-spacing: .08em; font-weight: 600; text-transform: uppercase; color: #D8D9B9; margin-top: 6px">Submit your LinkedIn post URL to enter the draw!</span>
+<form class="drawform is-dark" data-drawform novalidate>
+<label><span>Your name</span><input name="Name" type="text" autocomplete="name" required></label>
+<label><span>Email</span><input name="Email" type="email" autocomplete="email" required></label>
+<label class="wide"><span>LinkedIn post URL</span><input name="LinkedIn post" type="url" inputmode="url" placeholder="https://www.linkedin.com/posts/..." required></label>
+<input name="_gotcha" type="text" tabindex="-1" autocomplete="off" aria-hidden="true" class="drawtrap">
+<button type="submit">Enter the draw</button>
+<p class="drawmsg" role="status" aria-live="polite"></p>
+</form>
 </div>
 </div>
 
-<!-- The second prize, directly under the five seats and a different shape
-     from them: five seats go to five people, this one goes to the best post.
+<!-- The second prize, directly under the seat and a different shape
+     from it: the seat is drawn, this one goes to the best post.
      Its own band across the foot of the card so the two are not read as the
      same thing.
 
@@ -716,7 +765,7 @@ After the block, tell me to paste the worksheet into my Notion page.
 
 Start the interview now.`,
 
-    /* 2. When and where the five Accelerator winners are announced. */
+    /* 2. When the Accelerator seat winner is announced. */
     winnersWhen: "Tuesday 27 October at 12pm ET"
   };
 
@@ -799,9 +848,7 @@ Start the interview now.`,
         shot: 'step2-2.png', w: 1146, h: 907,
         alt: "Stanley's Connectors screen, with the apps grouped into Core, Meetings, Newsletters and Other. Connected ones carry a green tick." },
       { key: 'i2c', name: 'Add your past content', opt: true,
-        help: "Existing posts, newsletters, your website, or other people's posts you take inspiration from. More context, better tone.",
-        shot: 'step2-3.png', w: 298, h: 195,
-        alt: 'A folder of past posts, one folder per post, named by topic.' }
+        help: "Existing posts, newsletters, your website, or other people's posts you take inspiration from. More context, better tone." }
     ] },
     { n: 3, items: [
       { key: 'sk', name: 'Copy the skill',
@@ -846,6 +893,30 @@ Start the interview now.`,
   one('#mikaprompt').textContent = WORKSHOP.mikaPrompt;
   one('#winnerswhen').textContent = WORKSHOP.winnersWhen;
   one('#vipwhen').textContent = WORKSHOP.winnersWhen;
+
+  // The draw: both forms post to the forms worker, which files the entry in
+  // Notion ("Content Workshop Draw Entries"). Only a linkedin.com link goes.
+  var DRAW_ENDPOINT = 'https://time-rich-forms.timerich.workers.dev/draw-entry';
+  Array.prototype.forEach.call(document.querySelectorAll('[data-drawform]'), function (f) {
+    var msg = f.querySelector('.drawmsg'), btn = f.querySelector('button');
+    function say(t, err) { msg.textContent = t; msg.classList.toggle('is-err', !!err); }
+    f.addEventListener('submit', function (ev) {
+      ev.preventDefault();
+      var d = {}; Array.prototype.forEach.call(f.elements, function (el) { if (el.name) d[el.name] = el.value.trim(); });
+      if (!d.Name) return say('Add your name.', true);
+      if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(d.Email)) return say('Add a valid email so we can reach you if you win.', true);
+      if (!/linkedin\.com\/./i.test(d['LinkedIn post'])) return say('Paste the link to your LinkedIn post, like https://www.linkedin.com/posts/...', true);
+      btn.disabled = true; say('Sending…');
+      fetch(DRAW_ENDPOINT, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(d) })
+        .then(function (r) { return r.json().catch(function () { return {}; }).then(function (j) { return { ok: r.ok && j.ok !== false, j: j }; }); })
+        .then(function (res) {
+          if (!res.ok) { btn.disabled = false; return say((res.j && res.j.error) || 'That didn’t go through. Try again in a moment.', true); }
+          f.reset(); btn.disabled = false;
+          say('You’re in the draw! The winner is announced ' + WORKSHOP.winnersWhen + '.');
+        })
+        .catch(function () { btn.disabled = false; say('That didn’t go through. Check your connection and try again.', true); });
+    });
+  });
 
   /* ---- copy buttons --------------------------------------------------- */
   /* Everything copied here is also on the page, so each button reads its
