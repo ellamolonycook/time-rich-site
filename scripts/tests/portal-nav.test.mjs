@@ -32,7 +32,6 @@ const MENU = [
   // the document it frames.
   { href: '/club', label: 'Club' },
   { href: 'curriculum.html', label: 'Accelerator' },
-  { href: 'resources.html', label: 'Resources' },
   { href: 'members.html', label: 'Members' },
 ];
 
@@ -45,7 +44,7 @@ const LIT = {
   curriculum: 'curriculum.html',
   sessions: 'curriculum.html',
   prompts: 'curriculum.html',
-  resources: 'resources.html',
+  resources: 'curriculum.html',
   members: 'members.html',
 };
 
