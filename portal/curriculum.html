@@ -102,6 +102,7 @@
     .trp-cw-pep-toggle:focus-visible { outline: 2px solid var(--trp-green); outline-offset: 2px; }
     .trp-cw-pep-toggle[aria-expanded="true"] .trp-cw-chev { transform: rotate(180deg); }
     .trp-cw-heart { font-size: 20px; line-height: 1; }
+    .trp-cw-pep-line { margin: 0; max-width: 560px; font-family: var(--trp-display); font-weight: 600; font-size: clamp(19px, 2.4vw, 24px); letter-spacing: -.02em; line-height: 1.2; color: var(--trp-deep); }
     .trp-cw-link { padding: 0; border: 0; background: none; font: inherit; font-size: 14px; font-weight: 600; color: var(--trp-deep); text-decoration: underline; text-underline-offset: 3px; cursor: pointer; min-height: 44px; }
     .trp-cw-link:focus-visible { outline: 2px solid var(--trp-green); outline-offset: 2px; border-radius: 4px; }
     /* The photo in the opened pep talk. */
@@ -776,6 +777,7 @@
           });
           pep.appendChild(toggle);
           if (letterOpen) {
+            pep.appendChild(L.el('p', 'trp-cw-pep-line', 'Put your hand up if you want to reach your fullest potential'));
             var photo = L.el('img', 'trp-cw-letter-photo');
             photo.id = 'cw-pep-photo';
             photo.src = 'assets/ella-pep-talk.jpg';
