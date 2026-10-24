@@ -6,7 +6,7 @@
     // curriculum, so an old link or a bookmark lands there instead. This sits
     // in the theme script so that script is still the first thing in <head>.
     try {
-      location.replace('curriculum.html');
+      location.replace('curriculum');
       // The access script still parses and, with no session, sends the
       // browser to the sign-in page. That second replace was winning the
       // race. The one above is the only navigation this page is allowed.
@@ -98,11 +98,20 @@
        "moderate" is roughly 200ms of hover, which is long enough that a
        pointer crossing the nav does not fetch all six. Only portal pages are
        listed: a prefetch rule that matched everything would also warm the
-       sign-out and the partner links. -->
+       sign-out and the partner links.
+
+       Both address forms are matched. The nav links are extensionless now
+       (/portal/resources), so a rule naming only the .html form would warm
+       nothing; the .html form stays because an old bookmark or an emailed
+       link can still be one. ":page" is a single segment, so it stops at the
+       pages themselves and does not reach into /portal/assets. -->
   <script type="speculationrules">
   {
     "prefetch": [{
-      "where": { "href_matches": "/portal/*.html" },
+      "where": { "or": [
+        { "href_matches": "/portal/:page" },
+        { "href_matches": "/portal/*.html" }
+      ] },
       "eagerness": "moderate"
     }]
   }
@@ -128,11 +137,11 @@
           <svg class="w-4 h-4 shrink-0 text-brand-ink/50" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"></path></svg>
           Club
         </a>
-        <a href="curriculum.html" aria-current="true" class="flex items-center gap-3 px-4 py-3 rounded-[14px] text-sm font-medium bg-brand-green text-brand-bg">
+        <a href="curriculum" aria-current="true" class="flex items-center gap-3 px-4 py-3 rounded-[14px] text-sm font-medium bg-brand-green text-brand-bg">
           <svg class="w-4 h-4 shrink-0" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"></path></svg>
           Accelerator
         </a>
-        <a href="members.html" data-portal-members-link class="flex items-center gap-3 px-4 py-3 rounded-[14px] text-sm font-medium text-brand-ink/70 hover:text-brand-ink hover:bg-brand-ink/5 transition-colors">
+        <a href="members" data-portal-members-link class="flex items-center gap-3 px-4 py-3 rounded-[14px] text-sm font-medium text-brand-ink/70 hover:text-brand-ink hover:bg-brand-ink/5 transition-colors">
           <svg class="w-4 h-4 shrink-0 text-brand-ink/50" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"></path></svg>
           Members
           <span class="trp-soon ml-auto">Soon</span>
@@ -166,8 +175,8 @@
 
       <nav class="hidden lg:flex items-center gap-0.5" aria-label="Portal">
         <a href="/club" class="trp-nav-link px-3.5 text-[13px] font-medium text-brand-ink/70 hover:text-brand-ink">Club</a>
-        <a href="curriculum.html" aria-current="true" class="trp-nav-link px-3.5 text-[13px] font-medium">Accelerator</a>
-        <a href="members.html" data-portal-members-link class="trp-nav-link gap-1.5 px-3.5 text-[13px] font-medium text-brand-ink/70 hover:text-brand-ink">Members <span class="trp-soon">Soon</span></a>
+        <a href="curriculum" aria-current="true" class="trp-nav-link px-3.5 text-[13px] font-medium">Accelerator</a>
+        <a href="members" data-portal-members-link class="trp-nav-link gap-1.5 px-3.5 text-[13px] font-medium text-brand-ink/70 hover:text-brand-ink">Members <span class="trp-soon">Soon</span></a>
       </nav>
     </div>
 
@@ -360,7 +369,7 @@ Confirm you can open all 8.</pre>
               <h2 id="ready-heading" class="trp-dash-ready-title" data-dash-ready-title>All set up?</h2>
               <p class="trp-dash-ready-line" data-dash-ready-line>Week 1 opens on kickoff day. Preview it in the curriculum.</p>
             </div>
-            <a class="trp-dash-cta" href="curriculum.html">Open the curriculum <span aria-hidden="true">&rarr;</span></a>
+            <a class="trp-dash-cta" href="curriculum">Open the curriculum <span aria-hidden="true">&rarr;</span></a>
           </section>
 
           <!-- The call, the one-time setup and the partner offers. They sit
@@ -411,7 +420,7 @@ Confirm you can open all 8.</pre>
                   <span class="trp-ptile-line">3 months of LaunchLemonade included.</span>
                 </li>
               </ul>
-              <a class="trp-tile-go" href="resources.html">Claim in Resources <span aria-hidden="true">&rarr;</span></a>
+              <a class="trp-tile-go" href="resources">Claim in Resources <span aria-hidden="true">&rarr;</span></a>
             </section>
           </div>
 

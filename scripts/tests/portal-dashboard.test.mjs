@@ -314,7 +314,7 @@ console.log('\nThe band under the list');
     band(all).join(' | ') === 'You’re ready for kickoff. | Everything on your Start here list is done.',
     band(all));
   check('it offers the curriculum either way, rather than a dead end',
-    all.q('.trp-dash-cta').getAttribute('href') === 'curriculum.html' &&
+    all.q('.trp-dash-cta').getAttribute('href') === 'curriculum' &&
     /Open the curriculum/.test(all.q('.trp-dash-cta').textContent));
 
   // A tick is all it takes: the band is redrawn from the state the tick wrote.
@@ -464,7 +464,7 @@ console.log('\nThe partner offers');
     names.join('|') === 'Stanley|Wispr Flow|LaunchLemonade', names);
   check('and sends people to Resources to claim them',
     /Claim in Resources/.test(card.querySelector('.trp-tile-go').textContent) &&
-    card.querySelector('.trp-tile-go').getAttribute('href') === 'resources.html');
+    card.querySelector('.trp-tile-go').getAttribute('href') === 'resources');
 
   // These used to be Resources' lines, checked word for word against that
   // page: two files, one set of words.
@@ -623,8 +623,8 @@ console.log('\nNothing on the page is drawn twice');
   // The greeting appears once, not once per block.
   check('one h1 on the page', doc.querySelectorAll('main h1').length === 1);
   check('and one Curriculum link, not four',
-    page.all('main a[href="curriculum.html"]').length === 1,
-    page.all('main a[href="curriculum.html"]').map((a) => a.textContent.trim()));
+    page.all('main a[href="curriculum"]').length === 1,
+    page.all('main a[href="curriculum"]').map((a) => a.textContent.trim()));
 }
 
 console.log('\nThe bands are in the order the brief sets');

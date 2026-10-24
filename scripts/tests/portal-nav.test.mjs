@@ -30,9 +30,12 @@ const MENU = [
   // Club is the one absolute link: /club serves the Club home to a member
   // and the public Apply page to everyone else, with portal/club.html as
   // the document it frames.
+  //
+  // The rest are extensionless. The .html files are all still served, so an
+  // old bookmark still works, but nothing in the portal links to one.
   { href: '/club', label: 'Club' },
-  { href: 'curriculum.html', label: 'Accelerator' },
-  { href: 'members.html', label: 'Members' },
+  { href: 'curriculum', label: 'Accelerator' },
+  { href: 'members', label: 'Members' },
 ];
 
 // Which menu entry is lit on each page. Live Sessions and Prompts sit under
@@ -40,12 +43,12 @@ const MENU = [
 // is no longer a destination, so its own menu points there too.
 const LIT = {
   club: '/club',
-  dashboard: 'curriculum.html',
-  curriculum: 'curriculum.html',
-  sessions: 'curriculum.html',
-  prompts: 'curriculum.html',
-  resources: 'curriculum.html',
-  members: 'members.html',
+  dashboard: 'curriculum',
+  curriculum: 'curriculum',
+  sessions: 'curriculum',
+  prompts: 'curriculum',
+  resources: 'curriculum',
+  members: 'members',
 };
 
 const SRC = read('portal/portal-tailwind-src.css');
@@ -82,7 +85,8 @@ console.log('\nThe menu is the same four places on every page');
     // copy somewhere cannot fail this.
     const hrefs = links.map((a) => a.getAttribute('href'));
     check(name + ': Live Sessions and Prompts are not in it',
-      !hrefs.includes('sessions.html') && !hrefs.includes('prompts.html'), hrefs);
+      ['sessions', 'prompts', 'sessions.html', 'prompts.html']
+        .every((h) => !hrefs.includes(h)), hrefs);
 
     const mhrefs = [...menuOf(docs[name]).querySelectorAll('nav a')].map((a) => a.getAttribute('href'));
     check(name + ': nor in the phone menu',
@@ -92,6 +96,27 @@ console.log('\nThe menu is the same four places on every page');
   // The pages themselves are still served; only the way in changed.
   check('sessions.html and prompts.html are still here',
     docs.sessions.querySelector('title') !== null && docs.prompts.querySelector('title') !== null);
+}
+
+console.log('\nNo portal page links to a .html address');
+{
+  /* Every .html file is still there and still served -- renaming them would
+     break every bookmark and every link already emailed out. What changed is
+     that nothing in the portal POINTS at one any more, so a member moving
+     through the site only ever sees the clean address. A link that goes back
+     to the .html form is this regressing.
+
+     Off-site links are skipped: what a partner serves is their business. */
+  const dotHtml = /^(?!https?:|mailto:)[^:]*\.html(?:[?#]|$)/;
+  for (const name of PAGES.concat(['index'])) {
+    const d = name === 'index'
+      ? new JSDOM(read('portal/index.html')).window.document
+      : docs[name];
+    const bad = [...d.querySelectorAll('a[href]')]
+      .map((a) => a.getAttribute('href'))
+      .filter((h) => dotHtml.test(h));
+    check(name + ': no link on the page ends in .html', bad.length === 0, bad);
+  }
 }
 
 console.log('\nThe page you are on is marked, in both menus');
@@ -109,7 +134,7 @@ console.log('\nThe page you are on is marked, in both menus');
       // link really is this page. Live Sessions and Prompts sit in the
       // Accelerator without being the curriculum, so they get the generic
       // "current item in this set" instead.
-      const want = (LIT[name] === name + '.html' || LIT[name] === '/' + name) ? 'page' : 'true';
+      const want = (LIT[name] === name || LIT[name] === '/' + name) ? 'page' : 'true';
       check(name + ': marked aria-current="' + want + '" in the ' + what,
         marked.length === 1 && marked[0].getAttribute('aria-current') === want,
         marked.map((a) => a.getAttribute('aria-current')));
@@ -198,7 +223,7 @@ console.log('\nMembers is in the menu for everyone, marked Soon');
     for (const [what, root] of [['top nav', navOf(docs[name])], ['phone menu', menuOf(docs[name])]]) {
       const link = root.querySelector('[data-portal-members-link]');
       check(name + ': the ' + what + ' carries the Members link',
-        link !== null && link.getAttribute('href') === 'members.html');
+        link !== null && link.getAttribute('href') === 'members');
       // The attribute stays so portal-access.js still finds it; the markup
       // no longer starts it hidden.
       check(name + ': it is not hidden in the markup (' + what + ')',
