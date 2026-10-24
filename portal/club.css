@@ -490,6 +490,9 @@
   object-fit: cover;
   object-position: 50% 20%;
   background: rgb(var(--c-panel));
+  /* All four in black and white, so the photos read as one set whatever
+     light each was taken in. Indra's is already monochrome. */
+  filter: grayscale(1);
 }
 .tc-mentor-n {
   margin-top: 16px;
