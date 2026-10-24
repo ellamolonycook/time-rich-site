@@ -2401,12 +2401,15 @@ const ONBOARDING_KICKOFF_MS = Date.UTC(2026, 9, 26, 16, 0, 0);
 
 // Every link either email is allowed to carry, named once so the copy below
 // and the tests both read from the same list.
+//
+// There is deliberately no Club or portal link here. The portal is not live
+// for new members yet, so announcements go to WhatsApp instead, and a link
+// that cannot be added by accident is the cheapest way to keep it that way.
 const ONBOARDING_LINKS = {
   onboard: "https://timerich.ai/onboard/",
   calendar: "https://www.addevent.com/calendar/z0j4nlqbgt6b",
   questions: "https://timerich.ai/superhuman/",
-  portal: "https://timerich.ai/portal/",
-  ellaLinkedIn: "https://www.linkedin.com/in/ellamolonycook/",
+  instagram: "https://www.instagram.com/timerichtalk",
   wispr: "https://ref.wisprflow.ai/ella-cook-vt27",
   wisprGuide: "https://superhumanos.notion.site/Wispr-Flow-setup-Superhuman-Accelerator-401ca5ebe5578114bfc3d3bc73be21bd",
   toolsGuide: "https://superhumanos.notion.site/Connect-your-tools-to-your-AI-Superhuman-Accelerator-401ca5ebe557817aaa44ff89de92a091",
@@ -2485,15 +2488,8 @@ function buildOnboardingWelcomeEmail({ greeting, role, at }) {
   const isBuyer = role !== "second_seat";
 
   const opening = after
-    ? "You're in! Welcome to the Superhuman Accelerator. We kicked off on Monday 26 October, and we're live on Zoom every Monday and Friday at 12pm ET until Friday 20 November. Catch up on the recordings in the "
+    ? "You're in! Welcome to the Superhuman Accelerator. We kicked off on Monday 26 October, and we're live on Zoom every Monday and Friday at 12pm ET until Friday 20 November."
     : "You're in! Welcome to the Superhuman Accelerator. We kick off on Monday 26 October at 12pm ET, and we're live on Zoom every Monday and Friday at 12pm ET until Friday 20 November.";
-
-  const openingHtml = after
-    ? `<p>${opening}${onboardingLink(L.portal, "Time Rich Club")}.</p>`
-    : `<p>${opening}</p>`;
-  const openingText = after
-    ? opening + onboardingLinkText(L.portal, "Time Rich Club") + "."
-    : opening;
 
   // A buyer is told about their +1; the +1 is told that they are one. The
   // paragraph above already opens with "You're in!", so the +1's line does not
@@ -2511,18 +2507,16 @@ function buildOnboardingWelcomeEmail({ greeting, role, at }) {
     "Welcome to the Superhuman Accelerator",
     [
       `<p>${htmlEscape(greeting)}</p>`,
-      openingHtml,
+      `<p>${opening}</p>`,
       seatHtml,
       `<p><strong>Your next steps</strong></p>`,
       `<ol style="padding-left:20px;margin:0 0 16px;">`,
       `<li style="margin-bottom:8px;"><strong>Add every live session to your calendar:</strong> ${onboardingLink(L.calendar, "add them here")}.</li>`,
       `<li style="margin-bottom:8px;"><strong>Fill in your ${onboardingLink(L.questions, "onboarding questions")}</strong> (about 10 minutes).</li>`,
-      `<li style="margin-bottom:8px;"><strong>Log in to the ${onboardingLink(L.portal, "Time Rich Club")}</strong> with this email address. No password needed.</li>`,
+      `<li style="margin-bottom:8px;"><strong>Join the ${onboardingLink(L.whatsapp, "Superhuman WhatsApp group")}</strong> for announcements.</li>`,
       `</ol>`,
-      `<p>Your prep work arrives in a couple of hours.</p>`,
-      `<p><strong>What we ask you to commit to</strong></p>`,
-      `<p>During the cohort: attend each session, share 1 LinkedIn post and 2 Instagram stories about your experience, tagging @timerichtalk.<br/>`,
-      `Before Friday 20 November: 1 video testimonial and 1 recommendation on ${onboardingLink(L.ellaLinkedIn, "Ella's LinkedIn profile")}.</p>`,
+      `<p>We really appreciate it during the cohort: attend each session, share 1 LinkedIn post and 2 Instagram stories about your experience, tagging ${onboardingLink(L.instagram, "@timerichtalk")}.</p>`,
+      `<p>In 2 hours you'll see the preparation work to become Superhuman.</p>`,
       `<p>${htmlEscape(signOff)}</p>`,
       `<p>Time Rich Team</p>`,
     ].join("\n")
@@ -2531,37 +2525,30 @@ function buildOnboardingWelcomeEmail({ greeting, role, at }) {
   const text = [
     greeting,
     "",
-    openingText,
+    opening,
     "",
     seatText,
     "",
     "Your next steps",
     `1. Add every live session to your calendar: ${onboardingLinkText(L.calendar, "add them here")}.`,
     `2. Fill in your ${onboardingLinkText(L.questions, "onboarding questions")} (about 10 minutes).`,
-    `3. Log in to the ${onboardingLinkText(L.portal, "Time Rich Club")} with this email address. No password needed.`,
+    `3. Join the ${onboardingLinkText(L.whatsapp, "Superhuman WhatsApp group")} for announcements.`,
     "",
-    "Your prep work arrives in a couple of hours.",
+    `We really appreciate it during the cohort: attend each session, share 1 LinkedIn post and 2 Instagram stories about your experience, tagging ${onboardingLinkText(L.instagram, "@timerichtalk")}.`,
     "",
-    "What we ask you to commit to",
-    "During the cohort: attend each session, share 1 LinkedIn post and 2 Instagram stories about your experience, tagging @timerichtalk.",
-    `Before Friday 20 November: 1 video testimonial and 1 recommendation on ${onboardingLinkText(L.ellaLinkedIn, "Ella's LinkedIn profile")}.`,
+    "In 2 hours you'll see the preparation work to become Superhuman.",
     "",
     signOff,
     "",
     "Time Rich Team",
   ].join("\n");
 
-  return { subject: "You're in! Welcome to the Superhuman Accelerator", html, text };
+  return { subject: "Welcome to the Superhuman Accelerator", html, text };
 }
 
 function buildOnboardingPrepEmail({ greeting, at }) {
-  const after = onboardingAfterKickoff(at);
   const L = ONBOARDING_LINKS;
   const signOff = onboardingSignOff(at);
-
-  // The WhatsApp group is opened on the Saturday before kickoff, so that
-  // sentence is only true while kickoff is still ahead.
-  const whatsappTail = after ? "" : " We accept everyone on Saturday 24 October at 12pm ET.";
 
   const html = onboardingHtmlDocument(
     "Preparation to Become Superhuman",
@@ -2574,10 +2561,9 @@ function buildOnboardingPrepEmail({ greeting, at }) {
       `<li style="margin-bottom:10px;"><strong>Connect your tools to your AI.</strong> In Wispr Flow, open Settings, then MCP, and add it to Claude. For your other tools, ${onboardingLink(L.toolsGuide, "here is the guide")}.</li>`,
       `<li style="margin-bottom:10px;"><strong>Record last week.</strong> Turn on Wispr Flow's notetaker and talk for 2 minutes about last week, day by day: what you did and where the hours went. We'll run the Time Rich Audit on it live.</li>`,
       `<li style="margin-bottom:10px;"><strong>Your Business COMPASS</strong> is the most important setup of the week: it's the page your AI reads before it does anything for you. ${onboardingLink(L.compass, "Make your copy here")}, click into each section and talk it through with Wispr.</li>`,
-      `<li style="margin-bottom:10px;"><strong>Join the ${onboardingLink(L.whatsapp, "Superhuman WhatsApp group")}</strong> for announcements.${htmlEscape(whatsappTail)}</li>`,
+      `<li style="margin-bottom:10px;"><strong>Join the ${onboardingLink(L.whatsapp, "Superhuman WhatsApp group")}</strong> for announcements.</li>`,
       `<li style="margin-bottom:10px;"><strong>Join the ${onboardingLink(L.slack, "Time Rich Club Slack")}</strong>, where the cohort, our experts and the team work together. Add your photo by the end of Wednesday 28 October. Please read the TRC Club Code pinned in #superhuman-accelerator.</li>`,
       `</ol>`,
-      `<p>Every step is also in the ${onboardingLink(L.portal, "Time Rich Club")} under Start here.</p>`,
       `<p>${htmlEscape(signOff)}</p>`,
       `<p>Time Rich Team</p>`,
     ].join("\n")
@@ -2593,10 +2579,8 @@ function buildOnboardingPrepEmail({ greeting, at }) {
     `3. Connect your tools to your AI. In Wispr Flow, open Settings, then MCP, and add it to Claude. For your other tools, ${onboardingLinkText(L.toolsGuide, "here is the guide")}.`,
     "4. Record last week. Turn on Wispr Flow's notetaker and talk for 2 minutes about last week, day by day: what you did and where the hours went. We'll run the Time Rich Audit on it live.",
     `5. Your Business COMPASS is the most important setup of the week: it's the page your AI reads before it does anything for you. ${onboardingLinkText(L.compass, "Make your copy here")}, click into each section and talk it through with Wispr.`,
-    `6. Join the ${onboardingLinkText(L.whatsapp, "Superhuman WhatsApp group")} for announcements.${whatsappTail}`,
+    `6. Join the ${onboardingLinkText(L.whatsapp, "Superhuman WhatsApp group")} for announcements.`,
     `7. Join the ${onboardingLinkText(L.slack, "Time Rich Club Slack")}, where the cohort, our experts and the team work together. Add your photo by the end of Wednesday 28 October. Please read the TRC Club Code pinned in #superhuman-accelerator.`,
-    "",
-    `Every step is also in the ${onboardingLinkText(L.portal, "Time Rich Club")} under Start here.`,
     "",
     signOff,
     "",
