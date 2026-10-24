@@ -98,6 +98,8 @@
     .trp-cw-in { font-size: 14px; font-weight: 600; color: var(--trp-green); }
     .trp-cw-link { padding: 0; border: 0; background: none; font: inherit; font-size: 14px; font-weight: 600; color: var(--trp-deep); text-decoration: underline; text-underline-offset: 3px; cursor: pointer; min-height: 44px; }
     .trp-cw-link:focus-visible { outline: 2px solid var(--trp-green); outline-offset: 2px; border-radius: 4px; }
+    /* The photo in the opened pep talk. */
+    .trp-cw-letter-photo { display: block; width: 100%; max-width: 560px; aspect-ratio: 3 / 2; object-fit: cover; object-position: 50% 30%; border-radius: 18px; margin: 4px 0; }
     .trp-cw-side { align-self: start; display: flex; flex-direction: column; align-items: flex-start; gap: 10px; padding: 20px; border-radius: 18px; background: rgb(var(--c-surface)); }
     .trp-cw-side-title { font-family: var(--trp-display); font-weight: 600; font-size: 18px; letter-spacing: -.01em; line-height: 1.25; color: var(--trp-deep); margin: 0; }
     .trp-cw-side-note { margin: 0; font-size: 14px; line-height: 1.5; color: var(--trp-soft); }
@@ -215,13 +217,15 @@
     /* The tick button doubles as the lesson number: the number until it is
        done, a tick after. It is still the shared .trp-check-box from
        portal-live.js, so a tick still saves to the member's account. */
-    .trp-cw .trp-check-box { width: 32px; height: 32px; border: 0; background: var(--trp-sagelt); color: var(--trp-green); }
+    /* Every tick shows a tick, faint until it is done; ticking it fills the
+       circle green and turns the tick cream. The number is still written
+       into the button for the page's own bookkeeping, just not shown. */
+    .trp-cw .trp-check-box { width: 32px; height: 32px; border: 0; background: var(--trp-sagelt); color: rgb(var(--c-ink) / .28); transition: background-color .25s ease, color .25s ease; }
     .trp-cw .trp-check-box::before { inset: -6px; }
-    .trp-cw .trp-check-box svg { display: none; }
+    .trp-cw .trp-check-box svg { display: block; width: 16px; height: 16px; }
+    .trp-cw .trp-check-box:hover { color: var(--trp-green); }
     .trp-cw .trp-check-box.is-on { background: var(--trp-green); color: var(--trp-offwhite); }
-    .trp-cw .trp-check-box.is-on svg { display: block; }
-    .trp-cw .trp-check-box.is-on .trp-cw-n { display: none; }
-    .trp-cw-n { font-weight: 700; font-size: 13px; }
+    .trp-cw-n { display: none; }
     .trp-cw-session .trp-check-box { background: rgb(var(--c-surface)); }
 
     .trp-cw-tag { align-self: flex-start; display: inline-flex; font-size: 11px; font-weight: 600; letter-spacing: .06em; text-transform: uppercase; border-radius: 999px; padding: 3px 8px; background: var(--trp-sagelt); color: var(--trp-green); }
@@ -244,6 +248,13 @@
       .trp-cw-detail .trp-cw-btn, .trp-cw-task .trp-cw-btn { width: 100%; }
       .trp-cw-actions { width: 100%; }
     }
+
+    /* The pointer is a purple glitter disco ball on this page. Anything
+       you can press keeps the disco ball too, with the hand as the
+       fallback where SVG cursors are not drawn. */
+    body { cursor: url('assets/disco-cursor.svg') 15 17, auto; }
+    body a, body button, body summary, body [role="tab"], body label, body select { cursor: url('assets/disco-cursor.svg') 15 17, pointer; }
+    body input, body textarea { cursor: text; }
 
     /* the loading placeholder is the same shapes, inked out */
     .trp-cw .trp-skel .trp-cw-week { cursor: default; }
@@ -729,6 +740,16 @@
           var paras = L.str(letter.body).split(/\n\s*\n/).filter(function (t) { return t.trim(); });
           var shown = inAlready && !letterOpen ? paras.slice(0, 1) : paras;
           shown.forEach(function (t) { col.appendChild(L.el('p', '', t.trim())); });
+          // The photo comes with the pep talk, only once it is opened.
+          if (inAlready && letterOpen) {
+            var photo = L.el('img', 'trp-cw-letter-photo');
+            photo.src = 'assets/ella-pep-talk.jpg';
+            photo.alt = 'Ella Molony Cook mid-talk on stage, laughing';
+            photo.width = 1600;
+            photo.height = 1067;
+            photo.decoding = 'async';
+            col.appendChild(photo);
+          }
 
           var acts = L.el('div', 'trp-cw-letter-actions');
           if (!inAlready && L.itemKey(letter)) {
@@ -740,7 +761,7 @@
           } else {
             if (L.itemKey(letter)) acts.appendChild(L.el('span', 'trp-cw-in', "You're in"));
             if (paras.length > 1) {
-              var more = L.el('button', 'trp-cw-link', letterOpen ? 'Show less' : 'Read the full note');
+              var more = L.el('button', 'trp-cw-link', letterOpen ? 'Show less' : 'Time Rich Pep Talk');
               more.type = 'button';
               more.setAttribute('aria-expanded', letterOpen ? 'true' : 'false');
               more.setAttribute('data-cw-focus', 'letter-more');
