@@ -171,7 +171,8 @@
   src: url('../brand/fonts/Caveat-500.woff2') format('woff2');
 }
 
-.tc-sign { margin-top: 40px; }
+/* Signed on the right, the way a letter is. */
+.tc-sign { margin-top: 40px; text-align: right; }
 .tc-sign-love { font-size: 17px; color: rgb(244 241 230 / .78); }
 .tc-sign-name {
   margin-top: 6px;
