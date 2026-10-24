@@ -1,0 +1,37 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 32 32">
+  <defs>
+    <radialGradient id="ball" cx="38%" cy="32%" r="75%">
+      <stop offset="0" stop-color="#F3E6FF"/>
+      <stop offset=".35" stop-color="#C08BFF"/>
+      <stop offset=".75" stop-color="#7B3FD1"/>
+      <stop offset="1" stop-color="#3E1A78"/>
+    </radialGradient>
+    <clipPath id="clip"><circle cx="15" cy="17" r="11"/></clipPath>
+  </defs>
+  <!-- the string it hangs from -->
+  <path d="M15 1.5V6" stroke="#5B2A9E" stroke-width="1.2" stroke-linecap="round"/>
+  <circle cx="15" cy="17" r="11" fill="url(#ball)" stroke="#2A0F57" stroke-width="1"/>
+  <!-- the mirror tiles -->
+  <g clip-path="url(#clip)" stroke="#FFFFFF" stroke-opacity=".38" stroke-width=".7" fill="none">
+    <path d="M4 11.5h22M4 15h22M4 18.5h22M4 22h22"/>
+    <path d="M9.5 6c-2 7-2 15 0 22M15 6v22M20.5 6c2 7 2 15 0 22"/>
+  </g>
+  <!-- a few lit tiles -->
+  <g fill="#FFFFFF">
+    <rect x="9.9" y="11.9" width="4.6" height="2.8" opacity=".55"/>
+    <rect x="15.4" y="15.4" width="4.6" height="2.8" opacity=".35"/>
+    <rect x="10.2" y="19" width="4.3" height="2.7" opacity=".25"/>
+  </g>
+  <!-- purple glitter -->
+  <g fill="#E3C8FF">
+    <path d="M27.5 4.5l.8 2 2 .8-2 .8-.8 2-.8-2-2-.8 2-.8z"/>
+    <path d="M28 21l.55 1.35 1.35.55-1.35.55L28 24.8l-.55-1.35-1.35-.55 1.35-.55z"/>
+    <path d="M3.2 6.5l.5 1.2 1.2.5-1.2.5-.5 1.2-.5-1.2-1.2-.5 1.2-.5z"/>
+  </g>
+  <g fill="#B57BFF">
+    <circle cx="24.5" cy="12" r=".9"/>
+    <circle cx="5" cy="27.5" r=".8"/>
+    <circle cx="26" cy="28.5" r=".7"/>
+    <circle cx="2.5" cy="15.5" r=".6"/>
+  </g>
+</svg>
