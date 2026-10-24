@@ -156,3 +156,10 @@ NOTION_SUPERHUMAN_QUESTIONNAIRE_DATABASE_ID = "a4b3fdd6-c528-47a8-8ff6-ab27924b2
 #        ONBOARDING_EMAILS_ENABLED = "true"
 #
 # ONBOARDING_EMAILS_ENABLED = "false"
+
+# Content workshop draw (POST /draw-entry) -> "Content Workshop Draw Entries".
+# Name, Email and the LinkedIn post URL off the form on /contentworkshop;
+# the route stamps Status = New and Source = contentworkshop.
+# IMPORTANT: connect the SAME Notion integration (NOTION_TOKEN) to this
+# database (••• -> Connections) or writes will 404.
+NOTION_DRAW_DATABASE_ID = "46244286-6aca-436a-a8aa-51320500e1a0"

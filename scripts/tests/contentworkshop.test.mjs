@@ -577,7 +577,7 @@ console.log('\n/contentworkshop — the screenshots, on the page');
     !/workshop notes/i.test(HTML) && !HTML.includes('Content-Creation-Workshop-10-26'));
 
   const shots = [...document.querySelectorAll('figure.shot')];
-  check('four screenshots are drawn', shots.length === 4, shots.length);
+  check('three screenshots are drawn', shots.length === 3, shots.length);
 
   check('each sits under the sub-step it belongs to',
     shots.every((f) => {
@@ -588,7 +588,7 @@ console.log('\n/contentworkshop — the screenshots, on the page');
 
   check('they are the files in contentworkshop/img/, named by step and order',
     shots.map((f) => f.querySelector('img').getAttribute('src')).join(',') ===
-      'img/step2-1.png,img/step2-2.png,img/step2-3.png,img/step3-1.png',
+      'img/step2-1.png,img/step2-2.png,img/step3-1.png',
     shots.map((f) => f.querySelector('img').getAttribute('src')));
 
   check('and every one of those files is actually there',

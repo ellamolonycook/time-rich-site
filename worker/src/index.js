@@ -299,6 +299,23 @@ export default {
       return handleStrategy(data, env, cors, ctx);
     }
 
+    // Route: content workshop draw (POST /draw-entry) -> its own Notion
+    // database. One field that matters, the LinkedIn post, so it is checked
+    // here as well as on the page: only a linkedin.com link is accepted.
+    if (path.endsWith("/draw-entry")) {
+      const post = String(data["LinkedIn post"] || "").trim();
+      let ok = false;
+      try {
+        const u = new URL(/^https?:\/\//i.test(post) ? post : "https://" + post);
+        ok = /(^|\.)linkedin\.com$/i.test(u.hostname) && u.pathname.length > 1;
+        if (ok) data = { ...data, "LinkedIn post": u.origin + u.pathname };
+      } catch {}
+      if (!ok) {
+        return json({ ok: false, error: "Please paste the link to your LinkedIn post, like https://www.linkedin.com/posts/..." }, 400, cors);
+      }
+      return createApplication(data, env, cors, env.NOTION_DRAW_DATABASE_ID, { Status: "New", Source: "contentworkshop" });
+    }
+
     // Route: AI Revenue Accelerator application -> its own Notion database.
     // Same schema-driven mapping as the club form; stamps Status = New so the
     // "Call today" / pipeline views pick fresh applications up.
