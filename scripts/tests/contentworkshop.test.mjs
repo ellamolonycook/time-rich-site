@@ -173,10 +173,10 @@ console.log('\n/contentworkshop — the prizes, and who gets what');
     document.getElementById('stanleycode').textContent === 'TIMERICH6');
   check('and the offer beside it reads 6 months free',
     /6 months free/.test(offer.textContent), offer.textContent.replace(/\s+/g, ' ').trim());
-  check('the redeem card says 6 months free too',
-    /Check the total shows 6 months free/.test(HTML));
+  check('the redeem steps say 100% off for 6 billing cycles too',
+    /100% off for the next 6 billing cycles/.test(HTML));
   check('the redeem steps tell people to enter TIMERICH6 for Stanley',
-    /Enter <strong[^>]*>TIMERICH6<\/strong> and finish checkout/.test(HTML));
+    /Add promotion code<\/strong>, enter <strong[^>]*>TIMERICH6<\/strong>/.test(HTML));
   check('no STANLEY1MONTH or "1 month free" is left anywhere',
     !HTML.includes('STANLEY1MONTH') && !/1 month free/i.test(HTML));
 }
