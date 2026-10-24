@@ -249,18 +249,25 @@ console.log('\nPrompt Library — the page and the nav');
   for (const name of ['club', 'dashboard', 'curriculum', 'sessions', 'resources', 'members', 'prompts']) {
     const html = read('portal/' + name + '.html');
     const menus = html.slice(html.indexOf('<div id="mobile-menu"'), html.indexOf('</header>'));
-    const links = [...menus.matchAll(/<a href="prompts\.html"([^>]*)>/g)].map((m) => m[1]);
+    // Both address forms: the links are extensionless now, and putting one
+    // back as a .html link should not slip past this either.
+    const links = [...menus.matchAll(/<a href="prompts(?:\.html)?"([^>]*)>/g)].map((m) => m[1]);
     check(name + '.html: no Prompts link in the top nav or the phone menu',
       links.length === 0, links.length);
   }
   // It is the Accelerator that is lit while a member is on it: the menu's
   // Accelerator entry points at the dashboard, so it carries the generic
   // "current item in this set" rather than claiming to be this page.
+  /* This named the dashboard until now. It stopped being true at 13ab847,
+     "Open the Accelerator on the curriculum instead of the dashboard", and
+     was never updated -- the suite had already failed earlier in the chain,
+     so nothing here ran to say so. */
   check('prompts.html lights the Accelerator, without claiming to be it',
-    /<a href="dashboard\.html"[^>]*aria-current="true"/.test(PROMPTS_HTML) &&
-    !/aria-current="page"/.test(PROMPTS_HTML));
+    /<a href="curriculum"[^>]*aria-current="true"/.test(PROMPTS_HTML) &&
+    !/aria-current="page"/.test(PROMPTS_HTML),
+    (PROMPTS_HTML.match(/<a href="[^"]*"[^>]*aria-current="[a-z]*"/g) || []));
   check('prompts.html does not still think it is Resources',
-    !/href="resources\.html" aria-current/.test(PROMPTS_HTML));
+    !/href="resources(?:\.html)?" aria-current/.test(PROMPTS_HTML));
 
   // Tailwind purges any class it cannot find in a content file, so the new
   // renderer has to be in the content globs or the cards lose their styling.

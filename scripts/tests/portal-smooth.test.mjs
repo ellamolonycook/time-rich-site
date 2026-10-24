@@ -325,9 +325,18 @@ console.log('\nAnd the next page is warmed on hover');
     check(name + ': carries one set of speculation rules', rules.length === 1, rules.length);
     let parsed = null;
     try { parsed = JSON.parse(rules[0].textContent); } catch (e) { /* reported below */ }
+    /* Both address forms. The nav links are extensionless now, so a rule
+       naming only the .html form would warm nothing; the .html form stays
+       because an old bookmark or an emailed link can still be one. ":page"
+       is a single segment, so the rule stops at the pages and does not reach
+       into /portal/assets -- a rule that matched everything would also warm
+       sign-out and the partner links. */
+    const where = parsed && parsed.prefetch && parsed.prefetch[0].where;
+    const patterns = where && Array.isArray(where.or)
+      ? where.or.map((w) => w.href_matches) : [where && where.href_matches];
     check(name + ': they are valid JSON that prefetches portal pages only',
       parsed !== null && Array.isArray(parsed.prefetch) &&
-      parsed.prefetch[0].where.href_matches === '/portal/*.html',
+      JSON.stringify(patterns) === JSON.stringify(['/portal/:page', '/portal/*.html']),
       parsed);
     check(name + ': on hover, not on sight',
       parsed !== null && parsed.prefetch[0].eagerness === 'moderate',

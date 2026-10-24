@@ -80,7 +80,10 @@ const PARTNERS = [
   },
   {
     name: 'Wispr Flow',
-    href: 'https://ref.wisprflow.ai/ella-cook-vt27',
+    // The button goes to the redeem page, which carries the code and the
+    // term. The referral link did not go away: it is on "Download it" in
+    // step one, checked on its own further down.
+    href: 'https://wisprflow.ai/info/redeem-promo?code=TIMERICH6&months=6',
     logo: '../os/img/wispr-flow.png',
     title: 'Wispr Flow \u00b7 6 months Pro',
     line: "Only works if you're new to Wispr Flow or on the free plan.",
@@ -91,7 +94,7 @@ const PARTNERS = [
       'Enter TIMERICH6.',
     ],
     tip: "Only enter the code there. It won't work at checkout.",
-    button: 'Download Wispr Flow',
+    button: 'Redeem 6 months Pro',
     code: 'TIMERICH6',
   },
   {
@@ -183,11 +186,32 @@ console.log('\nResources: your partner offers');
       link.classList.contains('trp-btn') && link.classList.contains('trp-btn-primary'),
       link.textContent.trim());
 
-    // A link cannot sit inside a link, which is why none of these is one.
-    check(partner.name + ': the card is not a link, and holds exactly one',
-      card.tagName === 'DIV' && card.querySelectorAll('a').length === 1,
-      card.tagName + '/' + card.querySelectorAll('a').length);
+    // A link cannot sit inside a link, which is why none of these cards is
+    // one. There is exactly one button per card; links inside the steps are
+    // fine and Wispr has one, so the count is of buttons, not of anchors.
+    check(partner.name + ': the card is not a link, and holds exactly one button',
+      card.tagName === 'DIV' && card.querySelectorAll('a.trp-partner-btn').length === 1,
+      card.tagName + '/' + card.querySelectorAll('a.trp-partner-btn').length);
   });
+
+  /* Wispr's referral link pays Ella, and the main button no longer carries
+     it -- that now goes to the redeem page with the code in the address. So
+     the referral has to be the thing a member actually clicks to download,
+     which is "Download it" in step one. Losing it loses the referral. */
+  {
+    const wispr = cards.find((c) => /Wispr Flow/.test(
+      (c.querySelector('.trp-partner-title') || {}).textContent || '')) || doc.createElement('div');
+    const dl = wispr.querySelector('.trp-partner-steps a');
+    check('Wispr: "Download it" in step one keeps the referral link',
+      dl !== null &&
+      dl.getAttribute('href') === 'https://ref.wisprflow.ai/ella-cook-vt27' &&
+      dl.textContent.trim() === 'Download it',
+      dl && dl.getAttribute('href') + ' / ' + dl.textContent.trim());
+    check('Wispr: and it opens in a new tab, declared as sponsored',
+      dl !== null && dl.getAttribute('target') === '_blank' &&
+      dl.getAttribute('rel') === 'noopener sponsored',
+      dl && dl.getAttribute('target') + ' / ' + dl.getAttribute('rel'));
+  }
 
   // The card rules have to be in the build, not just the source, or the
   // three cards arrive unstyled.

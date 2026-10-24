@@ -123,7 +123,7 @@ console.log('\nA member gets the Club home, in the frame');
 
   const frame = d.getElementById('trp-club-frame');
   check('a frame is created', frame !== null);
-  check('pointed at the portal page', frame && frame.getAttribute('src') === '/portal/club.html');
+  check('pointed at the portal page', frame && frame.getAttribute('src') === '/portal/club');
   check('and it is labelled for a screen reader',
     frame && frame.getAttribute('title') === 'Time Rich Club');
 }
@@ -160,8 +160,10 @@ console.log('\nLeaving the portal from inside the frame');
     /function isFramed\(\)/.test(ACCESS) && /window\.top !== window\.self/.test(ACCESS));
   check('and leaves by taking the TOP window to /club',
     /window\.top\.location\.replace\('\/club'\)/.test(ACCESS));
+  // The sign-in page is "./" rather than "index.html" now: every address in
+  // the portal is extensionless, and this one is the directory itself.
   check('a rejected session goes that way rather than to the sign-in page',
-    /} else if \(!leaveFrame\(\)\) \{\s*window\.location\.replace\('index\.html'\);/.test(ACCESS),
+    /} else if \(!leaveFrame\(\)\) \{[\s\S]{0,120}?window\.location\.replace\('\.\/'\);/.test(ACCESS),
     (ACCESS.match(/function signedOut\(\)[\s\S]*?\n  \}/) || [])[0]);
   check('and so does signing out, instead of reloading the frame',
     /if \(!leaveFrame\(\)\) window\.location\.reload\(\);/.test(ACCESS));
@@ -177,13 +179,20 @@ console.log('\nLeaving the portal from inside the frame');
 
 console.log('\nThe way in, and the way back');
 {
+  /* Signing in used to land on /club. It lands on the curriculum now --
+     13ab847, "Open the Accelerator on the curriculum instead of the
+     dashboard" -- and this had been left asserting the old destination ever
+     since, which failed the suite and stopped every file after it from
+     running at all. It follows the code, on the extensionless address. */
   const index = read('portal/index.html');
-  check('signing in lands on /club',
-    /window\.location\.replace\('\/club'\);/.test(index));
+  check('signing in lands on the curriculum',
+    /window\.location\.replace\('\/portal\/curriculum'\);/.test(index),
+    (index.match(/window\.location\.replace\('[^']*'\)/g) || []));
   check('the portal pages point their Club link at /club',
     read('portal/dashboard.html').includes('<a href="/club"'));
+  // The file is still portal/club.html; the address it is framed at is not.
   check('portal/club.html is still served, and is what /club frames',
-    CLUB.length > 0 && APPLY.includes("'/portal/club.html'"));
+    CLUB.length > 0 && APPLY.includes("'/portal/club'"));
 }
 
 /* ---- the day/night toggle, on Club ------------------------------------- */

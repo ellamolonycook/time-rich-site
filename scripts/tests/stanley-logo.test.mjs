@@ -305,6 +305,14 @@ console.log('\nWispr Flow — the second credit');
 console.log('\nevery Wispr Flow link is the one referral URL');
 {
   const WISPR = 'https://ref.wisprflow.ai/ella-cook-vt27';
+  /* The one exception is the Resources card's main button, which goes to
+     Ella's redeem page: that address carries the promo code and the term,
+     which the referral link cannot. The referral is still on that card -- it
+     is on "Download it" in step one, where the download actually happens,
+     and portal-resources.test.mjs is what holds it there.
+
+     Written with &amp; in the markup, so it is matched as the sweep finds it. */
+  const REDEEM = 'https://wisprflow.ai/info/redeem-promo?code=TIMERICH6&amp;months=6';
   const FILES = readdirSync(new URL('../../portal/', import.meta.url))
     .filter((f) => /\.(html|js)$/.test(f))
     .map((f) => ['portal/' + f, read('portal/' + f)])
@@ -318,9 +326,15 @@ console.log('\nevery Wispr Flow link is the one referral URL');
       .map((m) => [file, m[0]]));
 
   check('the portal links to Wispr Flow at all', found.length > 0, found.length);
-  check('and every one of those links is the referral URL',
-    found.every(([, url]) => url === WISPR),
-    found.filter(([, url]) => url !== WISPR));
+  check('and every one of those links is the referral URL, bar the redeem page',
+    found.every(([, url]) => url === WISPR || url === REDEEM),
+    found.filter(([, url]) => url !== WISPR && url !== REDEEM));
+
+  // Allowed in exactly one place, so this cannot become a licence to point
+  // the footer credits at it too.
+  const redeems = found.filter(([, url]) => url === REDEEM);
+  check('the redeem page appears once, on the Resources card',
+    redeems.length === 1 && redeems[0][0] === 'portal/resources.html', redeems);
 
   // Named, rather than left to the sweep above, because this is the one that
   // was changed by hand and changed back.
