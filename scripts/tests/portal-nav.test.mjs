@@ -31,19 +31,20 @@ const MENU = [
   // and the public Apply page to everyone else, with portal/club.html as
   // the document it frames.
   { href: '/club', label: 'Club' },
-  { href: 'dashboard.html', label: 'Accelerator' },
+  { href: 'curriculum.html', label: 'Accelerator' },
   { href: 'resources.html', label: 'Resources' },
   { href: 'members.html', label: 'Members' },
 ];
 
-// Which menu entry is lit on each page. Curriculum, Live Sessions and
-// Prompts all sit under the Accelerator, whose link points at the dashboard.
+// Which menu entry is lit on each page. Live Sessions and Prompts sit under
+// the Accelerator, whose link points at the curriculum. The dashboard page
+// is no longer a destination, so its own menu points there too.
 const LIT = {
   club: '/club',
-  dashboard: 'dashboard.html',
-  curriculum: 'dashboard.html',
-  sessions: 'dashboard.html',
-  prompts: 'dashboard.html',
+  dashboard: 'curriculum.html',
+  curriculum: 'curriculum.html',
+  sessions: 'curriculum.html',
+  prompts: 'curriculum.html',
   resources: 'resources.html',
   members: 'members.html',
 };
@@ -106,8 +107,9 @@ console.log('\nThe page you are on is marked, in both menus');
         marked.map((a) => a.getAttribute('href')));
 
       // "page" is a claim about this document, so it is only used where the
-      // link really is this page. Curriculum, Live Sessions and Prompts get
-      // the generic "current item in this set" instead.
+      // link really is this page. Live Sessions and Prompts sit in the
+      // Accelerator without being the curriculum, so they get the generic
+      // "current item in this set" instead.
       const want = (LIT[name] === name + '.html' || LIT[name] === '/' + name) ? 'page' : 'true';
       check(name + ': marked aria-current="' + want + '" in the ' + what,
         marked.length === 1 && marked[0].getAttribute('aria-current') === want,
@@ -239,40 +241,16 @@ console.log('\nThe wordmark goes to the Club home');
   }
 }
 
-console.log('\nThe Accelerator’s second row, on its two pages only');
+console.log('\nThe Accelerator has no Dashboard option');
 {
-  const WITH = ['dashboard', 'curriculum'];
   for (const name of PAGES) {
     const row = docs[name].querySelector('nav.trp-subnav');
-    if (!WITH.includes(name)) {
-      check(name + ': carries no second row', row === null);
-      continue;
-    }
-    check(name + ': carries the second row', row !== null);
-    const links = [...row.querySelectorAll('a')];
-    check(name + ': it is Dashboard then Curriculum',
-      JSON.stringify(links.map((a) => [a.getAttribute('href'), a.textContent.trim()])) ===
-      JSON.stringify([['dashboard.html', 'Dashboard'], ['curriculum.html', 'Curriculum']]),
-      links.map((a) => a.getAttribute('href')));
-    const marked = links.filter((a) => a.hasAttribute('aria-current'));
-    check(name + ': the page you are on is the marked one',
-      marked.length === 1 && marked[0].getAttribute('href') === name + '.html' &&
-      marked[0].getAttribute('aria-current') === 'page',
-      marked.map((a) => a.getAttribute('href')));
-
-    // A sibling of the header, never a child. The header is identical on
-    // every portal page on purpose — that is what lets the cross-document
-    // view transition hold it still — so a row only two pages carry has to
-    // sit outside it. portal-smooth.test.mjs is what would catch the other
-    // way round; this is the statement of intent.
-    check(name + ': it sits outside the header',
-      row.closest('header#top-nav') === null);
+    check(name + ': carries no second row', row === null);
+    const labels = [...docs[name].querySelectorAll('a')].map((a) => a.textContent.trim());
+    check(name + ': no link is labelled Dashboard',
+      !labels.some((label) => label === 'Dashboard' || label.startsWith('Dashboard ')),
+      labels.filter((label) => /Dashboard/i.test(label)));
   }
-
-  check('the row’s own line is a ::after, so it costs no layout',
-    /\.trp-subnav-link\[aria-current='page'\]::after \{/.test(SRC));
-  check('and the build carries it',
-    BUILT_T.includes('.trp-subnav-link[aria-current=page]:after{'));
 }
 
 console.log('\nThe phone menu keeps its own classes');
