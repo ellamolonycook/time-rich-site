@@ -96,7 +96,12 @@
     .trp-cw-letter p { margin: 0; font-size: 16.5px; line-height: 1.65; color: var(--trp-deep); max-width: 60ch; white-space: pre-line; }
     .trp-cw-letter-actions { display: flex; flex-wrap: wrap; align-items: center; gap: 10px 16px; margin-top: 6px; }
     .trp-cw-in { font-size: 14px; font-weight: 600; color: var(--trp-green); }
-    .trp-cw-heart { font-size: 22px; line-height: 1; }
+    /* the Time Rich Pep Talk drop-down under the letter */
+    .trp-cw-pep { display: flex; flex-direction: column; align-items: flex-start; gap: 12px; margin-top: 6px; }
+    .trp-cw-pep-toggle { display: inline-flex; align-items: center; gap: 10px; min-height: 44px; padding: 0; border: 0; background: none; font: inherit; font-size: 15px; font-weight: 600; color: var(--trp-deep); cursor: pointer; border-radius: 8px; }
+    .trp-cw-pep-toggle:focus-visible { outline: 2px solid var(--trp-green); outline-offset: 2px; }
+    .trp-cw-pep-toggle[aria-expanded="true"] .trp-cw-chev { transform: rotate(180deg); }
+    .trp-cw-heart { font-size: 20px; line-height: 1; }
     .trp-cw-link { padding: 0; border: 0; background: none; font: inherit; font-size: 14px; font-weight: 600; color: var(--trp-deep); text-decoration: underline; text-underline-offset: 3px; cursor: pointer; min-height: 44px; }
     .trp-cw-link:focus-visible { outline: 2px solid var(--trp-green); outline-offset: 2px; border-radius: 4px; }
     /* The photo in the opened pep talk. */
@@ -719,9 +724,10 @@
 
       /* ---- the welcome ---------------------------------------------------- */
 
-      /* Ella's letter in full until the member says they're in; after that
-         its first paragraph, with the rest a click away. Link rows beside
-         it are buttons, and pressing one ticks it. */
+      /* Ella's letter, always in full. Under it, the "I'm in" button until
+         the member presses it, and the Time Rich Pep Talk: a drop-down that
+         opens onto a photo of Ella. Link rows beside it are buttons, and
+         pressing one ticks it. */
       var letterOpen = false;
 
       function welcome(prep) {
@@ -739,48 +745,47 @@
           var col = L.el('div', 'trp-cw-letter');
           col.appendChild(L.el('h2', 'trp-cw-h2', name));
           var paras = L.str(letter.body).split(/\n\s*\n/).filter(function (t) { return t.trim(); });
-          var shown = inAlready && !letterOpen ? paras.slice(0, 1) : paras;
-          shown.forEach(function (t) { col.appendChild(L.el('p', '', t.trim())); });
-          // The photo comes with the pep talk, only once it is opened.
-          if (inAlready && letterOpen) {
-            var photo = L.el('img', 'trp-cw-letter-photo');
-            photo.src = 'assets/ella-pep-talk.jpg';
-            photo.alt = 'Ella Molony Cook mid-talk on stage, laughing';
-            photo.width = 1600;
-            photo.height = 1067;
-            photo.decoding = 'async';
-            col.appendChild(photo);
-          }
+          paras.forEach(function (t) { col.appendChild(L.el('p', '', t.trim())); });
 
-          var acts = L.el('div', 'trp-cw-letter-actions');
           if (!inAlready && L.itemKey(letter)) {
+            var acts = L.el('div', 'trp-cw-letter-actions');
             var go = L.el('button', 'trp-cw-btn is-primary', "I'm in");
             go.type = 'button';
             go.setAttribute('data-cw-focus', 'letter-in');
             go.addEventListener('click', function () { L.toggleItem(letter); });
             acts.appendChild(go);
-          } else {
-            // A purple heart where "You're in" used to be; the words stay
-            // for screen readers.
-            if (L.itemKey(letter)) {
-              var heart = L.el('span', 'trp-cw-in trp-cw-heart', '\uD83D\uDC9C');
-              heart.setAttribute('role', 'img');
-              heart.setAttribute('aria-label', "You're in");
-              acts.appendChild(heart);
-            }
-            if (paras.length > 1) {
-              var more = L.el('button', 'trp-cw-link', letterOpen ? 'Show less' : 'Time Rich Pep Talk');
-              more.type = 'button';
-              more.setAttribute('aria-expanded', letterOpen ? 'true' : 'false');
-              more.setAttribute('data-cw-focus', 'letter-more');
-              more.addEventListener('click', function () {
-                letterOpen = !letterOpen;
-                render(lastData || window.TR_PORTAL_DATA);
-              });
-              acts.appendChild(more);
-            }
+            col.appendChild(acts);
           }
-          if (acts.firstChild) col.appendChild(acts);
+
+          // The pep talk. A button rather than <details> so it stays open
+          // across the redraw a tick causes; the photo is only drawn open.
+          var pep = L.el('div', 'trp-cw-pep');
+          var toggle = L.el('button', 'trp-cw-pep-toggle');
+          toggle.type = 'button';
+          toggle.setAttribute('aria-expanded', letterOpen ? 'true' : 'false');
+          toggle.setAttribute('aria-controls', 'cw-pep-photo');
+          toggle.setAttribute('data-cw-focus', 'letter-pep');
+          var heart = L.el('span', 'trp-cw-heart', '\uD83D\uDC9C');
+          heart.setAttribute('aria-hidden', 'true');
+          toggle.appendChild(heart);
+          toggle.appendChild(L.el('span', '', 'Time Rich Pep Talk'));
+          toggle.appendChild(chevron());
+          toggle.addEventListener('click', function () {
+            letterOpen = !letterOpen;
+            render(lastData || window.TR_PORTAL_DATA);
+          });
+          pep.appendChild(toggle);
+          if (letterOpen) {
+            var photo = L.el('img', 'trp-cw-letter-photo');
+            photo.id = 'cw-pep-photo';
+            photo.src = 'assets/ella-pep-talk.jpg';
+            photo.alt = 'Ella Molony Cook mid-talk on stage, laughing';
+            photo.width = 1600;
+            photo.height = 1067;
+            photo.decoding = 'async';
+            pep.appendChild(photo);
+          }
+          col.appendChild(pep);
           box.appendChild(col);
         }
 
