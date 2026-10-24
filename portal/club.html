@@ -121,7 +121,7 @@
           <svg class="w-4 h-4 shrink-0" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"></path></svg>
           Club
         </a>
-        <a href="dashboard.html" class="flex items-center gap-3 px-4 py-3 rounded-[14px] text-sm font-medium text-brand-ink/70 hover:text-brand-ink hover:bg-brand-ink/5 transition-colors">
+        <a href="curriculum.html" class="flex items-center gap-3 px-4 py-3 rounded-[14px] text-sm font-medium text-brand-ink/70 hover:text-brand-ink hover:bg-brand-ink/5 transition-colors">
           <svg class="w-4 h-4 shrink-0 text-brand-ink/50" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"></path></svg>
           Accelerator
         </a>
@@ -163,7 +163,7 @@
 
       <nav class="hidden lg:flex items-center gap-0.5" aria-label="Portal">
         <a href="/club" aria-current="page" class="trp-nav-link px-3.5 text-[13px] font-medium">Club</a>
-        <a href="dashboard.html" class="trp-nav-link px-3.5 text-[13px] font-medium text-brand-ink/70 hover:text-brand-ink">Accelerator</a>
+        <a href="curriculum.html" class="trp-nav-link px-3.5 text-[13px] font-medium text-brand-ink/70 hover:text-brand-ink">Accelerator</a>
         <a href="resources.html" class="trp-nav-link px-3.5 text-[13px] font-medium text-brand-ink/70 hover:text-brand-ink">Resources</a>
         <a href="members.html" data-portal-members-link class="trp-nav-link gap-1.5 px-3.5 text-[13px] font-medium text-brand-ink/70 hover:text-brand-ink">Members <span class="trp-soon">Soon</span></a>
       </nav>
@@ -205,14 +205,16 @@
            rather than by dropping [data-portal-name] into the sentence:
            the name is empty until the payload lands, and "Welcome back,
            ." is what that would read as in the meantime. -->
-      <section class="grid lg:grid-cols-[1fr_360px] lg:items-start gap-12 lg:gap-20">
-        <div class="min-w-0">
+      <section class="trp-hero">
+        <div class="trp-hero-copy min-w-0">
           <p class="trp-eyebrow">Time Rich Club &middot; Members</p>
-          <h1 data-club-greet class="trp-club-h1 mt-5">Welcome back.</h1>
+          <!-- <h1 data-club-greet class="trp-club-h1 mt-5">Welcome back.</h1> -->
           <!-- Ella's letter, in her words. The sign-off is its own block
                rather than a last line of the paragraph, so it reads as a
-               signature and not as another sentence of the letter. -->
-          <p class="trp-club-intro mt-7 max-w-[34rem]">
+               signature and not as another sentence of the letter. The
+               portrait sits beside this paragraph from tablet width up, and
+               under the signature on a phone. -->
+          <p class="trp-club-intro mt-7">
             I believe it's the greatest time in history to be ambitious while
             being Time Rich. But being ambitious is lonely, so I want us to
             have an ecosystem of resources, community, and a safe space to
@@ -226,13 +228,25 @@
             Love, Ella
             <span class="trp-club-sign-role">Chief Energy Officer</span>
           </p>
+          <figure class="trp-letter-photo">
+            <img src="assets/web/ella-vika.jpg" alt="Ella Molony Cook and ViKA Victoria" width="933" height="1400" decoding="async" fetchpriority="high"/>
+          </figure>
           <hr class="trp-hero-rule"/>
+        </div>
+
+        <div class="trp-highlights" aria-label="Highlights from Time Rich events">
+          <img src="assets/events/web/0V6A6478.jpg" alt="A full room for a panel of women on stage" width="1600" height="1067" loading="lazy" decoding="async"/>
+          <img src="assets/events/web/0V6A6055.jpg" alt="Two speakers in conversation on a sofa" width="1600" height="1067" loading="lazy" decoding="async"/>
+          <img src="assets/events/web/0V6A6153.jpg" alt="A speaker in a red blazer on a panel" width="1600" height="1067" loading="lazy" decoding="async"/>
+          <img src="assets/events/web/0V6A7246.jpg" alt="Two guests seated together on stage" width="1600" height="1067" loading="lazy" decoding="async"/>
+          <img src="assets/events/web/CHERUBxZANT-INVESTORDINNER-54.jpg" alt="Ella Molony Cook speaking at a dinner table" width="1600" height="1067" loading="lazy" decoding="async"/>
+          <img src="assets/events/web/LEDEXforum-244_resized.jpg" alt="Ella Molony Cook speaking on stage" width="1600" height="1067" loading="lazy" decoding="async"/>
         </div>
 
         <!-- The five pillars, in the rail beside the letter. Same numbered
              list the ethos used, so nothing new had to be invented for it,
              with the membership line and the Slack door under them. -->
-        <aside aria-labelledby="pillars-heading">
+        <aside class="trp-hero-aside" aria-labelledby="pillars-heading">
           <p class="trp-eyebrow" id="pillars-heading">Time Rich Club</p>
           <ol class="trp-ethos mt-5">
             <li>
@@ -295,7 +309,7 @@
                  the card never shows "0 of 0 done". -->
             <div data-club-progress hidden class="mt-8 max-w-[20rem]"></div>
 
-            <a href="dashboard.html" class="trp-btn trp-btn-primary mt-8">
+            <a href="curriculum.html" class="trp-btn trp-btn-primary mt-8">
               Enter the Accelerator
               <span aria-hidden="true">&rarr;</span>
             </a>
@@ -408,6 +422,14 @@
             </span>
           </a>
         </div>
+
+        <div class="trp-shots" aria-label="More from Time Rich events">
+          <img src="assets/events/web/0V6A5537.jpg" alt="Guests seated together at a Time Rich event" width="1600" height="1067" loading="lazy" decoding="async"/>
+          <img src="assets/events/web/0V6A6720.jpg" alt="A speaker in conversation from an armchair" width="1067" height="1600" loading="lazy" decoding="async"/>
+          <img src="assets/events/web/0V6A7164.jpg" alt="A guest holding a book before going on stage" width="1067" height="1600" loading="lazy" decoding="async"/>
+          <img src="assets/events/web/CHERUBxZANT-INVESTORDINNER-64.jpg" alt="A guest at an evening gathering" width="1067" height="1600" loading="lazy" decoding="async"/>
+          <img src="assets/events/web/CHERUBxZANT-INVESTORDINNER-77.jpg" alt="Two hosts at a Time Rich dinner" width="1067" height="1600" loading="lazy" decoding="async"/>
+        </div>
       </section>
 
       <!-- ---- stay in the room ------------------------------------------ -->
@@ -437,10 +459,8 @@
       </section>
 
       <!-- ---- 250+ time rich experiences ---------------------------------
-           Text only for now. Every card has an image slot ready: drop an
-           <img class="trp-exp-shot" .../> in as the first child of the
-           article and the card lays itself out around it, the same way the
-           mentor cards take a photo. -->
+           Each card leads with a photograph. The count of who registered
+           used to sit on the meta line; the picture carries that now. -->
       <section class="trp-sec" aria-labelledby="experiences-heading">
         <div class="trp-sec-head">
           <h2 id="experiences-heading" class="trp-club-h2">250+ Time Rich Experiences</h2>
@@ -469,48 +489,56 @@
         <div class="mt-9 grid gap-5 sm:grid-cols-2 lg:grid-cols-4 items-stretch">
 
           <article class="trp-exp">
+            <img class="trp-exp-shot is-tall" src="assets/events/web/0V6A6672.jpg" alt="" width="1067" height="1600" loading="lazy" decoding="async"/>
             <h3 class="trp-exp-t">Women in AI Pitch Tank</h3>
-            <p class="trp-exp-m">Pitch event &middot; May 2025 &middot; Online &middot; 384 registered</p>
+            <p class="trp-exp-m">Pitch event &middot; May 2025 &middot; Online</p>
             <p class="trp-exp-d">A reverse pitch. Three women in venture took the mic and founders heard what they actually back.</p>
           </article>
 
           <article class="trp-exp">
+            <img class="trp-exp-shot" src="assets/events/web/websummit.jpg" alt="" width="1600" height="1066" loading="lazy" decoding="async"/>
             <h3 class="trp-exp-t">Founders, Angels &amp; VCs: The New Era of Direct Investing</h3>
-            <p class="trp-exp-m">Investors &middot; Jun 2025 &middot; Online &middot; 1,282 registered</p>
+            <p class="trp-exp-m">Investors &middot; Jun 2025 &middot; Online</p>
             <p class="trp-exp-d">Two days on fundraising, institutional access and founder partnerships. Our largest room to date.</p>
           </article>
 
           <article class="trp-exp">
+            <img class="trp-exp-shot is-tall" src="assets/events/web/CHERUBxZANT-INVESTORDINNER-31.jpg" alt="" width="1067" height="1600" loading="lazy" decoding="async"/>
             <h3 class="trp-exp-t">Private Markets Poker Night with Jamie Gold</h3>
             <p class="trp-exp-m">Investors &middot; Nov 2025 &middot; New York</p>
             <p class="trp-exp-d">Cards as the icebreaker for a room of allocators and Series A+ founders.</p>
           </article>
 
           <article class="trp-exp">
+            <img class="trp-exp-shot is-tall" src="assets/events/web/CHERUBxZANT-INVESTORDINNER-48.jpg" alt="" width="1067" height="1600" loading="lazy" decoding="async"/>
             <h3 class="trp-exp-t">Creative Capital Family Office Dinner</h3>
             <p class="trp-exp-m">Investors &middot; Mar 2026 &middot; New York</p>
             <p class="trp-exp-d">A private table of family offices, built around one thesis for the night.</p>
           </article>
 
           <article class="trp-exp">
+            <img class="trp-exp-shot is-tall" src="assets/events/web/event-54.jpg" alt="" width="1066" height="1600" loading="lazy" decoding="async"/>
             <h3 class="trp-exp-t">Investor Happy Hour with Upgrade Labs</h3>
             <p class="trp-exp-m">Wellness &amp; Longevity &middot; Feb 2025 &middot; Austin</p>
             <p class="trp-exp-d">A longevity lab and the Texas venture community in one room.</p>
           </article>
 
           <article class="trp-exp">
+            <img class="trp-exp-shot is-tall" src="assets/events/web/0V6A6523.jpg" alt="" width="1067" height="1600" loading="lazy" decoding="async"/>
             <h3 class="trp-exp-t">AI Revenue Growth: Female Founder Circle</h3>
             <p class="trp-exp-m">Women &middot; Jul 2026 &middot; Online</p>
             <p class="trp-exp-d">Ella on the founder journey across eight companies, and how to grow revenue with AI.</p>
           </article>
 
           <article class="trp-exp">
+            <img class="trp-exp-shot" src="assets/events/web/event-56.jpg" alt="" width="1600" height="1066" loading="lazy" decoding="async"/>
             <h3 class="trp-exp-t">Time Rich Summer: Picnic in Central Park</h3>
             <p class="trp-exp-m">Women &middot; Aug 2026 &middot; New York</p>
             <p class="trp-exp-d">An afternoon on the grass for women and queer founders, investors and creators.</p>
           </article>
 
           <article class="trp-exp">
+            <img class="trp-exp-shot is-tall" src="assets/events/web/CHERUBxZANT-INVESTORDINNER-78.jpg" alt="" width="1067" height="1600" loading="lazy" decoding="async"/>
             <h3 class="trp-exp-t">Founders &amp; Funders, Williamsburg Walk</h3>
             <p class="trp-exp-m">Founders &middot; Sep 2025 &middot; Brooklyn</p>
             <p class="trp-exp-d">A morning walk over the bridge. No badges, no pitch decks, just the conversation.</p>

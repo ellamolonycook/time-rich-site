@@ -230,7 +230,7 @@
     // The real check lives in portal-access.js, which owns this form's submit.
     // Everything here only reflects what that check is doing: the button says
     // "Checking", a rejected address puts the button back and returns focus to
-    // the field, and an address we know moves on to the dashboard.
+    // the field, and an address we know moves on to the curriculum.
     (function () {
       var form = document.getElementById('portal-login-form');
       var label = document.getElementById('btn-text');
@@ -255,12 +255,10 @@
         }).observe(slot, { childList: true, characterData: true, subtree: true });
       }
 
-      // An address we know lands on the Club home, which is the front of
-      // the portal: the Accelerator is one of the programmes on it. /club is
-      // the public address for it -- it serves the Club home to a member and
-      // the Apply page to everyone else -- so that is where members land.
+      // An address we know lands on the curriculum. The dashboard is not
+      // offered from here; the Accelerator opens on the curriculum itself.
       document.addEventListener('trportal:data', function () {
-        window.location.replace('/club');
+        window.location.replace('/portal/curriculum.html');
       });
     })();
   </script>

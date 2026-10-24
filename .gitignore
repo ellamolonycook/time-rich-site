@@ -33,3 +33,5 @@ temp_interactive_push.bat
 
 # Local Worker secrets for wrangler dev - never commit.
 worker/.dev.vars
+
+.cursor/

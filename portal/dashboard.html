@@ -2,6 +2,17 @@
 <html lang="en" class="scroll-smooth" data-trp-gate>
 <head>
   <script>
+    // The dashboard is no longer a destination. The Accelerator opens on the
+    // curriculum, so an old link or a bookmark lands there instead. This sits
+    // in the theme script so that script is still the first thing in <head>.
+    try {
+      location.replace('curriculum.html');
+      // The access script still parses and, with no session, sends the
+      // browser to the sign-in page. That second replace was winning the
+      // race. The one above is the only navigation this page is allowed.
+      location.replace = function () {};
+    } catch (e) {}
+
     // Theme, applied before first paint so there is no flash of the wrong one.
     // "system" follows the device; the CSS reads this attribute.
     (function () {
@@ -117,7 +128,7 @@
           <svg class="w-4 h-4 shrink-0 text-brand-ink/50" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"></path></svg>
           Club
         </a>
-        <a href="dashboard.html" aria-current="page" class="flex items-center gap-3 px-4 py-3 rounded-[14px] text-sm font-medium bg-brand-green text-brand-bg">
+        <a href="curriculum.html" aria-current="true" class="flex items-center gap-3 px-4 py-3 rounded-[14px] text-sm font-medium bg-brand-green text-brand-bg">
           <svg class="w-4 h-4 shrink-0" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"></path></svg>
           Accelerator
         </a>
@@ -159,7 +170,7 @@
 
       <nav class="hidden lg:flex items-center gap-0.5" aria-label="Portal">
         <a href="/club" class="trp-nav-link px-3.5 text-[13px] font-medium text-brand-ink/70 hover:text-brand-ink">Club</a>
-        <a href="dashboard.html" aria-current="page" class="trp-nav-link px-3.5 text-[13px] font-medium">Accelerator</a>
+        <a href="curriculum.html" aria-current="true" class="trp-nav-link px-3.5 text-[13px] font-medium">Accelerator</a>
         <a href="resources.html" class="trp-nav-link px-3.5 text-[13px] font-medium text-brand-ink/70 hover:text-brand-ink">Resources</a>
         <a href="members.html" data-portal-members-link class="trp-nav-link gap-1.5 px-3.5 text-[13px] font-medium text-brand-ink/70 hover:text-brand-ink">Members <span class="trp-soon">Soon</span></a>
       </nav>
@@ -191,21 +202,6 @@
       </div>
     </div>
   </header>
-
-  <!-- The Accelerator's own two views. Dashboard and Curriculum are the same
-       programme seen two ways, so they sit a level under the menu rather than
-       beside Club and Resources in it.
-
-       A sibling of the header, never a child: the header's markup is
-       identical on every portal page on purpose, which is what lets the
-       cross-document view transition hold it still, and a row that only two
-       of the pages carry would break that. -->
-  <nav class="trp-subnav px-4 sm:px-6 lg:px-8 shrink-0" aria-label="Accelerator">
-    <div class="mx-auto max-w-[1120px] flex items-center text-[13px]">
-      <a href="dashboard.html" aria-current="page" class="trp-subnav-link">Dashboard</a>
-      <a href="curriculum.html" class="trp-subnav-link">Curriculum</a>
-    </div>
-  </nav>
 
   <!-- MAIN APP AREA -->
   <div class="flex-1 flex">

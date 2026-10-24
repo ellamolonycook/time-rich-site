@@ -1554,6 +1554,114 @@
     color: var(--trp-muted);
   }
 
+  /* The letter, the portrait and the pillars are one grid. On a phone they
+     stack in reading order: the letter, then Ella and ViKA, then the
+     pillars. From 640px the portrait sits in the column beside the letter.
+     From 1024px the pillars take a third column, which is where they were
+     before the portrait arrived. display:contents lets the portrait, which
+     lives in the letter for the phone order, move into that middle column. */
+  .trp-hero { display: grid; align-items: start; }
+  .trp-hero-aside { margin-top: 36px; }
+  .trp-letter-photo {
+    margin: 22px 0 0;
+    border-radius: 20px;
+    overflow: hidden;
+    aspect-ratio: 4 / 5;
+    background: rgb(var(--c-rule) / .06);
+  }
+  .trp-letter-photo img {
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center 18%;
+  }
+  @media (min-width: 640px) {
+    .trp-hero {
+      grid-template-columns: minmax(0, 1fr) minmax(190px, 250px);
+      column-gap: 28px;
+    }
+    .trp-hero-copy { display: contents; }
+    .trp-hero-copy > :not(.trp-letter-photo) { grid-column: 1; }
+    .trp-letter-photo {
+      grid-column: 2;
+      grid-row: 1 / 5;
+      align-self: end;
+      margin: 0;
+      aspect-ratio: 3 / 4;
+    }
+    .trp-hero-aside,
+    .trp-highlights { grid-column: 1 / -1; }
+    .trp-highlights { grid-row: 6; }
+    .trp-hero-aside { grid-row: 7; margin-top: 40px; }
+  }
+  @media (min-width: 1024px) {
+    .trp-hero {
+      grid-template-columns: minmax(0, 1fr) minmax(210px, 280px) 300px;
+      column-gap: 36px;
+    }
+    .trp-hero-aside {
+      grid-column: 3;
+      grid-row: 1 / 5;
+      margin-top: 0;
+    }
+    .trp-highlights { grid-column: 1 / -1; grid-row: 6; }
+  }
+
+  /* A film of rooms, under the letter. It scrolls sideways and the next
+     frame peeks in, which is how it stays one row on a phone. */
+  .trp-highlights {
+    display: flex;
+    gap: 10px;
+    margin-top: 28px;
+    overflow-x: auto;
+    scroll-snap-type: x mandatory;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+  }
+  .trp-highlights::-webkit-scrollbar { display: none; }
+  .trp-highlights img {
+    flex: 0 0 82%;
+    width: 82%;
+    aspect-ratio: 3 / 2;
+    object-fit: cover;
+    border-radius: 16px;
+    scroll-snap-align: start;
+    background: rgb(var(--c-rule) / .06);
+  }
+  @media (min-width: 700px) {
+    .trp-highlights { gap: 12px; margin-top: 36px; }
+    .trp-highlights img { flex-basis: calc((100% - 24px) / 3); width: calc((100% - 24px) / 3); }
+  }
+
+  /* The frames that sit with the upcoming events. Two-up on a phone, a
+     single row once there is width for it. An odd last frame spans, so a
+     phone never ends the grid on a half-empty row. */
+  .trp-shots {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 8px;
+    margin-top: 14px;
+  }
+  .trp-shots img {
+    display: block;
+    width: 100%;
+    aspect-ratio: 1;
+    object-fit: cover;
+    object-position: center 22%;
+    border-radius: 14px;
+    background: rgb(var(--c-rule) / .06);
+  }
+  @media (max-width: 699px) {
+    .trp-shots img:last-child:nth-child(odd) {
+      grid-column: 1 / -1;
+      aspect-ratio: 3 / 2;
+    }
+  }
+  @media (min-width: 700px) {
+    .trp-shots { grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 10px; }
+  }
+
   /* -- the ethos --
      Three lines, no fill. The numerals are the only colour and they sit in
      their own column so the sentences line up against them. */
@@ -1759,7 +1867,20 @@
      whole rather than cropped to the 4:3 room shot. */
   .trp-row-shot.is-poster { aspect-ratio: 1 / 1; }
   a.trp-row:hover .trp-row-shot img { opacity: .82; }
-  @media (max-width: 599px) { .trp-row-shot { display: none; } }
+  /* On a phone the poster drops under the date and the title and takes the
+     full row, instead of disappearing. A square poster stays square so its
+     type is still readable. */
+  @media (max-width: 599px) {
+    .trp-row-media { flex-wrap: wrap; row-gap: 14px; }
+    .trp-row-shot {
+      display: block;
+      flex: 1 0 100%;
+      width: 100%;
+      margin-left: 0;
+      aspect-ratio: 16 / 10;
+    }
+    .trp-row-shot.is-poster { aspect-ratio: 1 / 1; max-width: none; }
+  }
   @media (min-width: 900px) { .trp-row-shot { width: 168px; } }
 
   .trp-row-t {
@@ -1988,25 +2109,40 @@
     padding: 6px 12px;
   }
 
-  /* One event. Text only for now; .trp-exp-shot is the image slot, styled
-     and waiting, so a poster dropped in as the first child of the article
-     sits above the title at the same 4:3 the cards are built around. */
+  /* One event. The photograph bleeds to the top edge of the card and the
+     type sits under it, so the grid reads as pictures first. */
   .trp-exp {
     display: flex;
     flex-direction: column;
     border: 1px solid var(--trp-hair);
     border-radius: var(--trp-radius);
-    padding: 22px 20px;
+    padding: 0 0 20px;
+    overflow: hidden;
   }
-  @media (min-width: 640px) { .trp-exp { padding: 24px 22px; } }
+  @media (min-width: 640px) { .trp-exp { padding-bottom: 22px; } }
 
   .trp-exp-shot {
     display: block;
     width: 100%;
     aspect-ratio: 4 / 3;
     object-fit: cover;
-    border-radius: 12px;
-    margin-bottom: 18px;
+    object-position: center 30%;
+    border-radius: 0;
+    margin: 0 0 16px;
+    background: rgb(var(--c-rule) / .06);
+  }
+  /* A portrait source, cropped to the 4:3 card. Bias toward the face. */
+  .trp-exp-shot.is-tall { object-position: center 12%; }
+
+  .trp-exp :is(.trp-exp-t, .trp-exp-m, .trp-exp-d) {
+    padding-left: 16px;
+    padding-right: 16px;
+  }
+  @media (min-width: 640px) {
+    .trp-exp :is(.trp-exp-t, .trp-exp-m, .trp-exp-d) {
+      padding-left: 18px;
+      padding-right: 18px;
+    }
   }
 
   .trp-exp-t {
