@@ -102,6 +102,13 @@
     .trp-cw-pep-toggle:focus-visible { outline: 2px solid var(--trp-green); outline-offset: 2px; }
     .trp-cw-pep-toggle[aria-expanded="true"] .trp-cw-chev { transform: rotate(180deg); }
     .trp-cw-heart { font-size: 20px; line-height: 1; }
+    .trp-cw-pep-body { display: flex; flex-direction: column; gap: 14px; width: 100%; }
+    /* the photo on the left, the letter beside it; stacked on a phone */
+    .trp-cw-pep-pair { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.25fr); gap: 24px; align-items: start; width: 100%; }
+    .trp-cw-pep-pair .trp-cw-letter-photo { max-width: none; aspect-ratio: 4 / 5; margin: 0; }
+    .trp-cw-pep-copy { display: flex; flex-direction: column; gap: 12px; min-width: 0; }
+    .trp-cw-pep-copy p { margin: 0; }
+    @media (max-width: 640px) { .trp-cw-pep-pair { grid-template-columns: 1fr; } .trp-cw-pep-pair .trp-cw-letter-photo { aspect-ratio: 3 / 2; } }
     .trp-cw-pep-line { margin: 0; max-width: 560px; font-family: var(--trp-display); font-weight: 600; font-size: clamp(19px, 2.4vw, 24px); letter-spacing: -.02em; line-height: 1.2; color: var(--trp-deep); }
     .trp-cw-link { padding: 0; border: 0; background: none; font: inherit; font-size: 14px; font-weight: 600; color: var(--trp-deep); text-decoration: underline; text-underline-offset: 3px; cursor: pointer; min-height: 44px; }
     .trp-cw-link:focus-visible { outline: 2px solid var(--trp-green); outline-offset: 2px; border-radius: 4px; }
@@ -256,11 +263,11 @@
       .trp-cw-actions { width: 100%; }
     }
 
-    /* The pointer is a purple glitter disco ball on this page. Anything
-       you can press keeps the disco ball too, with the hand as the
+    /* The pointer is a flame on this page, its tip the point that clicks.
+       Anything you can press keeps the flame too, with the hand as the
        fallback where SVG cursors are not drawn. */
-    body { cursor: url('assets/disco-cursor.svg') 15 17, auto; }
-    body a, body button, body summary, body [role="tab"], body label, body select { cursor: url('assets/disco-cursor.svg') 15 17, pointer; }
+    body { cursor: url('assets/fire-cursor.svg') 16 2, auto; }
+    body a, body button, body summary, body [role="tab"], body label, body select { cursor: url('assets/fire-cursor.svg') 16 2, pointer; }
     body input, body textarea { cursor: text; }
 
     /* the loading placeholder is the same shapes, inked out */
@@ -725,11 +732,13 @@
 
       /* ---- the welcome ---------------------------------------------------- */
 
-      /* Ella's letter, always in full. Under it, the "I'm in" button until
-         the member presses it, and the Time Rich Pep Talk: a drop-down that
-         opens onto a photo of Ella. Link rows beside it are buttons, and
-         pressing one ticks it. */
-      var letterOpen = false;
+      /* Ella's welcome. The title, then the Time Rich Pep Talk: a drop-down
+         holding a line, her photo on the left and the letter beside it.
+         It starts open until the member says they're in, and after that
+         starts shut; either way the member's own open or shut wins. The
+         "I'm in" button sits under it until it is pressed. Link rows beside
+         the welcome are buttons, and pressing one ticks it. */
+      var letterOpen = null;   // null until the member opens or shuts it
 
       function welcome(prep) {
         var rows = pinned(prep);
@@ -743,10 +752,48 @@
         if (letter) {
           var name = L.str(letter.title) || 'Welcome';
           var inAlready = L.isItemDone(letter);
+          var open = letterOpen === null ? !inAlready : letterOpen;
           var col = L.el('div', 'trp-cw-letter');
           col.appendChild(L.el('h2', 'trp-cw-h2', name));
           var paras = L.str(letter.body).split(/\n\s*\n/).filter(function (t) { return t.trim(); });
-          paras.forEach(function (t) { col.appendChild(L.el('p', '', t.trim())); });
+
+          // A button rather than <details> so it stays as it was across the
+          // redraw a tick causes; what is inside is only drawn open.
+          var pep = L.el('div', 'trp-cw-pep');
+          var toggle = L.el('button', 'trp-cw-pep-toggle');
+          toggle.type = 'button';
+          toggle.setAttribute('aria-expanded', open ? 'true' : 'false');
+          toggle.setAttribute('aria-controls', 'cw-pep-body');
+          toggle.setAttribute('data-cw-focus', 'letter-pep');
+          var heart = L.el('span', 'trp-cw-heart', '\uD83D\uDC9C');
+          heart.setAttribute('aria-hidden', 'true');
+          toggle.appendChild(heart);
+          toggle.appendChild(L.el('span', '', 'Time Rich Pep Talk'));
+          toggle.appendChild(chevron());
+          toggle.addEventListener('click', function () {
+            letterOpen = !open;
+            render(lastData || window.TR_PORTAL_DATA);
+          });
+          pep.appendChild(toggle);
+          if (open) {
+            var inner = L.el('div', 'trp-cw-pep-body');
+            inner.id = 'cw-pep-body';
+            inner.appendChild(L.el('p', 'trp-cw-pep-line', 'Put your hand up if you want to reach your fullest potential'));
+            var pair = L.el('div', 'trp-cw-pep-pair');
+            var photo = L.el('img', 'trp-cw-letter-photo');
+            photo.src = 'assets/ella-pep-talk.jpg';
+            photo.alt = 'Ella Molony Cook mid-talk on stage, laughing';
+            photo.width = 1600;
+            photo.height = 1067;
+            photo.decoding = 'async';
+            pair.appendChild(photo);
+            var copy = L.el('div', 'trp-cw-pep-copy');
+            paras.forEach(function (t) { copy.appendChild(L.el('p', '', t.trim())); });
+            pair.appendChild(copy);
+            inner.appendChild(pair);
+            pep.appendChild(inner);
+          }
+          col.appendChild(pep);
 
           if (!inAlready && L.itemKey(letter)) {
             var acts = L.el('div', 'trp-cw-letter-actions');
@@ -757,37 +804,6 @@
             acts.appendChild(go);
             col.appendChild(acts);
           }
-
-          // The pep talk. A button rather than <details> so it stays open
-          // across the redraw a tick causes; the photo is only drawn open.
-          var pep = L.el('div', 'trp-cw-pep');
-          var toggle = L.el('button', 'trp-cw-pep-toggle');
-          toggle.type = 'button';
-          toggle.setAttribute('aria-expanded', letterOpen ? 'true' : 'false');
-          toggle.setAttribute('aria-controls', 'cw-pep-photo');
-          toggle.setAttribute('data-cw-focus', 'letter-pep');
-          var heart = L.el('span', 'trp-cw-heart', '\uD83D\uDC9C');
-          heart.setAttribute('aria-hidden', 'true');
-          toggle.appendChild(heart);
-          toggle.appendChild(L.el('span', '', 'Time Rich Pep Talk'));
-          toggle.appendChild(chevron());
-          toggle.addEventListener('click', function () {
-            letterOpen = !letterOpen;
-            render(lastData || window.TR_PORTAL_DATA);
-          });
-          pep.appendChild(toggle);
-          if (letterOpen) {
-            pep.appendChild(L.el('p', 'trp-cw-pep-line', 'Put your hand up if you want to reach your fullest potential'));
-            var photo = L.el('img', 'trp-cw-letter-photo');
-            photo.id = 'cw-pep-photo';
-            photo.src = 'assets/ella-pep-talk.jpg';
-            photo.alt = 'Ella Molony Cook mid-talk on stage, laughing';
-            photo.width = 1600;
-            photo.height = 1067;
-            photo.decoding = 'async';
-            pep.appendChild(photo);
-          }
-          col.appendChild(pep);
           box.appendChild(col);
         }
 
