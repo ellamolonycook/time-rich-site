@@ -367,14 +367,44 @@
 @media (min-width: 900px) {
   .tc-community { grid-template-columns: minmax(0, 1fr) minmax(0, 1.15fr); gap: 72px; align-items: end; }
 }
+/* The photo, with its caption on the image and the member count on a card
+   that hangs off its bottom-left corner. The figure keeps room under it
+   for the part of the card that overlaps. */
+.tc-moment { position: relative; margin: 18px 0 44px; }
+.tc-moment img {
+  display: block;
+  width: 100%;
+  aspect-ratio: 3 / 2;
+  object-fit: cover;
+  object-position: 55% 30%;
+  border-radius: var(--tc-r);
+}
+.tc-moment-cap {
+  position: absolute; top: 14px; left: 14px;
+  padding: 6px 12px;
+  border-radius: 999px;
+  background: rgb(21 21 17 / .7);
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
+  font-size: 12px; font-weight: 500; letter-spacing: .02em;
+  color: var(--tc-cream);
+}
+.tc-stat-card {
+  position: absolute; left: 16px; bottom: -32px;
+  padding: 14px 20px 16px;
+  border-radius: 16px;
+  background: rgb(var(--c-surface));
+  box-shadow: 0 10px 30px rgb(0 0 0 / .12), inset 0 0 0 1px var(--tc-hair);
+}
+@media (min-width: 640px) { .tc-stat-card { left: 24px; } }
 .tc-stat {
   font-family: var(--trp-face);
   font-weight: 500;
-  font-size: clamp(72px, 13vw, 168px);
-  line-height: .9;
-  letter-spacing: -.06em;
+  font-size: clamp(36px, 4vw, 48px);
+  line-height: 1;
+  letter-spacing: -.04em;
 }
-.tc-stat-l { margin-top: 14px; font-size: 17px; color: var(--tc-soft); }
+.tc-stat-l { margin-top: 4px; font-size: 13px; color: var(--tc-soft); }
 .tc-trouble {
   font-family: var(--trp-face);
   font-size: 15px;
