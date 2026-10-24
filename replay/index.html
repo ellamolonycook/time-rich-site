@@ -244,6 +244,7 @@ dialog.ep::backdrop { background: rgba(20, 22, 17, .78); backdrop-filter: blur(4
 .offer-steps { border: 1px solid var(--line); border-radius: 12px; }
 .offer-steps summary { cursor: pointer; padding: 12px 14px; font-weight: 600; font-size: 15px; }
 .offer-steps ol { padding: 0 14px 14px 36px; display: flex; flex-direction: column; gap: 6px; }
+.offer-steps-body { padding: 0 14px 14px; display: flex; flex-direction: column; gap: 10px; }
 .cards.is-events { grid-template-columns: repeat(auto-fill, minmax(min(260px, 100%), 340px)); }
 .event { display: flex; flex-direction: column; gap: 12px; text-decoration: none; color: var(--ink); }
 .event img { width: 100%; height: auto; aspect-ratio: 1 / 1; object-fit: cover; border-radius: 18px; display: block; background: var(--sage-lt); transition: opacity .2s ease; }
@@ -321,16 +322,20 @@ dialog.ep::backdrop { background: rgba(20, 22, 17, .78); backdrop-filter: blur(4
           <div class="offer-head"><img src="/os/img/stanley.png" alt="" width="36" height="36"/><h3>Stanley: 6 months free</h3></div>
           <p>Your AI head of content.</p>
           <div class="offer-code"><b>TIMERICH6</b><button class="pill is-light" type="button" data-copy-code="TIMERICH6">Copy code</button></div>
-          <p class="offer-help"><b>Get confused?</b> Watch the step-by-step video.</p>
-          <div class="offer-video"><iframe src="https://www.loom.com/embed/be6db9ceb94344afb9b56244c9e517f2?hide_owner=true&hide_share=true&hide_title=true&hideEmbedTopBar=true" title="How to get 6 months of Stanley free" loading="lazy" allow="fullscreen" allowfullscreen style=""></iframe></div>
-          <p class="offer-help"><a href="https://www.loom.com/share/be6db9ceb94344afb9b56244c9e517f2" target="_blank" rel="noopener">Watch it full screen on Loom &#8599;</a></p>
           <p class="offer-warn"><strong>Before you start:</strong> don&rsquo;t click &ldquo;Message Stanley&rdquo; on the homepage. That route skips the promo code. Go in through email first. You can connect iMessage, WhatsApp or Telegram later.</p>
-          <details class="offer-steps" open>
-            <summary>New to Stanley: 11 steps</summary>
+          <details class="offer-steps">
+            <summary>Watch the step-by-step video</summary>
+            <div class="offer-steps-body">
+              <div class="offer-video"><iframe src="https://www.loom.com/embed/be6db9ceb94344afb9b56244c9e517f2?hide_owner=true&hide_share=true&hide_title=true&hideEmbedTopBar=true" title="How to get 6 months of Stanley free" loading="lazy" allow="fullscreen" allowfullscreen style=""></iframe></div>
+              <p class="offer-help"><a href="https://www.loom.com/share/be6db9ceb94344afb9b56244c9e517f2" target="_blank" rel="noopener">Watch it full screen on Loom &#8599;</a></p>
+            </div>
+          </details>
+          <details class="offer-steps">
+            <summary>New to Stanley? Get started</summary>
             <ol><li>On your laptop, go to <a href="https://x.getstanley.ai/r/mz4y9g" target="_blank" rel="noopener sponsored">getstanley.ai</a>.</li><li>Click <strong>Log in</strong> (top of the page, not &ldquo;Message Stanley&rdquo;).</li><li>Click <strong>Sign up</strong>.</li><li>Choose <strong>Sign up with email or Google</strong>. Ignore the iMessage option on this screen.</li><li>Enter your email and create a password. Use the email you want tied to your account. Click <strong>Continue</strong>.</li><li>Verify your email. Check your inbox for a login code and enter it.</li><li>Answer the duplicate account check. If you&rsquo;ve never texted Stanley before, click <strong>No, I&rsquo;m new to Stanley</strong>. The next page can take a few seconds to load.</li><li>Pick the <strong>$49/month</strong> plan. Click <strong>Start your 14-day free trial</strong>. Checkout opens.</li><li>Click <strong>Pay without Link</strong> to pay by card.</li><li>Click <strong>Add promotion code</strong>, enter <strong>TIMERICH6</strong> and click <strong>Apply</strong>. You should see 100% off for the next 6 billing cycles.</li><li>Enter a payment method and click <strong>Start trial</strong>. You won&rsquo;t be charged during the 6 free months.</li></ol>
           </details>
           <details class="offer-steps">
-            <summary>Already on Stanley&rsquo;s free plan? 5 steps</summary>
+            <summary>Already on Stanley&rsquo;s free plan? Get started</summary>
             <ol><li>On your laptop, go to <a href="https://x.getstanley.ai/r/mz4y9g" target="_blank" rel="noopener sponsored">getstanley.ai</a> and log in.</li><li>Go to <strong>Upgrade</strong> and pick the <strong>$49/month</strong> plan. Click <strong>Start your 14-day free trial</strong>. Checkout opens.</li><li>Click <strong>Pay without Link</strong> to pay by card.</li><li>Click <strong>Add promotion code</strong>, enter <strong>TIMERICH6</strong> and click <strong>Apply</strong>. You should see 100% off for the next 6 billing cycles.</li><li>Enter a payment method and click <strong>Start trial</strong>. You won&rsquo;t be charged during the 6 free months.</li></ol>
           </details>
         </div>
