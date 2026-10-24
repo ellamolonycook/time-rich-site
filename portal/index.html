@@ -138,10 +138,12 @@
   <main class="w-full max-w-[400px]">
 
     <div class="mb-8 pl-3 sm:pl-4">
+      <!-- The wordmark carries the club's full name here, so the kicker that
+           used to sit under it would only have said it twice. The stop goes
+           after CLUB: it closes the whole name, not the middle of it. -->
       <a href="/" class="trp-wordmark text-[30px] sm:text-[34px] rounded hover:opacity-90 transition-opacity">
-        TIME RICH<span class="trp-stop">.</span>
+        TIME RICH CLUB<span class="trp-stop">.</span>
       </a>
-      <p class="trp-kicker mt-3">Time Rich Club</p>
     </div>
 
     <div class="glass-card is-static px-6 py-8 sm:px-8 sm:py-9">
@@ -258,7 +260,7 @@
       // An address we know lands on the curriculum. The dashboard is not
       // offered from here; the Accelerator opens on the curriculum itself.
       document.addEventListener('trportal:data', function () {
-        window.location.replace('/portal/curriculum.html');
+        window.location.replace('/portal/curriculum');
       });
     })();
   </script>
