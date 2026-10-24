@@ -96,6 +96,7 @@
     .trp-cw-letter p { margin: 0; font-size: 16.5px; line-height: 1.65; color: var(--trp-deep); max-width: 60ch; white-space: pre-line; }
     .trp-cw-letter-actions { display: flex; flex-wrap: wrap; align-items: center; gap: 10px 16px; margin-top: 6px; }
     .trp-cw-in { font-size: 14px; font-weight: 600; color: var(--trp-green); }
+    .trp-cw-heart { font-size: 22px; line-height: 1; }
     .trp-cw-link { padding: 0; border: 0; background: none; font: inherit; font-size: 14px; font-weight: 600; color: var(--trp-deep); text-decoration: underline; text-underline-offset: 3px; cursor: pointer; min-height: 44px; }
     .trp-cw-link:focus-visible { outline: 2px solid var(--trp-green); outline-offset: 2px; border-radius: 4px; }
     /* The photo in the opened pep talk. */
@@ -759,7 +760,14 @@
             go.addEventListener('click', function () { L.toggleItem(letter); });
             acts.appendChild(go);
           } else {
-            if (L.itemKey(letter)) acts.appendChild(L.el('span', 'trp-cw-in', "You're in"));
+            // A purple heart where "You're in" used to be; the words stay
+            // for screen readers.
+            if (L.itemKey(letter)) {
+              var heart = L.el('span', 'trp-cw-in trp-cw-heart', '\uD83D\uDC9C');
+              heart.setAttribute('role', 'img');
+              heart.setAttribute('aria-label', "You're in");
+              acts.appendChild(heart);
+            }
             if (paras.length > 1) {
               var more = L.el('button', 'trp-cw-link', letterOpen ? 'Show less' : 'Time Rich Pep Talk');
               more.type = 'button';
