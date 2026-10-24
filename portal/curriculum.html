@@ -109,6 +109,7 @@
     .trp-cw-pep-copy { display: flex; flex-direction: column; gap: 12px; min-width: 0; }
     .trp-cw-pep-copy p { margin: 0; }
     @media (max-width: 640px) { .trp-cw-pep-pair { grid-template-columns: 1fr; } .trp-cw-pep-pair .trp-cw-letter-photo { aspect-ratio: 3 / 2; } }
+    .trp-cw-letter .trp-cw-ask { font-family: var(--trp-display); font-weight: 600; font-size: clamp(19px, 2.4vw, 24px); letter-spacing: -.02em; line-height: 1.2; color: var(--trp-deep); }
     .trp-cw-pep-line { margin: 0; max-width: 560px; font-family: var(--trp-display); font-weight: 600; font-size: clamp(19px, 2.4vw, 24px); letter-spacing: -.02em; line-height: 1.2; color: var(--trp-deep); }
     .trp-cw-link { padding: 0; border: 0; background: none; font: inherit; font-size: 14px; font-weight: 600; color: var(--trp-deep); text-decoration: underline; text-underline-offset: 3px; cursor: pointer; min-height: 44px; }
     .trp-cw-link:focus-visible { outline: 2px solid var(--trp-green); outline-offset: 2px; border-radius: 4px; }
@@ -756,6 +757,11 @@
           var col = L.el('div', 'trp-cw-letter');
           col.appendChild(L.el('h2', 'trp-cw-h2', name));
           var paras = L.str(letter.body).split(/\n\s*\n/).filter(function (t) { return t.trim(); });
+          // The letter's closing question ("How serious are you about
+          // becoming Time Rich?") is lifted out and asked above the pep
+          // talk, so it is the first thing read under the title.
+          var ask = paras.length > 1 && /\?\s*$/.test(paras[paras.length - 1]) ? paras.pop().trim() : '';
+          if (ask) col.appendChild(L.el('p', 'trp-cw-ask', ask));
 
           // A button rather than <details> so it stays as it was across the
           // redraw a tick causes; what is inside is only drawn open.
