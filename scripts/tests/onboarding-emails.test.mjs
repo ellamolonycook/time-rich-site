@@ -132,7 +132,7 @@ console.log('\na live paid ThriveCart order from somebody new');
     sent.map((e) => e.body.subject));
 
   const w = welcomeOf(sent), p = prepOf(sent);
-  check('the welcome subject is Ella\'s', w && w.body.subject === "You're in! Welcome to the Superhuman Accelerator",
+  check('the welcome subject is Ella\'s', w && w.body.subject === 'Welcome to the Superhuman Accelerator',
     w && w.body.subject);
   check('the prep subject is Ella\'s', p && p.body.subject === 'Preparation to Become Superhuman',
     p && p.body.subject);
@@ -173,11 +173,24 @@ console.log('\na live paid ThriveCart order from somebody new');
     w && !visible(w.body.html).includes("You've been added as a +1"));
 
   check('the welcome carries the three next steps',
-    w && ['Add every live session to your calendar', 'onboarding questions', 'Log in to the Time Rich Club']
-      .every((s) => visible(w.body.html).includes(s)));
-  check('and what we ask members to commit to',
-    w && visible(w.body.html).includes('tagging @timerichtalk') &&
-    w && visible(w.body.html).includes('1 video testimonial and 1 recommendation'));
+    w && ['Add every live session to your calendar', 'onboarding questions', 'Superhuman WhatsApp group']
+      .every((s) => visible(w.body.html).includes(s)),
+    w && visible(w.body.html));
+  check('and what we ask members to do during the cohort',
+    w && visible(w.body.html).includes('We really appreciate it during the cohort: attend each session, ' +
+      'share 1 LinkedIn post and 2 Instagram stories about your experience, tagging @timerichtalk.'),
+    w && visible(w.body.html));
+  check('and says the prep email is two hours out',
+    w && visible(w.body.html).includes("In 2 hours you'll see the preparation work to become Superhuman.") &&
+    w.body.text.includes("In 2 hours you'll see the preparation work to become Superhuman."));
+  // These were in the first draft and Ella cut them.
+  check('the old commitment block is gone',
+    w && !visible(w.body.html).includes('What we ask you to commit to') &&
+    !visible(w.body.html).includes('1 video testimonial') &&
+    !w.body.text.includes('What we ask you to commit to') &&
+    !w.body.text.includes('1 video testimonial'));
+  check('and so is the old "a couple of hours" line',
+    w && !visible(w.body.html).includes('couple of hours') && !w.body.text.includes('couple of hours'));
 
   check('the prep email carries all seven steps',
     p && ['Claude Pro or ChatGPT Plus', 'Install Wispr Flow', 'Connect your tools to your AI',
@@ -319,14 +332,20 @@ console.log('\nthe wording changes at kickoff');
   check('before kickoff: both sign off "See you Monday!"',
     w && visible(w.body.html).includes('See you Monday!') &&
     p && visible(p.body.html).includes('See you Monday!'));
-  check('before kickoff: the WhatsApp step keeps the Saturday sentence',
-    p && visible(p.body.html).includes('We accept everyone on Saturday 24 October at 12pm ET.'));
+  // The Saturday sentence is gone for good now, on both sides of kickoff.
+  check('before kickoff: the WhatsApp step has no Saturday sentence either',
+    p && !visible(p.body.html).includes('Saturday 24 October') &&
+    !p.body.text.includes('Saturday 24 October'),
+    p && visible(p.body.html));
 
   await run('/thrivecart-webhook', TC, { now: AFTER });
   w = welcomeOf(sent); p = prepOf(sent);
   check('after kickoff: the welcome says we kicked off',
-    w && visible(w.body.html).includes('We kicked off on Monday 26 October, and we\'re live on Zoom every Monday and Friday at 12pm ET until Friday 20 November. Catch up on the recordings in the Time Rich Club.'),
+    w && visible(w.body.html).includes('We kicked off on Monday 26 October, and we\'re live on Zoom every Monday and Friday at 12pm ET until Friday 20 November.'),
     w && visible(w.body.html).slice(0, 320));
+  check('and still does not mention recordings or the Club',
+    w && !visible(w.body.html).includes('Catch up on the recordings') &&
+    !w.body.text.includes('Catch up on the recordings'));
   check('and drops the old kick-off sentence', w && !visible(w.body.html).includes('We kick off on Monday'));
   check('after kickoff: both sign off "See you at the next session!"',
     w && visible(w.body.html).includes('See you at the next session!') &&
@@ -359,8 +378,7 @@ console.log('\nevery link is hyperlinked text, and goes where Ella said');
     'https://timerich.ai/onboard/',
     'https://www.addevent.com/calendar/z0j4nlqbgt6b',
     'https://timerich.ai/superhuman/',
-    'https://timerich.ai/portal/',
-    'https://www.linkedin.com/in/ellamolonycook/',
+    'https://www.instagram.com/timerichtalk',
     'https://ref.wisprflow.ai/ella-cook-vt27',
     'https://superhumanos.notion.site/Wispr-Flow-setup-Superhuman-Accelerator-401ca5ebe5578114bfc3d3bc73be21bd',
     'https://superhumanos.notion.site/Connect-your-tools-to-your-AI-Superhuman-Accelerator-401ca5ebe557817aaa44ff89de92a091',
@@ -400,8 +418,43 @@ console.log('\nevery link is hyperlinked text, and goes where Ella said');
     }
   }
 
-  check('between them the two emails use all eleven links',
+  check('between them the two emails use all ten links',
     seen.size === ALLOWED.size, { used: seen.size, expected: ALLOWED.size });
+}
+
+/* ---- no Club, no portal, anywhere --------------------------------------- */
+
+// The portal is not live for new members yet, so Ella's rule is that neither
+// email points at it: announcements go to WhatsApp instead. This is the test
+// that keeps a Club link from drifting back in, on either side of kickoff.
+console.log('\nneither email sends anybody to the Club or the portal');
+{
+  const FORBIDDEN = [
+    'https://timerich.ai/portal/',
+    'timerich.ai/portal',
+    'Time Rich Club under Start here',
+    'Log in to the',
+    'Saturday 24 October',
+  ];
+
+  for (const [path, body] of [['/thrivecart-webhook', TC], ['/onboard', ONB]]) {
+    for (const now of [BEFORE, AFTER]) {
+      await run(path, body, { now });
+      const when = now === BEFORE ? 'before' : 'after';
+      check(`${path} @ ${when}: two emails to inspect`, sent.length === 2, sent.length);
+      for (const email of sent) {
+        const where = `${path} @ ${when}/${email.body.subject.slice(0, 18)}`;
+        // The raw HTML, not just the visible text: an href nobody can see is
+        // exactly the thing this is guarding against.
+        const haystacks = [email.body.html, email.body.text];
+        for (const phrase of FORBIDDEN) {
+          check(`${where}: no "${phrase}"`,
+            haystacks.every((h) => !h.includes(phrase)),
+            haystacks.map((h) => h.includes(phrase)));
+        }
+      }
+    }
+  }
 }
 
 /* ---- the name is somebody else's input ---------------------------------- */
