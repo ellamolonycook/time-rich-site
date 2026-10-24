@@ -59,7 +59,8 @@ Ella Molony Cook$tr$,
 + The TRC Club Code
 1. Bring the good energy. Be kind, cheer people on, and celebrate the wins, big and small.
 2. Give more than you take. Share what worked, answer the question you know, and make the intro.
-3. Need help with the portal or program? DM a Time Rich Leader or email emc@timerichclub.com.$tr$,
+3. Need help with the portal or program? DM a Time Rich Leader or email emc@timerichclub.com.
+4. No spam, self-promotion, selling or demanding vibes. Anyone who does this will be removed from the Club and refunded for the accelerator.$tr$,
    $tr$https://join.slack.com/t/timerichclub/shared_invite/zt-4dry4ppfn-yV~VNRrHW_z3K3AFtbnOJQ$tr$),
   (0, $tr$text$tr$, $tr$Add your photo and name$tr$, 120,
    $tr$Your full name, your headshot, and a title that says what you do and where. By the end of Wednesday 28 October.$tr$,
@@ -68,20 +69,18 @@ Ella Molony Cook$tr$,
    $tr$Who you are, what you sell, and your Q4 North Star with a number. After that, ask in the channel that fits so the right expert sees it.
 
 + The channels, and who to ask
-#superhuman-accelerator
-Announcements and session links. Ella and the Time Rich team.
 #introductions
-Say hello. Ella welcomes everyone here.
+Say hello and share your Q4 North Star with an outcome.
+#superhuman-accelerator
+Announcements, session links and the week's Audacious Action.
 #audacious-wins
-Every win, big or small.
-#ai-support
-Prompts, projects and agents. Jo O'Kelly, Shikshita Juyal, Indra Klavins, Thiers Santos and the 99x engineers, Cien Solon and Wilfred Soriaga.
-#technical-support
-The Club, Wispr Flow, connectors and logins. Time Rich Leader.
-#content-system
-The Content System and Stanley. Mika Reyes and the Stanley team.
+Post every win, big or small!!!
+#ai-setup
+Getting your tools installed, connected and talking to each other.
+#ai-systems
+Share and refine the agents and workflows running your business.
 #authority-storytelling-gtm
-Posts, talks and go-to-market. ViKA Victoria.$tr$,
+Storytelling, positioning and getting your offer to market.$tr$,
    null),
 
   -- Step 2: Set up your AI
