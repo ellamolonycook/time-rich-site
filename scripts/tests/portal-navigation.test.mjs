@@ -6,6 +6,22 @@ import assert from 'node:assert/strict';
 import { execFileSync } from 'node:child_process';
 
 const pages = ['club', 'dashboard', 'curriculum', 'resources', 'members', 'sessions', 'prompts', 'index'];
+
+/* The file a nav link is asking for. The links are extensionless now, so
+   /portal/resources is served from portal/resources.html and /portal/ from
+   portal/index.html -- the same mapping GitHub Pages does. The .html form is
+   still resolved too, because the files it names are all still there.
+
+   /club is its own page rather than a portal one: it serves Apply to anyone
+   without a session and frames the Club home for a member. */
+function fileFor(url) {
+  const path = url.pathname;
+  if (path === '/club' || path === '/club/') return 'club/index.html';
+  if (path.endsWith('.html')) return path.slice(1);
+  if (path.endsWith('/')) return path.slice(1) + 'index.html';
+  return path.slice(1) + '.html';
+}
+
 let linksChecked = 0;
 for (const page of pages) {
   const html = process.env.NAV_TEST_BASELINE === '1'
@@ -27,8 +43,8 @@ for (const page of pages) {
   for (const link of links) {
     const url = new URL(link.href);
     if (url.origin !== w.location.origin) continue;
-    const path = url.pathname === '/club' ? 'club/index.html' : url.pathname.slice(1);
-    assert(existsSync(new URL('../../' + path, import.meta.url)), page + ': missing destination ' + path);
+    assert(existsSync(new URL('../../' + fileFor(url), import.meta.url)),
+      page + ': missing destination ' + url.pathname);
     // Rapid clicks and modified clicks must retain native navigation behavior.
     for (const options of [{}, {}, {ctrlKey:true}, {metaKey:true}]) {
       const event = new w.MouseEvent('click', {bubbles:true, cancelable:true, button:0, ...options});
@@ -67,4 +83,64 @@ for (const page of pages) {
 
   dom.window.close();
 }
-console.log('Passed: ' + linksChecked + ' desktop/mobile/submenu links, rapid and modified clicks, Club frame target, and the shared theme script on all ' + pages.length + ' pages.');
+/* ---- an old .html address tidies itself -------------------------------
+   Nothing in the portal links to a .html address any more, but the files are
+   all still served and the .html form is what sits in bookmarks and in the
+   emails already sent. A member who arrives that way should end up looking
+   at the clean address, without a reload and without losing the query or the
+   hash -- the sign-in link carries a code in the query.
+
+   This runs the real portal-access.js in a window rather than reading it. */
+const ACCESS = readFileSync(new URL('../../portal/portal-access.js', import.meta.url), 'utf8');
+
+function arriveAt(url, { framed = false } = {}) {
+  const store = {};
+  const dom = new JSDOM('<!doctype html><html><body></body></html>', {
+    url, runScripts: 'outside-only', virtualConsole: new VirtualConsole(),
+    beforeParse(win) {
+      Object.defineProperty(win, 'localStorage', {
+        value: {
+          getItem: () => null, setItem: (k, v) => { store[k] = String(v); },
+          removeItem: (k) => { delete store[k]; },
+        },
+      });
+      /* A framed page must be left alone. The Club home is framed at /club,
+         where the bar shows /club and the frame's own address was never on
+         screen to tidy.
+
+         isFramed() asks whether window.top is window.self, and in jsdom
+         `top` cannot be redefined while `self` can, so the two are split
+         from the other side. The comparison is the same either way. */
+      if (framed) Object.defineProperty(win, 'self', { value: Object.create(win) });
+    },
+  });
+  const win = dom.window;
+  // Nothing should reach the network: mount() runs on the same evaluation.
+  win.fetch = () => new Promise(() => {});
+  win.eval(ACCESS);
+  const after = win.location.href;
+  win.close();
+  return after;
+}
+
+for (const [arrived, want] of [
+  ['https://timerich.ai/portal/resources.html', 'https://timerich.ai/portal/resources'],
+  ['https://timerich.ai/portal/club.html', 'https://timerich.ai/portal/club'],
+  // index.html is the directory's own page, so it drops to the slash.
+  ['https://timerich.ai/portal/index.html', 'https://timerich.ai/portal/'],
+  // The query and the hash come along.
+  ['https://timerich.ai/portal/index.html?code=abc', 'https://timerich.ai/portal/?code=abc'],
+  ['https://timerich.ai/portal/resources.html#faq', 'https://timerich.ai/portal/resources#faq'],
+  ['https://timerich.ai/portal/sessions.html?w=2#now', 'https://timerich.ai/portal/sessions?w=2#now'],
+  // A clean address is already right and must not be touched.
+  ['https://timerich.ai/portal/resources', 'https://timerich.ai/portal/resources'],
+  ['https://timerich.ai/portal/', 'https://timerich.ai/portal/'],
+]) {
+  assert.equal(arriveAt(arrived), want, arrived + ' should settle on ' + want);
+}
+
+// Inside the /club frame there is no address bar of ours to tidy.
+assert.equal(arriveAt('https://timerich.ai/portal/club.html', { framed: true }),
+  'https://timerich.ai/portal/club.html', 'a framed page should be left alone');
+
+console.log('Passed: ' + linksChecked + ' desktop/mobile/submenu links, rapid and modified clicks, Club frame target, the shared theme script on all ' + pages.length + ' pages, and 9 old .html addresses tidying themselves.');

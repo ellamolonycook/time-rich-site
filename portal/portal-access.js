@@ -28,7 +28,7 @@
  *     [data-portal-sessions] gets the session rows
  *   If any of name/weeks/sessions are present it calls load() to fill them.
  *   With no valid session it shows [data-portal-login] if the page has
- *   one, and otherwise sends the browser to index.html.
+ *   one, and otherwise sends the browser to the sign-in page.
  *
  * Gating
  *   The script keeps a state on <html>: data-tr-portal="loading" | "in" | "out".
@@ -840,7 +840,7 @@
   }
 
   /* ---- leaving the portal, from inside a frame or not ------------------
-   * The Club home is served two ways: on its own at /portal/club.html, and
+   * The Club home is served two ways: on its own at /portal/club, and
    * inside a full-bleed iframe at timerich.ai/club, where a visitor without
    * a session gets the public Apply page at that same address.
    *
@@ -868,11 +868,47 @@
     }
   }
 
+  /* ---- old .html addresses ----------------------------------------------
+   * Every link in the portal is extensionless now (/portal/resources), but
+   * /portal/resources.html is still served, and it is still what sits in
+   * bookmarks and in the emails already sent. A member who arrives that way
+   * gets the clean address in the bar instead, so the next thing they copy
+   * out of it is the form we want.
+   *
+   * replaceState rather than a redirect: this is already the right document,
+   * so there is nothing to fetch, nothing repaints, and Back still goes
+   * where the member came from instead of landing on the address they just
+   * left. The query string and the hash come along -- the sign-in link
+   * carries a code in the query, and the FAQ links carry a hash.
+   *
+   * Skipped inside a frame: the Club home is framed at /club, where the bar
+   * shows /club and the frame's own address was never on screen to tidy.
+   */
+  function tidyAddress() {
+    var loc = window.location;
+    if (loc.protocol !== 'https:' && loc.protocol !== 'http:') return;
+    if (isFramed()) return;
+    if (!window.history || !window.history.replaceState) return;
+    if (!/\.html$/.test(loc.pathname)) return;
+
+    // index.html is the directory's own page, so it drops to the trailing
+    // slash rather than to a bare "/portal".
+    var clean = /\/index\.html$/.test(loc.pathname)
+      ? loc.pathname.replace(/index\.html$/, '')
+      : loc.pathname.replace(/\.html$/, '');
+
+    try {
+      window.history.replaceState(window.history.state, '',
+                                  clean + loc.search + loc.hash);
+    } catch (e) { /* nothing to do: the address bar was not ours to rewrite */ }
+  }
+
   function signedOut() {
     if (document.querySelector('[data-portal-login]')) {
       setState('out');
     } else if (!leaveFrame()) {
-      window.location.replace('index.html');
+      // "./" rather than index.html: the sign-in page is the directory.
+      window.location.replace('./');
     }
   }
 
@@ -997,6 +1033,9 @@
       showMessage(MSG.unavailable);
     });
   }
+
+  // Nothing here touches the DOM, so it does not wait for it.
+  tidyAddress();
 
   if (document.readyState === 'loading') {
     document.addEventListener('DOMContentLoaded', mount);

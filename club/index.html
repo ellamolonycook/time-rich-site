@@ -5,7 +5,7 @@
      A signed-in member gets the Club home; everyone else gets the Apply
      page below, exactly as it has always been.
 
-     The member view is a full-bleed iframe of /portal/club.html rather than
+     The member view is a full-bleed iframe of /portal/club rather than
      the same markup inlined here, because this page styles bare h1, p, a,
      section, nav and footer -- those rules would land on the Club home and
      restyle it. The frame boundary is what keeps the two apart.
@@ -126,7 +126,7 @@
       showApply();
     });
 
-    frame.src = '/portal/club.html';
+    frame.src = '/portal/club';
     document.body.appendChild(frame);
   }
 

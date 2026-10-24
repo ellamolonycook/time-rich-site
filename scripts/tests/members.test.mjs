@@ -159,7 +159,7 @@ console.log('\nTime Rich Members page — still a portal page');
     page.doc.querySelector('header#top-nav') !== null &&
     page.doc.querySelector('nav[aria-label="Portal"]') !== null);
   check('Members is marked as the current page in the nav',
-    page.doc.querySelector('nav a[href="members.html"][aria-current="page"]') !== null);
+    page.doc.querySelector('nav a[href="members"][aria-current="page"]') !== null);
   check('the footer line is there',
     page.doc.querySelector('footer .trp-foot') !== null);
   check('and the theme control is still the one every page has',
@@ -249,7 +249,9 @@ async function openPortalPage(name, { directoryStatus = 200, cache, directoryThr
 console.log('\nMembers nav link on the other portal pages');
 for (const name of PAGES) {
   const html = readFileSync(new URL(`../../portal/${name}.html`, import.meta.url), 'utf8');
-  const raw = [...html.matchAll(/<a href="members\.html"([^>]*)>/g)].map((m) => m[1]);
+  // The link is extensionless now; portal/members.html is still the file
+  // behind it, and still served, so an old bookmark keeps working.
+  const raw = [...html.matchAll(/<a href="members"([^>]*)>/g)].map((m) => m[1]);
   check(name + '.html: a Members link in the top nav and the phone menu, neither hidden',
     raw.length === 2 && raw.every((attrs) => !/\shidden(\s|$)/.test(attrs)), raw);
   check(name + '.html: the attribute stays, so portal-access.js still finds them',

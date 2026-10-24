@@ -78,7 +78,7 @@
     /* The way on from this card, which is the whole list rather than the
        part of it that fits on the dashboard. */
     var go = L.el('a', 'trp-progress-go');
-    go.href = 'curriculum.html';
+    go.href = 'curriculum';
     go.appendChild(document.createTextNode('Resume curriculum '));
     var arrow = L.el('span', '', '→');
     arrow.setAttribute('aria-hidden', 'true');
