@@ -164,13 +164,14 @@ console.log('\nEvery area the payload fills holds its space open');
     docs.dashboard.querySelectorAll('[data-dash-list] .trp-dsteps .trp-dstep').length === 6 &&
     docs.dashboard.querySelector('[data-dash-meter] .trp-progress-track .trp-progress-fill') !== null,
     docs.dashboard.querySelectorAll('[data-dash-list] .trp-dstep').length);
-  // The redesigned curriculum: four week cards and the picked week's panel.
-  check('the curriculum placeholder uses the real week cards and lesson rows',
+  // The curriculum: the welcome, four week tabs and the setup steps.
+  check('the curriculum placeholder uses the real welcome, week tabs and step boxes',
+    docs.curriculum.querySelector('[data-curriculum-static] .trp-cw-welcome') !== null &&
     docs.curriculum.querySelectorAll('[data-curriculum-static] .trp-cw-weeks .trp-cw-week').length === 4 &&
-    docs.curriculum.querySelector('[data-curriculum-static] .trp-cw-panel .trp-cw-lessons .trp-cw-lesson') !== null);
-  check('and holds as many rows as Week 1 has steps',
-    docs.curriculum.querySelectorAll('[data-curriculum-static] .trp-cw-lesson').length === 9,
-    docs.curriculum.querySelectorAll('[data-curriculum-static] .trp-cw-lesson').length);
+    docs.curriculum.querySelector('[data-curriculum-static] .trp-cw-panel .trp-cw-steps .trp-cw-step') !== null);
+  check('and holds as many boxes as Start here has steps',
+    docs.curriculum.querySelectorAll('[data-curriculum-static] .trp-cw-step').length === 5,
+    docs.curriculum.querySelectorAll('[data-curriculum-static] .trp-cw-step').length);
   check('the prompts placeholder holds one card per card the page draws',
     docs.prompts.querySelectorAll('#prompt-cards .trp-pcard').length === 16,
     docs.prompts.querySelectorAll('#prompt-cards .trp-pcard').length);
