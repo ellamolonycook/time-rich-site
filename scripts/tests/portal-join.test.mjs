@@ -15,10 +15,10 @@ import { JSDOM, VirtualConsole } from 'jsdom';
 import { readFileSync } from 'node:fs';
 
 const read = (p) => readFileSync(new URL('../../' + p, import.meta.url), 'utf8');
-const LIVE = read('portal/portal-live.js');
-const SESSIONS_JS = read('portal/portal-sessions.js');
-const SESSIONS_HTML = read('portal/sessions.html');
-const DASHBOARD_HTML = read('portal/dashboard.html');
+const LIVE = read('club/portal-live.js');
+const SESSIONS_JS = read('club/portal-sessions.js');
+const SESSIONS_HTML = read('club/sessions.html');
+const DASHBOARD_HTML = read('club/dashboard.html');
 
 let pass = 0, fail = 0;
 function check(name, cond, extra) {
@@ -85,7 +85,7 @@ function stateOf(card) {
    the payload handed over the way portal-access.js hands it over. */
 function sessionsCard(nowIso) {
   const dom = new JSDOM(SESSIONS_HTML, {
-    url: 'https://timerich.ai/portal/sessions.html',
+    url: 'https://timerich.ai/club/sessions.html',
     runScripts: 'outside-only',
     virtualConsole: new VirtualConsole(),
   });
@@ -103,7 +103,7 @@ function sessionsCard(nowIso) {
    jsdom never fetches would cause. */
 function dashboardCard(nowIso) {
   const dom = new JSDOM(DASHBOARD_HTML, {
-    url: 'https://timerich.ai/portal/dashboard.html',
+    url: 'https://timerich.ai/club/dashboard.html',
     runScripts: 'dangerously',
     pretendToBeVisual: true,
     virtualConsole: new VirtualConsole(),

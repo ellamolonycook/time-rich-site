@@ -2,7 +2,7 @@
  *
  * The portal used to pull the Play CDN at runtime, which compiled the whole
  * framework in the browser on every page load. This builds the same utilities
- * once, into portal/portal.css, which is committed so GitHub Pages serves it
+ * once, into club/portal.css, which is committed so GitHub Pages serves it
  * as a plain stylesheet.
  *
  *   npm run build:css
@@ -16,11 +16,16 @@
 module.exports = {
   // A glob, not a list of files. The list was hand maintained, and adding
   // portal-prompts.js without remembering to add it here silently purged
-  // every class that only appeared in that file. Everything in portal/ is
+  // every class that only appeared in that file. Everything in club/ is
   // ours; there is no vendor code in here to sweep up.
+  //
+  // Except club/index.html, which is the public Apply page rather than a
+  // portal page: it carries its own stylesheet, and sweeping it in would put
+  // every word of its copy that happens to look like a class into portal.css.
   content: [
-    './portal/*.html',
-    './portal/*.js',
+    './club/*.html',
+    '!./club/index.html',
+    './club/*.js',
   ],
   theme: {
     extend: {
@@ -30,7 +35,7 @@ module.exports = {
       // modifiers (bg-brand-ink/5, border-brand-ink/10) keep working.
       //
       // The light and dark values live on :root and [data-theme='dark'] in
-      // portal/portal-tailwind-src.css. The dark theme swaps the ink family
+      // club/portal-tailwind-src.css. The dark theme swaps the ink family
       // and the paper family over, which is why a primary button written as
       // `bg-brand-deep text-brand-bg` comes out correctly inverted without
       // a single class changing.
@@ -70,7 +75,7 @@ module.exports = {
       // still tells a label apart is its size and tracking.
       //
       // These names are mirrored by --trp-body and --trp-label in
-      // portal/portal-tailwind-src.css; the two have to stay in step.
+      // club/portal-tailwind-src.css; the two have to stay in step.
       fontFamily: {
         sans: ['Inter', '"Inter Fallback"', 'system-ui', '-apple-system', '"Segoe UI"', 'Roboto', 'Helvetica', 'sans-serif'],
         display: ['"Space Grotesk"', '"Space Grotesk Fallback"', 'system-ui', 'sans-serif'],

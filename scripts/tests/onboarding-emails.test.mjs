@@ -430,7 +430,7 @@ console.log('\nevery link is hyperlinked text, and goes where Ella said');
 console.log('\nneither email sends anybody to the Club or the portal');
 {
   const FORBIDDEN = [
-    'https://timerich.ai/portal/',
+    'https://timerich.ai/club/',
     'timerich.ai/portal',
     'Time Rich Club under Start here',
     'Log in to the',

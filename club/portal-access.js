@@ -832,7 +832,7 @@
     // No login form on this page, so put it where the content would be.
     // [data-portal-message] is for a page that renders its own content and so
     // has neither hook: without it the page sits on its loading line forever
-    // with nothing to say. portal/prompts.html is one.
+    // with nothing to say. club/prompts.html is one.
     var target = document.querySelector('[data-portal-weeks]') ||
                  document.querySelector('[data-portal-sessions]') ||
                  document.querySelector('[data-portal-message]');
@@ -840,7 +840,7 @@
   }
 
   /* ---- leaving the portal, from inside a frame or not ------------------
-   * The Club home is served two ways: on its own at /portal/club, and
+   * The Club home is served two ways: on its own at /club/home, and
    * inside a full-bleed iframe at timerich.ai/club, where a visitor without
    * a session gets the public Apply page at that same address.
    *
@@ -869,8 +869,8 @@
   }
 
   /* ---- old .html addresses ----------------------------------------------
-   * Every link in the portal is extensionless now (/portal/resources), but
-   * /portal/resources.html is still served, and it is still what sits in
+   * Every link in the portal is extensionless now (/club/resources), but
+   * /club/resources.html is still served, and it is still what sits in
    * bookmarks and in the emails already sent. A member who arrives that way
    * gets the clean address in the bar instead, so the next thing they copy
    * out of it is the form we want.
@@ -891,11 +891,7 @@
     if (!window.history || !window.history.replaceState) return;
     if (!/\.html$/.test(loc.pathname)) return;
 
-    // index.html is the directory's own page, so it drops to the trailing
-    // slash rather than to a bare "/portal".
-    var clean = /\/index\.html$/.test(loc.pathname)
-      ? loc.pathname.replace(/index\.html$/, '')
-      : loc.pathname.replace(/\.html$/, '');
+    var clean = loc.pathname.replace(/\.html$/, '');
 
     try {
       window.history.replaceState(window.history.state, '',
@@ -907,8 +903,9 @@
     if (document.querySelector('[data-portal-login]')) {
       setState('out');
     } else if (!leaveFrame()) {
-      // "./" rather than index.html: the sign-in page is the directory.
-      window.location.replace('./');
+      // Not "./": that is /club, which is the Apply page to anyone without
+      // a session. The sign-in page has an address of its own.
+      window.location.replace('signin');
     }
   }
 

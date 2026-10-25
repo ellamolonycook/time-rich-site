@@ -75,7 +75,7 @@
    The portal's shared style.
    ---------------------------------------------------------------------------
    This file is the one place portal-wide styling is written down. Every page
-   under portal/ loads the compiled portal.css, and each page keeps only the
+   under club/ loads the compiled portal.css, and each page keeps only the
    CSS that is unique to it.
 
    The values here are the accelerator page's. That page is the front of the
