@@ -110,6 +110,7 @@
     .trp-cw-pep-copy { display: flex; flex-direction: column; gap: 16px; min-width: 0; }
     .trp-cw-pep-copy p { margin: 0; max-width: none; font-size: clamp(16.5px, 1.5vw, 19px); line-height: 1.65; color: var(--trp-deep); white-space: pre-line; }
     @media (max-width: 640px) { .trp-cw-pep-pair { grid-template-columns: 1fr; } .trp-cw-pep-pair .trp-cw-letter-photo { aspect-ratio: 3 / 2; } }
+    .trp-cw-letter .trp-cw-lead { font-size: clamp(17px, 1.6vw, 19px); }
     .trp-cw-letter .trp-cw-ask { font-family: var(--trp-display); font-weight: 600; font-size: clamp(19px, 2.4vw, 24px); letter-spacing: -.02em; line-height: 1.2; color: var(--trp-deep); }
     .trp-cw-pep-line { margin: 0; max-width: none; font-family: var(--trp-display); font-weight: 600; font-size: clamp(19px, 2.4vw, 24px); letter-spacing: -.02em; line-height: 1.2; color: var(--trp-deep); }
     .trp-cw-link { padding: 0; border: 0; background: none; font: inherit; font-size: 14px; font-weight: 600; color: var(--trp-deep); text-decoration: underline; text-underline-offset: 3px; cursor: pointer; min-height: 44px; }
@@ -763,10 +764,13 @@
           var col = L.el('div', 'trp-cw-letter');
           col.appendChild(L.el('h2', 'trp-cw-h2', name));
           var paras = L.str(letter.body).split(/\n\s*\n/).filter(function (t) { return t.trim(); });
-          // The letter's closing question ("How serious are you about
-          // becoming Time Rich?") is lifted out and asked above the pep
-          // talk, so it is the first thing read under the title.
+          // Two lines are lifted out of the letter to sit above the pep
+          // talk, under the title: its opening line ("You're not here just to
+          // learn AI..."), then its closing question ("How serious are you
+          // about becoming Time Rich?"). The rest stays in the drop-down.
           var ask = paras.length > 1 && /\?\s*$/.test(paras[paras.length - 1]) ? paras.pop().trim() : '';
+          var lead = paras.length > 1 ? paras.shift().trim() : '';
+          if (lead) col.appendChild(L.el('p', 'trp-cw-lead', lead));
           if (ask) col.appendChild(L.el('p', 'trp-cw-ask', ask));
 
           // A button rather than <details> so it stays as it was across the
