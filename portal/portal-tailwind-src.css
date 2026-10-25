@@ -1146,10 +1146,10 @@
     line-height: 1.55;
     color: var(--trp-muted);
   }
-  /* The box head carries a name and two actions. It wraps rather than
-     squeezing them, which is what a phone needs. */
+  /* The box head carries a name and four actions (three Opens and Copy).
+     It wraps rather than squeezing them, which is what a phone needs. */
   .trp-build .trp-copybox-head { flex-wrap: wrap; row-gap: 10px; }
-  .trp-build-acts { display: flex; align-items: center; gap: 8px; flex: none; }
+  .trp-build-acts { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; flex: none; }
   /* Open is the 44px pill on the Prompts page, where it is a card's main
      action. Here it shares a box head with Copy, so it takes Copy's 36px and
      keeps the 44px target through the same overlay trick. */
@@ -1163,10 +1163,11 @@
 
   @media (max-width: 640px) {
     .trp-build { padding: 22px 20px; }
-    /* Both actions on their own line, half each, rather than crushed against
-       the prompt name. */
+    /* The actions on their own line, sharing it, rather than crushed against
+       the prompt name. Three Opens and Copy wrap two to a row when narrow. */
     .trp-build-acts { width: 100%; }
-    .trp-build-acts > * { flex: 1 1 0; justify-content: center; text-align: center; }
+    .trp-build-acts > * { flex: 1 1 40%; justify-content: center; text-align: center; }
+    .trp-build .trp-open { flex: 1 1 40%; }
   }
 
   /* -- the partner offers --------------------------------------------------
@@ -3333,6 +3334,16 @@
     letter-spacing: -.015em;
     color: var(--trp-ink);
   }
+
+  /* Each name links to that agent's own site. Underlined so it reads as a
+     link without leaving the heading face or the ink. */
+  .trp-agents .trp-agent-name a {
+    color: inherit;
+    text-decoration: underline;
+    text-decoration-thickness: 1px;
+    text-underline-offset: 3px;
+  }
+  .trp-agents .trp-agent-name a:hover { opacity: .7; }
 
   @media (max-width: 900px) {
     /* One card per agent. The headings move from the <thead>, which goes,
