@@ -31,7 +31,7 @@ a{color:#424B36}a:hover{color:#333A28}
 .ghostbtn:hover{background:rgba(216,217,185,.16)}
 .stepdot:hover{background:#E5E6CF}
 .checkrow:hover{background:#E5E6CF}
-.ctabtn:hover{background:#333A28 !important}
+.ctabtn:hover{background:#E5E6CF !important;color:#1A1816 !important}
 .joinbtn:hover{border-color:#424B36 !important;box-shadow:0 16px 34px -24px rgba(26,24,22,.4)}
 .annc:hover{background:#333A28 !important}
 .stepnav::-webkit-scrollbar{display:none}
@@ -536,6 +536,10 @@ Keep the assessment brief and outside the post.
 <span style="font-family: 'Inter', sans-serif; font-size: 12px; letter-spacing: .08em; font-weight: 600; text-transform: uppercase; color: #D8D9B9">Superhuman Accelerator · Win a seat</span>
 <h2 id="winh" style="font-family: 'Space Grotesk', system-ui, sans-serif; font-weight: 600; font-size: clamp(28px, 4.4cqi, 40px); letter-spacing: -.022em; line-height: 1.08; margin: 0; color: #FFFDFB; text-wrap: balance">Win 1 seat in the Superhuman Accelerator</h2>
 <p style="font-size: 17px; line-height: 1.6; margin: 0; color: #E5E6CF; max-width: 56ch">Gifted to tonight's room by Stanley and Wispr Flow. 4 weeks to BECOME VISIBLE, INCREASE REVENUE &amp; BUILD YOUR AI OS.</p>
+<!-- What the best post wins, in the same column as the pitch. The VIP setup is part
+     of the prize; everyone in the room already gets 6 months of Stanley on
+     TIMERICH6 from the code card at the top. -->
+<p id="vipprize" style="font-size: 17px; line-height: 1.6; margin: 0; color: #FFFDFB; max-width: 56ch"><strong style="font-weight: 600; color: #CCEEA0">Best post wins:</strong> 1 seat in the Superhuman Accelerator, a VIP setup by the Stanley team (brain, voice and rituals built with you, $1,000 value), 6 months of Stanley Premium and 12 months of Wispr Flow Pro.</p>
 <a href="https://timerich.ai/accelerator" class="ctabtn" style="align-self: flex-start; display: inline-flex; align-items: center; background: #FFFDFB; color: #1A1816; text-decoration: none; font-weight: 500; font-size: 13px; letter-spacing: .06em; text-transform: uppercase; border-radius: 10px; padding: 0 20px; min-height: 48px; margin-top: 6px">See the accelerator</a>
 </div>
 <div style="flex: 1 1 340px; min-width: 0; background: rgba(255,253,251,.08); border: 1px solid rgba(216,217,185,.28); border-radius: 16px; padding: 22px; display: flex; flex-direction: column; gap: 14px">
@@ -556,21 +560,6 @@ Keep the assessment brief and outside the post.
 </div>
 </div>
 
-<!-- What the best post wins: the one Accelerator seat, plus the Stanley
-     VIP setup and Wispr Flow Pro. Its own band across the foot of the card.
-
-     The VIP setup here is part of the prize. Everyone in the room gets 6 months of
-     Stanley free on TIMERICH6, which is what the code card at the top of the
-     page says.
-
-     The draw date comes from WORKSHOP.winnersWhen, the same value the "How
-     to enter" list above reads. It is said twice on this page now, and a
-     date that is right in one place and stale in the other is worse than
-     either -- so there is still only one of it. -->
-<div id="vipprize" style="display: flex; align-items: flex-start; gap: 14px; background: rgba(255,253,251,.08); border: 1px solid rgba(216,217,185,.28); border-left: 4px solid #CCEEA0; border-radius: 16px; padding: 18px 20px">
-<img src="/os/img/stanley.png" alt="" width="32" height="32" style="flex: 0 0 auto; width: 32px; height: 32px; border-radius: 8px; background: #EEEBFF; object-fit: contain; display: block"/>
-<span style="font-size: 16.5px; line-height: 1.55; color: #FFFDFB; min-width: 0">Best post wins: 1 seat in the Superhuman Accelerator, a VIP setup by the Stanley team: brain, voice and rituals built with you ($1,000 value), plus 6 months of Stanley Premium. 12 months of Wispr Flow Pro. We draw the winner on <span id="vipwhen"></span>.</span>
-</div>
 </section>
 
 <section id="hosts" aria-labelledby="hostsh" style="display: flex; flex-direction: column; gap: 20px">
@@ -887,7 +876,6 @@ Start the interview now.`,
   /* ---- the open answers, written into the page ------------------------ */
   one('#mikaprompt').textContent = WORKSHOP.mikaPrompt;
   one('#winnerswhen').textContent = WORKSHOP.winnersWhen;
-  one('#vipwhen').textContent = WORKSHOP.winnersWhen;
 
   // The draw: both forms post to the forms worker, which files the entry in
   // Notion ("Content Workshop Draw Entries"). Only a linkedin.com link goes.
