@@ -68,7 +68,7 @@ console.log('\n/portal-passcode-emails — dry run');
   // at all, and the preview must not show the member's real address.
   check('carries no passcode', !combined.includes('ABCDE-FGHIJ') && !combined.includes('KLMNO-PQRST') && !/passcode:/i.test(combined), body);
   check('tells the member to sign in with their email',
-    combined.includes('sign in with this email address') && combined.includes('timerich.ai/portal'), body);
+    combined.includes('sign in with this email address') && combined.includes('timerich.ai/club/signin'), body);
   check('uses no CORS response header', !response.headers.has('Access-Control-Allow-Origin'));
 }
 
@@ -98,7 +98,7 @@ console.log('\n/portal-passcode-emails — confirmed send');
   check('records sent timestamp after the email call', calls.indexOf(resend) < calls.indexOf(patch), calls);
   check('records sent timestamp with the shared Supabase service-role headers', patch && patch.init.headers.apikey === env.SUPABASE_SERVICE_ROLE_KEY && patch.init.headers.Authorization === `Bearer ${env.SUPABASE_SERVICE_ROLE_KEY}`, patch);
   const email = JSON.parse(resend.init.body);
-  check('uses the approved portal link and support contact copy', email.text.includes('https://timerich.ai/portal') && email.text.includes('Questions? Reply to this email or write to emc@timerich.ai.') && email.text.includes('Warmly,\nElla\nFounder, Time Rich') && !email.text.includes('—'), email);
+  check('uses the approved portal link and support contact copy', email.text.includes('https://timerich.ai/club/signin') && email.text.includes('Questions? Reply to this email or write to emc@timerich.ai.') && email.text.includes('Warmly,\nElla\nFounder, Time Rich') && !email.text.includes('—'), email);
   check('send response does not expose the passcode', !JSON.stringify(body).includes('ABCDE-FGHIJ'), body);
   delete env.PORTAL_PASSCODE_BUYER_SEND_ENABLED;
 }

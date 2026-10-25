@@ -19,11 +19,11 @@ import { JSDOM, VirtualConsole } from 'jsdom';
 import { readFileSync } from 'node:fs';
 
 const read = (p) => readFileSync(new URL('../../' + p, import.meta.url), 'utf8');
-const LIVE = read('portal/portal-live.js');
-const HTML = read('portal/dashboard.html');
-const RESOURCES = read('portal/resources.html');
-const SRC = read('portal/portal-tailwind-src.css');
-const BUILT = read('portal/portal.css');
+const LIVE = read('club/portal-live.js');
+const HTML = read('club/dashboard.html');
+const RESOURCES = read('club/resources.html');
+const SRC = read('club/portal-tailwind-src.css');
+const BUILT = read('club/portal.css');
 
 let pass = 0, fail = 0;
 function check(name, cond, extra) {
@@ -102,7 +102,7 @@ function freeze(window, iso) {
 function open({ data = payload(), now = '2026-10-17T12:00:00.000Z' } = {}) {
   const saved = [];
   const dom = new JSDOM(HTML, {
-    url: 'https://timerich.ai/portal/dashboard.html',
+    url: 'https://timerich.ai/club/dashboard.html',
     runScripts: 'dangerously',
     pretendToBeVisual: true,
     virtualConsole: new VirtualConsole(),
@@ -329,7 +329,7 @@ console.log('\nThe band under the list');
 console.log('\nWeek 1 joins the list once it opens');
 {
   const WEEK1 = [
-    { id: 10, kind: 'link', title: 'Set your 90-day goal with your AI', body: 'No installs.', url: 'https://timerich.ai/portal/prompts.html' },
+    { id: 10, kind: 'link', title: 'Set your 90-day goal with your AI', body: 'No installs.', url: 'https://timerich.ai/club/prompts.html' },
   ];
   const page = open({
     data: payload({ doneIds: PREP.map((i) => i.id), week1Open: true, week1Items: WEEK1, unlockedWeeks: [0, 1] }),
@@ -560,7 +560,7 @@ console.log('\nSet up once asks for one thing, and Step 1 has the other');
 
   // The renderer counts off its own list, so the heading cannot drift from
   // the rows again.
-  const SETUP = read('portal/portal-setup.js');
+  const SETUP = read('club/portal-setup.js');
   check('the count is read off the step list, not written out by hand',
     /' of ' \+ STEPS\.length \+ ' complete'/.test(SETUP) && !/of 2 complete/.test(SETUP));
   check('and one step is all the list holds',

@@ -23,12 +23,12 @@ const read = (p) => readFileSync(new URL('../../' + p, import.meta.url), 'utf8')
 
 // club is in the list; sessions and prompts are still here, still carrying
 // the menu, just no longer in it.
-const PAGES = ['club', 'dashboard', 'curriculum', 'sessions', 'resources', 'prompts', 'members'];
+const PAGES = ['home', 'dashboard', 'curriculum', 'sessions', 'resources', 'prompts', 'members'];
 
 // What the menu is, in order, on every page.
 const MENU = [
   // Club is the one absolute link: /club serves the Club home to a member
-  // and the public Apply page to everyone else, with portal/club.html as
+  // and the public Apply page to everyone else, with club/home.html as
   // the document it frames.
   //
   // The rest are extensionless. The .html files are all still served, so an
@@ -41,8 +41,11 @@ const MENU = [
 // Which menu entry is lit on each page. Live Sessions and Prompts sit under
 // the Accelerator, whose link points at the curriculum. The dashboard page
 // is no longer a destination, so its own menu points there too.
+//
+// The Club home's file is club/home.html, but the address it is lit by is
+// /club: that is where a member finds it, framed.
 const LIT = {
-  club: '/club',
+  home: '/club',
   dashboard: 'curriculum',
   curriculum: 'curriculum',
   sessions: 'curriculum',
@@ -51,8 +54,8 @@ const LIT = {
   members: 'members',
 };
 
-const SRC = read('portal/portal-tailwind-src.css');
-const BUILT = read('portal/portal.css');
+const SRC = read('club/portal-tailwind-src.css');
+const BUILT = read('club/portal.css');
 
 // Whitespace between declarations differs between the source and the build,
 // so both are squashed before anything is matched against them.
@@ -67,7 +70,7 @@ function check(name, cond, extra) {
 }
 
 const docs = {};
-for (const name of PAGES) docs[name] = new JSDOM(read('portal/' + name + '.html')).window.document;
+for (const name of PAGES) docs[name] = new JSDOM(read('club/' + name + '.html')).window.document;
 
 const navOf = (d) => d.querySelector('nav[aria-label="Portal"]');
 const menuOf = (d) => d.getElementById('mobile-menu');
@@ -108,9 +111,9 @@ console.log('\nNo portal page links to a .html address');
 
      Off-site links are skipped: what a partner serves is their business. */
   const dotHtml = /^(?!https?:|mailto:)[^:]*\.html(?:[?#]|$)/;
-  for (const name of PAGES.concat(['index'])) {
-    const d = name === 'index'
-      ? new JSDOM(read('portal/index.html')).window.document
+  for (const name of PAGES.concat(['signin'])) {
+    const d = name === 'signin'
+      ? new JSDOM(read('club/signin.html')).window.document
       : docs[name];
     const bad = [...d.querySelectorAll('a[href]')]
       .map((a) => a.getAttribute('href'))
@@ -133,8 +136,9 @@ console.log('\nThe page you are on is marked, in both menus');
       // "page" is a claim about this document, so it is only used where the
       // link really is this page. Live Sessions and Prompts sit in the
       // Accelerator without being the curriculum, so they get the generic
-      // "current item in this set" instead.
-      const want = (LIT[name] === name || LIT[name] === '/' + name) ? 'page' : 'true';
+      // "current item in this set" instead. The Club home is its own page
+      // even though its link is /club rather than /home.
+      const want = (LIT[name] === name || LIT[name] === '/' + name || name === 'home') ? 'page' : 'true';
       check(name + ': marked aria-current="' + want + '" in the ' + what,
         marked.length === 1 && marked[0].getAttribute('aria-current') === want,
         marked.map((a) => a.getAttribute('aria-current')));
@@ -236,7 +240,7 @@ console.log('\nMembers is in the menu for everyone, marked Soon');
 
   // The two rules that used to hide it are gone, or it would still be
   // hidden the moment the Worker answered 403.
-  const CONTENT = read('portal/portal-content.css');
+  const CONTENT = read('club/portal-content.css');
   check('nothing hides the link on [hidden] any more',
     !/\[data-portal-members-link\]\[hidden\]\s*\{\s*display:\s*none/.test(CONTENT),
     (CONTENT.match(/\[data-portal-members-link\]\[hidden\][^}]*\}/) || [])[0]);

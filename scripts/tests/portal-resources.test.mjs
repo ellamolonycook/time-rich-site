@@ -20,9 +20,9 @@ import { JSDOM, VirtualConsole } from 'jsdom';
 import { readFileSync } from 'node:fs';
 
 const read = (p) => readFileSync(new URL('../../' + p, import.meta.url), 'utf8');
-const HTML = read('portal/resources.html');
-const SRC = read('portal/portal-tailwind-src.css');
-const BUILT = read('portal/portal.css');
+const HTML = read('club/resources.html');
+const SRC = read('club/portal-tailwind-src.css');
+const BUILT = read('club/portal.css');
 
 let pass = 0, fail = 0;
 function check(name, cond, extra) {
@@ -34,7 +34,7 @@ function check(name, cond, extra) {
 // the markup, which is the point. The payload-driven part of the page (the
 // "Where things live" links card) is not under test.
 const doc = new JSDOM(HTML, {
-  url: 'https://timerich.ai/portal/resources.html',
+  url: 'https://timerich.ai/club/resources.html',
   virtualConsole: new VirtualConsole(),
 }).window.document;
 

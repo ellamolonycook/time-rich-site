@@ -359,7 +359,7 @@ console.log('\nthe sign-in form, as it sits on the page');
 {
   const { JSDOM } = await import('jsdom');
   const { readFileSync } = await import('node:fs');
-  const doc = new JSDOM(readFileSync(new URL('../../portal/index.html', import.meta.url), 'utf8'))
+  const doc = new JSDOM(readFileSync(new URL('../../club/signin.html', import.meta.url), 'utf8'))
     .window.document;
 
   /* The wordmark carries the club's full name, with the pastel stop closing

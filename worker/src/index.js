@@ -2279,8 +2279,8 @@ function buildPortalPasscodeEmail(member, maskCode) {
   const raw = String(member.email || "").trim();
   const address = raw && maskCode ? maskEmail(raw) : raw;
   const line = address
-    ? `Go to https://timerich.ai/portal and sign in with this email address: ${address}`
-    : "Go to https://timerich.ai/portal and sign in with this email address.";
+    ? `Go to https://timerich.ai/club/signin and sign in with this email address: ${address}`
+    : "Go to https://timerich.ai/club/signin and sign in with this email address.";
   return {
     subject: "Your Time Rich portal is ready",
     text: `Hi ${name},\n\nYour Time Rich portal is ready.\n\n${line}\n\nThere is no passcode to remember.\n\nQuestions? Reply to this email or write to emc@timerich.ai.\n\nWarmly,\nElla\nFounder, Time Rich`,

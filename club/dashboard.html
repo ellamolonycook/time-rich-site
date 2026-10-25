@@ -1,0 +1,833 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth" data-trp-gate>
+<head>
+  <script>
+    // The dashboard is no longer a destination. The Accelerator opens on the
+    // curriculum, so an old link or a bookmark lands there instead. This sits
+    // in the theme script so that script is still the first thing in <head>.
+    try {
+      location.replace('curriculum');
+      // The access script still parses and, with no session, sends the
+      // browser to the sign-in page. That second replace was winning the
+      // race. The one above is the only navigation this page is allowed.
+      location.replace = function () {};
+    } catch (e) {}
+
+    // Theme, applied before first paint so there is no flash of the wrong one.
+    // "system" follows the device; the CSS reads this attribute.
+    (function () {
+      var t = 'system';
+      try { t = window.localStorage.getItem('tr_portal_theme') || 'system'; } catch (e) {}
+      if (t !== 'light' && t !== 'dark') t = 'system';
+      document.documentElement.setAttribute('data-theme', t);
+    })();
+  </script>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <!-- Google tag (gtag.js). The library is fetched once the page is
+       interactive: it is the heaviest request here and nothing on screen
+       waits on it. The consent defaults below are set first, so the queue
+       it replays on arrival already respects them. -->
+  <script>
+    window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}
+    // Consent Mode v2. Region-specific default first, then the global fallback,
+    // which is the order Google's docs specify: the narrower region wins.
+    gtag('consent','default',{ad_storage:'denied',ad_user_data:'denied',ad_personalization:'denied',analytics_storage:'denied',region:['AT','BE','BG','HR','CY','CZ','DK','EE','FI','FR','DE','GR','HU','IS','IE','IT','LV','LI','LT','LU','MT','NL','NO','PL','PT','RO','SK','SI','ES','SE','GB','CH']});
+    gtag('consent','default',{ad_storage:'denied',ad_user_data:'denied',ad_personalization:'denied',analytics_storage:'granted'});
+    gtag('js',new Date());
+    gtag('config','G-CTZLQ4R388');
+
+    // The library, once the page has loaded and the main thread is free.
+    // requestIdleCallback's own timeout and the setTimeout fallback are both
+    // 2000ms, so it never waits longer than that on a busy page.
+    (function () {
+      var asked = false;
+      function loadGtag() {
+        if (asked) return;
+        asked = true;
+        var s = document.createElement('script');
+        s.async = true;
+        s.src = 'https://www.googletagmanager.com/gtag/js?id=G-CTZLQ4R388';
+        document.head.appendChild(s);
+      }
+      function schedule() {
+        if (typeof window.requestIdleCallback === 'function') {
+          window.requestIdleCallback(loadGtag, { timeout: 2000 });
+        } else {
+          window.setTimeout(loadGtag, 2000);
+        }
+      }
+      if (document.readyState === 'complete') schedule();
+      else window.addEventListener('load', schedule);
+    })();
+  </script>
+
+  <title>Dashboard | Time Rich Portal</title>
+  <meta property="og:image" content="https://timerich.ai/og-time-rich.png" />
+  <meta property="og:image:width" content="1200" />
+  <meta property="og:image:height" content="630" />
+  <meta name="twitter:image" content="https://timerich.ai/og-time-rich.png" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <link rel="stylesheet" href="portal.css"/>
+  <!-- The two faces, served from this repo. They used to come from Google
+       Fonts, which costs a DNS lookup, a stylesheet and only then the font
+       itself: three round trips before a heading could be drawn in the right
+       face, and a reflow when it finally was. Preloading the files directly
+       starts them with the stylesheet instead.
+
+       crossorigin is required on a font preload even for a same-origin file:
+       fonts are fetched in CORS mode, and a preload without it is fetched
+       twice. -->
+  <link rel="preload" href="../brand/fonts/SpaceGrotesk-Variable.woff2" as="font" type="font/woff2" crossorigin/>
+  <link rel="preload" href="../brand/fonts/Inter-Variable.woff2" as="font" type="font/woff2" crossorigin/>
+  <link rel="stylesheet" href="portal-content.css?v=20261021">
+
+  
+
+
+  <!-- The session gate. Config first, then the library; both deferred so
+       the DOM is ready when the script mounts. No valid code redirects to
+       the sign-in page, because this page has no login form of its own. -->
+  <script src="portal-config.js" defer></script>
+  <script src="portal-access.js" defer></script>
+  <script src="portal-live.js"></script>
+  <script src="portal-chrome.js?v=20261021" defer></script>
+  <script src="portal-setup.js" defer></script>
+
+  <!-- Warm the next page while the pointer is still travelling to the link.
+       "moderate" is roughly 200ms of hover, which is long enough that a
+       pointer crossing the nav does not fetch all six. Only portal pages are
+       listed: a prefetch rule that matched everything would also warm the
+       sign-out and the partner links.
+
+       Both address forms are matched. The nav links are extensionless now
+       (/club/resources), so a rule naming only the .html form would warm
+       nothing; the .html form stays because an old bookmark or an emailed
+       link can still be one. ":page" is a single segment, so it stops at the
+       pages themselves, and the images under /portal/assets are outside it
+       altogether. -->
+  <script type="speculationrules">
+  {
+    "prefetch": [{
+      "where": { "or": [
+        { "href_matches": "/club/:page" },
+        { "href_matches": "/club/*.html" }
+      ] },
+      "eagerness": "moderate"
+    }]
+  }
+  </script>
+</head>
+
+
+
+<body class="text-brand-deep font-sans min-h-screen flex flex-col selection:bg-brand-lime selection:text-brand-deep">
+
+  <!-- Noise Texture Overlay -->
+
+  <!-- MOBILE MENU -->
+  <div id="mobile-menu-overlay" class="fixed inset-0 bg-brand-ink/25 z-[100] opacity-0 pointer-events-none transition-opacity duration-300 lg:hidden"></div>
+
+  <div id="mobile-menu" class="fixed top-0 left-0 bottom-0 w-[82%] max-w-[300px] bg-brand-page border-r border-brand-ink/10 z-[101] -translate-x-full transition-transform duration-300 ease-out flex flex-col lg:hidden" role="dialog" aria-modal="true" aria-label="Menu">
+    <div class="flex-1 overflow-y-auto p-5 pt-6 flex flex-col">
+      <a href="/club" class="trp-wordmark text-[22px] mb-8 px-1">
+        TIME RICH<span class="trp-stop">.</span>
+      </a>
+      <nav class="space-y-1">
+        <a href="/club" class="flex items-center gap-3 px-4 py-3 rounded-[14px] text-sm font-medium text-brand-ink/70 hover:text-brand-ink hover:bg-brand-ink/5 transition-colors">
+          <svg class="w-4 h-4 shrink-0 text-brand-ink/50" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"></path></svg>
+          Club
+        </a>
+        <a href="curriculum" aria-current="true" class="flex items-center gap-3 px-4 py-3 rounded-[14px] text-sm font-medium bg-brand-green text-brand-bg">
+          <svg class="w-4 h-4 shrink-0" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"></path></svg>
+          Accelerator
+        </a>
+        <a href="members" data-portal-members-link class="flex items-center gap-3 px-4 py-3 rounded-[14px] text-sm font-medium text-brand-ink/70 hover:text-brand-ink hover:bg-brand-ink/5 transition-colors">
+          <svg class="w-4 h-4 shrink-0 text-brand-ink/50" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"></path></svg>
+          Members
+          <span class="trp-soon ml-auto">Soon</span>
+        </a>
+      </nav>
+      <div class="mt-auto pt-8 border-t border-brand-ink/10">
+        <button type="button" data-portal-signout class="w-full text-left px-4 py-3 rounded-[14px] text-sm font-medium text-brand-ink/70 hover:text-brand-ink hover:bg-brand-ink/5 transition-colors">Sign out</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- TOP NAVBAR -->
+  <header id="top-nav" class="trp-header h-14 sm:h-16 shrink-0 sticky top-0 z-50">
+    <div class="mx-auto max-w-[1120px] h-full flex items-center justify-between gap-3 px-4 sm:px-6 lg:px-8">
+
+    <!-- Left: the wordmark, then the nav pills beside it. The nav used to be
+         absolutely centred in the header, which left the right-hand side no
+         room for the sponsor credit, the member's name and Sign out all at
+         once. It flows after the wordmark now, which is also the order the
+         design asks for: logo, nav pills, then the right-hand group. -->
+    <div class="flex items-center gap-2 lg:gap-6 min-w-0">
+      <button id="mobile-menu-btn" type="button" aria-expanded="false" aria-controls="mobile-menu" aria-label="Menu" class="lg:hidden flex items-center justify-center w-11 h-11 -ml-2.5 rounded-full text-brand-ink hover:bg-brand-ink/5 transition-colors">
+        <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5"></path></svg>
+      </button>
+
+      <a href="/club" class="trp-wordmark text-[17px] sm:text-[20px] whitespace-nowrap rounded focus:outline-none focus-visible:ring-2 focus-visible:ring-brand-ink/30">
+        TIME RICH<span class="trp-stop">.</span>
+      </a>
+
+      <span class="trp-head-div" aria-hidden="true"></span>
+
+      <nav class="hidden lg:flex items-center gap-0.5" aria-label="Portal">
+        <a href="/club" class="trp-nav-link px-3.5 text-[13px] font-medium text-brand-ink/70 hover:text-brand-ink">Club</a>
+        <a href="curriculum" aria-current="true" class="trp-nav-link px-3.5 text-[13px] font-medium">Accelerator</a>
+        <a href="members" data-portal-members-link class="trp-nav-link gap-1.5 px-3.5 text-[13px] font-medium text-brand-ink/70 hover:text-brand-ink">Members <span class="trp-soon">Soon</span></a>
+      </nav>
+    </div>
+
+    <!-- Right: the theme control, a thin divider, the member and Sign out.
+         The sponsor credit is no longer here; it sits beside the wordmark on
+         the left, which is the only place it appears on the page. -->
+    <div class="trp-head-right">
+      <!-- Filled in by portal-chrome.js, and only while a session is live or
+           about to start. Stays hidden the rest of the time. -->
+      <a data-portal-join hidden class="hidden xl:inline-flex items-center px-3.5 py-1.5 rounded-full bg-brand-green text-brand-bg text-[11px] font-medium tracking-[0.04em] whitespace-nowrap hover:bg-brand-green/90 transition-colors"></a>
+
+      <div class="trp-theme">
+        <label class="sr-only" for="theme-dashboard">Theme</label>
+        <select id="theme-dashboard" data-theme-select>
+          <option value="system">System</option>
+          <option value="light">Light</option>
+          <option value="dark">Dark</option>
+        </select>
+        <svg class="trp-theme-caret" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7"></path></svg>
+      </div>
+
+      <span class="trp-head-div hidden md:block" aria-hidden="true"></span>
+
+      <span data-portal-name class="hidden md:inline text-xs font-medium text-brand-ink/70 whitespace-nowrap"></span>
+
+      <button type="button" data-portal-signout class="hidden lg:inline-flex items-center h-11 text-[13px] font-medium text-brand-ink/70 hover:text-brand-ink transition-colors">Sign out</button>
+      </div>
+    </div>
+  </header>
+
+  <!-- MAIN APP AREA -->
+  <div class="flex-1 flex">
+    
+    <!-- LEFT SIDEBAR -->
+    
+    <!-- CENTER SCROLLABLE CONTENT -->
+    <!-- min-w-0 because this is a flex item, and a flex item's default
+         min-width: auto is its content's minimum, not zero. The set-up bar
+         carries a 320px progress track, so without this the page could not
+         lay out narrower than about 350px and scrolled sideways on a 320px
+         screen. -->
+    <main class="flex-1 min-w-0 relative bg-transparent">
+
+      <div class="relative z-10 px-4 sm:px-6 lg:px-8 pb-16 max-w-[1120px] mx-auto">
+
+        <div class="trp-dash">
+
+          <!-- The greeting, the kickoff line and how many set-up steps are
+               done. The line and the bar are filled by the script: the date
+               comes from the first session, and the count from the same
+               steps the Curriculum shows. -->
+          <header class="trp-dash-hero">
+            <p class="trp-dash-kicker" data-dash-countdown><span class="trp-skel" aria-hidden="true"><span class="trp-bar">Superhuman Accelerator &middot; Kickoff Mon 26 Oct, 12pm ET &middot; 9 days to go</span></span></p>
+            <h1 class="trp-title">Good to see you<span data-portal-name-wrap hidden>, <span data-portal-name></span></span>.</h1>
+            <div class="trp-dash-meter" data-dash-meter>
+              <div class="trp-skel" aria-hidden="true">
+                <div class="trp-progress-track"><div class="trp-progress-fill" style="width:16%"></div></div>
+                <p class="trp-dash-meter-label"><span class="trp-bar">1 of 9 set-up steps done</span></p>
+              </div>
+            </div>
+          </header>
+
+          <!-- STEP 1. Every Start here item, in the Curriculum's order. The
+               first one not ticked is the highlighted row. -->
+          <section data-dash-setup class="trp-dash-block" aria-labelledby="setup-heading">
+            <div class="trp-dash-stephead">
+              <span class="trp-dash-stepn">Step 1</span>
+              <span class="trp-dash-stepmeta">Before kickoff &middot; 30 min</span>
+            </div>
+            <h2 id="setup-heading" class="trp-dash-h">Set up</h2>
+            <p class="trp-dash-lede">Tick each one off. Your next step is highlighted.</p>
+            <div data-dash-list class="trp-dash-card">
+              <div class="trp-skel" aria-hidden="true">
+                <ul class="trp-dsteps">
+                  <li class="trp-dstep"><span class="trp-check-gap"></span><span class="trp-dstep-copy"><span class="trp-bar">Welcome to the Superhuman Accelerator</span></span></li>
+                  <li class="trp-dstep is-next"><span class="trp-check-gap"></span><span class="trp-dstep-copy"><span class="trp-bar">Make your copy of the Business COMPASS</span></span><span class="trp-dstep-tag">Next</span></li>
+                  <li class="trp-dstep"><span class="trp-check-gap"></span><span class="trp-dstep-copy"><span class="trp-bar">Install Wispr Flow</span></span></li>
+                  <li class="trp-dstep"><span class="trp-check-gap"></span><span class="trp-dstep-copy"><span class="trp-bar">Turn it on</span></span></li>
+                  <li class="trp-dstep"><span class="trp-check-gap"></span><span class="trp-dstep-copy"><span class="trp-bar">Say it: One-liners</span></span></li>
+                  <li class="trp-dstep"><span class="trp-check-gap"></span><span class="trp-dstep-copy"><span class="trp-bar">Say it: Who I serve</span></span></li>
+                </ul>
+              </div>
+            </div>
+          </section>
+
+          <!-- STEP 2. The same three guides, as cards rather than pills. -->
+          <section class="trp-dash-block trp-connect" aria-labelledby="connect-heading">
+            <div class="trp-dash-stephead">
+              <span class="trp-dash-stepn">Step 2</span>
+              <span class="trp-dash-stepmeta">Once &middot; 10 min</span>
+            </div>
+            <h2 id="connect-heading" class="trp-dash-h">Connect your Notion to your AI</h2>
+            <p class="trp-dash-lede">Point your AI at your own pages once and it stops guessing. Open the one you use.</p>
+            <div class="trp-dash-accs">
+
+          <details class="trp-acc">
+            <summary class="trp-acc-head">
+              <span class="trp-acc-title">In Claude</span>
+              <svg class="trp-acc-caret" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7"></path></svg>
+            </summary>
+            <div class="trp-acc-body">
+              <ol class="trp-acc-steps">
+                <li>Open your Business Hub project.</li>
+                <li>Go to Context.</li>
+                <li>Choose Add, then Notion.</li>
+                <li>Search for each page, or paste its link.</li>
+                <li>Add it.</li>
+              </ol>
+              <!-- The file itself is cropped to the Context dialog. Nothing
+                   here hides any part of it. -->
+              <figure class="trp-acc-figure" data-shot>
+                <img src="img/claude-notion-context.png"
+                     alt="The Context dialog in Claude, with Notion pages being added."
+                     loading="lazy" decoding="async"
+                     onerror="this.closest('[data-shot]').hidden = true"/>
+              </figure>
+            </div>
+          </details>
+
+          <details class="trp-acc">
+            <summary class="trp-acc-head">
+              <span class="trp-acc-title">In Grok Bot</span>
+              <svg class="trp-acc-caret" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7"></path></svg>
+            </summary>
+            <div class="trp-acc-body">
+              <ol class="trp-acc-steps">
+                <li>Open Grok Bot.</li>
+                <li>Paste the prompt below, with your own page links in place of the brackets.</li>
+                <li>Check it confirms it can open all 8.</li>
+              </ol>
+
+              <div class="trp-copybox">
+                <div class="trp-copybox-head">
+                  <span class="trp-tag">The prompt</span>
+                  <button type="button" class="trp-copy" data-copy-target="grok-prompt">Copy</button>
+                </div>
+                <pre id="grok-prompt" class="trp-copybox-text">Save this as standing context. Read these Notion pages live before any task. They are the source of truth:
+1. Business COMPASS: [paste your link]
+2. Content Hub: [paste your link]
+3. Content Library: [paste your link]
+4. Content Strategy: [paste your link]
+5. Ideas + Story Bank: [paste your link]
+6. Distribution Channels: [paste your link]
+7. Marketing Avenues: [paste your link]
+8. Customer insights: [paste your link]
+Confirm you can open all 8.</pre>
+              </div>
+
+              <figure class="trp-acc-figure" data-shot>
+                <img src="img/grok-standing-context.png"
+                     alt="Grok Bot confirming it can open all eight Notion pages."
+                     loading="lazy" decoding="async"
+                     onerror="this.closest('[data-shot]').hidden = true"/>
+              </figure>
+            </div>
+          </details>
+
+          <details class="trp-acc">
+            <summary class="trp-acc-head">
+              <span class="trp-acc-title">In ChatGPT</span>
+              <svg class="trp-acc-caret" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7"></path></svg>
+            </summary>
+            <div class="trp-acc-body">
+              <ol class="trp-acc-steps">
+                <li>Open Settings from your profile picture, then Apps &amp; connectors.</li>
+                <li>Find Notion and choose Connect.</li>
+                <li>Sign in to Notion and tick the pages you want ChatGPT to read.</li>
+                <li>Back in Apps &amp; connectors, turn the Sync toggle on. Without it, ChatGPT will not search your pages.</li>
+                <li>Open your project, choose the three dots, then Project settings, and put your standing instructions there.</li>
+              </ol>
+              <p class="trp-acc-note">Connectors need a paid ChatGPT plan. Skills and scheduled agents still run in Claude.</p>
+              <!-- Remove the hidden attribute once img/chatgpt-notion-connector.png
+                   is in place. The onerror below hides it again if the file goes
+                   missing later. -->
+              <figure class="trp-acc-figure" data-shot hidden>
+                <img src="img/chatgpt-notion-connector.png"
+                     alt="The Apps and connectors screen in ChatGPT, with Notion connected and Sync on."
+                     loading="lazy" decoding="async"
+                     onerror="this.closest('[data-shot]').hidden = true"/>
+              </figure>
+            </div>
+          </details>
+
+            </div>
+            <p class="trp-connect-note">Use the links from your own duplicated workbook, not ours.</p>
+          </section>
+
+          <section class="trp-dash-ready" aria-labelledby="ready-heading">
+            <div>
+              <h2 id="ready-heading" class="trp-dash-ready-title" data-dash-ready-title>All set up?</h2>
+              <p class="trp-dash-ready-line" data-dash-ready-line>Week 1 opens on kickoff day. Preview it in the curriculum.</p>
+            </div>
+            <a class="trp-dash-cta" href="curriculum">Open the curriculum <span aria-hidden="true">&rarr;</span></a>
+          </section>
+
+          <!-- The call, the one-time setup and the partner offers. They sit
+               under the two steps so the top of the page stays the set-up
+               list. -->
+          <div class="trp-dash-more">
+            <div data-dash-next class="trp-dash-session">
+              <div class="trp-skel" aria-hidden="true">
+                <p class="trp-tag"><span class="trp-bar">Next live session</span></p>
+                <h2 class="trp-next-title"><span class="trp-bar">Open Business Surgery</span></h2>
+                <p class="trp-next-when"><span class="trp-bar">Mon 26 Oct &middot; 12pm ET</span></p>
+                <div class="trp-next-acts"><span class="trp-bar is-btn"></span></div>
+                <p class="trp-join-note"><span class="trp-bar">Opens 30 minutes before the start.</span></p>
+              </div>
+            </div>
+
+            <section data-portal-setup class="glass-card is-static trp-setup" aria-label="Set up once">
+              <div class="trp-skel" aria-hidden="true">
+                <div class="trp-setup-heading">
+                  <h2><span class="trp-bar">Set up once</span></h2>
+                  <span><span class="trp-bar">0 of 1 complete</span></span>
+                </div>
+                <ol class="trp-setup-steps">
+                  <li class="trp-setup-step">
+                    <div class="trp-setup-copy"><h3><span class="trp-bar">Add every session to your calendar</span></h3></div>
+                    <div class="trp-setup-actions"><span class="trp-bar is-btn"></span><span class="trp-bar is-btn"></span></div>
+                  </li>
+                </ol>
+              </div>
+            </section>
+
+            <!-- The partner lines are the ones on Resources, word for word.
+                 A test compares the two files so they cannot drift. -->
+            <section class="trp-dash-partners trp-ptile" aria-labelledby="dash-partners">
+              <p class="trp-tag">Your partner offers</p>
+              <h2 id="dash-partners" class="trp-dash-h">Included with your place</h2>
+              <ul class="trp-ptile-list">
+                <li>
+                  <span class="trp-ptile-name">Stanley</span>
+                  <span class="trp-ptile-line">6 months of Stanley free with code TIMERICH6. Your AI head of content: drafts from your calls, learns your voice, posts for you.</span>
+                </li>
+                <li>
+                  <span class="trp-ptile-name">Wispr Flow</span>
+                  <span class="trp-ptile-line">6 months of Wispr Flow Pro, the voice dictation app the accelerator runs on.</span>
+                </li>
+                <li>
+                  <span class="trp-ptile-name">LaunchLemonade</span>
+                  <span class="trp-ptile-line">3 months of LaunchLemonade included.</span>
+                </li>
+              </ul>
+              <a class="trp-tile-go" href="resources">Claim in Resources <span aria-hidden="true">&rarr;</span></a>
+            </section>
+          </div>
+
+        </div>
+      </div>
+      </main> <!-- CLOSE main -->
+    </div> <!-- CLOSE h-screen container -->
+
+  <footer class="shrink-0 px-4 sm:px-6 lg:px-8 py-2 border-t border-brand-ink/10 text-[12px] text-brand-ink/70">
+    <!-- One quiet line. The second "Powered by Stanley" lockup that used to
+         sit under this is gone: the credit is in the header now, once per
+         page, which is the rule on every page inside.
+
+         The separators are their own elements so .trp-foot-sep can take all
+         of them out at once on a narrow screen, where the line wraps and a
+         separator would otherwise be left stranded at the head of the second
+         line. See .trp-foot in portal-tailwind-src.css. -->
+    <p class="trp-foot flex flex-wrap items-center justify-center text-center">
+      <span>&copy; 2026 Time Rich</span>
+      <span class="trp-foot-sep" aria-hidden="true">&middot;</span>
+      <a href="/privacy/" class="trp-foot-link">Privacy</a>
+      <span class="trp-foot-sep" aria-hidden="true">&middot;</span>
+      <a href="/terms/" class="trp-foot-link">Terms</a>
+      <!-- Href comes from the week 0 link item; hidden when there is none. -->
+      <span data-portal-community hidden class="trp-foot-sep" aria-hidden="true">&middot;</span>
+      <a data-portal-community hidden class="trp-foot-link">WhatsApp community</a>
+      <span class="trp-foot-sep" aria-hidden="true">&middot;</span>
+      <span>Need help? <a href="mailto:emc@timerichclub.com" class="trp-foot-link">emc@timerichclub.com</a></span>
+      <span class="trp-foot-sep" aria-hidden="true">&middot;</span>
+      <!-- The two sponsors, read as one credit: "Powered by" is said once over
+           the pair. Stanley is the presenting sponsor, Wispr Flow the official
+           voice partner. Both are the real marks in their own colours, at the
+           line's own height -- the script that used to swap in a cropped,
+           greyed-out Stanley is gone, and so is the bare Wispr tile that read
+           as a stray black square with nothing to name it.
+
+           Stanley ships two files because its wordmark is black and vanishes on
+           the dark theme; both sit in the markup and the theme picks, since an
+           img's src is not something CSS can swap. -->
+      <span class="trp-credits">
+        <span class="trp-powered-label">Powered by</span>
+        <a class="trp-powered trp-powered-foot" href="https://x.getstanley.ai/r/mz4y9g" target="_blank" rel="noopener sponsored">
+          <img class="trp-powered-pos" src="../brand/partners/stanley-logo.png" alt="Stanley" width="765" height="203" loading="lazy" decoding="async"/>
+          <img class="trp-powered-rev" src="../brand/partners/stanley-logo-dark.png" alt="Stanley" width="765" height="203" loading="lazy" decoding="async"/>
+        </a>
+        <span class="trp-credit-dot" aria-hidden="true">&middot;</span>
+        <a class="trp-credit" href="https://ref.wisprflow.ai/ella-cook-vt27" target="_blank" rel="noopener sponsored">
+          <img class="trp-credit-tile" src="../os/img/wispr-flow.png" alt="" width="256" height="256" loading="lazy" decoding="async"/>
+          <span class="trp-credit-name">Wispr Flow</span>
+        </a>
+      </span>
+    </p>
+  </footer>
+
+
+
+
+
+  <script>
+    /* Dashboard, drawn from portal_get. Every block hides itself when the
+       data it needs is not there, so a member never meets a placeholder.
+
+       The page is the set-up list. The line under the greeting says when
+       kickoff is, the bar says how many steps are done, and the first
+       unticked row is the one highlighted. The next call, the one-time
+       setup and the partner offers sit under that, because they are not
+       the thing to do next. */
+    (function () {
+      var L = window.TRLive;
+      if (!L) return;
+
+      var TZ = 'America/New_York';
+      var DAY = 86400000;
+
+      /* A thin bar with the numbers already on it. Used by the next step
+         card and by the sessions tile, which is why it takes its label
+         rather than writing one. */
+      function bar(done, total, label) {
+        var track = L.el('div', 'trp-progress-track');
+        var fill = L.el('div', 'trp-progress-fill');
+        var percent = total ? Math.round((done / total) * 100) : 0;
+        fill.style.width = Math.max(0, Math.min(100, percent)) + '%';
+        track.appendChild(fill);
+        track.setAttribute('role', 'progressbar');
+        track.setAttribute('aria-valuemin', '0');
+        track.setAttribute('aria-valuemax', String(total));
+        track.setAttribute('aria-valuenow', String(done));
+        track.setAttribute('aria-label', label);
+        return track;
+      }
+
+      /* ---- the steps ------------------------------------------------------
+         The same items the Curriculum shows, in the same order: everything
+         in Start here, then Week 1's own items once that week has opened.
+         TRLive.learningCard draws exactly this, which is why the order is
+         taken from there rather than invented here. */
+      function stepList(data) {
+        var out = [];
+        var all = L.weeks(data);
+        var prep = all.filter(function (w) { return L.num(w.id) === 0 && w.unlocked === true; })[0];
+        var week1 = all.filter(function (w) { return L.num(w.id) === 1; })[0];
+        if (prep) L.items(prep).forEach(function (i) { if (L.itemKey(i)) out.push(i); });
+        if (week1 && week1.unlocked === true) {
+          L.items(week1).forEach(function (i) { if (L.itemKey(i)) out.push(i); });
+        }
+        return out;
+      }
+
+      function stepState(data) {
+        var list = stepList(data);
+        var done = 0, firstOpen = -1;
+        for (var i = 0; i < list.length; i++) {
+          if (L.isItemDone(list[i])) done += 1;
+          else if (firstOpen === -1) firstOpen = i;
+        }
+        return { list: list, done: done, total: list.length, index: firstOpen };
+      }
+
+      /* ---- 1. the countdown pill ------------------------------------------
+         Whole Eastern days between today and the first session, because the
+         cohort is announced in ET and a member in Sydney must see the same
+         number as one in Los Angeles. Comparing the two date keys rather
+         than subtracting timestamps is what keeps a daylight-saving change
+         from costing a day. */
+      function etMidnight(value) {
+        var key = L.dateKey(value, TZ);
+        return key ? Date.parse(key + 'T00:00:00Z') : NaN;
+      }
+
+      function countdownText(data, now) {
+        var list = L.sessions(data);
+        if (!list.length) return '';
+        var first = list[0];
+        var start = L.toDate(first && first.starts_at);
+        if (!start) return '';
+
+        var days = Math.round((etMidnight(start) - etMidnight(now)) / DAY);
+        if (!isFinite(days)) return '';
+
+        if (days > 0) {
+          var when = L.etDate(first.starts_at);
+          var time = L.etTime(first.starts_at);
+          var kick = 'Kickoff ' + when + (time ? ', ' + time + ' ET' : '');
+          return 'Superhuman Accelerator \u00b7 ' + kick + ' \u00b7 ' +
+            days + (days === 1 ? ' day to go' : ' days to go');
+        }
+        if (days === 0) return 'Superhuman Accelerator \u00b7 Kickoff today';
+
+        /* Past kickoff the pill stops counting and says where the cohort is.
+           The week number is the count of weeks that have opened, which is
+           the same flag the Curriculum reads. */
+        var program = L.scheduleProgress(data, now);
+        var total = program.weeksTotal || 4;
+        var n = Math.min(total, Math.max(1, program.weeksDone));
+        return 'Superhuman Accelerator \u00b7 Week ' + n + ' of ' + total;
+      }
+
+      function renderCountdown(root, data, now) {
+        var text = countdownText(data, now);
+        L.clear(root);
+        if (!text) { L.show(root, false); return; }
+        root.appendChild(document.createTextNode(text));
+        L.show(root, true);
+      }
+
+      /* ---- 2. the bar under the greeting -----------------------------------
+         One number: how many of the set-up steps are ticked. The sessions
+         have their own page, so they are not counted here. */
+      function renderMeter(root, data) {
+        var state = stepState(data);
+        L.clear(root);
+        root.className = 'trp-dash-meter';
+        if (!state.total) { L.show(root, false); return; }
+
+        root.appendChild(bar(state.done, state.total,
+          'Set-up steps: ' + state.done + ' of ' + state.total + ' done'));
+        var label = L.el('p', 'trp-dash-meter-label');
+        label.appendChild(L.el('strong', '', state.done + ' of ' + state.total));
+        label.appendChild(document.createTextNode(' set-up steps done'));
+        root.appendChild(label);
+        L.show(root, true);
+      }
+
+      /* The band under the list. It says the list is finished in the same
+         words the old next-step card used, and otherwise points at Week 1. */
+      function renderReady(state) {
+        var title = document.querySelector('[data-dash-ready-title]');
+        var line = document.querySelector('[data-dash-ready-line]');
+        if (!title || !line || !state.total) return;
+        var done = state.index === -1;
+        title.textContent = done ? 'You\u2019re ready for kickoff.' : 'All set up?';
+        line.textContent = done
+          ? 'Everything on your Start here list is done.'
+          : 'Week 1 opens on kickoff day. Preview it in the curriculum.';
+      }
+
+      /* ---- 3a. the next live session --------------------------------------
+         The button's state is not decided here. This card used to hand out a
+         live link as soon as the session carried one, while Live Sessions
+         kept the same call dead until its Eastern calendar day began, so the
+         two pages disagreed about the same session. Both call
+         TRLive.joinControl now, which opens the link half an hour before the
+         start and shuts it when the call ends. */
+      function renderNext(root, data, now) {
+        L.clear(root);
+        root.className = 'trp-dash-session';
+
+        var at = now || new Date();
+        var next = L.nextSession(data, at);
+
+        if (next) {
+          root.appendChild(L.el('p', 'trp-tag', 'Next live session'));
+          root.appendChild(L.el('h2', 'trp-next-title', L.str(next.title) || 'Session'));
+
+          var when = L.etDateTime(next.starts_at);
+          if (when) {
+            var line = L.el('p', 'trp-next-when');
+            line.appendChild(L.el('span', '', when));
+            root.appendChild(line);
+          }
+
+          var actions = L.el('div', 'trp-next-acts');
+          var join = L.joinControl(next, at);
+          actions.appendChild(join.control);
+          root.appendChild(actions);
+          if (join.note) root.appendChild(join.note);
+
+          L.show(root, true);
+          return;
+        }
+
+        // Past the last session: offer the most recent recording instead.
+        var rec = L.latestRecording(data, at);
+        if (rec) {
+          root.appendChild(L.el('p', 'trp-tag', 'Latest recording'));
+          root.appendChild(L.el('h2', 'trp-next-title', L.str(rec.title) || 'Session'));
+          var recWhen = L.etDateTime(rec.starts_at);
+          if (recWhen) {
+            var recLine = L.el('p', 'trp-next-when');
+            recLine.appendChild(L.el('span', '', recWhen));
+            root.appendChild(recLine);
+          }
+          var watch = L.linkTo(rec.recording_url, 'Watch recording', 'trp-btn trp-btn-pastel');
+          if (watch) {
+            var box = L.el('div', 'trp-next-acts');
+            box.appendChild(watch);
+            root.appendChild(box);
+          }
+          L.show(root, true);
+          return;
+        }
+
+        L.show(root, false);
+      }
+
+      /* ---- the set-up list --------------------------------------------------
+         Every step, title and body together. The circle ticks it. The first
+         one still open is the highlighted row, and a step with a link gets
+         an Open control that does not tick it. */
+      function stepRow(item, index, isNext) {
+        var name = L.str(item && item.title) || 'Untitled';
+        var row = L.el('li', 'trp-dstep' + (isNext ? ' is-next' : ''));
+        if (L.isItemDone(item)) row.classList.add('is-done');
+
+        var box = L.checkBox(
+          function () { return L.isItemDone(item); },
+          function () { return L.toggleItem(item); },
+          name);
+        box.appendChild(L.el('span', 'trp-dstep-num', String(index + 1)));
+        row.appendChild(box);
+
+        var copy = L.el('div', 'trp-dstep-copy');
+        copy.appendChild(L.el('span', 'trp-dstep-name', name));
+        var body = L.str(item && item.body);
+        if (body) copy.appendChild(L.el('span', 'trp-dstep-text', body));
+        row.appendChild(copy);
+
+        var link = L.linkTo(item && item.url, 'Open', 'trp-dstep-open');
+        if (link) {
+          link.setAttribute('aria-label', 'Open ' + name);
+          row.appendChild(link);
+        }
+        if (isNext) row.appendChild(L.el('span', 'trp-dstep-tag', 'Next'));
+        return row;
+      }
+
+      function renderList(root, data) {
+        var state = stepState(data);
+        var section = document.querySelector('[data-dash-setup]');
+        L.clear(root);
+        root.className = 'trp-dash-card';
+
+        if (!state.total) {
+          if (section) L.show(section, false);
+          return;
+        }
+
+        var ul = L.el('ul', 'trp-dsteps');
+        state.list.forEach(function (item, i) {
+          ul.appendChild(stepRow(item, i, i === state.index));
+        });
+        root.appendChild(ul);
+        if (section) L.show(section, true);
+        renderReady(state);
+        L.show(root, true);
+      }
+
+      /* ---- all of it ------------------------------------------------------
+         `now` is threaded in rather than read inside each card: a test can
+         then put this page and Live Sessions on the same clock and compare
+         them, which is the only way to prove they agree. */
+      function paint(data, now) {
+        if (!data) return;
+        var at = now || new Date();
+
+        var nameWrap = document.querySelector('[data-portal-name-wrap]');
+        var name = document.querySelector('[data-portal-name]');
+        L.show(nameWrap, Boolean(name && L.str(name.textContent)));
+
+        var pill = document.querySelector('[data-dash-countdown]');
+        var meter = document.querySelector('[data-dash-meter]');
+        var next = document.querySelector('[data-dash-next]');
+        var list = document.querySelector('[data-dash-list]');
+
+        if (pill) renderCountdown(pill, data, at);
+        if (meter) renderMeter(meter, data);
+        if (next) renderNext(next, data, at);
+        if (list) renderList(list, data);
+      }
+
+      // The test harness drives these directly, with a frozen clock.
+      window.TRDashboard = {
+        paint: paint,
+        renderNext: renderNext,
+        renderMeter: renderMeter,
+        renderList: renderList,
+        countdownText: countdownText,
+        stepState: stepState
+      };
+
+      document.addEventListener('trportal:data', function (event) {
+        paint(event && event.detail);
+      });
+
+      /* A tick changes which row is next and what the bar reads, so both
+         are redrawn from the state the tick just wrote. */
+      document.addEventListener('trportal:progress', function () {
+        var data = window.TR_PORTAL_DATA;
+        if (!data) return;
+        var meter = document.querySelector('[data-dash-meter]');
+        var list = document.querySelector('[data-dash-list]');
+        if (meter) renderMeter(meter, data);
+        if (list) renderList(list, data);
+      });
+    })();
+  </script>
+
+  <script>
+    // Copy the standing-context prompt. Falls back to a selection when the
+    // clipboard API is not there, so the button is never a dead end.
+    (function () {
+      var buttons = document.querySelectorAll('[data-copy-target]');
+      if (!buttons.length) return;
+
+      Array.prototype.forEach.call(buttons, function (btn) {
+        var idle = btn.textContent;
+        var timer = null;
+
+        function say(word) {
+          btn.textContent = word;
+          if (timer) window.clearTimeout(timer);
+          timer = window.setTimeout(function () { btn.textContent = idle; }, 1600);
+        }
+
+        btn.addEventListener('click', function () {
+          var source = document.getElementById(btn.getAttribute('data-copy-target'));
+          if (!source) return;
+          var text = source.textContent;
+
+          if (navigator.clipboard && navigator.clipboard.writeText) {
+            navigator.clipboard.writeText(text).then(function () { say('Copied'); },
+                                                     function () { select(source); say('Press Ctrl+C'); });
+            return;
+          }
+          select(source);
+          say('Press Ctrl+C');
+        });
+      });
+
+      function select(node) {
+        try {
+          var range = document.createRange();
+          range.selectNodeContents(node);
+          var sel = window.getSelection();
+          sel.removeAllRanges();
+          sel.addRange(range);
+        } catch (e) { /* nothing more we can do */ }
+      }
+    })();
+  </script>
+
+  <!-- The light/dark choice, shared by every portal page. The pre-paint
+       script in <head> sets the attribute; this keeps the controls in step
+       with it and writes a new choice back. -->
+  <script src="portal-theme.js" defer></script>
+
+</body>
+</html>
+

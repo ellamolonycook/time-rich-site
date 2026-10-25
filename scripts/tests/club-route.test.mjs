@@ -4,7 +4,7 @@
 // everyone, and the member Club home to anyone carrying a portal session.
 // The site is static, so the choice is made in the browser: an inline script
 // at the top of club/index.html reads the stored session and, for a member,
-// drops a full-bleed iframe of /portal/club.html over the page.
+// drops a full-bleed iframe of /club/home over the page.
 //
 // It is a frame rather than the same markup inlined because the Apply page
 // styles bare body, h1, p, a, section, nav and footer — those rules would
@@ -20,8 +20,8 @@ import { readFileSync } from 'node:fs';
 const read = (p) => readFileSync(new URL('../../' + p, import.meta.url), 'utf8');
 
 const APPLY = read('club/index.html');
-const CLUB = read('portal/club.html');
-const ACCESS = read('portal/portal-access.js');
+const CLUB = read('club/home.html');
+const ACCESS = read('club/portal-access.js');
 
 let pass = 0, fail = 0;
 function check(name, cond, extra) {
@@ -123,7 +123,7 @@ console.log('\nA member gets the Club home, in the frame');
 
   const frame = d.getElementById('trp-club-frame');
   check('a frame is created', frame !== null);
-  check('pointed at the portal page', frame && frame.getAttribute('src') === '/portal/club');
+  check('pointed at the portal page', frame && frame.getAttribute('src') === '/club/home');
   check('and it is labelled for a screen reader',
     frame && frame.getAttribute('title') === 'Time Rich Club');
 }
@@ -160,10 +160,10 @@ console.log('\nLeaving the portal from inside the frame');
     /function isFramed\(\)/.test(ACCESS) && /window\.top !== window\.self/.test(ACCESS));
   check('and leaves by taking the TOP window to /club',
     /window\.top\.location\.replace\('\/club'\)/.test(ACCESS));
-  // The sign-in page is "./" rather than "index.html" now: every address in
-  // the portal is extensionless, and this one is the directory itself.
+  // The sign-in page is /club/signin, extensionless like every address in
+  // the portal. Not "./": the directory is /club, which is the Apply page.
   check('a rejected session goes that way rather than to the sign-in page',
-    /} else if \(!leaveFrame\(\)\) \{[\s\S]{0,120}?window\.location\.replace\('\.\/'\);/.test(ACCESS),
+    /} else if \(!leaveFrame\(\)\) \{[\s\S]{0,200}?window\.location\.replace\('signin'\);/.test(ACCESS),
     (ACCESS.match(/function signedOut\(\)[\s\S]*?\n  \}/) || [])[0]);
   check('and so does signing out, instead of reloading the frame',
     /if \(!leaveFrame\(\)\) window\.location\.reload\(\);/.test(ACCESS));
@@ -184,15 +184,15 @@ console.log('\nThe way in, and the way back');
      dashboard" -- and this had been left asserting the old destination ever
      since, which failed the suite and stopped every file after it from
      running at all. It follows the code, on the extensionless address. */
-  const index = read('portal/index.html');
+  const index = read('club/signin.html');
   check('signing in lands on the curriculum',
-    /window\.location\.replace\('\/portal\/curriculum'\);/.test(index),
+    /window\.location\.replace\('\/club\/curriculum'\);/.test(index),
     (index.match(/window\.location\.replace\('[^']*'\)/g) || []));
   check('the portal pages point their Club link at /club',
-    read('portal/dashboard.html').includes('<a href="/club"'));
-  // The file is still portal/club.html; the address it is framed at is not.
-  check('portal/club.html is still served, and is what /club frames',
-    CLUB.length > 0 && APPLY.includes("'/portal/club'"));
+    read('club/dashboard.html').includes('<a href="/club"'));
+  // The file is club/home.html; the address a member sees it at is /club.
+  check('club/home.html is still served, and is what /club frames',
+    CLUB.length > 0 && APPLY.includes("'/club/home'"));
 }
 
 /* ---- the day/night toggle, on Club ------------------------------------- */
@@ -207,15 +207,15 @@ console.log('\nThe way in, and the way back');
 // page, rather than reading the source for it.
 console.log('\nThe day/night toggle works on Club');
 {
-  const CHROME = read('portal/portal-chrome.js');
-  const THEME = read('portal/portal-theme.js');
+  const CHROME = read('club/portal-chrome.js');
+  const THEME = read('club/portal-theme.js');
 
   /* The Club page in a window, with the two scripts it loads evaluated in
      the order the browser runs them. Storage is a plain object the test can
      look inside, which is also how the reload below is done. */
   function club(store = {}) {
     const dom = new JSDOM(CLUB, {
-      url: 'https://timerich.ai/portal/club.html',
+      url: 'https://timerich.ai/club/home.html',
       runScripts: 'outside-only',
       beforeParse(win) {
         Object.defineProperty(win, 'localStorage', {
@@ -282,9 +282,9 @@ console.log('\nThe day/night toggle works on Club');
 
   // The same storage key is what keeps Club in step with the rest.
   check('every portal page reads and writes the one key',
-    ['dashboard', 'curriculum', 'sessions', 'resources', 'prompts', 'members', 'index']
-      .every((p) => read('portal/' + p + '.html').includes("getItem('tr_portal_theme')")) &&
-    /var KEY = 'tr_portal_theme';/.test(read('portal/portal-theme.js')));
+    ['dashboard', 'curriculum', 'sessions', 'resources', 'prompts', 'members', 'signin']
+      .every((p) => read('club/' + p + '.html').includes("getItem('tr_portal_theme')")) &&
+    /var KEY = 'tr_portal_theme';/.test(read('club/portal-theme.js')));
 }
 
 console.log('\nThe frame follows the choice made inside it');
@@ -294,7 +294,7 @@ console.log('\nThe frame follows the choice made inside it');
   // loads. That colour was read once, when the frame was made, so a choice
   // made inside the frame afterwards left it stale. The framed page posts the
   // new theme up; the outer page repaints.
-  const THEME = read('portal/portal-theme.js');
+  const THEME = read('club/portal-theme.js');
   check('the framed page tells its parent when the theme changes',
     /window\.top !== window\.self/.test(THEME) &&
     /postMessage\(\{ type: 'trportal:theme', theme: value \}, window\.location\.origin\)/.test(THEME));

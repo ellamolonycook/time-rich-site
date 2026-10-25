@@ -32,13 +32,13 @@ const DARK = 'brand/partners/stanley-logo-dark.png';
 //   themed   — true where the page has a dark theme and so needs both files
 const PAGES = [
   { path: 'accelerator/index.html', selector: '.powered', spots: 2, themed: false },
-  { path: 'portal/index.html', selector: '.trp-powered', spots: 1, themed: true },
-  { path: 'portal/dashboard.html', selector: '.trp-powered', spots: 1, themed: true },
-  { path: 'portal/curriculum.html', selector: '.trp-powered', spots: 1, themed: true },
-  { path: 'portal/sessions.html', selector: '.trp-powered', spots: 1, themed: true },
-  { path: 'portal/prompts.html', selector: '.trp-powered', spots: 1, themed: true },
-  { path: 'portal/resources.html', selector: '.trp-powered', spots: 1, themed: true },
-  { path: 'portal/members.html', selector: '.trp-powered', spots: 1, themed: true },
+  { path: 'club/signin.html', selector: '.trp-powered', spots: 1, themed: true },
+  { path: 'club/dashboard.html', selector: '.trp-powered', spots: 1, themed: true },
+  { path: 'club/curriculum.html', selector: '.trp-powered', spots: 1, themed: true },
+  { path: 'club/sessions.html', selector: '.trp-powered', spots: 1, themed: true },
+  { path: 'club/prompts.html', selector: '.trp-powered', spots: 1, themed: true },
+  { path: 'club/resources.html', selector: '.trp-powered', spots: 1, themed: true },
+  { path: 'club/members.html', selector: '.trp-powered', spots: 1, themed: true },
 ];
 
 let pass = 0, fail = 0;
@@ -149,7 +149,7 @@ console.log('\n/accelerator — where the two lockups sit');
 
 console.log('\n/portal — where the lockups sit');
 {
-  const signin = doc('portal/index.html');
+  const signin = doc('club/signin.html');
   const lockup = signin.querySelector('.trp-powered');
   // The card is the portal's shared .glass-card now rather than a one-off
   // rounded box written on the page, but it is still the card and the
@@ -166,8 +166,8 @@ console.log('\n/portal — where the lockups sit');
     signin.querySelectorAll('a.trp-powered').length === 1,
     signin.querySelectorAll('a.trp-powered').length);
 
-  for (const page of PAGES.filter((p) => p.path !== 'portal/index.html' &&
-                                         p.path.startsWith('portal/'))) {
+  for (const page of PAGES.filter((p) => p.path !== 'club/signin.html' &&
+                                         p.path.startsWith('club/'))) {
     const document = doc(page.path);
     const inFooter = [...document.querySelectorAll('footer .trp-powered')];
     const inHeader = [...document.querySelectorAll('header#top-nav .trp-powered')];
@@ -247,7 +247,7 @@ console.log('\nWispr Flow — the second credit');
   const WISPR = 'https://ref.wisprflow.ai/ella-cook-vt27';
   const TILE = 'os/img/wispr-flow.png';
 
-  for (const page of PAGES.filter((p) => p.path.startsWith('portal/'))) {
+  for (const page of PAGES.filter((p) => p.path.startsWith('club/'))) {
     const document = doc(page.path);
     const credits = [...document.querySelectorAll('a.trp-credit')];
 
@@ -313,9 +313,9 @@ console.log('\nevery Wispr Flow link is the one referral URL');
 
      Written with &amp; in the markup, so it is matched as the sweep finds it. */
   const REDEEM = 'https://wisprflow.ai/info/redeem-promo?code=TIMERICH6&amp;months=6';
-  const FILES = readdirSync(new URL('../../portal/', import.meta.url))
+  const FILES = readdirSync(new URL('../../club/', import.meta.url))
     .filter((f) => /\.(html|js)$/.test(f))
-    .map((f) => ['portal/' + f, read('portal/' + f)])
+    .map((f) => ['club/' + f, read('club/' + f)])
     .concat([['contentworkshop/index.html', read('contentworkshop/index.html')]]);
 
   check('there are files to sweep', FILES.length > 10, FILES.length);
@@ -334,7 +334,7 @@ console.log('\nevery Wispr Flow link is the one referral URL');
   // the footer credits at it too.
   const redeems = found.filter(([, url]) => url === REDEEM);
   check('the redeem page appears once, on the Resources card',
-    redeems.length === 1 && redeems[0][0] === 'portal/resources.html', redeems);
+    redeems.length === 1 && redeems[0][0] === 'club/resources.html', redeems);
 
   // Named, rather than left to the sweep above, because this is the one that
   // was changed by hand and changed back.
@@ -357,8 +357,8 @@ console.log('\nevery Wispr Flow link is the one referral URL');
 // markup is the markup now.
 console.log('\nthe artwork is never swapped at runtime');
 {
-  const chrome = read('portal/portal-chrome.js');
-  const content = read('portal/portal-content.css');
+  const chrome = read('club/portal-chrome.js');
+  const content = read('club/portal-content.css');
   check('portal-chrome.js no longer rewrites the credit',
     !chrome.includes('trp-stanley-clean') && !chrome.includes('stanley-clean.png'));
   check('and it no longer reaches into .trp-powered or .trp-credit at all',
@@ -410,13 +410,13 @@ console.log('\nthe style, written once per site rather than per page');
     (accelerator.match(/\.v2 \.powered\{display:inline-flex/g) || []).length === 1,
     (accelerator.match(/\.v2 \.powered\{display:inline-flex/g) || []).length);
 
-  const src = read('portal/portal-tailwind-src.css');
+  const src = read('club/portal-tailwind-src.css');
   check('the portal styles .trp-powered once, in the Tailwind source',
     (src.match(/\n  \.trp-powered \{/g) || []).length === 1);
   check('the built portal.css has it, so the source was rebuilt',
-    /\.trp-powered\{/.test(read('portal/portal.css')));
+    /\.trp-powered\{/.test(read('club/portal.css')));
   check('and the built CSS knows about the dark swap',
-    /trp-powered-rev/.test(read('portal/portal.css')));
+    /trp-powered-rev/.test(read('club/portal.css')));
 
   // The wording is clipped, not removed, below 640px: a credit that is
   // display:none would not be read out either.
@@ -424,7 +424,7 @@ console.log('\nthe style, written once per site rather than per page');
     /\.trp-powered-head \.trp-powered-label \{[^}]*position: absolute/.test(src) &&
     !/\.trp-powered-head \.trp-powered-label \{[^}]*display: none/.test(src));
   check('and the built CSS carries that step-down too',
-    /trp-powered-head \.trp-powered-label\{/.test(read('portal/portal.css')));
+    /trp-powered-head \.trp-powered-label\{/.test(read('club/portal.css')));
 }
 
 console.log('\n' + pass + ' passed, ' + fail + ' failed');

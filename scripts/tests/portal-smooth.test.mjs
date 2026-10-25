@@ -23,12 +23,12 @@ import { readFileSync, existsSync, statSync } from 'node:fs';
 
 const read = (p) => readFileSync(new URL('../../' + p, import.meta.url), 'utf8');
 const bytes = (p) => statSync(new URL('../../' + p, import.meta.url)).size;
-const SRC = read('portal/portal-tailwind-src.css');
-const BUILT = read('portal/portal.css');
-const ACCESS = read('portal/portal-access.js');
+const SRC = read('club/portal-tailwind-src.css');
+const BUILT = read('club/portal.css');
+const ACCESS = read('club/portal-access.js');
 
 const PAGES = ['dashboard', 'curriculum', 'sessions', 'resources', 'prompts', 'members'];
-const ALL = PAGES.concat(['index']);
+const ALL = PAGES.concat(['signin']);
 
 let pass = 0, fail = 0;
 function check(name, cond, extra) {
@@ -37,9 +37,9 @@ function check(name, cond, extra) {
 }
 
 const docs = {};
-for (const name of ALL) docs[name] = new JSDOM(read('portal/' + name + '.html')).window.document;
+for (const name of ALL) docs[name] = new JSDOM(read('club/' + name + '.html')).window.document;
 const html = {};
-for (const name of ALL) html[name] = read('portal/' + name + '.html');
+for (const name of ALL) html[name] = read('club/' + name + '.html');
 
 /* ---- 1. the payload cache ------------------------------------------------ */
 
@@ -80,7 +80,7 @@ console.log('\nDriven in a browser');
   const PAYLOAD = { ok: true, member: { first_name: 'Ella' }, weeks: [], sessions: [], progress: { items: [], sessions: [] } };
   function boot(token) {
     const dom = new JSDOM('<!doctype html><html><body></body></html>', {
-      url: 'https://timerich.ai/portal/dashboard.html',
+      url: 'https://timerich.ai/club/dashboard.html',
       runScripts: 'outside-only',
       virtualConsole: new VirtualConsole(),
     });
@@ -336,7 +336,7 @@ console.log('\nAnd the next page is warmed on hover');
       ? where.or.map((w) => w.href_matches) : [where && where.href_matches];
     check(name + ': they are valid JSON that prefetches portal pages only',
       parsed !== null && Array.isArray(parsed.prefetch) &&
-      JSON.stringify(patterns) === JSON.stringify(['/portal/:page', '/portal/*.html']),
+      JSON.stringify(patterns) === JSON.stringify(['/club/:page', '/club/*.html']),
       parsed);
     check(name + ': on hover, not on sight',
       parsed !== null && parsed.prefetch[0].eagerness === 'moderate',
@@ -344,7 +344,7 @@ console.log('\nAnd the next page is warmed on hover');
   }
   // The sign-in page links nowhere inside the portal.
   check('the sign-in page has nothing to prefetch',
-    docs.index.querySelectorAll('script[type="speculationrules"]').length === 0);
+    docs.signin.querySelectorAll('script[type="speculationrules"]').length === 0);
 }
 
 console.log('\n' + pass + ' passed, ' + fail + ' failed');

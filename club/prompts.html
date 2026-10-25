@@ -1,0 +1,439 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth" data-trp-gate>
+<head>
+  <script>
+    // Theme, applied before first paint so there is no flash of the wrong one.
+    // "system" follows the device; the CSS reads this attribute.
+    (function () {
+      var t = 'system';
+      try { t = window.localStorage.getItem('tr_portal_theme') || 'system'; } catch (e) {}
+      if (t !== 'light' && t !== 'dark') t = 'system';
+      document.documentElement.setAttribute('data-theme', t);
+    })();
+  </script>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <!-- Google tag (gtag.js). The library is fetched once the page is
+       interactive: it is the heaviest request here and nothing on screen
+       waits on it. The consent defaults below are set first, so the queue
+       it replays on arrival already respects them. -->
+  <script>
+    window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}
+    // Consent Mode v2. Region-specific default first, then the global fallback,
+    // which is the order Google's docs specify: the narrower region wins.
+    gtag('consent','default',{ad_storage:'denied',ad_user_data:'denied',ad_personalization:'denied',analytics_storage:'denied',region:['AT','BE','BG','HR','CY','CZ','DK','EE','FI','FR','DE','GR','HU','IS','IE','IT','LV','LI','LT','LU','MT','NL','NO','PL','PT','RO','SK','SI','ES','SE','GB','CH']});
+    gtag('consent','default',{ad_storage:'denied',ad_user_data:'denied',ad_personalization:'denied',analytics_storage:'granted'});
+    gtag('js',new Date());
+    gtag('config','G-CTZLQ4R388');
+
+    // The library, once the page has loaded and the main thread is free.
+    // requestIdleCallback's own timeout and the setTimeout fallback are both
+    // 2000ms, so it never waits longer than that on a busy page.
+    (function () {
+      var asked = false;
+      function loadGtag() {
+        if (asked) return;
+        asked = true;
+        var s = document.createElement('script');
+        s.async = true;
+        s.src = 'https://www.googletagmanager.com/gtag/js?id=G-CTZLQ4R388';
+        document.head.appendChild(s);
+      }
+      function schedule() {
+        if (typeof window.requestIdleCallback === 'function') {
+          window.requestIdleCallback(loadGtag, { timeout: 2000 });
+        } else {
+          window.setTimeout(loadGtag, 2000);
+        }
+      }
+      if (document.readyState === 'complete') schedule();
+      else window.addEventListener('load', schedule);
+    })();
+  </script>
+
+  <title>Prompts | Time Rich Portal</title>
+  <meta property="og:image" content="https://timerich.ai/og-time-rich.png" />
+  <meta property="og:image:width" content="1200" />
+  <meta property="og:image:height" content="630" />
+  <meta name="twitter:image" content="https://timerich.ai/og-time-rich.png" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <link rel="stylesheet" href="portal.css"/>
+  <!-- The two faces, served from this repo. They used to come from Google
+       Fonts, which costs a DNS lookup, a stylesheet and only then the font
+       itself: three round trips before a heading could be drawn in the right
+       face, and a reflow when it finally was. Preloading the files directly
+       starts them with the stylesheet instead.
+
+       crossorigin is required on a font preload even for a same-origin file:
+       fonts are fetched in CORS mode, and a preload without it is fetched
+       twice. -->
+  <link rel="preload" href="../brand/fonts/SpaceGrotesk-Variable.woff2" as="font" type="font/woff2" crossorigin/>
+  <link rel="preload" href="../brand/fonts/Inter-Variable.woff2" as="font" type="font/woff2" crossorigin/>
+  <link rel="stylesheet" href="portal-content.css?v=20261021">
+  <!-- The session gate. Config first, then the library; both deferred so
+       the DOM is ready when the script mounts. No valid code redirects to
+       the sign-in page, because this page has no login form of its own. -->
+  <script src="portal-config.js" defer></script>
+  <script src="portal-access.js" defer></script>
+  <script src="portal-live.js"></script>
+  <script src="portal-chrome.js?v=20261021" defer></script>
+  <!-- The instructions inside each skill pack, so "Open in your AI" can hand
+       a whole skill to a member who has not installed it. Generated from the
+       packs themselves by scripts/build-skill-instructions.mjs; deferred, and
+       ordered before the renderer that reads it. -->
+  <script src="skill-instructions.js" defer></script>
+  <script src="portal-prompts.js" defer></script>
+
+  <!-- Warm the next page while the pointer is still travelling to the link.
+       "moderate" is roughly 200ms of hover, which is long enough that a
+       pointer crossing the nav does not fetch all six. Only portal pages are
+       listed: a rule that matched everything would also warm sign-out and
+       the partner links.
+
+       Both address forms are matched. The nav links are extensionless now
+       (/club/resources), so a rule naming only the .html form would warm
+       nothing; the .html form stays because an old bookmark or an emailed
+       link can still be one. ":page" is a single segment, so it stops at the
+       pages themselves, and the images under /portal/assets are outside it
+       altogether. -->
+  <script type="speculationrules">
+  {
+    "prefetch": [{
+      "where": { "or": [
+        { "href_matches": "/club/:page" },
+        { "href_matches": "/club/*.html" }
+      ] },
+      "eagerness": "moderate"
+    }]
+  }
+  </script>
+</head>
+
+
+
+<body class="text-brand-deep font-sans min-h-screen flex flex-col selection:bg-brand-lime selection:text-brand-deep">
+
+  <!-- Noise Texture Overlay -->
+
+  <!-- MOBILE MENU -->
+  <div id="mobile-menu-overlay" class="fixed inset-0 bg-brand-ink/25 z-[100] opacity-0 pointer-events-none transition-opacity duration-300 lg:hidden"></div>
+
+  <div id="mobile-menu" class="fixed top-0 left-0 bottom-0 w-[82%] max-w-[300px] bg-brand-page border-r border-brand-ink/10 z-[101] -translate-x-full transition-transform duration-300 ease-out flex flex-col lg:hidden" role="dialog" aria-modal="true" aria-label="Menu">
+    <div class="flex-1 overflow-y-auto p-5 pt-6 flex flex-col">
+      <a href="/club" class="trp-wordmark text-[22px] mb-8 px-1">
+        TIME RICH<span class="trp-stop">.</span>
+      </a>
+      <nav class="space-y-1">
+        <a href="/club" class="flex items-center gap-3 px-4 py-3 rounded-[14px] text-sm font-medium text-brand-ink/70 hover:text-brand-ink hover:bg-brand-ink/5 transition-colors">
+          <svg class="w-4 h-4 shrink-0 text-brand-ink/50" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"></path></svg>
+          Club
+        </a>
+        <a href="curriculum" aria-current="true" class="flex items-center gap-3 px-4 py-3 rounded-[14px] text-sm font-medium bg-brand-green text-brand-bg">
+          <svg class="w-4 h-4 shrink-0" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"></path></svg>
+          Accelerator
+        </a>
+        <a href="members" data-portal-members-link class="flex items-center gap-3 px-4 py-3 rounded-[14px] text-sm font-medium text-brand-ink/70 hover:text-brand-ink hover:bg-brand-ink/5 transition-colors">
+          <svg class="w-4 h-4 shrink-0 text-brand-ink/50" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"></path></svg>
+          Members
+          <span class="trp-soon ml-auto">Soon</span>
+        </a>
+      </nav>
+      <div class="mt-auto pt-8 border-t border-brand-ink/10">
+        <button type="button" data-portal-signout class="w-full text-left px-4 py-3 rounded-[14px] text-sm font-medium text-brand-ink/70 hover:text-brand-ink hover:bg-brand-ink/5 transition-colors">Sign out</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- TOP NAVBAR -->
+  <header id="top-nav" class="trp-header h-14 sm:h-16 shrink-0 sticky top-0 z-50">
+    <div class="mx-auto max-w-[1120px] h-full flex items-center justify-between gap-3 px-4 sm:px-6 lg:px-8">
+
+    <!-- Left: the wordmark, then the nav pills beside it. The nav used to be
+         absolutely centred in the header, which left the right-hand side no
+         room for the sponsor credit, the member's name and Sign out all at
+         once. It flows after the wordmark now, which is also the order the
+         design asks for: logo, nav pills, then the right-hand group. -->
+    <div class="flex items-center gap-2 lg:gap-6 min-w-0">
+      <button id="mobile-menu-btn" type="button" aria-expanded="false" aria-controls="mobile-menu" aria-label="Menu" class="lg:hidden flex items-center justify-center w-11 h-11 -ml-2.5 rounded-full text-brand-ink hover:bg-brand-ink/5 transition-colors">
+        <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5"></path></svg>
+      </button>
+
+      <a href="/club" class="trp-wordmark text-[17px] sm:text-[20px] whitespace-nowrap rounded focus:outline-none focus-visible:ring-2 focus-visible:ring-brand-ink/30">
+        TIME RICH<span class="trp-stop">.</span>
+      </a>
+
+      <span class="trp-head-div" aria-hidden="true"></span>
+
+      <nav class="hidden lg:flex items-center gap-0.5" aria-label="Portal">
+        <a href="/club" class="trp-nav-link px-3.5 text-[13px] font-medium text-brand-ink/70 hover:text-brand-ink">Club</a>
+        <a href="curriculum" aria-current="true" class="trp-nav-link px-3.5 text-[13px] font-medium">Accelerator</a>
+        <a href="members" data-portal-members-link class="trp-nav-link gap-1.5 px-3.5 text-[13px] font-medium text-brand-ink/70 hover:text-brand-ink">Members <span class="trp-soon">Soon</span></a>
+      </nav>
+    </div>
+
+    <!-- Right: the theme control, a thin divider, the member and Sign out.
+         The sponsor credit is no longer here; it sits beside the wordmark on
+         the left, which is the only place it appears on the page. -->
+    <div class="trp-head-right">
+      <!-- Filled in by portal-chrome.js, and only while a session is live or
+           about to start. Stays hidden the rest of the time. -->
+      <a data-portal-join hidden class="hidden xl:inline-flex items-center px-3.5 py-1.5 rounded-full bg-brand-green text-brand-bg text-[11px] font-medium tracking-[0.04em] whitespace-nowrap hover:bg-brand-green/90 transition-colors"></a>
+
+      <div class="trp-theme">
+        <label class="sr-only" for="theme-prompts">Theme</label>
+        <select id="theme-prompts" data-theme-select>
+          <option value="system">System</option>
+          <option value="light">Light</option>
+          <option value="dark">Dark</option>
+        </select>
+        <svg class="trp-theme-caret" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7"></path></svg>
+      </div>
+
+      <span class="trp-head-div hidden md:block" aria-hidden="true"></span>
+
+      <span data-portal-name class="hidden md:inline text-xs font-medium text-brand-ink/70 whitespace-nowrap"></span>
+
+      <button type="button" data-portal-signout class="hidden lg:inline-flex items-center h-11 text-[13px] font-medium text-brand-ink/70 hover:text-brand-ink transition-colors">Sign out</button>
+      </div>
+    </div>
+  </header>
+
+  <!-- MAIN APP AREA -->
+  <div class="flex-1 flex">
+    
+    <!-- LEFT SIDEBAR -->
+    
+    <!-- CENTER SCROLLABLE CONTENT -->
+    <main class="flex-1 relative bg-transparent">
+        <div class="relative z-10 px-3 sm:px-6 lg:px-12 py-8 lg:py-12 flex justify-center w-full">
+          <div class="w-full space-y-16 max-w-[1200px]">
+          
+    <header class="trp-page-head">
+              <div class="space-y-4">
+                <span class="trp-kicker">Prompt library</span>
+                <h1 class="trp-title">Prompts<span class="trp-stop">.</span></h1>
+                <p class="trp-lede">Pick the job you want done. One click opens it in your AI with the prompt already written.</p>
+              </div>
+              <!-- The shape lives at the foot of the page, where it cannot push
+                   the library down. This is only the way to it, parked in the
+                   space beside the title that was empty anyway. -->
+              <a class="trp-own-link" href="#write-your-own">Write your own prompt</a>
+            </header>
+
+            <section class="space-y-10 mt-6" aria-labelledby="prompt-cards-heading">
+              <div class="space-y-3">
+                <h2 id="prompt-cards-heading" class="trp-section-title">Your prompts</h2>
+                <p class="trp-lede">Choose where your prompts open once, and every card below follows it. Nothing to set up.</p>
+              </div>
+
+              <!-- Which AI the Open buttons point at. Chosen once, remembered
+                   on this device, and applied to all sixteen cards, so the
+                   page carries one button each instead of three. -->
+              <!-- The picker is built by the script, so its row is held open
+                   here. Empty, it was 114px of nothing that pushed the whole
+                   grid down the moment the script ran. -->
+              <div id="prompt-ai-picker">
+                <div class="trp-skel" aria-hidden="true">
+                  <div class="trp-picker">
+                    <span class="trp-tag trp-picker-label"><span class="trp-bar">Open prompts in</span></span>
+                    <div class="trp-picker-opts">
+                      <span class="trp-picker-opt"><span class="trp-bar">Claude</span></span>
+                      <span class="trp-picker-opt"><span class="trp-bar">ChatGPT</span></span>
+                      <span class="trp-picker-opt"><span class="trp-bar">Grok</span></span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- portal-prompts.js fills this on load. It needs nothing from
+                   the payload: every card carries its own prompt. -->
+              <!-- data-portal-message lets the shared gate replace the loading
+                   line with a reason when the payload never arrives. Without it
+                   this page waits on "Loading" with nothing to say. -->
+              <div id="prompt-cards" data-portal-message class="trp-sched">
+                <div class="trp-skel" aria-hidden="true">
+                <div class="trp-group-head">
+                  <h3 class="trp-group-title"><span class="trp-bar">Set up your AI</span></h3>
+                  <p class="trp-group-lede"><span class="trp-bar">Do these once. They give every other prompt something to read.</span></p>
+                </div>
+                <ul class="trp-pcards">
+                  <li class="glass-card is-static trp-pcard">
+                    <div class="trp-pcard-head"><h3 class="trp-pcard-name"><span class="trp-bar">Build my context</span></h3></div>
+                    <p class="trp-pcard-one"><span class="trp-bar">Builds your Business COMPASS from your own calls, docs, email and Notion, then shows where your time goes.</span></p>
+                    <div class="trp-actions"><span class="trp-bar is-btn"></span><span class="trp-bar is-btn"></span></div>
+                    <div class="trp-pcard-more"><span class="trp-bar">More ways to use this</span></div>
+                  </li>
+                  <li class="glass-card is-static trp-pcard">
+                    <div class="trp-pcard-head"><h3 class="trp-pcard-name"><span class="trp-bar">Lock down my AI</span></h3></div>
+                    <p class="trp-pcard-one"><span class="trp-bar">Walks you through three privacy settings in your AI before you connect anything, and reports back what changed.</span></p>
+                    <div class="trp-actions"><span class="trp-bar is-btn"></span><span class="trp-bar is-btn"></span></div>
+                    <div class="trp-pcard-more"><span class="trp-bar">More ways to use this</span></div>
+                  </li>
+                  <li class="glass-card is-static trp-pcard">
+                    <div class="trp-pcard-head"><h3 class="trp-pcard-name"><span class="trp-bar">Build my story bank</span></h3></div>
+                    <p class="trp-pcard-one"><span class="trp-bar">Pulls the stories you already tell out of your own transcripts and banks them in one place.</span></p>
+                    <div class="trp-actions"><span class="trp-bar is-btn"></span><span class="trp-bar is-btn"></span></div>
+                    <div class="trp-pcard-more"><span class="trp-bar">More ways to use this</span></div>
+                  </li>
+                </ul>
+                <div class="trp-group-head">
+                  <h3 class="trp-group-title"><span class="trp-bar">LinkedIn</span></h3>
+                  <p class="trp-group-lede"><span class="trp-bar">Write it, post it, and keep up with what comes back.</span></p>
+                </div>
+                <ul class="trp-pcards">
+                  <li class="glass-card is-static trp-pcard">
+                    <div class="trp-pcard-head"><h3 class="trp-pcard-name"><span class="trp-bar">Audit my LinkedIn</span></h3></div>
+                    <p class="trp-pcard-one"><span class="trp-bar">Scores your LinkedIn profile against one 90 day goal and one ideal client, then gives you ranked fixes with drafts.</span></p>
+                    <div class="trp-actions"><span class="trp-bar is-btn"></span><span class="trp-bar is-btn"></span></div>
+                    <div class="trp-pcard-more"><span class="trp-bar">More ways to use this</span></div>
+                  </li>
+                  <li class="glass-card is-static trp-pcard">
+                    <div class="trp-pcard-head"><h3 class="trp-pcard-name"><span class="trp-bar">Optimise my profile</span></h3></div>
+                    <p class="trp-pcard-one"><span class="trp-bar">Rewrites your whole LinkedIn profile, from the headline to the recommendations.</span></p>
+                    <div class="trp-actions"><span class="trp-bar is-btn"></span><span class="trp-bar is-btn"></span></div>
+                    <div class="trp-pcard-more"><span class="trp-bar">More ways to use this</span></div>
+                  </li>
+                  <li class="glass-card is-static trp-pcard">
+                    <div class="trp-pcard-head"><h3 class="trp-pcard-name"><span class="trp-bar">Plan my week</span></h3></div>
+                    <p class="trp-pcard-one"><span class="trp-bar">Builds a seven day LinkedIn plan with a pillar, a format and a hook for each day.</span></p>
+                    <div class="trp-actions"><span class="trp-bar is-btn"></span><span class="trp-bar is-btn"></span></div>
+                    <div class="trp-pcard-more"><span class="trp-bar">More ways to use this</span></div>
+                  </li>
+                  <li class="glass-card is-static trp-pcard">
+                    <div class="trp-pcard-head"><h3 class="trp-pcard-name"><span class="trp-bar">Write a post</span></h3></div>
+                    <p class="trp-pcard-one"><span class="trp-bar">Writes a LinkedIn post from scratch using a proven hook, then takes the AI tells out of it.</span></p>
+                    <div class="trp-actions"><span class="trp-bar is-btn"></span><span class="trp-bar is-btn"></span></div>
+                    <div class="trp-pcard-more"><span class="trp-bar">More ways to use this</span></div>
+                  </li>
+                  <li class="glass-card is-static trp-pcard">
+                    <div class="trp-pcard-head"><h3 class="trp-pcard-name"><span class="trp-bar">Break down a hook</span></h3></div>
+                    <p class="trp-pcard-one"><span class="trp-bar">Takes a post that worked and tells you which hook formula it used, and why.</span></p>
+                    <div class="trp-actions"><span class="trp-bar is-btn"></span><span class="trp-bar is-btn"></span></div>
+                    <div class="trp-pcard-more"><span class="trp-bar">More ways to use this</span></div>
+                  </li>
+                  <li class="glass-card is-static trp-pcard">
+                    <div class="trp-pcard-head"><h3 class="trp-pcard-name"><span class="trp-bar">Humanise a draft</span></h3></div>
+                    <p class="trp-pcard-one"><span class="trp-bar">Takes the AI tells out of a draft, and audits a post before you publish it.</span></p>
+                    <div class="trp-actions"><span class="trp-bar is-btn"></span><span class="trp-bar is-btn"></span></div>
+                    <div class="trp-pcard-more"><span class="trp-bar">More ways to use this</span></div>
+                  </li>
+                  <li class="glass-card is-static trp-pcard">
+                    <div class="trp-pcard-head"><h3 class="trp-pcard-name"><span class="trp-bar">Repurpose something</span></h3></div>
+                    <p class="trp-pcard-one"><span class="trp-bar">Rebuilds a tweet, video, blog or newsletter as a native LinkedIn post.</span></p>
+                    <div class="trp-actions"><span class="trp-bar is-btn"></span><span class="trp-bar is-btn"></span></div>
+                    <div class="trp-pcard-more"><span class="trp-bar">More ways to use this</span></div>
+                  </li>
+                  <li class="glass-card is-static trp-pcard">
+                    <div class="trp-pcard-head"><h3 class="trp-pcard-name"><span class="trp-bar">Interview me</span></h3></div>
+                    <p class="trp-pcard-one"><span class="trp-bar">Interviews you for the raw material your posts are made of.</span></p>
+                    <div class="trp-actions"><span class="trp-bar is-btn"></span><span class="trp-bar is-btn"></span></div>
+                    <div class="trp-pcard-more"><span class="trp-bar">More ways to use this</span></div>
+                  </li>
+                  <li class="glass-card is-static trp-pcard">
+                    <div class="trp-pcard-head"><h3 class="trp-pcard-name"><span class="trp-bar">Comment on a post</span></h3></div>
+                    <p class="trp-pcard-one"><span class="trp-bar">Drafts a comment on someone else’s post, in your voice.</span></p>
+                    <div class="trp-actions"><span class="trp-bar is-btn"></span><span class="trp-bar is-btn"></span></div>
+                    <div class="trp-pcard-more"><span class="trp-bar">More ways to use this</span></div>
+                  </li>
+                  <li class="glass-card is-static trp-pcard">
+                    <div class="trp-pcard-head"><h3 class="trp-pcard-name"><span class="trp-bar">Clear my comments</span></h3></div>
+                    <p class="trp-pcard-one"><span class="trp-bar">Drafts a reply to one comment, or sweeps a whole post and replies to every comment worth answering.</span></p>
+                    <div class="trp-actions"><span class="trp-bar is-btn"></span><span class="trp-bar is-btn"></span></div>
+                    <div class="trp-pcard-more"><span class="trp-bar">More ways to use this</span></div>
+                  </li>
+                  <li class="glass-card is-static trp-pcard">
+                    <div class="trp-pcard-head"><h3 class="trp-pcard-name"><span class="trp-bar">Find my warm threads</span></h3></div>
+                    <p class="trp-pcard-one"><span class="trp-bar">Tracks which of your comments got a reply, and flags the ones worth following up now.</span></p>
+                    <div class="trp-actions"><span class="trp-bar is-btn"></span><span class="trp-bar is-btn"></span></div>
+                    <div class="trp-pcard-more"><span class="trp-bar">More ways to use this</span></div>
+                  </li>
+                  <li class="glass-card is-static trp-pcard">
+                    <div class="trp-pcard-head"><h3 class="trp-pcard-name"><span class="trp-bar">Who engaged</span></h3></div>
+                    <p class="trp-pcard-one"><span class="trp-bar">Pulls everyone who liked or commented on a post and sorts them by how well they fit your ideal client.</span></p>
+                    <div class="trp-actions"><span class="trp-bar is-btn"></span><span class="trp-bar is-btn"></span></div>
+                    <div class="trp-pcard-more"><span class="trp-bar">More ways to use this</span></div>
+                  </li>
+                  <li class="glass-card is-static trp-pcard">
+                    <div class="trp-pcard-head"><h3 class="trp-pcard-name"><span class="trp-bar">Get the team posting</span></h3></div>
+                    <p class="trp-pcard-one"><span class="trp-bar">Sets up and runs a LinkedIn program for your team, from the launch plan to the numbers.</span></p>
+                    <div class="trp-actions"><span class="trp-bar is-btn"></span><span class="trp-bar is-btn"></span></div>
+                    <div class="trp-pcard-more"><span class="trp-bar">More ways to use this</span></div>
+                  </li>
+                </ul>
+                </div>
+                <p class="trp-skel-say" role="status">Loading the prompt library&hellip;</p>
+              </div>
+            </section>
+
+            <section class="space-y-6" aria-labelledby="guides-heading" data-prompt-guides hidden>
+              <div class="space-y-3">
+                <h2 id="guides-heading" class="trp-section-title">Guides</h2>
+                <p class="trp-lede">Longer reads in your workbook, for when you want the thinking behind a skill.</p>
+              </div>
+              <div id="prompt-guides"></div>
+            </section>
+</div>
+      </div>
+    
+        </div>
+      </main> <!-- CLOSE main -->
+    </div> <!-- CLOSE h-screen container -->
+
+  <footer class="shrink-0 px-4 sm:px-6 lg:px-8 py-2 border-t border-brand-ink/10 text-[12px] text-brand-ink/70">
+    <!-- One quiet line. The second "Powered by Stanley" lockup that used to
+         sit under this is gone: the credit is in the header now, once per
+         page, which is the rule on every page inside.
+
+         The separators are their own elements so .trp-foot-sep can take all
+         of them out at once on a narrow screen, where the line wraps and a
+         separator would otherwise be left stranded at the head of the second
+         line. See .trp-foot in portal-tailwind-src.css. -->
+    <p class="trp-foot flex flex-wrap items-center justify-center text-center">
+      <span>&copy; 2026 Time Rich</span>
+      <span class="trp-foot-sep" aria-hidden="true">&middot;</span>
+      <a href="/privacy/" class="trp-foot-link">Privacy</a>
+      <span class="trp-foot-sep" aria-hidden="true">&middot;</span>
+      <a href="/terms/" class="trp-foot-link">Terms</a>
+      <!-- Href comes from the week 0 link item; hidden when there is none. -->
+      <span data-portal-community hidden class="trp-foot-sep" aria-hidden="true">&middot;</span>
+      <a data-portal-community hidden class="trp-foot-link">WhatsApp community</a>
+      <span class="trp-foot-sep" aria-hidden="true">&middot;</span>
+      <span>Need help? <a href="mailto:emc@timerichclub.com" class="trp-foot-link">emc@timerichclub.com</a></span>
+      <span class="trp-foot-sep" aria-hidden="true">&middot;</span>
+      <!-- The two sponsors, read as one credit: "Powered by" is said once over
+           the pair. Stanley is the presenting sponsor, Wispr Flow the official
+           voice partner. Both are the real marks in their own colours, at the
+           line's own height -- the script that used to swap in a cropped,
+           greyed-out Stanley is gone, and so is the bare Wispr tile that read
+           as a stray black square with nothing to name it.
+
+           Stanley ships two files because its wordmark is black and vanishes on
+           the dark theme; both sit in the markup and the theme picks, since an
+           img's src is not something CSS can swap. -->
+      <span class="trp-credits">
+        <span class="trp-powered-label">Powered by</span>
+        <a class="trp-powered trp-powered-foot" href="https://x.getstanley.ai/r/mz4y9g" target="_blank" rel="noopener sponsored">
+          <img class="trp-powered-pos" src="../brand/partners/stanley-logo.png" alt="Stanley" width="765" height="203" loading="lazy" decoding="async"/>
+          <img class="trp-powered-rev" src="../brand/partners/stanley-logo-dark.png" alt="Stanley" width="765" height="203" loading="lazy" decoding="async"/>
+        </a>
+        <span class="trp-credit-dot" aria-hidden="true">&middot;</span>
+        <a class="trp-credit" href="https://ref.wisprflow.ai/ella-cook-vt27" target="_blank" rel="noopener sponsored">
+          <img class="trp-credit-tile" src="../os/img/wispr-flow.png" alt="" width="256" height="256" loading="lazy" decoding="async"/>
+          <span class="trp-credit-name">Wispr Flow</span>
+        </a>
+      </span>
+    </p>
+  </footer>
+
+
+
+
+
+  <!-- The light/dark choice, shared by every portal page. The pre-paint
+       script in <head> sets the attribute; this keeps the controls in step
+       with it and writes a new choice back. -->
+  <script src="portal-theme.js" defer></script>
+
+</body>
+</html>
+
