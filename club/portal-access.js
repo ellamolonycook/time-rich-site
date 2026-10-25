@@ -28,7 +28,7 @@
  *     [data-portal-sessions] gets the session rows
  *   If any of name/weeks/sessions are present it calls load() to fill them.
  *   With no valid session it shows [data-portal-login] if the page has
- *   one, and otherwise sends the browser to index.html.
+ *   one, and otherwise sends the browser to the sign-in page.
  *
  * Gating
  *   The script keeps a state on <html>: data-tr-portal="loading" | "in" | "out".
@@ -392,8 +392,12 @@
   var RE_VIMEO = /^[0-9]{6,12}$/;            // Vimeo ids are numeric
 
   // Build an embed src from an allowed host. The original URL is never
-  // reused: the src is assembled from a pattern-checked id.
+  // reused: the src is assembled from a pattern-checked id. Takes the URL
+  // object the cards already hold, or a raw string from a page, which goes
+  // through the same https-only check first. Anything unrecognised: null.
   function embedSrc(url) {
+    if (typeof url === 'string') url = safeUrl(url);
+    if (!url || !url.hostname) return null;
     var host  = url.hostname.toLowerCase().replace(/^www\./, '');
     var parts = url.pathname.split('/').filter(Boolean);
     var id;
@@ -441,7 +445,7 @@
     var frame = document.createElement('iframe');
     frame.src = src;
     frame.title = title || 'Video';
-    frame.loading = 'lazy';
+    frame.setAttribute('loading', 'lazy');
     frame.allow = 'accelerometer; clipboard-write; encrypted-media; picture-in-picture; fullscreen';
     frame.referrerPolicy = 'strict-origin-when-cross-origin';
     frame.setAttribute('allowfullscreen', '');
@@ -832,7 +836,7 @@
     // No login form on this page, so put it where the content would be.
     // [data-portal-message] is for a page that renders its own content and so
     // has neither hook: without it the page sits on its loading line forever
-    // with nothing to say. portal/prompts.html is one.
+    // with nothing to say. club/prompts.html is one.
     var target = document.querySelector('[data-portal-weeks]') ||
                  document.querySelector('[data-portal-sessions]') ||
                  document.querySelector('[data-portal-message]');
@@ -840,7 +844,7 @@
   }
 
   /* ---- leaving the portal, from inside a frame or not ------------------
-   * The Club home is served two ways: on its own at /portal/club.html, and
+   * The Club home is served two ways: on its own at /club/home, and
    * inside a full-bleed iframe at timerich.ai/club, where a visitor without
    * a session gets the public Apply page at that same address.
    *
@@ -868,11 +872,44 @@
     }
   }
 
+  /* ---- old .html addresses ----------------------------------------------
+   * Every link in the portal is extensionless now (/club/resources), but
+   * /club/resources.html is still served, and it is still what sits in
+   * bookmarks and in the emails already sent. A member who arrives that way
+   * gets the clean address in the bar instead, so the next thing they copy
+   * out of it is the form we want.
+   *
+   * replaceState rather than a redirect: this is already the right document,
+   * so there is nothing to fetch, nothing repaints, and Back still goes
+   * where the member came from instead of landing on the address they just
+   * left. The query string and the hash come along -- the sign-in link
+   * carries a code in the query, and the FAQ links carry a hash.
+   *
+   * Skipped inside a frame: the Club home is framed at /club, where the bar
+   * shows /club and the frame's own address was never on screen to tidy.
+   */
+  function tidyAddress() {
+    var loc = window.location;
+    if (loc.protocol !== 'https:' && loc.protocol !== 'http:') return;
+    if (isFramed()) return;
+    if (!window.history || !window.history.replaceState) return;
+    if (!/\.html$/.test(loc.pathname)) return;
+
+    var clean = loc.pathname.replace(/\.html$/, '');
+
+    try {
+      window.history.replaceState(window.history.state, '',
+                                  clean + loc.search + loc.hash);
+    } catch (e) { /* nothing to do: the address bar was not ours to rewrite */ }
+  }
+
   function signedOut() {
     if (document.querySelector('[data-portal-login]')) {
       setState('out');
     } else if (!leaveFrame()) {
-      window.location.replace('index.html');
+      // Not "./": that is /club, which is the Apply page to anyone without
+      // a session. The sign-in page has an address of its own.
+      window.location.replace('signin');
     }
   }
 
@@ -998,6 +1035,9 @@
     });
   }
 
+  // Nothing here touches the DOM, so it does not wait for it.
+  tidyAddress();
+
   if (document.readyState === 'loading') {
     document.addEventListener('DOMContentLoaded', mount);
   } else {
@@ -1021,6 +1061,11 @@
     // resources.html renders its own skill library and reuses this button, so
     // the gated-download flow lives in exactly one place.
     skillButton: skillButton,
+    // curriculum.html plays a pinned welcome video inside the page rather
+    // than as a card, and reuses these so the src is still assembled from a
+    // pattern-checked id and never from the stored URL.
+    embedSrc: embedSrc,
+    videoFrame: videoFrame,
     revealMembersLink: revealMembersLink,
     messages: MSG
   };

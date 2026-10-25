@@ -15,9 +15,9 @@
 import { JSDOM, VirtualConsole } from 'jsdom';
 import { readFileSync } from 'node:fs';
 
-const LIVE = readFileSync(new URL('../../portal/portal-live.js', import.meta.url), 'utf8');
-const SESSIONS_JS = readFileSync(new URL('../../portal/portal-sessions.js', import.meta.url), 'utf8');
-const SESSIONS_HTML = readFileSync(new URL('../../portal/sessions.html', import.meta.url), 'utf8');
+const LIVE = readFileSync(new URL('../../club/portal-live.js', import.meta.url), 'utf8');
+const SESSIONS_JS = readFileSync(new URL('../../club/portal-sessions.js', import.meta.url), 'utf8');
+const SESSIONS_HTML = readFileSync(new URL('../../club/sessions.html', import.meta.url), 'utf8');
 const SUBSCRIBE_URL = 'https://www.addevent.com/calendar/z0j4nlqbgt6b';
 
 let pass = 0, fail = 0;
@@ -29,7 +29,7 @@ function check(name, cond, extra) {
 function boot() {
   const vc = new VirtualConsole();
   const dom = new JSDOM('<!doctype html><html><body></body></html>', {
-    url: 'https://timerich.ai/portal/sessions.html',
+    url: 'https://timerich.ai/club/sessions.html',
     runScripts: 'dangerously',
     virtualConsole: vc,
   });
@@ -136,7 +136,7 @@ function renderPage() {
   // outside-only: window.eval runs with the window as its global, and the
   // page's own inline scripts (analytics, the theme, the page fade) stay off.
   const dom = new JSDOM(SESSIONS_HTML, {
-    url: 'https://timerich.ai/portal/sessions.html',
+    url: 'https://timerich.ai/club/sessions.html',
     runScripts: 'outside-only',
     virtualConsole: new VirtualConsole(),
   });
@@ -225,7 +225,7 @@ console.log('\nLive Sessions: the space is reserved before the payload lands');
   // from the same classes as the loaded cards, which is what makes both of
   // those numbers zero. jsdom does no layout, so what is pinned here is the
   // shape the measurement depends on.
-  const dom = new JSDOM(SESSIONS_HTML, { url: 'https://timerich.ai/portal/sessions.html' });
+  const dom = new JSDOM(SESSIONS_HTML, { url: 'https://timerich.ai/club/sessions.html' });
   const d = dom.window.document;
   const host = d.getElementById('trSessionList');
   const skel = host.querySelector('.trp-skel');
@@ -264,14 +264,14 @@ console.log('\nLive Sessions: the space is reserved before the payload lands');
 
   // The one part of the placeholder with no counterpart in the loaded page.
   // Left in flow it would cost its own height the moment it went.
-  const css = readFileSync(new URL('../../portal/portal-tailwind-src.css', import.meta.url), 'utf8');
+  const css = readFileSync(new URL('../../club/portal-tailwind-src.css', import.meta.url), 'utf8');
   check('the status line is taken out of flow, so losing it moves nothing',
     /\.trp-skel-say \{[^}]*position: absolute/.test(css),
     (css.match(/\.trp-skel-say \{[\s\S]*?\}/) || [])[0]);
   check('an empty bar takes the line box it sits in rather than a fixed height',
     /\.trp-skel \.trp-bar:empty \{ height: 1\.35em; \}/.test(css));
   check('and the built stylesheet carries it, so the source was rebuilt',
-    readFileSync(new URL('../../portal/portal.css', import.meta.url), 'utf8')
+    readFileSync(new URL('../../club/portal.css', import.meta.url), 'utf8')
       .includes('.trp-skel .trp-bar:empty{height:1.35em}'));
 
   // The renderer clears the box, so the placeholder is replaced rather than

@@ -3,7 +3,7 @@
  *
  * Every class is prefixed "trp-" so nothing here can collide with the
  * existing portal pages or with Tailwind's utilities. Colours and fonts
- * are the portal's own, lifted from portal/dashboard.html.
+ * are the portal's own, lifted from club/dashboard.html.
  *
  * To restyle: override the custom properties on :root, or just rewrite
  * the rules. No JavaScript depends on any of these declarations, only

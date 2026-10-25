@@ -8,11 +8,11 @@
 //
 // The second half is unchanged and is not about this page at all: it is the
 // hidden Members link on the other four pages and the back button after
-// signing out, both driven by the real portal/portal-access.js.
+// signing out, both driven by the real club/portal-access.js.
 import { JSDOM, VirtualConsole } from 'jsdom';
 import { readFileSync } from 'node:fs';
 
-const HTML = readFileSync(new URL('../../portal/members.html', import.meta.url), 'utf8');
+const HTML = readFileSync(new URL('../../club/members.html', import.meta.url), 'utf8');
 const DIRECTORY_URL = 'https://worker.test/portal-directory';
 
 let pass = 0, fail = 0;
@@ -29,7 +29,7 @@ async function open({ code = 'ABCDE-FGHJK' } = {}) {
   const virtualConsole = new VirtualConsole();
   virtualConsole.on('jsdomError', (e) => errors.push(String(e && e.message)));
   const dom = new JSDOM(HTML, {
-    url: 'https://timerich.ai/portal/members.html',
+    url: 'https://timerich.ai/club/members.html',
     runScripts: 'dangerously',
     pretendToBeVisual: true,
     virtualConsole,
@@ -159,7 +159,7 @@ console.log('\nTime Rich Members page — still a portal page');
     page.doc.querySelector('header#top-nav') !== null &&
     page.doc.querySelector('nav[aria-label="Portal"]') !== null);
   check('Members is marked as the current page in the nav',
-    page.doc.querySelector('nav a[href="members.html"][aria-current="page"]') !== null);
+    page.doc.querySelector('nav a[href="members"][aria-current="page"]') !== null);
   check('the footer line is there',
     page.doc.querySelector('footer .trp-foot') !== null);
   check('and the theme control is still the one every page has',
@@ -186,17 +186,17 @@ console.log('\nTime Rich Members page — copy');
 
 // ---------------------------------------------------------------------------
 // The hidden "Members" link on the other portal pages, driven by the real
-// portal/portal-access.js.
+// club/portal-access.js.
 // ---------------------------------------------------------------------------
-const ACCESS_JS = readFileSync(new URL('../../portal/portal-access.js', import.meta.url), 'utf8');
+const ACCESS_JS = readFileSync(new URL('../../club/portal-access.js', import.meta.url), 'utf8');
 const PAGES = ['dashboard', 'curriculum', 'sessions', 'resources'];
 
 async function openPortalPage(name, { directoryStatus = 200, cache, directoryThrows = false, holdDirectory = false } = {}) {
-  const html = readFileSync(new URL(`../../portal/${name}.html`, import.meta.url), 'utf8');
+  const html = readFileSync(new URL(`../../club/${name}.html`, import.meta.url), 'utf8');
   const calls = [];
   let held = null;   // set when holdDirectory keeps the answer pending
   const dom = new JSDOM(html, {
-    url: `https://timerich.ai/portal/${name}.html`,
+    url: `https://timerich.ai/club/${name}.html`,
     runScripts: 'dangerously',
     pretendToBeVisual: true,
     virtualConsole: new VirtualConsole(),   // the shells' own scripts are not under test here
@@ -248,8 +248,10 @@ async function openPortalPage(name, { directoryStatus = 200, cache, directoryThr
 // rebuilding any of this.
 console.log('\nMembers nav link on the other portal pages');
 for (const name of PAGES) {
-  const html = readFileSync(new URL(`../../portal/${name}.html`, import.meta.url), 'utf8');
-  const raw = [...html.matchAll(/<a href="members\.html"([^>]*)>/g)].map((m) => m[1]);
+  const html = readFileSync(new URL(`../../club/${name}.html`, import.meta.url), 'utf8');
+  // The link is extensionless now; club/members.html is still the file
+  // behind it, and still served, so an old bookmark keeps working.
+  const raw = [...html.matchAll(/<a href="members"([^>]*)>/g)].map((m) => m[1]);
   check(name + '.html: a Members link in the top nav and the phone menu, neither hidden',
     raw.length === 2 && raw.every((attrs) => !/\shidden(\s|$)/.test(attrs)), raw);
   check(name + '.html: the attribute stays, so portal-access.js still finds them',
@@ -258,7 +260,7 @@ for (const name of PAGES) {
     (html.match(/<span class="trp-soon[^"]*">Soon<\/span>/g) || []).length === 2);
 }
 {
-  const css = readFileSync(new URL('../../portal/portal-content.css', import.meta.url), 'utf8');
+  const css = readFileSync(new URL('../../club/portal-content.css', import.meta.url), 'utf8');
   check('the stylesheet no longer hides the link on [hidden]',
     !/\[data-portal-members-link\]\[hidden\]\s*\{\s*display:\s*none/.test(css),
     (css.match(/\[data-portal-members-link\]\[hidden\][^}]*\}/) || [])[0]);
@@ -290,7 +292,7 @@ for (const name of PAGES) {
   // used to shove the other four sideways. With nothing remembered the link
   // keeps its box while the answer is in flight.
   {
-    const css = readFileSync(new URL('../../portal/portal-content.css', import.meta.url), 'utf8');
+    const css = readFileSync(new URL('../../club/portal-content.css', import.meta.url), 'utf8');
     check('nor blanks it while the answer is in flight',
       !/\[data-portal-members-link\]\[data-pending\]\s*\{\s*visibility:\s*hidden/.test(css),
       (css.match(/\[data-portal-members-link\]\[data-pending\][^}]*\}/) || [])[0]);
@@ -332,12 +334,12 @@ console.log('\n' + 'The back button after signing out');
   // "Not implemented: navigation" jsdomError. That error is the signal that
   // the page tried to leave, so it is collected rather than swallowed.
   const openGated = async ({ signedIn }) => {
-    const html = readFileSync(new URL('../../portal/dashboard.html', import.meta.url), 'utf8');
+    const html = readFileSync(new URL('../../club/dashboard.html', import.meta.url), 'utf8');
     const left = [];
     const vc = new VirtualConsole();
     vc.on('jsdomError', (e) => { if (/navigation/i.test(e.message)) left.push(e.message); });
     const dom = new JSDOM(html, {
-      url: 'https://timerich.ai/portal/dashboard.html',
+      url: 'https://timerich.ai/club/dashboard.html',
       runScripts: 'dangerously',
       pretendToBeVisual: true,
       virtualConsole: vc,

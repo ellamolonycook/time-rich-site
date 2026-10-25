@@ -23,12 +23,12 @@ import { readFileSync, existsSync, statSync } from 'node:fs';
 
 const read = (p) => readFileSync(new URL('../../' + p, import.meta.url), 'utf8');
 const bytes = (p) => statSync(new URL('../../' + p, import.meta.url)).size;
-const SRC = read('portal/portal-tailwind-src.css');
-const BUILT = read('portal/portal.css');
-const ACCESS = read('portal/portal-access.js');
+const SRC = read('club/portal-tailwind-src.css');
+const BUILT = read('club/portal.css');
+const ACCESS = read('club/portal-access.js');
 
 const PAGES = ['dashboard', 'curriculum', 'sessions', 'resources', 'prompts', 'members'];
-const ALL = PAGES.concat(['index']);
+const ALL = PAGES.concat(['signin']);
 
 let pass = 0, fail = 0;
 function check(name, cond, extra) {
@@ -37,9 +37,9 @@ function check(name, cond, extra) {
 }
 
 const docs = {};
-for (const name of ALL) docs[name] = new JSDOM(read('portal/' + name + '.html')).window.document;
+for (const name of ALL) docs[name] = new JSDOM(read('club/' + name + '.html')).window.document;
 const html = {};
-for (const name of ALL) html[name] = read('portal/' + name + '.html');
+for (const name of ALL) html[name] = read('club/' + name + '.html');
 
 /* ---- 1. the payload cache ------------------------------------------------ */
 
@@ -80,7 +80,7 @@ console.log('\nDriven in a browser');
   const PAYLOAD = { ok: true, member: { first_name: 'Ella' }, weeks: [], sessions: [], progress: { items: [], sessions: [] } };
   function boot(token) {
     const dom = new JSDOM('<!doctype html><html><body></body></html>', {
-      url: 'https://timerich.ai/portal/dashboard.html',
+      url: 'https://timerich.ai/club/dashboard.html',
       runScripts: 'outside-only',
       virtualConsole: new VirtualConsole(),
     });
@@ -164,13 +164,14 @@ console.log('\nEvery area the payload fills holds its space open');
     docs.dashboard.querySelectorAll('[data-dash-list] .trp-dsteps .trp-dstep').length === 6 &&
     docs.dashboard.querySelector('[data-dash-meter] .trp-progress-track .trp-progress-fill') !== null,
     docs.dashboard.querySelectorAll('[data-dash-list] .trp-dstep').length);
-  // The redesigned curriculum: four week cards and the picked week's panel.
-  check('the curriculum placeholder uses the real week cards and lesson rows',
+  // The curriculum: the welcome, four week tabs and the setup steps.
+  check('the curriculum placeholder uses the real welcome, week tabs and step boxes',
+    docs.curriculum.querySelector('[data-curriculum-static] .trp-cw-welcome') !== null &&
     docs.curriculum.querySelectorAll('[data-curriculum-static] .trp-cw-weeks .trp-cw-week').length === 4 &&
-    docs.curriculum.querySelector('[data-curriculum-static] .trp-cw-panel .trp-cw-lessons .trp-cw-lesson') !== null);
-  check('and holds as many rows as Week 1 has steps',
-    docs.curriculum.querySelectorAll('[data-curriculum-static] .trp-cw-lesson').length === 9,
-    docs.curriculum.querySelectorAll('[data-curriculum-static] .trp-cw-lesson').length);
+    docs.curriculum.querySelector('[data-curriculum-static] .trp-cw-panel .trp-cw-steps .trp-cw-step') !== null);
+  check('and holds as many boxes as Start here has steps',
+    docs.curriculum.querySelectorAll('[data-curriculum-static] .trp-cw-step').length === 5,
+    docs.curriculum.querySelectorAll('[data-curriculum-static] .trp-cw-step').length);
   check('the prompts placeholder holds one card per card the page draws',
     docs.prompts.querySelectorAll('#prompt-cards .trp-pcard').length === 16,
     docs.prompts.querySelectorAll('#prompt-cards .trp-pcard').length);
@@ -324,9 +325,18 @@ console.log('\nAnd the next page is warmed on hover');
     check(name + ': carries one set of speculation rules', rules.length === 1, rules.length);
     let parsed = null;
     try { parsed = JSON.parse(rules[0].textContent); } catch (e) { /* reported below */ }
+    /* Both address forms. The nav links are extensionless now, so a rule
+       naming only the .html form would warm nothing; the .html form stays
+       because an old bookmark or an emailed link can still be one. ":page"
+       is a single segment, so the rule stops at the pages and does not reach
+       into /portal/assets -- a rule that matched everything would also warm
+       sign-out and the partner links. */
+    const where = parsed && parsed.prefetch && parsed.prefetch[0].where;
+    const patterns = where && Array.isArray(where.or)
+      ? where.or.map((w) => w.href_matches) : [where && where.href_matches];
     check(name + ': they are valid JSON that prefetches portal pages only',
       parsed !== null && Array.isArray(parsed.prefetch) &&
-      parsed.prefetch[0].where.href_matches === '/portal/*.html',
+      JSON.stringify(patterns) === JSON.stringify(['/club/:page', '/club/*.html']),
       parsed);
     check(name + ': on hover, not on sight',
       parsed !== null && parsed.prefetch[0].eagerness === 'moderate',
@@ -334,7 +344,7 @@ console.log('\nAnd the next page is warmed on hover');
   }
   // The sign-in page links nowhere inside the portal.
   check('the sign-in page has nothing to prefetch',
-    docs.index.querySelectorAll('script[type="speculationrules"]').length === 0);
+    docs.signin.querySelectorAll('script[type="speculationrules"]').length === 0);
 }
 
 console.log('\n' + pass + ' passed, ' + fail + ' failed');

@@ -41,11 +41,11 @@ check('Worker rejects invalid member token',(await post({token:'bad',setup_step:
    carry the notion step -- the checks above pin that -- so an older member's
    saved tick is not lost; the card simply no longer asks for it. */
 function boot(state={calendar:false,notion:false}, success=true) {
-  const dom=new JSDOM('<section data-portal-setup hidden></section>',{runScripts:'dangerously',url:'https://timerich.ai/portal/dashboard.html'});
+  const dom=new JSDOM('<section data-portal-setup hidden></section>',{runScripts:'dangerously',url:'https://timerich.ai/club/dashboard.html'});
   const w=dom.window;
   w.TR_PORTAL_DATA={member:{setup:{...state}},weeks:[],sessions:[]};
   w.TRPortal={setSetup:async()=>success};
-  w.eval(read('portal/portal-live.js')); w.eval(read('portal/portal-setup.js'));
+  w.eval(read('club/portal-live.js')); w.eval(read('club/portal-setup.js'));
   return w;
 }
 const flush=()=>new Promise(resolve=>setTimeout(resolve,0));
@@ -117,7 +117,7 @@ check('a body is text, never markup',
   rows[2].querySelector('.trp-check-body').innerHTML === 'Body with &lt;b&gt;markup&lt;/b&gt; &amp; an ampersand' &&
   rows[2].querySelector('.trp-check-body').querySelector('b') === null);
 check('line breaks in a body are kept by the stylesheet',
-  /\.trp-check-body\s*\{[^}]*white-space:\s*pre-line/.test(read('portal/portal-tailwind-src.css')) &&
-  read('portal/portal.css').includes('white-space:pre-line'));
+  /\.trp-check-body\s*\{[^}]*white-space:\s*pre-line/.test(read('club/portal-tailwind-src.css')) &&
+  read('club/portal.css').includes('white-space:pre-line'));
 w.close();
 console.log(`\n${checks} setup checks passed`);

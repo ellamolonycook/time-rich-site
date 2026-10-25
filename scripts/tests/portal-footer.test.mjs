@@ -21,12 +21,12 @@ const read = (p) => readFileSync(new URL('../../' + p, import.meta.url), 'utf8')
 
 // Every page inside the gate. The sign-in page has no footer.
 const PAGES = [
-  'portal/dashboard.html',
-  'portal/curriculum.html',
-  'portal/sessions.html',
-  'portal/resources.html',
-  'portal/prompts.html',
-  'portal/members.html',
+  'club/dashboard.html',
+  'club/curriculum.html',
+  'club/sessions.html',
+  'club/resources.html',
+  'club/prompts.html',
+  'club/members.html',
 ];
 
 let pass = 0, fail = 0;
@@ -101,7 +101,7 @@ for (const path of PAGES) {
   check('it holds two links, Stanley then Wispr Flow',
     credits.length === 2 &&
     credits[0].getAttribute('href') === 'https://x.getstanley.ai/r/mz4y9g' &&
-    credits[1].getAttribute('href') === 'https://ref.wisprflow.ai/ella-cook-vt27',
+    credits[1].getAttribute('href') === 'https://wisprflow.ai/info/redeem-promo?code=TIMERICH6&months=6',
     credits.map((a) => a.getAttribute('href')));
   check('both open in a new tab and are marked sponsored',
     credits.length === 2 && credits.every((a) => a.getAttribute('target') === '_blank' &&
@@ -128,8 +128,8 @@ for (const path of PAGES) {
   // The script that used to swap the Stanley artwork for a cropped, greyed
   // copy is gone. If it ever comes back, so does the misaligned logo.
   check('nothing on the page swaps the artwork at runtime',
-    !read('portal/portal-chrome.js').includes('stanley-clean') &&
-    !read('portal/portal-content.css').includes('stanley-clean'));
+    !read('club/portal-chrome.js').includes('stanley-clean') &&
+    !read('club/portal-content.css').includes('stanley-clean'));
 
   const text = row.textContent.replace(/\s+/g, ' ').trim();
   check('the line still reads as the brief sets it, with the credit last',
@@ -141,8 +141,8 @@ for (const path of PAGES) {
 
 console.log('\nthe rule that keeps a separator off the head of a wrapped line');
 {
-  const src = read('portal/portal-tailwind-src.css');
-  const built = read('portal/portal.css');
+  const src = read('club/portal-tailwind-src.css');
+  const built = read('club/portal.css');
 
   check('the separators are hidden by default, which is the narrow case',
     /\.trp-foot-sep \{\s*display: none;\s*\}/.test(src));
@@ -165,7 +165,7 @@ console.log('\nthe rule that keeps a separator off the head of a wrapped line');
   // [hidden] has to keep beating the media query, or the conditional
   // separator would reappear on a wide screen with no link beside it.
   check('[hidden] still wins over the breakpoint, so the conditional dot stays away',
-    /\[hidden\] \{ display: none !important; \}/.test(read('portal/portal-content.css')));
+    /\[hidden\] \{ display: none !important; \}/.test(read('club/portal-content.css')));
 }
 
 /* ---- the support address ------------------------------------------------ */
@@ -184,13 +184,15 @@ console.log('\nthe rule that keeps a separator off the head of a wrapped line');
 // and fails on a second one anywhere, which is the thing that actually goes
 // wrong. emc@timerichclub.com does not contain emc@timerich.ai as a substring,
 // so the two counts never overlap.
-const PARTNER_FILE = 'club.html';
+const PARTNER_FILE = 'home.html';
 const PARTNER_LINK = 'mailto:emc@timerich.ai';
 const PARTNER_TEXT = 'Want to partner on an event?';
-console.log('\nthe support address, everywhere in portal/');
+console.log('\nthe support address, everywhere in club/');
 {
-  const dir = new URL('../../portal/', import.meta.url);
-  const files = readdirSync(dir).filter((f) => /\.(html|js|css)$/.test(f));
+  const dir = new URL('../../club/', import.meta.url);
+  // club/index.html is the public Apply page at /club, not a portal page, and
+  // it has its own contact copy.
+  const files = readdirSync(dir).filter((f) => /\.(html|js|css)$/.test(f) && f !== 'index.html');
 
   check('there are portal files to sweep', files.length > 10, files.length);
 
@@ -231,13 +233,13 @@ console.log('\nthe support address, everywhere in portal/');
     PAGES.every((p) => carrying.some(([f]) => p.endsWith(f))),
     carrying.map(([f]) => f));
   check('so does the sign-in page and the gate script itself',
-    carrying.some(([f]) => f === 'index.html') &&
+    carrying.some(([f]) => f === 'signin.html') &&
     carrying.some(([f]) => f === 'portal-access.js'),
     carrying.map(([f]) => f));
 
   // Every mailto on a page goes to the new address, not just the text beside
   // it: the two drift apart the moment one is edited and the other is not.
-  for (const path of PAGES.concat(['portal/index.html'])) {
+  for (const path of PAGES.concat(['club/signin.html'])) {
     const d = new JSDOM(read(path)).window.document;
     const mailtos = [...d.querySelectorAll('a[href^="mailto:"]')]
       .map((a) => a.getAttribute('href').replace(/^mailto:/, '').split('?')[0]);

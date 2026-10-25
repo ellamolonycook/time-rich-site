@@ -227,24 +227,32 @@ dialog.ep::backdrop { background: rgba(20, 22, 17, .78); backdrop-filter: blur(4
 .block-head h2 { font-family: var(--display); font-weight: 600; font-size: clamp(22px, 3vw, 28px); letter-spacing: -.02em; margin: 0; }
 .block-head a { font-size: 14px; font-weight: 500; color: var(--green); text-underline-offset: 3px; white-space: nowrap; }
 .cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(300px, 100%), 1fr)); gap: 16px; }
-.offer { border: 1px solid var(--line); border-radius: 18px; padding: 20px 22px; display: flex; flex-direction: column; gap: 10px; }
+.offer { border: 1px solid var(--line); border-radius: 18px; padding: 22px; display: flex; flex-direction: column; gap: 16px; }
 .offer-head { display: flex; align-items: center; gap: 12px; }
-.offer-head img { width: 36px; height: 36px; border-radius: 9px; object-fit: contain; background: var(--sage-lt); flex: none; }
+.offer-head img { width: 40px; height: 40px; border-radius: 10px; object-fit: contain; background: var(--sage-lt); flex: none; }
 .offer h3 { margin: 0; font-family: var(--display); font-weight: 600; font-size: 19px; letter-spacing: -.01em; }
-.offer p { margin: 0; font-size: 15px; color: var(--soft); }
+.offer-head p { margin: 2px 0 0; font-size: 14px; color: var(--soft); }
 .offer-code { display: flex; align-items: center; justify-content: space-between; gap: 12px; background: var(--sage-lt); border-radius: 12px; padding: 8px 8px 8px 16px; }
 .offer-code b { font-size: 16px; letter-spacing: .06em; }
 .offer-code .pill { min-height: 36px; padding: 0 14px; font-size: 13px; }
-.offer ol { margin: 0; padding-left: 20px; font-size: 14.5px; line-height: 1.55; color: var(--soft); }
-.offer ol a { color: var(--ink); text-underline-offset: 3px; }
-.offer p.offer-help { color: var(--ink); }
+/* Three slim rows per card, hairlines between them, one chevron each. */
+.acc-group { border-top: 1px solid var(--line); }
+.acc { display: block; border-bottom: 1px solid var(--line); }
+.acc summary, .acc-link { display: flex; align-items: center; justify-content: space-between; gap: 12px; min-height: 48px; padding: 4px 2px; cursor: pointer; list-style: none; font-size: 15px; font-weight: 500; color: var(--ink); text-decoration: none; }
+.acc summary::-webkit-details-marker { display: none; }
+.acc summary:hover, .acc-link:hover { color: var(--green); }
+.acc summary:focus-visible, .acc-link:focus-visible { outline: 2px solid var(--green); outline-offset: 2px; border-radius: 6px; }
+.acc-chev { width: 16px; height: 16px; flex: none; fill: none; stroke: currentColor; stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; transition: transform .18s ease; }
+.acc[open] .acc-chev { transform: rotate(90deg); }
+.acc-body { padding: 0 2px 16px; display: flex; flex-direction: column; gap: 10px; font-size: 14.5px; line-height: 1.55; color: var(--soft); }
+.acc-body p { margin: 0; }
+.acc-body ol { margin: 0; padding-left: 20px; display: flex; flex-direction: column; gap: 6px; }
+.acc-body a { color: var(--ink); text-underline-offset: 3px; }
+.acc-body strong { color: var(--ink); font-weight: 600; }
+.acc-note { font-size: 13.5px; background: var(--sage-lt); border-radius: 10px; padding: 10px 12px; color: var(--ink) !important; }
 .offer-video { position: relative; aspect-ratio: 4 / 3; border-radius: 12px; overflow: hidden; background: var(--ink); }
 .offer-video iframe { position: absolute; inset: 0; width: 100%; height: 100%; border: 0; }
-.offer p.offer-warn { font-size: 14px; line-height: 1.5; background: var(--sage-lt); border-radius: 12px; padding: 10px 12px; color: var(--ink); }
-.offer-steps { border: 1px solid var(--line); border-radius: 12px; }
-.offer-steps summary { cursor: pointer; padding: 12px 14px; font-weight: 600; font-size: 15px; }
-.offer-steps ol { padding: 0 14px 14px 36px; display: flex; flex-direction: column; gap: 6px; }
-.offer-steps-body { padding: 0 14px 14px; display: flex; flex-direction: column; gap: 10px; }
+@media (prefers-reduced-motion: reduce) { .acc-chev { transition: none; } }
 .cards.is-events { grid-template-columns: repeat(auto-fill, minmax(min(260px, 100%), 340px)); }
 .event { display: flex; flex-direction: column; gap: 12px; text-decoration: none; color: var(--ink); }
 .event img { width: 100%; height: auto; aspect-ratio: 1 / 1; object-fit: cover; border-radius: 18px; display: block; background: var(--sage-lt); transition: opacity .2s ease; }
@@ -309,35 +317,37 @@ dialog.ep::backdrop { background: rgba(20, 22, 17, .78); backdrop-filter: blur(4
       <div class="block-head"><h2 id="offers-title">Member offers</h2></div>
       <div class="cards">
         <div class="offer">
-          <div class="offer-head"><img src="/os/img/wispr-flow.png" alt="" width="36" height="36"/><h3>Wispr Flow: 6 months Pro free</h3></div>
-          <p>Talk instead of type, in any app.</p>
+          <div class="offer-head"><img src="/os/img/wispr-flow.png" alt="" width="36" height="36"/><div><h3>Wispr Flow</h3><p>6 months Pro free &middot; talk instead of type, in any app</p></div></div>
           <div class="offer-code"><b>TIMERICH6</b><button class="pill is-light" type="button" data-copy-code="TIMERICH6">Copy code</button></div>
-          <ol>
-            <li>Install Wispr Flow on your laptop through <a href="https://ref.wisprflow.ai/ella-cook-vt27" target="_blank" rel="noopener sponsored">this link</a>. The code only works in the desktop app.</li>
-            <li>In the app: Settings, then Plans and Billing, then Add promo code. Enter TIMERICH6, press Apply, then Redeem now.</li>
-            <li>Wispr asks for a card, but you won&rsquo;t be charged for the 6 months.</li>
-          </ol>
+          <div class="acc-group">
+            <details class="acc">
+              <summary>How to redeem<svg class="acc-chev" viewBox="0 0 24 24" aria-hidden="true"><path d="M9 6l6 6-6 6"/></svg></summary>
+              <div class="acc-body"><ol><li>Install Wispr Flow on your laptop through <a href="https://wisprflow.ai/info/redeem-promo?code=TIMERICH6&amp;months=6" target="_blank" rel="noopener sponsored">this link</a>. The code only works in the desktop app.</li><li>In the app: Settings, then Plans and Billing, then Add promo code. Enter TIMERICH6, press Apply, then Redeem now.</li></ol></div>
+            </details>
+            <details class="acc">
+              <summary>Good to know<svg class="acc-chev" viewBox="0 0 24 24" aria-hidden="true"><path d="M9 6l6 6-6 6"/></svg></summary>
+              <div class="acc-body"><p>Only works if you&rsquo;re new to Wispr Flow or on the free plan. Wispr asks for a card, but you won&rsquo;t be charged for the 6 months.</p></div>
+            </details>
+            <a class="acc acc-link" href="https://superhumanos.notion.site/Superhuman-Hacks-Wispr-Flow-free-guide-400ca5ebe55781f59f9ee69c08c680f0" target="_blank" rel="noopener">Wispr Flow setup guide<svg class="acc-chev" viewBox="0 0 24 24" aria-hidden="true"><path d="M7 17L17 7M9 7h8v8"/></svg></a>
+          </div>
         </div>
         <div class="offer">
-          <div class="offer-head"><img src="/os/img/stanley.png" alt="" width="36" height="36"/><h3>Stanley: 6 months free</h3></div>
-          <p>Your AI head of content.</p>
+          <div class="offer-head"><img src="/os/img/stanley.png" alt="" width="36" height="36"/><div><h3>Stanley</h3><p>6 months free &middot; your AI head of content</p></div></div>
           <div class="offer-code"><b>TIMERICH6</b><button class="pill is-light" type="button" data-copy-code="TIMERICH6">Copy code</button></div>
-          <p class="offer-warn"><strong>Before you start:</strong> don&rsquo;t click &ldquo;Message Stanley&rdquo; on the homepage. That route skips the promo code. Go in through email first. You can connect iMessage, WhatsApp or Telegram later.</p>
-          <details class="offer-steps">
-            <summary>Watch the step-by-step video</summary>
-            <div class="offer-steps-body">
-              <div class="offer-video"><iframe src="https://www.loom.com/embed/be6db9ceb94344afb9b56244c9e517f2?hide_owner=true&hide_share=true&hide_title=true&hideEmbedTopBar=true" title="How to get 6 months of Stanley free" loading="lazy" allow="fullscreen" allowfullscreen style=""></iframe></div>
-              <p class="offer-help"><a href="https://www.loom.com/share/be6db9ceb94344afb9b56244c9e517f2" target="_blank" rel="noopener">Watch it full screen on Loom &#8599;</a></p>
-            </div>
-          </details>
-          <details class="offer-steps">
-            <summary>New to Stanley? Get started</summary>
-            <ol><li>On your laptop, go to <a href="https://x.getstanley.ai/r/mz4y9g" target="_blank" rel="noopener sponsored">getstanley.ai</a>.</li><li>Click <strong>Log in</strong> (top of the page, not &ldquo;Message Stanley&rdquo;).</li><li>Click <strong>Sign up</strong>.</li><li>Choose <strong>Sign up with email or Google</strong>. Ignore the iMessage option on this screen.</li><li>Enter your email and create a password. Use the email you want tied to your account. Click <strong>Continue</strong>.</li><li>Verify your email. Check your inbox for a login code and enter it.</li><li>Answer the duplicate account check. If you&rsquo;ve never texted Stanley before, click <strong>No, I&rsquo;m new to Stanley</strong>. The next page can take a few seconds to load.</li><li>Pick the <strong>$49/month</strong> plan. Click <strong>Start your 14-day free trial</strong>. Checkout opens.</li><li>Click <strong>Pay without Link</strong> to pay by card.</li><li>Click <strong>Add promotion code</strong>, enter <strong>TIMERICH6</strong> and click <strong>Apply</strong>. You should see 100% off for the next 6 billing cycles.</li><li>Enter a payment method and click <strong>Start trial</strong>. You won&rsquo;t be charged during the 6 free months.</li></ol>
-          </details>
-          <details class="offer-steps">
-            <summary>Already on Stanley&rsquo;s free plan? Get started</summary>
-            <ol><li>On your laptop, go to <a href="https://x.getstanley.ai/r/mz4y9g" target="_blank" rel="noopener sponsored">getstanley.ai</a> and log in.</li><li>Go to <strong>Upgrade</strong> and pick the <strong>$49/month</strong> plan. Click <strong>Start your 14-day free trial</strong>. Checkout opens.</li><li>Click <strong>Pay without Link</strong> to pay by card.</li><li>Click <strong>Add promotion code</strong>, enter <strong>TIMERICH6</strong> and click <strong>Apply</strong>. You should see 100% off for the next 6 billing cycles.</li><li>Enter a payment method and click <strong>Start trial</strong>. You won&rsquo;t be charged during the 6 free months.</li></ol>
-          </details>
+          <div class="acc-group">
+            <details class="acc">
+              <summary>Watch the step-by-step video<svg class="acc-chev" viewBox="0 0 24 24" aria-hidden="true"><path d="M9 6l6 6-6 6"/></svg></summary>
+              <div class="acc-body"><div class="offer-video"><iframe src="https://www.loom.com/embed/be6db9ceb94344afb9b56244c9e517f2?hide_owner=true&hide_share=true&hide_title=true&hideEmbedTopBar=true" title="How to get 6 months of Stanley free" loading="lazy" allow="fullscreen" allowfullscreen></iframe></div></div>
+            </details>
+            <details class="acc">
+              <summary>New to Stanley? Get started<svg class="acc-chev" viewBox="0 0 24 24" aria-hidden="true"><path d="M9 6l6 6-6 6"/></svg></summary>
+              <div class="acc-body"><p class="acc-note"><strong>Before you start:</strong> don&rsquo;t click &ldquo;Message Stanley&rdquo; on the homepage. That route skips the promo code. Go in through email first. You can connect iMessage, WhatsApp or Telegram later.</p><ol><li>On your laptop, go to <a href="https://x.getstanley.ai/r/mz4y9g" target="_blank" rel="noopener sponsored">getstanley.ai</a>.</li><li>Click <strong>Log in</strong> (top of the page, not &ldquo;Message Stanley&rdquo;).</li><li>Click <strong>Sign up</strong>.</li><li>Choose <strong>Sign up with email or Google</strong>. Ignore the iMessage option on this screen.</li><li>Enter your email and create a password. Use the email you want tied to your account. Click <strong>Continue</strong>.</li><li>Verify your email. Check your inbox for a login code and enter it.</li><li>Answer the duplicate account check. If you&rsquo;ve never texted Stanley before, click <strong>No, I&rsquo;m new to Stanley</strong>. The next page can take a few seconds to load.</li><li>Pick the <strong>$49/month</strong> plan. Click <strong>Start your 14-day free trial</strong>. Checkout opens.</li><li>Click <strong>Pay without Link</strong> to pay by card.</li><li>Click <strong>Add promotion code</strong>, enter <strong>TIMERICH6</strong> and click <strong>Apply</strong>. You should see 100% off for the next 6 billing cycles.</li><li>Enter a payment method and click <strong>Start trial</strong>. You won&rsquo;t be charged during the 6 free months.</li></ol></div>
+            </details>
+            <details class="acc">
+              <summary>Already on the free plan? Upgrade<svg class="acc-chev" viewBox="0 0 24 24" aria-hidden="true"><path d="M9 6l6 6-6 6"/></svg></summary>
+              <div class="acc-body"><p class="acc-note"><strong>Before you start:</strong> don&rsquo;t click &ldquo;Message Stanley&rdquo; on the homepage. That route skips the promo code. Go in through email first. You can connect iMessage, WhatsApp or Telegram later.</p><ol><li>On your laptop, go to <a href="https://x.getstanley.ai/r/mz4y9g" target="_blank" rel="noopener sponsored">getstanley.ai</a> and log in.</li><li>Go to <strong>Upgrade</strong> and pick the <strong>$49/month</strong> plan. Click <strong>Start your 14-day free trial</strong>. Checkout opens.</li><li>Click <strong>Pay without Link</strong> to pay by card.</li><li>Click <strong>Add promotion code</strong>, enter <strong>TIMERICH6</strong> and click <strong>Apply</strong>. You should see 100% off for the next 6 billing cycles.</li><li>Enter a payment method and click <strong>Start trial</strong>. You won&rsquo;t be charged during the 6 free months.</li></ol></div>
+            </details>
+          </div>
         </div>
       </div>
     </section>
@@ -846,7 +856,7 @@ var SERIES = ['AI Build Sessions', 'Leading with AI', 'Female Founder Circle'];
     var res = el('div', 'ep-box');
     res.appendChild(el('h3', '', 'Resources'));
     (e.resources || []).forEach(function (r) { res.appendChild(link(r[0], r[1], r[2])); });
-    res.appendChild(link('Wispr Flow: 6 months Pro free', 'Code TIMERICH6, in the desktop app', 'https://ref.wisprflow.ai/ella-cook-vt27'));
+    res.appendChild(link('Wispr Flow: 6 months Pro free', 'Code TIMERICH6, in the desktop app', 'https://wisprflow.ai/info/redeem-promo?code=TIMERICH6&months=6'));
     res.appendChild(link('Stanley: 6 months free', 'Code TIMERICH6, at checkout', 'https://x.getstanley.ai/r/mz4y9g'));
     side.appendChild(res);
     var acts = el('div', 'ep-actions');

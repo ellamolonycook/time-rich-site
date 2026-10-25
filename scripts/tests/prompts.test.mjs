@@ -17,7 +17,7 @@ function check(name, cond, extra) {
   else { fail++; console.log('  FAIL ' + name + (extra !== undefined ? '  -> ' + JSON.stringify(extra) : '')); }
 }
 
-const PROMPTS_JS = read('portal/portal-prompts.js');
+const PROMPTS_JS = read('club/portal-prompts.js');
 
 // The seven headings the brief sets, in the order it sets them.
 const HEADINGS = ['ROLE', 'SECOND OPINION', 'CONTEXT', 'TASK', 'RED TEAM', 'BLIND SPOTS', 'OUTPUT'];
@@ -27,8 +27,8 @@ const headingsOf = (text) =>
 // Every pack a card points at, read off the renderer so the list cannot
 // drift from the cards themselves.
 const CARD_FILES = [...PROMPTS_JS.matchAll(/^\s*file: '([^']+)'/gm)].map((m) => m[1]);
-const PROMPTS_HTML = read('portal/prompts.html');
-const SKILL_TEXT_JS = read('portal/skill-instructions.js');
+const PROMPTS_HTML = read('club/prompts.html');
+const SKILL_TEXT_JS = read('club/skill-instructions.js');
 
 // One unlocked week holding two of the sixteen packs, and one locked week
 // holding a third. Only the two should become buttons.
@@ -64,7 +64,7 @@ const OPEN_PAYLOAD = {
 async function openPrompts(payload = PAYLOAD, withSkillText = true) {
   const calls = [];
   const dom = new JSDOM(PROMPTS_HTML, {
-    url: 'https://timerich.ai/portal/prompts.html',
+    url: 'https://timerich.ai/club/prompts.html',
     runScripts: 'dangerously',
     pretendToBeVisual: true,
     virtualConsole: new VirtualConsole(),
@@ -94,8 +94,8 @@ async function openPrompts(payload = PAYLOAD, withSkillText = true) {
       };
     },
   });
-  dom.window.eval(read('portal/portal-live.js'));
-  dom.window.eval(read('portal/portal-access.js'));
+  dom.window.eval(read('club/portal-live.js'));
+  dom.window.eval(read('club/portal-access.js'));
   // The page loads this before the renderer, so the test does too: without
   // it a card has no instructions to hand an AI and grows no AI buttons.
   if (withSkillText) dom.window.eval(SKILL_TEXT_JS);
@@ -198,11 +198,11 @@ console.log('\nPrompt Library — when the payload never arrives');
   check('the card area is a target the shared gate can write a reason into',
     /id="prompt-cards" data-portal-message/.test(PROMPTS_HTML));
   check('the gate looks for that target when a page has no weeks or sessions hook',
-    /\[data-portal-message\]/.test(read('portal/portal-access.js')));
+    /\[data-portal-message\]/.test(read('club/portal-access.js')));
 
   // Drive it: this is what a hung or refused Worker looks like to the page.
   const dom = new JSDOM(PROMPTS_HTML, {
-    url: 'https://timerich.ai/portal/prompts.html',
+    url: 'https://timerich.ai/club/prompts.html',
     runScripts: 'dangerously',
     pretendToBeVisual: true,
     virtualConsole: new VirtualConsole(),
@@ -219,8 +219,8 @@ console.log('\nPrompt Library — when the payload never arrives');
       window.fetch = () => Promise.reject(new Error('network'));
     },
   });
-  dom.window.eval(read('portal/portal-live.js'));
-  dom.window.eval(read('portal/portal-access.js'));
+  dom.window.eval(read('club/portal-live.js'));
+  dom.window.eval(read('club/portal-access.js'));
   dom.window.eval(PROMPTS_JS);
   for (let i = 0; i < 20; i++) await new Promise((r) => setTimeout(r, 0));
 
@@ -246,28 +246,35 @@ console.log('\nPrompt Library — the page and the nav');
   // the curriculum still works — it is simply no longer one of the four
   // places the menu steers to. So what is pinned here is the opposite of
   // what used to be: no portal page offers it in either menu.
-  for (const name of ['club', 'dashboard', 'curriculum', 'sessions', 'resources', 'members', 'prompts']) {
-    const html = read('portal/' + name + '.html');
+  for (const name of ['home', 'dashboard', 'curriculum', 'sessions', 'resources', 'members', 'prompts']) {
+    const html = read('club/' + name + '.html');
     const menus = html.slice(html.indexOf('<div id="mobile-menu"'), html.indexOf('</header>'));
-    const links = [...menus.matchAll(/<a href="prompts\.html"([^>]*)>/g)].map((m) => m[1]);
+    // Both address forms: the links are extensionless now, and putting one
+    // back as a .html link should not slip past this either.
+    const links = [...menus.matchAll(/<a href="prompts(?:\.html)?"([^>]*)>/g)].map((m) => m[1]);
     check(name + '.html: no Prompts link in the top nav or the phone menu',
       links.length === 0, links.length);
   }
   // It is the Accelerator that is lit while a member is on it: the menu's
   // Accelerator entry points at the dashboard, so it carries the generic
   // "current item in this set" rather than claiming to be this page.
+  /* This named the dashboard until now. It stopped being true at 13ab847,
+     "Open the Accelerator on the curriculum instead of the dashboard", and
+     was never updated -- the suite had already failed earlier in the chain,
+     so nothing here ran to say so. */
   check('prompts.html lights the Accelerator, without claiming to be it',
-    /<a href="dashboard\.html"[^>]*aria-current="true"/.test(PROMPTS_HTML) &&
-    !/aria-current="page"/.test(PROMPTS_HTML));
+    /<a href="curriculum"[^>]*aria-current="true"/.test(PROMPTS_HTML) &&
+    !/aria-current="page"/.test(PROMPTS_HTML),
+    (PROMPTS_HTML.match(/<a href="[^"]*"[^>]*aria-current="[a-z]*"/g) || []));
   check('prompts.html does not still think it is Resources',
-    !/href="resources\.html" aria-current/.test(PROMPTS_HTML));
+    !/href="resources(?:\.html)?" aria-current/.test(PROMPTS_HTML));
 
   // Tailwind purges any class it cannot find in a content file, so the new
   // renderer has to be in the content globs or the cards lose their styling.
   const cfg = read('tailwind.config.js');
   check('the Tailwind content globs cover the new renderer',
-    /'\.\/portal\/\*\.js'/.test(cfg), cfg.split('content:')[1]?.slice(0, 120));
-  const css = read('portal/portal.css');
+    /'\.\/club\/\*\.js'/.test(cfg), cfg.split('content:')[1]?.slice(0, 120));
+  const css = read('club/portal.css');
   for (const cls of ['trp-pcards', 'trp-pcard-head', 'trp-toast', 'trp-ptemplate']) {
     check('the built stylesheet still has .' + cls, css.includes(cls));
   }
@@ -290,7 +297,7 @@ console.log('\nPrompt Library — the page and the nav');
 
 console.log('\nResources — the FAQ');
 {
-  const html = read('portal/resources.html');
+  const html = read('club/resources.html');
   const dom = new JSDOM(html, { virtualConsole: new VirtualConsole() });
   const faq = dom.window.document.querySelector('.trp-faq');
   check('there is an FAQ section', Boolean(faq));
@@ -306,7 +313,7 @@ console.log('\nResources — the FAQ');
 
 console.log('\nDashboard — the In ChatGPT dropdown');
 {
-  const html = read('portal/dashboard.html');
+  const html = read('club/dashboard.html');
   const dom = new JSDOM(html, { virtualConsole: new VirtualConsole() });
   const accs = [...dom.window.document.querySelectorAll('.trp-connect details')];
   const titles = accs.map((d) => d.querySelector('.trp-acc-title').textContent);

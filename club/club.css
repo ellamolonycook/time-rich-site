@@ -171,7 +171,8 @@
   src: url('../brand/fonts/Caveat-500.woff2') format('woff2');
 }
 
-.tc-sign { margin-top: 40px; }
+/* Signed on the right, the way a letter is. */
+.tc-sign { margin-top: 40px; text-align: right; }
 .tc-sign-love { font-size: 17px; color: rgb(244 241 230 / .78); }
 .tc-sign-name {
   margin-top: 6px;
@@ -205,6 +206,53 @@
   background: linear-gradient(to top, rgb(0 0 0 / .55), transparent);
 }
 
+/* One screen, on a laptop or a desktop. The letter and the portrait fill
+   the viewport under the 64px header and no more, so the whole opening is
+   read without scrolling; the photo strip starts at the fold. Type and
+   spacing scale with the viewport's height rather than its width, because
+   height is what runs out. min-height, not height: a very short window
+   still grows rather than cutting the letter off. */
+@media (min-width: 900px) and (min-height: 560px) {
+  /* Centred in the screen rather than stretched to it, so the portrait
+     stays exactly as tall as the letter beside it. */
+  .tc-letter-screen {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    min-height: calc(100svh - 64px);
+  }
+  /* Wider than the rest of the page, so the two-column letter has room. */
+  .tc-letter-screen .tc-wrap { max-width: 1320px; width: 100%; }
+  .tc-letter-top { padding-top: clamp(20px, 4vh, 48px); padding-bottom: clamp(10px, 2vh, 22px); }
+  .tc-letter-grid {
+    grid-template-columns: minmax(0, 1.5fr) minmax(0, 1fr);
+    gap: clamp(40px, 5vw, 72px);
+    padding-bottom: clamp(24px, 5vh, 64px);
+  }
+  .tc-open { font-size: clamp(28px, min(2.8vw, 4.4vh), 48px); }
+  /* The letter runs in two columns here: in one, it is too long to fit a
+     laptop screen at a size anyone would want to read. Each paragraph is
+     kept whole, so a column never breaks mid-thought. */
+  .tc-letter-body {
+    margin-top: clamp(16px, 3vh, 36px);
+    max-width: none;
+    columns: 2;
+    column-gap: clamp(24px, 2.6vw, 40px);
+  }
+  .tc-letter-body p { font-size: clamp(14px, 1.9vh, 16.5px); line-height: 1.6; break-inside: avoid; }
+  .tc-letter-body p + p { margin-top: clamp(8px, 1.5vh, 16px); }
+  .tc-letter-body .tc-turn { margin: clamp(8px, 1.5vh, 16px) 0; font-size: clamp(17px, 2.5vh, 22px); }
+  .tc-letter-body .tc-turn + p { margin-top: 0; }
+  .tc-sign { margin-top: clamp(14px, 2.6vh, 40px); }
+  .tc-sign-love { font-size: clamp(14px, 1.95vh, 17px); }
+  .tc-sign-name { font-size: clamp(30px, 4.8vh, 44px); }
+  .tc-sign-role { margin-top: 6px; }
+  /* The photo is laid over its frame instead of sitting in it, so its own
+     1400px height adds nothing to the row: the letter alone sets how tall
+     the row is, and the photo fills exactly that. */
+  .tc-portrait img { position: absolute; inset: 0; }
+}
+
 /* =====================================================================
    A rail of photographs, edge to edge. It scrolls sideways under a finger
    or a trackpad and snaps to each frame; nothing moves on its own.
@@ -229,7 +277,27 @@
 }
 .tc-rail > * { scroll-snap-align: start; flex: none; }
 
-.tc-film { background: var(--tc-night); padding-bottom: 56px; }
+.tc-film { position: relative; background: var(--tc-night); padding-bottom: 56px; }
+/* Drifting is a scroll the script drives, so snapping would fight it. */
+.tc-film .tc-rail.is-drifting { scroll-snap-type: none; }
+/* The small arrow, on the strip's right edge at its middle. */
+.tc-film-next {
+  position: absolute; z-index: 2;
+  right: 16px; top: calc(var(--tc-u) * .5);
+  transform: translateY(-50%);
+  display: grid; place-items: center;
+  width: 40px; height: 40px;
+  border: 0; border-radius: 999px;
+  background: rgb(244 241 230 / .92);
+  color: var(--tc-night);
+  box-shadow: 0 6px 20px rgb(0 0 0 / .3);
+  cursor: pointer;
+  transition: background-color .2s, transform .25s var(--tc-ease);
+}
+.tc-film-next:hover { background: var(--tc-cream); transform: translateY(-50%) translateX(2px); }
+.tc-film-next:focus-visible { outline: 2px solid var(--tc-lime); outline-offset: 3px; }
+.tc-film-next svg { width: 18px; height: 18px; fill: none; stroke: currentColor; stroke-width: 2.2; stroke-linecap: round; stroke-linejoin: round; }
+@media (min-width: 640px) { .tc-film-next { right: 24px; } }
 @media (min-width: 900px) { .tc-film { padding-bottom: 96px; } }
 .tc-film .tc-rail { align-items: flex-start; gap: 14px; padding-bottom: 40px; }
 @media (min-width: 640px) { .tc-film .tc-rail { gap: 20px; } }
@@ -319,19 +387,49 @@
 @media (min-width: 900px) {
   .tc-community { grid-template-columns: minmax(0, 1fr) minmax(0, 1.15fr); gap: 72px; align-items: end; }
 }
+/* The photo, with its caption on the image and the member count on a card
+   that hangs off its bottom-left corner. The figure keeps room under it
+   for the part of the card that overlaps. */
+.tc-moment { position: relative; margin: 18px 0 44px; }
+.tc-moment img {
+  display: block;
+  width: 100%;
+  aspect-ratio: 3 / 2;
+  object-fit: cover;
+  object-position: 55% 30%;
+  border-radius: var(--tc-r);
+}
+.tc-moment-cap {
+  position: absolute; top: 14px; left: 14px;
+  padding: 6px 12px;
+  border-radius: 999px;
+  background: rgb(21 21 17 / .7);
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
+  font-size: 12px; font-weight: 500; letter-spacing: .02em;
+  color: var(--tc-cream);
+}
+.tc-stat-card {
+  position: absolute; left: 16px; bottom: -32px;
+  padding: 14px 20px 16px;
+  border-radius: 16px;
+  background: rgb(var(--c-surface));
+  box-shadow: 0 10px 30px rgb(0 0 0 / .12), inset 0 0 0 1px var(--tc-hair);
+}
+@media (min-width: 640px) { .tc-stat-card { left: 24px; } }
 .tc-stat {
   font-family: var(--trp-face);
   font-weight: 500;
-  font-size: clamp(72px, 13vw, 168px);
-  line-height: .9;
-  letter-spacing: -.06em;
+  font-size: clamp(36px, 4vw, 48px);
+  line-height: 1;
+  letter-spacing: -.04em;
 }
-.tc-stat-l { margin-top: 14px; font-size: 17px; color: var(--tc-soft); }
+.tc-stat-l { margin-top: 4px; font-size: 13px; color: var(--tc-soft); }
 .tc-trouble {
   font-family: var(--trp-face);
   font-size: 15px;
   font-weight: 500;
-  margin: 28px 0 4px;
+  margin: 0 0 4px;
   color: rgb(var(--c-ink) / .6);
 }
 
@@ -443,6 +541,9 @@
   object-fit: cover;
   object-position: 50% 20%;
   background: rgb(var(--c-panel));
+  /* All four in black and white, so the photos read as one set whatever
+     light each was taken in. Indra's is already monochrome. */
+  filter: grayscale(1);
 }
 .tc-mentor-n {
   margin-top: 16px;

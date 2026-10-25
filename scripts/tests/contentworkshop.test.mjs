@@ -228,10 +228,10 @@ console.log('\n/contentworkshop — how Wispr Flow is described');
   check('the old "not on your phone" line is gone, since the phone app is now the fallback',
     !/Not on your phone/.test(HTML));
 
-  // The one link out to Wispr Flow is the referral URL, same as the portal.
+  // The one link out to Wispr Flow is the redeem page, same as the portal.
   const links = [...document.querySelectorAll('a[href*="wisprflow.ai"]')];
-  check('the download link is the referral URL',
-    links.length === 1 && links[0].getAttribute('href') === 'https://ref.wisprflow.ai/ella-cook-vt27',
+  check('the download link is the redeem page',
+    links.length === 1 && links[0].getAttribute('href') === 'https://wisprflow.ai/info/redeem-promo?code=TIMERICH6&months=6',
     links.map((a) => a.getAttribute('href')));
   check('and it opens in a new tab, marked sponsored',
     links.length === 1 && links[0].getAttribute('target') === '_blank' &&
@@ -577,7 +577,7 @@ console.log('\n/contentworkshop — the screenshots, on the page');
     !/workshop notes/i.test(HTML) && !HTML.includes('Content-Creation-Workshop-10-26'));
 
   const shots = [...document.querySelectorAll('figure.shot')];
-  check('four screenshots are drawn', shots.length === 4, shots.length);
+  check('three screenshots are drawn', shots.length === 3, shots.length);
 
   check('each sits under the sub-step it belongs to',
     shots.every((f) => {
@@ -588,7 +588,7 @@ console.log('\n/contentworkshop — the screenshots, on the page');
 
   check('they are the files in contentworkshop/img/, named by step and order',
     shots.map((f) => f.querySelector('img').getAttribute('src')).join(',') ===
-      'img/step2-1.png,img/step2-2.png,img/step2-3.png,img/step3-1.png',
+      'img/step2-1.png,img/step2-2.png,img/step3-1.png',
     shots.map((f) => f.querySelector('img').getAttribute('src')));
 
   check('and every one of those files is actually there',

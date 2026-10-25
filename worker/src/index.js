@@ -155,11 +155,6 @@ export default {
       return handleWaitlist(request, env, cors);
     }
 
-    // Route: best-post entries from /contentworkshop -> their own Notion database.
-    if (path.endsWith("/contentworkshop")) {
-      return handleContentWorkshop(request, env, cors);
-    }
-
     // Route: the email gate on /os (POST /os-email) -> a Resend contact.
     if (path.endsWith("/os-email")) {
       return handleOsEmail(request, env, cors);
@@ -302,6 +297,23 @@ export default {
     // themselves, so the mapping table is the contract with the page.
     if (path.endsWith("/strategy")) {
       return handleStrategy(data, env, cors, ctx);
+    }
+
+    // Route: content workshop draw (POST /draw-entry) -> its own Notion
+    // database. One field that matters, the LinkedIn post, so it is checked
+    // here as well as on the page: only a linkedin.com link is accepted.
+    if (path.endsWith("/draw-entry")) {
+      const post = String(data["LinkedIn post"] || "").trim();
+      let ok = false;
+      try {
+        const u = new URL(/^https?:\/\//i.test(post) ? post : "https://" + post);
+        ok = /(^|\.)linkedin\.com$/i.test(u.hostname) && u.pathname.length > 1;
+        if (ok) data = { ...data, "LinkedIn post": u.origin + u.pathname };
+      } catch {}
+      if (!ok) {
+        return json({ ok: false, error: "Please paste the link to your LinkedIn post, like https://www.linkedin.com/posts/..." }, 400, cors);
+      }
+      return createApplication(data, env, cors, env.NOTION_DRAW_DATABASE_ID, { Status: "New", Source: "contentworkshop" });
     }
 
     // Route: AI Revenue Accelerator application -> its own Notion database.
@@ -558,48 +570,6 @@ async function handleWaitlist(request, env, cors) {
   if (social) {
     properties["Social media"] = { url: /^https?:\/\//i.test(social) ? social : `https://${social}` };
   }
-
-  try {
-    const res = await fetch("https://api.notion.com/v1/pages", {
-      method: "POST",
-      headers: { ...authHeaders(env), "Content-Type": "application/json" },
-      body: JSON.stringify({ parent: { database_id: dbId }, properties }),
-    });
-    if (!res.ok) return json({ ok: false, error: "Notion create failed", detail: await res.text() }, 502, cors);
-    return json({ ok: true }, 200, cors);
-  } catch (err) {
-    return json({ ok: false, error: "Unexpected error", detail: String(err) }, 500, cors);
-  }
-}
-
-// Best-post entries from the /contentworkshop page: name, email and the
-// LinkedIn post URL, one row each in the "Content Workshop Entries" database.
-async function handleContentWorkshop(request, env, cors) {
-  const dbId = env.NOTION_CONTENTWORKSHOP_DATABASE_ID;
-  if (!env.NOTION_TOKEN || !dbId) {
-    return json({ ok: false, error: "Content workshop entries not configured" }, 500, cors);
-  }
-
-  let d;
-  try { d = await request.json(); } catch { return json({ ok: false, error: "Invalid JSON" }, 400, cors); }
-  if (d._gotcha) return json({ ok: true }, 200, cors);           // honeypot: silently accept bots
-
-  const name = String(d.name || "").trim();
-  const email = String(d.email || "").trim();
-  let postUrl = String(d.post_url || "").trim();
-  if (postUrl && !/^https?:\/\//i.test(postUrl)) postUrl = `https://${postUrl}`;
-  if (!name || !isEmail(email)) return json({ ok: false, error: "Missing name or email" }, 400, cors);
-  if (!/^https?:\/\/([a-z0-9-]+\.)?linkedin\.com\//i.test(postUrl) || postUrl.length > 2000) {
-    return json({ ok: false, error: "Invalid LinkedIn URL" }, 400, cors);
-  }
-
-  const rich = (s) => [{ text: { content: clip(s, 2000) } }];
-  const properties = {
-    "Name": { title: rich(name) },
-    "Email": { email: clip(email, 200) },
-    "Post URL": { url: postUrl },
-    "Status": { select: { name: "New" } },
-  };
 
   try {
     const res = await fetch("https://api.notion.com/v1/pages", {
@@ -2309,8 +2279,8 @@ function buildPortalPasscodeEmail(member, maskCode) {
   const raw = String(member.email || "").trim();
   const address = raw && maskCode ? maskEmail(raw) : raw;
   const line = address
-    ? `Go to https://timerich.ai/portal and sign in with this email address: ${address}`
-    : "Go to https://timerich.ai/portal and sign in with this email address.";
+    ? `Go to https://timerich.ai/club/signin and sign in with this email address: ${address}`
+    : "Go to https://timerich.ai/club/signin and sign in with this email address.";
   return {
     subject: "Your Time Rich portal is ready",
     text: `Hi ${name},\n\nYour Time Rich portal is ready.\n\n${line}\n\nThere is no passcode to remember.\n\nQuestions? Reply to this email or write to emc@timerich.ai.\n\nWarmly,\nElla\nFounder, Time Rich`,
@@ -2448,13 +2418,16 @@ const ONBOARDING_KICKOFF_MS = Date.UTC(2026, 9, 26, 16, 0, 0);
 
 // Every link either email is allowed to carry, named once so the copy below
 // and the tests both read from the same list.
+//
+// There is deliberately no Club or portal link here. The portal is not live
+// for new members yet, so announcements go to WhatsApp instead, and a link
+// that cannot be added by accident is the cheapest way to keep it that way.
 const ONBOARDING_LINKS = {
   onboard: "https://timerich.ai/onboard/",
   calendar: "https://www.addevent.com/calendar/z0j4nlqbgt6b",
   questions: "https://timerich.ai/superhuman/",
-  portal: "https://timerich.ai/portal/",
-  ellaLinkedIn: "https://www.linkedin.com/in/ellamolonycook/",
-  wispr: "https://ref.wisprflow.ai/ella-cook-vt27",
+  instagram: "https://www.instagram.com/timerichtalk",
+  wispr: "https://wisprflow.ai/info/redeem-promo?code=TIMERICH6&months=6",
   wisprGuide: "https://superhumanos.notion.site/Wispr-Flow-setup-Superhuman-Accelerator-401ca5ebe5578114bfc3d3bc73be21bd",
   toolsGuide: "https://superhumanos.notion.site/Connect-your-tools-to-your-AI-Superhuman-Accelerator-401ca5ebe557817aaa44ff89de92a091",
   compass: "https://docs.google.com/document/d/1c50ST_FSASEOCIh1z3GQhkdNl9eqFjY0asvk-MC1X5s/copy",
@@ -2532,15 +2505,8 @@ function buildOnboardingWelcomeEmail({ greeting, role, at }) {
   const isBuyer = role !== "second_seat";
 
   const opening = after
-    ? "You're in! Welcome to the Superhuman Accelerator. We kicked off on Monday 26 October, and we're live on Zoom every Monday and Friday at 12pm ET until Friday 20 November. Catch up on the recordings in the "
+    ? "You're in! Welcome to the Superhuman Accelerator. We kicked off on Monday 26 October, and we're live on Zoom every Monday and Friday at 12pm ET until Friday 20 November."
     : "You're in! Welcome to the Superhuman Accelerator. We kick off on Monday 26 October at 12pm ET, and we're live on Zoom every Monday and Friday at 12pm ET until Friday 20 November.";
-
-  const openingHtml = after
-    ? `<p>${opening}${onboardingLink(L.portal, "Time Rich Club")}.</p>`
-    : `<p>${opening}</p>`;
-  const openingText = after
-    ? opening + onboardingLinkText(L.portal, "Time Rich Club") + "."
-    : opening;
 
   // A buyer is told about their +1; the +1 is told that they are one. The
   // paragraph above already opens with "You're in!", so the +1's line does not
@@ -2558,18 +2524,16 @@ function buildOnboardingWelcomeEmail({ greeting, role, at }) {
     "Welcome to the Superhuman Accelerator",
     [
       `<p>${htmlEscape(greeting)}</p>`,
-      openingHtml,
+      `<p>${opening}</p>`,
       seatHtml,
       `<p><strong>Your next steps</strong></p>`,
       `<ol style="padding-left:20px;margin:0 0 16px;">`,
       `<li style="margin-bottom:8px;"><strong>Add every live session to your calendar:</strong> ${onboardingLink(L.calendar, "add them here")}.</li>`,
       `<li style="margin-bottom:8px;"><strong>Fill in your ${onboardingLink(L.questions, "onboarding questions")}</strong> (about 10 minutes).</li>`,
-      `<li style="margin-bottom:8px;"><strong>Log in to the ${onboardingLink(L.portal, "Time Rich Club")}</strong> with this email address. No password needed.</li>`,
+      `<li style="margin-bottom:8px;"><strong>Join the ${onboardingLink(L.whatsapp, "Superhuman WhatsApp group")}</strong> for announcements.</li>`,
       `</ol>`,
-      `<p>Your prep work arrives in a couple of hours.</p>`,
-      `<p><strong>What we ask you to commit to</strong></p>`,
-      `<p>During the cohort: attend each session, share 1 LinkedIn post and 2 Instagram stories about your experience, tagging @timerichtalk.<br/>`,
-      `Before Friday 20 November: 1 video testimonial and 1 recommendation on ${onboardingLink(L.ellaLinkedIn, "Ella's LinkedIn profile")}.</p>`,
+      `<p>We really appreciate it during the cohort: attend each session, share 1 LinkedIn post and 2 Instagram stories about your experience, tagging ${onboardingLink(L.instagram, "@timerichtalk")}.</p>`,
+      `<p>In 2 hours you'll see the preparation work to become Superhuman.</p>`,
       `<p>${htmlEscape(signOff)}</p>`,
       `<p>Time Rich Team</p>`,
     ].join("\n")
@@ -2578,37 +2542,30 @@ function buildOnboardingWelcomeEmail({ greeting, role, at }) {
   const text = [
     greeting,
     "",
-    openingText,
+    opening,
     "",
     seatText,
     "",
     "Your next steps",
     `1. Add every live session to your calendar: ${onboardingLinkText(L.calendar, "add them here")}.`,
     `2. Fill in your ${onboardingLinkText(L.questions, "onboarding questions")} (about 10 minutes).`,
-    `3. Log in to the ${onboardingLinkText(L.portal, "Time Rich Club")} with this email address. No password needed.`,
+    `3. Join the ${onboardingLinkText(L.whatsapp, "Superhuman WhatsApp group")} for announcements.`,
     "",
-    "Your prep work arrives in a couple of hours.",
+    `We really appreciate it during the cohort: attend each session, share 1 LinkedIn post and 2 Instagram stories about your experience, tagging ${onboardingLinkText(L.instagram, "@timerichtalk")}.`,
     "",
-    "What we ask you to commit to",
-    "During the cohort: attend each session, share 1 LinkedIn post and 2 Instagram stories about your experience, tagging @timerichtalk.",
-    `Before Friday 20 November: 1 video testimonial and 1 recommendation on ${onboardingLinkText(L.ellaLinkedIn, "Ella's LinkedIn profile")}.`,
+    "In 2 hours you'll see the preparation work to become Superhuman.",
     "",
     signOff,
     "",
     "Time Rich Team",
   ].join("\n");
 
-  return { subject: "You're in! Welcome to the Superhuman Accelerator", html, text };
+  return { subject: "Welcome to the Superhuman Accelerator", html, text };
 }
 
 function buildOnboardingPrepEmail({ greeting, at }) {
-  const after = onboardingAfterKickoff(at);
   const L = ONBOARDING_LINKS;
   const signOff = onboardingSignOff(at);
-
-  // The WhatsApp group is opened on the Saturday before kickoff, so that
-  // sentence is only true while kickoff is still ahead.
-  const whatsappTail = after ? "" : " We accept everyone on Saturday 24 October at 12pm ET.";
 
   const html = onboardingHtmlDocument(
     "Preparation to Become Superhuman",
@@ -2621,10 +2578,9 @@ function buildOnboardingPrepEmail({ greeting, at }) {
       `<li style="margin-bottom:10px;"><strong>Connect your tools to your AI.</strong> In Wispr Flow, open Settings, then MCP, and add it to Claude. For your other tools, ${onboardingLink(L.toolsGuide, "here is the guide")}.</li>`,
       `<li style="margin-bottom:10px;"><strong>Record last week.</strong> Turn on Wispr Flow's notetaker and talk for 2 minutes about last week, day by day: what you did and where the hours went. We'll run the Time Rich Audit on it live.</li>`,
       `<li style="margin-bottom:10px;"><strong>Your Business COMPASS</strong> is the most important setup of the week: it's the page your AI reads before it does anything for you. ${onboardingLink(L.compass, "Make your copy here")}, click into each section and talk it through with Wispr.</li>`,
-      `<li style="margin-bottom:10px;"><strong>Join the ${onboardingLink(L.whatsapp, "Superhuman WhatsApp group")}</strong> for announcements.${htmlEscape(whatsappTail)}</li>`,
+      `<li style="margin-bottom:10px;"><strong>Join the ${onboardingLink(L.whatsapp, "Superhuman WhatsApp group")}</strong> for announcements.</li>`,
       `<li style="margin-bottom:10px;"><strong>Join the ${onboardingLink(L.slack, "Time Rich Club Slack")}</strong>, where the cohort, our experts and the team work together. Add your photo by the end of Wednesday 28 October. Please read the TRC Club Code pinned in #superhuman-accelerator.</li>`,
       `</ol>`,
-      `<p>Every step is also in the ${onboardingLink(L.portal, "Time Rich Club")} under Start here.</p>`,
       `<p>${htmlEscape(signOff)}</p>`,
       `<p>Time Rich Team</p>`,
     ].join("\n")
@@ -2640,10 +2596,8 @@ function buildOnboardingPrepEmail({ greeting, at }) {
     `3. Connect your tools to your AI. In Wispr Flow, open Settings, then MCP, and add it to Claude. For your other tools, ${onboardingLinkText(L.toolsGuide, "here is the guide")}.`,
     "4. Record last week. Turn on Wispr Flow's notetaker and talk for 2 minutes about last week, day by day: what you did and where the hours went. We'll run the Time Rich Audit on it live.",
     `5. Your Business COMPASS is the most important setup of the week: it's the page your AI reads before it does anything for you. ${onboardingLinkText(L.compass, "Make your copy here")}, click into each section and talk it through with Wispr.`,
-    `6. Join the ${onboardingLinkText(L.whatsapp, "Superhuman WhatsApp group")} for announcements.${whatsappTail}`,
+    `6. Join the ${onboardingLinkText(L.whatsapp, "Superhuman WhatsApp group")} for announcements.`,
     `7. Join the ${onboardingLinkText(L.slack, "Time Rich Club Slack")}, where the cohort, our experts and the team work together. Add your photo by the end of Wednesday 28 October. Please read the TRC Club Code pinned in #superhuman-accelerator.`,
-    "",
-    `Every step is also in the ${onboardingLinkText(L.portal, "Time Rich Club")} under Start here.`,
     "",
     signOff,
     "",

@@ -359,8 +359,24 @@ console.log('\nthe sign-in form, as it sits on the page');
 {
   const { JSDOM } = await import('jsdom');
   const { readFileSync } = await import('node:fs');
-  const doc = new JSDOM(readFileSync(new URL('../../portal/index.html', import.meta.url), 'utf8'))
+  const doc = new JSDOM(readFileSync(new URL('../../club/signin.html', import.meta.url), 'utf8'))
     .window.document;
+
+  /* The wordmark carries the club's full name, with the pastel stop closing
+     it after CLUB rather than sitting in the middle after RICH. The kicker
+     that used to sit under it said "Time Rich Club" a second time, so it has
+     gone: the wordmark is the only place the name is now said. */
+  const mark = doc.querySelector('.trp-wordmark');
+  check('the wordmark reads TIME RICH CLUB.',
+    mark !== null && mark.textContent.replace(/\s+/g, ' ').trim() === 'TIME RICH CLUB.',
+    mark && mark.textContent.trim());
+  check('and the stop is the last thing in it, after CLUB',
+    mark !== null && mark.lastElementChild !== null &&
+    mark.lastElementChild.classList.contains('trp-stop') &&
+    mark.lastElementChild.textContent === '.',
+    mark && mark.innerHTML.trim());
+  check('the kicker under it is gone, so the name is not said twice',
+    doc.querySelector('.trp-kicker') === null);
 
   const form = doc.querySelector('[data-portal-login]');
   const field = doc.getElementById('email');

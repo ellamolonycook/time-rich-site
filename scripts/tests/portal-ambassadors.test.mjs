@@ -149,7 +149,7 @@ console.log('\nPortal — the Zoom link stays out of the repository');
   // secret: the migration copies it from a sibling row rather than
   // writing it down. Scoped to what ships -- the two fake zoom.us/j/1
   // fixtures in this folder are test data, not a leak.
-  const SHIPPED = ['supabase/', 'worker/', 'portal/'];
+  const SHIPPED = ['supabase/', 'worker/', 'club/'];
   const tracked = execSync('git ls-files', { cwd: repoRoot, encoding: 'utf8' })
     .split('\n').map((f) => f.trim())
     .filter((f) => f && SHIPPED.some((dir) => f.startsWith(dir)));

@@ -99,7 +99,7 @@ console.log('\nPrompt Library skills — safe to run again');
 
 console.log('\nPrompt Library skills — the rows match the cards');
 {
-  const js = readFileSync(new URL('../../portal/portal-prompts.js', import.meta.url), 'utf8');
+  const js = readFileSync(new URL('../../club/portal-prompts.js', import.meta.url), 'utf8');
   const cardFiles = [...js.matchAll(/file: '([^']+)'/g)].map((m) => m[1]);
   const rows = await skills();
   const wired = new Set(rows.map((r) => r.url));

@@ -1,11 +1,11 @@
 name: Portal stylesheet
 
-# portal/portal.css is a build artefact that is committed, because GitHub Pages
+# club/portal.css is a build artefact that is committed, because GitHub Pages
 # serves this repo as-is and there is no build step at deploy time. That only
 # works if the committed file matches the sources it came from.
 #
 # This rebuilds it and fails when the result differs from what is committed,
-# which is what happens when someone adds a class in portal/ and forgets to run
+# which is what happens when someone adds a class in club/ and forgets to run
 # `npm run build:css`. The symptom otherwise is subtle: the new class is simply
 # absent from the stylesheet, so that part of the page renders unstyled.
 
@@ -13,7 +13,7 @@ on:
   push:
     branches: ["**"]
     paths:
-      - "portal/**"
+      - "club/**"
       - "tailwind.config.js"
       - "package.json"
       - "package-lock.json"
@@ -21,7 +21,7 @@ on:
   pull_request:
     branches: ["**"]
     paths:
-      - "portal/**"
+      - "club/**"
       - "tailwind.config.js"
       - "package.json"
       - "package-lock.json"
@@ -50,13 +50,13 @@ jobs:
       - name: Install dependencies
         run: npm ci --no-audit --no-fund
 
-      - name: Rebuild portal/portal.css
+      - name: Rebuild club/portal.css
         run: npm run build:css
 
       - name: Check the committed stylesheet is up to date
         run: |
-          if ! git diff --exit-code -- portal/portal.css; then
-            echo "::error file=portal/portal.css::portal/portal.css is out of date. Run 'npm run build:css' and commit the result."
+          if ! git diff --exit-code -- club/portal.css; then
+            echo "::error file=club/portal.css::club/portal.css is out of date. Run 'npm run build:css' and commit the result."
             exit 1
           fi
-          echo "portal/portal.css matches its sources."
+          echo "club/portal.css matches its sources."

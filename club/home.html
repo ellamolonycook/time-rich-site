@@ -1,0 +1,888 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth" data-trp-gate>
+<head>
+  <script>
+    // Theme, applied before first paint so there is no flash of the wrong one.
+    // "system" follows the device; the CSS reads this attribute.
+    (function () {
+      var t = 'system';
+      try { t = window.localStorage.getItem('tr_portal_theme') || 'system'; } catch (e) {}
+      if (t !== 'light' && t !== 'dark') t = 'system';
+      document.documentElement.setAttribute('data-theme', t);
+    })();
+  </script>
+  <meta charset="utf-8"/>
+  <base target="_top"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <!-- Google tag (gtag.js). The library is fetched once the page is
+       interactive: it is the heaviest request here and nothing on screen
+       waits on it. The consent defaults below are set first, so the queue
+       it replays on arrival already respects them. -->
+  <script>
+    window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}
+    // Consent Mode v2. Region-specific default first, then the global fallback,
+    // which is the order Google's docs specify: the narrower region wins.
+    gtag('consent','default',{ad_storage:'denied',ad_user_data:'denied',ad_personalization:'denied',analytics_storage:'denied',region:['AT','BE','BG','HR','CY','CZ','DK','EE','FI','FR','DE','GR','HU','IS','IE','IT','LV','LI','LT','LU','MT','NL','NO','PL','PT','RO','SK','SI','ES','SE','GB','CH']});
+    gtag('consent','default',{ad_storage:'denied',ad_user_data:'denied',ad_personalization:'denied',analytics_storage:'granted'});
+    gtag('js',new Date());
+    gtag('config','G-CTZLQ4R388');
+
+    // The library, once the page has loaded and the main thread is free.
+    // requestIdleCallback's own timeout and the setTimeout fallback are both
+    // 2000ms, so it never waits longer than that on a busy page.
+    (function () {
+      var asked = false;
+      function loadGtag() {
+        if (asked) return;
+        asked = true;
+        var s = document.createElement('script');
+        s.async = true;
+        s.src = 'https://www.googletagmanager.com/gtag/js?id=G-CTZLQ4R388';
+        document.head.appendChild(s);
+      }
+      function schedule() {
+        if (typeof window.requestIdleCallback === 'function') {
+          window.requestIdleCallback(loadGtag, { timeout: 2000 });
+        } else {
+          window.setTimeout(loadGtag, 2000);
+        }
+      }
+      if (document.readyState === 'complete') schedule();
+      else window.addEventListener('load', schedule);
+    })();
+  </script>
+
+  <title>Club | Time Rich Portal</title>
+  <meta property="og:image" content="https://timerich.ai/og-time-rich.png" />
+  <meta property="og:image:width" content="1200" />
+  <meta property="og:image:height" content="630" />
+  <meta name="twitter:image" content="https://timerich.ai/og-time-rich.png" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <link rel="stylesheet" href="portal.css"/>
+  <!-- The two faces, served from this repo. They used to come from Google
+       Fonts, which costs a DNS lookup, a stylesheet and only then the font
+       itself: three round trips before a heading could be drawn in the right
+       face, and a reflow when it finally was. Preloading the files directly
+       starts them with the stylesheet instead.
+
+       crossorigin is required on a font preload even for a same-origin file:
+       fonts are fetched in CORS mode, and a preload without it is fetched
+       twice. -->
+  <link rel="preload" href="../brand/fonts/SpaceGrotesk-Variable.woff2" as="font" type="font/woff2" crossorigin/>
+  <link rel="preload" href="../brand/fonts/Inter-Variable.woff2" as="font" type="font/woff2" crossorigin/>
+  <link rel="stylesheet" href="portal-content.css?v=20261021">
+  <link rel="stylesheet" href="club.css?v=20261024">
+
+  
+
+
+  <!-- The session gate. Config first, then the library; both deferred so
+       the DOM is ready when the script mounts. No valid code redirects to
+       the sign-in page, because this page has no login form of its own. -->
+  <script src="portal-config.js" defer></script>
+  <script src="portal-access.js" defer></script>
+  <script src="portal-live.js"></script>
+  <script src="portal-chrome.js?v=20261021" defer></script>
+  <!-- The light/dark choice, shared by every portal page. The pre-paint
+       script in <head> sets the attribute; this keeps the controls in step
+       with it and writes a new choice back. -->
+  <script src="portal-theme.js" defer></script>
+
+  <!-- Warm the next page while the pointer is still travelling to the link.
+       "moderate" is roughly 200ms of hover, which is long enough that a
+       pointer crossing the nav does not fetch all six. Only portal pages are
+       listed: a prefetch rule that matched everything would also warm the
+       sign-out and the partner links.
+
+       Both address forms are matched. The nav links are extensionless now
+       (/club/resources), so a rule naming only the .html form would warm
+       nothing; the .html form stays because an old bookmark or an emailed
+       link can still be one. ":page" is a single segment, so it stops at the
+       pages themselves, and the images under /portal/assets are outside it
+       altogether. -->
+  <script type="speculationrules">
+  {
+    "prefetch": [{
+      "where": { "or": [
+        { "href_matches": "/club/:page" },
+        { "href_matches": "/club/*.html" }
+      ] },
+      "eagerness": "moderate"
+    }]
+  }
+  </script>
+</head>
+
+
+
+<body class="text-brand-ink font-sans min-h-screen flex flex-col selection:bg-brand-sage selection:text-brand-ink">
+
+  <!-- Noise Texture Overlay -->
+
+  <!-- MOBILE MENU -->
+  <div id="mobile-menu-overlay" class="fixed inset-0 bg-brand-ink/25 z-[100] opacity-0 pointer-events-none transition-opacity duration-300 lg:hidden"></div>
+
+  <div id="mobile-menu" class="fixed top-0 left-0 bottom-0 w-[82%] max-w-[300px] bg-brand-page border-r border-brand-ink/10 z-[101] -translate-x-full transition-transform duration-300 ease-out flex flex-col lg:hidden" role="dialog" aria-modal="true" aria-label="Menu">
+    <div class="flex-1 overflow-y-auto p-5 pt-6 flex flex-col">
+      <a href="/club" class="trp-wordmark text-[22px] mb-8 px-1">
+        TIME RICH<span class="trp-stop">.</span>
+      </a>
+      <nav class="space-y-1">
+        <a href="/club" aria-current="page" class="flex items-center gap-3 px-4 py-3 rounded-[14px] text-sm font-medium bg-brand-green text-brand-bg">
+          <svg class="w-4 h-4 shrink-0" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"></path></svg>
+          Club
+        </a>
+        <a href="curriculum" class="flex items-center gap-3 px-4 py-3 rounded-[14px] text-sm font-medium text-brand-ink/70 hover:text-brand-ink hover:bg-brand-ink/5 transition-colors">
+          <svg class="w-4 h-4 shrink-0 text-brand-ink/50" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"></path></svg>
+          Accelerator
+        </a>
+        <a href="members" data-portal-members-link class="flex items-center gap-3 px-4 py-3 rounded-[14px] text-sm font-medium text-brand-ink/70 hover:text-brand-ink hover:bg-brand-ink/5 transition-colors">
+          <svg class="w-4 h-4 shrink-0 text-brand-ink/50" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"></path></svg>
+          Members
+          <span class="trp-soon ml-auto">Soon</span>
+        </a>
+      </nav>
+      <div class="mt-auto pt-8 border-t border-brand-ink/10">
+        <button type="button" data-portal-signout class="w-full text-left px-4 py-3 rounded-[14px] text-sm font-medium text-brand-ink/70 hover:text-brand-ink hover:bg-brand-ink/5 transition-colors">Sign out</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- TOP NAVBAR -->
+  <header id="top-nav" class="trp-header h-14 sm:h-16 shrink-0 sticky top-0 z-50">
+    <div class="mx-auto max-w-[1120px] h-full flex items-center justify-between gap-3 px-4 sm:px-6 lg:px-8">
+
+    <!-- Left: the wordmark, then the nav pills beside it. The nav used to be
+         absolutely centred in the header, which left the right-hand side no
+         room for the sponsor credit, the member's name and Sign out all at
+         once. It flows after the wordmark now, which is also the order the
+         design asks for: logo, nav pills, then the right-hand group. -->
+    <div class="flex items-center gap-2 lg:gap-6 min-w-0">
+      <button id="mobile-menu-btn" type="button" aria-expanded="false" aria-controls="mobile-menu" aria-label="Menu" class="lg:hidden flex items-center justify-center w-11 h-11 -ml-2.5 rounded-full text-brand-ink hover:bg-brand-ink/5 transition-colors">
+        <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5"></path></svg>
+      </button>
+
+      <a href="/club" class="trp-wordmark text-[17px] sm:text-[20px] whitespace-nowrap rounded focus:outline-none focus-visible:ring-2 focus-visible:ring-brand-ink/30">
+        TIME RICH<span class="trp-stop">.</span>
+      </a>
+
+      <span class="trp-head-div" aria-hidden="true"></span>
+
+      <nav class="hidden lg:flex items-center gap-0.5" aria-label="Portal">
+        <a href="/club" aria-current="page" class="trp-nav-link px-3.5 text-[13px] font-medium">Club</a>
+        <a href="curriculum" class="trp-nav-link px-3.5 text-[13px] font-medium text-brand-ink/70 hover:text-brand-ink">Accelerator</a>
+        <a href="members" data-portal-members-link class="trp-nav-link gap-1.5 px-3.5 text-[13px] font-medium text-brand-ink/70 hover:text-brand-ink">Members <span class="trp-soon">Soon</span></a>
+      </nav>
+    </div>
+
+    <!-- Right: the theme control, a thin divider, the member and Sign out.
+         The sponsor credit is no longer here; it sits beside the wordmark on
+         the left, which is the only place it appears on the page. -->
+    <div class="trp-head-right">
+      <!-- Filled in by portal-chrome.js, and only while a session is live or
+           about to start. Stays hidden the rest of the time. -->
+      <a data-portal-join hidden class="hidden xl:inline-flex items-center px-3.5 py-1.5 rounded-full bg-brand-green text-brand-bg text-[11px] font-medium tracking-[0.04em] whitespace-nowrap hover:bg-brand-green/90 transition-colors"></a>
+
+      <div class="trp-theme">
+        <label class="sr-only" for="theme-dashboard">Theme</label>
+        <select id="theme-dashboard" data-theme-select>
+          <option value="system">System</option>
+          <option value="light">Light</option>
+          <option value="dark">Dark</option>
+        </select>
+        <svg class="trp-theme-caret" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7"></path></svg>
+      </div>
+
+      <span class="trp-head-div hidden md:block" aria-hidden="true"></span>
+
+      <span data-portal-name class="hidden md:inline text-xs font-medium text-brand-ink/70 whitespace-nowrap"></span>
+
+      <button type="button" data-portal-signout class="hidden lg:inline-flex items-center h-11 text-[13px] font-medium text-brand-ink/70 hover:text-brand-ink transition-colors">Sign out</button>
+      </div>
+    </div>
+  </header>
+
+  <!-- MAIN
+       Styled by club.css, which only this page loads. Sections that rise in
+       on scroll carry data-tc-rise; the script at the foot of the page adds
+       the class that hides them, so without it everything simply shows. -->
+  <main class="tc flex-1">
+
+    <!-- ---- the letter ------------------------------------------------
+         Ella's letter, in her words, on the dark ground. The first line is
+         the headline; the turn ("breakdown to breakthrough") is pulled out
+         because it is the hinge of the story. -->
+    <section class="tc-letter" aria-labelledby="letter-heading">
+      <!-- The eyebrow sits above the grid, so the portrait's top edge lines
+           up with the headline's and its foot with the signature's. The two
+           are wrapped together so that, on a laptop or desktop, they can be
+           sized to exactly one screen under the header. -->
+      <div class="tc-letter-screen">
+      <div class="tc-wrap tc-letter-top">
+        <p class="tc-eyebrow">Time Rich Club &middot; Members</p>
+      </div>
+      <div class="tc-wrap tc-letter-grid">
+        <div class="tc-letter-copy min-w-0">
+          <h1 id="letter-heading" class="tc-open">
+            If you&rsquo;re here, I have a feeling we&rsquo;re cut from the same
+            cloth: <em>ambitious as hell</em> and driven to create something big.
+          </h1>
+
+          <div class="tc-letter-body">
+            <p>
+              And you&rsquo;re arriving just in time: it&rsquo;s the greatest
+              time in history to be ambitious while being Time Rich.
+            </p>
+            <p>
+              I created the space I wish existed, because after I left my
+              VC-backed startup, I found myself on the verge of burnout, lonely,
+              and depressed in a NYC apartment in the dead of a freezing
+              winter, too proud to ask for help and too stressed to cope.
+            </p>
+            <p class="tc-turn">Ever had that breakdown to breakthrough moment?</p>
+            <p>
+              Time Rich Club was born a few months later, from a place of
+              wanting to gather the smartest people I know to build an ecosystem
+              of resources, community, and a safe space to show up and be
+              vulnerable.
+            </p>
+            <p>
+              It&rsquo;s a place where founders, creators, media leaders, and
+              investors invest in themselves, their relationships, and their
+              delegation system to become Time Rich.
+            </p>
+            <p>
+              The philosophy here is simple: <strong>real talk</strong> (lead
+              with vulnerability) and <strong>real contribution</strong> (give
+              first).
+            </p>
+          </div>
+
+          <!-- The name is set in Caveat, the same script the accelerator page
+               signs Ella's letter with. -->
+          <div class="tc-sign">
+            <p class="tc-sign-love">Much Love,</p>
+            <p class="tc-sign-name">Ella Molony Cook</p>
+            <p class="tc-sign-role">Chief Energy Officer, Time Rich Club</p>
+          </div>
+        </div>
+
+        <figure class="tc-portrait">
+          <img src="/portal/assets/web/ella-vika.jpg" alt="Ella Molony Cook and ViKA Victoria" width="933" height="1400" decoding="async" fetchpriority="high"/>
+          <figcaption>Ella Molony Cook &amp; ViKA Victoria</figcaption>
+        </figure>
+      </div>
+      </div>
+
+      <!-- A contact sheet rather than a row of matching frames: each picture
+           keeps its own shape and size, and they sit at different heights.
+           The modifier on each figure sets that; the order is what makes it
+           read as a spread. It drifts slowly left on its own (the script at
+           the foot of the page) and the arrow moves it on by a frame. -->
+      <div class="tc-film" aria-label="Highlights from Time Rich events">
+        <button type="button" class="tc-film-next" data-tc-film-next aria-label="Next photos">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 5l7 7-7 7"/></svg>
+        </button>
+        <div class="tc-rail" data-tc-drift>
+          <figure class="tc-f tc-f-wide"><img src="/portal/assets/events/web/0V6A6478.jpg" alt="A full room for a panel of women on stage" width="1600" height="1067" loading="lazy" decoding="async"/></figure>
+          <figure class="tc-f tc-f-tall tc-f-low"><img src="/portal/assets/events/web/0V6A6720.jpg" alt="A speaker in conversation from an armchair" width="1067" height="1600" loading="lazy" decoding="async"/></figure>
+          <figure class="tc-f tc-f-sq"><img src="/portal/assets/events/web/0V6A6055.jpg" alt="Two speakers in conversation on a sofa" width="1600" height="1067" loading="lazy" decoding="async"/><figcaption>Fireside, New York</figcaption></figure>
+          <figure class="tc-f tc-f-arch tc-f-low"><img src="/portal/assets/events/web/CHERUBxZANT-INVESTORDINNER-77.jpg" alt="Two hosts at a Time Rich dinner" width="1067" height="1600" loading="lazy" decoding="async"/></figure>
+          <figure class="tc-f tc-f-wide tc-f-mid"><img src="/portal/assets/events/web/0V6A6153.jpg" alt="A speaker in a red blazer on a panel" width="1600" height="1067" loading="lazy" decoding="async"/></figure>
+          <figure class="tc-f tc-f-small"><img src="/portal/assets/events/web/0V6A7164.jpg" alt="A guest holding a book before going on stage" width="1067" height="1600" loading="lazy" decoding="async"/></figure>
+          <figure class="tc-f tc-f-sq tc-f-low"><img src="/portal/assets/events/web/CHERUBxZANT-INVESTORDINNER-54.jpg" alt="Ella Molony Cook speaking at a dinner table" width="1600" height="1067" loading="lazy" decoding="async"/><figcaption>Investor dinner</figcaption></figure>
+          <figure class="tc-f tc-f-tall"><img src="/portal/assets/events/web/LEDEXforum-244_resized.jpg" alt="Ella Molony Cook speaking on stage" width="1600" height="1067" loading="lazy" decoding="async"/></figure>
+          <figure class="tc-f tc-f-wide tc-f-low"><img src="/portal/assets/events/web/0V6A5537.jpg" alt="Guests seated together at a Time Rich event" width="1600" height="1067" loading="lazy" decoding="async"/></figure>
+          <figure class="tc-f tc-f-arch"><img src="/portal/assets/events/web/0V6A7246.jpg" alt="Two guests seated together on stage" width="1600" height="1067" loading="lazy" decoding="async"/></figure>
+        </div>
+      </div>
+    </section>
+
+    <!-- ---- the five pillars ------------------------------------------ -->
+    <section class="tc-sec" aria-labelledby="pillars-heading" data-tc-rise>
+      <div class="tc-wrap">
+        <p class="tc-eyebrow">The philosophy</p>
+        <h2 id="pillars-heading" class="tc-h2">Five ways to become Time Rich</h2>
+        <ol class="tc-pillars">
+          <li class="tc-pillar"><span class="tc-pillar-n" aria-hidden="true">01</span><span class="tc-pillar-t">Invest in YOU</span></li>
+          <li class="tc-pillar"><span class="tc-pillar-n" aria-hidden="true">02</span><span class="tc-pillar-t">Become visible + build authority</span></li>
+          <li class="tc-pillar"><span class="tc-pillar-n" aria-hidden="true">03</span><span class="tc-pillar-t">Build the delegate system</span></li>
+          <li class="tc-pillar"><span class="tc-pillar-n" aria-hidden="true">04</span><span class="tc-pillar-t">Building wealth</span></li>
+          <li class="tc-pillar"><span class="tc-pillar-n" aria-hidden="true">05</span><span class="tc-pillar-t">Enjoy the journey with people you love</span></li>
+        </ol>
+      </div>
+    </section>
+
+    <!-- ---- the community ---------------------------------------------
+         The NYC row is filled by portal-chrome.js from the member's week 0
+         WhatsApp item, and stays hidden when there is none. -->
+    <section class="tc-sec" aria-labelledby="community-heading" data-tc-rise>
+      <div class="tc-wrap tc-community">
+        <!-- A moment from the stage, with the member count set small on a
+             card that overlaps the photo's foot. -->
+        <div>
+          <p class="tc-eyebrow" id="community-heading">The community</p>
+          <figure class="tc-moment">
+            <img src="/portal/assets/events/web/ella-ledex-algarve.jpg" alt="Ella Molony Cook speaking on stage at the LEDEX Forum in the Algarve" width="1600" height="1067" loading="lazy" decoding="async"/>
+            <figcaption class="tc-moment-cap">AI Content Machine | Algarve, Portugal</figcaption>
+            <div class="tc-stat-card">
+              <p class="tc-stat">63K</p>
+              <p class="tc-stat-l">Club of 63K ambitious legends&hellip;</p>
+            </div>
+          </figure>
+        </div>
+
+        <div>
+          <p class="tc-trouble">Let&rsquo;s get into good trouble!</p>
+
+          <div class="tc-doors">
+            <a class="tc-door" href="https://join.slack.com/t/timerichclub/shared_invite/zt-4dry4ppfn-yV~VNRrHW_z3K3AFtbnOJQ" target="_blank" rel="noopener noreferrer">
+              <span class="min-w-0">
+                <span class="tc-door-t">Join the TRC Slack</span>
+                <span class="tc-door-d">Members Only Slack</span>
+              </span>
+              <span class="tc-door-go">Join <span aria-hidden="true">&rarr;</span></span>
+            </a>
+            <a class="tc-door" href="https://chat.whatsapp.com/H495V76Eewx2dFxDnfr6VF?mode=gi_t" target="_blank" rel="noopener noreferrer">
+              <span class="min-w-0">
+                <span class="tc-door-t">Time Rich Women</span>
+                <span class="tc-door-d">WhatsApp</span>
+              </span>
+              <span class="tc-door-go">Join <span aria-hidden="true">&rarr;</span></span>
+            </a>
+            <a data-portal-community hidden class="tc-door">
+              <span class="min-w-0">
+                <span class="tc-door-t">NYC Founders, Creators &amp; Investors</span>
+                <span class="tc-door-d">WhatsApp</span>
+              </span>
+              <span class="tc-door-go">Join <span aria-hidden="true">&rarr;</span></span>
+            </a>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ---- the two programmes ---------------------------------------- -->
+    <section class="tc-sec" aria-labelledby="programs-heading" data-tc-rise>
+      <div class="tc-wrap">
+        <p class="tc-eyebrow">Your membership</p>
+        <h2 id="programs-heading" class="tc-h2">What you&rsquo;re part of</h2>
+
+        <div class="tc-progs">
+          <div class="tc-prog tc-prog-on">
+            <p class="tc-eyebrow">You&rsquo;re enrolled</p>
+            <h3 class="tc-prog-t">Superhuman Accelerator</h3>
+            <p class="tc-prog-d">
+              Four weeks, live. Build the AI system behind your sales, your
+              systems, and your visibility. Kicks off Monday, 26 October, 12pm ET.
+            </p>
+
+            <!-- Filled from the same TRLive.userProgress the dashboard
+                 reads. Stays out of the page until there is a count, so
+                 the card never shows "0 of 0 done". -->
+            <div data-club-progress hidden></div>
+
+            <a href="curriculum" class="tc-btn tc-btn-lime">
+              Enter the Accelerator <span aria-hidden="true">&rarr;</span>
+            </a>
+          </div>
+
+          <div class="tc-prog tc-prog-club">
+            <img src="/portal/assets/events/web/CHERUBxZANT-INVESTORDINNER-64.jpg" alt="" width="1067" height="1600" loading="lazy" decoding="async"/>
+            <p class="tc-eyebrow">Time Rich Club</p>
+            <h3 class="tc-prog-t">Club&rsquo;s IRL Dancefloor</h3>
+            <p class="tc-prog-d">
+              Private conversations, masterclasses, curated networking &amp;
+              pitch events.
+            </p>
+            <p class="tc-prog-d">
+              Fireside chats with investors, exited founders &amp; industry
+              leaders.
+            </p>
+            <a href="https://luma.com/timerich" target="_blank" rel="noopener noreferrer" class="tc-btn tc-btn-line">
+              Upcoming Events <span aria-hidden="true">&rarr;</span>
+            </a>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ---- trc mentors ------------------------------------------------
+         A photo, a name and a title on each card; the rest folds away. Open,
+         a card holds two sentences and a way to connect, nothing more.
+         ViKA and Indra have no LinkedIn link yet: add an a.tc-mentor-li under
+         their sentences, as on Ella's card, when the addresses arrive. -->
+    <section class="tc-sec" aria-labelledby="mentors-heading">
+      <div class="tc-wrap">
+        <div data-tc-rise>
+          <p class="tc-eyebrow">TRC Mentors</p>
+          <h2 id="mentors-heading" class="tc-h2">Different dance floors. Same beat.</h2>
+          <p class="tc-lede">
+            Every quarter the club has each mentor run a series on what they
+            know best. We bring in industry leaders to build alongside them,
+            and the conversation continues inside the TRC Slack channels.
+          </p>
+        </div>
+
+        <div class="tc-mentors">
+          <article class="tc-mentor" data-tc-rise>
+            <img class="tc-mentor-photo" src="/portal/assets/ella-portrait.jpg" alt="Ella Molony Cook" width="960" height="1200" loading="lazy" decoding="async"/>
+            <h3 class="tc-mentor-n">Ella Molony Cook</h3>
+            <p class="tc-mentor-role">Chief Energy Officer</p>
+            <details class="tc-mentor-more">
+              <summary>About Ella</summary>
+              <div class="tc-mentor-body">
+                <p>Four companies, one exit and an early investment in Anthropic.
+                  Ella helps founders build a delegation system where they and AI
+                  share the load, so the work stops running through them.</p>
+                <a class="tc-mentor-li" href="https://www.linkedin.com/in/ellamolonycook/" target="_blank" rel="noopener noreferrer">
+                  <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="3" width="18" height="18" rx="2.5"/><path d="M7.5 10.5V17M7.5 7v.01M11.5 17v-3.75a2.25 2.25 0 0 1 4.5 0V17"/></svg>
+                  Connect on LinkedIn
+                </a>
+              </div>
+            </details>
+          </article>
+          <article class="tc-mentor" data-tc-rise>
+            <img class="tc-mentor-photo" src="/portal/assets/vika-victoria-square.jpg" alt="ViKA Victoria" width="600" height="600" loading="lazy" decoding="async"/>
+            <h3 class="tc-mentor-n">ViKA Victoria</h3>
+            <p class="tc-mentor-role">Chief Storytelling Officer</p>
+            <details class="tc-mentor-more">
+              <summary>About ViKA</summary>
+              <div class="tc-mentor-body">
+                <p>Two-time Moth StorySlam winner and trainer to leaders at Google,
+                  TED, BCG and the Tony Blair Institute. Through Brave New Story,
+                  ViKA teaches founders to tell the right story, in the right way,
+                  to the right audience.</p>
+              </div>
+            </details>
+          </article>
+          <article class="tc-mentor" data-tc-rise>
+            <img class="tc-mentor-photo" src="/portal/assets/cien-solon-crop.jpg" alt="Cien Solon" width="600" height="600" loading="lazy" decoding="async"/>
+            <h3 class="tc-mentor-n">Cien Solon</h3>
+            <p class="tc-mentor-role">Chief AI Officer</p>
+            <details class="tc-mentor-more">
+              <summary>About Cien</summary>
+              <div class="tc-mentor-body">
+                <p>Co-founder and CEO of LaunchLemonade, where businesses build and
+                  manage AI teammates securely. Cien helps founders find the AI uses
+                  that actually pay and build workflows they can trust.</p>
+                <a class="tc-mentor-li" href="https://www.linkedin.com/in/ciensolon/" target="_blank" rel="noopener noreferrer">
+                  <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="3" width="18" height="18" rx="2.5"/><path d="M7.5 10.5V17M7.5 7v.01M11.5 17v-3.75a2.25 2.25 0 0 1 4.5 0V17"/></svg>
+                  Connect on LinkedIn
+                </a>
+              </div>
+            </details>
+          </article>
+          <article class="tc-mentor" data-tc-rise>
+            <img class="tc-mentor-photo" src="/portal/assets/indra-klavins.jpg" alt="Indra Klavins" width="800" height="800" loading="lazy" decoding="async"/>
+            <h3 class="tc-mentor-n">Indra Klavins</h3>
+            <p class="tc-mentor-role">Chief Clarity Officer</p>
+            <details class="tc-mentor-more">
+              <summary>About Indra</summary>
+              <div class="tc-mentor-body">
+                <p>Organizational strategist, executive advisor and host of The Messy
+                  Middle Matters. Indra helps senior leaders see what is really
+                  happening and name what to do next.</p>
+              </div>
+            </details>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <!-- ---- upcoming in new york, and the Collection ------------------ -->
+    <section class="tc-sec" aria-labelledby="events-heading" data-tc-rise>
+      <div class="tc-wrap">
+        <div class="tc-head">
+          <div>
+            <p class="tc-eyebrow">What&rsquo;s next</p>
+            <h2 id="events-heading" class="tc-h2">Upcoming in New York</h2>
+          </div>
+          <a class="tc-link" href="https://luma.com/timerich" target="_blank" rel="noopener noreferrer">
+            All events <span aria-hidden="true">&rarr;</span>
+          </a>
+        </div>
+
+        <div class="tc-events">
+          <a class="tc-event" href="https://luma.com/contentsystem" target="_blank" rel="noopener noreferrer">
+            <img src="../brand/img/event-ai-content-machine.jpg" alt="" width="1200" height="1200" loading="lazy" decoding="async"/>
+            <span class="min-w-0">
+              <span class="tc-event-when">Nov 04</span>
+              <span class="tc-event-t">AI Content System + Investor Fireside</span>
+              <span class="tc-event-d">The Ned. Build your content agents and leave with a week of posts scheduled.</span>
+              <span class="sr-only">4 November, opens in a new tab</span>
+            </span>
+          </a>
+          <a class="tc-event" href="https://luma.com/nycwomen" target="_blank" rel="noopener noreferrer">
+            <img src="../brand/img/event-womens-wealth.jpg" alt="" width="1200" height="1200" loading="lazy" decoding="async"/>
+            <span class="min-w-0">
+              <span class="tc-event-when">Nov 09</span>
+              <span class="tc-event-t">Women&rsquo;s Wealth Transfer</span>
+              <span class="tc-event-d">An honest panel with women who have exited and invested, then drinks. 6 to 9pm.</span>
+              <span class="sr-only">9 November, opens in a new tab</span>
+            </span>
+          </a>
+        </div>
+
+        <div class="tc-collection">
+          <div class="min-w-0">
+            <p class="tc-eyebrow">On demand</p>
+            <h3 class="tc-collection-t">Time Rich Collection</h3>
+            <p class="tc-collection-d">
+              Every workshop, on demand. Pick an episode, press play, and
+              download the transcript to keep or hand to your AI.
+            </p>
+          </div>
+          <a href="/replay" class="tc-btn tc-btn-lime">
+            Watch the Collection <span aria-hidden="true">&rarr;</span>
+          </a>
+        </div>
+      </div>
+    </section>
+
+    <!-- ---- time rich experiences -------------------------------------- -->
+    <section class="tc-sec" aria-labelledby="experiences-heading">
+      <div class="tc-wrap" data-tc-rise>
+        <div class="tc-head">
+          <div>
+            <p class="tc-eyebrow">250+ hosted</p>
+            <h2 id="experiences-heading" class="tc-h2">Time Rich Experiences</h2>
+          </div>
+          <a class="tc-link" href="https://timerich.ai/eventportfolio" target="_blank" rel="noopener noreferrer">
+            See every event <span aria-hidden="true">&rarr;</span>
+          </a>
+        </div>
+        <p class="tc-lede">
+          We&rsquo;ve hosted and built 250+ experiences, and collectively our
+          team has been producing and speaking at events all around the world.
+          We work with world class brands to give Time Rich members the best
+          experiences.
+        </p>
+        <ul class="tc-tags" aria-label="What we run">
+          <li>Founders</li>
+          <li>Wealth</li>
+          <li>Women-focused</li>
+          <li>AI</li>
+          <li>Wellness &amp; Longevity</li>
+          <li>Pitch events</li>
+          <li>Storytelling</li>
+        </ul>
+      </div>
+
+      <div class="tc-exps" data-tc-rise>
+        <div class="tc-rail" role="list">
+          <article class="tc-exp" role="listitem">
+            <img src="/portal/assets/events/web/0V6A6672.jpg" alt="" width="1067" height="1600" loading="lazy" decoding="async"/>
+            <div class="tc-exp-body">
+              <p class="tc-exp-m">Pitch event &middot; May 2025</p>
+              <h3 class="tc-exp-t">Women in AI Pitch Tank</h3>
+              <p class="tc-exp-d">A reverse pitch. Three women in venture took the mic, and founders heard what they actually back.</p>
+            </div>
+          </article>
+          <article class="tc-exp" role="listitem">
+            <img src="/portal/assets/events/web/websummit.jpg" alt="" width="1600" height="1066" loading="lazy" decoding="async"/>
+            <div class="tc-exp-body">
+              <p class="tc-exp-m">Investors &middot; Jun 2025</p>
+              <h3 class="tc-exp-t">Founders, Angels &amp; VCs: The New Era of Direct Investing</h3>
+              <p class="tc-exp-d">Two days on fundraising, institutional access, and founder partnerships.</p>
+            </div>
+          </article>
+          <article class="tc-exp" role="listitem">
+            <img src="/portal/assets/events/web/CHERUBxZANT-INVESTORDINNER-31.jpg" alt="" width="1067" height="1600" loading="lazy" decoding="async"/>
+            <div class="tc-exp-body">
+              <p class="tc-exp-m">Investors &middot; Nov 2025 &middot; New York</p>
+              <h3 class="tc-exp-t">Private Markets Poker Night with Jamie Gold</h3>
+              <p class="tc-exp-d">Cards as the icebreaker for a room of allocators and Series A+ founders.</p>
+            </div>
+          </article>
+          <article class="tc-exp" role="listitem">
+            <img src="/portal/assets/events/web/CHERUBxZANT-INVESTORDINNER-48.jpg" alt="" width="1067" height="1600" loading="lazy" decoding="async"/>
+            <div class="tc-exp-body">
+              <p class="tc-exp-m">Investors &middot; Mar 2026 &middot; New York</p>
+              <h3 class="tc-exp-t">Creative Capital Family Office Dinner</h3>
+              <p class="tc-exp-d">A private table of family offices, built around one thesis for the night.</p>
+            </div>
+          </article>
+          <article class="tc-exp" role="listitem">
+            <img src="/portal/assets/events/web/event-54.jpg" alt="" width="1066" height="1600" loading="lazy" decoding="async"/>
+            <div class="tc-exp-body">
+              <p class="tc-exp-m">Wellness &amp; Longevity &middot; Feb 2025 &middot; Austin</p>
+              <h3 class="tc-exp-t">Investor Happy Hour with Upgrade Labs</h3>
+              <p class="tc-exp-d">A longevity lab and the Texas venture community in one room.</p>
+            </div>
+          </article>
+          <article class="tc-exp" role="listitem">
+            <img src="/portal/assets/events/web/0V6A6523.jpg" alt="" width="1067" height="1600" loading="lazy" decoding="async"/>
+            <div class="tc-exp-body">
+              <p class="tc-exp-m">Women &middot; Jul 2026</p>
+              <h3 class="tc-exp-t">AI Revenue Growth: Female Founder Circle</h3>
+              <p class="tc-exp-d">Ella on the founder journey across eight companies, and how to grow revenue with AI.</p>
+            </div>
+          </article>
+          <article class="tc-exp" role="listitem">
+            <img src="/portal/assets/events/web/event-56.jpg" alt="" width="1600" height="1066" loading="lazy" decoding="async"/>
+            <div class="tc-exp-body">
+              <p class="tc-exp-m">Women &middot; Aug 2026 &middot; New York</p>
+              <h3 class="tc-exp-t">Time Rich Summer: Picnic in Central Park</h3>
+              <p class="tc-exp-d">An afternoon on the grass for women and queer founders, investors and creators.</p>
+            </div>
+          </article>
+          <article class="tc-exp" role="listitem">
+            <img src="/portal/assets/events/web/CHERUBxZANT-INVESTORDINNER-78.jpg" alt="" width="1067" height="1600" loading="lazy" decoding="async"/>
+            <div class="tc-exp-body">
+              <p class="tc-exp-m">Founders &middot; Sep 2025 &middot; Brooklyn</p>
+              <h3 class="tc-exp-t">Founders &amp; Funders, Williamsburg Walk</h3>
+              <p class="tc-exp-d">A morning walk over the bridge. No badges, no pitch decks, just the conversation.</p>
+            </div>
+          </article>
+        </div>
+      </div>
+
+      <div class="tc-wrap">
+        <p class="tc-rail-hint" aria-hidden="true">Swipe for more &rarr;</p>
+        <p class="tc-partner">
+          <a class="tc-link" href="mailto:emc@timerich.ai">Want to partner on an event?</a>
+        </p>
+      </div>
+    </section>
+
+    <!-- ---- follow along ----------------------------------------------- -->
+    <section class="tc-sec tc-follow" aria-labelledby="follow-heading" data-tc-rise>
+      <div class="tc-wrap">
+        <h2 id="follow-heading" class="tc-h2">Let&rsquo;s meet in the virtual club..</h2>
+        <nav aria-label="Time Rich elsewhere">
+          <a href="https://timerichclub.com" target="_blank" rel="noopener noreferrer">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 5h16M4 9.5h16M4 14h16v6l-8-4-8 4z"/></svg>
+            Substack
+          </a>
+          <a href="https://www.linkedin.com/in/ellamolonycook/" target="_blank" rel="noopener noreferrer">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="3" width="18" height="18" rx="2.5"/><path d="M7.5 10.5V17M7.5 7v.01M11.5 17v-3.75a2.25 2.25 0 0 1 4.5 0V17"/></svg>
+            LinkedIn
+          </a>
+          <a href="https://www.instagram.com/timerichtalk" target="_blank" rel="noopener noreferrer">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="3.8"/><path d="M17 7v.01"/></svg>
+            Instagram
+          </a>
+          <a href="https://luma.com/timerich" target="_blank" rel="noopener noreferrer">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="5" width="18" height="16" rx="2.5"/><path d="M8 3v4M16 3v4M3 11h18"/></svg>
+            Events
+          </a>
+        </nav>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- FOOTER -->
+  <footer class="trp-club shrink-0 border-t border-brand-ink/10 px-5 sm:px-6 lg:px-8 py-7">
+    <div class="max-w-[1120px] mx-auto flex flex-wrap items-center justify-between gap-x-6 gap-y-4 text-[12px] text-brand-muted">
+      <p>&copy; 2026 Time Rich</p>
+
+      <p class="flex flex-wrap items-center gap-x-3 gap-y-2">
+        <!-- The two sponsors, read as one credit: "Powered by" is said once over
+             the pair. Stanley is the presenting sponsor, Wispr Flow the official
+             voice partner. Both are the real marks in their own colours, at the
+             line's own height -- the script that used to swap in a cropped,
+             greyed-out Stanley is gone, and so is the bare Wispr tile that read
+             as a stray black square with nothing to name it.
+
+             Stanley ships two files because its wordmark is black and vanishes on
+             the dark theme; both sit in the markup and the theme picks, since an
+             img's src is not something CSS can swap. -->
+        <span class="trp-credits">
+          <span class="trp-powered-label">Powered by</span>
+          <a class="trp-powered trp-powered-foot" href="https://x.getstanley.ai/r/mz4y9g" target="_blank" rel="noopener sponsored">
+            <img class="trp-powered-pos" src="../brand/partners/stanley-logo.png" alt="Stanley" width="765" height="203" loading="lazy" decoding="async"/>
+            <img class="trp-powered-rev" src="../brand/partners/stanley-logo-dark.png" alt="Stanley" width="765" height="203" loading="lazy" decoding="async"/>
+          </a>
+          <span class="trp-credit-dot" aria-hidden="true">&middot;</span>
+          <a class="trp-credit" href="https://wisprflow.ai/info/redeem-promo?code=TIMERICH6&amp;months=6" target="_blank" rel="noopener sponsored">
+            <img class="trp-credit-tile" src="../os/img/wispr-flow.png" alt="" width="256" height="256" loading="lazy" decoding="async"/>
+            <span class="trp-credit-name">Wispr Flow</span>
+          </a>
+        </span>
+        <span aria-hidden="true">&middot;</span>
+        <span>Help: <a href="mailto:emc@timerichclub.com" class="trp-foot-link">emc@timerichclub.com</a></span>
+      </p>
+    </div>
+  </footer>
+
+
+  <script>
+    // The greeting and the Accelerator card's progress, both from the payload
+    // portal-access.js fetches. Nothing here owns any data: TRLive.userProgress
+    // is the same call the dashboard's own progress card makes, so the two can
+    // never disagree about where a member is.
+    (function () {
+      var greet = document.querySelector('[data-club-greet]');
+      var slot = document.querySelector('[data-club-progress]');
+
+      function name(data) {
+        var m = data && data.member;
+        var first = m && typeof m.first_name === 'string' ? m.first_name.trim() : '';
+        return first;
+      }
+
+      function fill(data) {
+        if (greet) {
+          var first = name(data);
+          // Built with textContent, never innerHTML: the name is member input.
+          greet.textContent = first ? 'Welcome back, ' + first + '.' : 'Welcome back.';
+        }
+
+        var L = window.TRLive;
+        if (!slot || !L || !L.userProgress) return;
+
+        var you = L.userProgress(data);
+        if (!you || !you.total) { slot.setAttribute('hidden', ''); return; }
+
+        while (slot.firstChild) slot.removeChild(slot.firstChild);
+
+        /* Before week 1 opens there is nothing to have got through, and a
+           bar pinned at zero reads as "you are behind" rather than "it has
+           not started yet". So until then this says where the cohort is and
+           when it begins, and the bar arrives with the first week.
+
+           weeksDone is the count of weeks that have unlocked, which is the
+           same flag the Curriculum and the dashboard's countdown read. */
+        var program = L.scheduleProgress ? L.scheduleProgress(data) : null;
+        var weeksTotal = (program && program.weeksTotal) || 4;
+        var weeksDone = program ? program.weeksDone : 0;
+
+        if (!weeksDone) {
+          var when = '';
+          var first = L.sessions(data)[0];
+          if (first && first.starts_at && L.etDate) when = L.etDate(first.starts_at);
+
+          var pre = document.createElement('p');
+          pre.className = 'trp-prog-line trp-prog-when';
+          pre.textContent = 'Week 0 of ' + weeksTotal +
+            (when ? ' · Starts ' + when : '');
+          slot.appendChild(pre);
+          slot.removeAttribute('hidden');
+          return;
+        }
+
+        var track = document.createElement('div');
+        track.className = 'trp-prog-track';
+        var fillBar = document.createElement('div');
+        fillBar.className = 'trp-prog-fill';
+        fillBar.style.width = Math.max(0, Math.min(100, you.percent)) + '%';
+        track.appendChild(fillBar);
+        track.setAttribute('role', 'progressbar');
+        track.setAttribute('aria-valuemin', '0');
+        track.setAttribute('aria-valuemax', String(you.total));
+        track.setAttribute('aria-valuenow', String(you.done));
+        track.setAttribute('aria-label', 'Your progress: ' + you.done + ' of ' + you.total + ' done');
+        slot.appendChild(track);
+
+        var line = document.createElement('p');
+        line.className = 'trp-prog-line';
+        line.textContent = 'Week ' + Math.min(weeksDone, weeksTotal) + ' of ' + weeksTotal +
+                           ' · ' + you.done + ' of ' + you.total + ' done';
+        slot.appendChild(line);
+
+        slot.removeAttribute('hidden');
+      }
+
+      document.addEventListener('trportal:data', function (e) { fill(e && e.detail); });
+      document.addEventListener('trportal:progress', function () { fill(window.TR_PORTAL_DATA); });
+
+      // The event may already have fired: portal-access.js leaves the payload
+      // behind for exactly this case.
+      if (window.TR_PORTAL_DATA) fill(window.TR_PORTAL_DATA);
+    })();
+  </script>
+
+
+  <script>
+    // Each section rises in once as it reaches the screen. The tc-js class
+    // is what hides them first, so it goes on only when the observer exists;
+    // club.css leaves them alone entirely for reduced motion.
+    (function () {
+      if (!('IntersectionObserver' in window)) return;
+      if (window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+      var els = document.querySelectorAll('[data-tc-rise]');
+      if (!els.length) return;
+      document.documentElement.classList.add('tc-js');
+      var io = new IntersectionObserver(function (entries) {
+        entries.forEach(function (e) {
+          if (!e.isIntersecting) return;
+          e.target.classList.add('is-in');
+          io.unobserve(e.target);
+        });
+      }, { rootMargin: '0px 0px -8% 0px', threshold: 0.08 });
+      els.forEach(function (el) { io.observe(el); });
+    })();
+
+    // The photo strip under the letter drifts slowly left, round and round.
+    // The frames are copied once onto the end, and when the copies reach
+    // the start the strip jumps back by exactly one set, so the loop has no
+    // seam. It holds still while a pointer is over it, a finger is on it,
+    // it has focus, or it is off screen, and not at all for reduced motion.
+    // The arrow moves it on by one frame either way.
+    (function () {
+      var rail = document.querySelector('[data-tc-drift]');
+      var next = document.querySelector('[data-tc-film-next]');
+      if (!rail) return;
+      var still = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+      var SPEED = 0.025;            // px per ms: about 25px a second
+
+      var originals = Array.prototype.slice.call(rail.children);
+      originals.forEach(function (f) {
+        var copy = f.cloneNode(true);
+        copy.setAttribute('aria-hidden', 'true');
+        var img = copy.querySelector('img');
+        if (img) img.alt = '';
+        rail.appendChild(copy);
+      });
+
+      function loop() { return rail.children[originals.length].offsetLeft - originals[0].offsetLeft; }
+
+      var pos = rail.scrollLeft;
+      var holdUntil = 0;
+      var hovered = false, touching = false, focused = false, visible = true;
+
+      function wrap() {
+        var span = loop();
+        if (span > 0 && rail.scrollLeft >= span) { rail.scrollLeft -= span; pos = rail.scrollLeft; }
+      }
+
+      if (next) next.addEventListener('click', function () {
+        var frame = originals[0].getBoundingClientRect().width + 16;
+        holdUntil = performance.now() + 2500;
+        rail.scrollBy({ left: frame, behavior: still ? 'auto' : 'smooth' });
+      });
+      rail.addEventListener('scroll', function () { wrap(); });
+
+      if (still) return;
+      rail.classList.add('is-drifting');
+      rail.addEventListener('pointerenter', function (e) { if (e.pointerType === 'mouse') hovered = true; });
+      rail.addEventListener('pointerleave', function () { hovered = false; });
+      rail.addEventListener('touchstart', function () { touching = true; }, { passive: true });
+      rail.addEventListener('touchend', function () { touching = false; holdUntil = performance.now() + 3000; }, { passive: true });
+      rail.addEventListener('focusin', function () { focused = true; });
+      rail.addEventListener('focusout', function () { focused = false; });
+      if ('IntersectionObserver' in window) {
+        new IntersectionObserver(function (es) { visible = es[0].isIntersecting; }).observe(rail);
+      }
+
+      var last = performance.now();
+      function tick(now) {
+        var dt = Math.min(now - last, 64);
+        last = now;
+        // A swipe or the arrow moved it: carry on from where it is now.
+        if (Math.abs(rail.scrollLeft - pos) > 2) pos = rail.scrollLeft;
+        if (!hovered && !touching && !focused && visible && !document.hidden && now > holdUntil) {
+          pos += SPEED * dt;
+          rail.scrollLeft = pos;
+          wrap();
+        }
+        requestAnimationFrame(tick);
+      }
+      requestAnimationFrame(tick);
+    })();
+  </script>
+
+</body>
+</html>

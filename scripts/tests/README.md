@@ -124,6 +124,26 @@ One fake stands in for Supabase, Notion and Resend. Supabase answers in the real
   logs carries an email address. A name with markup in it is escaped, and an
   order with no name falls back to "Hi there,".
 
+## `onboard-page.test.mjs`
+
+Loads [`onboard/index.html`](../../onboard/index.html) into jsdom and drives the
+plus-one form the way a buyer does, with the worker's lookup JSON stubbed.
+
+The rule it exists for is the one a real buyer fell through: a buyer who chose
+**"Decide later"** has a saved choice, so the order comes back `isCompleted`,
+but their plus one is still missing. The page used to send them to the completed
+screen, which said to come back any time before kickoff and then gave them no
+form to do it in. So a `Not Sure yet` lookup now lands on the form, on "Add
+them now", with the name and email fields open, whether they arrived on a link
+or typed their email into the lookup box.
+
+Past that: a buyer who already named a plus one still goes straight to the
+completed screen and nothing is posted; "Decide later" is still a real answer
+and still confirms with the plus one left open; the second submit posts
+`choice: "named"` against the same order and lands on "Your seat and plus one
+are saved."; and an order we cannot verify, or a save that fails, leaves the
+buyer with the error said and a button they can press again.
+
 ## `form.test.mjs`
 
 Loads [`sh-apply/index.html`](../../sh-apply/index.html) into jsdom and actually
@@ -282,3 +302,51 @@ no alpha — since that is what the transparent copies are cut from.
 
 No layout here either, so clearance in the header, the knockout's edges and
 whether the lockup reads as muted are eyeball checks.
+
+## `portal-welcome-video.test.mjs`
+
+Drives [`club/curriculum.html`](../../club/curriculum.html) in jsdom with the
+real `portal-live.js` and the real `portal-access.js`, and hands it a Start
+here week carrying Ella's welcome video and the calendar row.
+
+Both used to sit in the welcome box — the video as a small side card with an
+Open button that sent the member out to YouTube, the calendar as a second
+card beside the letter. The welcome box now holds only Ella's letter and the
+Time Rich Pep Talk, and the two of them have a band of their own directly
+under it: the video wide on the left, a stripped-back calendar card on the
+right, stacked on a phone.
+
+What the suite pins is the part that is easy to get wrong by hand. The `src`
+is rebuilt by the portal's own `embedSrc` from a pattern-checked id, so the
+stored URL never reaches an `iframe` — `http:`, `javascript:`, an unknown
+host and an id of the wrong shape are all refused, and the raw URL appears
+nowhere on the page. Past that: the band is a section of its own, after the
+welcome box, and the welcome holds neither a player, nor a card, nor a link
+of any kind; the iframe is `loading="lazy"` and carries the row's title,
+which is also the heading above it; the heading and the player are all the
+video column holds, so the row's "3 minutes." is not drawn; and the calendar
+card is its title and its button and nothing else, even though the row has a
+body line.
+
+Nothing sends the member off the page to watch. A video URL `embedSrc`
+refuses draws **nothing** — no player, no button, no link, not even its
+title — and a second embeddable video is dropped rather than linked out. The
+suite checks every `a[href]` in the live container, not just the band, so a
+stray link cannot hide in a corner it does not look at.
+
+The kind and the sort still decide: an embeddable URL on a `link` row is one
+of the band's cards, and a video at sort 150 is a setup step in Week 1's
+panel instead. With neither a video nor a card, the band is not drawn at all.
+
+It also checks the two things this was not allowed to disturb — the letter
+and the Pep Talk — and that the loading placeholder carries the band, since
+the player is the tallest thing above the week tabs and the footer would
+otherwise jump when the payload lands.
+
+The video carries no tick. A cross-origin iframe never tells the page that
+play was pressed, and a tick redraws the page, which would restart a video
+the member had just started.
+
+jsdom does no layout, so the 16:9 box, the rounded corners, the video-beside
+-card / video-above-card switch at 760px and the absence of sideways
+scrolling at 320–1440px are eyeball checks.
