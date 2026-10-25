@@ -253,6 +253,80 @@
   .tc-portrait img { position: absolute; inset: 0; }
 }
 
+/* The opening line under the headline, and the button that opens the rest
+   of the letter over the page. */
+.tc-letter-lede {
+  margin-top: 28px;
+  max-width: 36rem;
+  font-size: 17px;
+  line-height: 1.7;
+  color: rgb(244 241 230 / .78);
+  text-wrap: pretty;
+}
+.tc-letter-more { margin-top: 28px; }
+@media (min-width: 900px) and (min-height: 560px) {
+  .tc-letter-lede { margin-top: clamp(16px, 3vh, 32px); font-size: clamp(15px, 2vh, 18px); }
+  .tc-letter-more { margin-top: clamp(16px, 3vh, 32px); }
+}
+
+/* The founding story: the whole letter, full screen on the dark ground,
+   one column at a reading width. The rules above set the letter in two
+   columns on a laptop; here it is always one. */
+.tc-story {
+  width: 100%; max-width: none;
+  height: 100%; max-height: none;
+  margin: 0; padding: 0;
+  border: 0;
+  background: var(--tc-night);
+  color: var(--tc-cream);
+  overflow-y: auto;
+  overscroll-behavior: contain;
+}
+.tc-story::backdrop { background: rgb(0 0 0 / .5); }
+.tc-story[open] { animation: tc-story-in .35s var(--tc-ease); }
+@keyframes tc-story-in { from { opacity: 0; transform: translateY(12px); } }
+html.tc-story-on { overflow: hidden; }
+.tc-story-in {
+  position: relative;
+  max-width: 40rem;
+  margin: 0 auto;
+  padding: 72px 20px 80px;
+}
+@media (min-width: 640px) { .tc-story-in { padding: 104px 32px 112px; } }
+.tc-story .tc-eyebrow { color: rgb(244 241 230 / .55); }
+.tc-story-h {
+  margin-top: 14px;
+  font-family: var(--trp-face);
+  font-weight: 500;
+  font-size: clamp(28px, 4vw, 40px);
+  line-height: 1.1;
+  letter-spacing: -.03em;
+  color: var(--tc-cream);
+  text-wrap: balance;
+}
+.tc-story-h em { font-style: normal; color: var(--tc-lime); }
+.tc-story .tc-letter-body { margin-top: 32px; max-width: none; columns: auto; }
+.tc-story .tc-letter-body p { font-size: 17px; line-height: 1.75; }
+.tc-story .tc-letter-body p + p { margin-top: 18px; }
+.tc-story .tc-letter-body .tc-turn { margin: 30px 0; font-size: 24px; }
+.tc-story .tc-sign { margin-top: 40px; }
+.tc-story .tc-sign-love { font-size: 17px; }
+.tc-story .tc-sign-name { font-size: 44px; }
+.tc-story-x {
+  position: absolute; top: 20px; right: 16px;
+  display: grid; place-items: center;
+  width: 44px; height: 44px;
+  border-radius: 999px;
+  border: 1px solid rgb(244 241 230 / .25);
+  color: var(--tc-cream);
+  transition: border-color .2s, background-color .2s;
+}
+.tc-story-x:hover { border-color: var(--tc-cream); background: rgb(244 241 230 / .06); }
+.tc-story-x svg { width: 18px; height: 18px; fill: none; stroke: currentColor; stroke-width: 1.8; stroke-linecap: round; }
+@media (min-width: 640px) { .tc-story-x { top: 32px; right: 24px; } }
+.tc-story a:focus-visible, .tc-story button:focus-visible { outline-color: var(--tc-lime); }
+@media (prefers-reduced-motion: reduce) { .tc-story[open] { animation: none; } }
+
 /* =====================================================================
    A rail of photographs, edge to edge. It scrolls sideways under a finger
    or a trackpad and snaps to each frame; nothing moves on its own.
@@ -437,7 +511,7 @@
 .tc-door {
   display: flex; align-items: center; justify-content: space-between; gap: 16px;
   min-height: 72px;
-  padding: 16px 4px;
+  padding: 16px 0;
   border-bottom: 1px solid var(--tc-hair);
   transition: padding .3s var(--tc-ease), background-color .2s;
 }

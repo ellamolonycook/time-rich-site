@@ -228,35 +228,17 @@
             cloth: <em>ambitious as hell</em> and driven to create something big.
           </h1>
 
-          <div class="tc-letter-body">
-            <p>
-              And you&rsquo;re arriving just in time: it&rsquo;s the greatest
-              time in history to be ambitious while being Time Rich.
-            </p>
-            <p>
-              I created the space I wish existed, because after I left my
-              VC-backed startup, I found myself on the verge of burnout, lonely,
-              and depressed in a NYC apartment in the dead of a freezing
-              winter, too proud to ask for help and too stressed to cope.
-            </p>
-            <p class="tc-turn">Ever had that breakdown to breakthrough moment?</p>
-            <p>
-              Time Rich Club was born a few months later, from a place of
-              wanting to gather the smartest people I know to build an ecosystem
-              of resources, community, and a safe space to show up and be
-              vulnerable.
-            </p>
-            <p>
-              It&rsquo;s a place where founders, creators, media leaders, and
-              investors invest in themselves, their relationships, and their
-              delegation system to become Time Rich.
-            </p>
-            <p>
-              The philosophy here is simple: <strong>real talk</strong> (lead
-              with vulnerability) and <strong>real contribution</strong> (give
-              first).
-            </p>
-          </div>
+          <p class="tc-letter-lede">
+            And you&rsquo;re arriving just in time: it&rsquo;s the greatest
+            time in history to be ambitious while being Time Rich.
+          </p>
+
+          <!-- The rest of the letter opens over the page, so the opening
+               stays one screen. The overlay is the dialog at the foot of
+               this section. -->
+          <button type="button" class="tc-btn tc-btn-lime tc-letter-more" data-tc-story-open aria-haspopup="dialog">
+            Read the founding story <span aria-hidden="true">&rarr;</span>
+          </button>
 
           <!-- The name is set in Caveat, the same script the accelerator page
                signs Ella's letter with. -->
@@ -296,6 +278,57 @@
           <figure class="tc-f tc-f-arch"><img src="/portal/assets/events/web/0V6A7246.jpg" alt="Two guests seated together on stage" width="1600" height="1067" loading="lazy" decoding="async"/></figure>
         </div>
       </div>
+
+      <!-- The founding story, the whole letter, opened by the button under
+           the headline. A native dialog: Esc closes it, and so does a click
+           on the backdrop (the script at the foot of the page). -->
+      <dialog class="tc-story" aria-labelledby="story-heading" data-tc-story>
+        <div class="tc-story-in">
+          <button type="button" class="tc-story-x" data-tc-story-close aria-label="Close the founding story">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"/></svg>
+          </button>
+          <p class="tc-eyebrow">The founding story</p>
+          <h2 id="story-heading" class="tc-story-h">
+            If you&rsquo;re here, I have a feeling we&rsquo;re cut from the same
+            cloth: <em>ambitious as hell</em> and driven to create something big.
+          </h2>
+          <div class="tc-letter-body">
+            <p>
+              And you&rsquo;re arriving just in time: it&rsquo;s the greatest
+              time in history to be ambitious while being Time Rich.
+            </p>
+            <p>
+              I created the space I wish existed, because after I left my
+              VC-backed startup, I found myself on the verge of burnout, lonely,
+              and depressed in a NYC apartment in the dead of a freezing
+              winter, too proud to ask for help and too stressed to cope.
+            </p>
+            <p class="tc-turn">Ever had that breakdown to breakthrough moment?</p>
+            <p>
+              Time Rich Club was born a few months later, from a place of
+              wanting to gather the smartest people I know to build an ecosystem
+              of resources, community, and a safe space to show up and be
+              vulnerable.
+            </p>
+            <p>
+              It&rsquo;s a place where founders, creators, media leaders, and
+              investors invest in themselves, their relationships, and their
+              delegation system to become Time Rich.
+            </p>
+            <p>
+              The philosophy here is simple: <strong>real talk</strong> (lead
+              with vulnerability) and <strong>real contribution</strong> (give
+              first).
+            </p>
+          </div>
+
+          <div class="tc-sign">
+            <p class="tc-sign-love">Much Love,</p>
+            <p class="tc-sign-name">Ella Molony Cook</p>
+            <p class="tc-sign-role">Chief Energy Officer, Time Rich Club</p>
+          </div>
+        </div>
+      </dialog>
     </section>
 
     <!-- ---- the five pillars ------------------------------------------ -->
@@ -796,6 +829,27 @@
 
 
   <script>
+    // The founding story overlay. showModal() keeps focus inside it and
+    // gives Esc for free; a click on the backdrop (the dialog itself, not
+    // its contents) closes it too. The page behind does not scroll while
+    // it is open.
+    (function () {
+      var dlg = document.querySelector('[data-tc-story]');
+      var open = document.querySelector('[data-tc-story-open]');
+      if (!dlg || !open || typeof dlg.showModal !== 'function') return;
+      open.addEventListener('click', function () {
+        dlg.showModal();
+        document.documentElement.classList.add('tc-story-on');
+      });
+      dlg.addEventListener('close', function () {
+        document.documentElement.classList.remove('tc-story-on');
+        open.focus();
+      });
+      dlg.addEventListener('click', function (e) {
+        if (e.target === dlg || e.target.closest('[data-tc-story-close]')) dlg.close();
+      });
+    })();
+
     // Each section rises in once as it reaches the screen. The tc-js class
     // is what hides them first, so it goes on only when the observer exists;
     // club.css leaves them alone entirely for reduced motion.
