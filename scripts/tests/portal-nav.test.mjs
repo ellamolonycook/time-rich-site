@@ -8,11 +8,11 @@
 // that was right either way: the effect costs no layout, hover and keyboard
 // focus behave the same, and the mobile slide-out menu keeps its own classes.
 //
-// The menu itself is shorter. Live Sessions and Prompts came out of it —
-// both pages are still served, they are just no longer somewhere you steer
-// to — and Club and Accelerator went in. Members is now shown to everyone
-// with a purple Soon pill rather than being hidden until the Worker says the
-// directory is open.
+// The menu is four places now. Live Sessions and Prompts are not in it —
+// both pages are still served, they are just reached from the course rather
+// than steered to — and Club, Accelerator and Resources are. Members is
+// shown to everyone with a purple Soon pill rather than being hidden until
+// the Worker says the directory is open.
 //
 // jsdom does no layout and no painting, so what is checked here is the shape
 // the look depends on, not the look.
@@ -21,36 +21,38 @@ import { readFileSync } from 'node:fs';
 
 const read = (p) => readFileSync(new URL('../../' + p, import.meta.url), 'utf8');
 
-// club is in the list; sessions and prompts are still here, still carrying
-// the menu, just no longer in it.
-const PAGES = ['home', 'dashboard', 'curriculum', 'sessions', 'resources', 'prompts', 'members'];
+// club/index.html is the Club home; sessions and prompts are still here,
+// still carrying the menu, just no longer in it.
+const PAGES = ['index', 'dashboard', 'curriculum', 'sessions', 'resources', 'prompts', 'members'];
 
 // What the menu is, in order, on every page.
 const MENU = [
-  // Club is the one absolute link: /club serves the Club home to a member
-  // and the public Apply page to everyone else, with club/home.html as
-  // the document it frames.
+  // Club is the one absolute link: /club is the Club home itself now, which
+  // is club/index.html. The public application form moved to /clubform and
+  // is not in here at all -- the portal menu never points a member at it.
   //
   // The rest are extensionless. The .html files are all still served, so an
   // old bookmark still works, but nothing in the portal links to one.
   { href: '/club', label: 'Club' },
   { href: 'curriculum', label: 'Accelerator' },
+  { href: 'resources', label: 'Resources' },
   { href: 'members', label: 'Members' },
 ];
 
 // Which menu entry is lit on each page. Live Sessions and Prompts sit under
 // the Accelerator, whose link points at the curriculum. The dashboard page
-// is no longer a destination, so its own menu points there too.
+// is no longer a destination, so its own menu points there too. Resources
+// has its own entry now, so it lights that rather than the Accelerator.
 //
-// The Club home's file is club/home.html, but the address it is lit by is
-// /club: that is where a member finds it, framed.
+// The Club home's file is club/index.html and the address it is lit by is
+// /club, which is the same page.
 const LIT = {
-  home: '/club',
+  index: '/club',
   dashboard: 'curriculum',
   curriculum: 'curriculum',
   sessions: 'curriculum',
   prompts: 'curriculum',
-  resources: 'curriculum',
+  resources: 'resources',
   members: 'members',
 };
 
@@ -79,7 +81,7 @@ console.log('\nThe menu is the same four places on every page');
 {
   for (const name of PAGES) {
     const links = [...navOf(docs[name]).querySelectorAll('a')];
-    check(name + ': four links, in order',
+    check(name + ': all four links, in order',
       JSON.stringify(links.map((a) => [a.getAttribute('href'), a.textContent.trim().split(/\s+/)[0]])) ===
       JSON.stringify(MENU.map((m) => [m.href, m.label])),
       links.map((a) => a.getAttribute('href')));
@@ -137,8 +139,8 @@ console.log('\nThe page you are on is marked, in both menus');
       // link really is this page. Live Sessions and Prompts sit in the
       // Accelerator without being the curriculum, so they get the generic
       // "current item in this set" instead. The Club home is its own page
-      // even though its link is /club rather than /home.
-      const want = (LIT[name] === name || LIT[name] === '/' + name || name === 'home') ? 'page' : 'true';
+      // even though its link is /club rather than /index.
+      const want = (LIT[name] === name || LIT[name] === '/' + name || name === 'index') ? 'page' : 'true';
       check(name + ': marked aria-current="' + want + '" in the ' + what,
         marked.length === 1 && marked[0].getAttribute('aria-current') === want,
         marked.map((a) => a.getAttribute('aria-current')));

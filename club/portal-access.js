@@ -843,35 +843,6 @@
     if (target) { clear(target); target.appendChild(el('p', 'trp-error', text)); }
   }
 
-  /* ---- leaving the portal, from inside a frame or not ------------------
-   * The Club home is served two ways: on its own at /club/home, and
-   * inside a full-bleed iframe at timerich.ai/club, where a visitor without
-   * a session gets the public Apply page at that same address.
-   *
-   * So "send them to sign in" has to move the TOP window when this page is
-   * framed. Navigating the frame instead would draw the sign-in form inside
-   * the frame with /club still in the address bar, which is neither page.
-   *
-   * Same origin, so window.top is reachable; it is still wrapped, because a
-   * cross-origin embed throws on the first touch rather than returning null.
-   */
-  function isFramed() {
-    try { return window.top !== window.self; } catch (e) { return true; }
-  }
-
-  /* Takes the top window to /club and says whether it managed it. /club is
-     the right destination rather than the sign-in page: it shows Apply to
-     anyone without a session, which is what this member now is. */
-  function leaveFrame() {
-    if (!isFramed()) return false;
-    try {
-      window.top.location.replace('/club');
-      return true;
-    } catch (e) {
-      return false;
-    }
-  }
-
   /* ---- old .html addresses ----------------------------------------------
    * Every link in the portal is extensionless now (/club/resources), but
    * /club/resources.html is still served, and it is still what sits in
@@ -884,14 +855,10 @@
    * where the member came from instead of landing on the address they just
    * left. The query string and the hash come along -- the sign-in link
    * carries a code in the query, and the FAQ links carry a hash.
-   *
-   * Skipped inside a frame: the Club home is framed at /club, where the bar
-   * shows /club and the frame's own address was never on screen to tidy.
    */
   function tidyAddress() {
     var loc = window.location;
     if (loc.protocol !== 'https:' && loc.protocol !== 'http:') return;
-    if (isFramed()) return;
     if (!window.history || !window.history.replaceState) return;
     if (!/\.html$/.test(loc.pathname)) return;
 
@@ -906,9 +873,9 @@
   function signedOut() {
     if (document.querySelector('[data-portal-login]')) {
       setState('out');
-    } else if (!leaveFrame()) {
-      // Not "./": that is /club, which is the Apply page to anyone without
-      // a session. The sign-in page has an address of its own.
+    } else {
+      // Not "./": that is /club, the Club home, which is a page this member
+      // has just been refused. The sign-in page has an address of its own.
       window.location.replace('signin');
     }
   }
@@ -940,9 +907,7 @@
       buttons[i].addEventListener('click', function (event) {
         event.preventDefault();
         signOut();
-        // Framed at /club, reloading would reload the frame and leave the
-        // member looking at the sign-in page inside it.
-        if (!leaveFrame()) window.location.reload();
+        window.location.reload();
       });
     }
   }

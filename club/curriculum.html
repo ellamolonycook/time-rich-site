@@ -51,12 +51,21 @@
     })();
   </script>
 
-  <title>Curriculum | Time Rich Portal</title>
+  <title>Curriculum | Time Rich Club</title>
+  <link rel="canonical" href="https://timerich.ai/club/curriculum" />
+  <meta name="description" content="Your weekly steps, prompts and session recordings for the Superhuman Accelerator." />
+  <meta property="og:type" content="website" />
+  <meta property="og:site_name" content="Time Rich Club" />
+  <meta property="og:title" content="Curriculum | Time Rich Club" />
+  <meta property="og:description" content="Your weekly steps, prompts and session recordings for the Superhuman Accelerator." />
+  <meta property="og:url" content="https://timerich.ai/club/curriculum" />
   <meta property="og:image" content="https://timerich.ai/og-time-rich.png" />
   <meta property="og:image:width" content="1200" />
   <meta property="og:image:height" content="630" />
-  <meta name="twitter:image" content="https://timerich.ai/og-time-rich.png" />
   <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="Curriculum | Time Rich Club" />
+  <meta name="twitter:description" content="Your weekly steps, prompts and session recordings for the Superhuman Accelerator." />
+  <meta name="twitter:image" content="https://timerich.ai/og-time-rich.png" />
   <link rel="stylesheet" href="portal.css"/>
   <!-- The two faces, served from this repo. They used to come from Google
        Fonts, which costs a DNS lookup, a stylesheet and only then the font
@@ -69,7 +78,7 @@
        twice. -->
   <link rel="preload" href="../brand/fonts/SpaceGrotesk-Variable.woff2" as="font" type="font/woff2" crossorigin/>
   <link rel="preload" href="../brand/fonts/Inter-Variable.woff2" as="font" type="font/woff2" crossorigin/>
-  <link rel="stylesheet" href="portal-content.css?v=20261021">
+  <link rel="stylesheet" href="portal-content.css?v=20261025">
   <!-- The Curriculum's own layout: four week cards you tap between and one
        panel for the week that is picked (canvas board 3). Every rule is
        scoped under .trp-cw and every colour comes from the --trp-* palette
@@ -236,6 +245,113 @@
     .trp-cw-more > .trp-cw-lesson-body { padding: 0 14px 14px; font-size: 14.5px; }
     .trp-cw-empty { margin: 0; font-size: 15px; color: var(--trp-soft); }
 
+    /* -- what's next ---------------------------------------------------
+       Every week that has not opened yet, one line each. */
+    .trp-cw-next { display: flex; flex-direction: column; gap: 12px; }
+    .trp-cw-next-heading { font-family: var(--trp-display); font-weight: 600; font-size: clamp(19px, 2.4vw, 24px); letter-spacing: -.02em; line-height: 1.15; margin: 0; color: var(--trp-deep); }
+    .trp-cw-next-rows { list-style: none; margin: 0; padding: 0; border: 1px solid var(--trp-line); border-radius: 18px; background: rgb(var(--c-surface)); overflow: hidden; }
+    .trp-cw-next-row { display: grid; grid-template-columns: 76px minmax(0, 1fr) auto; align-items: center; gap: 8px 16px; padding: 14px 20px; }
+    .trp-cw-next-row + .trp-cw-next-row { border-top: 1px solid var(--trp-line); }
+    .trp-cw-next-n { font-size: 12px; font-weight: 600; letter-spacing: .06em; text-transform: uppercase; color: var(--trp-soft); }
+    .trp-cw-next-title { font-size: 15.5px; font-weight: 600; color: var(--trp-deep); }
+    .trp-cw-next-when { font-size: 13px; color: var(--trp-soft); white-space: nowrap; }
+    @media (max-width: 560px) {
+      .trp-cw-next-row { grid-template-columns: minmax(0, 1fr) auto; }
+      .trp-cw-next-n { grid-column: 1 / -1; }
+    }
+
+    /* -- a row that ticks when you click it -----------------------------
+       The box inside it is still the button; this is only a bigger target,
+       so the cursor has to say so. A row that cannot be ticked never gets
+       the class. */
+    .trp-cw-task.is-tickable, .trp-cw-lesson-head.is-tickable { cursor: pointer; }
+
+    /* -- Week 1's static content ---------------------------------------
+       The audit, the ten growth prompts and the cohort's questions. All of
+       it sits inside the Week 1 panel, so the gap matches the panel's. */
+    /* :not([hidden]) because the block sits in the page hidden until the
+       renderer moves it into the Week 1 panel, and a class rule would
+       otherwise beat the browser's own rule for the hidden attribute. */
+    .trp-cw-w1:not([hidden]) { display: flex; flex-direction: column; gap: 36px; }
+    .trp-cw-w1-sec { display: flex; flex-direction: column; gap: 14px; }
+    .trp-cw-w1-h { font-family: var(--trp-display); font-weight: 600; font-size: clamp(22px, 2.8vw, 28px); letter-spacing: -.02em; line-height: 1.15; margin: 0; color: var(--trp-deep); }
+    .trp-cw-w1-lede { margin: 0; font-size: 16px; line-height: 1.6; color: var(--trp-soft); max-width: 68ch; }
+    .trp-cw-w1-sub { margin: 8px 0 0; font-size: 12px; font-weight: 600; letter-spacing: .08em; text-transform: uppercase; color: var(--trp-soft); }
+    .trp-cw-w1-list { margin: 0; padding-left: 22px; display: flex; flex-direction: column; gap: 8px; font-size: 16px; line-height: 1.6; color: var(--trp-deep); }
+    .trp-cw-sr { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; border: 0; }
+
+    /* the challenge, in Ella's yellow */
+    .trp-cw-callout { display: flex; gap: 14px; align-items: flex-start; padding: 18px 20px; border-radius: 18px; background: rgb(var(--c-lime) / .32); border: 1px solid rgb(var(--c-lime) / .6); }
+    .trp-cw-callout-icon { flex: none; font-size: 20px; line-height: 1.4; }
+    .trp-cw-callout p { margin: 0; font-size: 16px; line-height: 1.6; color: var(--trp-deep); }
+    .trp-cw-callout b { font-weight: 600; }
+
+    /* the audit table: text boxes the member types into. It sits in the
+       detail of the row that asks for it, under Ella's prompt, so the gap
+       matches the detail's own. :not([hidden]) because it waits in the page
+       hidden until the renderer moves it, and a class rule would otherwise
+       beat the browser's own rule for the hidden attribute. */
+    .trp-cw-audit-tool:not([hidden]) { display: flex; flex-direction: column; gap: 14px; width: 100%; }
+    .trp-cw-audit-wrap { border: 1px solid var(--trp-line); border-radius: 18px; background: rgb(var(--c-surface)); overflow: hidden; }
+    .trp-cw-audit { width: 100%; border-collapse: collapse; font-size: 14.5px; }
+    .trp-cw-audit th { text-align: left; padding: 12px 14px; font-size: 11.5px; font-weight: 600; letter-spacing: .06em; text-transform: uppercase; color: var(--trp-soft); border-bottom: 1px solid var(--trp-line); vertical-align: bottom; }
+    .trp-cw-audit td { padding: 6px 8px; border-bottom: 1px solid var(--trp-line); vertical-align: middle; }
+    .trp-cw-audit tbody tr:last-child td { border-bottom: 0; }
+    .trp-ca-task { width: 26%; }
+    .trp-ca-hours { width: 9%; }
+    .trp-ca-dollar { width: 11%; }
+    .trp-ca-owner { width: 20%; }
+    .trp-cw-audit-in { width: 100%; min-height: 44px; padding: 8px 10px; border: 1px solid transparent; border-radius: 10px; background: transparent; font: inherit; font-size: 14.5px; color: var(--trp-deep); }
+    .trp-cw-audit-in::placeholder { color: var(--trp-soft); opacity: .7; }
+    .trp-cw-audit-in:hover { border-color: var(--trp-line); }
+    .trp-cw-audit-in:focus { outline: 0; border-color: var(--trp-green); background: rgb(var(--c-surface)); }
+    .trp-cw-audit-acts { display: flex; flex-wrap: wrap; gap: 10px; }
+    .trp-cw-audit-rev { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; margin: 0; font-size: 15.5px; color: var(--trp-deep); }
+    .trp-cw-audit-rev b { font-weight: 600; }
+    .trp-cw-audit-in.is-pct { width: 90px; border-color: var(--trp-line); }
+    /* On a phone the five columns become five labelled lines. */
+    @media (max-width: 760px) {
+      /* The table itself has to stop being a table, or the <col> widths keep
+         squeezing every cell to its desktop share of the row. */
+      .trp-cw-audit, .trp-cw-audit tbody { display: block; }
+      .trp-cw-audit thead, .trp-cw-audit colgroup { display: none; }
+      .trp-cw-audit tbody tr { display: block; padding: 10px 12px; }
+      .trp-cw-audit tbody tr + tr { border-top: 1px solid var(--trp-line); }
+      .trp-cw-audit td { display: grid; grid-template-columns: minmax(0, 1fr); gap: 2px; padding: 6px 0; border-bottom: 0; }
+      .trp-cw-audit td::before { content: attr(data-label); font-size: 11px; font-weight: 600; letter-spacing: .06em; text-transform: uppercase; color: var(--trp-soft); }
+      .trp-cw-audit-in { border-color: var(--trp-line); }
+      .trp-cw-audit-acts .trp-cw-btn { flex: 1 1 auto; }
+    }
+
+    /* The shared agent comparison, in the Week 1 block. Resources sets the
+       card's padding with Tailwind utilities in its own markup; here the
+       card comes from this file, so the padding does too. */
+    .trp-cw-agents { padding: clamp(20px, 3vw, 32px); display: flex; flex-direction: column; gap: 14px; }
+    .trp-cw-agents .trp-agents-wrap { margin-top: 8px; }
+
+    /* a prompt in a box, with its Copy button */
+    .trp-cw-gp { display: flex; flex-direction: column; gap: 12px; }
+    .trp-cw-gp-h { font-family: var(--trp-display); font-weight: 600; font-size: clamp(17px, 1.9vw, 20px); letter-spacing: -.01em; line-height: 1.25; margin: 20px 0 0; color: var(--trp-deep); }
+    .trp-cw-gp-lead { margin: 0; font-size: 15.5px; line-height: 1.6; color: var(--trp-soft); max-width: 68ch; }
+    .trp-cw-slink { color: var(--trp-deep); text-decoration: underline; text-underline-offset: 3px; }
+    .trp-cw-pb { border: 1px solid var(--trp-line); border-radius: 16px; background: rgb(var(--c-surface)); overflow: hidden; }
+    .trp-cw-pb-head { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 10px 12px 10px 16px; border-bottom: 1px solid var(--trp-line); }
+    .trp-cw-pb-label { font-size: 11.5px; font-weight: 600; letter-spacing: .06em; text-transform: uppercase; color: var(--trp-soft); }
+    .trp-cw-copy { flex: none; min-height: 44px; padding: 0 14px; border: 1px solid var(--trp-line); border-radius: 999px; background: rgb(var(--c-surface)); font: inherit; font-size: 13px; font-weight: 600; color: var(--trp-deep); cursor: pointer; }
+    .trp-cw-copy:hover { background: var(--trp-sagelt); }
+    .trp-cw-copy:focus-visible { outline: 2px solid var(--trp-green); outline-offset: 2px; }
+    .trp-cw-pb-text { margin: 0; padding: 16px; font-family: var(--trp-mono); font-size: 13.5px; line-height: 1.65; color: var(--trp-deep); white-space: pre-wrap; overflow-wrap: break-word; }
+
+    /* the cohort's questions */
+    .trp-cw-qa { display: flex; flex-direction: column; gap: 8px; }
+    .trp-cw-qa-item { border: 1px solid var(--trp-line); border-radius: 14px; background: rgb(var(--c-surface)); }
+    .trp-cw-qa-item[open] { border-color: var(--trp-green); }
+    .trp-cw-qa-item > summary { display: flex; align-items: center; justify-content: space-between; gap: 12px; min-height: 52px; padding: 10px 16px; cursor: pointer; list-style: none; border-radius: 14px; font-size: 15.5px; font-weight: 600; color: var(--trp-deep); }
+    .trp-cw-qa-item > summary::-webkit-details-marker { display: none; }
+    .trp-cw-qa-item > summary:focus-visible { outline: 2px solid var(--trp-green); outline-offset: 2px; }
+    .trp-cw-qa-item[open] > summary .trp-cw-chev { transform: rotate(180deg); }
+    .trp-cw-qa-a { margin: 0; padding: 0 16px 16px; font-size: 15.5px; line-height: 1.65; color: var(--trp-soft); max-width: 72ch; }
+
     /* Resources, at the foot of the page rather than in the menu */
     .trp-cw-resources { display: flex; align-items: center; justify-content: space-between; gap: 16px; padding: 20px 24px; border-radius: 20px; border: 1px solid var(--trp-line); background: rgb(var(--c-surface)); color: var(--trp-deep); text-decoration: none; transition: box-shadow .18s ease; }
     .trp-cw-resources:hover { box-shadow: 0 18px 40px -28px rgba(26, 24, 22, .45); }
@@ -349,6 +465,10 @@
           <svg class="w-4 h-4 shrink-0" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"></path></svg>
           Accelerator
         </a>
+        <a href="resources" class="flex items-center gap-3 px-4 py-3 rounded-[14px] text-sm font-medium text-brand-ink/70 hover:text-brand-ink hover:bg-brand-ink/5 transition-colors">
+          <svg class="w-4 h-4 shrink-0 text-brand-ink/50" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"></path></svg>
+          Resources
+        </a>
         <a href="members" data-portal-members-link class="flex items-center gap-3 px-4 py-3 rounded-[14px] text-sm font-medium text-brand-ink/70 hover:text-brand-ink hover:bg-brand-ink/5 transition-colors">
           <svg class="w-4 h-4 shrink-0 text-brand-ink/50" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"></path></svg>
           Members
@@ -384,6 +504,7 @@
       <nav class="hidden lg:flex items-center gap-0.5" aria-label="Portal">
         <a href="/club" class="trp-nav-link px-3.5 text-[13px] font-medium text-brand-ink/70 hover:text-brand-ink">Club</a>
         <a href="curriculum" aria-current="page" class="trp-nav-link px-3.5 text-[13px] font-medium">Accelerator</a>
+        <a href="resources" class="trp-nav-link px-3.5 text-[13px] font-medium text-brand-ink/70 hover:text-brand-ink">Resources</a>
         <a href="members" data-portal-members-link class="trp-nav-link gap-1.5 px-3.5 text-[13px] font-medium text-brand-ink/70 hover:text-brand-ink">Members <span class="trp-soon">Soon</span></a>
       </nav>
     </div>
@@ -490,10 +611,420 @@
         <p class="trp-skel-say" role="status">Loading your curriculum&hellip;</p>
       </div>
 
+
+      <!-- THE TIME RICH AUDIT TABLE ========================================
+           Week 1 already carries a row called "Run your Time Rich Audit",
+           with Ella's prompt in its body. This is the table that goes with
+           it, and the renderer moves it into that row's detail rather than
+           drawing a second audit section further down the page: one audit,
+           in the place the member is already looking.
+
+           Held here, outside [data-curriculum-live], for the same reason as
+           the Week 1 block below: one node, moved rather than rebuilt, so a
+           member keeps what they have typed across the redraw a tick causes.
+
+           Nothing typed leaves the browser. There is no form and no
+           endpoint; the only things that read it are the member's own Copy
+           table button and the restore at the foot of the page. -->
+      <div id="cw-audit-tool" class="trp-cw-audit-tool" hidden>
+  <div class="trp-cw-audit-wrap">
+              <table class="trp-cw-audit">
+                <caption class="trp-cw-sr">Your Time Rich Audit. Five rows to start, and an Add a row button under it.</caption>
+                <colgroup>
+                  <col class="trp-ca-task"/>
+                  <col class="trp-ca-hours"/>
+                  <col class="trp-ca-dollar"/>
+                  <col class="trp-ca-owner"/>
+                  <col class="trp-ca-compass"/>
+                </colgroup>
+                <thead>
+                  <tr>
+                    <th scope="col">Task (last week)</th>
+                    <th scope="col">Hours</th>
+                    <th scope="col">$ or not</th>
+                    <th scope="col">Owner: Skill, Agent, Human or Me</th>
+                    <th scope="col">COMPASS check</th>
+                  </tr>
+                </thead>
+                <!-- The example row is placeholder text on the first row, so the
+                     member starts with an empty table and still has the example
+                     in front of them. Nothing is pre-filled. -->
+                <tbody data-audit-body>
+                <tr class="trp-cw-audit-row">
+                  <td data-label="Task (last week)"><input type="text" class="trp-cw-audit-in" data-audit-cell="task" placeholder="Example: rewrote sales page copy" aria-label="Task (last week), row 1"/></td>
+                  <td data-label="Hours"><input type="text" class="trp-cw-audit-in" data-audit-cell="hours" placeholder="3" aria-label="Hours, row 1"/></td>
+                  <td data-label="$ or not"><input type="text" class="trp-cw-audit-in" data-audit-cell="dollar" placeholder="Not" aria-label="$ or not, row 1"/></td>
+                  <td data-label="Owner"><input type="text" class="trp-cw-audit-in" data-audit-cell="owner" placeholder="Skill" aria-label="Owner, row 1"/></td>
+                  <td data-label="COMPASS check"><input type="text" class="trp-cw-audit-in" data-audit-cell="compass" placeholder="Sells an offer on my COMPASS, but the writing isn&#x27;t mine to do" aria-label="COMPASS check, row 1"/></td>
+                </tr>
+                <tr class="trp-cw-audit-row">
+                  <td data-label="Task (last week)"><input type="text" class="trp-cw-audit-in" data-audit-cell="task" aria-label="Task (last week), row 2"/></td>
+                  <td data-label="Hours"><input type="text" class="trp-cw-audit-in" data-audit-cell="hours" aria-label="Hours, row 2"/></td>
+                  <td data-label="$ or not"><input type="text" class="trp-cw-audit-in" data-audit-cell="dollar" aria-label="$ or not, row 2"/></td>
+                  <td data-label="Owner"><input type="text" class="trp-cw-audit-in" data-audit-cell="owner" aria-label="Owner, row 2"/></td>
+                  <td data-label="COMPASS check"><input type="text" class="trp-cw-audit-in" data-audit-cell="compass" aria-label="COMPASS check, row 2"/></td>
+                </tr>
+                <tr class="trp-cw-audit-row">
+                  <td data-label="Task (last week)"><input type="text" class="trp-cw-audit-in" data-audit-cell="task" aria-label="Task (last week), row 3"/></td>
+                  <td data-label="Hours"><input type="text" class="trp-cw-audit-in" data-audit-cell="hours" aria-label="Hours, row 3"/></td>
+                  <td data-label="$ or not"><input type="text" class="trp-cw-audit-in" data-audit-cell="dollar" aria-label="$ or not, row 3"/></td>
+                  <td data-label="Owner"><input type="text" class="trp-cw-audit-in" data-audit-cell="owner" aria-label="Owner, row 3"/></td>
+                  <td data-label="COMPASS check"><input type="text" class="trp-cw-audit-in" data-audit-cell="compass" aria-label="COMPASS check, row 3"/></td>
+                </tr>
+                <tr class="trp-cw-audit-row">
+                  <td data-label="Task (last week)"><input type="text" class="trp-cw-audit-in" data-audit-cell="task" aria-label="Task (last week), row 4"/></td>
+                  <td data-label="Hours"><input type="text" class="trp-cw-audit-in" data-audit-cell="hours" aria-label="Hours, row 4"/></td>
+                  <td data-label="$ or not"><input type="text" class="trp-cw-audit-in" data-audit-cell="dollar" aria-label="$ or not, row 4"/></td>
+                  <td data-label="Owner"><input type="text" class="trp-cw-audit-in" data-audit-cell="owner" aria-label="Owner, row 4"/></td>
+                  <td data-label="COMPASS check"><input type="text" class="trp-cw-audit-in" data-audit-cell="compass" aria-label="COMPASS check, row 4"/></td>
+                </tr>
+                <tr class="trp-cw-audit-row">
+                  <td data-label="Task (last week)"><input type="text" class="trp-cw-audit-in" data-audit-cell="task" aria-label="Task (last week), row 5"/></td>
+                  <td data-label="Hours"><input type="text" class="trp-cw-audit-in" data-audit-cell="hours" aria-label="Hours, row 5"/></td>
+                  <td data-label="$ or not"><input type="text" class="trp-cw-audit-in" data-audit-cell="dollar" aria-label="$ or not, row 5"/></td>
+                  <td data-label="Owner"><input type="text" class="trp-cw-audit-in" data-audit-cell="owner" aria-label="Owner, row 5"/></td>
+                  <td data-label="COMPASS check"><input type="text" class="trp-cw-audit-in" data-audit-cell="compass" aria-label="COMPASS check, row 5"/></td>
+                </tr>
+                </tbody>
+              </table>
+            </div>
+
+            <div class="trp-cw-audit-acts">
+              <button type="button" class="trp-cw-btn is-soft is-sm" data-audit-add>Add a row</button>
+              <button type="button" class="trp-cw-btn is-soft is-sm" data-audit-copy>Copy table</button>
+            </div>
+
+            <p class="trp-cw-audit-rev">
+              <label for="cw-audit-revenue"><b>Revenue number:</b> $ hours divided by total hours =</label>
+              <input type="text" id="cw-audit-revenue" class="trp-cw-audit-in is-pct" data-audit-revenue inputmode="decimal" aria-label="Your revenue number, as a percentage"/><span aria-hidden="true">%</span>
+            </p>
+      </div>
+
+      <!-- WEEK 1, THE STATIC PART =========================================
+           Ella's Week 1 content: the agent comparison, the ten growth
+           prompts, next steps and the cohort's questions. It is markup
+           rather than payload rows because the copy is long, exact and does
+           not change per member. (The audit lives in its own row, above.)
+
+           It lives here, outside [data-curriculum-live], and the renderer
+           below moves the whole node into the Week 1 panel when Week 1 is
+           the week on screen. One node, moved rather than rebuilt, which is
+           what lets a member keep typing in the audit across a redraw: a
+           tick anywhere on the page redraws the panel around it.
+
+           Every prompt in here is a <pre> with a Copy button beside it,
+           wired by the script at the foot of the page. -->
+      <div id="cw-week1-extra" class="trp-cw-w1" hidden>
+
+
+        <!-- The agent comparison, built by portal-agents.js. The Resources
+             page shows the same block from the same file, so the two cannot
+             drift. The card around it is the portal's, as on Resources. -->
+        <div class="trp-cw-w1-sec" id="which-agent">
+          <div class="glass-card is-static trp-cw-agents" data-agents-block></div>
+        </div>
+
+        <section class="trp-cw-w1-sec" id="growth-prompts" aria-labelledby="cw-growth-h">
+          <h3 class="trp-cw-w1-h" id="cw-growth-h">Audacious Action: 10 growth prompts</h3>
+          <p class="trp-cw-w1-lede">Your first agent goes where the money is. Your moat is your expertise, trust, creativity and distribution, so growth comes first.</p>
+
+          <div class="trp-cw-callout">
+            <span class="trp-cw-callout-icon" aria-hidden="true">&#127919;</span>
+            <p><b>The challenge:</b> pick ONE prompt below, run it in a chat inside your Business Hub before Friday, and post your audacious action in <b class="trp-cw-channel">#audacious-wins</b> in the Time Rich Club Slack.</p>
+          </div>
+
+          <p class="trp-cw-w1-lede">Speak your answers with Wispr Flow. Every prompt reads your Business COMPASS first, and none of them sends, posts or deletes anything without your yes.</p>
+
+        <div class="trp-cw-gp">
+          <h4 class="trp-cw-gp-h">A. ICP agent: know exactly who you sell to</h4>
+          <p class="trp-cw-gp-lead">Recorded 3 to 5 sales calls with Wispr Flow&#x27;s notetaker? Use the first prompt. No calls yet? Use the second.</p>
+        <div class="trp-cw-pb">
+          <div class="trp-cw-pb-head">
+            <span class="trp-cw-pb-label">With calls</span>
+            <button type="button" class="trp-cw-copy" data-copy-target="cw-gp-a-1">Copy</button>
+          </div>
+          <pre id="cw-gp-a-1" class="trp-cw-pb-text">Build my ICP from my sales call notes in Wispr Flow. Read my Business COMPASS first. Give me who my ideal client is, the problem they feel, what makes them buy, their budget, their top objections and the exact phrases they use, quoting the calls. Save it as a page called &quot;My ICP&quot; in my Notion (or here in the chat if Notion isn&#x27;t connected), then tell me the 3 points you&#x27;re least sure about.</pre>
+        </div>
+        <div class="trp-cw-pb">
+          <div class="trp-cw-pb-head">
+            <span class="trp-cw-pb-label">No calls yet</span>
+            <button type="button" class="trp-cw-copy" data-copy-target="cw-gp-a-2">Copy</button>
+          </div>
+          <pre id="cw-gp-a-2" class="trp-cw-pb-text">Interview me to build my ICP. Read my Business COMPASS first and don&#x27;t ask what it already answers. Ask one question at a time, with an example answer so I can reply fast by voice. Cover: my best 3 clients so far and why, the problem they had before me, what made them buy, what they paid, their objections, and who I always say no to. Stop after 8 questions. Then write &quot;My ICP&quot; as a page in my Notion (or here in the chat if Notion isn&#x27;t connected) and tell me the 3 points you&#x27;re least sure about.</pre>
+        </div>
+        </div>
+
+        <div class="trp-cw-gp">
+          <h4 class="trp-cw-gp-h">B. Boardy: your AI superconnector (free)</h4>
+          <p class="trp-cw-gp-lead">Boardy calls or WhatsApps you, learns who you want to meet and makes warm intros. Sign up: <a class="trp-cw-slink" href="https://boardy.ai/links/zTblS" target="_blank" rel="noopener sponsored">boardy.ai/links/zTblS</a>. Use this to prep what you tell it:</p>
+        <div class="trp-cw-pb">
+          <div class="trp-cw-pb-head">
+            <span class="trp-cw-pb-label">Prep what you tell it</span>
+            <button type="button" class="trp-cw-copy" data-copy-target="cw-gp-b-1">Copy</button>
+          </div>
+          <pre id="cw-gp-b-1" class="trp-cw-pb-text">Read my Business COMPASS and My ICP. Write me a 60-second script to say to Boardy, my AI superconnector: who I am in one line, what I&#x27;m building, the 3 types of people I most want to meet this month (clients, partners, investors or experts) and why, and one thing I can offer the people it introduces me to. Plain spoken words, no jargon.</pre>
+        </div>
+        </div>
+
+        <div class="trp-cw-gp">
+          <h4 class="trp-cw-gp-h">C. Hot lead extractor: your warmest people, in one list</h4>
+        <div class="trp-cw-pb">
+          <div class="trp-cw-pb-head">
+            <span class="trp-cw-pb-label">Hot + Warm Contacts</span>
+            <button type="button" class="trp-cw-copy" data-copy-target="cw-gp-c-1">Copy</button>
+          </div>
+          <pre id="cw-gp-c-1" class="trp-cw-pb-text">Build my Hot + Warm Contacts list. Read my Business COMPASS and My ICP first.
+1. Pull contacts from my CRM if it&#x27;s connected, my email and calendar from the last 90 days, and any CSV I upload (Luma guest lists, event sign-ups).
+2. Score each one:
+- Hot: replied, met me or showed buying intent in the last 30 days.
+- Warm: engaged in the last 90 days but no clear next step.
+Leave out everyone else, plus suppliers, team and personal contacts.
+3. Put them in a table (a Notion database if Notion is connected) called &quot;Hot + Warm Contacts&quot; with these columns: Name, Company, Email, Temperature (Hot or Warm), Last touch, Source, Why hot or warm, Next step.
+4. Show me the first 10 rows before you save anything.
+Finish with the 5 contacts I should reach out to this week, and why.</pre>
+        </div>
+        </div>
+
+        <div class="trp-cw-gp">
+          <h4 class="trp-cw-gp-h">D. Follow-up in AI: never let a lead go quiet</h4>
+        <div class="trp-cw-pb">
+          <div class="trp-cw-pb-head">
+            <span class="trp-cw-pb-label">Follow-up drafts</span>
+            <button type="button" class="trp-cw-copy" data-copy-target="cw-gp-d-1">Copy</button>
+          </div>
+          <pre id="cw-gp-d-1" class="trp-cw-pb-text">Scan my email from the last 7 days. Read my Business COMPASS and my Hot + Warm Contacts list first.
+1. Find every thread that needs a follow-up:
+- someone asked me something and I haven&#x27;t replied
+- I sent something and they haven&#x27;t replied in 3 days
+- I promised something (a link, deck, intro, date) and haven&#x27;t sent it
+Skip newsletters, receipts, notifications and anything already handled.
+2. Draft one follow-up per thread in my voice: short, warm, one clear ask. Save each as a Gmail draft in the same thread. Never send anything.
+3. List each draft for me: who, why it needs a follow-up, and the first line. Hot contacts first.</pre>
+        </div>
+        </div>
+
+        <div class="trp-cw-gp">
+          <h4 class="trp-cw-gp-h">E. Audacious outbound: a voice note or video, not another email</h4>
+        <div class="trp-cw-pb">
+          <div class="trp-cw-pb-head">
+            <span class="trp-cw-pb-label">Audacious outbound</span>
+            <button type="button" class="trp-cw-copy" data-copy-target="cw-gp-e-1">Copy</button>
+          </div>
+          <pre id="cw-gp-e-1" class="trp-cw-pb-text">Read my Business COMPASS, My ICP and my Hot + Warm Contacts. Pick the 5 people most worth an audacious personal message this week, and tell me why for each.
+For each one, write a 30-second LinkedIn voice note or video script: open with something specific to them (a post, a result, a mutual connection I can verify), say in one line why I&#x27;m reaching out, and end with one easy ask.
+Only use details you can show me a source for. No flattery, no &quot;quick question&quot;. I record and send them myself.</pre>
+        </div>
+        </div>
+
+        <div class="trp-cw-gp">
+          <h4 class="trp-cw-gp-h">F. Audacious give: give first</h4>
+        <div class="trp-cw-pb">
+          <div class="trp-cw-pb-head">
+            <span class="trp-cw-pb-label">Audacious give</span>
+            <button type="button" class="trp-cw-copy" data-copy-target="cw-gp-f-1">Copy</button>
+          </div>
+          <pre id="cw-gp-f-1" class="trp-cw-pb-text">Read my Business COMPASS and my Hot + Warm Contacts, and scan my email and calendar from the last 90 days. Find 5 clients, friends or peers who&#x27;ve helped me or whom I rate.
+For each, suggest one give: a LinkedIn recommendation, an introduction to someone in my network, or sharing their work.
+Then draft it: the recommendation text (under 80 words, specific, in my voice) or the double opt-in intro email. Add a 20-second voice note script to send with it.
+Never send anything. Never invent results or praise I can&#x27;t back up.</pre>
+        </div>
+        </div>
+
+        <div class="trp-cw-gp">
+          <h4 class="trp-cw-gp-h">G. Partnerships strategy: interview me</h4>
+        <div class="trp-cw-pb">
+          <div class="trp-cw-pb-head">
+            <span class="trp-cw-pb-label">Partnerships strategy</span>
+            <button type="button" class="trp-cw-copy" data-copy-target="cw-gp-g-1">Copy</button>
+          </div>
+          <pre id="cw-gp-g-1" class="trp-cw-pb-text">Interview me to build my partnerships strategy. Read my Business COMPASS and My ICP first and don&#x27;t ask what they already answer. Ask one question at a time, with an example answer so I can reply fast by voice. Cover: who already has my ideal clients&#x27; attention (communities, brands, newsletters, podcasts, events), what I can give a partner, what I want from a partnership, and my capacity. Stop after 8 questions.
+Then give me 10 partner targets whose audience matches My ICP. For each: who, why they fit, what I offer, what I ask, and the first message (draft only). Save it as a page called &quot;Partnerships&quot; in my Notion (or here in the chat if Notion isn&#x27;t connected). Only name organisations you can show me a source for.</pre>
+        </div>
+        </div>
+
+        <div class="trp-cw-gp">
+          <h4 class="trp-cw-gp-h">H. Virtual calls: get your name in the room</h4>
+          <p class="trp-cw-gp-lead">Your team (or you) attends other people&#x27;s online events, drops their LinkedIn and positions yours.</p>
+        <div class="trp-cw-pb">
+          <div class="trp-cw-pb-head">
+            <span class="trp-cw-pb-label">Virtual calls</span>
+            <button type="button" class="trp-cw-copy" data-copy-target="cw-gp-h-1">Copy</button>
+          </div>
+          <pre id="cw-gp-h-1" class="trp-cw-pb-text">Read my Business COMPASS and My ICP. Find 5 online events, webinars or live sessions in the next 30 days where my ideal clients will be. For each: the event, the date, the link, and why my ICP will be there.
+Then write a brief for the person attending for me: a 2-line intro to drop in the chat (with my LinkedIn), one smart question to ask out loud that shows my expertise, and who to connect with afterwards.
+Only list events you found a real link for. Don&#x27;t invent dates.</pre>
+        </div>
+        </div>
+
+        <div class="trp-cw-gp">
+          <h4 class="trp-cw-gp-h">I. Sales call analyser</h4>
+        <div class="trp-cw-pb">
+          <div class="trp-cw-pb-head">
+            <span class="trp-cw-pb-label">Sales call analyser</span>
+            <button type="button" class="trp-cw-copy" data-copy-target="cw-gp-i-1">Copy</button>
+          </div>
+          <pre id="cw-gp-i-1" class="trp-cw-pb-text">Read my latest sales call notes in Wispr Flow. Read my Business COMPASS (sections 2 and 3) first.
+Score the call 1 to 10 on: discovery (did I find their real problem and budget), listening (my talk time vs theirs), handling objections, and the next step agreed.
+Quote the moments that mattered, in their words. Then give me the 3 things to do differently on my next call, and draft the follow-up email with one clear next step. Never send it.</pre>
+        </div>
+        </div>
+
+        <div class="trp-cw-gp">
+          <h4 class="trp-cw-gp-h">J. Cashflow check</h4>
+        <div class="trp-cw-pb">
+          <div class="trp-cw-pb-head">
+            <span class="trp-cw-pb-label">Cashflow check</span>
+            <button type="button" class="trp-cw-copy" data-copy-target="cw-gp-j-1">Copy</button>
+          </div>
+          <pre id="cw-gp-j-1" class="trp-cw-pb-text">Check my cashflow from my email (and Stripe or my accounting tool if connected) for the last 90 days.
+1. Money in: who paid, how much, when.
+2. Money owed to me: open or overdue invoices, oldest first.
+3. Money out: recurring tools and subscriptions, with the monthly total. Flag any I haven&#x27;t used in 30 days.
+4. My next 30 days: what&#x27;s due in and out.
+Only use numbers you found. If something is missing, list it instead of guessing. Draft polite reminders for overdue invoices as Gmail drafts. Never send.</pre>
+        </div>
+        </div>
+        </section>
+
+        <section class="trp-cw-w1-sec" aria-labelledby="cw-nextsteps-h">
+          <h3 class="trp-cw-w1-h" id="cw-nextsteps-h">Next steps</h3>
+          <ul class="trp-cw-w1-list">
+            <li>Post your audacious action in <b class="trp-cw-channel">#audacious-wins</b>.</li>
+            <li>Bring your audit to Friday&rsquo;s Q&amp;A.</li>
+          </ul>
+        </section>
+
+        <section class="trp-cw-w1-sec" id="cohort-questions" aria-labelledby="cw-qa-h">
+          <h3 class="trp-cw-w1-h" id="cw-qa-h">Questions from the cohort</h3>
+          <p class="trp-cw-w1-lede">What you asked before we started, grouped by where it belongs. Open the one you need.</p>
+
+        <h4 class="trp-cw-gp-h">Agents</h4>
+        <div class="trp-cw-qa">
+          <details class="trp-cw-qa-item">
+            <summary><span>Where do I start, and can I build an agent with no technical background?</span><svg class="trp-cw-chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6"></path></svg></summary>
+            <p class="trp-cw-qa-a">Yes. Most agents in this cohort need no code. An agent is three parts: a trigger (when it runs), instructions plus context (what it knows and how to do the job), and an output (where the result lands: a doc, a sheet, a draft email). Start with a task you already do by hand and can describe in ten steps. Write those steps down. That document becomes the agent&#x27;s instructions. Build it first as a Claude Project you run manually. When the output is good three times in a row, connect it to your tools and put it on a schedule. Your profile in this program names a suggested first agent. Bring it to session 1 and we will build it live.</p>
+          </details>
+          <details class="trp-cw-qa-item">
+            <summary><span>How much time does this take, and what is the smallest first step with a real payoff?</span><svg class="trp-cw-chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6"></path></svg></summary>
+            <p class="trp-cw-qa-a">Plan for two to four hours to build your first agent, then 15 minutes a week to review and improve it. The first step with a real payoff: take one weekly task that eats an hour or more, write down how you do it, and turn that into a reusable Claude Project. That alone often cuts the task in half before anything is automated. Do it today, not after you have the perfect system.</p>
+          </details>
+          <details class="trp-cw-qa-item">
+            <summary><span>How do I make agents reliable so I review their work instead of redoing it?</span><svg class="trp-cw-chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6"></path></svg></summary>
+            <p class="trp-cw-qa-a">Unreliable agents usually have vague instructions. Fix it in this order. 1. Give it a template for the output, with every field named. 2. Give it two or three examples of excellent work. 3. Tell it what to do when information is missing: leave the field blank and flag it, never guess. 4. Add a checklist it runs on its own output before handing it over. 5. Keep a short log of every mistake you correct and add each one to the instructions as a rule. After two weeks of that, most agents go from redo to review. You will know a setup is done when it passes your checklist three runs in a row. Stop building at that point and use it.</p>
+          </details>
+          <details class="trp-cw-qa-item">
+            <summary><span>How do I get an agent to run on a schedule, and does my computer need to be on?</span><svg class="trp-cw-chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6"></path></svg></summary>
+            <p class="trp-cw-qa-a">An agent that only runs when you open a chat is a prompt, not an agent. To run without you it needs a trigger that lives in the cloud: a scheduled task in Claude, or a tool like Zapier, Make or n8n that starts it at a set time or when something happens (a new form entry, a new row, a new email). Cloud triggers run with your laptop closed, so you do not need a dedicated server, even if you travel. Keep a human approval step before anything is sent: the agent saves drafts to your inbox or a review column, and you press send. We will set up a scheduled run together in week 2.</p>
+          </details>
+          <details class="trp-cw-qa-item">
+            <summary><span>How do I get agents to work together and share context?</span><svg class="trp-cw-chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6"></path></svg></summary>
+            <p class="trp-cw-qa-a">Get one agent working first. Most people who ask this have zero agents running and are designing a team. When you do have two, connect them through a shared place, not through each other: agent one writes its output to a sheet or Notion database, agent two reads from it. Both read the same context documents from A2. That is how a research agent hands leads to an outreach agent without you copying anything. Keep a human checkpoint at each handoff until you trust it. Truly autonomous multi-agent teams are possible for builders using tools like Claude Code, but they need the single-agent basics nailed first.</p>
+          </details>
+          <details class="trp-cw-qa-item">
+            <summary><span>Can agents learn and improve on their own?</span><svg class="trp-cw-chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6"></path></svg></summary>
+            <p class="trp-cw-qa-a">Not in the way people imagine. An agent does not get smarter by itself between runs. It improves when you update its instructions, examples and rules. Build that loop in: keep a feedback document, add every correction to it, and have the agent read it each run. For builders, you can automate part of this by logging outcomes (replies, bookings, edits you made) and having a weekly review agent suggest rule changes for you to approve.</p>
+          </details>
+          <details class="trp-cw-qa-item">
+            <summary><span>What does this cost, and how do I stop running out of tokens?</span><svg class="trp-cw-chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6"></path></svg></summary>
+            <p class="trp-cw-qa-a">For most people here, one paid AI plan (around the price of a gym membership per month) covers a first agent. Costs climb when agents run constantly on huge amounts of context. To keep them down: give each agent only the documents it needs, not your whole drive. Run it on a schedule (daily or weekly), not every minute. Use a smaller, cheaper model for simple jobs like sorting and formatting, and the stronger model for writing and judgment. Check your usage weekly for the first month. If you are running autonomous agents at scale, track cost per task the same way you track cost per lead.</p>
+          </details>
+          <details class="trp-cw-qa-item">
+            <summary><span>Is my information safe, and can I use agents inside my company&#x27;s restrictions?</span><svg class="trp-cw-chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6"></path></svg></summary>
+            <p class="trp-cw-qa-a">Use a paid business plan, not a free account, and check that your provider does not train on your data under that plan. Connect agents only to the folders and inboxes they need. Never paste passwords, bank details, patient records or client confidential files into a prompt. If your employer locks down your systems, follow their policy and build your first agent on work that uses public or non-sensitive information, such as prospect research or content drafts. On IP: your instructions, data, process and customer relationships are the asset, not the platform you built on. Investors care that you own the customer and the know-how. On agents running amok: an agent that only drafts and never sends without your approval cannot do much damage.</p>
+          </details>
+          <details class="trp-cw-qa-item">
+            <summary><span>How do I stop AI making things up or using out-of-date information?</span><svg class="trp-cw-chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6"></path></svg></summary>
+            <p class="trp-cw-qa-a">Give it the source, do not ask it to remember. Put your latest decisions in a dated priorities document and tell the agent to treat the newest date as the truth. Tell it to cite where every fact came from and to say &#x27;not found&#x27; rather than guess. For anything regulated (legal, health, finance), add a rule that every claim must link to a named source, and keep a human expert review before anything goes out. No current AI is 100% accurate, so the safeguard is your review step, not the model. Ask the agent to show its sources and reasoning in the output if you want to see how it got there.</p>
+          </details>
+          <details class="trp-cw-qa-item">
+            <summary><span>My setup is a mess: too many chats, overlapping agents, worse answers than a blank chat. How do I fix it?</span><svg class="trp-cw-chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6"></path></svg></summary>
+            <p class="trp-cw-qa-a">Too much context makes AI worse, not better. Fix it without starting over. 1. List every project, agent and custom instruction you have. 2. Pick the three you actually use. 3. Archive the rest. 4. Rewrite the context for those three into the five short documents from A2. Delete old instructions that contradict each other. 5. Give each agent one job. If two agents do the same job, keep the better one. If you catch yourself designing org charts for AI employees, stop and ship one agent that does one task this week.</p>
+          </details>
+          <details class="trp-cw-qa-item">
+            <summary><span>Do agents even make sense for a small business like mine?</span><svg class="trp-cw-chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6"></path></svg></summary>
+            <p class="trp-cw-qa-a">They make sense if you repeat the same task every week and it follows rules. They do not make sense as a substitute for a clear offer or a sales habit. Agents are not the final form of anything; they are the current useful one, and the skill you build here (writing down how your work is done so a machine can do it) carries over to whatever comes next. You do not need avatars, hype or a digital twin. If an agent saves you two hours a week on a task you hate, it has paid for itself.</p>
+          </details>
+          <details class="trp-cw-qa-item">
+            <summary><span>Which tools do I actually need, and should I use several AI models?</span><svg class="trp-cw-chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6"></path></svg></summary>
+            <p class="trp-cw-qa-a">Fewer than you think. A core stack for this program: one main AI (Claude), the place your work already lives (Google Workspace or Notion), and, only if needed, one automation tool for schedules (Zapier, Make or n8n). Using two models is fine when each has a clear job, for example one for thinking and one for email. Using five is how you end up with 57 subscriptions. Add a tool only when a specific agent needs it. For visuals, use one design tool (Canva covers most of this cohort) before buying video or image add-ons. Tools change monthly, so learn the pattern, not the product.</p>
+          </details>
+          <details class="trp-cw-qa-item">
+            <summary><span>How do I maintain the system when something changes?</span><svg class="trp-cw-chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6"></path></svg></summary>
+            <p class="trp-cw-qa-a">Keep every agent&#x27;s instructions and context in documents you can edit, not buried in chat history. When something changes (a new offer, a new price, a new tool), update the one source document, and every agent that reads it picks up the change. Keep a simple list of your agents: name, job, trigger, where output goes, last checked. Review it monthly. If an agent breaks, the list tells you what it touches. Do not build what you cannot explain on one page.</p>
+          </details>
+          <details class="trp-cw-qa-item">
+            <summary><span>Can an agent research leads, funders or customers for me?</span><svg class="trp-cw-chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6"></path></svg></summary>
+            <p class="trp-cw-qa-a">Yes, and it is the most common first agent in this cohort. Give it a tight brief: who qualifies (sector, size, location, signals), where to look, and the exact fields to fill in a sheet (name, why they fit, source link, contact route). Tell it to skip anyone it cannot verify. Review the first 20 rows by hand, tighten the brief, then let it run weekly. It drafts the first message; you send it.</p>
+          </details>
+        </div>
+
+        <h4 class="trp-cw-gp-h">AI operating system</h4>
+        <div class="trp-cw-qa">
+          <details class="trp-cw-qa-item">
+            <summary><span>What is an AI operating system, and what can it actually do?</span><svg class="trp-cw-chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6"></path></svg></summary>
+            <p class="trp-cw-qa-a">An AI operating system is a set of documents and rules your AI reads before it does any work, plus the agents that use them. The documents cover who you are, what you sell, who you sell to, how you write, and your goals this quarter. Once that context lives in one place, every chat, project and agent starts from it instead of a blank page. What it can do today: draft emails and posts in your voice, research prospects, summarise calls, prepare briefs, flag what is stale, and fill in sheets or Notion. What it cannot do: make judgment calls you have not written down, or fix a business with no clear offer. Week 1 builds the first version of this for you.</p>
+          </details>
+          <details class="trp-cw-qa-item">
+            <summary><span>Where should the brain live when my information is spread across Notion, Drive, Gmail, a CRM and several AI tools?</span><svg class="trp-cw-chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6"></path></svg></summary>
+            <p class="trp-cw-qa-a">Pick one home for your context and point everything else at it. For most of this cohort that is a Claude Project (or a set of Notion pages that Claude reads through a connector). Put five documents there: business overview, offer and pricing, ideal customer, voice guide with real examples, and current priorities. Leave the data where it already lives. Your pipeline stays in the spreadsheet or CRM, files stay in Drive. Connect the agent to those sources instead of copying them in. The rule: context in one place, data in its own place, agents read both. If you run two businesses, give each its own project with its own voice guide so they never mix. When your context changes, update one document, not five chats.</p>
+          </details>
+          <details class="trp-cw-qa-item">
+            <summary><span>Can I build one system that runs the whole business without me constantly prompting it?</span><svg class="trp-cw-chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6"></path></svg></summary>
+            <p class="trp-cw-qa-a">Not in four weeks, and anyone who says otherwise is selling something. The businesses that get there build it one agent at a time. Each agent does one job on a schedule: research leads every Monday, draft follow-ups every morning, summarise the pipeline every Friday. After three or four of those run reliably, they start to feel like a system. Start with the job you repeat most and hate most. Prove it saves you time for two weeks. Then add the next. Big architecture first is how people end up with a beautiful diagram and nothing running. Scale comes from repeating a working pattern, not from designing for millions of users on day one.</p>
+          </details>
+          <details class="trp-cw-qa-item">
+            <summary><span>What should I hand to agents, and what should always stay human?</span><svg class="trp-cw-chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6"></path></svg></summary>
+            <p class="trp-cw-qa-a">Hand off work that is repeatable, rules-based and cheap to fix if wrong: research, first drafts, summaries, data entry, reminders, formatting. Keep anything where one mistake costs a relationship or a decision: sending to investors, funds or key clients, pricing, hiring, legal or clinical claims, and anything that commits money. The simplest pattern: the agent drafts, you approve. That review step is where your judgment stays in the business. As an agent proves itself, you can sample its work instead of checking every item, for example reading 1 in 5 drafts. To decide what to automate first, list every task you did last week, mark the ones you did more than twice, and pick the one with the clearest rules.</p>
+          </details>
+        </div>
+
+        <h4 class="trp-cw-gp-h">Content</h4>
+        <div class="trp-cw-qa">
+          <details class="trp-cw-qa-item">
+            <summary><span>How do I make AI content sound like me and not like AI slop?</span><svg class="trp-cw-chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6"></path></svg></summary>
+            <p class="trp-cw-qa-a">AI sounds like AI when it has nothing of yours to work from. Fix the input, not the prompt. 1. Feed it your raw material: voice notes, call transcripts, your own rough bullet points. Do not ask it to invent ideas. 2. Build a voice guide with 5 to 10 of your best real posts, words you use, words you never use, and how you open and close. 3. Ban the giveaways: em dashes, &#x27;in today&#x27;s fast-paced world&#x27;, triple lists, &#x27;not X but Y&#x27;. 4. Edit the first draft by hand and feed your edits back into the guide. Your stories, opinions and specifics are what make it human. The AI handles structure and speed.</p>
+          </details>
+          <details class="trp-cw-qa-item">
+            <summary><span>How do I post consistently without content eating my week?</span><svg class="trp-cw-chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6"></path></svg></summary>
+            <p class="trp-cw-qa-a">Make one thing a week and let an agent turn it into many. Your one thing: a 10-minute voice note, a call transcript, a client result or a newsletter. The agent turns it into 3 to 5 platform drafts in your voice and drops them into a review queue (Notion or a doc). You spend 30 minutes approving and scheduling. Pick two platforms, not five, and post on a fixed cadence you can keep for 12 weeks. Consistency beats volume. Build your community by replying to comments and messages yourself; that part should not be automated. I use Stanley and we will be going through setting this up inside the Accelerator</p>
+          </details>
+          <details class="trp-cw-qa-item">
+            <summary><span>How do I get attention in the first few seconds?</span><svg class="trp-cw-chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6"></path></svg></summary>
+            <p class="trp-cw-qa-a">The hook is the first line, and it should name a specific problem your reader has, in their words. Pull hooks from your calls: what did a client say was driving them mad? Formats that work: a specific number (&#x27;I spent 14 hours a week on email&#x27;), a confession, a strong opinion, or the result first. Write ten hooks for every post and pick one; AI is good at generating options, you are good at picking. Hooks that work change, so track which of your posts get comments and reuse those patterns. On the algorithm: you cannot beat it, so build an email list you own alongside it.</p>
+          </details>
+          <details class="trp-cw-qa-item">
+            <summary><span>How do I make content bring in customers, not just likes?</span><svg class="trp-cw-chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6"></path></svg></summary>
+            <p class="trp-cw-qa-a">Every post needs a job and a next step. Use three types: posts that name the problem (reach), posts that show how you think (trust), and posts that show a result or invite people in (sales). Each post ends with one clear action: reply, book, subscribe, download. Then measure the right thing: replies, DMs, sign-ups and calls booked, not likes. Track it in a simple sheet weekly and do more of what led to conversations. If you have no defined offer yet, content cannot convert; fix the offer first. For a service or personalised product, show real customers, before and after, and behind the scenes.</p>
+          </details>
+          <details class="trp-cw-qa-item">
+            <summary><span>Which tools should I use for visuals and video, and do I have to show my face?</span><svg class="trp-cw-chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6"></path></svg></summary>
+            <p class="trp-cw-qa-a">Start with Canva for graphics and carousels and CapCut or your phone&#x27;s editor for short video. Add AI image or video tools only when a specific post needs them, and keep a human final check so designs do not look generic. Showing your face builds trust faster, but it is not required. Faceless options that work: carousels, screen recordings, voiceover over B-roll, written posts and newsletters. Start where you are comfortable and post consistently there.</p>
+          </details>
+          <details class="trp-cw-qa-item">
+            <summary><span>I hate self-promotion, I&#x27;m camera shy, or I feel my story isn&#x27;t interesting. How do I put myself out there?</span><svg class="trp-cw-chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6"></path></svg></summary>
+            <p class="trp-cw-qa-a">Talk about the problem you solve, not yourself. That reframe removes most of the cringe. Your story does not need to be dramatic; it needs to be specific. A small true detail beats a big generic claim. Start with low-exposure formats: write, comment thoughtfully on others&#x27; posts, share a client lesson. Practise your story out loud in a breakout before you post it. If you need to keep visibility low because of an employer, use channels where your buyers are, not public feeds. For presenting: use three points on a card, not a script, and rehearse with the agent playing your audience.</p>
+          </details>
+        </div>
+        </section>
+
+      </div>
+      <!-- end of the static Week 1 block -->
+
       <a class="trp-cw-resources" href="resources">
         <span class="trp-cw-resources-copy">
           <span class="trp-cw-resources-title">Resources</span>
           <span class="trp-cw-resources-note">Every prompt, skill and guide from the accelerator, in one place.</span>
+        </span>
+        <svg class="trp-cw-chev" style="transform: rotate(-90deg)" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6"></path></svg>
+      </a>
+
+      <!-- Live Sessions. The FAQ sends members here for recordings, and this
+           was the only page in the portal with no way in: not in the menu
+           and not linked from the course. -->
+      <a class="trp-cw-resources" href="sessions">
+        <span class="trp-cw-resources-copy">
+          <span class="trp-cw-resources-title">Live Sessions</span>
+          <span class="trp-cw-resources-note">Every call in the program, with its recording once it is up.</span>
         </span>
         <svg class="trp-cw-chev" style="transform: rotate(-90deg)" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6"></path></svg>
       </a>
@@ -589,6 +1120,41 @@
       var BONUS_RE = /^bonus:\s*/i;
 
       var selected = null;     // the week id the member picked, kept across redraws
+
+      /* Week 1's static content: the audit, the ten growth prompts and the
+         cohort's questions. It is one node in the page, moved into the Week
+         1 panel rather than rebuilt, which is what lets a member keep
+         typing in the audit across a redraw -- a tick anywhere on the page
+         redraws the panel around it. It is left in the document until the
+         first move so the script at the foot of the page can find it and
+         wire its buttons once. */
+      var week1 = document.getElementById('cw-week1-extra');
+
+      /* The audit table, and the one row it belongs to. Matched on the
+         title because that is what Ella edits in Supabase; a row renamed
+         there simply stops carrying the table, rather than carrying it
+         twice or drawing it in the wrong place. */
+      var auditTool = document.getElementById('cw-audit-tool');
+      var AUDIT_ROW = /^run your time rich audit$/i;
+
+      function addWeek1(box) {
+        if (!week1) return;
+        week1.hidden = false;
+        box.appendChild(week1);
+      }
+
+      /* A link from the Resources page points at a section inside that
+         block (curriculum#growth-prompts). The block is only drawn when
+         Week 1 is the week on screen, and the week on screen is the last
+         one open, so the hash has to pick the week before it can scroll.
+         Honoured once, on the first draw: after that the member's own
+         choice of week wins. */
+      var W1_SECTIONS = ['time-rich-audit', 'growth-prompts', 'cohort-questions'];
+      var wantSection = null;
+      try {
+        var hash = (window.location.hash || '').replace(/^#/, '');
+        if (W1_SECTIONS.indexOf(hash) !== -1) wantSection = hash;
+      } catch (e) { /* no hash to honour */ }
 
       function pad(n) { return n < 10 ? '0' + n : String(n); }
 
@@ -709,7 +1275,7 @@
          so the list scans. Everything goes in through textContent. */
       function bodyText(body) {
         var p = L.el('p', 'trp-cw-lesson-body');
-        body.split('\n').forEach(function (line, i) {
+        body.replace(/\r\n?/g, '\n').split('\n').forEach(function (line, i) {
           if (i) p.appendChild(document.createTextNode('\n'));
           if (/^#[a-z0-9-]+$/.test(line.trim()) || /^[A-Z][A-Za-z' -]{2,30}$/.test(line.trim())) {
             p.appendChild(L.el('strong', 'trp-cw-channel', line.trim()));
@@ -719,22 +1285,92 @@
         return p;
       }
 
-      /* A body can carry small drop-downs: a line starting "+ " opens one,
-         named by the rest of the line, holding the lines after it up to the
-         next "+ " line. That is where the Slack channels and the Club Code
-         sit, so the task itself stays one line. */
+      /* A body can carry two kinds of block, both written as plain text in
+         the row itself, so Ella can add one from Supabase without a deploy.
+
+         "+ Name" opens a small drop-down, named by the rest of the line and
+         holding the lines after it. That is where the Slack channels and
+         the Club Code sit, so the task itself stays one line.
+
+         "= Copy: Label" opens a text box with a Copy button on it, holding
+         the lines after it and copying exactly those. It runs to the end of
+         the body, or to the next line that opens a block of its own -- so
+         the intro format stops before the "+ " drop-down written under it,
+         and the audit prompt, which has blank lines between its paragraphs,
+         keeps all of them.
+
+         Everything goes in with textContent. A body is Ella's, not a
+         member's, but no file in this portal builds markup from a string. */
       var moreOpen = {};   // drop-down -> open, kept across redraws
+      var COPY_RE = /^=\s*Copy:\s*(.+)$/;
+      var MORE_RE = /^\+\s+(.+)$/;
+      // The two markers that open a block, and so close the one before.
+      var OPENS_BLOCK = /^(\+\s+\S|=\s*Copy:)/;
+
+      /* The body, cut into parts: plain text, a named drop-down, or a copy
+         box. One pass, so a copy box can sit before a drop-down, between
+         two, or on its own. */
+      function bodyParts(body) {
+        // A body typed on Windows, or pasted into Supabase from a checkout
+        // with CRLF endings, arrives with a carriage return on every line.
+        // It is normalised once, here, so no rule below has to allow for it.
+        var lines = body.replace(/\r\n?/g, '\n').split('\n');
+        var parts = [{ kind: 'text', name: '', lines: [] }];
+        for (var i = 0; i < lines.length; i++) {
+          var line = lines[i];
+          var copy = COPY_RE.exec(line.trim());
+          if (copy) {
+            var box = { kind: 'copy', name: copy[1].trim(), lines: [] };
+            parts.push(box);
+            /* It runs to the end of the body, or to the next line that
+               opens a block of its own -- a "+ " drop-down or another
+               "= Copy:". That is what stops the intro format swallowing
+               the channels drop-down written under it.
+
+               It is the marker that closes the box, not a blank line: the
+               audit prompt has blank lines between its paragraphs, and
+               ending at the first of those would copy one paragraph of a
+               six-paragraph prompt. The blank line before a marker is
+               dropped, so the box has no trailing gap. */
+            for (i = i + 1; i < lines.length; i++) {
+              if (OPENS_BLOCK.test(lines[i].trim())) { i -= 1; break; }
+              box.lines.push(lines[i]);
+            }
+            parts.push({ kind: 'text', name: '', lines: [] });
+            continue;
+          }
+          var more = MORE_RE.exec(line.trim());
+          if (more) { parts.push({ kind: 'more', name: more[1], lines: [] }); continue; }
+          parts[parts.length - 1].lines.push(line);
+        }
+        return parts;
+      }
+
+      function copyBox(label, text, key) {
+        var box = L.el('div', 'trp-cw-pb');
+        var head = L.el('div', 'trp-cw-pb-head');
+        head.appendChild(L.el('span', 'trp-cw-pb-label', label));
+        var btn = L.el('button', 'trp-cw-copy', 'Copy');
+        btn.type = 'button';
+        var id = 'cw-copy-' + key.replace(/[^a-z0-9_-]/gi, '-');
+        btn.setAttribute('data-copy-target', id);
+        head.appendChild(btn);
+        box.appendChild(head);
+        var pre = L.el('pre', 'trp-cw-pb-text', text);
+        pre.id = id;
+        box.appendChild(pre);
+        return box;
+      }
+
       function bodyBlocks(body, key) {
         var frag = document.createDocumentFragment();
-        var parts = [{ name: '', lines: [] }];
-        body.split('\n').forEach(function (line) {
-          var m = /^\+\s+(.+)$/.exec(line.trim());
-          if (m) parts.push({ name: m[1], lines: [] });
-          else parts[parts.length - 1].lines.push(line);
-        });
-        parts.forEach(function (part) {
+        bodyParts(body).forEach(function (part, i) {
           var text = part.lines.join('\n').replace(/^\s+|\s+$/g, '');
-          if (!part.name) { if (text) frag.appendChild(bodyText(text)); return; }
+          if (part.kind === 'copy') {
+            if (text) frag.appendChild(copyBox(part.name || 'Copy', text, key + '-' + i));
+            return;
+          }
+          if (part.kind === 'text') { if (text) frag.appendChild(bodyText(text)); return; }
           var id = key + '|' + part.name;
           var more = document.createElement('details');
           more.className = 'trp-cw-more';
@@ -749,6 +1385,28 @@
           frag.appendChild(more);
         });
         return frag;
+      }
+
+      /* Clicking the row ticks it, not just the 18px box in front of it.
+         The box is still a real button, so the keyboard and a screen reader
+         are unchanged and the done state is written by the one code path;
+         this only gives that button a much bigger target.
+
+         Anything else that can be clicked keeps its own click: a link, the
+         Open button, a drop-down's summary, and on a lesson row the title,
+         which opens the lesson. A row that cannot be ticked at all -- a
+         video -- gets nothing, so clicking it does nothing rather than
+         silently failing. */
+      var CLICKABLE = 'a, button, summary, input, textarea, select, label';
+      function tickOnRowClick(row, item) {
+        if (!L.isTrackable(item)) return;
+        row.classList.add('is-tickable');
+        row.addEventListener('click', function (event) {
+          var hit = event.target && event.target.closest ? event.target.closest(CLICKABLE) : null;
+          if (hit && row.contains(hit)) return;
+          var box = row.querySelector('.trp-check-box');
+          if (box && box.tagName === 'BUTTON') box.click();
+        });
       }
 
       function tickFor(item, n, name) {
@@ -792,9 +1450,13 @@
 
       /* Ella's welcome: the title, the lead line, the closing question and
          the Time Rich Pep Talk, a drop-down holding a line, her photo on
-         the left and the letter beside it. It starts open, and shut for a
-         member who already pressed the old "I'm in"; either way the
-         member's own open or shut wins. */
+         the left and the letter beside it.
+
+         It starts open for everyone. It used to start shut for any member
+         who had pressed the old "I'm in", which meant the members who had
+         been here longest were the ones who never saw it. That saved state
+         is ignored now; the member's own open or shut, this visit, still
+         wins. */
       var letterOpen = null;   // null until the member opens or shuts it
 
       function welcome(parts) {
@@ -808,8 +1470,7 @@
         var inner = null;
 
         var name = L.str(letter.title) || 'Welcome';
-        var inAlready = L.isItemDone(letter);
-        var open = letterOpen === null ? !inAlready : letterOpen;
+        var open = letterOpen === null ? true : letterOpen;
         var col = L.el('div', 'trp-cw-letter');
         col.appendChild(L.el('h2', 'trp-cw-h2', name));
         var paras = L.str(letter.body).split(/\n\s*\n/).filter(function (t) { return t.trim(); });
@@ -972,6 +1633,7 @@
         list.forEach(function (item, i) {
           var name = L.str(item && item.title) || 'Untitled';
           var row = L.el('li', 'trp-cw-task' + (L.isItemDone(item) ? ' is-done' : ''));
+          tickOnRowClick(row, item);
           row.appendChild(tickFor(item, i + 1, name));
           var copy = L.el('div', 'trp-cw-task-copy');
           var title = L.el('span', 'trp-cw-task-title', name);
@@ -1027,6 +1689,7 @@
         var isOpenRow = touched ? !!opened[key] : !!isNext;
         var row = L.el('li', 'trp-cw-lesson' + (isOpenRow ? ' is-open' : ''));
         var head = L.el('div', 'trp-cw-lesson-head');
+        tickOnRowClick(head, item);
         head.appendChild(tickFor(item, n, name));
 
         var detailId = 'cw-detail-' + key.replace(/[^a-z0-9_-]/gi, '-');
@@ -1053,6 +1716,12 @@
           open.setAttribute('aria-label', buttonLabel(item) + ': ' + name);
           detail.appendChild(open);
         }
+        // The audit table goes under the prompt it belongs to, in the row's
+        // own detail, rather than in a second audit section of its own.
+        if (auditTool && AUDIT_ROW.test(name.trim())) {
+          auditTool.hidden = false;
+          detail.appendChild(auditTool);
+        }
         detail.hidden = !isOpenRow;
         row.appendChild(detail);
 
@@ -1075,13 +1744,6 @@
       }
 
       /* ---- the panel ------------------------------------------------------ */
-
-      function nextSessionIn(list, now) {
-        for (var i = 0; i < list.length; i++) {
-          if (L.toDate(list[i].starts_at) && !L.isSessionPast(list[i], now)) return list[i];
-        }
-        return null;
-      }
 
       function sessionTile(session, now) {
         var name = L.str(session && session.title) || 'Session';
@@ -1159,24 +1821,15 @@
         if (total) copy.appendChild(L.el('p', 'trp-cw-count', done + ' of ' + total + ' done'));
         head.appendChild(copy);
 
-        // the next call: one button, live 30 minutes before (the rule every page uses)
-        var next = nextSessionIn(L.sessionsForWeek(data, week.id), now);
-        if (next && open) {
-          var actions = L.el('div', 'trp-cw-actions');
-          var join = L.joinControl(next, now, { onClass: 'trp-cw-btn is-primary', offClass: 'trp-cw-btn is-off' });
-          join.control.textContent = 'Join live on Zoom';
-          if (join.open) {
-            join.control.addEventListener('click', function () { L.markSession(next); });
-          }
-          var joinWrap = L.el('div', 'trp-cw-join');
-          joinWrap.appendChild(join.control);
-          if (join.note) joinWrap.appendChild(join.note);
-          actions.appendChild(joinWrap);
-          head.appendChild(actions);
-        }
+        // No Join button here. The Zoom link lives in the calendar invite,
+        // which is where a member looks for it when a call is about to
+        // start; the Live Sessions page still carries one per call.
         box.appendChild(head);
 
+        // This week's calls come first, above the lessons and the setup:
+        // the call is the thing with a time on it.
         if (sessionList.length) {
+          box.appendChild(L.el('h3', 'trp-cw-group', "This week's live calls"));
           var tiles = L.el('div', 'trp-cw-sessions');
           sessionList.forEach(function (s) { tiles.appendChild(sessionTile(s, now)); });
           box.appendChild(tiles);
@@ -1184,6 +1837,7 @@
 
         if (!open) {
           box.appendChild(L.el('p', 'trp-cw-empty', 'Lessons open ' + (starts || 'soon') + '.'));
+          if (n === 1) addWeek1(box);
           return box;
         }
 
@@ -1203,8 +1857,40 @@
           box.appendChild(setupSteps(steps));
         }
 
-        if (!total && !own.length && !steps.length) box.appendChild(L.el('p', 'trp-cw-empty', 'Nothing here yet.'));
+        if (!total && !own.length && !steps.length && n !== 1) box.appendChild(L.el('p', 'trp-cw-empty', 'Nothing here yet.'));
 
+        // Week 1's own audit, growth prompts and questions, last in the panel.
+        if (n === 1) addWeek1(box);
+
+        return box;
+      }
+
+      /* ---- what's next ---------------------------------------------------
+         Every week that has not opened yet, one line each: the number, the
+         title, and the date it opens. It replaces a "Coming up" card that
+         said how many weeks were left without saying which, or when. */
+
+      function whatsNext(cards, prep) {
+        var shut = cards.filter(function (w) { return !isOpen(w, prep); });
+        if (!shut.length) return null;
+
+        var box = L.el('section', 'trp-cw-next');
+        box.setAttribute('aria-labelledby', 'cw-next-heading');
+        var head = L.el('h2', 'trp-cw-next-heading', "What's next");
+        head.id = 'cw-next-heading';
+        box.appendChild(head);
+
+        var ul = L.el('ul', 'trp-cw-next-rows');
+        shut.forEach(function (week) {
+          var n = L.num(week.id);
+          var row = L.el('li', 'trp-cw-next-row');
+          row.appendChild(L.el('span', 'trp-cw-next-n', 'Week ' + pad(n)));
+          row.appendChild(L.el('span', 'trp-cw-next-title', PILLARS[n] || weekTitle(week)));
+          var opens = L.etDate(week.release_at);
+          row.appendChild(L.el('span', 'trp-cw-next-when', opens ? 'Opens ' + opens : 'Opens soon'));
+          ul.appendChild(row);
+        });
+        box.appendChild(ul);
         return box;
       }
 
@@ -1226,6 +1912,7 @@
         var ids = cards.map(function (w) { return L.num(w.id); });
         var current = defaultWeek(cards, prep);
         if (selected === null || ids.indexOf(selected) === -1) selected = current;
+        if (wantSection && ids.indexOf(1) !== -1) selected = 1;
         var week = cards[ids.indexOf(selected)];
 
         // keep focus where it was across a redraw (a tick redraws the page)
@@ -1266,6 +1953,9 @@
 
         live.appendChild(panel(data, week, prep));
 
+        var next = whatsNext(cards, prep);
+        if (next) live.appendChild(next);
+
         L.show(live, true);
         L.show(statik, false);
 
@@ -1274,6 +1964,17 @@
         if (focusKey) {
           var back = live.querySelector('[data-cw-focus="' + focusKey + '"]');
           if (back) back.focus();
+        }
+
+        // The browser already tried to honour the hash, before the section
+        // existed. Now that it does, go there -- and only this once.
+        if (wantSection) {
+          var target = document.getElementById(wantSection);
+          wantSection = null;
+          if (target && target.scrollIntoView) {
+            try { target.scrollIntoView({ block: 'start' }); }
+            catch (e) { target.scrollIntoView(); }
+          }
         }
       }
 
@@ -1297,9 +1998,185 @@
     })();
   </script>
 
+  <script>
+    /* Every Copy button on the page, and the Time Rich Audit table.
+     *
+     * Copy is delegated from the document, because a Copy button can be in
+     * three places by now: the prompt boxes in the Week 1 block, the audit
+     * table in its row, and any row body carrying a "= Copy: " block, which
+     * the renderer draws inside [data-curriculum-live] and rebuilds on every
+     * tick. One listener, high up, covers all three and survives a redraw.
+     *
+     * The audit's own listeners are on the table node itself. That node is
+     * moved into the row's detail rather than rebuilt, so the listeners --
+     * and whatever the member has typed -- travel with it.
+     *
+     * Nothing typed leaves the browser. There is no form, no endpoint and no
+     * beacon. The only things that read it are the member's own Copy table
+     * button and the restore below, which reads it back out of this
+     * browser's localStorage so a reload does not lose an hour's work.
+     */
+    (function () {
+      var KEY = 'tr_audit_rows';
+      var CELLS = ['task', 'hours', 'dollar', 'owner', 'compass'];
+      var HEADS = ['Task (last week)', 'Hours', '$ or not', 'Owner', 'COMPASS check'];
+
+      /* ---- Copy, on any box on the page -------------------------------- */
+
+      /* When the clipboard is missing or refused -- an insecure origin, a
+         permission turned off -- the text is selected and the button says
+         so, rather than doing nothing. */
+      function select(node) {
+        try {
+          var range = document.createRange();
+          range.selectNodeContents(node);
+          var sel = window.getSelection();
+          sel.removeAllRanges();
+          sel.addRange(range);
+        } catch (e) { /* nothing more we can do */ }
+      }
+
+      // The timer is kept on the button, not in a map keyed by it: a DOM
+      // node used as an object key stringifies, so every button would share
+      // one slot and the first to fire would reset the others.
+      function say(btn, word) {
+        if (!btn.getAttribute('data-idle')) btn.setAttribute('data-idle', btn.textContent);
+        btn.textContent = word;
+        if (btn.trTimer) window.clearTimeout(btn.trTimer);
+        btn.trTimer = window.setTimeout(function () {
+          btn.textContent = btn.getAttribute('data-idle');
+        }, 1600);
+      }
+
+      function copy(btn, text, source) {
+        if (window.navigator.clipboard && window.navigator.clipboard.writeText) {
+          window.navigator.clipboard.writeText(text).then(
+            function () { say(btn, 'Copied'); },
+            function () { if (source) select(source); say(btn, 'Press Ctrl+C'); }
+          );
+          return;
+        }
+        if (source) select(source);
+        say(btn, 'Press Ctrl+C');
+      }
+
+      document.addEventListener('click', function (event) {
+        var btn = event.target && event.target.closest ? event.target.closest('[data-copy-target]') : null;
+        if (!btn) return;
+        var source = document.getElementById(btn.getAttribute('data-copy-target'));
+        if (!source) return;
+        copy(btn, source.textContent, source);
+      });
+
+      /* ---- the audit table --------------------------------------------- */
+
+      var root = document.getElementById('cw-audit-tool');
+      if (!root) return;
+      var body = root.querySelector('[data-audit-body]');
+      var revenue = root.querySelector('[data-audit-revenue]');
+      if (!body) return;
+
+      function rows() {
+        return Array.prototype.slice.call(body.querySelectorAll('.trp-cw-audit-row'));
+      }
+
+      /* A new row is the first row's shape with nothing in it: no values and
+         no placeholders, since the example only belongs on the first one. */
+      function addRow() {
+        var list = rows();
+        var fresh = list[0].cloneNode(true);
+        var n = list.length + 1;
+        Array.prototype.forEach.call(fresh.querySelectorAll('.trp-cw-audit-in'), function (input, i) {
+          input.value = '';
+          input.removeAttribute('placeholder');
+          input.setAttribute('aria-label', HEADS[i] + ', row ' + n);
+        });
+        body.appendChild(fresh);
+        return fresh;
+      }
+
+      var add = root.querySelector('[data-audit-add]');
+      if (add) {
+        add.addEventListener('click', function () {
+          var fresh = addRow();
+          var first = fresh.querySelector('.trp-cw-audit-in');
+          if (first) first.focus();
+          save();
+        });
+      }
+
+      /* ---- Copy table -------------------------------------------------- */
+
+      /* Tab-separated, which is what a spreadsheet and a chat both read
+         sensibly, with the heads on the first line. Empty rows are left
+         out: a member who filled in two rows wants two lines, not five. */
+      function asText() {
+        var lines = [HEADS.join('\t')];
+        rows().forEach(function (row) {
+          var values = CELLS.map(function (key) {
+            var input = row.querySelector('[data-audit-cell="' + key + '"]');
+            return input ? input.value.replace(/\s+/g, ' ').trim() : '';
+          });
+          if (values.join('').length) lines.push(values.join('\t'));
+        });
+        var pct = revenue && revenue.value.trim();
+        if (pct) lines.push('', 'Revenue number: $ hours divided by total hours = ' + pct + '%');
+        return lines.join('\n');
+      }
+
+      var copyTable = root.querySelector('[data-audit-copy]');
+      if (copyTable) {
+        copyTable.addEventListener('click', function () { copy(copyTable, asText(), null); });
+      }
+
+      /* ---- kept in this browser, and nowhere else ---------------------- */
+
+      function save() {
+        var payload = {
+          rows: rows().map(function (row) {
+            return CELLS.map(function (key) {
+              var input = row.querySelector('[data-audit-cell="' + key + '"]');
+              return input ? input.value : '';
+            });
+          }),
+          revenue: revenue ? revenue.value : ''
+        };
+        try { window.localStorage.setItem(KEY, JSON.stringify(payload)); }
+        catch (e) { /* private mode: the typing lasts as long as the page */ }
+      }
+
+      function restore() {
+        var saved = null;
+        try { saved = JSON.parse(window.localStorage.getItem(KEY) || 'null'); }
+        catch (e) { return; }
+        if (!saved || !saved.rows || typeof saved.rows.length !== 'number') return;
+
+        while (rows().length < saved.rows.length && rows().length < 60) addRow();
+        var list = rows();
+        saved.rows.forEach(function (values, i) {
+          if (!list[i] || !values || typeof values.length !== 'number') return;
+          CELLS.forEach(function (key, j) {
+            var input = list[i].querySelector('[data-audit-cell="' + key + '"]');
+            if (input && typeof values[j] === 'string') input.value = values[j];
+          });
+        });
+        if (revenue && typeof saved.revenue === 'string') revenue.value = saved.revenue;
+      }
+
+      root.addEventListener('input', function (event) {
+        var t = event.target;
+        if (t && t.classList && t.classList.contains('trp-cw-audit-in')) save();
+      });
+
+      restore();
+    })();
+  </script>
+
   <!-- The light/dark choice, shared by every portal page. The pre-paint
        script in <head> sets the attribute; this keeps the controls in step
        with it and writes a new choice back. -->
+  <!-- The agent comparison in Week 1, shared with the Resources page. -->
+  <script src="portal-agents.js" defer></script>
   <script src="portal-theme.js" defer></script>
 
 </body>

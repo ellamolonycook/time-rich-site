@@ -51,12 +51,21 @@
     })();
   </script>
 
-  <title>Resources | Time Rich Portal</title>
+  <title>Resources | Time Rich Club</title>
+  <link rel="canonical" href="https://timerich.ai/club/resources" />
+  <meta name="description" content="Your weekly steps, prompts and session recordings for the Superhuman Accelerator." />
+  <meta property="og:type" content="website" />
+  <meta property="og:site_name" content="Time Rich Club" />
+  <meta property="og:title" content="Resources | Time Rich Club" />
+  <meta property="og:description" content="Your weekly steps, prompts and session recordings for the Superhuman Accelerator." />
+  <meta property="og:url" content="https://timerich.ai/club/resources" />
   <meta property="og:image" content="https://timerich.ai/og-time-rich.png" />
   <meta property="og:image:width" content="1200" />
   <meta property="og:image:height" content="630" />
-  <meta name="twitter:image" content="https://timerich.ai/og-time-rich.png" />
   <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="Resources | Time Rich Club" />
+  <meta name="twitter:description" content="Your weekly steps, prompts and session recordings for the Superhuman Accelerator." />
+  <meta name="twitter:image" content="https://timerich.ai/og-time-rich.png" />
   <link rel="stylesheet" href="portal.css"/>
   <!-- The two faces, served from this repo. They used to come from Google
        Fonts, which costs a DNS lookup, a stylesheet and only then the font
@@ -69,7 +78,29 @@
        twice. -->
   <link rel="preload" href="../brand/fonts/SpaceGrotesk-Variable.woff2" as="font" type="font/woff2" crossorigin/>
   <link rel="preload" href="../brand/fonts/Inter-Variable.woff2" as="font" type="font/woff2" crossorigin/>
-  <link rel="stylesheet" href="portal-content.css?v=20261021">
+  <link rel="stylesheet" href="portal-content.css?v=20261025">
+
+  <!-- Two small pieces this page owns: the link back to the course and the
+       link card to the growth prompts. Both are scoped here rather than
+       added to the Tailwind source, so portal.css is not rebuilt for two
+       rules, and both take their colours from the --trp-* palette in
+       portal-content.css so the dark theme follows without rules of its own.
+       The card is deliberately the same shape as .trp-cw-resources on the
+       curriculum, which is the card that points the other way. -->
+  <style>
+    .trp-res-back { display: inline-flex; align-items: center; gap: 8px; min-height: 44px; font-size: 14px; font-weight: 600; color: var(--trp-muted); text-decoration: none; transition: color .18s ease; }
+    .trp-res-back:hover { color: var(--trp-ink); }
+    .trp-res-back:focus-visible { outline: 2px solid var(--trp-green); outline-offset: 3px; border-radius: 6px; }
+    .trp-res-back svg { width: 18px; height: 18px; flex: none; }
+
+    .trp-reslink { display: flex; align-items: center; justify-content: space-between; gap: 16px; padding: 20px 24px; border-radius: 20px; border: 1px solid var(--trp-rule); background: rgb(var(--c-surface)); color: var(--trp-ink); text-decoration: none; transition: box-shadow .18s ease; }
+    .trp-reslink:hover { box-shadow: 0 18px 40px -28px rgba(26, 24, 22, .45); }
+    .trp-reslink:focus-visible { outline: 2px solid var(--trp-green); outline-offset: 3px; }
+    .trp-reslink-copy { display: flex; flex-direction: column; gap: 4px; min-width: 0; }
+    .trp-reslink-title { font-family: var(--trp-face); font-weight: 600; font-size: 19px; letter-spacing: -.01em; }
+    .trp-reslink-note { font-size: 14px; color: var(--trp-muted); }
+    .trp-reslink-chev { width: 20px; height: 20px; flex: none; color: var(--trp-muted); }
+  </style>
   <!-- The session gate. Config first, then the library; both deferred so
        the DOM is ready when the script mounts. No valid code redirects to
        the sign-in page, because this page has no login form of its own. -->
@@ -122,9 +153,13 @@
           <svg class="w-4 h-4 shrink-0 text-brand-ink/50" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"></path></svg>
           Club
         </a>
-        <a href="curriculum" aria-current="true" class="flex items-center gap-3 px-4 py-3 rounded-[14px] text-sm font-medium bg-brand-green text-brand-bg">
-          <svg class="w-4 h-4 shrink-0" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"></path></svg>
+        <a href="curriculum" class="flex items-center gap-3 px-4 py-3 rounded-[14px] text-sm font-medium text-brand-ink/70 hover:text-brand-ink hover:bg-brand-ink/5 transition-colors">
+          <svg class="w-4 h-4 shrink-0 text-brand-ink/50" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"></path></svg>
           Accelerator
+        </a>
+        <a href="resources" aria-current="page" class="flex items-center gap-3 px-4 py-3 rounded-[14px] text-sm font-medium bg-brand-green text-brand-bg">
+          <svg class="w-4 h-4 shrink-0" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"></path></svg>
+          Resources
         </a>
         <a href="members" data-portal-members-link class="flex items-center gap-3 px-4 py-3 rounded-[14px] text-sm font-medium text-brand-ink/70 hover:text-brand-ink hover:bg-brand-ink/5 transition-colors">
           <svg class="w-4 h-4 shrink-0 text-brand-ink/50" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"></path></svg>
@@ -160,7 +195,8 @@
 
       <nav class="hidden lg:flex items-center gap-0.5" aria-label="Portal">
         <a href="/club" class="trp-nav-link px-3.5 text-[13px] font-medium text-brand-ink/70 hover:text-brand-ink">Club</a>
-        <a href="curriculum" aria-current="true" class="trp-nav-link px-3.5 text-[13px] font-medium">Accelerator</a>
+        <a href="curriculum" class="trp-nav-link px-3.5 text-[13px] font-medium text-brand-ink/70 hover:text-brand-ink">Accelerator</a>
+        <a href="resources" aria-current="page" class="trp-nav-link px-3.5 text-[13px] font-medium">Resources</a>
         <a href="members" data-portal-members-link class="trp-nav-link gap-1.5 px-3.5 text-[13px] font-medium text-brand-ink/70 hover:text-brand-ink">Members <span class="trp-soon">Soon</span></a>
       </nav>
     </div>
@@ -203,10 +239,27 @@
           <div class="w-full space-y-16 max-w-[1200px]">
           
     <header class="space-y-4">
+              <!-- Straight back to where the member came from. Resources is
+                   reached from the course and from the top menu, and the
+                   course is the only place it makes sense to return to. -->
+              <a href="curriculum" class="trp-res-back">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M19 12H5m0 0l7-7m-7 7l7 7"></path></svg>
+                Back to the course
+              </a>
               <span class="trp-kicker">Toolkit</span>
               <h1 class="trp-title">Resources<span class="trp-stop">.</span></h1>
-              <p class="trp-lede">Your partner offers, agent guide and answers.</p>
             </header>
+
+            <!-- Straight to the ten growth prompts in Week 1. The curriculum
+                 reads the hash, picks Week 1 and scrolls there, so this lands
+                 on the section itself rather than the top of the page. -->
+            <a class="trp-reslink" href="curriculum#growth-prompts">
+              <span class="trp-reslink-copy">
+                <span class="trp-reslink-title">10 growth prompts</span>
+                <span class="trp-reslink-note">Your audacious action for Week 1, in the curriculum.</span>
+              </span>
+              <svg class="trp-reslink-chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 6l6 6-6 6"></path></svg>
+            </a>
 
             <!-- The partner offers, first on the page. Each one is something
                  a member already has as part of the accelerator, so this is
@@ -533,87 +586,50 @@
                  per agent by changing `display`, and Chrome and Safari drop
                  a table's implicit semantics as soon as that happens. See
                  .trp-agents in portal-tailwind-src.css. -->
-            <section class="glass-card is-static p-7 lg:p-8" aria-labelledby="agents-heading">
-              <p class="trp-tag">New &middot; Checked 15 Oct 2026</p>
-              <h2 id="agents-heading" class="trp-section-title mt-3">Which personal AI agent should you start with?</h2>
-              <p class="trp-lede">Personal agents now do real work for you: your inbox, your calendar, your bookings. They overlap a lot, so don't try them all. Pick the one that lives where your context already is, give it one recurring task, and keep approval on.</p>
+            <!-- The agent comparison. The heading, the intro, the six rows
+                 and the three rules are all built by portal-agents.js, which
+                 Week 1 of the Curriculum uses as well -- one source, so the
+                 two can never drift. The card is this page's. -->
+            <section class="glass-card is-static p-7 lg:p-8" data-agents-block></section>
 
-              <div class="trp-agents-wrap">
-                <table class="trp-agents" role="table">
-                  <colgroup>
-                    <col class="trp-ac-name"/>
-                    <col class="trp-ac-maker"/>
-                    <col class="trp-ac-where"/>
-                    <col class="trp-ac-task"/>
-                    <col class="trp-ac-watch"/>
-                  </colgroup>
-                  <thead role="rowgroup">
-                    <tr role="row">
-                      <th role="columnheader" scope="col">Agent</th>
-                      <th role="columnheader" scope="col">Made by</th>
-                      <th role="columnheader" scope="col">Where it lives</th>
-                      <th role="columnheader" scope="col">Start with this task</th>
-                      <th role="columnheader" scope="col">Watch out for</th>
-                    </tr>
-                  </thead>
-                  <tbody role="rowgroup">
-                    <tr role="row">
-                      <th role="rowheader" scope="row" class="trp-agent-name">Dots</th>
-                      <td role="cell" data-label="Made by">OpenAI</td>
-                      <td role="cell" data-label="Where it lives">Inside ChatGPT (set up on desktop)</td>
-                      <td role="cell" data-label="Start with this task">Email drafts, using the ChatGPT context you already have</td>
-                      <td role="cell" data-label="Watch out for">Needs ChatGPT Pro ($100/month). Not yet open to Pro users in the UK or EU.</td>
-                    </tr>
-                    <tr role="row">
-                      <th role="rowheader" scope="row" class="trp-agent-name">Muse</th>
-                      <td role="cell" data-label="Made by">Meta</td>
-                      <td role="cell" data-label="Where it lives">App, web, WhatsApp and Mac</td>
-                      <td role="cell" data-label="Start with this task">Turning your saved Instagram posts into a list you can use</td>
-                      <td role="cell" data-label="Watch out for">US and Canada only. Trains on your chats unless you switch it off. Turn on approval for every action.</td>
-                    </tr>
-                    <tr role="row">
-                      <th role="rowheader" scope="row" class="trp-agent-name">Grok Bot</th>
-                      <td role="cell" data-label="Made by">xAI</td>
-                      <td role="cell" data-label="Where it lives">Named "Bots" in the Grok app, linked to Gmail, Calendar, Drive and Slack</td>
-                      <td role="cell" data-label="Start with this task">A daily brief Bot (we set this up in the Accelerator)</td>
-                      <td role="cell" data-label="Watch out for">Paid plan needed. All your Bots share one cloud computer, so logins are not kept apart.</td>
-                    </tr>
-                    <tr role="row">
-                      <th role="rowheader" scope="row" class="trp-agent-name">Instinct</th>
-                      <td role="cell" data-label="Made by">Instinct</td>
-                      <td role="cell" data-label="Where it lives">iMessage, WhatsApp and phone calls</td>
-                      <td role="cell" data-label="Start with this task">A morning brief sent by text</td>
-                      <td role="cell" data-label="Watch out for">Invite-only beta. Has sent an email without approval before.</td>
-                    </tr>
-                    <tr role="row">
-                      <th role="rowheader" scope="row" class="trp-agent-name">Hark</th>
-                      <td role="cell" data-label="Made by">Hark Labs</td>
-                      <td role="cell" data-label="Where it lives">Its own app, where you can watch each task as it runs</td>
-                      <td role="cell" data-label="Start with this task">Travel and browser admin you want to watch it do</td>
-                      <td role="cell" data-label="Watch out for">Newer and less proven. Check pricing before you rely on it.</td>
-                    </tr>
-                  </tbody>
-                </table>
-              </div>
+            <section class="glass-card is-static p-7 lg:p-8" aria-labelledby="agents-join-heading">
+              <h2 id="agents-join-heading" class="trp-section-title">Your Superhuman agents</h2>
+              <p class="trp-lede">The three you can join today, with your place on the accelerator.</p>
+              <!-- The three agents a member can join today, under the
+                   comparison that names them. Same card as the partner
+                   offers above: a title, one line and one button. No marks:
+                   only Stanley ships a file, and one card with a logo beside
+                   two without reads as broken rather than branded. -->
+              <ul class="trp-partners mt-4">
+                <li>
+                  <div class="glass-card trp-partner">
+                    <h3 class="trp-partner-title">Instinct &middot; Chief of Staff</h3>
+                    <span class="trp-partner-line">Inbox, calendar, call prep, travel, admin.</span>
+                    <a class="trp-btn trp-btn-primary trp-partner-btn"
+                       href="https://app.instinct.com/invite?t=uwtiwya74qy2r7ntq3mdmzrrxu&amp;preview=imessage"
+                       target="_blank" rel="noopener sponsored">Join Instinct</a>
+                  </div>
+                </li>
+                <li>
+                  <div class="glass-card trp-partner">
+                    <h3 class="trp-partner-title">Stanley &middot; Head of Content</h3>
+                    <span class="trp-partner-line">Posts, newsletters, repurposing, publishing.</span>
+                    <a class="trp-btn trp-btn-primary trp-partner-btn"
+                       href="https://x.getstanley.ai/r/mz4y9g"
+                       target="_blank" rel="noopener sponsored">Join Stanley</a>
+                  </div>
+                </li>
+                <li>
+                  <div class="glass-card trp-partner">
+                    <h3 class="trp-partner-title">Boardy &middot; AI SuperConnector</h3>
+                    <span class="trp-partner-line">Intros, meetings, booking, pre-call prep.</span>
+                    <a class="trp-btn trp-btn-primary trp-partner-btn"
+                       href="https://boardy.ai/links/zTblS"
+                       target="_blank" rel="noopener sponsored">Join Boardy</a>
+                  </div>
+                </li>
+              </ul>
 
-              <!-- The three rules, in the numbering the install steps below
-                   already use on this page. One sentence each, so there is
-                   no title line above the body. -->
-              <p class="trp-tag mt-8">Three rules</p>
-              <ol class="trp-steps mt-4">
-                <li>
-                  <span class="trp-step" aria-hidden="true">01</span>
-                  <p class="trp-step-body">Start with one task you already do every week, like a morning brief or email drafts. Count how much you have to correct.</p>
-                </li>
-                <li>
-                  <span class="trp-step" aria-hidden="true">02</span>
-                  <p class="trp-step-body">Keep approval on for anything that sends a message, spends money or books something.</p>
-                </li>
-                <li>
-                  <span class="trp-step" aria-hidden="true">03</span>
-                  <p class="trp-step-body">Choose by where your context lives. Your agent is only as good as what it already knows about you.</p>
-                </li>
-              </ol>
             </section>
 
 
@@ -639,7 +655,7 @@
                 <svg class="trp-acc-caret" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7"></path></svg>
               </summary>
               <div class="trp-acc-body">
-                <p class="trp-faq-answer">Nothing is lost. Every session is recorded and the recording appears on the Live Sessions page under that week.</p>
+                <p class="trp-faq-answer">Nothing is lost. Every session is recorded and the recording appears on <a href="sessions" class="trp-slink">Live Sessions</a> under that week.</p>
                 <p class="trp-faq-answer">If you know in advance, send your question to the WhatsApp group or to emc@timerichclub.com and it gets answered on the call.</p>
               </div>
             </details>
@@ -925,6 +941,7 @@
   <!-- The light/dark choice, shared by every portal page. The pre-paint
        script in <head> sets the attribute; this keeps the controls in step
        with it and writes a new choice back. -->
+  <script src="portal-agents.js" defer></script>
   <script src="portal-theme.js" defer></script>
 
 </body>

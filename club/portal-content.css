@@ -454,3 +454,21 @@ body { animation: trp-fade-in 180ms ease-out both; }
 .trp-day-night:hover{border-color:var(--trp-rule-2)}
 .trp-day-night:focus-visible{outline:2px solid rgb(var(--c-olive));outline-offset:3px}
 @media(prefers-reduced-motion:reduce){.trp-day-night-thumb{transition:none}}
+
+/* The agent name in the comparison table that portal-agents.js builds. It
+   is a link now, on both the Resources page and in Week 1 of the course, and
+   the cell it sits in is already set in the heading face at the page's ink --
+   so the link only has to say it is one, and not fight the colour. */
+.trp-agents .trp-agent-link {
+  color: inherit;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+  text-decoration-thickness: 1px;
+  text-decoration-color: rgb(var(--c-ink) / .35);
+}
+.trp-agents .trp-agent-link:hover { text-decoration-color: currentColor; }
+.trp-agents .trp-agent-link:focus-visible {
+  outline: 2px solid rgb(var(--c-olive));
+  outline-offset: 3px;
+  border-radius: 3px;
+}
