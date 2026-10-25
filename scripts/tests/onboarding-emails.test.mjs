@@ -379,7 +379,7 @@ console.log('\nevery link is hyperlinked text, and goes where Ella said');
     'https://www.addevent.com/calendar/z0j4nlqbgt6b',
     'https://timerich.ai/superhuman/',
     'https://www.instagram.com/timerichtalk',
-    'https://ref.wisprflow.ai/ella-cook-vt27',
+    'https://wisprflow.ai/info/redeem-promo?code=TIMERICH6&months=6',
     'https://superhumanos.notion.site/Wispr-Flow-setup-Superhuman-Accelerator-401ca5ebe5578114bfc3d3bc73be21bd',
     'https://superhumanos.notion.site/Connect-your-tools-to-your-AI-Superhuman-Accelerator-401ca5ebe557817aaa44ff89de92a091',
     'https://docs.google.com/document/d/1c50ST_FSASEOCIh1z3GQhkdNl9eqFjY0asvk-MC1X5s/copy',
