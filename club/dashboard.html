@@ -523,9 +523,9 @@ Confirm you can open all 8.</pre>
         var all = L.weeks(data);
         var prep = all.filter(function (w) { return L.num(w.id) === 0 && w.unlocked === true; })[0];
         var week1 = all.filter(function (w) { return L.num(w.id) === 1; })[0];
-        if (prep) L.items(prep).forEach(function (i) { if (L.itemKey(i)) out.push(i); });
+        if (prep) L.items(prep).forEach(function (i) { if (L.isTrackable(i)) out.push(i); });
         if (week1 && week1.unlocked === true) {
-          L.items(week1).forEach(function (i) { if (L.itemKey(i)) out.push(i); });
+          L.items(week1).forEach(function (i) { if (L.isTrackable(i)) out.push(i); });
         }
         return out;
       }

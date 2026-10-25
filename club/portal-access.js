@@ -392,8 +392,12 @@
   var RE_VIMEO = /^[0-9]{6,12}$/;            // Vimeo ids are numeric
 
   // Build an embed src from an allowed host. The original URL is never
-  // reused: the src is assembled from a pattern-checked id.
+  // reused: the src is assembled from a pattern-checked id. Takes the URL
+  // object the cards already hold, or a raw string from a page, which goes
+  // through the same https-only check first. Anything unrecognised: null.
   function embedSrc(url) {
+    if (typeof url === 'string') url = safeUrl(url);
+    if (!url || !url.hostname) return null;
     var host  = url.hostname.toLowerCase().replace(/^www\./, '');
     var parts = url.pathname.split('/').filter(Boolean);
     var id;
@@ -441,7 +445,7 @@
     var frame = document.createElement('iframe');
     frame.src = src;
     frame.title = title || 'Video';
-    frame.loading = 'lazy';
+    frame.setAttribute('loading', 'lazy');
     frame.allow = 'accelerometer; clipboard-write; encrypted-media; picture-in-picture; fullscreen';
     frame.referrerPolicy = 'strict-origin-when-cross-origin';
     frame.setAttribute('allowfullscreen', '');
@@ -1057,6 +1061,11 @@
     // resources.html renders its own skill library and reuses this button, so
     // the gated-download flow lives in exactly one place.
     skillButton: skillButton,
+    // curriculum.html plays a pinned welcome video inside the page rather
+    // than as a card, and reuses these so the src is still assembled from a
+    // pattern-checked id and never from the stored URL.
+    embedSrc: embedSrc,
+    videoFrame: videoFrame,
     revealMembersLink: revealMembersLink,
     messages: MSG
   };

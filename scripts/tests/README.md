@@ -302,3 +302,51 @@ no alpha — since that is what the transparent copies are cut from.
 
 No layout here either, so clearance in the header, the knockout's edges and
 whether the lockup reads as muted are eyeball checks.
+
+## `portal-welcome-video.test.mjs`
+
+Drives [`club/curriculum.html`](../../club/curriculum.html) in jsdom with the
+real `portal-live.js` and the real `portal-access.js`, and hands it a Start
+here week carrying Ella's welcome video and the calendar row.
+
+Both used to sit in the welcome box — the video as a small side card with an
+Open button that sent the member out to YouTube, the calendar as a second
+card beside the letter. The welcome box now holds only Ella's letter and the
+Time Rich Pep Talk, and the two of them have a band of their own directly
+under it: the video wide on the left, a stripped-back calendar card on the
+right, stacked on a phone.
+
+What the suite pins is the part that is easy to get wrong by hand. The `src`
+is rebuilt by the portal's own `embedSrc` from a pattern-checked id, so the
+stored URL never reaches an `iframe` — `http:`, `javascript:`, an unknown
+host and an id of the wrong shape are all refused, and the raw URL appears
+nowhere on the page. Past that: the band is a section of its own, after the
+welcome box, and the welcome holds neither a player, nor a card, nor a link
+of any kind; the iframe is `loading="lazy"` and carries the row's title,
+which is also the heading above it; the heading and the player are all the
+video column holds, so the row's "3 minutes." is not drawn; and the calendar
+card is its title and its button and nothing else, even though the row has a
+body line.
+
+Nothing sends the member off the page to watch. A video URL `embedSrc`
+refuses draws **nothing** — no player, no button, no link, not even its
+title — and a second embeddable video is dropped rather than linked out. The
+suite checks every `a[href]` in the live container, not just the band, so a
+stray link cannot hide in a corner it does not look at.
+
+The kind and the sort still decide: an embeddable URL on a `link` row is one
+of the band's cards, and a video at sort 150 is a setup step in Week 1's
+panel instead. With neither a video nor a card, the band is not drawn at all.
+
+It also checks the two things this was not allowed to disturb — the letter
+and the Pep Talk — and that the loading placeholder carries the band, since
+the player is the tallest thing above the week tabs and the footer would
+otherwise jump when the payload lands.
+
+The video carries no tick. A cross-origin iframe never tells the page that
+play was pressed, and a tick redraws the page, which would restart a video
+the member had just started.
+
+jsdom does no layout, so the 16:9 box, the rounded corners, the video-beside
+-card / video-above-card switch at 760px and the absence of sideways
+scrolling at 320–1440px are eyeball checks.

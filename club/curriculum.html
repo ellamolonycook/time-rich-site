@@ -89,9 +89,10 @@
     /* "Your progress" in the quiet grey, not the accent */
     .trp-cw-head .trp-headbar .trp-tag { color: var(--trp-soft); }
 
-    /* Ella's welcome and the calendar, pinned above the weeks: the first
-       thing a member sees, and not a step of its own. */
-    .trp-cw-welcome { display: grid; grid-template-columns: minmax(0, 1fr) minmax(240px, 300px); gap: 24px 40px; padding: clamp(20px, 4vw, 36px); border-radius: 24px; background: var(--trp-sagelt); }
+    /* Ella's letter, pinned above the weeks: the first thing a member
+       sees, and not a step of its own. The video and the calendar used to
+       sit in here beside it; they have the band below it now. */
+    .trp-cw-welcome { display: grid; grid-template-columns: minmax(0, 1fr); gap: 24px; padding: clamp(20px, 4vw, 36px); border-radius: 24px; background: var(--trp-sagelt); }
     .trp-cw-letter { display: flex; flex-direction: column; align-items: flex-start; gap: 12px; min-width: 0; }
     .trp-cw-letter p { margin: 0; font-size: 16.5px; line-height: 1.65; color: var(--trp-deep); max-width: 60ch; white-space: pre-line; }
     .trp-cw-letter-actions { display: flex; flex-wrap: wrap; align-items: center; gap: 10px 16px; margin-top: 6px; }
@@ -115,15 +116,25 @@
     .trp-cw-pep-line { margin: 0; max-width: none; font-family: var(--trp-display); font-weight: 600; font-size: clamp(19px, 2.4vw, 24px); letter-spacing: -.02em; line-height: 1.2; color: var(--trp-deep); }
     .trp-cw-link { padding: 0; border: 0; background: none; font: inherit; font-size: 14px; font-weight: 600; color: var(--trp-deep); text-decoration: underline; text-underline-offset: 3px; cursor: pointer; min-height: 44px; }
     .trp-cw-link:focus-visible { outline: 2px solid var(--trp-green); outline-offset: 2px; border-radius: 4px; }
+    /* The player. The 16:9 box, the clipping and the dark-mode backdrop
+       come from the shared .trp-video; this only sets the radius the rest
+       of the page uses and clears the margin it carries elsewhere. */
+    .trp-cw-video { width: 100%; margin: 0; border-radius: 18px; }
     /* The photo in the opened pep talk. */
     .trp-cw-letter-photo { display: block; width: 100%; max-width: 560px; aspect-ratio: 3 / 2; object-fit: cover; object-position: 50% 30%; border-radius: 18px; margin: 4px 0; }
-    .trp-cw-side { align-self: start; display: flex; flex-direction: column; align-items: flex-start; gap: 10px; padding: 20px; border-radius: 18px; background: rgb(var(--c-surface)); }
-    .trp-cw-side-title { font-family: var(--trp-display); font-weight: 600; font-size: 18px; letter-spacing: -.01em; line-height: 1.25; color: var(--trp-deep); margin: 0; }
-    .trp-cw-side-note { margin: 0; font-size: 14px; line-height: 1.5; color: var(--trp-soft); }
-    .trp-cw-side .trp-cw-btn { width: 100%; }
-    /* One column on a phone, with the calendar card after the pep talk
-       rather than between the toggle and what it opens. */
-    @media (max-width: 760px) { .trp-cw-welcome { grid-template-columns: 1fr; } .trp-cw-welcome > .trp-cw-side { order: 1; } }
+    /* The band under the welcome: Ella's video, wide, with the calendar
+       card beside it. On a phone the video comes first and the card sits
+       under it, which is the order of the grid as written. */
+    .trp-cw-intro { display: grid; grid-template-columns: minmax(0, 1fr) minmax(220px, 280px); gap: 24px 40px; align-items: start; }
+    .trp-cw-intro-vid { display: flex; flex-direction: column; gap: 14px; min-width: 0; }
+    .trp-cw-intro-title { font-family: var(--trp-display); font-weight: 600; font-size: clamp(20px, 2.2vw, 26px); letter-spacing: -.02em; line-height: 1.15; margin: 0; color: var(--trp-deep); }
+    /* Title and button, nothing else. It sits on the page rather than in
+       the welcome's sage box, so it takes the same line every other card
+       on the page takes. */
+    .trp-cw-mini { display: flex; flex-direction: column; align-items: flex-start; gap: 14px; padding: 20px; border-radius: 18px; border: 1px solid var(--trp-line); background: rgb(var(--c-surface)); }
+    .trp-cw-mini-title { font-family: var(--trp-display); font-weight: 600; font-size: 17px; letter-spacing: -.01em; line-height: 1.25; color: var(--trp-deep); margin: 0; }
+    .trp-cw-mini .trp-cw-btn { width: 100%; }
+    @media (max-width: 760px) { .trp-cw-intro { grid-template-columns: 1fr; } }
 
     /* the four weeks: a slim row of tabs with no dates, so the page stays
        on the week the member is in */
@@ -415,7 +426,7 @@
         <div class="trp-cw-head-copy">
           <span class="trp-cw-eyebrow">Four weeks &middot; Mondays build &middot; Fridays hot seat &middot; 12pm ET</span>
           <h1 class="trp-cw-h1">Sales. Systems. Visibility.</h1>
-          <p class="trp-cw-lede">One part of your business running on AI by 20 November. Each week opens on Monday.</p>
+          <p class="trp-cw-lede">Become ruthlessly efficient with AI in 4 weeks. Monday masterclasses &amp; Friday Q&amp;A’s mean you’re learning the right way.</p>
         </div>
         <!-- Held open rather than hidden, so the weeks under it do not move
              when it fills in. -->
@@ -443,9 +454,17 @@
               <h2 class="trp-cw-h2"><span class="trp-bar">Welcome to the Superhuman Accelerator</span></h2>
               <p><span class="trp-bar">You're not here just to learn AI. You're here for an outcome: more revenue, more visibility, a system that runs.</span></p>
             </div>
-            <div class="trp-cw-side">
-              <p class="trp-cw-side-title"><span class="trp-bar">Add every session to your calendar</span></p>
-              <p class="trp-cw-side-note"><span class="trp-bar">All 9 live sessions at 12pm ET.</span></p>
+          </div>
+          <!-- The video is the tallest thing on the page above the tabs:
+               without it here the footer jumps when the payload lands. -->
+          <div class="trp-cw-intro">
+            <div class="trp-cw-intro-vid">
+              <p class="trp-cw-intro-title"><span class="trp-bar">Welcome Video</span></p>
+              <div class="trp-cw-video"><span class="trp-bar" style="display: block; width: 100%; height: 100%"></span></div>
+            </div>
+            <div class="trp-cw-mini">
+              <p class="trp-cw-mini-title"><span class="trp-bar">Add every session to your calendar</span></p>
+              <span class="trp-bar is-btn"></span>
             </div>
           </div>
           <div class="trp-cw-weeks">
@@ -673,6 +692,18 @@
         return item && item.kind === 'skill' ? 'Download' : 'Open';
       }
 
+      /* The embed src for a video row, or '' for anything the portal will
+         not embed. portal-access.js owns the host list and rebuilds the src
+         from a pattern-checked id, so the stored URL never reaches an
+         iframe. Ella publishes on Vimeo; Loom and YouTube are accepted
+         too, and everything else draws nothing. */
+      function embedFor(item) {
+        if (!item || L.str(item.kind) !== 'video') return '';
+        var api = window.TRPortal;
+        if (!api || typeof api.embedSrc !== 'function' || typeof api.videoFrame !== 'function') return '';
+        return api.embedSrc(L.str(item.url)) || '';
+      }
+
       /* Plain text, never markup: a line that is only a Slack channel
          (#introductions) or a short heading ("Who I serve") is set in bold
          so the list scans. Everything goes in through textContent. */
@@ -721,7 +752,7 @@
       }
 
       function tickFor(item, n, name) {
-        if (L.itemKey(item)) {
+        if (L.isTrackable(item)) {
           var box = L.checkBox(
             function () { return L.isItemDone(item); },
             function () { return L.toggleItem(item); },
@@ -738,99 +769,141 @@
 
       /* ---- the welcome ---------------------------------------------------- */
 
-      /* Ella's welcome. The title, then the Time Rich Pep Talk: a drop-down
-         holding a line, her photo on the left and the letter beside it.
-         It starts open, and shut for a member who already pressed the old
-         "I'm in"; either way the member's own open or shut wins. Link rows
-         beside the welcome are buttons, and pressing one ticks it. */
+      /* The pinned rows of Start here, sorted into the three things they
+         draw: Ella's letter, which is the welcome box; the welcome video;
+         and any other link row, which is a small card beside the video.
+
+         Only a video the portal can embed is shown at all. A video URL it
+         refuses draws nothing: the member is never sent off the page to
+         watch, and a dead row is better than a link out. Only the first
+         embeddable video plays, so the band never grows a stack. */
+      function pinnedParts(prep) {
+        var letter = null, video = null, cards = [];
+        pinned(prep).forEach(function (it) {
+          if (!L.str(it.url)) { if (!letter) letter = it; return; }
+          if (L.str(it.kind) === 'video') {
+            if (!video && embedFor(it)) video = it;
+            return;
+          }
+          cards.push(it);
+        });
+        return { letter: letter, video: video, cards: cards };
+      }
+
+      /* Ella's welcome: the title, the lead line, the closing question and
+         the Time Rich Pep Talk, a drop-down holding a line, her photo on
+         the left and the letter beside it. It starts open, and shut for a
+         member who already pressed the old "I'm in"; either way the
+         member's own open or shut wins. */
       var letterOpen = null;   // null until the member opens or shuts it
 
-      function welcome(prep) {
-        var rows = pinned(prep);
-        if (!rows.length) return null;
-        var letter = rows.filter(function (it) { return !L.str(it.url); })[0] || null;
-        var links = rows.filter(function (it) { return L.str(it.url); });
+      function welcome(parts) {
+        var letter = parts.letter;
+        if (!letter) return null;
 
         var box = L.el('section', 'trp-cw-welcome');
         box.setAttribute('aria-label', 'Welcome');
-        // The open pep talk runs the full width of the welcome, under the
-        // title and the calendar card, so the photo and the letter have the
-        // room.
+        // The open pep talk runs the full width of the welcome, so the
+        // photo and the letter have the room.
         var inner = null;
 
-        if (letter) {
-          var name = L.str(letter.title) || 'Welcome';
-          var inAlready = L.isItemDone(letter);
-          var open = letterOpen === null ? !inAlready : letterOpen;
-          var col = L.el('div', 'trp-cw-letter');
-          col.appendChild(L.el('h2', 'trp-cw-h2', name));
-          var paras = L.str(letter.body).split(/\n\s*\n/).filter(function (t) { return t.trim(); });
-          // Two lines are lifted out of the letter to sit above the pep
-          // talk, under the title: its opening line ("You're not here just to
-          // learn AI..."), then its closing question ("How serious are you
-          // about becoming Time Rich?"). The rest stays in the drop-down.
-          var ask = paras.length > 1 && /\?\s*$/.test(paras[paras.length - 1]) ? paras.pop().trim() : '';
-          var lead = paras.length > 1 ? paras.shift().trim() : '';
-          if (lead) col.appendChild(L.el('p', 'trp-cw-lead', lead));
-          if (ask) col.appendChild(L.el('p', 'trp-cw-ask', ask));
+        var name = L.str(letter.title) || 'Welcome';
+        var inAlready = L.isItemDone(letter);
+        var open = letterOpen === null ? !inAlready : letterOpen;
+        var col = L.el('div', 'trp-cw-letter');
+        col.appendChild(L.el('h2', 'trp-cw-h2', name));
+        var paras = L.str(letter.body).split(/\n\s*\n/).filter(function (t) { return t.trim(); });
+        // Two lines are lifted out of the letter to sit above the pep
+        // talk, under the title: its opening line ("You're not here just to
+        // learn AI..."), then its closing question ("How serious are you
+        // about becoming Time Rich?"). The rest stays in the drop-down.
+        var ask = paras.length > 1 && /\?\s*$/.test(paras[paras.length - 1]) ? paras.pop().trim() : '';
+        var lead = paras.length > 1 ? paras.shift().trim() : '';
+        if (lead) col.appendChild(L.el('p', 'trp-cw-lead', lead));
+        if (ask) col.appendChild(L.el('p', 'trp-cw-ask', ask));
 
-          // A button rather than <details> so it stays as it was across the
-          // redraw a tick causes; what is inside is only drawn open.
-          var pep = L.el('div', 'trp-cw-pep');
-          var toggle = L.el('button', 'trp-cw-pep-toggle');
-          toggle.type = 'button';
-          toggle.setAttribute('aria-expanded', open ? 'true' : 'false');
-          toggle.setAttribute('aria-controls', 'cw-pep-body');
-          toggle.setAttribute('data-cw-focus', 'letter-pep');
-          var heart = L.el('span', 'trp-cw-heart', '\uD83D\uDC9C');
-          heart.setAttribute('aria-hidden', 'true');
-          toggle.appendChild(heart);
-          toggle.appendChild(L.el('span', '', 'Time Rich Pep Talk'));
-          toggle.appendChild(chevron());
-          toggle.addEventListener('click', function () {
-            letterOpen = !open;
-            render(lastData || window.TR_PORTAL_DATA);
-          });
-          pep.appendChild(toggle);
-          if (open) {
-            inner = L.el('div', 'trp-cw-pep-body trp-cw-wide');
-            inner.id = 'cw-pep-body';
-            inner.appendChild(L.el('p', 'trp-cw-pep-line', 'Put your hand up if you want to reach your fullest potential'));
-            var pair = L.el('div', 'trp-cw-pep-pair');
-            var photo = L.el('img', 'trp-cw-letter-photo');
-            photo.src = '/portal/assets/ella-pep-talk.jpg';
-            photo.alt = 'Ella Molony Cook mid-talk on stage, laughing';
-            photo.width = 1600;
-            photo.height = 1067;
-            photo.decoding = 'async';
-            pair.appendChild(photo);
-            var copy = L.el('div', 'trp-cw-pep-copy');
-            paras.forEach(function (t) { copy.appendChild(L.el('p', '', t.trim())); });
-            pair.appendChild(copy);
-            inner.appendChild(pair);
-          }
-          col.appendChild(pep);
+        // A button rather than <details> so it stays as it was across the
+        // redraw a tick causes; what is inside is only drawn open.
+        var pep = L.el('div', 'trp-cw-pep');
+        var toggle = L.el('button', 'trp-cw-pep-toggle');
+        toggle.type = 'button';
+        toggle.setAttribute('aria-expanded', open ? 'true' : 'false');
+        toggle.setAttribute('aria-controls', 'cw-pep-body');
+        toggle.setAttribute('data-cw-focus', 'letter-pep');
+        var heart = L.el('span', 'trp-cw-heart', '\uD83D\uDC9C');
+        heart.setAttribute('aria-hidden', 'true');
+        toggle.appendChild(heart);
+        toggle.appendChild(L.el('span', '', 'Time Rich Pep Talk'));
+        toggle.appendChild(chevron());
+        toggle.addEventListener('click', function () {
+          letterOpen = !open;
+          render(lastData || window.TR_PORTAL_DATA);
+        });
+        pep.appendChild(toggle);
+        if (open) {
+          inner = L.el('div', 'trp-cw-pep-body trp-cw-wide');
+          inner.id = 'cw-pep-body';
+          inner.appendChild(L.el('p', 'trp-cw-pep-line', 'Put your hand up if you want to reach your fullest potential'));
+          var pair = L.el('div', 'trp-cw-pep-pair');
+          var photo = L.el('img', 'trp-cw-letter-photo');
+          photo.src = '/portal/assets/ella-pep-talk.jpg';
+          photo.alt = 'Ella Molony Cook mid-talk on stage, laughing';
+          photo.width = 1600;
+          photo.height = 1067;
+          photo.decoding = 'async';
+          pair.appendChild(photo);
+          var copy = L.el('div', 'trp-cw-pep-copy');
+          paras.forEach(function (t) { copy.appendChild(L.el('p', '', t.trim())); });
+          pair.appendChild(copy);
+          inner.appendChild(pair);
+        }
+        col.appendChild(pep);
 
+        box.appendChild(col);
+
+        if (inner) box.appendChild(inner);
+
+        return box;
+      }
+
+      /* The band under the welcome: the video, wide, and the calendar card
+         beside it. The card is the title and its button and nothing else --
+         the row's body line is deliberately not drawn. */
+      function intro(parts) {
+        if (!parts.video && !parts.cards.length) return null;
+
+        var box = L.el('div', 'trp-cw-intro');
+
+        if (parts.video) {
+          var name = L.str(parts.video.title) || 'Welcome Video';
+          var col = L.el('div', 'trp-cw-intro-vid');
+          col.appendChild(L.el('h2', 'trp-cw-intro-title', name));
+          col.appendChild(videoBox(parts.video, name));
           box.appendChild(col);
         }
 
-        links.forEach(function (item) {
+        parts.cards.forEach(function (item) {
           var label = buttonLabel(item);
-          var side = L.el('div', 'trp-cw-side');
-          side.appendChild(L.el('p', 'trp-cw-side-title', L.str(item.title)));
-          if (L.str(item.body)) side.appendChild(L.el('p', 'trp-cw-side-note', L.str(item.body)));
+          var card = L.el('div', 'trp-cw-mini');
+          card.appendChild(L.el('p', 'trp-cw-mini-title', L.str(item.title)));
           var btn = L.linkTo(item.url, label, 'trp-cw-btn is-primary');
           if (btn) {
             btn.setAttribute('aria-label', label + ': ' + L.str(item.title));
             btn.addEventListener('click', function () { if (!L.isItemDone(item)) L.toggleItem(item); });
-            side.appendChild(btn);
+            card.appendChild(btn);
           }
-          if (L.isItemDone(item)) side.appendChild(L.el('span', 'trp-cw-in', 'Done'));
-          box.appendChild(side);
+          if (L.isItemDone(item)) card.appendChild(L.el('span', 'trp-cw-in', 'Done'));
+          box.appendChild(card);
         });
 
-        if (inner) box.appendChild(inner);
+        return box;
+      }
 
+      /* The player itself: the portal's own iframe, already lazy and named
+         for a screen reader, in a rounded 16:9 box. */
+      function videoBox(item, name) {
+        var box = window.TRPortal.videoFrame(embedFor(item), name || L.str(item.title) || 'Video');
+        box.className = 'trp-video trp-cw-video';
         return box;
       }
 
@@ -867,7 +940,7 @@
       var stepWasDone = {};
 
       function stepBox(n, group, list, isNext) {
-        var trackable = list.filter(function (it) { return L.itemKey(it); });
+        var trackable = list.filter(function (it) { return L.isTrackable(it); });
         var done = trackable.filter(function (it) { return L.isItemDone(it); }).length;
         var all = trackable.length > 0 && done === trackable.length;
         if (all && stepWasDone[group] === false) { delete stepOpen[group]; delete stepOpen[group + 1]; }
@@ -931,7 +1004,7 @@
         var found = false;
         order.forEach(function (g, i) {
           var rows = groups[g];
-          var left = rows.some(function (it) { return L.itemKey(it) && !L.isItemDone(it); });
+          var left = rows.some(function (it) { return L.isTrackable(it) && !L.isItemDone(it); });
           var isNext = !found && left;
           if (isNext) found = true;
           wrap.appendChild(stepBox(i + 1, g, rows, isNext));
@@ -1066,7 +1139,7 @@
 
         var done = 0, total = 0;
         steps.concat(own).forEach(function (it) {
-          if (!L.itemKey(it)) return;
+          if (!L.isTrackable(it)) return;
           total += 1; if (L.isItemDone(it)) done += 1;
         });
         sessionList.forEach(function (s) { total += 1; if (L.isSessionMarked(s)) done += 1; });
@@ -1118,7 +1191,7 @@
         if (own.length) {
           var nextKey = null;
           own.forEach(function (it, i) {
-            if (nextKey === null && L.itemKey(it) && !L.isItemDone(it)) nextKey = rowKey(it, i + 1);
+            if (nextKey === null && L.isTrackable(it) && !L.isItemDone(it)) nextKey = rowKey(it, i + 1);
           });
           var ul = L.el('ul', 'trp-cw-lessons');
           own.forEach(function (it, i) { ul.appendChild(lessonRow(it, i + 1, rowKey(it, i + 1) === nextKey)); });
@@ -1161,8 +1234,11 @@
 
         L.clear(live);
 
-        var hello = welcome(prep);
+        var parts = pinnedParts(prep);
+        var hello = welcome(parts);
         if (hello) live.appendChild(hello);
+        var band = intro(parts);
+        if (band) live.appendChild(band);
 
         var tabs = L.el('div', 'trp-cw-weeks');
         tabs.setAttribute('role', 'tablist');
