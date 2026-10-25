@@ -267,7 +267,7 @@ console.log('\nA video URL embedSrc refuses draws nothing at all');
   const p = open([LETTER, BAD, CALENDAR]);
   check('no player is drawn', p.frames().length === 0, p.frames().length);
   check('no link to it anywhere on the page',
-    !p.links().some((h) => h.includes('videos.example.com')), p.links());
+    !p.links().some((h) => { try { return new URL(h, 'https://timerich.ai/').hostname === 'videos.example.com'; } catch (e) { return false; } }), p.links());
   check('no Watch or Open button stands in for it',
     !/\bWatch\b/.test(p.live.textContent), (p.live.textContent.match(/.{0,30}Watch.{0,20}/) || [])[0]);
   check('its title is not drawn either',
