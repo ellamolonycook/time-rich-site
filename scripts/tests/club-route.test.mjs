@@ -51,7 +51,7 @@ console.log('\nThe application form moved to /clubform, otherwise untouched');
     FORM.includes('<link rel="canonical" href="https://timerich.ai/clubform/" />'));
   check('and shares that address, not the old one',
     FORM.includes('content="https://timerich.ai/clubform/"') &&
-    !FORM.includes('https://timerich.ai/club/'));
+    FORM.split('https://timerich.ai/club/').length === 1);
 
   // Driven, with a live session in storage: a member landing here gets the
   // form like anybody else, because there is nothing left to switch.
