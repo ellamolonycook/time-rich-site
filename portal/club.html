@@ -276,9 +276,13 @@
       <!-- A contact sheet rather than a row of matching frames: each picture
            keeps its own shape and size, and they sit at different heights.
            The modifier on each figure sets that; the order is what makes it
-           read as a spread. -->
+           read as a spread. It drifts slowly left on its own (the script at
+           the foot of the page) and the arrow moves it on by a frame. -->
       <div class="tc-film" aria-label="Highlights from Time Rich events">
-        <div class="tc-rail">
+        <button type="button" class="tc-film-next" data-tc-film-next aria-label="Next photos">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 5l7 7-7 7"/></svg>
+        </button>
+        <div class="tc-rail" data-tc-drift>
           <figure class="tc-f tc-f-wide"><img src="assets/events/web/0V6A6478.jpg" alt="A full room for a panel of women on stage" width="1600" height="1067" loading="lazy" decoding="async"/></figure>
           <figure class="tc-f tc-f-tall tc-f-low"><img src="assets/events/web/0V6A6720.jpg" alt="A speaker in conversation from an armchair" width="1067" height="1600" loading="lazy" decoding="async"/></figure>
           <figure class="tc-f tc-f-sq"><img src="assets/events/web/0V6A6055.jpg" alt="Two speakers in conversation on a sofa" width="1600" height="1067" loading="lazy" decoding="async"/><figcaption>Fireside, New York</figcaption></figure>
@@ -812,6 +816,74 @@
         });
       }, { rootMargin: '0px 0px -8% 0px', threshold: 0.08 });
       els.forEach(function (el) { io.observe(el); });
+    })();
+
+    // The photo strip under the letter drifts slowly left, round and round.
+    // The frames are copied once onto the end, and when the copies reach
+    // the start the strip jumps back by exactly one set, so the loop has no
+    // seam. It holds still while a pointer is over it, a finger is on it,
+    // it has focus, or it is off screen, and not at all for reduced motion.
+    // The arrow moves it on by one frame either way.
+    (function () {
+      var rail = document.querySelector('[data-tc-drift]');
+      var next = document.querySelector('[data-tc-film-next]');
+      if (!rail) return;
+      var still = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+      var SPEED = 0.025;            // px per ms: about 25px a second
+
+      var originals = Array.prototype.slice.call(rail.children);
+      originals.forEach(function (f) {
+        var copy = f.cloneNode(true);
+        copy.setAttribute('aria-hidden', 'true');
+        var img = copy.querySelector('img');
+        if (img) img.alt = '';
+        rail.appendChild(copy);
+      });
+
+      function loop() { return rail.children[originals.length].offsetLeft - originals[0].offsetLeft; }
+
+      var pos = rail.scrollLeft;
+      var holdUntil = 0;
+      var hovered = false, touching = false, focused = false, visible = true;
+
+      function wrap() {
+        var span = loop();
+        if (span > 0 && rail.scrollLeft >= span) { rail.scrollLeft -= span; pos = rail.scrollLeft; }
+      }
+
+      if (next) next.addEventListener('click', function () {
+        var frame = originals[0].getBoundingClientRect().width + 16;
+        holdUntil = performance.now() + 2500;
+        rail.scrollBy({ left: frame, behavior: still ? 'auto' : 'smooth' });
+      });
+      rail.addEventListener('scroll', function () { wrap(); });
+
+      if (still) return;
+      rail.classList.add('is-drifting');
+      rail.addEventListener('pointerenter', function (e) { if (e.pointerType === 'mouse') hovered = true; });
+      rail.addEventListener('pointerleave', function () { hovered = false; });
+      rail.addEventListener('touchstart', function () { touching = true; }, { passive: true });
+      rail.addEventListener('touchend', function () { touching = false; holdUntil = performance.now() + 3000; }, { passive: true });
+      rail.addEventListener('focusin', function () { focused = true; });
+      rail.addEventListener('focusout', function () { focused = false; });
+      if ('IntersectionObserver' in window) {
+        new IntersectionObserver(function (es) { visible = es[0].isIntersecting; }).observe(rail);
+      }
+
+      var last = performance.now();
+      function tick(now) {
+        var dt = Math.min(now - last, 64);
+        last = now;
+        // A swipe or the arrow moved it: carry on from where it is now.
+        if (Math.abs(rail.scrollLeft - pos) > 2) pos = rail.scrollLeft;
+        if (!hovered && !touching && !focused && visible && !document.hidden && now > holdUntil) {
+          pos += SPEED * dt;
+          rail.scrollLeft = pos;
+          wrap();
+        }
+        requestAnimationFrame(tick);
+      }
+      requestAnimationFrame(tick);
     })();
   </script>
 

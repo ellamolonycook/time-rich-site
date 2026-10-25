@@ -277,7 +277,27 @@
 }
 .tc-rail > * { scroll-snap-align: start; flex: none; }
 
-.tc-film { background: var(--tc-night); padding-bottom: 56px; }
+.tc-film { position: relative; background: var(--tc-night); padding-bottom: 56px; }
+/* Drifting is a scroll the script drives, so snapping would fight it. */
+.tc-film .tc-rail.is-drifting { scroll-snap-type: none; }
+/* The small arrow, on the strip's right edge at its middle. */
+.tc-film-next {
+  position: absolute; z-index: 2;
+  right: 16px; top: calc(var(--tc-u) * .5);
+  transform: translateY(-50%);
+  display: grid; place-items: center;
+  width: 40px; height: 40px;
+  border: 0; border-radius: 999px;
+  background: rgb(244 241 230 / .92);
+  color: var(--tc-night);
+  box-shadow: 0 6px 20px rgb(0 0 0 / .3);
+  cursor: pointer;
+  transition: background-color .2s, transform .25s var(--tc-ease);
+}
+.tc-film-next:hover { background: var(--tc-cream); transform: translateY(-50%) translateX(2px); }
+.tc-film-next:focus-visible { outline: 2px solid var(--tc-lime); outline-offset: 3px; }
+.tc-film-next svg { width: 18px; height: 18px; fill: none; stroke: currentColor; stroke-width: 2.2; stroke-linecap: round; stroke-linejoin: round; }
+@media (min-width: 640px) { .tc-film-next { right: 24px; } }
 @media (min-width: 900px) { .tc-film { padding-bottom: 96px; } }
 .tc-film .tc-rail { align-items: flex-start; gap: 14px; padding-bottom: 40px; }
 @media (min-width: 640px) { .tc-film .tc-rail { gap: 20px; } }
