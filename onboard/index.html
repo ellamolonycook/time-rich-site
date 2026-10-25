@@ -382,12 +382,19 @@ function verifyOrder(tId, em) {
         if (data.firstName) {
           document.getElementById("welcomeTitle").textContent = "Welcome to the Superhumans, " + data.firstName + ".";
         }
-        if (data.isCompleted) {
+        // A buyer who chose "Decide later" has a saved choice, so the order
+        // reads as completed, but their plus one is still missing. Sending
+        // them to the completed screen is what stranded them: it said to come
+        // back any time before kickoff and then gave them no form to do it in.
+        // So they land back on the form, on "Add them now", ready to type.
+        var undecided = /not sure/i.test(data.secondSeatChoice || "");
+        if (data.isCompleted && !undecided) {
           var link = document.getElementById("whatsappLink");
           if (link && whatsappUrl) { link.href = whatsappUrl; }
-          setCompletedSub(/not sure/i.test(data.secondSeatChoice || "") ? "undecided" : "named");
+          setCompletedSub("named");
           showState("completed");
         } else {
+          if (undecided) selectSeatOption("named");
           showState("form");
         }
       } else {
