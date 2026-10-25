@@ -155,6 +155,11 @@ export default {
       return handleWaitlist(request, env, cors);
     }
 
+    // Route: best-post entries from /contentworkshop -> their own Notion database.
+    if (path.endsWith("/contentworkshop")) {
+      return handleContentWorkshop(request, env, cors);
+    }
+
     // Route: the email gate on /os (POST /os-email) -> a Resend contact.
     if (path.endsWith("/os-email")) {
       return handleOsEmail(request, env, cors);
@@ -553,6 +558,48 @@ async function handleWaitlist(request, env, cors) {
   if (social) {
     properties["Social media"] = { url: /^https?:\/\//i.test(social) ? social : `https://${social}` };
   }
+
+  try {
+    const res = await fetch("https://api.notion.com/v1/pages", {
+      method: "POST",
+      headers: { ...authHeaders(env), "Content-Type": "application/json" },
+      body: JSON.stringify({ parent: { database_id: dbId }, properties }),
+    });
+    if (!res.ok) return json({ ok: false, error: "Notion create failed", detail: await res.text() }, 502, cors);
+    return json({ ok: true }, 200, cors);
+  } catch (err) {
+    return json({ ok: false, error: "Unexpected error", detail: String(err) }, 500, cors);
+  }
+}
+
+// Best-post entries from the /contentworkshop page: name, email and the
+// LinkedIn post URL, one row each in the "Content Workshop Entries" database.
+async function handleContentWorkshop(request, env, cors) {
+  const dbId = env.NOTION_CONTENTWORKSHOP_DATABASE_ID;
+  if (!env.NOTION_TOKEN || !dbId) {
+    return json({ ok: false, error: "Content workshop entries not configured" }, 500, cors);
+  }
+
+  let d;
+  try { d = await request.json(); } catch { return json({ ok: false, error: "Invalid JSON" }, 400, cors); }
+  if (d._gotcha) return json({ ok: true }, 200, cors);           // honeypot: silently accept bots
+
+  const name = String(d.name || "").trim();
+  const email = String(d.email || "").trim();
+  let postUrl = String(d.post_url || "").trim();
+  if (postUrl && !/^https?:\/\//i.test(postUrl)) postUrl = `https://${postUrl}`;
+  if (!name || !isEmail(email)) return json({ ok: false, error: "Missing name or email" }, 400, cors);
+  if (!/^https?:\/\/([a-z0-9-]+\.)?linkedin\.com\//i.test(postUrl) || postUrl.length > 2000) {
+    return json({ ok: false, error: "Invalid LinkedIn URL" }, 400, cors);
+  }
+
+  const rich = (s) => [{ text: { content: clip(s, 2000) } }];
+  const properties = {
+    "Name": { title: rich(name) },
+    "Email": { email: clip(email, 200) },
+    "Post URL": { url: postUrl },
+    "Status": { select: { name: "New" } },
+  };
 
   try {
     const res = await fetch("https://api.notion.com/v1/pages", {

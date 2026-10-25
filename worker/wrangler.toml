@@ -105,6 +105,12 @@ NOTION_SUPERHUMAN_COHORT1_DATABASE_ID = "3e3ca5eb-e557-80ab-9b32-e3c84d74784e"
 # existing SLACK_BOT_TOKEN. A failed Slack post never fails the application.
 NOTION_GRANTS_DATABASE_ID = "8b8d014a-a83f-4ec6-b557-68cfbbf0e935"
 
+# Content workshop best-post entries (POST /contentworkshop) -> the "Content
+# Workshop Entries" database under Superhuman OS. Name, Email, Post URL.
+# IMPORTANT: connect the SAME Notion integration (NOTION_TOKEN) to this
+# database (••• -> Connections) or writes will 404.
+NOTION_CONTENTWORKSHOP_DATABASE_ID = "6f31b1ba-765c-4942-87fa-7764d72573ac"
+
 # Superhuman questionnaire (POST /superhuman-questionnaire) -> its own Notion
 # database. The page at /superhuman/ is open to buyers, second seats and
 # ambassadors alike, so there is no order lookup: Name, Email and Role come
