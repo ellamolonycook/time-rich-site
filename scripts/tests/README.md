@@ -124,6 +124,26 @@ One fake stands in for Supabase, Notion and Resend. Supabase answers in the real
   logs carries an email address. A name with markup in it is escaped, and an
   order with no name falls back to "Hi there,".
 
+## `onboard-page.test.mjs`
+
+Loads [`onboard/index.html`](../../onboard/index.html) into jsdom and drives the
+plus-one form the way a buyer does, with the worker's lookup JSON stubbed.
+
+The rule it exists for is the one a real buyer fell through: a buyer who chose
+**"Decide later"** has a saved choice, so the order comes back `isCompleted`,
+but their plus one is still missing. The page used to send them to the completed
+screen, which said to come back any time before kickoff and then gave them no
+form to do it in. So a `Not Sure yet` lookup now lands on the form, on "Add
+them now", with the name and email fields open, whether they arrived on a link
+or typed their email into the lookup box.
+
+Past that: a buyer who already named a plus one still goes straight to the
+completed screen and nothing is posted; "Decide later" is still a real answer
+and still confirms with the plus one left open; the second submit posts
+`choice: "named"` against the same order and lands on "Your seat and plus one
+are saved."; and an order we cannot verify, or a save that fails, leaves the
+buyer with the error said and a button they can press again.
+
 ## `form.test.mjs`
 
 Loads [`sh-apply/index.html`](../../sh-apply/index.html) into jsdom and actually
