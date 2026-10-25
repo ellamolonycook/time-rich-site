@@ -101,7 +101,7 @@ for (const path of PAGES) {
   check('it holds two links, Stanley then Wispr Flow',
     credits.length === 2 &&
     credits[0].getAttribute('href') === 'https://x.getstanley.ai/r/mz4y9g' &&
-    credits[1].getAttribute('href') === 'https://ref.wisprflow.ai/ella-cook-vt27',
+    credits[1].getAttribute('href') === 'https://wisprflow.ai/info/redeem-promo?code=TIMERICH6&months=6',
     credits.map((a) => a.getAttribute('href')));
   check('both open in a new tab and are marked sponsored',
     credits.length === 2 && credits.every((a) => a.getAttribute('target') === '_blank' &&
