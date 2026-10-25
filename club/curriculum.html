@@ -102,15 +102,17 @@
     .trp-cw-pep-toggle:focus-visible { outline: 2px solid var(--trp-green); outline-offset: 2px; }
     .trp-cw-pep-toggle[aria-expanded="true"] .trp-cw-chev { transform: rotate(180deg); }
     .trp-cw-heart { font-size: 20px; line-height: 1; }
-    .trp-cw-pep-body { display: flex; flex-direction: column; gap: 14px; width: 100%; }
+    .trp-cw-wide { grid-column: 1 / -1; }
+    .trp-cw-pep-body { display: flex; flex-direction: column; gap: 16px; width: 100%; }
     /* the photo on the left, the letter beside it; stacked on a phone */
-    .trp-cw-pep-pair { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.25fr); gap: 24px; align-items: start; width: 100%; }
+    .trp-cw-pep-pair { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.1fr); gap: clamp(24px, 4vw, 48px); align-items: start; width: 100%; }
     .trp-cw-pep-pair .trp-cw-letter-photo { max-width: none; aspect-ratio: 4 / 5; margin: 0; }
-    .trp-cw-pep-copy { display: flex; flex-direction: column; gap: 12px; min-width: 0; }
-    .trp-cw-pep-copy p { margin: 0; }
+    .trp-cw-pep-copy { display: flex; flex-direction: column; gap: 16px; min-width: 0; }
+    .trp-cw-pep-copy p { margin: 0; max-width: none; font-size: clamp(16.5px, 1.5vw, 19px); line-height: 1.65; color: var(--trp-deep); white-space: pre-line; }
     @media (max-width: 640px) { .trp-cw-pep-pair { grid-template-columns: 1fr; } .trp-cw-pep-pair .trp-cw-letter-photo { aspect-ratio: 3 / 2; } }
+    .trp-cw-letter .trp-cw-lead { font-size: clamp(17px, 1.6vw, 19px); }
     .trp-cw-letter .trp-cw-ask { font-family: var(--trp-display); font-weight: 600; font-size: clamp(19px, 2.4vw, 24px); letter-spacing: -.02em; line-height: 1.2; color: var(--trp-deep); }
-    .trp-cw-pep-line { margin: 0; max-width: 560px; font-family: var(--trp-display); font-weight: 600; font-size: clamp(19px, 2.4vw, 24px); letter-spacing: -.02em; line-height: 1.2; color: var(--trp-deep); }
+    .trp-cw-pep-line { margin: 0; max-width: none; font-family: var(--trp-display); font-weight: 600; font-size: clamp(19px, 2.4vw, 24px); letter-spacing: -.02em; line-height: 1.2; color: var(--trp-deep); }
     .trp-cw-link { padding: 0; border: 0; background: none; font: inherit; font-size: 14px; font-weight: 600; color: var(--trp-deep); text-decoration: underline; text-underline-offset: 3px; cursor: pointer; min-height: 44px; }
     .trp-cw-link:focus-visible { outline: 2px solid var(--trp-green); outline-offset: 2px; border-radius: 4px; }
     /* The photo in the opened pep talk. */
@@ -119,7 +121,9 @@
     .trp-cw-side-title { font-family: var(--trp-display); font-weight: 600; font-size: 18px; letter-spacing: -.01em; line-height: 1.25; color: var(--trp-deep); margin: 0; }
     .trp-cw-side-note { margin: 0; font-size: 14px; line-height: 1.5; color: var(--trp-soft); }
     .trp-cw-side .trp-cw-btn { width: 100%; }
-    @media (max-width: 760px) { .trp-cw-welcome { grid-template-columns: 1fr; } }
+    /* One column on a phone, with the calendar card after the pep talk
+       rather than between the toggle and what it opens. */
+    @media (max-width: 760px) { .trp-cw-welcome { grid-template-columns: 1fr; } .trp-cw-welcome > .trp-cw-side { order: 1; } }
 
     /* the four weeks: a slim row of tabs with no dates, so the page stays
        on the week the member is in */
@@ -516,7 +520,7 @@
           <img class="trp-powered-rev" src="../brand/partners/stanley-logo-dark.png" alt="Stanley" width="765" height="203" loading="lazy" decoding="async"/>
         </a>
         <span class="trp-credit-dot" aria-hidden="true">&middot;</span>
-        <a class="trp-credit" href="https://ref.wisprflow.ai/ella-cook-vt27" target="_blank" rel="noopener sponsored">
+        <a class="trp-credit" href="https://wisprflow.ai/info/redeem-promo?code=TIMERICH6&amp;months=6" target="_blank" rel="noopener sponsored">
           <img class="trp-credit-tile" src="../os/img/wispr-flow.png" alt="" width="256" height="256" loading="lazy" decoding="async"/>
           <span class="trp-credit-name">Wispr Flow</span>
         </a>
@@ -736,10 +740,9 @@
 
       /* Ella's welcome. The title, then the Time Rich Pep Talk: a drop-down
          holding a line, her photo on the left and the letter beside it.
-         It starts open until the member says they're in, and after that
-         starts shut; either way the member's own open or shut wins. The
-         "I'm in" button sits under it until it is pressed. Link rows beside
-         the welcome are buttons, and pressing one ticks it. */
+         It starts open, and shut for a member who already pressed the old
+         "I'm in"; either way the member's own open or shut wins. Link rows
+         beside the welcome are buttons, and pressing one ticks it. */
       var letterOpen = null;   // null until the member opens or shuts it
 
       function welcome(prep) {
@@ -750,6 +753,10 @@
 
         var box = L.el('section', 'trp-cw-welcome');
         box.setAttribute('aria-label', 'Welcome');
+        // The open pep talk runs the full width of the welcome, under the
+        // title and the calendar card, so the photo and the letter have the
+        // room.
+        var inner = null;
 
         if (letter) {
           var name = L.str(letter.title) || 'Welcome';
@@ -758,10 +765,13 @@
           var col = L.el('div', 'trp-cw-letter');
           col.appendChild(L.el('h2', 'trp-cw-h2', name));
           var paras = L.str(letter.body).split(/\n\s*\n/).filter(function (t) { return t.trim(); });
-          // The letter's closing question ("How serious are you about
-          // becoming Time Rich?") is lifted out and asked above the pep
-          // talk, so it is the first thing read under the title.
+          // Two lines are lifted out of the letter to sit above the pep
+          // talk, under the title: its opening line ("You're not here just to
+          // learn AI..."), then its closing question ("How serious are you
+          // about becoming Time Rich?"). The rest stays in the drop-down.
           var ask = paras.length > 1 && /\?\s*$/.test(paras[paras.length - 1]) ? paras.pop().trim() : '';
+          var lead = paras.length > 1 ? paras.shift().trim() : '';
+          if (lead) col.appendChild(L.el('p', 'trp-cw-lead', lead));
           if (ask) col.appendChild(L.el('p', 'trp-cw-ask', ask));
 
           // A button rather than <details> so it stays as it was across the
@@ -783,7 +793,7 @@
           });
           pep.appendChild(toggle);
           if (open) {
-            var inner = L.el('div', 'trp-cw-pep-body');
+            inner = L.el('div', 'trp-cw-pep-body trp-cw-wide');
             inner.id = 'cw-pep-body';
             inner.appendChild(L.el('p', 'trp-cw-pep-line', 'Put your hand up if you want to reach your fullest potential'));
             var pair = L.el('div', 'trp-cw-pep-pair');
@@ -798,19 +808,9 @@
             paras.forEach(function (t) { copy.appendChild(L.el('p', '', t.trim())); });
             pair.appendChild(copy);
             inner.appendChild(pair);
-            pep.appendChild(inner);
           }
           col.appendChild(pep);
 
-          if (!inAlready && L.itemKey(letter)) {
-            var acts = L.el('div', 'trp-cw-letter-actions');
-            var go = L.el('button', 'trp-cw-btn is-primary', "I'm in");
-            go.type = 'button';
-            go.setAttribute('data-cw-focus', 'letter-in');
-            go.addEventListener('click', function () { L.toggleItem(letter); });
-            acts.appendChild(go);
-            col.appendChild(acts);
-          }
           box.appendChild(col);
         }
 
@@ -828,6 +828,8 @@
           if (L.isItemDone(item)) side.appendChild(L.el('span', 'trp-cw-in', 'Done'));
           box.appendChild(side);
         });
+
+        if (inner) box.appendChild(inner);
 
         return box;
       }

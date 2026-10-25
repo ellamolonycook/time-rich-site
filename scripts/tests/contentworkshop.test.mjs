@@ -228,10 +228,10 @@ console.log('\n/contentworkshop — how Wispr Flow is described');
   check('the old "not on your phone" line is gone, since the phone app is now the fallback',
     !/Not on your phone/.test(HTML));
 
-  // The one link out to Wispr Flow is the referral URL, same as the portal.
+  // The one link out to Wispr Flow is the redeem page, same as the portal.
   const links = [...document.querySelectorAll('a[href*="wisprflow.ai"]')];
-  check('the download link is the referral URL',
-    links.length === 1 && links[0].getAttribute('href') === 'https://ref.wisprflow.ai/ella-cook-vt27',
+  check('the download link is the redeem page',
+    links.length === 1 && links[0].getAttribute('href') === 'https://wisprflow.ai/info/redeem-promo?code=TIMERICH6&months=6',
     links.map((a) => a.getAttribute('href')));
   check('and it opens in a new tab, marked sponsored',
     links.length === 1 && links[0].getAttribute('target') === '_blank' &&

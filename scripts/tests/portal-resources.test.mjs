@@ -194,17 +194,16 @@ console.log('\nResources: your partner offers');
       card.tagName + '/' + card.querySelectorAll('a.trp-partner-btn').length);
   });
 
-  /* Wispr's referral link pays Ella, and the main button no longer carries
-     it -- that now goes to the redeem page with the code in the address. So
-     the referral has to be the thing a member actually clicks to download,
-     which is "Download it" in step one. Losing it loses the referral. */
+  /* Every Wispr Flow link is the redeem page now, with the code and the
+     term in the address (Ella's call, 25 Oct: it replaced the referral
+     link everywhere). That includes "Download it" in step one. */
   {
     const wispr = cards.find((c) => /Wispr Flow/.test(
       (c.querySelector('.trp-partner-title') || {}).textContent || '')) || doc.createElement('div');
     const dl = wispr.querySelector('.trp-partner-steps a');
-    check('Wispr: "Download it" in step one keeps the referral link',
+    check('Wispr: "Download it" in step one goes to the redeem page',
       dl !== null &&
-      dl.getAttribute('href') === 'https://ref.wisprflow.ai/ella-cook-vt27' &&
+      dl.getAttribute('href') === 'https://wisprflow.ai/info/redeem-promo?code=TIMERICH6&months=6' &&
       dl.textContent.trim() === 'Download it',
       dl && dl.getAttribute('href') + ' / ' + dl.textContent.trim());
     check('Wispr: and it opens in a new tab, declared as sponsored',

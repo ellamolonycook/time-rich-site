@@ -240,11 +240,11 @@ console.log('\n/portal — where the lockups sit');
 // beside it the footer showed a stray black square with nothing to name it.
 console.log('\nWispr Flow — the second credit');
 {
-  // One referral URL, everywhere. It has been written two different ways
-  // already, and a credit pointing somewhere else is a credit nobody is
-  // paid for -- so the sweep at the foot of this file checks the whole
-  // portal rather than just the footers.
-  const WISPR = 'https://ref.wisprflow.ai/ella-cook-vt27';
+  // One Wispr Flow URL, everywhere: the redeem page, which carries the
+  // promo code and the term (it replaced the referral link on 25 Oct). The
+  // sweep at the foot of this file checks the whole portal rather than
+  // just the footers.
+  const WISPR = 'https://wisprflow.ai/info/redeem-promo?code=TIMERICH6&months=6';
   const TILE = 'os/img/wispr-flow.png';
 
   for (const page of PAGES.filter((p) => p.path.startsWith('club/'))) {
@@ -297,22 +297,17 @@ console.log('\nWispr Flow — the second credit');
 
 /* ---- one Wispr Flow URL, across the whole portal ------------------------- */
 
-// Every link to Wispr Flow is the same referral URL. It has been written two
-// different ways already -- the Club footer carried one and the new footers
-// another -- and a credit pointed anywhere else is traffic nobody is paid
-// for. So this sweeps the folder rather than the six footers, and takes in
-// /contentworkshop, which carries its own download link.
-console.log('\nevery Wispr Flow link is the one referral URL');
+// Every link to Wispr Flow is the same URL. It has been written more than
+// one way before, so this sweeps the folder rather than the footers, and
+// takes in /contentworkshop, which carries its own download link.
+console.log('\nevery Wispr Flow link is the one redeem URL');
 {
-  const WISPR = 'https://ref.wisprflow.ai/ella-cook-vt27';
-  /* The one exception is the Resources card's main button, which goes to
-     Ella's redeem page: that address carries the promo code and the term,
-     which the referral link cannot. The referral is still on that card -- it
-     is on "Download it" in step one, where the download actually happens,
-     and portal-resources.test.mjs is what holds it there.
-
-     Written with &amp; in the markup, so it is matched as the sweep finds it. */
-  const REDEEM = 'https://wisprflow.ai/info/redeem-promo?code=TIMERICH6&amp;months=6';
+  // Every link to Wispr Flow is the redeem page, which carries the promo
+  // code and the term. It replaced Ella's referral link everywhere on
+  // 25 Oct, the footers and /contentworkshop included, so this sweeps the
+  // folder rather than the footers. Written with &amp; in the markup, so
+  // it is matched as the sweep finds it.
+  const WISPR = 'https://wisprflow.ai/info/redeem-promo?code=TIMERICH6&amp;months=6';
   const FILES = readdirSync(new URL('../../club/', import.meta.url))
     .filter((f) => /\.(html|js)$/.test(f))
     .map((f) => ['club/' + f, read('club/' + f)])
@@ -326,15 +321,9 @@ console.log('\nevery Wispr Flow link is the one referral URL');
       .map((m) => [file, m[0]]));
 
   check('the portal links to Wispr Flow at all', found.length > 0, found.length);
-  check('and every one of those links is the referral URL, bar the redeem page',
-    found.every(([, url]) => url === WISPR || url === REDEEM),
-    found.filter(([, url]) => url !== WISPR && url !== REDEEM));
-
-  // Allowed in exactly one place, so this cannot become a licence to point
-  // the footer credits at it too.
-  const redeems = found.filter(([, url]) => url === REDEEM);
-  check('the redeem page appears once, on the Resources card',
-    redeems.length === 1 && redeems[0][0] === 'club/resources.html', redeems);
+  check('and every one of those links is the redeem URL',
+    found.every(([, url]) => url === WISPR),
+    found.filter(([, url]) => url !== WISPR));
 
   // Named, rather than left to the sweep above, because this is the one that
   // was changed by hand and changed back.
@@ -342,8 +331,8 @@ console.log('\nevery Wispr Flow link is the one referral URL');
     if (!body.includes('trp-credit"')) continue;
     const document = new JSDOM(body).window.document;
     const credit = document.querySelector('a.trp-credit');
-    check(file + ': the footer credit points at the referral URL',
-      credit !== null && credit.getAttribute('href') === WISPR,
+    check(file + ': the footer credit points at the redeem URL',
+      credit !== null && credit.getAttribute('href') === WISPR.replace('&amp;', '&'),
       credit && credit.getAttribute('href'));
   }
 }
