@@ -349,6 +349,16 @@
     return Boolean(key && progress.items[key]);
   }
 
+  /* What counts toward progress: a row with an id, that is not a video.
+     A video plays inside the page now, and a cross-origin player never
+     tells us it reached the end, so a member could never tick it off.
+     Counting it would hold everyone one short of 100% for ever. Rows that
+     do not count are not ticked either -- a tick that moves no number
+     reads as a bug. */
+  function isTrackable(item) {
+    return Boolean(itemKey(item)) && str(item && item.kind) !== 'video';
+  }
+
   function isSessionMarked(session) {
     var key = sessionKey(session);
     return Boolean(key && progress.sessions[key]);
@@ -405,7 +415,7 @@
     weeks(data).forEach(function (week) {
       if (!week || week.unlocked !== true) return;
       items(week).forEach(function (item) {
-        if (itemKey(item)) out.push(item);
+        if (isTrackable(item)) out.push(item);
       });
     });
     return out;
@@ -557,7 +567,7 @@
     var name = str(item && item.title) || 'Untitled';
     var row = el('li', 'trp-check-row');
 
-    if (itemKey(item)) {
+    if (isTrackable(item)) {
       row.appendChild(checkBox(
         function () { return isItemDone(item); },
         function () { return toggleItem(item); },
@@ -815,6 +825,7 @@
     joinControl: joinControl,
     scheduleProgress: scheduleProgress,
     itemKey: itemKey,
+    isTrackable: isTrackable,
     sessionKey: sessionKey,
     isItemDone: isItemDone,
     isSessionMarked: isSessionMarked,
