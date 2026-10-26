@@ -196,10 +196,13 @@
 
     /* this week's live sessions */
     .trp-cw-sessions { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 14px; }
-    .trp-cw-session { background: var(--trp-sage); border-radius: 16px; padding: 18px; display: flex; align-items: flex-start; gap: 14px; }
+    .trp-cw-session { position: relative; background: var(--trp-sage); border-radius: 16px; padding: 18px; display: flex; align-items: flex-start; gap: 14px; }
+    .trp-cw-session .trp-cw-btn.is-soon { opacity: .55; cursor: default; pointer-events: none; }
+    .trp-cw-soon { position: absolute; top: 14px; right: 14px; font-size: 10px; font-weight: 600; letter-spacing: .06em; text-transform: uppercase; border-radius: 999px; padding: 3px 8px; background: rgb(var(--c-surface)); color: var(--trp-soft); }
     .trp-cw-session.is-friday { background: var(--trp-sagelt); }
     .trp-cw-session-copy { flex: 1 1 auto; min-width: 0; display: flex; flex-direction: column; gap: 4px; }
     .trp-cw-session-when { font-size: 12px; font-weight: 600; letter-spacing: .08em; text-transform: uppercase; color: var(--trp-soft); }
+    .trp-cw-session:has(.trp-cw-soon) .trp-cw-session-when { padding-right: 96px; }
         .trp-cw-session-title { font-size: 16px; font-weight: 600; color: var(--trp-deep); }
     .trp-cw-session .trp-cw-btn { margin-top: 8px; align-self: flex-start; background: rgb(var(--c-surface)); color: var(--trp-deep); }
 
@@ -2298,16 +2301,22 @@ When you finish:
         copy.appendChild(L.el('span', 'trp-cw-session-title', shown));
         if (bonus) copy.appendChild(L.el('span', 'trp-cw-tag', 'Bonus'));
 
-        // The recording, once the call has run; watching it marks the session.
-        if (L.isSessionPast(session, now)) {
-          var rec = L.linkTo(session.recording_url, 'Watch recording', 'trp-cw-btn is-sm');
-          if (rec) {
-            rec.setAttribute('aria-label', 'Watch recording of ' + name);
-            rec.addEventListener('click', function () {
-              L.markSession(session);
-            });
-            copy.appendChild(rec);
-          }
+        // The recording, once the call has run and its link is in; watching
+        // it marks the session. Until then the button is there but greyed,
+        // with Coming soon in the corner, so members know where to look.
+        var rec = L.isSessionPast(session, now) ? L.linkTo(session.recording_url, 'Watch recording', 'trp-cw-btn is-sm') : null;
+        if (rec) {
+          rec.setAttribute('aria-label', 'Watch recording of ' + name);
+          rec.addEventListener('click', function () {
+            L.markSession(session);
+          });
+          copy.appendChild(rec);
+        } else {
+          var soon = L.el('span', 'trp-cw-btn is-sm is-soon', 'Recording');
+          soon.setAttribute('aria-disabled', 'true');
+          soon.setAttribute('aria-label', 'Recording of ' + name + ': coming soon');
+          copy.appendChild(soon);
+          tile.appendChild(L.el('span', 'trp-cw-soon', 'Coming soon'));
         }
         tile.appendChild(copy);
         return tile;

@@ -1070,6 +1070,10 @@ console.log('\nSetup tasks have a tick and a cross; the calls have neither');
     tasks.length > 0 && tasks.every((t) => t.querySelector('.trp-check-box') && t.querySelector('.trp-cw-cross')));
   check('the live calls have no tick box',
     p.doc.querySelectorAll('.trp-cw-session .trp-check-box').length === 0);
+  const calls = [...p.doc.querySelectorAll('.trp-cw-session')];
+  check('a call with no recording yet shows a Recording button, marked Coming soon',
+    calls.length > 0 && calls.every((c) => c.querySelector('.trp-cw-btn') &&
+      (c.querySelector('a.trp-cw-btn') || c.querySelector('.trp-cw-soon'))));
   p.w.close();
 }
 
