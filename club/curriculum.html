@@ -152,10 +152,9 @@
     .trp-cw-intro.is-solo { grid-template-columns: minmax(0, 1fr); }
     /* The welcome's title, with the small calendar button beside it. */
     .trp-cw-welcome-head { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 12px 20px; width: 100%; }
-    .trp-cw-cal { display: inline-flex; align-items: center; gap: 8px; min-height: 40px; padding: 0 14px; border-radius: 999px; border: 1px solid var(--trp-line); background: rgb(var(--c-surface)); color: var(--trp-deep); font-size: 13px; font-weight: 600; text-decoration: none; white-space: nowrap; transition: background-color .18s ease; }
-    .trp-cw-cal:hover { background: var(--trp-sage); }
+    .trp-cw-cal { display: inline-flex; align-items: center; gap: 8px; min-height: 40px; padding: 0 14px; border-radius: 999px; border: 1px solid var(--trp-line); background: rgb(var(--c-surface)); color: var(--trp-deep); font-size: 13px; font-weight: 600; text-decoration: none; white-space: nowrap; }
+    /* No hover fill: the button stays the colour it is (Ella, 26 Oct). */
     .trp-cw-cal:focus-visible { outline: 2px solid var(--trp-green); outline-offset: 2px; }
-    .trp-cw-cal-done { font-size: 12px; font-weight: 600; color: var(--trp-green); }
 
     /* the four weeks: a slim row of tabs with no dates, so the page stays
        on the week the member is in */
@@ -1864,11 +1863,10 @@ When you finish:
           icon.setAttribute('aria-hidden', 'true');
           cal.insertBefore(icon, cal.firstChild);
           cal.setAttribute('aria-label', title);
+          // A click still counts towards the member's progress; it just shows
+          // no "Done" beside the button any more.
           cal.addEventListener('click', function () { if (!L.isItemDone(item)) L.toggleItem(item); });
-          var wrap = L.el('span', '');
-          wrap.appendChild(cal);
-          if (L.isItemDone(item)) { wrap.appendChild(document.createTextNode(' ')); wrap.appendChild(L.el('span', 'trp-cw-cal-done', 'Done')); }
-          head.appendChild(wrap);
+          head.appendChild(cal);
         });
         col.appendChild(head);
         var paras = L.str(letter.body).split(/\n\s*\n/).filter(function (t) { return t.trim(); });
