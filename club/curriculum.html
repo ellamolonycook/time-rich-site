@@ -211,7 +211,8 @@
     .trp-cw-lesson.is-open { border-color: var(--trp-green); }
     .trp-cw-lesson-head { display: grid; grid-template-columns: auto minmax(0, 1fr); align-items: center; gap: 14px; padding: 8px 12px 8px 16px; }
     .trp-cw-toggle { display: flex; align-items: center; justify-content: space-between; gap: 12px; width: 100%; min-height: 48px; padding: 0; border: 0; background: none; font: inherit; color: inherit; text-align: left; cursor: pointer; border-radius: 10px; }
-    .trp-cw-toggle:focus-visible { outline: 2px solid var(--trp-green); outline-offset: 2px; }
+    .trp-cw-toggle:focus-visible { outline: none; }
+    .trp-cw-lesson-head:has(.trp-cw-toggle:focus-visible) { background: var(--trp-sagelt); }
     .trp-cw-chev { flex: none; width: 20px; height: 20px; color: var(--trp-soft); transition: transform .2s ease; }
     .trp-cw-toggle[aria-expanded="true"] .trp-cw-chev { transform: rotate(180deg); }
     .trp-cw-lesson-copy { min-width: 0; display: flex; flex-direction: column; gap: 2px; }
@@ -233,6 +234,13 @@
     /* Inside a section, one outline is enough: the section's. The rows
        lose their own, and the green header shows where each one starts. */
     .trp-cw-master-body .trp-cw-lesson, .trp-cw-master-body .trp-cw-step:not(.trp-cw-gpd) { border-color: transparent; box-shadow: none; }
+    /* The section and prize headers are always light green, and a step or
+       lesson keeps its green header while it is open. One line round the
+       card, no ring around the header: the fill shows focus too. */
+    .trp-cw-master > summary, .trp-cw-prizes > summary { background: var(--trp-sagelt); }
+    .trp-cw-master[open] > summary, .trp-cw-prizes[open] > summary { border-radius: 21px 21px 0 0; margin-bottom: 12px; }
+    .trp-cw-step[open]:not(.trp-cw-gpd) > summary { background: var(--trp-sagelt); border-radius: 19px 19px 0 0; }
+    .trp-cw-lesson.is-open > .trp-cw-lesson-head { background: var(--trp-sagelt); }
     @keyframes trp-cw-reveal { from { opacity: 0; transform: translateY(-6px); } to { opacity: 1; transform: none; } }
     .trp-cw-reveal { animation: trp-cw-reveal .22s ease; }
     @media (prefers-reduced-motion: reduce) { .trp-cw-reveal { animation: none; } .trp-cw-master > summary, .trp-cw-step > summary, .trp-cw-lesson-head { transition: none; } }
@@ -245,7 +253,7 @@
     .trp-cw-step.is-done { background: var(--trp-sagelt); }
     .trp-cw-step > summary { display: flex; align-items: center; gap: 14px; min-height: 72px; padding: 16px 20px; cursor: pointer; list-style: none; border-radius: 20px; }
     .trp-cw-step > summary::-webkit-details-marker { display: none; }
-    .trp-cw-step > summary:focus-visible { outline: 2px solid var(--trp-green); outline-offset: 2px; }
+    .trp-cw-step > summary:focus-visible { outline: none; background: var(--trp-sagelt); }
     .trp-cw-step-badge { flex: none; width: 36px; height: 36px; border-radius: 50%; display: inline-flex; align-items: center; justify-content: center; font-weight: 700; font-size: 14px; background: var(--trp-sage); color: var(--trp-green); }
     .trp-cw-step-badge svg { width: 18px; height: 18px; }
     .trp-cw-step.is-done .trp-cw-step-badge { background: var(--trp-green); color: var(--trp-offwhite); }
@@ -318,7 +326,7 @@
     .trp-cw-prizes[open] { border-color: var(--trp-green); }
     .trp-cw-prizes > summary { display: flex; align-items: center; gap: 14px; min-height: 64px; padding: 14px 20px; cursor: pointer; list-style: none; border-radius: 22px; transition: background-color .18s ease; }
     .trp-cw-prizes > summary::-webkit-details-marker { display: none; }
-    .trp-cw-prizes > summary:focus-visible { outline: 2px solid var(--trp-green); outline-offset: 2px; }
+    .trp-cw-prizes > summary:focus-visible { outline: none; }
     @media (hover: hover) { .trp-cw-prizes > summary:hover { background: var(--trp-sagelt); } .trp-cw-prizes > summary:hover .trp-cw-chev { color: var(--trp-green); } }
     .trp-cw-prizes[open] > summary .trp-cw-chev { transform: rotate(180deg); }
     .trp-cw-prizes-h { flex: 1 1 auto; min-width: 0; font-family: var(--trp-display); font-weight: 600; font-size: clamp(18px, 2.2vw, 22px); letter-spacing: -.02em; line-height: 1.2; color: var(--trp-deep); }
@@ -413,7 +421,7 @@
     .trp-cw-master[open] { border-color: var(--trp-green); }
     .trp-cw-master > summary { display: flex; align-items: center; gap: 14px; min-height: 64px; padding: 14px 20px; cursor: pointer; list-style: none; border-radius: 22px; }
     .trp-cw-master > summary::-webkit-details-marker { display: none; }
-    .trp-cw-master > summary:focus-visible { outline: 2px solid var(--trp-green); outline-offset: 2px; }
+    .trp-cw-master > summary:focus-visible { outline: none; }
     .trp-cw-master[open] > summary .trp-cw-chev { transform: rotate(180deg); }
     .trp-cw-master-title { flex: 1 1 auto; min-width: 0; font-family: var(--trp-display); font-weight: 600; font-size: clamp(18px, 2.2vw, 22px); letter-spacing: -.02em; line-height: 1.2; color: var(--trp-deep); }
     .trp-cw-master-count { flex: none; font-size: 12px; font-weight: 600; letter-spacing: .06em; text-transform: uppercase; color: var(--trp-soft); white-space: nowrap; }
