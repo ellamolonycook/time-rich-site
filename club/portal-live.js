@@ -371,11 +371,18 @@
     return Boolean(key && progress.sessions[key]);
   }
 
+  var markSeq = {};
+
   // crossed is for items only: true or false saves how the item was done,
   // and undefined leaves it as it was (a session, or a caller that does
   // not know about crosses).
   function setMark(mapName, key, value, crossed) {
     if (!key) return Promise.resolve(false);
+    // Only the latest save for a row may roll it back: two quick clicks
+    // must not let the first one's failure undo the second.
+    var seqKey = mapName + ':' + key;
+    var seq = (markSeq[seqKey] || 0) + 1;
+    markSeq[seqKey] = seq;
     var wasDone = Boolean(progress[mapName][key]);
     var wasCrossed = Boolean(progress.crossed[key]);
     var cross = mapName === 'items' && typeof crossed === 'boolean';
@@ -387,7 +394,11 @@
         else delete progress.crossed[key];
       }
     }
-    function undo() { put(wasDone, wasCrossed); announceProgress(); }
+    function undo() {
+      if (markSeq[seqKey] !== seq) return;
+      put(wasDone, wasCrossed);
+      announceProgress();
+    }
     put(value, cross ? crossed : wasCrossed);
     announceProgress();
 
@@ -413,7 +424,11 @@
   // Sets an item to done or not, and whether it was crossed off as not
   // needed, in one save.
   function markItem(item, done, crossed) {
-    return setMark('items', itemKey(item), Boolean(done), Boolean(done && crossed));
+    var key = itemKey(item);
+    // A plain tick on a row that was never crossed saves the old way, so it
+    // works before the crossed column and the new Worker are live.
+    if (!crossed && !progress.crossed[key]) return setMark('items', key, Boolean(done));
+    return setMark('items', key, Boolean(done), Boolean(done && crossed));
   }
 
   function toggleSession(session) {

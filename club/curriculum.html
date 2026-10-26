@@ -502,6 +502,8 @@
     /* The page keeps its own place after a redraw; the browser's scroll
        anchoring on top of that nudged it a few pixels. */
     .trp-cw [data-curriculum-live] { overflow-anchor: none; }
+    /* A link that lands on a lesson or section stops below the sticky header. */
+    .trp-cw-lesson, .trp-cw-master { scroll-margin-top: 84px; }
     .trp-cw-session .trp-check-box { box-shadow: inset 0 0 0 1.5px var(--trp-line); }
 
     /* On a phone the weeks sit two by two, the tasks use the full width,
@@ -1724,7 +1726,7 @@ When you finish:
          which opens the lesson. A row that cannot be ticked at all -- a
          video -- gets nothing, so clicking it does nothing rather than
          silently failing. */
-      var CLICKABLE = 'a, button, summary, input, textarea, select, label';
+      var CLICKABLE = 'a, button, summary, input, textarea, select, label, .trp-cw-pair';
       function tickOnRowClick(row, item) {
         if (!L.isTrackable(item)) return;
         row.classList.add('is-tickable');
@@ -1758,7 +1760,8 @@ When you finish:
          as done, so it never holds the member back, and both are saved to
          the member's account, so they follow them to any device. */
       function tickOrCross(item, n, name, row) {
-        if (!L.isTrackable(item)) return tickFor(item, n, name);
+        // An older cached portal-live.js has no crosses; the tick alone works.
+        if (!L.isTrackable(item) || typeof L.isItemCrossed !== 'function' || typeof L.markItem !== 'function') return tickFor(item, n, name);
         var pair = L.el('div', 'trp-cw-pair');
         var tick = L.checkBox(
           function () { return L.isItemDone(item) && !L.isItemCrossed(item); },
@@ -2153,7 +2156,8 @@ When you finish:
         var name = L.str(item && item.title) || 'Untitled';
         var key = rowKey(item, n);
         // The growth prompts start open, laid out to scan, not tucked away.
-        var isOpenRow = touched ? !!opened[key] : (!!isNext || GROWTH_ROW.test(name.trim()));
+        var isOpenRow = has(opened, key) ? !!opened[key]
+          : touched ? false : (!!isNext || GROWTH_ROW.test(name.trim()));
         var row = L.el('li', 'trp-cw-lesson' + (isOpenRow ? ' is-open' : ''));
         var head = L.el('div', 'trp-cw-lesson-head');
         tickOnRowClick(head, item);
@@ -2239,6 +2243,8 @@ When you finish:
 
       // Which sections the member has opened or shut, kept across redraws.
       var masterOpen = {};
+      var setupWasLeft = null;     // was any setup left at the last draw
+      var setupJustDone = false;   // this draw is the one that finished it
 
       /* One section: a drop-down with its title and how much of it is done.
          Open by default when it holds the next thing to do; the member's own
@@ -2337,7 +2343,7 @@ When you finish:
           if (!L.isTrackable(it)) return;
           total += 1; if (L.isItemDone(it)) done += 1;
         });
-        sessionList.forEach(function (s) { total += 1; if (L.isSessionMarked(s)) done += 1; });
+        // the calls have no tick box, so they are not in the count
 
         // Before the week opens, Week 1 is only the setup, and says so.
         var setupOnly = steps.length && week.unlocked !== true;
@@ -2372,6 +2378,15 @@ When you finish:
         // run in the Business Hub and with Wispr Flow, which the setup
         // builds. Once it is all ticked it drops under the lessons.
         var setupLeft = steps.some(function (it) { return L.isTrackable(it) && !L.isItemDone(it); });
+        // The tick that finishes the setup moves it under the lessons. What
+        // was held open goes, so the section with the next lesson opens and
+        // the page goes to it, rather than following the setup down.
+        if (steps.length && setupWasLeft === true && !setupLeft) {
+          [masterOpen, stepOpen, opened].forEach(function (map) { Object.keys(map).forEach(function (k) { delete map[k]; }); });
+          touched = false;
+          setupJustDone = true;
+        }
+        if (steps.length) setupWasLeft = setupLeft;
 
         // The setup is one drop-down of its own, open while any of it is left.
         function drawSetup(heading) {
@@ -2560,7 +2575,8 @@ When you finish:
 
         if (focusKey) {
           var back = live.querySelector('[data-cw-focus="' + focusKey + '"]');
-          if (back) back.focus();
+          // no scroll: the redraw keeps the page where it was
+          if (back) { try { back.focus({ preventScroll: true }); } catch (e) { back.focus(); } }
         }
 
         // The browser already tried to honour the hash, before the section
@@ -2574,9 +2590,13 @@ When you finish:
           if (master && !master.open) master.open = true;
           var tog = target && target.classList.contains('trp-cw-lesson') ? target.querySelector('.trp-cw-toggle') : null;
           if (tog && tog.getAttribute('aria-expanded') !== 'true') tog.click();
+          // After the section's own toggle has run: opening it shuts the
+          // others and holds the page still, which would undo this scroll.
           if (target && target.scrollIntoView) {
-            try { target.scrollIntoView({ block: 'start' }); }
-            catch (e) { target.scrollIntoView(); }
+            setTimeout(function () {
+              try { target.scrollIntoView({ block: 'start', behavior: 'instant' }); }
+              catch (e) { target.scrollIntoView(); }
+            }, 60);
           }
         }
       }
@@ -2600,6 +2620,12 @@ When you finish:
         var held = holdOpen();
         if (window.TR_PORTAL_DATA) render(window.TR_PORTAL_DATA);
         else if (lastData) render(lastData);
+        if (setupJustDone) {
+          setupJustDone = false;
+          var next = document.querySelector('[data-curriculum-live] details.trp-cw-master[open]');
+          if (next) window.scrollTo({ top: window.scrollY + next.getBoundingClientRect().top - 96, behavior: 'instant' });
+          return;
+        }
         if (held) {
           var box = findBox(held.name);
           var moved = box ? box.getBoundingClientRect().top - held.top : 0;
@@ -2618,12 +2644,10 @@ When you finish:
           if (key.indexOf('step-') === 0) stepOpen[key.slice(5)] = open;
           else if (key.indexOf('master-') === 0) masterOpen[key.slice(7)] = open;
         });
-        if (!touched) {
-          touched = true;
-          [].forEach.call(live.querySelectorAll('.trp-cw-toggle[aria-expanded="true"]'), function (t) {
-            opened[t.getAttribute('data-cw-focus').replace(/^toggle-/, '')] = true;
-          });
-        }
+        // the lessons on screen, open or shut; other weeks keep their default
+        [].forEach.call(live.querySelectorAll('.trp-cw-toggle[data-cw-focus]'), function (t) {
+          opened[t.getAttribute('data-cw-focus').replace(/^toggle-/, '')] = t.getAttribute('aria-expanded') === 'true';
+        });
         var box = document.activeElement;
         var key = box && box.getAttribute ? box.getAttribute('data-cw-focus') : null;
         if (!key || !live.contains(box)) return null;

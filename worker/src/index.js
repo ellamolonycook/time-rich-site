@@ -1900,7 +1900,7 @@ async function handlePortalProgress(request, env) {
   const done = body?.done;
   // A lesson crossed off as not needed: saved with the tick, items only.
   const crossed = body?.crossed;
-  if (crossed != null && (typeof crossed !== "boolean" || itemId === null)) {
+  if (crossed != null && (typeof crossed !== "boolean" || itemId === null || (crossed && done !== true))) {
     return json({ ok: false }, 400, cors);
   }
 
