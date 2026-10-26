@@ -1877,7 +1877,8 @@ When you finish:
           var title = L.str(item.title);
           var cal = L.linkTo(item.url, title, 'trp-cw-cal');
           if (!cal) return;
-          var icon = L.el('span', '', '\uD83D\uDCC5');
+          // A Slack link gets a speech bubble; anything else is the calendar.
+          var icon = L.el('span', '', /slack\.com/i.test(L.str(item.url)) ? '\uD83D\uDCAC' : '\uD83D\uDCC5');
           icon.setAttribute('aria-hidden', 'true');
           cal.insertBefore(icon, cal.firstChild);
           cal.setAttribute('aria-label', title);
