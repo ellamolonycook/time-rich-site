@@ -1547,6 +1547,8 @@ When you finish:
          "| a | b |" lines are a table, the first of them its header; a cell
          written "Name :: https://..." is a link. "! /portal/assets/x.png |
          what it shows" is a screenshot, from the site's own assets only.
+         "Video: https://www.loom.com/share/..." plays that video in the
+         page, Vimeo, Loom or YouTube only (Ella, 26 Oct).
 
          Everything goes in with textContent. A body is Ella's, not a
          member's, but no file in this portal builds markup from a string. */
@@ -1555,8 +1557,9 @@ When you finish:
       var MORE_RE = /^\+\s+(.+)$/;
       var TABLE_RE = /^\|.*\|$/;
       var PIC_RE = /^!\s+(\/portal\/assets\/[\w.-]+\.(?:png|jpe?g|webp))\s*\|\s*(.+)$/;
+      var VID_RE = /^video:\s+(https:\/\/\S+)$/i;
       // The markers that open a block, and so close the one before.
-      var OPENS_BLOCK = /^(\+\s+\S|=\s*\S|=$|\|.*\|$|!\s+\/)/;
+      var OPENS_BLOCK = /^(\+\s+\S|=\s*\S|=$|\|.*\|$|!\s+\/|video:\s+https:)/i;
 
       /* The body, cut into parts: plain text, a named drop-down, a copy box,
          a table or a screenshot. One pass, so they can come in any order. */
@@ -1587,6 +1590,12 @@ When you finish:
             continue;
           }
           if (t === '=') { parts.push({ kind: 'text', name: '', lines: [] }); continue; }
+          var vid = VID_RE.exec(t);
+          if (vid) {
+            parts.push({ kind: 'video', src: vid[1], name: '', lines: [] });
+            parts.push({ kind: 'text', name: '', lines: [] });
+            continue;
+          }
           var pic = PIC_RE.exec(t);
           if (pic) {
             parts.push({ kind: 'image', src: pic[1], name: pic[2], lines: [] });
@@ -1688,6 +1697,17 @@ When you finish:
         bodyParts(body).forEach(function (part, i) {
           if (part.kind === 'table') { frag.appendChild(tableBox(part.lines)); return; }
           if (part.kind === 'image') { frag.appendChild(imageBox(part.src, part.name)); return; }
+          if (part.kind === 'video') {
+            // Only a video the portal can embed; anything else draws nothing.
+            var api = window.TRPortal;
+            var src = api && typeof api.embedSrc === 'function' ? api.embedSrc(part.src) : '';
+            if (src && typeof api.videoFrame === 'function') {
+              var player = api.videoFrame(src, 'Video');
+              player.className = 'trp-video trp-cw-video';
+              frag.appendChild(player);
+            }
+            return;
+          }
           var text = part.lines.join('\n').replace(/^\s+|\s+$/g, '');
           if (part.kind === 'copy') {
             if (text) frag.appendChild(copyBox(part.name || 'Copy', text, key + '-' + i));
