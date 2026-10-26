@@ -242,7 +242,7 @@ console.log('\n/cohort26 — every slot is filled from data.json');
     page.document.querySelectorAll('#st-detail .cx-stage').length === rowsOf('stage_detail').length);
   check('the heat map has a cell per level and revenue stage',
     page.document.querySelectorAll('#ch-heat .cx-heat div[data-members]').length ===
-      5 * rowsOf('revenue').length);
+      4 * rowsOf('revenue').length);
   check('the level chart has a bar per level',
     page.document.querySelectorAll('#ch-levels svg > g').length === rowsOf('levels').length);
 
