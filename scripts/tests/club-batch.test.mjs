@@ -596,7 +596,7 @@ console.log('\nClicking anywhere on a row ticks it');
 
 /* ---- Week 1's static content ------------------------------------------- */
 
-console.log("\nWeek 1 carries the audit, the growth prompts and the questions");
+console.log("\nWeek 1's block carries the agents and the growth prompts when their lessons are missing");
 {
   const p = open();
   const extra = p.extra();
@@ -614,12 +614,13 @@ console.log("\nWeek 1 carries the audit, the growth prompts and the questions");
   /* This payload has no "Pick your personal AI agent" or "10 Growth
      Prompts" lesson, so their blocks are drawn here, where they always
      were. With the lessons, they move into them (tested further down). */
-  check('the agents, the growth prompts and the questions, in Ella\'s order',
+  check('the agents and the growth prompts, in Ella\'s order',
     JSON.stringify(order) === JSON.stringify([
       'Which personal AI agent should you start with?',
       'growth-prompts',
-      'Questions from the cohort',
     ]), order);
+  check('and the cohort\'s questions are off the page',
+    p.doc.getElementById('cohort-questions') === null && !/Questions from the cohort/.test(p.live.textContent));
   check('and no Next steps list: the lessons say all of it',
     extra.querySelector('#cw-nextsteps-h') === null && !/Next steps/.test(extra.textContent));
 
@@ -947,48 +948,6 @@ console.log('\nAudacious Action: one toggle, shut, with a drop-down per prompt')
   p.w.close();
 }
 
-
-console.log('\nThe questions from the cohort close Week 1');
-{
-  const p = open();
-  const extra = p.extra();
-
-  const qa = extra.querySelector('#cohort-questions');
-  check('the questions are in Week 1, last', qa !== null && extra.lastElementChild === qa,
-    extra.lastElementChild && extra.lastElementChild.id);
-
-  const groups = [...qa.querySelectorAll('.trp-cw-gp-h')].map((h) => h.textContent);
-  check('grouped by section, in order',
-    JSON.stringify(groups) === JSON.stringify(['Agents', 'AI operating system', 'Content']), groups);
-
-  const items = [...qa.querySelectorAll('.trp-cw-qa-item')];
-  check('twenty-four questions', items.length === 24, items.length);
-  check('all collapsed to begin with', items.every((d) => !d.open));
-  check('each on a <details>, so the keyboard and in-page search are the browser\'s',
-    items.every((d) => d.tagName === 'DETAILS' && d.querySelector('summary')));
-
-  const counts = ['Agents', 'AI operating system', 'Content'].map((name) => {
-    const head = [...qa.querySelectorAll('.trp-cw-gp-h')].find((h) => h.textContent === name);
-    return head.nextElementSibling.querySelectorAll('.trp-cw-qa-item').length;
-  });
-  check('fourteen, four and six', JSON.stringify(counts) === JSON.stringify([14, 4, 6]), counts);
-
-  // One answer, word for word, so a reflow of this block cannot quietly
-  // rewrite Ella's words.
-  const first = items[0];
-  check('the first question is the first one asked',
-    first.querySelector('summary').textContent.trim() ===
-    'Where do I start, and can I build an agent with no technical background?',
-    first.querySelector('summary').textContent.trim());
-  const answer = first.querySelector('.trp-cw-qa-a').textContent;
-  check('and its answer is exactly as written',
-    answer.startsWith('Yes. Most agents in this cohort need no code.') &&
-    answer.endsWith('Bring it to session 1 and we will build it live.'), answer.slice(0, 50));
-
-  check('no answer sends a member off the page',
-    qa.querySelector('a[href]') === null, qa.innerHTML.slice(0, 80));
-  p.w.close();
-}
 
 console.log('\nThe agent table and the growth prompts sit in their own lessons');
 {
