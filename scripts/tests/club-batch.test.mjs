@@ -430,6 +430,19 @@ function openWith(data, hash) {
   };
 }
 
+console.log('\nA week 1 video row plays outside its drop-down');
+{
+  const p = open();
+  p.pick(1);
+  const row = p.lesson('Masterclass replay');
+  const frame = row && row.querySelector('iframe');
+  check('the video is in the row', frame !== null);
+  check('and not inside the drop-down, so it shows without opening it',
+    frame && !frame.closest('[hidden]'));
+  check('and there is no button out to the video site',
+    row && !row.querySelector('a.trp-cw-btn'));
+}
+
 console.log('\nThe Time Rich Pep Talk starts shut for everyone');
 {
   const p = open();

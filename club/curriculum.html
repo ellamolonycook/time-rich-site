@@ -2175,6 +2175,16 @@ When you finish:
         head.appendChild(toggle);
         row.appendChild(head);
 
+        /* A video row shows its video under the title, outside the
+           drop-down, so it plays without opening anything (Ella, 26 Oct).
+           Only a video the portal can embed; it never links off the page. */
+        var isVideo = !!(item && L.str(item.kind) === 'video');
+        if (isVideo && embedFor(item)) {
+          var watch = L.el('div', 'trp-cw-detail');
+          watch.appendChild(videoBox(item, name));
+          row.appendChild(watch);
+        }
+
         var detail = L.el('div', 'trp-cw-detail');
         detail.id = detailId;
         var body = L.str(item && item.body);
@@ -2190,7 +2200,7 @@ When you finish:
           detail.appendChild(blockNode);
           placed[block.id] = true;
         }
-        var open = L.linkTo(item && item.url, buttonLabel(item), 'trp-cw-btn is-primary is-sm');
+        var open = isVideo ? null : L.linkTo(item && item.url, buttonLabel(item), 'trp-cw-btn is-primary is-sm');
         if (open) {
           open.setAttribute('aria-label', buttonLabel(item) + ': ' + name);
           detail.appendChild(open);
