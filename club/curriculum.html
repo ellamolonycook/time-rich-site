@@ -312,6 +312,16 @@
     .trp-cw-callout p { margin: 0; font-size: 16px; line-height: 1.6; color: var(--trp-deep); }
     .trp-cw-callout b { font-weight: 600; }
 
+    /* The prizes, above the week tabs, so they show whichever week is open. */
+    .trp-cw-prizes { padding: 20px 22px; border-radius: 22px; background: rgb(var(--c-lime) / .32); border: 1px solid rgb(var(--c-lime) / .6); }
+    .trp-cw-prizes-h { margin: 0; font-family: var(--trp-display); font-weight: 600; font-size: clamp(18px, 2.2vw, 22px); letter-spacing: -.02em; color: var(--trp-deep); }
+    .trp-cw-prizes-lead { margin: 4px 0 14px; font-size: 15px; line-height: 1.5; color: var(--trp-soft); }
+    .trp-cw-prizes-list { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(auto-fit, minmax(190px, 1fr)); gap: 10px; }
+    .trp-cw-prize { padding: 12px 14px; border-radius: 14px; background: rgb(var(--c-surface)); }
+    .trp-cw-prize-name { display: block; font-size: 15px; font-weight: 600; color: var(--trp-deep); }
+    .trp-cw-prize-how { display: block; margin-top: 4px; font-size: 14px; line-height: 1.5; color: var(--trp-soft); }
+    .trp-cw-prize-win { display: block; margin-top: 6px; font-size: 14px; font-weight: 600; line-height: 1.4; color: var(--trp-green); }
+
     /* the audit table: text boxes the member types into. It sits in the
        detail of the row that asks for it, under Ella's prompt, so the gap
        matches the detail's own. :not([hidden]) because it waits in the page
@@ -1829,6 +1839,34 @@ When you finish:
       /* The band under the welcome: the video, wide. The calendar used to
          be a card beside it; it is a small button beside the welcome's
          title now. */
+      /* The Superhuman prizes run across all four weeks, so they sit above
+         the week tabs rather than inside one week's lessons. */
+      var PRIZES = [
+        ['Boldest Move', 'Post your most audacious win in #audacious-wins.', 'A 30-minute 1:1 with a mentor'],
+        ['Best Energy, drawn every Friday', 'Show up live and bring the energy.', 'A 1:1 with an expert'],
+        ['Stanley VIP Prize', 'Post about the Accelerator on LinkedIn and Instagram across all 4 weeks. Tag Ella, Stanley, Wispr Flow and Time Rich.', 'A $1K Stanley setup and 12 months of Wispr Flow'],
+        ['Testimonial Prize, 3 winners', 'Leave a LinkedIn recommendation and a video testimonial.', 'A 30-minute strategy call with mentors'],
+        ['First 10 intros', 'Introduce yourself and give a LinkedIn testimonial on Day 1.', 'Instinct Assistant, 100% free']
+      ];
+      function prizes() {
+        var box = L.el('section', 'trp-cw-prizes');
+        box.setAttribute('aria-labelledby', 'cw-prizes-h');
+        var h = L.el('h2', 'trp-cw-prizes-h', '\uD83D\uDD25 Superhuman prizes');
+        h.id = 'cw-prizes-h';
+        box.appendChild(h);
+        box.appendChild(L.el('p', 'trp-cw-prizes-lead', 'Every prize winner also gets 1 year of Time Rich Club membership.'));
+        var ul = L.el('ul', 'trp-cw-prizes-list');
+        PRIZES.forEach(function (p) {
+          var li = L.el('li', 'trp-cw-prize');
+          li.appendChild(L.el('span', 'trp-cw-prize-name', p[0]));
+          li.appendChild(L.el('span', 'trp-cw-prize-how', p[1]));
+          li.appendChild(L.el('span', 'trp-cw-prize-win', 'Win: ' + p[2]));
+          ul.appendChild(li);
+        });
+        box.appendChild(ul);
+        return box;
+      }
+
       function intro(parts) {
         if (!parts.video) return null;
 
@@ -2347,6 +2385,7 @@ When you finish:
         if (hello) live.appendChild(hello);
         var band = intro(parts);
         if (band) live.appendChild(band);
+        live.appendChild(prizes());
 
         var tabs = L.el('div', 'trp-cw-weeks');
         tabs.setAttribute('role', 'tablist');

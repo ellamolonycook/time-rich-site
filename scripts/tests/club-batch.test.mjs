@@ -1045,6 +1045,21 @@ console.log('\nAn open lesson folds from a click in its body, not from its contr
   p.w.close();
 }
 
+console.log('\nThe Superhuman prizes sit above the week tabs');
+{
+  const p = open();
+  const prizes = p.doc.querySelector('[data-curriculum-live] > .trp-cw-prizes');
+  check('they are drawn once, outside the weeks', prizes !== null &&
+    p.doc.querySelectorAll('.trp-cw-prizes').length === 1 &&
+    prizes.nextElementSibling && prizes.nextElementSibling.className === 'trp-cw-weeks');
+  check('with all five prizes',
+    prizes && prizes.querySelectorAll('.trp-cw-prize').length === 5);
+  p.pick(2);
+  check('and they stay when another week is picked',
+    p.doc.querySelectorAll('[data-curriculum-live] > .trp-cw-prizes').length === 1);
+  p.w.close();
+}
+
 console.log('\nOne drop-down open at a time');
 {
   const data = payload();
