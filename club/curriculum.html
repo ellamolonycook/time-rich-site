@@ -357,8 +357,9 @@
     .trp-cw-gp-lead { margin: 0; font-size: 15.5px; line-height: 1.6; color: var(--trp-soft); max-width: 68ch; }
     .trp-cw-slink { color: var(--trp-deep); text-decoration: underline; text-underline-offset: 3px; }
     .trp-cw-pb { border: 1px solid var(--trp-line); border-radius: 16px; background: rgb(var(--c-surface)); overflow: hidden; }
-    .trp-cw-pb-head { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 10px 12px 10px 16px; border-bottom: 1px solid var(--trp-line); }
-    .trp-cw-pb-label { font-size: 11.5px; font-weight: 600; letter-spacing: .06em; text-transform: uppercase; color: var(--trp-soft); }
+    .trp-cw-pb-head { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 10px 12px 10px 16px; border-bottom: 1px solid var(--trp-line); background: var(--trp-sagelt); }
+    .trp-cw-pb-label { font-size: 11.5px; font-weight: 600; letter-spacing: .06em; text-transform: uppercase; color: var(--trp-green); }
+    .trp-cw-key { background: var(--trp-sagelt); color: var(--trp-deep); font-weight: 700; border-radius: 4px; padding: 1px 3px; box-decoration-break: clone; -webkit-box-decoration-break: clone; }
     .trp-cw-copy { flex: none; min-height: 44px; padding: 0 14px; border: 1px solid var(--trp-line); border-radius: 999px; background: rgb(var(--c-surface)); font: inherit; font-size: 13px; font-weight: 600; color: var(--trp-deep); cursor: pointer; }
     .trp-cw-copy:hover { background: var(--trp-sagelt); }
     .trp-cw-copy:focus-visible { outline: 2px solid var(--trp-green); outline-offset: 2px; }
@@ -660,8 +661,6 @@
               <div class="trp-cw-step"><div style="display:flex;align-items:center;gap:14px;min-height:72px;padding:16px 20px"><span class="trp-bar is-tick"></span><span class="trp-cw-step-text"><span class="trp-cw-step-kicker"><span class="trp-bar">Step 1</span></span><span class="trp-cw-step-title"><span class="trp-bar">Introduce yourself in the Club</span></span></span></div></div>
               <div class="trp-cw-step"><div style="display:flex;align-items:center;gap:14px;min-height:72px;padding:16px 20px"><span class="trp-bar is-tick"></span><span class="trp-cw-step-text"><span class="trp-cw-step-kicker"><span class="trp-bar">Step 2</span></span><span class="trp-cw-step-title"><span class="trp-bar">Set up your AI</span></span></span></div></div>
               <div class="trp-cw-step"><div style="display:flex;align-items:center;gap:14px;min-height:72px;padding:16px 20px"><span class="trp-bar is-tick"></span><span class="trp-cw-step-text"><span class="trp-cw-step-kicker"><span class="trp-bar">Step 3</span></span><span class="trp-cw-step-title"><span class="trp-bar">Install Wispr Flow</span></span></span></div></div>
-              <div class="trp-cw-step"><div style="display:flex;align-items:center;gap:14px;min-height:72px;padding:16px 20px"><span class="trp-bar is-tick"></span><span class="trp-cw-step-text"><span class="trp-cw-step-kicker"><span class="trp-bar">Step 4</span></span><span class="trp-cw-step-title"><span class="trp-bar">Build your Business Hub</span></span></span></div></div>
-              <div class="trp-cw-step"><div style="display:flex;align-items:center;gap:14px;min-height:72px;padding:16px 20px"><span class="trp-bar is-tick"></span><span class="trp-cw-step-text"><span class="trp-cw-step-kicker"><span class="trp-bar">Step 5</span></span><span class="trp-cw-step-title"><span class="trp-bar">Get ready for the week</span></span></span></div></div>
             </div>
           </div>
         </div>
@@ -779,7 +778,7 @@
         <!-- The agent comparison, built by portal-agents.js. The Resources
              page shows the same block from the same file, so the two cannot
              drift. The card around it is the portal's, as on Resources. The
-             renderer moves it into "Pick your personal AI agent". -->
+             renderer moves it into "Pick your AI agent". -->
         <div class="trp-cw-w1-sec" id="which-agent">
           <div class="glass-card is-static trp-cw-agents" data-agents-block></div>
         </div>
@@ -817,7 +816,7 @@
               <p><b>The challenge:</b> pick ONE prompt below, run it in a chat inside your Business Hub before Friday, and post your audacious action in <b class="trp-cw-channel">#audacious-wins</b> in the Time Rich Club Slack.</p>
             </div>
 
-            <p class="trp-cw-w1-lede">Speak your answers with Wispr Flow. Every prompt reads your Business COMPASS first, and none of them sends, posts or deletes anything without your yes.</p>
+            <p class="trp-cw-w1-lede">Speak your answers with <a class="trp-cw-slink" href="https://wisprflow.ai/info/redeem-promo?code=TIMERICH6&amp;months=6" target="_blank" rel="noopener noreferrer">Wispr Flow</a>. Every prompt reads your Business COMPASS first, and none of them sends, posts or deletes anything without your yes.</p>
 
 
             <details class="trp-cw-step trp-cw-gpd">
@@ -826,7 +825,7 @@
                 <svg class="trp-cw-chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6"></path></svg>
               </summary>
               <div class="trp-cw-gp-body">
-                <p class="trp-cw-gp-lead">Recorded 3 to 5 sales calls with Wispr Flow&#x27;s notetaker? Use the first prompt. No calls yet? Use the second.</p>
+                <p class="trp-cw-gp-lead">Recorded 3 to 5 sales calls with <a class="trp-cw-slink" href="https://wisprflow.ai/info/redeem-promo?code=TIMERICH6&amp;months=6" target="_blank" rel="noopener noreferrer">Wispr Flow</a>&#x27;s notetaker? Use the first prompt. No calls yet? Use the second.</p>
                 <div class="trp-cw-pb">
                   <div class="trp-cw-pb-head">
                     <span class="trp-cw-pb-label">With calls</span>
@@ -836,10 +835,10 @@
 
 Before you start:
 - Restate my goal in one line, and tell me if it&#x27;s the right goal.
-- Don&#x27;t assume. If you need more context, ask me up to 3 questions first.
+- <mark class="trp-cw-key">Don&#x27;t assume.</mark> If you need more context, ask me up to 3 questions first.
 
 When you finish:
-- Rate your work out of 10. Say what would make it a 10, then fix it.
+- <mark class="trp-cw-key">Rate your work out of 10</mark>. Say what would make it a 10, then fix it.
 - Push back on me: where is my thinking weak, what could go wrong, and what am I missing?
 - Tell me the one next step to take.
 - Tell me what you learned about me or my work that should be saved to my Business COMPASS, so you&#x27;re smarter next time.</pre>
@@ -853,10 +852,10 @@ When you finish:
 
 Before you start:
 - Restate my goal in one line, and tell me if it&#x27;s the right goal.
-- Don&#x27;t assume. If you need more context, ask me up to 3 questions first.
+- <mark class="trp-cw-key">Don&#x27;t assume.</mark> If you need more context, ask me up to 3 questions first.
 
 When you finish:
-- Rate your work out of 10. Say what would make it a 10, then fix it.
+- <mark class="trp-cw-key">Rate your work out of 10</mark>. Say what would make it a 10, then fix it.
 - Push back on me: where is my thinking weak, what could go wrong, and what am I missing?
 - Tell me the one next step to take.
 - Tell me what you learned about me or my work that should be saved to my Business COMPASS, so you&#x27;re smarter next time.</pre>
@@ -882,10 +881,10 @@ When you finish:
 
 Before you start:
 - Restate my goal in one line, and tell me if it&#x27;s the right goal.
-- Don&#x27;t assume. If you need more context, ask me up to 3 questions first.
+- <mark class="trp-cw-key">Don&#x27;t assume.</mark> If you need more context, ask me up to 3 questions first.
 
 When you finish:
-- Rate your work out of 10. Say what would make it a 10, then fix it.
+- <mark class="trp-cw-key">Rate your work out of 10</mark>. Say what would make it a 10, then fix it.
 - Push back on me: where is my thinking weak, what could go wrong, and what am I missing?
 - Tell me the one next step to take.
 - Tell me what you learned about me or my work that should be saved to my Business COMPASS, so you&#x27;re smarter next time.</pre>
@@ -916,10 +915,10 @@ Finish with the 5 contacts I should reach out to this week, and why.
 
 Before you start:
 - Restate my goal in one line, and tell me if it&#x27;s the right goal.
-- Don&#x27;t assume. If you need more context, ask me up to 3 questions first.
+- <mark class="trp-cw-key">Don&#x27;t assume.</mark> If you need more context, ask me up to 3 questions first.
 
 When you finish:
-- Rate your work out of 10. Say what would make it a 10, then fix it.
+- <mark class="trp-cw-key">Rate your work out of 10</mark>. Say what would make it a 10, then fix it.
 - Push back on me: where is my thinking weak, what could go wrong, and what am I missing?
 - Tell me the one next step to take.
 - Tell me what you learned about me or my work that should be saved to my Business COMPASS, so you&#x27;re smarter next time.</pre>
@@ -944,15 +943,15 @@ When you finish:
 - I sent something and they haven&#x27;t replied in 3 days
 - I promised something (a link, deck, intro, date) and haven&#x27;t sent it
 Skip newsletters, receipts, notifications and anything already handled.
-2. Draft one follow-up per thread in my voice: short, warm, one clear ask. Save each as a Gmail draft in the same thread. Never send anything.
+2. Draft one follow-up per thread in my voice: short, warm, one clear ask. Save each as a Gmail draft in the same thread. <mark class="trp-cw-key">Never send anything</mark>.
 3. List each draft for me: who, why it needs a follow-up, and the first line. Hot contacts first.
 
 Before you start:
 - Restate my goal in one line, and tell me if it&#x27;s the right goal.
-- Don&#x27;t assume. If you need more context, ask me up to 3 questions first.
+- <mark class="trp-cw-key">Don&#x27;t assume.</mark> If you need more context, ask me up to 3 questions first.
 
 When you finish:
-- Rate your work out of 10. Say what would make it a 10, then fix it.
+- <mark class="trp-cw-key">Rate your work out of 10</mark>. Say what would make it a 10, then fix it.
 - Push back on me: where is my thinking weak, what could go wrong, and what am I missing?
 - Tell me the one next step to take.
 - Tell me what you learned about me or my work that should be saved to my Business COMPASS, so you&#x27;re smarter next time.</pre>
@@ -977,10 +976,10 @@ Only use details you can show me a source for. No flattery, no &quot;quick quest
 
 Before you start:
 - Restate my goal in one line, and tell me if it&#x27;s the right goal.
-- Don&#x27;t assume. If you need more context, ask me up to 3 questions first.
+- <mark class="trp-cw-key">Don&#x27;t assume.</mark> If you need more context, ask me up to 3 questions first.
 
 When you finish:
-- Rate your work out of 10. Say what would make it a 10, then fix it.
+- <mark class="trp-cw-key">Rate your work out of 10</mark>. Say what would make it a 10, then fix it.
 - Push back on me: where is my thinking weak, what could go wrong, and what am I missing?
 - Tell me the one next step to take.
 - Tell me what you learned about me or my work that should be saved to my Business COMPASS, so you&#x27;re smarter next time.</pre>
@@ -1002,14 +1001,14 @@ When you finish:
                   <pre id="cw-gp-f-1" class="trp-cw-pb-text">Read my Business COMPASS and my Hot + Warm Contacts, and scan my email and calendar from the last 90 days. Find 5 clients, friends or peers who&#x27;ve helped me or whom I rate.
 For each, suggest one give: a LinkedIn recommendation, an introduction to someone in my network, or sharing their work.
 Then draft it: the recommendation text (under 80 words, specific, in my voice) or the double opt-in intro email. Add a 20-second voice note script to send with it.
-Never send anything. Never invent results or praise I can&#x27;t back up.
+<mark class="trp-cw-key">Never send anything</mark>. Never invent results or praise I can&#x27;t back up.
 
 Before you start:
 - Restate my goal in one line, and tell me if it&#x27;s the right goal.
-- Don&#x27;t assume. If you need more context, ask me up to 3 questions first.
+- <mark class="trp-cw-key">Don&#x27;t assume.</mark> If you need more context, ask me up to 3 questions first.
 
 When you finish:
-- Rate your work out of 10. Say what would make it a 10, then fix it.
+- <mark class="trp-cw-key">Rate your work out of 10</mark>. Say what would make it a 10, then fix it.
 - Push back on me: where is my thinking weak, what could go wrong, and what am I missing?
 - Tell me the one next step to take.
 - Tell me what you learned about me or my work that should be saved to my Business COMPASS, so you&#x27;re smarter next time.</pre>
@@ -1033,10 +1032,10 @@ Then give me 10 partner targets whose audience matches My ICP. For each: who, wh
 
 Before you start:
 - Restate my goal in one line, and tell me if it&#x27;s the right goal.
-- Don&#x27;t assume. If you need more context, ask me up to 3 questions first.
+- <mark class="trp-cw-key">Don&#x27;t assume.</mark> If you need more context, ask me up to 3 questions first.
 
 When you finish:
-- Rate your work out of 10. Say what would make it a 10, then fix it.
+- <mark class="trp-cw-key">Rate your work out of 10</mark>. Say what would make it a 10, then fix it.
 - Push back on me: where is my thinking weak, what could go wrong, and what am I missing?
 - Tell me the one next step to take.
 - Tell me what you learned about me or my work that should be saved to my Business COMPASS, so you&#x27;re smarter next time.</pre>
@@ -1062,10 +1061,10 @@ Only list events you found a real link for. Don&#x27;t invent dates.
 
 Before you start:
 - Restate my goal in one line, and tell me if it&#x27;s the right goal.
-- Don&#x27;t assume. If you need more context, ask me up to 3 questions first.
+- <mark class="trp-cw-key">Don&#x27;t assume.</mark> If you need more context, ask me up to 3 questions first.
 
 When you finish:
-- Rate your work out of 10. Say what would make it a 10, then fix it.
+- <mark class="trp-cw-key">Rate your work out of 10</mark>. Say what would make it a 10, then fix it.
 - Push back on me: where is my thinking weak, what could go wrong, and what am I missing?
 - Tell me the one next step to take.
 - Tell me what you learned about me or my work that should be saved to my Business COMPASS, so you&#x27;re smarter next time.</pre>
@@ -1086,14 +1085,14 @@ When you finish:
                   </div>
                   <pre id="cw-gp-i-1" class="trp-cw-pb-text">Read my latest sales call notes in Wispr Flow. Read my Business COMPASS (sections 2 and 3) first.
 Score the call 1 to 10 on: discovery (did I find their real problem and budget), listening (my talk time vs theirs), handling objections, and the next step agreed.
-Quote the moments that mattered, in their words. Then give me the 3 things to do differently on my next call, and draft the follow-up email with one clear next step. Never send it.
+Quote the moments that mattered, in their words. Then give me the 3 things to do differently on my next call, and draft the follow-up email with one clear next step. <mark class="trp-cw-key">Never send</mark> it.
 
 Before you start:
 - Restate my goal in one line, and tell me if it&#x27;s the right goal.
-- Don&#x27;t assume. If you need more context, ask me up to 3 questions first.
+- <mark class="trp-cw-key">Don&#x27;t assume.</mark> If you need more context, ask me up to 3 questions first.
 
 When you finish:
-- Rate your work out of 10. Say what would make it a 10, then fix it.
+- <mark class="trp-cw-key">Rate your work out of 10</mark>. Say what would make it a 10, then fix it.
 - Push back on me: where is my thinking weak, what could go wrong, and what am I missing?
 - Tell me the one next step to take.
 - Tell me what you learned about me or my work that should be saved to my Business COMPASS, so you&#x27;re smarter next time.</pre>
@@ -1117,14 +1116,14 @@ When you finish:
 2. Money owed to me: open or overdue invoices, oldest first.
 3. Money out: recurring tools and subscriptions, with the monthly total. Flag any I haven&#x27;t used in 30 days.
 4. My next 30 days: what&#x27;s due in and out.
-Only use numbers you found. If something is missing, list it instead of guessing. Draft polite reminders for overdue invoices as Gmail drafts. Never send.
+Only use numbers you found. If something is missing, list it instead of guessing. Draft polite reminders for overdue invoices as Gmail drafts. <mark class="trp-cw-key">Never send</mark>.
 
 Before you start:
 - Restate my goal in one line, and tell me if it&#x27;s the right goal.
-- Don&#x27;t assume. If you need more context, ask me up to 3 questions first.
+- <mark class="trp-cw-key">Don&#x27;t assume.</mark> If you need more context, ask me up to 3 questions first.
 
 When you finish:
-- Rate your work out of 10. Say what would make it a 10, then fix it.
+- <mark class="trp-cw-key">Rate your work out of 10</mark>. Say what would make it a 10, then fix it.
 - Push back on me: where is my thinking weak, what could go wrong, and what am I missing?
 - Tell me the one next step to take.
 - Tell me what you learned about me or my work that should be saved to my Business COMPASS, so you&#x27;re smarter next time.</pre>
@@ -1220,9 +1219,7 @@ When you finish:
       var STEPS = {
         1: 'Introduce yourself in the Club',
         2: 'Set up your AI',
-        3: 'Install Wispr Flow',
-        4: 'Build your Business Hub',
-        5: 'Get ready for the week'
+        3: 'Install Wispr Flow'
       };
       var PIN_BELOW = 100;
       var BONUS_RE = /^bonus:\s*/i;
@@ -1248,7 +1245,7 @@ When you finish:
       var auditTool = document.getElementById('cw-audit-tool');
       var AUDIT_ROW = /^run your time rich audit$/i;
       var agentsBlock = document.getElementById('which-agent');
-      var AGENTS_ROW = /^pick your personal ai agent$/i;
+      var AGENTS_ROW = /^pick your (personal )?ai agent$/i;
       // In a lesson, the prompts go without their own toggle: the lesson is
       // the toggle. The toggle itself stays put for the fallback below.
       var growthPrompts = document.getElementById('growth-prompts');
@@ -1440,9 +1437,20 @@ When you finish:
           if (/^#[a-z0-9-]+$/.test(line.trim()) || /^[A-Z][A-Za-z' -]{2,30}$/.test(line.trim())) {
             p.appendChild(L.el('strong', 'trp-cw-channel', line.trim()));
           }
-          else p.appendChild(document.createTextNode(line));
+          else linkNames(p, line);
         });
         return p;
+      }
+
+      // Tool names in a lesson's text link to where you get them.
+      var NAME_LINKS = { 'Wispr Flow': 'https://wisprflow.ai/info/redeem-promo?code=TIMERICH6&months=6' };
+      var NAME_RE = /(Wispr Flow)/;
+      function linkNames(p, line) {
+        line.split(NAME_RE).forEach(function (bit, n) {
+          if (!bit) return;
+          var a = n % 2 ? L.linkTo(NAME_LINKS[bit], bit, 'trp-cw-slink') : null;
+          p.appendChild(a || document.createTextNode(bit));
+        });
       }
 
       /* A body can carry two kinds of block, both written as plain text in
@@ -1527,7 +1535,11 @@ When you finish:
       function copyBox(label, text, key) {
         var box = L.el('div', 'trp-cw-pb');
         var head = L.el('div', 'trp-cw-pb-head');
-        head.appendChild(L.el('span', 'trp-cw-pb-label', label));
+        // The button already says Copy, so the label drops it: "Copy the
+        // voice prompt" reads as "Voice prompt".
+        var name = label.replace(/^copy:?\s+/i, '').replace(/^the\s+/i, '');
+        name = name ? name.charAt(0).toUpperCase() + name.slice(1) : label;
+        head.appendChild(L.el('span', 'trp-cw-pb-label', name));
         var btn = L.el('button', 'trp-cw-copy', 'Copy');
         btn.type = 'button';
         var id = 'cw-copy-' + key.replace(/[^a-z0-9_-]/gi, '-');
@@ -1535,7 +1547,13 @@ When you finish:
         btn.setAttribute('aria-label', 'Copy: ' + label);
         head.appendChild(btn);
         box.appendChild(head);
-        var pre = L.el('pre', 'trp-cw-pb-text', text);
+        // **like this** marks the words that matter most. The marks are
+        // drawn green and never copied.
+        var pre = L.el('pre', 'trp-cw-pb-text');
+        text.split(/\*\*(.+?)\*\*/).forEach(function (bit, n) {
+          if (!bit) return;
+          pre.appendChild(n % 2 ? L.el('mark', 'trp-cw-key', bit) : document.createTextNode(bit));
+        });
         pre.id = id;
         box.appendChild(pre);
         // Filled in once it is copied: where it goes next.
@@ -2009,11 +2027,10 @@ When you finish:
          so a lesson Ella adds in Supabase lands in the section its place in
          the week says. Other weeks are short enough to stay one list. */
       var WEEK1_SECTIONS = [
-        { upto: 9, title: 'Start here' },
-        { upto: 49, title: 'Monday: set your goal and build your COMPASS' },
-        { upto: 79, title: "This week: your audit, your AI EA and Wednesday's prep" },
-        { upto: 89, title: 'Before Friday: your Audacious Action' },
-        { upto: Infinity, title: 'Build your Time Rich Agents and your voice' }
+        { upto: 49, title: 'Monday: goal and COMPASS' },
+        { upto: 79, title: 'This week: audit, AI EA, Wednesday prep' },
+        { upto: 89, title: 'Before Friday: Audacious Action' },
+        { upto: Infinity, title: 'Time Rich Agents and your voice' }
       ];
 
       // Which sections the member has opened or shut, kept across redraws.
@@ -2161,7 +2178,7 @@ When you finish:
           return box;
         }
 
-        if (setupLeft) drawSetup('First, your setup');
+        if (setupLeft) drawSetup('Your setup');
 
         if (own.length) {
           var nextKey = null;

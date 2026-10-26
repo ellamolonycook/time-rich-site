@@ -19,32 +19,32 @@
 -- appears, and the prompts work without customers or a team yet. Ella's
 -- welcome letter is not touched.
 --
--- Start here (the setup), in five steps:
+-- Start here (the setup), in three steps:
 --   100s  Step 1  Join the Club Slack. "Say hello in #introductions" is
---                 now "Introduce yourself in the Club", with the six-point
---                 template in a copy box.
+--                 now "Post your intro", with the six-point template in a
+--                 copy box. The onboarding questions and the WhatsApp
+--                 group sit here too, since Step 5 is gone.
 --   200s  Step 2  Set up your AI
 --   300s  Step 3  Install Wispr Flow
---   400s  Step 4  Build your Business Hub: create it click by click,
---                 paste in its rules, check it works. Create your Business
---                 Hub moved here from the COMPASS step, because this
---                 week's prompts run inside the Hub.
---   500s  Step 5  Get ready for the week (was Before Monday)
+-- The Business Hub is no longer a setup step: its three rows move into
+-- Week 1 at 24 to 26. "Record last week" goes; the audit prompt asks for
+-- the same voice note.
 --
 -- Week 1, in the order of the week, with the build-it-yourself lessons
 -- at the end:
 --    5  Your master prompt                             (new: copy it, then the AI sets up xx and the other shortcuts)
 --   10  Open Business Surgery
---   20  Write your North Star on paper
---   30  Wispr your North Star into your Business Hub   (copy the prompt)
+--   20  Write your North Star
+--   24  Create your Business Hub, 25 Paste your Hub's rules, 26 Test your Hub
+--   30  Wispr your North Star   (copy the prompt)
 --   40  Build your Business COMPASS                    (was Start here)
---   44  Build your ICP from your calls                 (new, Business Hub doc)
+--   44  Build your ICP                 (new, Business Hub doc)
 --   50  Run your Time Rich Audit                       (copy the prompt)
---   60  Pick your personal AI agent                    (the page draws the shared agent table in it)
+--   60  Pick your AI agent                    (the page draws the shared agent table in it)
 --   70  Preparation: Multi-LLM & Setting Your Harness  (was Wednesday 28 October: Meet Cien Solon ...)
 --   80  10 Growth Prompts                              (was Take one Audacious Action; the page draws the ten prompts in it)
---   90  Set up your first three Time Rich Agents       (new: setup for Claude, ChatGPT and Gemini)
---   94  Build your next Time Rich Agent                (new, Business Hub doc)
+--   90  Your first 3 Time Rich Agents       (new: setup for Claude, ChatGPT and Gemini)
+--   94  Your next Time Rich Agent                (new, Business Hub doc)
 --   98  Give your AI your voice                        (new: voice prompt, then a skill)
 --
 -- Renamed rows keep their ids and ticks: "Make your copy of the Business
@@ -85,15 +85,15 @@ update public.portal_items
    and not exists (select 1 from public.portal_items
                     where week_id = 1 and title = 'Build your Business COMPASS');
 update public.portal_items
-   set title = 'Make sure you introduce yourself'
+   set title = 'Post your intro'
  where week_id = 0 and title = 'Say hello in #introductions'
    and not exists (select 1 from public.portal_items
-                    where week_id = 0 and title = 'Make sure you introduce yourself');
+                    where week_id = 0 and title = 'Post your intro');
 update public.portal_items
-   set title = 'Make sure you introduce yourself'
+   set title = 'Post your intro'
  where week_id = 0 and title = 'Introduce yourself in #introductions'
    and not exists (select 1 from public.portal_items
-                    where week_id = 0 and title = 'Make sure you introduce yourself');
+                    where week_id = 0 and title = 'Post your intro');
 update public.portal_items
    set title = 'TRC Slack'
  where week_id = 0 and title = 'Join the Time Rich Club Slack'
@@ -117,6 +117,96 @@ update public.portal_items
                     where week_id = 1 and title = '10 Growth Prompts');
 
 -- one LaunchLemonade offer, wherever the link is: the TIMERICHLL voucher
+-- The Business Hub moves from the setup into Week 1, ticks kept.
+update public.portal_items p
+   set week_id = 1
+ where p.week_id = 0
+   and p.title in ('Create your Business Hub', 'Paste in your Hub''s rules', 'Paste your Hub''s rules',
+                   'Check your Hub works', 'Test your Hub')
+   and not exists (select 1 from public.portal_items q
+                    where q.week_id = 1 and q.title = p.title);
+-- Headings without filler words. Renamed in place, so ticks stay.
+update public.portal_items
+   set title = 'Join the WhatsApp group'
+ where week_id = 0 and title = 'Join the Superhuman WhatsApp group'
+   and not exists (select 1 from public.portal_items
+                    where week_id = 0 and title = 'Join the WhatsApp group');
+update public.portal_items
+   set title = 'Connect your tools'
+ where week_id = 0 and title = 'Connect your tools to your AI'
+   and not exists (select 1 from public.portal_items
+                    where week_id = 0 and title = 'Connect your tools');
+update public.portal_items
+   set title = 'Onboarding questions'
+ where week_id = 0 and title = 'Answer the onboarding questions'
+   and not exists (select 1 from public.portal_items
+                    where week_id = 0 and title = 'Onboarding questions');
+update public.portal_items
+   set title = 'Photo and name'
+ where week_id = 0 and title = 'Add your photo and name'
+   and not exists (select 1 from public.portal_items
+                    where week_id = 0 and title = 'Photo and name');
+update public.portal_items
+   set title = 'Post your intro'
+ where week_id = 0 and title = 'Make sure you introduce yourself'
+   and not exists (select 1 from public.portal_items
+                    where week_id = 0 and title = 'Post your intro');
+update public.portal_items
+   set title = 'Paid AI plan and desktop app'
+ where week_id = 0 and title = 'Get a paid AI plan and the desktop app'
+   and not exists (select 1 from public.portal_items
+                    where week_id = 0 and title = 'Paid AI plan and desktop app');
+update public.portal_items
+   set title = 'Lock down privacy'
+ where week_id = 0 and title = 'Lock down your privacy'
+   and not exists (select 1 from public.portal_items
+                    where week_id = 0 and title = 'Lock down privacy');
+update public.portal_items
+   set title = 'Paste your Hub''s rules'
+ where week_id = 1 and title = 'Paste in your Hub''s rules'
+   and not exists (select 1 from public.portal_items
+                    where week_id = 1 and title = 'Paste your Hub''s rules');
+update public.portal_items
+   set title = 'Test your Hub'
+ where week_id = 1 and title = 'Check your Hub works'
+   and not exists (select 1 from public.portal_items
+                    where week_id = 1 and title = 'Test your Hub');
+update public.portal_items
+   set title = 'Record last week'
+ where week_id = 0 and title = 'Record last week in 2 minutes'
+   and not exists (select 1 from public.portal_items
+                    where week_id = 0 and title = 'Record last week');
+update public.portal_items
+   set title = 'Write your North Star'
+ where week_id = 1 and title = 'Write your North Star on paper'
+   and not exists (select 1 from public.portal_items
+                    where week_id = 1 and title = 'Write your North Star');
+update public.portal_items
+   set title = 'Wispr your North Star'
+ where week_id = 1 and title = 'Wispr your North Star into your Business Hub'
+   and not exists (select 1 from public.portal_items
+                    where week_id = 1 and title = 'Wispr your North Star');
+update public.portal_items
+   set title = 'Build your ICP'
+ where week_id = 1 and title = 'Build your ICP from your calls'
+   and not exists (select 1 from public.portal_items
+                    where week_id = 1 and title = 'Build your ICP');
+update public.portal_items
+   set title = 'Pick your AI agent'
+ where week_id = 1 and title = 'Pick your personal AI agent'
+   and not exists (select 1 from public.portal_items
+                    where week_id = 1 and title = 'Pick your AI agent');
+update public.portal_items
+   set title = 'Your first 3 Time Rich Agents'
+ where week_id = 1 and title = 'Set up your first three Time Rich Agents'
+   and not exists (select 1 from public.portal_items
+                    where week_id = 1 and title = 'Your first 3 Time Rich Agents');
+update public.portal_items
+   set title = 'Your next Time Rich Agent'
+ where week_id = 1 and title = 'Build your next Time Rich Agent'
+   and not exists (select 1 from public.portal_items
+                    where week_id = 1 and title = 'Your next Time Rich Agent');
+
 update public.portal_items
    set url = 'https://studio.launchlemonade.app/signup?voucher=TIMERICHLL'
  where url like '%launchlemonade.app%'
@@ -141,16 +231,16 @@ insert into want (week_id, kind, title, sort, body, url) values
 3. Need help with the portal or program? DM a Time Rich Leader or email emc@timerichclub.com.
 4. No spam, self-promotion, selling or demanding vibes. Anyone who does this will be removed from the Club and refunded for the accelerator.$tr$,
    $tr$https://join.slack.com/t/timerichclub/shared_invite/zt-4dry4ppfn-yV~VNRrHW_z3K3AFtbnOJQ$tr$),
-  (0, $tr$text$tr$, $tr$Add your photo and name$tr$, 120,
+  (0, $tr$text$tr$, $tr$Photo and name$tr$, 120,
    $tr$Your full name, a clear headshot, and a title that says what you do. People reply to a face, and this room is full of founders who can open doors for you. Do it by the end of Wednesday 28 October.$tr$,
    null),
-  (0, $tr$text$tr$, $tr$Make sure you introduce yourself$tr$, 130,
+  (0, $tr$text$tr$, $tr$Post your intro$tr$, 130,
    $tr$Post it in #introductions. Press Copy, paste it into the message box (Cmd+V on Mac, Ctrl+V on Windows), replace each point with your answer and press send.
 
 = Copy the template
 • Name, company, city. Where you’re based.
 • What your business does. The problem you solve, in one sentence.
-• Your Q4 North Star. One target, with a number and a date. Example: “3 new retainer clients by 31 December.”
+• **Your Q4 North Star.** One target, with a number and a date. Example: “3 new retainer clients by 31 December.”
 • Your superpower. What you can help the other founders with.
 • What you’re most excited about in the accelerator.
 • LinkedIn. Full link, so people can connect.
@@ -173,7 +263,7 @@ Storytelling, positioning and getting your offer to market.$tr$,
    null),
 
   -- ---- Start here, Step 2: Set up your AI ---------------------------
-  (0, $tr$link$tr$, $tr$Get a paid AI plan and the desktop app$tr$, 210,
+  (0, $tr$link$tr$, $tr$Paid AI plan and desktop app$tr$, 210,
    $tr$Claude Pro, ChatGPT Plus or a Google AI plan, around $20 USD a month. Every step on this page shows Claude, so it's the easiest to follow along with. Install the desktop app rather than using a browser tab: it's the version Wispr Flow and your other tools connect to. Then sign in.
 
 New to AI? Open the drop-down below first, and every step after this will make more sense.
@@ -199,7 +289,7 @@ When an answer is off, don't start over. Tell it what's wrong in plain words, li
 AI can sound sure and still be wrong. Check any number, name or date before you use it.
 Stuck on setup? Ask in #ai-setup in the Club Slack. Someone has hit the same wall.$tr$,
    $tr$https://claude.ai/download$tr$),
-  (0, $tr$link$tr$, $tr$Lock down your privacy$tr$, 220,
+  (0, $tr$link$tr$, $tr$Lock down privacy$tr$, 220,
    $tr$Do this before you tell your AI anything about your business or your clients. In Claude's Settings:
 1. Privacy: turn off Help improve Claude.
 2. Memory: turn off Include sensitive topics in memory.
@@ -218,7 +308,7 @@ I run (your business) for (who you serve). I'm a founder with very little time, 
   (0, $tr$text$tr$, $tr$Turn it on$tr$, 320,
    $tr$Hold fn on Mac (Ctrl + Opt if there's no fn key) or Ctrl + Win on Windows. Speak, let go, and your words appear at your cursor. For longer answers, double-tap fn on Mac to talk hands-free, and tap fn again to stop. Try it now: say your Q4 goal out loud into any text box.$tr$,
    null),
-  (0, $tr$link$tr$, $tr$Connect your tools to your AI$tr$, 330,
+  (0, $tr$link$tr$, $tr$Connect your tools$tr$, 330,
    $tr$This lets Claude read your email, calendar and files, so it answers with your real week instead of a guess. Your agents need these connections later this week. In Wispr Flow: Settings, MCP, Add to Claude. Then in Claude: Settings, Connectors, and connect what you use. The guide walks you through each one. Nothing sends, posts or deletes without your yes.
 
 + What to connect
@@ -230,8 +320,8 @@ I run (your business) for (who you serve). I'm a founder with very little time, 
 ☐ Your CRM, if you use one (HubSpot, Pipedrive, Attio)$tr$,
    $tr$https://superhumanos.notion.site/Connect-your-tools-to-your-AI-Superhuman-Accelerator-401ca5ebe557817aaa44ff89de92a091$tr$),
 
-  -- ---- Start here, Step 4: Build your Business Hub ------------------
-  (0, $tr$link$tr$, $tr$Create your Business Hub$tr$, 410,
+  -- ---- Week 1: Build your Business Hub (sits between 20 and 30) ------
+  (1, $tr$link$tr$, $tr$Create your Business Hub$tr$, 24,
    $tr$Your Business Hub is one project in your AI tool that knows your business. Every chat inside it reads the same instructions and files, so you never explain your business from scratch again. Every prompt this week runs in it.
 
 In the Claude desktop app:
@@ -248,23 +338,23 @@ In the sidebar, click New project, name it Business Hub and create it. Its instr
 Gemini
 Open Gems, click New Gem and name it Business Hub. It has its own Instructions box, and a Knowledge section for files.$tr$,
    $tr$https://claude.ai/projects$tr$),
-  (0, $tr$text$tr$, $tr$Paste in your Hub's rules$tr$, 420,
+  (1, $tr$text$tr$, $tr$Paste your Hub's rules$tr$, 25,
    $tr$These tell your Hub how to work with you: read your COMPASS first, never guess, and never send anything without your yes.
 1. On the Business Hub page, click Instructions on the right. It may say Set project instructions.
 2. Press Copy below, paste it into the box and click Save.
 
 = Copy the instructions
-This is my Business Hub. Read my Business COMPASS in this project's files before any task. Everything we build here gets saved as a doc in my Google Drive, not left in the chat.
+This is my Business Hub. **Read my Business COMPASS in this project's files before any task.** Everything we build here gets saved as a doc in my Google Drive, not left in the chat.
 
 House rules:
 - Assess my goal and point out where it falls short.
 - Ask clarifying questions before you start.
 - Act on small, reversible tasks. Ask before anything that goes out in my name.
 - Never invent numbers, quotes, names or sources. Say "I don't know" instead.
-- Never send, post, buy or delete without my yes.
+- **Never send, post, buy or delete without my yes.**
 - Push back when my plan has a gap. Tell me before you tell me it's good.
 - Before you finish, check your work against my brief and say what you checked.
-- Rate your work out of 10, and be brutally honest.
+- **Rate your work out of 10**, and be brutally honest.
 
 Honesty rules:
 1. If you don't know, say so. Never fill a gap with a guess. Name your source for every fact or number so I can check it.
@@ -282,7 +372,7 @@ Your COMPASS isn't in the Hub yet. You build it this week, add it to the Hub's F
 ☐ Tested with a real question
 Once a month, update your COMPASS goal, offers and priorities.$tr$,
    null),
-  (0, $tr$link$tr$, $tr$Check your Hub works$tr$, 430,
+  (1, $tr$link$tr$, $tr$Test your Hub$tr$, 26,
    $tr$Start a chat from inside the project: type in the box on the Business Hub page, not on Claude's home screen. Chats you start there show up in the Hub's list.
 
 = Copy the test prompt
@@ -293,14 +383,11 @@ If it plays back your rules, your Hub is ready. If it doesn't know them, check y
 Then test your connectors: press the + button in the message box, check they're switched on, and ask "What's on my calendar this week?"$tr$,
    $tr$https://claude.ai/projects$tr$),
 
-  -- ---- Start here, Step 5: Get ready for the week -------------------
-  (0, $tr$text$tr$, $tr$Record last week in 2 minutes$tr$, 510,
-   $tr$Turn on Wispr Flow's notetaker and talk through last week, day by day: what you did and where the hours went. Rough is fine, and honest is better than impressive: the AI can only find hours you tell it about. You'll paste it into your Time Rich Audit this week.$tr$,
-   null),
-  (0, $tr$link$tr$, $tr$Answer the onboarding questions$tr$, 520,
+  -- ---- Start here, Step 1 again: onboarding and WhatsApp -----------
+  (0, $tr$link$tr$, $tr$Onboarding questions$tr$, 140,
    $tr$Your answers shape the curriculum, your hot seat room and your Club profile.$tr$,
    $tr$https://timerich.ai/superhuman/$tr$),
-  (0, $tr$link$tr$, $tr$Join the Superhuman WhatsApp group$tr$, 530,
+  (0, $tr$link$tr$, $tr$Join the WhatsApp group$tr$, 150,
    $tr$For announcements between sessions, straight to your phone.$tr$,
    $tr$https://chat.whatsapp.com/E5GU1dvuHhFDI77yO88OIw?mode=gi_t$tr$),
 
@@ -311,10 +398,10 @@ Then test your connectors: press the + button in the message box, check they're 
 = Copy the master prompt
 Before you start:
 - Restate my goal in one line, and tell me if it's the right goal.
-- Don't assume. If you need more context, ask me up to 3 questions first.
+- **Don't assume.** If you need more context, ask me up to 3 questions first.
 
 When you finish:
-- Rate your work out of 10. Say what would make it a 10, then fix it.
+- **Rate your work out of 10**. Say what would make it a 10, then fix it.
 - Push back on me: where is my thinking weak, what could go wrong, and what am I missing?
 - Tell me the one next step to take.
 - Tell me what you learned about me or my work that should be saved to my Business COMPASS, so you're smarter next time.
@@ -327,7 +414,7 @@ Help me set up text shortcuts on my computer, so I type a short code in any app 
 First ask me if I'm on a Mac or Windows. Then walk me through it one click at a time, and wait for me to say done before the next step.
 
 Set up these shortcuts. Write the text for each one from my Business COMPASS, and show it to me before I save it:
-- xx: my master prompt (I'll paste it in)
+- **xx: my master prompt** (I'll paste it in)
 - bio: my bio in 3 sentences
 - oneliner: what I do, who it's for and the result they get, in one sentence
 - linkedinurl: my full LinkedIn link
@@ -349,20 +436,20 @@ The shortcuts it sets up:
 | signoff | How you sign off your emails |$tr$,
    null),
   (1, $tr$text$tr$, $tr$Open Business Surgery$tr$, 10,
-   $tr$Today you set one goal and see where your hours really go. Every prompt below runs in a chat inside your Business Hub, from Step 4 of your setup. Speak your answers with Wispr Flow. If Wispr isn't working on the day, type them and fix it after the call.
+   $tr$Today you set one goal and see where your hours really go. Every prompt below runs in a chat inside your Business Hub, which you build just after your North Star. Speak your answers with Wispr Flow. If Wispr isn't working on the day, type them and fix it after the call.
 
 First time running a prompt? Press Copy, open your Business Hub, start a new chat, paste and press Enter. If the AI asks you questions back, that's it working: answer them out loud with Wispr.
 
 Any time you hand your AI a task of your own, give it these three lines:
 
 = Copy the task brief
-Result: (what done looks like, not the steps to get there)
-Depth: (a fast first pass, or careful work where accuracy matters most)
-Proof: (the check to run before handing it back)
+**Result:** (what done looks like, not the steps to get there)
+**Depth:** (a fast first pass, or careful work where accuracy matters most)
+**Proof:** (the check to run before handing it back)
 =
 Missed it live? Watch the recording on the Monday session above once it's posted.$tr$,
    null),
-  (1, $tr$text$tr$, $tr$Write your North Star on paper$tr$, 20,
+  (1, $tr$text$tr$, $tr$Write your North Star$tr$, 20,
    $tr$Before you open any AI, write by hand:
 
 1. Q4: 1 specific target by 31 December, with a number
@@ -374,11 +461,11 @@ Pre-revenue? Make your target your first paying customers, or the number of conv
 
 Then ask yourself: if this was the only result you got this quarter, would it set you up for 2027?$tr$,
    null),
-  (1, $tr$link$tr$, $tr$Wispr your North Star into your Business Hub$tr$, 30,
+  (1, $tr$link$tr$, $tr$Wispr your North Star$tr$, 30,
    $tr$Open a new chat in your Business Hub and paste the prompt. Where it says to, turn on Wispr Flow and read your four answers from your paper: double-tap fn on Mac, or hold Ctrl + Win on Windows. Tap fn again to stop.
 
 = Copy the prompt
-Here is my North Star: (double-tap fn on Mac, or hold Ctrl + Win on Windows, and read out your four answers).
+**Here is my North Star:** (double-tap fn on Mac, or hold Ctrl + Win on Windows, and read out your four answers).
 
 Before you assess it, ask me your clarifying questions, one at a time.
 
@@ -388,7 +475,7 @@ Then assess my goal with the 4 Cs:
 3. Collaboration: who or what do I need to hit it, and where should I check in?
 4. Cadence: does my 1 hour a day go to the work that moves this number?
 
-Then rate your own assessment out of 10, tell me what would make it a 10, and give me my sharpened North Star in one line. Keep it, because every prompt after this works towards it.
+Then rate your own assessment out of 10, tell me what would make it a 10, and **give me my sharpened North Star in one line**. Keep it, because every prompt after this works towards it.
 =
 What you'll get: a few questions first, so answer them out loud. Then a check of your goal against the 4 Cs, a score for its own work, and your North Star in one line. If your target has no number yet, add one now, even a rough one.$tr$,
    $tr$https://claude.ai/projects$tr$),
@@ -416,16 +503,26 @@ Read my Business COMPASS. Tell me in three lines what you know about my business
 =
 If it can't find your COMPASS, check it's in the project's Files and that you started the chat inside the Business Hub, not on its own. If the three lines sound like you, it's working. Once a month, update its goal, offers and priorities.$tr$,
    $tr$https://docs.google.com/document/d/1c50ST_FSASEOCIh1z3GQhkdNl9eqFjY0asvk-MC1X5s/copy$tr$),
-  (1, $tr$text$tr$, $tr$Build your ICP from your calls$tr$, 44,
+  (1, $tr$text$tr$, $tr$Build your ICP$tr$, 44,
    $tr$Your ICP is your ideal client profile: who buys from you, why, and the exact words they use. Once your AI knows them, everything it writes for you lands better. This runs on your recorded calls from Wispr Flow or any AI notetaker, connected in Step 3 of your setup. No recorded calls yet? Skip this for now and come back after your next few sales calls.
 
 = Copy the prompt
 Build my ICP from my Wispr Flow or AI notetaker notes. Read my Business COMPASS first. Give me who my ideal client is, the problem they feel, what makes them buy, their budget, their top objections and the exact phrases they use, quoting the calls. Write it as one page called "My ICP", then tell me the 3 points you're least sure about.
+
+Before you start:
+- Restate my goal in one line, and tell me if it's the right goal.
+- **Don't assume.** If you need more context, ask me up to 3 questions first.
+
+When you finish:
+- **Rate your work out of 10**. Say what would make it a 10, then fix it.
+- Push back on me: where is my thinking weak, what could go wrong, and what am I missing?
+- Tell me the one next step to take.
+- Tell me what you learned about me or my work that should be saved to my Business COMPASS, so you're smarter next time.
 =
 Save it as a Google Doc called My ICP in your Drive, and add it to your Business Hub's Files so every chat reads it.$tr$,
    null),
   (1, $tr$link$tr$, $tr$Run your Time Rich Audit$tr$, 50,
-   $tr$This shows how much of your week actually makes you money, and the first 3 jobs to hand off. Open a new chat in your Business Hub, paste the prompt, then paste your 2-minute voice note of last week after "My last week:". No voice note? Paste your calendar.
+   $tr$This shows how much of your week actually makes you money, and the first 3 jobs to hand off. Open a new chat in your Business Hub, paste the prompt, then talk through last week with Wispr Flow, day by day, and paste it after "My last week:". Rough is fine: the AI can only find hours you tell it about. No time? Paste your calendar.
 
 = Copy the prompt
 Run a Time Rich Audit on my last week. Read my Business COMPASS first. If it's missing or empty, ask me the 3 questions you need before you start.
@@ -436,13 +533,13 @@ Run a Time Rich Audit on my last week. Read my Business COMPASS first. If it's m
 4. Give every non-$ task one owner: Skill (same steps every time), Agent (recurring, on a schedule or trigger), Human (a freelancer, assistant or teammate, now or later), or Me. Only mark Me if it's pricing, anything sent in my name, brand direction or hiring.
 5. Name the 3 hand-offs that return the most hours this week. Write each as a 4 Cs brief: Clarity (what done looks like), Context (what's in my head), Collaboration (who's involved, where I check), Cadence (one-off or recurring, when it's due).
 
-Don't invent tasks, hours or offers. If something is missing, ask me before you guess.
+**Don't invent tasks, hours or offers.** If something is missing, ask me before you guess.
 
-My last week:
+**My last week:**
 =
 What you'll get: a list of your tasks with hours, one percentage, and 3 short briefs you can hand to a person or an agent. A low percentage is normal in week 1. That number is what the next four weeks move. Check the hours against your memory: if the AI got one wrong, tell it and ask for the audit again.$tr$,
    $tr$https://claude.ai/projects$tr$),
-  (1, $tr$text$tr$, $tr$Set up your first three Time Rich Agents$tr$, 90,
+  (1, $tr$text$tr$, $tr$Your first 3 Time Rich Agents$tr$, 90,
    $tr$These are your first Time Rich Agents. They draft. You send. Each one is a prompt that runs on a schedule, so it works while you don't. Pick your AI tool below for the setup, then copy an agent's prompt and set the time from the next drop-down. Run it once straight away to check it. Start with the one that would save you the most time this week. Not on Slack much? Skip the first one.
 
 + Set up an agent in Claude
@@ -471,14 +568,14 @@ Every second day at 8:00. Saves Gmail drafts, plus a summary email to you.
 Twice a day, scan my Slack since your last run. Read my Business COMPASS first so you know my priorities and my voice.
 1. Find every message that needs me: DMs, @mentions, and threads where someone is waiting on my answer. Skip channels I only watch, bots, and messages I've already answered.
 2. Sort them: Reply today, Can wait, FYI only.
-3. For each Reply today and Can wait message, draft a reply in my voice. Short, clear, no filler. Save it as a draft in the right conversation. Never send anything.
+3. For each Reply today and Can wait message, draft a reply in my voice. Short, clear, no filler. Save it as a draft in the right conversation. **Never send anything**.
 4. Give me one list: who, what they need, your draft, and anything you need from me to finish it.
 If nothing needs me, say so in one line.
 
 Before you start: restate the goal of this run in one line.
 
 When you finish:
-- Rate your work out of 10, and say what would make it a 10.
+- **Rate your work out of 10**, and say what would make it a 10.
 - Don't stop to ask me questions while you run. List anything you weren't sure about, and the questions you'd have asked me.
 - Tell me the one next step to take.
 - Tell me what you learned about me or my work that should be saved to my Business COMPASS, so you're smarter next time.
@@ -490,13 +587,13 @@ Build my Hot + Warm Contacts list. Read my Business COMPASS and My ICP first, if
 - Warm: engaged in the last 90 days but no clear next step.
 Leave out everyone else, plus suppliers, team and personal contacts.
 3. Save it as a Google Sheet called "Hot + Warm Contacts" in my Drive, with these columns: Name, Company, Email, Temperature (Hot or Warm), Last touch, Source, Why hot or warm, Next step. If you can't write to my Drive, give me the table to paste in.
-4. Show me the first 10 rows before you save anything. On the weekly run, add new people and update Temperature and Last touch. Never delete a row.
+4. **Show me the first 10 rows before you save anything.** On the weekly run, add new people and update Temperature and Last touch. **Never delete a row.**
 Finish with the 5 contacts I should reach out to this week, and why.
 
 Before you start: restate the goal of this run in one line.
 
 When you finish:
-- Rate your work out of 10, and say what would make it a 10.
+- **Rate your work out of 10**, and say what would make it a 10.
 - Don't stop to ask me questions while you run. List anything you weren't sure about, and the questions you'd have asked me.
 - Tell me the one next step to take.
 - Tell me what you learned about me or my work that should be saved to my Business COMPASS, so you're smarter next time.
@@ -507,21 +604,21 @@ Every second day, scan my email from the last 7 days. Read my Business COMPASS a
 - I sent something and they haven't replied in 3 days
 - I promised something (a link, deck, intro, date) and haven't sent it
 Skip newsletters, receipts, notifications and anything already handled.
-2. Draft one follow-up per thread in my voice: short, warm, one clear ask. Save each as a Gmail draft in the same thread. Never send anything to anyone else.
+2. Draft one follow-up per thread in my voice: short, warm, one clear ask. Save each as a Gmail draft in the same thread. **Never send anything** to anyone else.
 3. Then send one email to me only, subject "Your follow-ups: (today's date)", listing each draft: who, why it needs a follow-up, and the first line of the draft. Hot contacts first.
 If nothing needs a follow-up, send me a one-line email saying so.
 
 Before you start: restate the goal of this run in one line.
 
 When you finish:
-- Rate your work out of 10, and say what would make it a 10.
+- **Rate your work out of 10**, and say what would make it a 10.
 - Don't stop to ask me questions while you run. List anything you weren't sure about, and the questions you'd have asked me.
 - Tell me the one next step to take.
 - Tell me what you learned about me or my work that should be saved to my Business COMPASS, so you're smarter next time.
 =
 Each agent ends with the master prompt, written for a run with nobody there to answer: it lists its questions in the report instead of stopping to ask. Read the drafts before you send any of them. When one is off, tell the agent what to change in plain words, and it gets better each run.$tr$,
    null),
-  (1, $tr$text$tr$, $tr$Build your next Time Rich Agent$tr$, 94,
+  (1, $tr$text$tr$, $tr$Your next Time Rich Agent$tr$, 94,
    $tr$Got a hand-off from your Time Rich Audit that none of the three covers? Your AI interviews you, writes the agent's brief, then you test it on a real example and put it on a schedule the same way as your first three.
 
 = Copy the interview prompt
@@ -532,7 +629,7 @@ Ask one question at a time, with an example answer so I can reply fast. Cover:
 3. Standards: tone, length, what a great result looks like and what I'd reject.
 4. The line: what it does alone, what it drafts for my approval, and what it never does.
 5. Rhythm: when it runs and how it reports back.
-Stop after 10 questions, or sooner if I say "build".
+**Stop after 10 questions**, or sooner if I say "build".
 Then write the agent as one page called "Agent: (name)" with these sections: Job, Reads, Steps, Delivers, Never, Runs, Rules learned. Show it to me before I save it.
 
 When you finish:
@@ -548,10 +645,10 @@ Run my new agent once on a real example from this week. Show me the result, then
 
 Before you start:
 - Restate my goal in one line, and tell me if it's the right goal.
-- Don't assume. If you need more context, ask me up to 3 questions first.
+- **Don't assume.** If you need more context, ask me up to 3 questions first.
 
 When you finish:
-- Rate your work out of 10. Say what would make it a 10, then fix it.
+- **Rate your work out of 10**. Say what would make it a 10, then fix it.
 - Push back on me: where is my thinking weak, what could go wrong, and what am I missing?
 - Tell me the one next step to take.
 - Tell me what you learned about me or my work that should be saved to my Business COMPASS, so you're smarter next time.
@@ -564,7 +661,7 @@ Delivers: (what you get and where it lands)
 Never: (what it must not do)
 Runs: (when)$tr$,
    null),
-  (1, $tr$text$tr$, $tr$Pick your personal AI agent$tr$, 60,
+  (1, $tr$text$tr$, $tr$Pick your AI agent$tr$, 60,
    $tr$An agent is an AI that does a job for you on its own, like sorting your inbox or booking meetings. Think of it as your first AI executive assistant. These overlap a lot, so pick one, not all of them: the one that lives where your work already is.
 
 Give it one hand-off from your Time Rich Audit, and keep approval on so nothing goes out without your yes. Every agent in the table links to where you sign up.$tr$,
@@ -597,20 +694,20 @@ Read the writing samples in this project's files. Study how I write: the words I
 
 Before you start:
 - Restate my goal in one line, and tell me if it's the right goal.
-- Don't assume. If you need more context, ask me up to 3 questions first.
+- **Don't assume.** If you need more context, ask me up to 3 questions first.
 
-Then rewrite the draft below so it sounds like me. Keep my meaning, cut the filler, and don't add facts I didn't give you.
+Then rewrite the draft below so it sounds like me. Keep my meaning, cut the filler, and **don't add facts I didn't give you.**
 
 When you finish:
 - List the 5 voice rules you followed, so I can correct any that are wrong.
-- Rate your work out of 10. Say what would make it a 10, then fix it.
+- **Rate your work out of 10**. Say what would make it a 10, then fix it.
 - Push back on me: where is my thinking weak, what could go wrong, and what am I missing?
 - Tell me the one next step to take.
 - Tell me what you learned about me or my work that should be saved to my Business COMPASS, so you're smarter next time.
 
-My draft:
+**My draft:**
 
-Blog URLs:
+**Blog URLs:**
 =
 Paste a real draft after "My draft:", and links to anything you've published after "Blog URLs:". Correct any rule that's off and ask for the rewrite again until it sounds like you. Then, in the same chat:
 
@@ -641,6 +738,7 @@ update public.portal_items set published = false
  where (week_id = 0 and title in ('Fill it in by voice', 'Make your copy of the Business COMPASS',
                                   'Say hello in #introductions'))
     or (week_id = 0 and title = 'Sign up to LaunchLemonade (3 months free)')
+    or (week_id = 0 and title = 'Record last week')
     or (week_id = 1 and title in ('This week: your photo and the TRC Club Code',
                                   'Audacious Action before Friday: finish your Business Hub'));
 
@@ -650,14 +748,14 @@ begin
   select string_agg(title, ' | ' order by sort) into got
     from public.portal_items where week_id = 1 and published;
   if got is distinct from
-     'Your master prompt | Open Business Surgery | Write your North Star on paper | Wispr your North Star into your Business Hub | Build your Business COMPASS | Build your ICP from your calls | Run your Time Rich Audit | Pick your personal AI agent | Preparation: Multi-LLM & Setting Your Harness | 10 Growth Prompts | Set up your first three Time Rich Agents | Build your next Time Rich Agent | Give your AI your voice'
+     'Your master prompt | Open Business Surgery | Write your North Star | Create your Business Hub | Paste your Hub''s rules | Test your Hub | Wispr your North Star | Build your Business COMPASS | Build your ICP | Run your Time Rich Audit | Pick your AI agent | Preparation: Multi-LLM & Setting Your Harness | 10 Growth Prompts | Your first 3 Time Rich Agents | Your next Time Rich Agent | Give your AI your voice'
   then raise exception 'Week 1 is not in the order of the week: %', got; end if;
 
   select string_agg(sort || ' ' || title, ' | ' order by sort) into got
     from public.portal_items where week_id = 0 and published and sort >= 100;
   if got is distinct from
-     '110 TRC Slack | 120 Add your photo and name | 130 Make sure you introduce yourself | 210 Get a paid AI plan and the desktop app | 220 Lock down your privacy | 230 Tell your AI how you work | 310 Install Wispr Flow | 320 Turn it on | 330 Connect your tools to your AI | 410 Create your Business Hub | 420 Paste in your Hub''s rules | 430 Check your Hub works | 510 Record last week in 2 minutes | 520 Answer the onboarding questions | 530 Join the Superhuman WhatsApp group'
-  then raise exception 'Start here is not in five steps: %', got; end if;
+     '110 TRC Slack | 120 Photo and name | 130 Post your intro | 140 Onboarding questions | 150 Join the WhatsApp group | 210 Paid AI plan and desktop app | 220 Lock down privacy | 230 Tell your AI how you work | 310 Install Wispr Flow | 320 Turn it on | 330 Connect your tools'
+  then raise exception 'Start here is not in three steps: %', got; end if;
 
   -- one LaunchLemonade link, on the voucher the 25 Oct migration set
   select count(*) into v from public.portal_items
@@ -671,28 +769,28 @@ begin
   -- everything a member pastes is in a copy box
   select count(*) into v from public.portal_items
    where published and (
-         (week_id = 0 and title = 'Make sure you introduce yourself' and body like '%= Copy the template%LinkedIn. Full link%')
+         (week_id = 0 and title = 'Post your intro' and body like '%= Copy the template%LinkedIn. Full link%')
       or (week_id = 0 and title = 'Tell your AI how you work' and body like '%= Copy your preferences%')
-      or (week_id = 0 and title = 'Paste in your Hub''s rules' and body like '%= Copy the instructions%')
-      or (week_id = 0 and title = 'Check your Hub works' and body like '%= Copy the test prompt%')
-      or (week_id = 1 and title = 'Wispr your North Star into your Business Hub' and body like '%= Copy the prompt%')
+      or (week_id = 1 and title = 'Paste your Hub''s rules' and body like '%= Copy the instructions%')
+      or (week_id = 1 and title = 'Test your Hub' and body like '%= Copy the test prompt%')
+      or (week_id = 1 and title = 'Wispr your North Star' and body like '%= Copy the prompt%')
       or (week_id = 1 and title = 'Build your Business COMPASS' and body like '%= Copy the test prompt%'
           and url like 'https://docs.google.com/%/copy')
       or (week_id = 1 and title = 'Run your Time Rich Audit' and body like '%= Copy the prompt%')
-      or (week_id = 1 and title = 'Build your ICP from your calls' and body like '%= Copy the prompt%')
+      or (week_id = 1 and title = 'Build your ICP' and body like '%= Copy the prompt%')
       or (week_id = 1 and title = 'Give your AI your voice' and body like '%= Copy the voice prompt%= Copy: Turn this into a skill%')
-      or (week_id = 1 and title = 'Set up your first three Time Rich Agents' and body like '%+ Set up an agent in Claude%+ Set up an agent in ChatGPT%+ Set up an agent in Gemini%= Copy agent 1%= Copy agent 2%= Copy agent 3%')
+      or (week_id = 1 and title = 'Your first 3 Time Rich Agents' and body like '%+ Set up an agent in Claude%+ Set up an agent in ChatGPT%+ Set up an agent in Gemini%= Copy agent 1%= Copy agent 2%= Copy agent 3%')
       or (week_id = 1 and title = 'Your master prompt' and body like '%= Copy the master prompt%= Copy the shortcut setup prompt%! /portal/assets/master-prompt-shortcut.png%| xx | Your master prompt |%')
-      or (week_id = 1 and title = 'Build your next Time Rich Agent' and body like '%= Copy the interview prompt%= Copy the test prompt%'));
+      or (week_id = 1 and title = 'Your next Time Rich Agent' and body like '%= Copy the interview prompt%= Copy the test prompt%'));
   if v <> 12 then raise exception 'expected 12 rows with their copy boxes or table, found %', v; end if;
 
   -- the master prompt's "When you finish" check rides on every agent prompt
   -- and on the voice prompt
   select count(*) into v from public.portal_items
    where week_id = 1 and published and (
-         (title = 'Set up your first three Time Rich Agents'
+         (title = 'Your first 3 Time Rich Agents'
           and (length(body) - length(replace(body, 'When you finish:', ''))) / length('When you finish:') = 3)
-      or (title = 'Build your next Time Rich Agent'
+      or (title = 'Your next Time Rich Agent'
           and (length(body) - length(replace(body, 'When you finish:', ''))) / length('When you finish:') = 2)
       or (title = 'Give your AI your voice' and body like '%When you finish:%'));
   if v <> 3 then raise exception 'expected the master prompt in the agent and voice prompts, found % rows', v; end if;

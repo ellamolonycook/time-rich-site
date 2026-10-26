@@ -985,6 +985,25 @@ console.log('\nThe agent table and the growth prompts sit in their own lessons')
   p.w.close();
 }
 
+console.log('\nA copy box marks the key words and drops "Copy" from its label');
+{
+  const LESSON = { id: 207, kind: 'text', title: 'Key words', sort: 45,
+    body: 'Try it.\n\n= Copy the prompt\nRead my COMPASS. **Never send anything.**\n=' };
+  const data = payload();
+  data.weeks[1].items.push(LESSON);
+  const p = openWith(data);
+  const box = p.detail('Key words').querySelector('.trp-cw-pb');
+  check('the label reads Prompt',
+    box && box.querySelector('.trp-cw-pb-label').textContent === 'Prompt',
+    box && box.querySelector('.trp-cw-pb-label').textContent);
+  const mark = box && box.querySelector('pre mark.trp-cw-key');
+  check('the starred words are marked', mark && mark.textContent === 'Never send anything.');
+  check('and the stars never reach the copy',
+    box && box.querySelector('pre').textContent === 'Read my COMPASS. Never send anything.',
+    box && box.querySelector('pre').textContent);
+  p.w.close();
+}
+
 console.log('\nThe setup and the week are master drop-downs');
 {
   const p = open();

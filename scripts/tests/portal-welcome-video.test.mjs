@@ -381,7 +381,7 @@ console.log('\nThe letter and the Pep Talk are untouched');
     p.hello.querySelector('.trp-cw-lead').textContent.startsWith("You're not here just to learn AI") &&
     p.hello.querySelector('.trp-cw-ask').textContent === 'How serious are you about becoming Time Rich?');
   /* No WhatsApp card in between: joining the group is a task in the setup
-     (Get ready for the week), where it can be ticked. */
+     (Step 1, beside your intro), where it can be ticked. */
   check('the week tabs follow the band',
     p.band.nextElementSibling && p.band.nextElementSibling.className === 'trp-cw-weeks',
     p.band.nextElementSibling && p.band.nextElementSibling.className);
