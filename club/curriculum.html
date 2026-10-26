@@ -330,6 +330,7 @@
     .trp-cw-prize { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 15rem); gap: 4px 24px; align-items: baseline; padding: 14px 0; border-top: 1px solid var(--trp-line); }
     .trp-cw-prize:first-child { border-top: 0; }
     .trp-cw-prize-name { font-size: 16px; font-weight: 600; color: var(--trp-deep); }
+    .trp-cw-prize-label { font-size: 11px; letter-spacing: .06em; text-transform: uppercase; color: var(--trp-soft); }
     .trp-cw-prize-how { grid-column: 1; font-size: 14px; line-height: 1.5; color: var(--trp-soft); }
     .trp-cw-prize-win { grid-column: 2; grid-row: 1 / span 2; font-size: 14px; font-weight: 600; line-height: 1.45; color: var(--trp-green); }
     @media (max-width: 640px) {
@@ -1886,7 +1887,10 @@ When you finish:
         PRIZES.forEach(function (p) {
           var li = L.el('li', 'trp-cw-prize');
           li.appendChild(L.el('span', 'trp-cw-prize-name', p[0]));
-          li.appendChild(L.el('span', 'trp-cw-prize-win', p[2]));
+          var win = L.el('span', 'trp-cw-prize-win');
+          win.appendChild(L.el('span', 'trp-cw-prize-label', 'Win: '));
+          win.appendChild(document.createTextNode(p[2]));
+          li.appendChild(win);
           li.appendChild(L.el('span', 'trp-cw-prize-how', p[1]));
           ul.appendChild(li);
         });
