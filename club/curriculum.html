@@ -147,6 +147,14 @@
     .trp-cw-mini-note { margin: -6px 0 0; font-size: 14.5px; line-height: 1.5; color: var(--trp-soft); }
     .trp-cw-wide-card:not([hidden]) { display: flex; }
     @media (max-width: 760px) { .trp-cw-intro { grid-template-columns: 1fr; } }
+    /* the band with only the video in it: the calendar is in the welcome now */
+    .trp-cw-intro.is-solo { grid-template-columns: minmax(0, 1fr); }
+    /* The welcome's title, with the small calendar button beside it. */
+    .trp-cw-welcome-head { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 12px 20px; width: 100%; }
+    .trp-cw-cal { display: inline-flex; align-items: center; gap: 8px; min-height: 40px; padding: 0 14px; border-radius: 999px; border: 1px solid var(--trp-line); background: rgb(var(--c-surface)); color: var(--trp-deep); font-size: 13px; font-weight: 600; text-decoration: none; white-space: nowrap; transition: background-color .18s ease; }
+    .trp-cw-cal:hover { background: var(--trp-sage); }
+    .trp-cw-cal:focus-visible { outline: 2px solid var(--trp-green); outline-offset: 2px; }
+    .trp-cw-cal-done { font-size: 12px; font-weight: 600; color: var(--trp-green); }
 
     /* the four weeks: a slim row of tabs with no dates, so the page stays
        on the week the member is in */
@@ -622,20 +630,19 @@
         <div class="trp-skel" aria-hidden="true" style="display: flex; flex-direction: column; gap: 32px">
           <div class="trp-cw-welcome">
             <div class="trp-cw-letter">
-              <h2 class="trp-cw-h2"><span class="trp-bar">Welcome to the Superhuman Accelerator</span></h2>
+              <div class="trp-cw-welcome-head">
+                <h2 class="trp-cw-h2"><span class="trp-bar">Welcome to the Superhuman Accelerator</span></h2>
+                <span class="trp-cw-cal"><span class="trp-bar">Add every session to your calendar</span></span>
+              </div>
               <p><span class="trp-bar">You're not here just to learn AI. You're here for an outcome: more revenue, more visibility, a system that runs.</span></p>
             </div>
           </div>
           <!-- The video is the tallest thing on the page above the tabs:
                without it here the footer jumps when the payload lands. -->
-          <div class="trp-cw-intro">
+          <div class="trp-cw-intro is-solo">
             <div class="trp-cw-intro-vid">
               <p class="trp-cw-intro-title"><span class="trp-bar">Welcome Video</span></p>
               <div class="trp-cw-video"><span class="trp-bar" style="display: block; width: 100%; height: 100%"></span></div>
-            </div>
-            <div class="trp-cw-mini">
-              <p class="trp-cw-mini-title"><span class="trp-bar">Add every session to your calendar</span></p>
-              <span class="trp-bar is-btn"></span>
             </div>
           </div>
           <div class="trp-cw-weeks">
@@ -1692,11 +1699,14 @@ When you finish:
          the Time Rich Pep Talk, a drop-down holding a line, her photo on
          the left and the letter beside it.
 
-         It starts open for everyone. It used to start shut for any member
-         who had pressed the old "I'm in", which meant the members who had
-         been here longest were the ones who never saw it. That saved state
-         is ignored now; the member's own open or shut, this visit, still
-         wins. */
+         It starts shut for everyone, so the letter never pushes the week
+         down the page; a member opens it when they want it. (It used to
+         start open, and before that shut only for a member who had pressed
+         the old "I'm in". That saved state is ignored.) The member's own open
+         or shut, this visit, still wins.
+
+         The calendar sits beside the title as a small button: every pinned
+         link row is drawn there, rather than as a card in the band. */
       var letterOpen = null;   // null until the member opens or shuts it
 
       function welcome(parts) {
@@ -1710,9 +1720,25 @@ When you finish:
         var inner = null;
 
         var name = L.str(letter.title) || 'Welcome';
-        var open = letterOpen === null ? true : letterOpen;
+        var open = letterOpen === null ? false : letterOpen;
         var col = L.el('div', 'trp-cw-letter');
-        col.appendChild(L.el('h2', 'trp-cw-h2', name));
+        var head = L.el('div', 'trp-cw-welcome-head');
+        head.appendChild(L.el('h2', 'trp-cw-h2', name));
+        parts.cards.forEach(function (item) {
+          var title = L.str(item.title);
+          var cal = L.linkTo(item.url, title, 'trp-cw-cal');
+          if (!cal) return;
+          var icon = L.el('span', '', '\uD83D\uDCC5');
+          icon.setAttribute('aria-hidden', 'true');
+          cal.insertBefore(icon, cal.firstChild);
+          cal.setAttribute('aria-label', title);
+          cal.addEventListener('click', function () { if (!L.isItemDone(item)) L.toggleItem(item); });
+          var wrap = L.el('span', '');
+          wrap.appendChild(cal);
+          if (L.isItemDone(item)) { wrap.appendChild(document.createTextNode(' ')); wrap.appendChild(L.el('span', 'trp-cw-cal-done', 'Done')); }
+          head.appendChild(wrap);
+        });
+        col.appendChild(head);
         var paras = L.str(letter.body).split(/\n\s*\n/).filter(function (t) { return t.trim(); });
         // Two lines are lifted out of the letter to sit above the pep
         // talk, under the title: its opening line ("You're not here just to
@@ -1767,36 +1793,18 @@ When you finish:
         return box;
       }
 
-      /* The band under the welcome: the video, wide, and the calendar card
-         beside it. The card is the title and its button and nothing else --
-         the row's body line is deliberately not drawn. */
+      /* The band under the welcome: the video, wide. The calendar used to
+         be a card beside it; it is a small button beside the welcome's
+         title now. */
       function intro(parts) {
-        if (!parts.video && !parts.cards.length) return null;
+        if (!parts.video) return null;
 
-        var box = L.el('div', 'trp-cw-intro');
-
-        if (parts.video) {
-          var name = L.str(parts.video.title) || 'Welcome Video';
-          var col = L.el('div', 'trp-cw-intro-vid');
-          col.appendChild(L.el('h2', 'trp-cw-intro-title', name));
-          col.appendChild(videoBox(parts.video, name));
-          box.appendChild(col);
-        }
-
-        parts.cards.forEach(function (item) {
-          var label = buttonLabel(item);
-          var card = L.el('div', 'trp-cw-mini');
-          card.appendChild(L.el('p', 'trp-cw-mini-title', L.str(item.title)));
-          var btn = L.linkTo(item.url, label, 'trp-cw-btn is-primary');
-          if (btn) {
-            btn.setAttribute('aria-label', label + ': ' + L.str(item.title));
-            btn.addEventListener('click', function () { if (!L.isItemDone(item)) L.toggleItem(item); });
-            card.appendChild(btn);
-          }
-          if (L.isItemDone(item)) card.appendChild(L.el('span', 'trp-cw-in', 'Done'));
-          box.appendChild(card);
-        });
-
+        var box = L.el('div', 'trp-cw-intro is-solo');
+        var name = L.str(parts.video.title) || 'Welcome Video';
+        var col = L.el('div', 'trp-cw-intro-vid');
+        col.appendChild(L.el('h2', 'trp-cw-intro-title', name));
+        col.appendChild(videoBox(parts.video, name));
+        box.appendChild(col);
         return box;
       }
 

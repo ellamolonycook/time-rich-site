@@ -430,33 +430,34 @@ function openWith(data, hash) {
   };
 }
 
-console.log('\nThe Time Rich Pep Talk is open for everyone');
+console.log('\nThe Time Rich Pep Talk starts shut for everyone');
 {
   const p = open();
   const toggle = p.live.querySelector('.trp-cw-pep-toggle');
   check('the toggle is still there', toggle !== null && toggle.textContent.includes('Time Rich Pep Talk'));
-  check('and it starts open', toggle && toggle.getAttribute('aria-expanded') === 'true',
+  check('and it starts shut, so the week is not pushed down',
+    toggle && toggle.getAttribute('aria-expanded') === 'false',
     toggle && toggle.getAttribute('aria-expanded'));
-  check('with the middle of the letter showing',
-    p.live.querySelector('#cw-pep-body') !== null &&
-    p.live.textContent.includes('The middle of the letter'));
+  check('with the letter not drawn yet', p.live.querySelector('#cw-pep-body') === null);
 
   // The member's own click still wins, this visit.
   toggle.dispatchEvent(new p.w.MouseEvent('click', { bubbles: true }));
   const after = p.live.querySelector('.trp-cw-pep-toggle');
-  check('clicking it shuts it', after.getAttribute('aria-expanded') === 'false',
+  check('clicking it opens it', after.getAttribute('aria-expanded') === 'true',
     after.getAttribute('aria-expanded'));
-  check('and the body goes with it', p.live.querySelector('#cw-pep-body') === null);
+  check('with the middle of the letter showing',
+    p.live.querySelector('#cw-pep-body') !== null &&
+    p.live.textContent.includes('The middle of the letter'));
   p.w.close();
 }
 
-console.log('\nA member who pressed the old "I\'m in" gets it open too');
+console.log('\nA member who pressed the old "I\'m in" gets it shut too');
 {
   // The letter row ticked is what used to shut the Pep Talk, which meant the
   // members who had been here longest never saw it.
   const p = open([LETTER.id]);
   const toggle = p.live.querySelector('.trp-cw-pep-toggle');
-  check('still open', toggle && toggle.getAttribute('aria-expanded') === 'true',
+  check('still shut', toggle && toggle.getAttribute('aria-expanded') === 'false',
     toggle && toggle.getAttribute('aria-expanded'));
   p.w.close();
 }
