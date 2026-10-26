@@ -1685,6 +1685,14 @@ const PORTAL_LOCAL_ORIGINS = [
   "http://localhost:8000",
   "http://127.0.0.1:8000",
 ];
+// The sandbox: Cloudflare Pages previews of this repo, one per branch, at
+// https://<branch>.time-rich-site.pages.dev (and the project root). Only our
+// Pages project can deploy there, so the portal can be tested on a branch
+// before it goes live. https only, exact project name, nothing wider.
+const SANDBOX_ORIGIN_RE = /^https:\/\/([a-z0-9-]+\.)?time-rich-site\.pages\.dev$/;
+function isSandboxOrigin(origin) {
+  return typeof origin === "string" && SANDBOX_ORIGIN_RE.test(origin);
+}
 const SKILL_BUCKET = "portal-skills";
 const SKILL_URL_TTL_SECONDS = 300; // 5 minutes
 
@@ -1698,7 +1706,7 @@ function portalDownloadCors(request) {
   };
   // Echoed back to the one caller that asked, never widened to a wildcard.
   const origin = request.headers.get("Origin") || "";
-  if (origin === PORTAL_DOWNLOAD_ORIGIN || PORTAL_LOCAL_ORIGINS.includes(origin)) {
+  if (origin === PORTAL_DOWNLOAD_ORIGIN || PORTAL_LOCAL_ORIGINS.includes(origin) || isSandboxOrigin(origin)) {
     headers["Access-Control-Allow-Origin"] = origin;
   }
   return headers;
@@ -2014,7 +2022,7 @@ function corsHeaders(request, env) {
     allow = "*";
   } else {
     const isLocal = /^https?:\/\/(localhost|127\.0\.0\.1)(:\d+)?$/.test(origin);
-    if (allowed.includes(origin) || isLocal) allow = origin;
+    if (allowed.includes(origin) || isLocal || isSandboxOrigin(origin)) allow = origin;
   }
   return {
     "Access-Control-Allow-Origin": allow,

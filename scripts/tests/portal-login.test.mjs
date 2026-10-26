@@ -322,6 +322,16 @@ console.log('\nCORS on the portal routes: production, plus the local dev server'
   check('http://127.0.0.1.example.com:8000 is refused', await allow('http://127.0.0.1.example.com:8000') === null);
   check('https://localhost:8000 is refused, http only', await allow('https://localhost:8000') === null);
   check('an unrelated origin is still refused', await allow('https://evil.example') === null);
+
+  // the sandbox: Cloudflare Pages previews of this repo, one per branch
+  check('the sandbox root is allowed',
+    await allow('https://time-rich-site.pages.dev') === 'https://time-rich-site.pages.dev');
+  check('a sandbox branch preview is allowed',
+    await allow('https://club-batch-25oct.time-rich-site.pages.dev') === 'https://club-batch-25oct.time-rich-site.pages.dev');
+  check('another Pages project is refused', await allow('https://time-rich-site-evil.pages.dev') === null);
+  check('a look-alike host is refused', await allow('https://time-rich-site.pages.dev.evil.example') === null);
+  check('a deeper look-alike is refused', await allow('https://a.b.time-rich-site.pages.dev') === null);
+  check('the sandbox over http is refused', await allow('http://time-rich-site.pages.dev') === null);
   check('no Origin header gets no CORS header', await allow('') === null);
 
   // every portal route, not just the login one
