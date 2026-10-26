@@ -247,7 +247,11 @@
 
     /* a table in a lesson, like the agent picker */
     .trp-cw-table-wrap { width: 100%; border: 1px solid var(--trp-line); border-radius: 12px; overflow: hidden; }
-    .trp-cw-table { width: 100%; border-collapse: collapse; font-size: 14px; line-height: 1.5; color: var(--trp-deep); }
+    /* Spacing 0 rather than merged borders: Tailwind reads every word on
+       the page as a possible class, and the merged-borders keyword is one,
+       so it would add rules to portal.css. Cells only draw a top border,
+       so the result looks the same. */
+    .trp-cw-table { width: 100%; border-spacing: 0; font-size: 14px; line-height: 1.5; color: var(--trp-deep); }
     .trp-cw-table th, .trp-cw-table td { padding: 10px 12px; text-align: left; vertical-align: top; border-top: 1px solid var(--trp-line); }
     .trp-cw-table thead th { border-top: 0; background: var(--trp-sagelt); font-size: 11px; font-weight: 600; letter-spacing: .06em; text-transform: uppercase; color: var(--trp-soft); }
     .trp-cw-table tbody th { font-weight: 600; white-space: nowrap; }
