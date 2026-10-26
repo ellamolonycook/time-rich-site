@@ -380,8 +380,8 @@ console.log('\nThe letter and the Pep Talk are untouched');
   check('the lead line and the ask are still lifted out',
     p.hello.querySelector('.trp-cw-lead').textContent.startsWith("You're not here just to learn AI") &&
     p.hello.querySelector('.trp-cw-ask').textContent === 'How serious are you about becoming Time Rich?');
-  /* No WhatsApp card in between: joining the group is a task in the setup
-     (Step 1, beside your intro), where it can be ticked. */
+  /* No WhatsApp card in between: the group and the onboarding questions
+     are off the curriculum page. */
   check('the week tabs follow the band',
     p.band.nextElementSibling && p.band.nextElementSibling.className === 'trp-cw-weeks',
     p.band.nextElementSibling && p.band.nextElementSibling.className);

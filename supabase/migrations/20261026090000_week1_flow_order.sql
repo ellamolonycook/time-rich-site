@@ -23,7 +23,7 @@
 --   100s  Step 1  Join the Club Slack. "Say hello in #introductions" is
 --                 now "Post your intro", with the six-point template in a
 --                 copy box. The onboarding questions and the WhatsApp
---                 group sit here too, since Step 5 is gone.
+--                 group are off the page, with Step 5.
 --   200s  Step 2  Set up your AI
 --   300s  Step 3  Install Wispr Flow
 -- The Business Hub is no longer a setup step: its three rows move into
@@ -296,14 +296,14 @@ Stuck on setup? Ask in #ai-setup in the Club Slack. Someone has hit the same wal
 3. Shared chats and Shared artifacts: set both to Private.$tr$,
    $tr$https://claude.ai/settings$tr$),
   (0, $tr$link$tr$, $tr$Tell your AI how you work$tr$, 230,
-   $tr$Your AI reads this before every answer, so you stop repeating yourself. In Claude: Settings, General, Personal preferences. In ChatGPT: Settings, Personalization, Custom instructions. Copy this in and change the first line to fit you.
+   $tr$Your AI reads this before every answer, so you stop repeating yourself. In Claude: Settings, Account, Instructions for Claude. In ChatGPT: Settings, Personalization, Custom instructions. Copy this in and change the first line to fit you.
 
 = Copy your preferences
 I run (your business) for (who you serve). I'm a founder with very little time, so give me direct answers with no fluff. Ask before you assume anything about my business, and tell me when you're not sure.$tr$,
    $tr$https://claude.ai/settings$tr$),
   -- ---- Start here, Step 3: Install Wispr Flow -----------------------
   (0, $tr$link$tr$, $tr$Install Wispr Flow$tr$, 310,
-   $tr$Wispr Flow turns your voice into text anywhere on your laptop. You'll talk most of this week instead of typing. 6 months of Wispr Flow Pro are included: install it, then open Settings, Plans and Billing, Add promo code. Enter TIMERICH6, press Apply, then Redeem now. It asks for a card, but you won't be charged for the 6 months.$tr$,
+   $tr$Wispr Flow turns your voice into text anywhere on your laptop. You'll talk most of this week instead of typing. 6 months of Wispr Flow Pro are included: the button below applies the offer for you. It asks for a card, but you won't be charged for the 6 months.$tr$,
    $tr$https://wisprflow.ai/info/redeem-promo?code=TIMERICH6&months=6$tr$),
   (0, $tr$text$tr$, $tr$Turn it on$tr$, 320,
    $tr$Hold fn on Mac (Ctrl + Opt if there's no fn key) or Ctrl + Win on Windows. Speak, let go, and your words appear at your cursor. For longer answers, double-tap fn on Mac to talk hands-free, and tap fn again to stop. Try it now: say your Q4 goal out loud into any text box.$tr$,
@@ -383,13 +383,6 @@ If it plays back your rules, your Hub is ready. If it doesn't know them, check y
 Then test your connectors: press the + button in the message box, check they're switched on, and ask "What's on my calendar this week?"$tr$,
    $tr$https://claude.ai/projects$tr$),
 
-  -- ---- Start here, Step 1 again: onboarding and WhatsApp -----------
-  (0, $tr$link$tr$, $tr$Onboarding questions$tr$, 140,
-   $tr$Your answers shape the curriculum, your hot seat room and your Club profile.$tr$,
-   $tr$https://timerich.ai/superhuman/$tr$),
-  (0, $tr$link$tr$, $tr$Join the WhatsApp group$tr$, 150,
-   $tr$For announcements between sessions, straight to your phone.$tr$,
-   $tr$https://chat.whatsapp.com/E5GU1dvuHhFDI77yO88OIw?mode=gi_t$tr$),
 
   -- ---- Week 1, in the order of the week -----------------------------
   (1, $tr$text$tr$, $tr$Your master prompt$tr$, 5,
@@ -467,7 +460,7 @@ Then ask yourself: if this was the only result you got this quarter, would it se
 = Copy the prompt
 **Here is my North Star:** (double-tap fn on Mac, or hold Ctrl + Win on Windows, and read out your four answers).
 
-Before you assess it, ask me your clarifying questions, one at a time.
+Before you assess it, **ask me at most 3 clarifying questions**, one at a time.
 
 Then assess my goal with the 4 Cs:
 1. Clarity: is my Q4 target one specific result, with a number and a date?
@@ -477,7 +470,9 @@ Then assess my goal with the 4 Cs:
 
 Then rate your own assessment out of 10, tell me what would make it a 10, and **give me my sharpened North Star in one line**. Keep it, because every prompt after this works towards it.
 =
-What you'll get: a few questions first, so answer them out loud. Then a check of your goal against the 4 Cs, a score for its own work, and your North Star in one line. If your target has no number yet, add one now, even a rough one.$tr$,
+What you'll get: a few questions first, so answer them out loud. Then a check of your goal against the 4 Cs, a score for its own work, and your North Star in one line. If your target has no number yet, add one now, even a rough one.
+
+Then copy your sharpened North Star into the Current focus section of your Business COMPASS when you build it below. The chat won't remember it.$tr$,
    $tr$https://claude.ai/projects$tr$),
   (1, $tr$link$tr$, $tr$Build your Business COMPASS$tr$, 40,
    $tr$Your COMPASS is the one page your AI reads before every task: who you serve, what you sell and how you sound. Press Make my copy at the bottom of this card, then click under each heading, hold fn and talk. Messy is fine, and early is fine: if you haven't sold yet, say what you plan to sell and who you think it's for. You'll sharpen it every week.
@@ -530,7 +525,7 @@ Run a Time Rich Audit on my last week. Read my Business COMPASS first. If it's m
 1. List every task over 15 minutes with its hours.
 2. Mark a task $ only if it put me in front of someone who can pay me this month AND it sells one of my offers. If I'm pre-revenue, a conversation with someone who could become a paying customer counts as $. Prep, admin and coffee with no ask are not $.
 3. Give me my revenue number: the percentage of my hours that were $ tasks.
-4. Give every non-$ task one owner: Skill (same steps every time), Agent (recurring, on a schedule or trigger), Human (a freelancer, assistant or teammate, now or later), or Me. Only mark Me if it's pricing, anything sent in my name, brand direction or hiring.
+4. Give every non-$ task one owner: Skill (same steps every time), Agent (recurring, on a schedule or trigger), Human (a freelancer, assistant or teammate, now or later), Cut (stop doing it: a podcast, meeting or coffee that doesn't move my North Star), or Me. Only mark Me if it's pricing, brand direction or hiring. Anything sent in my name, like emails or Substack posts, is AI drafts, I approve: give it to a Skill or an Agent, not Me.
 5. Name the 3 hand-offs that return the most hours this week. Write each as a 4 Cs brief: Clarity (what done looks like), Context (what's in my head), Collaboration (who's involved, where I check), Cadence (one-off or recurring, when it's due).
 
 **Don't invent tasks, hours or offers.** If something is missing, ask me before you guess.
@@ -764,7 +759,7 @@ update public.portal_items set published = false
  where (week_id = 0 and title in ('Fill it in by voice', 'Make your copy of the Business COMPASS',
                                   'Say hello in #introductions'))
     or (week_id = 0 and title = 'Sign up to LaunchLemonade (3 months free)')
-    or (week_id = 0 and title = 'Record last week')
+    or (week_id = 0 and title in ('Record last week', 'Onboarding questions', 'Join the WhatsApp group'))
     or (week_id = 1 and title in ('This week: your photo and the TRC Club Code',
                                   'Audacious Action before Friday: finish your Business Hub'));
 
@@ -780,7 +775,7 @@ begin
   select string_agg(sort || ' ' || title, ' | ' order by sort) into got
     from public.portal_items where week_id = 0 and published and sort >= 100;
   if got is distinct from
-     '110 TRC Slack | 120 Photo and name | 130 Post your intro | 140 Onboarding questions | 150 Join the WhatsApp group | 210 Paid AI plan and desktop app | 220 Lock down privacy | 230 Tell your AI how you work | 310 Install Wispr Flow | 320 Turn it on | 330 Connect your tools'
+     '110 TRC Slack | 120 Photo and name | 130 Post your intro | 210 Paid AI plan and desktop app | 220 Lock down privacy | 230 Tell your AI how you work | 310 Install Wispr Flow | 320 Turn it on | 330 Connect your tools'
   then raise exception 'Start here is not in three steps: %', got; end if;
 
   -- one LaunchLemonade link, on the voucher the 25 Oct migration set

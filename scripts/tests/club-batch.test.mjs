@@ -671,7 +671,7 @@ console.log('\nThe Time Rich Audit is in its lesson: the prompt, then the table'
   check('the five columns from the Business COMPASS',
     JSON.stringify(heads) === JSON.stringify([
       'Task (last week)', 'Hours', '$ or not',
-      'Owner: Skill, Agent, Human or Me', 'COMPASS check',
+      'Owner: Skill, Agent, Human, Cut or Me', 'COMPASS check',
     ]), heads);
 
   const rows = [...tool.querySelectorAll('.trp-cw-audit-row')];
