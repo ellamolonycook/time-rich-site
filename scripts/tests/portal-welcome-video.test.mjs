@@ -382,8 +382,9 @@ console.log('\nThe letter and the Pep Talk are untouched');
     p.hello.querySelector('.trp-cw-ask').textContent === 'How serious are you about becoming Time Rich?');
   /* No WhatsApp card in between: the group and the onboarding questions
      are off the curriculum page. */
-  check('the week tabs follow the band',
-    p.band.nextElementSibling && p.band.nextElementSibling.className === 'trp-cw-weeks',
+  check('the prizes follow the band, then the week tabs',
+    p.band.nextElementSibling && p.band.nextElementSibling.className === 'trp-cw-prizes' &&
+    p.band.nextElementSibling.nextElementSibling.className === 'trp-cw-weeks',
     p.band.nextElementSibling && p.band.nextElementSibling.className);
   p.w.close();
 }

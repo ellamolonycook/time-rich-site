@@ -1045,6 +1045,46 @@ console.log('\nAn open lesson folds from a click in its body, not from its contr
   p.w.close();
 }
 
+console.log('\nThe Superhuman prizes sit above the week tabs');
+{
+  const p = open();
+  const prizes = p.doc.querySelector('[data-curriculum-live] > .trp-cw-prizes');
+  check('they are drawn once, outside the weeks', prizes !== null &&
+    p.doc.querySelectorAll('.trp-cw-prizes').length === 1 &&
+    prizes.nextElementSibling && prizes.nextElementSibling.className === 'trp-cw-weeks');
+  check('with all five prizes',
+    prizes && prizes.querySelectorAll('.trp-cw-prize').length === 5);
+  p.pick(2);
+  check('and they stay when another week is picked',
+    p.doc.querySelectorAll('[data-curriculum-live] > .trp-cw-prizes').length === 1);
+  p.w.close();
+}
+
+console.log('\nOne drop-down open at a time');
+{
+  const data = payload();
+  data.weeks[1].items.push({ id: 205, kind: 'text', title: 'Pick your AI agent', body: 'Pick one.', sort: 60 });
+  const p = openWith(data);
+  const t = (title) => p.lesson(title).querySelector('.trp-cw-toggle');
+  if (t('Run your Time Rich Audit').getAttribute('aria-expanded') !== 'true') t('Run your Time Rich Audit').click();
+  t('Pick your AI agent').click();
+  check('opening a lesson shuts the one that was open',
+    t('Pick your AI agent').getAttribute('aria-expanded') === 'true' &&
+    t('Run your Time Rich Audit').getAttribute('aria-expanded') === 'false');
+  check('so one lesson is open',
+    p.panel().querySelectorAll('.trp-cw-toggle[aria-expanded="true"]').length === 1);
+
+  const masters = [...p.panel().querySelectorAll('details.trp-cw-master')];
+  masters[1].open = true;
+  await new Promise((r) => setTimeout(r, 0));
+  masters[2].open = true;
+  await new Promise((r) => setTimeout(r, 0));
+  check('opening a section shuts the one that was open',
+    masters[2].open === true && masters[1].open === false,
+    masters.map((d) => d.open));
+  p.w.close();
+}
+
 console.log('\nA link from Resources lands on the growth prompts');
 {
   // Week 1 is not the week the page would pick on its own if a later week
