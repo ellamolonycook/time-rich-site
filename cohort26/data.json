@@ -3,21 +3,21 @@
   "table": "levels",
   "level": 1,
   "label": "1 Beginner",
-  "members": 15,
+  "members": 17,
   "desc": "ChatGPT only or nothing; work lives in their head; unsure what an agent is"
  },
  {
   "table": "levels",
   "level": 2,
   "label": "2 Casual",
-  "members": 33,
+  "members": 46,
   "desc": "Uses 1 to 3 chat tools for drafting and research; no repeatable workflows"
  },
  {
   "table": "levels",
   "level": 3,
   "label": "3 Practitioner",
-  "members": 24,
+  "members": 33,
   "desc": "Several tools used on purpose; saved prompts or light automation"
  },
  {
@@ -38,19 +38,19 @@
   "table": "funnel",
   "order": 1,
   "step": "Has an AI tool in their stack",
-  "members": 75
+  "members": 98
  },
  {
   "table": "funnel",
   "order": 2,
   "step": "Uses AI for outreach at least some days",
-  "members": 49
+  "members": 61
  },
  {
   "table": "funnel",
   "order": 3,
   "step": "Repeatable workflows (level 3+)",
-  "members": 36
+  "members": 45
  },
  {
   "table": "funnel",
@@ -67,166 +67,171 @@
  {
   "table": "build",
   "priority": "Building Agents",
+  "members": 14,
+  "avg_level": 2.4
+ },
+ {
+  "table": "build",
+  "priority": "Content",
+  "members": 12,
+  "avg_level": 2.1
+ },
+ {
+  "table": "build",
+  "priority": "Creating Structure with AI",
+  "members": 24,
+  "avg_level": 2.3
+ },
+ {
+  "table": "build",
+  "priority": "Outreach",
+  "members": 24,
+  "avg_level": 2.7
+ },
+ {
+  "table": "build",
+  "priority": "Storytelling/Pitch",
   "members": 12,
   "avg_level": 2.2
  },
  {
   "table": "build",
-  "priority": "Content",
-  "members": 11,
-  "avg_level": 2.2
- },
- {
-  "table": "build",
-  "priority": "Creating Structure with AI",
-  "members": 15,
-  "avg_level": 2.2
- },
- {
-  "table": "build",
-  "priority": "Outreach",
-  "members": 20,
-  "avg_level": 2.8
- },
- {
-  "table": "build",
-  "priority": "Storytelling/Pitch",
-  "members": 9,
-  "avg_level": 2.2
- },
- {
-  "table": "build",
   "priority": "Systems",
-  "members": 17,
-  "avg_level": 2.5
+  "members": 22,
+  "avg_level": 2.4
  },
  {
   "table": "goals",
   "goal": "Increased revenue",
-  "first_choice": 37,
+  "first_choice": 45,
   "avg_rank": 2.1
  },
  {
   "table": "goals",
   "goal": "A system that runs without you",
-  "first_choice": 16,
-  "avg_rank": 2.6
+  "first_choice": 21,
+  "avg_rank": 2.5
  },
  {
   "table": "goals",
   "goal": "Becoming visible",
-  "first_choice": 13,
+  "first_choice": 17,
   "avg_rank": 2.9
  },
  {
   "table": "goals",
-  "goal": "Telling a better story/pitch",
-  "first_choice": 8,
-  "avg_rank": 3.5
+  "goal": "Leveling up your AI skills",
+  "first_choice": 12,
+  "avg_rank": 3.0
  },
  {
   "table": "goals",
-  "goal": "Leveling up your AI skills",
-  "first_choice": 7,
-  "avg_rank": 3.1
+  "goal": "Telling a better story/pitch",
+  "first_choice": 9,
+  "avg_rank": 3.6
  },
  {
   "table": "ai_outreach",
   "order": 1,
   "answer": "Daily",
-  "members": 21
+  "members": 27
  },
  {
   "table": "ai_outreach",
   "order": 2,
   "answer": "Some days",
-  "members": 28
+  "members": 34
  },
  {
   "table": "ai_outreach",
   "order": 3,
   "answer": "Never",
-  "members": 31
+  "members": 42
  },
  {
   "table": "ai_outreach",
   "order": 4,
   "answer": "No answer",
-  "members": 4
+  "members": 5
  },
  {
   "table": "pm",
   "method": "Other",
-  "members": 24
+  "members": 27
  },
  {
   "table": "pm",
   "method": "Spreadsheet",
-  "members": 17
+  "members": 25
  },
  {
   "table": "pm",
   "method": "In my head",
-  "members": 16
+  "members": 24
  },
  {
   "table": "pm",
   "method": "Notion",
-  "members": 16
+  "members": 18
  },
  {
   "table": "pm",
   "method": "Other PM tool",
-  "members": 8
+  "members": 10
  },
  {
   "table": "pm",
   "method": "No answer",
-  "members": 3
+  "members": 4
  },
  {
   "table": "tools",
   "tool": "Claude",
-  "members": 53
+  "members": 73
  },
  {
   "table": "tools",
   "tool": "ChatGPT",
-  "members": 26
- },
- {
-  "table": "tools",
-  "tool": "Notion",
-  "members": 20
+  "members": 51
  },
  {
   "table": "tools",
   "tool": "Google Workspace",
-  "members": 20
+  "members": 29
+ },
+ {
+  "table": "tools",
+  "tool": "Notion",
+  "members": 24
  },
  {
   "table": "tools",
   "tool": "Slack",
-  "members": 18
- },
- {
-  "table": "tools",
-  "tool": "Granola",
-  "members": 9
+  "members": 23
  },
  {
   "table": "tools",
   "tool": "Canva",
-  "members": 8
+  "members": 13
+ },
+ {
+  "table": "tools",
+  "tool": "Granola",
+  "members": 12
  },
  {
   "table": "tools",
   "tool": "Lovable",
-  "members": 7
+  "members": 9
  },
  {
   "table": "tools",
   "tool": "Perplexity",
+  "members": 8
+ },
+ {
+  "table": "tools",
+  "tool": "Instinct",
   "members": 6
  },
  {
@@ -236,8 +241,8 @@
  },
  {
   "table": "tools",
-  "tool": "Instinct",
-  "members": 4
+  "tool": "HubSpot",
+  "members": 5
  },
  {
   "table": "tools",
@@ -246,151 +251,146 @@
  },
  {
   "table": "tools",
-  "tool": "HubSpot",
-  "members": 3
- },
- {
-  "table": "tools",
   "tool": "ElevenLabs",
   "members": 3
  },
  {
   "table": "tools_none",
-  "members": 9
+  "members": 10
  },
  {
   "table": "channels",
   "channel": "LinkedIn",
-  "members": 63
+  "members": 80
  },
  {
   "table": "channels",
   "channel": "Instagram",
-  "members": 44
+  "members": 56
  },
  {
   "table": "channels",
   "channel": "Referrals",
-  "members": 43
- },
- {
-  "table": "channels",
-  "channel": "Email / newsletter",
-  "members": 35
+  "members": 53
  },
  {
   "table": "channels",
   "channel": "Events / IRL",
-  "members": 33
+  "members": 51
+ },
+ {
+  "table": "channels",
+  "channel": "Email / newsletter",
+  "members": 46
  },
  {
   "table": "channels",
   "channel": "Cold email or cold call",
-  "members": 27
+  "members": 33
  },
  {
   "table": "channels",
   "channel": "Paid Ads",
-  "members": 11
+  "members": 16
  },
  {
   "table": "channels",
   "channel": "Other",
-  "members": 6
+  "members": 9
  },
  {
   "table": "automation",
   "need": "Lead research and outreach",
-  "members": 37
+  "members": 44
  },
  {
   "table": "automation",
   "need": "Content creation and repurposing",
-  "members": 35
+  "members": 43
  },
  {
   "table": "automation",
   "need": "Follow-up and CRM",
-  "members": 23
+  "members": 34
  },
  {
   "table": "automation",
   "need": "Email and inbox",
-  "members": 22
- },
- {
-  "table": "automation",
-  "need": "Admin, scheduling and ops",
-  "members": 22
- },
- {
-  "table": "automation",
-  "need": "Research and information",
   "members": 26
  },
  {
   "table": "automation",
+  "need": "Admin, scheduling and ops",
+  "members": 35
+ },
+ {
+  "table": "automation",
+  "need": "Research and information",
+  "members": 29
+ },
+ {
+  "table": "automation",
   "need": "Reporting, finance and data",
-  "members": 12
+  "members": 15
  },
  {
   "table": "automation",
   "need": "Fundraising and grants",
-  "members": 8
+  "members": 9
  },
  {
   "table": "automation",
   "need": "Client delivery",
-  "members": 6
+  "members": 11
  },
  {
   "table": "automation_meta",
-  "answered": 72
+  "answered": 92
  },
  {
   "table": "topic_summary",
   "topic": "AI operating system",
-  "members_asked": 67,
-  "questions": 67,
-  "unsure": 26,
-  "answered_real": 58
- },
- {
-  "table": "themes",
-  "topic": "AI operating system",
-  "theme_id": "A3",
-  "theme": "Can I build one system that runs the whole business without me constantly prompting it?",
-  "questions": 17,
-  "members": 17,
-  "l1": 2,
-  "l2": 4,
-  "l3": 8,
-  "l4": 3,
-  "example": "How do I build an AI operating system that actually helps me become a better founder?"
+  "members_asked": 82,
+  "questions": 87,
+  "unsure": 35,
+  "answered_real": 73
  },
  {
   "table": "themes",
   "topic": "AI operating system",
   "theme_id": "A1",
   "theme": "What is an AI operating system, and what can it actually do?",
-  "questions": 14,
-  "members": 14,
-  "l1": 6,
-  "l2": 6,
-  "l3": 0,
-  "l4": 2,
+  "questions": 16,
+  "members": 16,
+  "l1": 4,
+  "l2": 7,
+  "l3": 5,
+  "l4": 0,
   "example": "What's that?"
+ },
+ {
+  "table": "themes",
+  "topic": "AI operating system",
+  "theme_id": "A3",
+  "theme": "Can I build one system that runs the whole business without me constantly prompting it?",
+  "questions": 16,
+  "members": 16,
+  "l1": 1,
+  "l2": 7,
+  "l3": 6,
+  "l4": 2,
+  "example": "How do I build an AI operating system that actually helps me become a better founder?"
  },
  {
   "table": "themes",
   "topic": "AI operating system",
   "theme_id": "A2",
   "theme": "Where should the brain live when my information is spread across Notion, Drive, Gmail, a CRM and several AI tools?",
-  "questions": 11,
-  "members": 11,
-  "l1": 0,
-  "l2": 4,
-  "l3": 4,
+  "questions": 15,
+  "members": 15,
+  "l1": 1,
+  "l2": 5,
+  "l3": 6,
   "l4": 3,
   "example": "Where should I host my AI-powered second brain to organise my knowledge, connect my tools and automate my life?"
  },
@@ -399,10 +399,10 @@
   "topic": "AI operating system",
   "theme_id": "B8",
   "theme": "Is my information safe, and can I use agents inside my company's restrictions?",
-  "questions": 5,
-  "members": 5,
-  "l1": 2,
-  "l2": 1,
+  "questions": 7,
+  "members": 7,
+  "l1": 1,
+  "l2": 4,
   "l3": 1,
   "l4": 1,
   "example": "How do we best manage private data and LLM exposure? Hallucinations, true isolation etc."
@@ -410,15 +410,54 @@
  {
   "table": "themes",
   "topic": "AI operating system",
+  "theme_id": "B12",
+  "theme": "Which tools do I actually need, and should I use several AI models?",
+  "questions": 6,
+  "members": 6,
+  "l1": 0,
+  "l2": 4,
+  "l3": 2,
+  "l4": 0,
+  "example": "How to keep it running, up to date and actually helpful without having to have 57 subscriptions."
+ },
+ {
+  "table": "themes",
+  "topic": "AI operating system",
   "theme_id": "B1",
   "theme": "Where do I start, and can I build an agent with no technical background?",
-  "questions": 3,
-  "members": 3,
-  "l1": 0,
-  "l2": 3,
+  "questions": 5,
+  "members": 5,
+  "l1": 1,
+  "l2": 4,
   "l3": 0,
   "l4": 0,
   "example": "How do I even start?! And what if I map what I need, wrongly?"
+ },
+ {
+  "table": "themes",
+  "topic": "AI operating system",
+  "theme_id": "A4",
+  "theme": "What should I hand to agents, and what should always stay human?",
+  "questions": 4,
+  "members": 4,
+  "l1": 0,
+  "l2": 2,
+  "l3": 1,
+  "l4": 1,
+  "example": "What should an AI operating system handle for a solo founder, and what should I never hand off?"
+ },
+ {
+  "table": "themes",
+  "topic": "AI operating system",
+  "theme_id": "B13",
+  "theme": "How do I maintain the system when something changes?",
+  "questions": 3,
+  "members": 3,
+  "l1": 0,
+  "l2": 1,
+  "l3": 2,
+  "l4": 0,
+  "example": "What happens when you have to update one system... does it translate to the others?"
  },
  {
   "table": "themes",
@@ -436,54 +475,15 @@
  {
   "table": "themes",
   "topic": "AI operating system",
-  "theme_id": "B12",
-  "theme": "Which tools do I actually need, and should I use several AI models?",
-  "questions": 2,
-  "members": 2,
-  "l1": 0,
-  "l2": 1,
-  "l3": 1,
-  "l4": 0,
-  "example": "How to keep it running, up to date and actually helpful without having to have 57 subscriptions."
- },
- {
-  "table": "themes",
-  "topic": "AI operating system",
-  "theme_id": "B13",
-  "theme": "How do I maintain the system when something changes?",
-  "questions": 2,
-  "members": 2,
-  "l1": 0,
-  "l2": 2,
-  "l3": 0,
-  "l4": 0,
-  "example": "What happens when you have to update one system... does it translate to the others?"
- },
- {
-  "table": "themes",
-  "topic": "AI operating system",
   "theme_id": "B9",
   "theme": "How do I stop AI making things up or using out-of-date information?",
-  "questions": 2,
-  "members": 2,
+  "questions": 3,
+  "members": 3,
   "l1": 1,
   "l2": 0,
   "l3": 1,
-  "l4": 0,
+  "l4": 1,
   "example": "I want it to be transparent - How can I visualize its ways?"
- },
- {
-  "table": "themes",
-  "topic": "AI operating system",
-  "theme_id": "A4",
-  "theme": "What should I hand to agents, and what should always stay human?",
-  "questions": 2,
-  "members": 2,
-  "l1": 0,
-  "l2": 2,
-  "l3": 0,
-  "l4": 0,
-  "example": "What should an AI operating system handle for a solo founder, and what should I never hand off?"
  },
  {
   "table": "themes",
@@ -493,45 +493,45 @@
   "questions": 2,
   "members": 2,
   "l1": 0,
-  "l2": 1,
+  "l2": 0,
   "l3": 1,
-  "l4": 0,
+  "l4": 1,
   "example": "I think I have given too many instructions and information to my AI platforms that the quality is worse than if I use incognito mode."
+ },
+ {
+  "table": "themes",
+  "topic": "AI operating system",
+  "theme_id": "B3",
+  "theme": "How do I make agents reliable so I review their work instead of redoing it?",
+  "questions": 2,
+  "members": 2,
+  "l1": 1,
+  "l2": 1,
+  "l3": 0,
+  "l4": 0,
+  "example": "How do I build an agent that follows my rules reliably enough that I can review its work rather than redo it?"
  },
  {
   "table": "themes",
   "topic": "AI operating system",
   "theme_id": "B5",
   "theme": "How do I get agents to work together and share context?",
-  "questions": 1,
-  "members": 1,
+  "questions": 2,
+  "members": 2,
   "l1": 0,
   "l2": 0,
   "l3": 1,
-  "l4": 0,
+  "l4": 1,
   "example": "How to have them speak to one another and still keep the human aspect involved"
- },
- {
-  "table": "themes",
-  "topic": "AI operating system",
-  "theme_id": "B4",
-  "theme": "How do I get an agent to run on a schedule, and does my computer need to be on?",
-  "questions": 1,
-  "members": 1,
-  "l1": 0,
-  "l2": 1,
-  "l3": 0,
-  "l4": 0,
-  "example": "How do I get an agent to run on its own, on a schedule, and finish the job well without me checking it every step?"
  },
  {
   "table": "themes",
   "topic": "AI operating system",
   "theme_id": "B7",
   "theme": "What does this cost, and how do I stop running out of tokens?",
-  "questions": 1,
-  "members": 1,
-  "l1": 0,
+  "questions": 2,
+  "members": 2,
+  "l1": 1,
   "l2": 1,
   "l3": 0,
   "l4": 0,
@@ -540,34 +540,34 @@
  {
   "table": "themes",
   "topic": "AI operating system",
-  "theme_id": "B3",
-  "theme": "How do I make agents reliable so I review their work instead of redoing it?",
+  "theme_id": "B6",
+  "theme": "Can agents learn and improve on their own?",
   "questions": 1,
   "members": 1,
   "l1": 0,
   "l2": 0,
   "l3": 1,
   "l4": 0,
-  "example": "How do I build an agent that follows my rules reliably enough that I can review its work rather than redo it?"
+  "example": "Can the system actually learn and improve over time without me retraining it?"
  },
  {
   "table": "topic_summary",
   "topic": "Agents",
-  "members_asked": 74,
-  "questions": 75,
-  "unsure": 14,
-  "answered_real": 70
+  "members_asked": 93,
+  "questions": 100,
+  "unsure": 12,
+  "answered_real": 96
  },
  {
   "table": "themes",
   "topic": "Agents",
   "theme_id": "B1",
   "theme": "Where do I start, and can I build an agent with no technical background?",
-  "questions": 14,
-  "members": 14,
-  "l1": 2,
-  "l2": 9,
-  "l3": 3,
+  "questions": 24,
+  "members": 24,
+  "l1": 5,
+  "l2": 13,
+  "l3": 6,
   "l4": 0,
   "example": "How do you actually do it?"
  },
@@ -576,12 +576,12 @@
   "topic": "Agents",
   "theme_id": "B3",
   "theme": "How do I make agents reliable so I review their work instead of redoing it?",
-  "questions": 11,
-  "members": 11,
+  "questions": 20,
+  "members": 20,
   "l1": 1,
-  "l2": 3,
-  "l3": 4,
-  "l4": 3,
+  "l2": 10,
+  "l3": 7,
+  "l4": 2,
   "example": "How do I know it's doing it right, well, accurately, securely (and keeping agents from going rogue)?"
  },
  {
@@ -589,13 +589,26 @@
   "topic": "Agents",
   "theme_id": "B5",
   "theme": "How do I get agents to work together and share context?",
-  "questions": 11,
-  "members": 10,
-  "l1": 1,
-  "l2": 3,
-  "l3": 2,
+  "questions": 12,
+  "members": 12,
+  "l1": 0,
+  "l2": 4,
+  "l3": 4,
   "l4": 4,
   "example": "How do I train my agents to talk to each other across multiple projects?"
+ },
+ {
+  "table": "themes",
+  "topic": "Agents",
+  "theme_id": "A4",
+  "theme": "What should I hand to agents, and what should always stay human?",
+  "questions": 7,
+  "members": 7,
+  "l1": 2,
+  "l2": 1,
+  "l3": 3,
+  "l4": 1,
+  "example": "As a solo founder, which parts of the business should I hand to agents now, and which should I keep doing by hand until I really understand them?"
  },
  {
   "table": "themes",
@@ -604,9 +617,9 @@
   "theme": "What does this cost, and how do I stop running out of tokens?",
   "questions": 7,
   "members": 7,
-  "l1": 1,
+  "l1": 2,
   "l2": 1,
-  "l3": 4,
+  "l3": 3,
   "l4": 1,
   "example": "I mostly found that it's kind of expensive when they run on credits."
  },
@@ -617,46 +630,20 @@
   "theme": "Is my information safe, and can I use agents inside my company's restrictions?",
   "questions": 6,
   "members": 6,
-  "l1": 1,
+  "l1": 0,
   "l2": 3,
   "l3": 1,
-  "l4": 1,
-  "example": "How can I build AI agents that work for me, in my style, within my company’s restrictions?"
- },
- {
-  "table": "themes",
-  "topic": "Agents",
-  "theme_id": "A4",
-  "theme": "What should I hand to agents, and what should always stay human?",
-  "questions": 5,
-  "members": 5,
-  "l1": 1,
-  "l2": 2,
-  "l3": 2,
-  "l4": 0,
-  "example": "As a solo founder, which parts of the business should I hand to agents now, and which should I keep doing by hand until I really understand them?"
- },
- {
-  "table": "themes",
-  "topic": "Agents",
-  "theme_id": "B4",
-  "theme": "How do I get an agent to run on a schedule, and does my computer need to be on?",
-  "questions": 5,
-  "members": 5,
-  "l1": 1,
-  "l2": 0,
-  "l3": 2,
   "l4": 2,
-  "example": "How do I get an agent to run on its own, on a schedule, and finish the job well without me checking it every step?"
+  "example": "How can I build AI agents that work for me, in my style, within my company’s restrictions?"
  },
  {
   "table": "themes",
   "topic": "Agents",
   "theme_id": "B11",
   "theme": "Do agents even make sense for a small business like mine?",
-  "questions": 4,
-  "members": 4,
-  "l1": 1,
+  "questions": 5,
+  "members": 5,
+  "l1": 2,
   "l2": 2,
   "l3": 1,
   "l4": 0,
@@ -665,25 +652,25 @@
  {
   "table": "themes",
   "topic": "Agents",
-  "theme_id": "B2",
-  "theme": "How much time does this take, and what is the smallest first step with a real payoff?",
-  "questions": 2,
-  "members": 2,
-  "l1": 2,
-  "l2": 0,
-  "l3": 0,
-  "l4": 0,
-  "example": "How much time does it take, genuinely?"
+  "theme_id": "B4",
+  "theme": "How do I get an agent to run on a schedule, and does my computer need to be on?",
+  "questions": 4,
+  "members": 4,
+  "l1": 0,
+  "l2": 1,
+  "l3": 1,
+  "l4": 2,
+  "example": "How do I get an agent to run on its own, on a schedule, and finish the job well without me checking it every step?"
  },
  {
   "table": "themes",
   "topic": "Agents",
   "theme_id": "B10",
   "theme": "My setup is a mess: too many chats, overlapping agents, worse answers than a blank chat. How do I fix it?",
-  "questions": 2,
-  "members": 2,
+  "questions": 3,
+  "members": 3,
   "l1": 0,
-  "l2": 2,
+  "l2": 3,
   "l3": 0,
   "l4": 0,
   "example": "I think I have given too many instructions and information to my AI platforms that the quality is worse than if I use incognito mode."
@@ -691,12 +678,25 @@
  {
   "table": "themes",
   "topic": "Agents",
+  "theme_id": "B14",
+  "theme": "Can an agent research leads, funders or customers for me?",
+  "questions": 3,
+  "members": 3,
+  "l1": 1,
+  "l2": 1,
+  "l3": 1,
+  "l4": 0,
+  "example": "How do I get an agent to reliably research and qualify prospects without me checking every row?"
+ },
+ {
+  "table": "themes",
+  "topic": "Agents",
   "theme_id": "B9",
   "theme": "How do I stop AI making things up or using out-of-date information?",
-  "questions": 2,
-  "members": 2,
+  "questions": 3,
+  "members": 3,
   "l1": 0,
-  "l2": 1,
+  "l2": 2,
   "l3": 1,
   "l4": 0,
   "example": "Again, how do I know it’s not hallucinating and always taking the most recent directions into considerations."
@@ -704,28 +704,41 @@
  {
   "table": "themes",
   "topic": "Agents",
-  "theme_id": "B14",
-  "theme": "Can an agent research leads, funders or customers for me?",
-  "questions": 1,
-  "members": 1,
+  "theme_id": "B2",
+  "theme": "How much time does this take, and what is the smallest first step with a real payoff?",
+  "questions": 2,
+  "members": 2,
   "l1": 1,
   "l2": 0,
-  "l3": 0,
+  "l3": 1,
   "l4": 0,
-  "example": "How do I get an agent to reliably research and qualify prospects without me checking every row?"
+  "example": "How much time does it take, genuinely?"
  },
  {
   "table": "themes",
   "topic": "Agents",
-  "theme_id": "C1",
-  "theme": "How do I make AI content sound like me and not like AI slop?",
+  "theme_id": "A2",
+  "theme": "Where should the brain live when my information is spread across Notion, Drive, Gmail, a CRM and several AI tools?",
   "questions": 1,
   "members": 1,
-  "l1": 1,
+  "l1": 0,
   "l2": 0,
-  "l3": 0,
+  "l3": 1,
   "l4": 0,
-  "example": "how do you make content with ai, without it seeming like ai. I feel people can spot ai content a mile away now and judge for it"
+  "example": "How should agents connect to my other tools, and what does that mean for privacy?"
+ },
+ {
+  "table": "themes",
+  "topic": "Agents",
+  "theme_id": "B13",
+  "theme": "How do I maintain the system when something changes?",
+  "questions": 1,
+  "members": 1,
+  "l1": 0,
+  "l2": 0,
+  "l3": 1,
+  "l4": 0,
+  "example": "What happens when you have to update one system... does it translate to the others?"
  },
  {
   "table": "themes",
@@ -736,144 +749,105 @@
   "members": 1,
   "l1": 0,
   "l2": 0,
-  "l3": 0,
-  "l4": 1,
+  "l3": 1,
+  "l4": 0,
   "example": "How to create and launch self-learning agents?"
  },
  {
   "table": "themes",
   "topic": "Agents",
-  "theme_id": "A1",
-  "theme": "What is an AI operating system, and what can it actually do?",
-  "questions": 1,
-  "members": 1,
-  "l1": 0,
-  "l2": 1,
-  "l3": 0,
-  "l4": 0,
-  "example": "What's that?"
- },
- {
-  "table": "themes",
-  "topic": "Agents",
-  "theme_id": "B13",
-  "theme": "How do I maintain the system when something changes?",
-  "questions": 1,
-  "members": 1,
-  "l1": 0,
-  "l2": 1,
-  "l3": 0,
-  "l4": 0,
-  "example": "What happens when you have to update one system... does it translate to the others?"
- },
- {
-  "table": "themes",
-  "topic": "Agents",
-  "theme_id": "C2",
-  "theme": "How do I post consistently without content eating my week?",
+  "theme_id": "C1",
+  "theme": "How do I make AI content sound like me and not like AI slop?",
   "questions": 1,
   "members": 1,
   "l1": 0,
   "l2": 0,
   "l3": 1,
   "l4": 0,
-  "example": "Content and client delivery are competing for the same hours, and something always slips."
+  "example": "how do you make content with ai, without it seeming like ai. I feel people can spot ai content a mile away now and judge for it"
  },
  {
   "table": "topic_summary",
   "topic": "Content",
-  "members_asked": 66,
-  "questions": 67,
-  "unsure": 16,
-  "answered_real": 68
+  "members_asked": 84,
+  "questions": 87,
+  "unsure": 22,
+  "answered_real": 86
  },
  {
   "table": "themes",
   "topic": "Content",
   "theme_id": "C1",
   "theme": "How do I make AI content sound like me and not like AI slop?",
-  "questions": 22,
-  "members": 22,
+  "questions": 29,
+  "members": 29,
   "l1": 2,
-  "l2": 6,
-  "l3": 8,
+  "l2": 11,
+  "l3": 10,
   "l4": 6,
   "example": "How do I make it sound like me and not AI?"
  },
  {
   "table": "themes",
   "topic": "Content",
-  "theme_id": "C2",
-  "theme": "How do I post consistently without content eating my week?",
-  "questions": 14,
-  "members": 13,
-  "l1": 0,
-  "l2": 10,
-  "l3": 2,
-  "l4": 1,
-  "example": "Content and client delivery are competing for the same hours, and something always slips."
- },
- {
-  "table": "themes",
-  "topic": "Content",
   "theme_id": "C4",
   "theme": "How do I make content bring in customers, not just likes?",
-  "questions": 12,
-  "members": 12,
-  "l1": 1,
-  "l2": 3,
-  "l3": 4,
+  "questions": 20,
+  "members": 20,
+  "l1": 2,
+  "l2": 6,
+  "l3": 8,
   "l4": 4,
   "example": "What kind of content should I built and how should I make it commercial?"
  },
  {
   "table": "themes",
   "topic": "Content",
-  "theme_id": "C3",
-  "theme": "How do I get attention in the first few seconds?",
-  "questions": 8,
-  "members": 8,
-  "l1": 3,
-  "l2": 1,
-  "l3": 4,
-  "l4": 0,
-  "example": "How to catch audience' eyes fast?"
+  "theme_id": "C2",
+  "theme": "How do I post consistently without content eating my week?",
+  "questions": 16,
+  "members": 16,
+  "l1": 2,
+  "l2": 7,
+  "l3": 6,
+  "l4": 1,
+  "example": "Content and client delivery are competing for the same hours, and something always slips."
  },
  {
   "table": "themes",
   "topic": "Content",
   "theme_id": "C5",
   "theme": "Which tools should I use for visuals and video, and do I have to show my face?",
-  "questions": 5,
-  "members": 5,
-  "l1": 1,
-  "l2": 3,
-  "l3": 1,
+  "questions": 8,
+  "members": 8,
+  "l1": 2,
+  "l2": 2,
+  "l3": 4,
   "l4": 0,
   "example": "How to get authentic viral reels!?"
  },
  {
   "table": "themes",
   "topic": "Content",
-  "theme_id": "B12",
-  "theme": "Which tools do I actually need, and should I use several AI models?",
-  "questions": 2,
-  "members": 2,
+  "theme_id": "C3",
+  "theme": "How do I get attention in the first few seconds?",
+  "questions": 6,
+  "members": 6,
   "l1": 1,
-  "l2": 1,
-  "l3": 0,
+  "l2": 3,
+  "l3": 2,
   "l4": 0,
-  "example": "How to keep it running, up to date and actually helpful without having to have 57 subscriptions."
+  "example": "How to catch audience' eyes fast?"
  },
  {
   "table": "themes",
   "topic": "Content",
   "theme_id": "B1",
   "theme": "Where do I start, and can I build an agent with no technical background?",
-  "questions": 1,
-  "members": 1,
+  "questions": 3,
+  "members": 3,
   "l1": 1,
-  "l2": 0,
+  "l2": 2,
   "l3": 0,
   "l4": 0,
   "example": "How do I even start?! And what if I map what I need, wrongly?"
@@ -883,13 +857,26 @@
   "topic": "Content",
   "theme_id": "C6",
   "theme": "I hate self-promotion, I'm camera shy, or I feel my story isn't interesting. How do I put myself out there?",
-  "questions": 1,
-  "members": 1,
+  "questions": 2,
+  "members": 2,
   "l1": 0,
-  "l2": 1,
+  "l2": 2,
   "l3": 0,
   "l4": 0,
   "example": "Some people have such interesting stories, I feel mine isn't that interesting!"
+ },
+ {
+  "table": "themes",
+  "topic": "Content",
+  "theme_id": "D1",
+  "theme": "How do I explain what I do clearly, especially something new or complex?",
+  "questions": 2,
+  "members": 2,
+  "l1": 0,
+  "l2": 2,
+  "l3": 0,
+  "l4": 0,
+  "example": "How do I turn very technical work into content that investors and the public can follow?"
  },
  {
   "table": "themes",
@@ -900,30 +887,30 @@
   "members": 1,
   "l1": 0,
   "l2": 0,
-  "l3": 0,
-  "l4": 1,
-  "example": "Again, how do I know it’s not hallucinating and always taking the most recent directions into considerations."
- },
- {
-  "table": "themes",
-  "topic": "Content",
-  "theme_id": "B14",
-  "theme": "Can an agent research leads, funders or customers for me?",
-  "questions": 1,
-  "members": 1,
-  "l1": 0,
-  "l2": 0,
   "l3": 1,
   "l4": 0,
-  "example": "How do I get an agent to reliably research and qualify prospects without me checking every row?"
+  "example": "Again, how do I know it’s not hallucinating and always taking the most recent directions into considerations."
  },
  {
   "table": "topic_summary",
   "topic": "Storytelling and pitch",
-  "members_asked": 61,
-  "questions": 62,
-  "unsure": 22,
-  "answered_real": 62
+  "members_asked": 72,
+  "questions": 73,
+  "unsure": 32,
+  "answered_real": 76
+ },
+ {
+  "table": "themes",
+  "topic": "Storytelling and pitch",
+  "theme_id": "D1",
+  "theme": "How do I explain what I do clearly, especially something new or complex?",
+  "questions": 24,
+  "members": 24,
+  "l1": 1,
+  "l2": 13,
+  "l3": 6,
+  "l4": 4,
+  "example": "How do I tell a story succinctly and engagingly without mulling it over or hunting for the right words? In this business, it needs to come quickly."
  },
  {
   "table": "themes",
@@ -933,34 +920,21 @@
   "questions": 20,
   "members": 20,
   "l1": 2,
-  "l2": 6,
-  "l3": 5,
-  "l4": 7,
-  "example": "I’m good at storytelling live, is my site doing the same?"
- },
- {
-  "table": "themes",
-  "topic": "Storytelling and pitch",
-  "theme_id": "D1",
-  "theme": "How do I explain what I do clearly, especially something new or complex?",
-  "questions": 18,
-  "members": 17,
-  "l1": 1,
   "l2": 7,
-  "l3": 7,
+  "l3": 9,
   "l4": 2,
-  "example": "How do I tell a story succinctly and engagingly without mulling it over or hunting for the right words? In this business, it needs to come quickly."
+  "example": "I’m good at storytelling live, is my site doing the same?"
  },
  {
   "table": "themes",
   "topic": "Storytelling and pitch",
   "theme_id": "D2",
   "theme": "How do I pitch without sounding salesy, cringe, or like a resume?",
-  "questions": 9,
-  "members": 9,
-  "l1": 2,
-  "l2": 6,
-  "l3": 0,
+  "questions": 11,
+  "members": 11,
+  "l1": 1,
+  "l2": 7,
+  "l3": 2,
   "l4": 1,
   "example": "How can I use AI to tell better stories and communicate my value, standards and build trust authentically, without losing my human touch?"
  },
@@ -969,10 +943,10 @@
   "topic": "Storytelling and pitch",
   "theme_id": "C6",
   "theme": "I hate self-promotion, I'm camera shy, or I feel my story isn't interesting. How do I put myself out there?",
-  "questions": 6,
-  "members": 6,
+  "questions": 7,
+  "members": 7,
   "l1": 1,
-  "l2": 2,
+  "l2": 3,
   "l3": 3,
   "l4": 0,
   "example": "How do I squeeze all of that into 60 seconds and not pass out?"
@@ -982,11 +956,11 @@
   "topic": "Storytelling and pitch",
   "theme_id": "C3",
   "theme": "How do I get attention in the first few seconds?",
-  "questions": 4,
-  "members": 4,
-  "l1": 2,
-  "l2": 2,
-  "l3": 0,
+  "questions": 5,
+  "members": 5,
+  "l1": 1,
+  "l2": 3,
+  "l3": 1,
   "l4": 0,
   "example": "How do I achieve the perfect hook that attracts the right audience?"
  },
@@ -995,26 +969,13 @@
   "topic": "Storytelling and pitch",
   "theme_id": "C1",
   "theme": "How do I make AI content sound like me and not like AI slop?",
-  "questions": 2,
-  "members": 2,
+  "questions": 4,
+  "members": 4,
   "l1": 0,
-  "l2": 0,
+  "l2": 2,
   "l3": 1,
   "l4": 1,
   "example": "how do you make content with ai, without it seeming like ai. I feel people can spot ai content a mile away now and judge for it"
- },
- {
-  "table": "themes",
-  "topic": "Storytelling and pitch",
-  "theme_id": "C2",
-  "theme": "How do I post consistently without content eating my week?",
-  "questions": 1,
-  "members": 1,
-  "l1": 0,
-  "l2": 0,
-  "l3": 1,
-  "l4": 0,
-  "example": "Content and client delivery are competing for the same hours, and something always slips."
  },
  {
   "table": "themes",
@@ -1032,85 +993,85 @@
  {
   "table": "themes",
   "topic": "Storytelling and pitch",
-  "theme_id": "C4",
-  "theme": "How do I make content bring in customers, not just likes?",
+  "theme_id": "C2",
+  "theme": "How do I post consistently without content eating my week?",
   "questions": 1,
   "members": 1,
   "l1": 0,
-  "l2": 1,
-  "l3": 0,
+  "l2": 0,
+  "l3": 1,
   "l4": 0,
-  "example": "What kind of content should I built and how should I make it commercial?"
+  "example": "Content and client delivery are competing for the same hours, and something always slips."
  },
  {
   "table": "success",
   "theme": "Signed clients, revenue or pipeline",
-  "members": 26,
+  "members": 30,
   "desc": "A concrete sales result: named numbers of clients, leads, calls or revenue, plus a repeatable process to get them."
  },
  {
   "table": "success",
   "theme": "Time back: no longer the bottleneck",
-  "members": 19,
+  "members": 30,
   "desc": "Out of day-to-day ops. Agents or a system handle the repeat work so the founder reviews instead of doing."
  },
  {
   "table": "success",
-  "theme": "Consistent content and visibility",
-  "members": 14,
-  "desc": "Posting every week in their own voice without it eating the week, and being known in their market."
- },
- {
-  "table": "success",
   "theme": "A product, funding or company milestone",
-  "members": 13,
+  "members": 18,
   "desc": "App launched, MVP shipped, business model decided, investors or partners signed."
  },
  {
   "table": "success",
+  "theme": "Consistent content and visibility",
+  "members": 16,
+  "desc": "Posting every week in their own voice without it eating the week, and being known in their market."
+ },
+ {
+  "table": "success",
   "theme": "Learn it and feel confident (no hard target)",
-  "members": 12,
+  "members": 14,
   "desc": "Understand how AI and agents work and use them with intent. No number attached, so success is hard to prove."
  },
  {
   "table": "pains",
   "theme": "No steady lead flow; prospecting is manual",
-  "members": 29,
+  "members": 37,
   "desc": "Hand-searching for clients, investors, partners or funders, then writing every first message and follow-up from scratch."
  },
  {
   "table": "pains",
-  "theme": "Everything runs through them; the business lives in their head",
-  "members": 16,
-  "desc": "They are in every task, list and decision. Knowledge is undocumented, so nothing moves when they step away."
- },
- {
-  "table": "pains",
   "theme": "Content takes too long or sounds like AI",
-  "members": 15,
+  "members": 21,
   "desc": "Content eats hours, posting is inconsistent, hooks do not land, and AI drafts read as generic."
  },
  {
   "table": "pains",
+  "theme": "Everything runs through them; the business lives in their head",
+  "members": 19,
+  "desc": "They are in every task, list and decision. Knowledge is undocumented, so nothing moves when they step away."
+ },
+ {
+  "table": "pains",
   "theme": "No clear offer, niche or pitch",
-  "members": 13,
+  "members": 18,
   "desc": "Pre-revenue or spread across several lanes, with no single offer, buyer or price to point an agent at."
  },
  {
   "table": "pains",
   "theme": "AI tools are unreliable, scattered or unclear",
-  "members": 11,
+  "members": 13,
   "desc": "Agents guess or only run when prompted, too many overlapping tools, company restrictions, or no idea where to start."
  },
  {
   "table": "kpi",
   "key": "members",
-  "value": 84
+  "value": 108
  },
  {
   "table": "kpi",
   "key": "l12",
-  "value": 48
+  "value": 63
  },
  {
   "table": "kpi",
@@ -1120,28 +1081,28 @@
  {
   "table": "kpi",
   "key": "prerev_u100",
-  "value": 68
+  "value": 89
  },
  {
   "table": "kpi",
   "key": "no_offer",
-  "value": 21
+  "value": 24
  },
  {
   "table": "kpi",
   "key": "measurable",
-  "value": 23
+  "value": 27
  },
  {
   "table": "kpi",
   "key": "questions",
-  "value": 272
+  "value": 347
  },
  {
   "table": "revenue",
   "order": 1,
   "stage": "Pre-revenue",
-  "members": 40
+  "members": 53
  },
  {
   "table": "level_revenue",
@@ -1153,19 +1114,19 @@
   "table": "level_revenue",
   "stage": "Pre-revenue",
   "level": 2,
-  "members": 18
+  "members": 29
  },
  {
   "table": "level_revenue",
   "stage": "Pre-revenue",
   "level": 3,
-  "members": 10
+  "members": 14
  },
  {
   "table": "level_revenue",
   "stage": "Pre-revenue",
   "level": 4,
-  "members": 3
+  "members": 1
  },
  {
   "table": "level_revenue",
@@ -1177,25 +1138,25 @@
   "table": "revenue",
   "order": 2,
   "stage": "Under $100K",
-  "members": 28
+  "members": 36
  },
  {
   "table": "level_revenue",
   "stage": "Under $100K",
   "level": 1,
-  "members": 3
+  "members": 4
  },
  {
   "table": "level_revenue",
   "stage": "Under $100K",
   "level": 2,
-  "members": 7
+  "members": 9
  },
  {
   "table": "level_revenue",
   "stage": "Under $100K",
   "level": 3,
-  "members": 10
+  "members": 15
  },
  {
   "table": "level_revenue",
@@ -1213,13 +1174,13 @@
   "table": "revenue",
   "order": 3,
   "stage": "$100K to 500K",
-  "members": 12
+  "members": 15
  },
  {
   "table": "level_revenue",
   "stage": "$100K to 500K",
   "level": 1,
-  "members": 1
+  "members": 2
  },
  {
   "table": "level_revenue",
@@ -1237,7 +1198,7 @@
   "table": "level_revenue",
   "stage": "$100K to 500K",
   "level": 4,
-  "members": 1
+  "members": 3
  },
  {
   "table": "level_revenue",
@@ -1357,19 +1318,19 @@
   "table": "team",
   "order": 1,
   "size": "Solo",
-  "members": 41
+  "members": 55
  },
  {
   "table": "team",
   "order": 2,
   "size": "2 to 5",
-  "members": 37
+  "members": 46
  },
  {
   "table": "team",
   "order": 3,
   "size": "6 to 15",
-  "members": 1
+  "members": 2
  },
  {
   "table": "team",
@@ -1381,17 +1342,17 @@
   "table": "stage_detail",
   "level": 1,
   "label": "Beginner",
-  "members": 15,
+  "members": 17,
   "prerev": 9,
-  "solo": 10,
+  "solo": 11,
   "ai_outreach": 6,
-  "head_or_sheet": 12,
+  "head_or_sheet": 11,
   "top_pain": "No steady lead flow; prospecting is manual",
-  "top_pain_n": 6,
-  "top_success": "Learn it and feel confident (no hard target)",
+  "top_pain_n": 5,
+  "top_success": "Consistent content and visibility",
   "top_success_n": 5,
-  "top_build": "Content",
-  "top_build_n": 4,
+  "top_build": "Creating Structure with AI",
+  "top_build_n": 5,
   "looks": "ChatGPT only or nothing. Work lives in their head. Unsure what an agent or AI operating system is.",
   "needs": "Hands-on setup: one paid AI account, one project with their context, one working prompt in session 1. Highest refund risk for 6 Nov."
  },
@@ -1399,17 +1360,17 @@
   "table": "stage_detail",
   "level": 2,
   "label": "Casual",
-  "members": 33,
-  "prerev": 18,
-  "solo": 15,
-  "ai_outreach": 19,
-  "head_or_sheet": 14,
+  "members": 46,
+  "prerev": 29,
+  "solo": 23,
+  "ai_outreach": 27,
+  "head_or_sheet": 24,
   "top_pain": "No steady lead flow; prospecting is manual",
-  "top_pain_n": 9,
+  "top_pain_n": 15,
   "top_success": "Time back: no longer the bottleneck",
-  "top_success_n": 12,
+  "top_success_n": 18,
   "top_build": "Systems",
-  "top_build_n": 8,
+  "top_build_n": 11,
   "looks": "Uses one to three chat tools for drafting and research some days. No saved workflows, no automations.",
   "needs": "A first agent built live with them, step by step. They know chat; they have never made it repeatable or scheduled."
  },
@@ -1417,17 +1378,17 @@
   "table": "stage_detail",
   "level": 3,
   "label": "Practitioner",
-  "members": 24,
-  "prerev": 10,
-  "solo": 11,
-  "ai_outreach": 16,
-  "head_or_sheet": 4,
+  "members": 33,
+  "prerev": 14,
+  "solo": 16,
+  "ai_outreach": 19,
+  "head_or_sheet": 11,
   "top_pain": "No steady lead flow; prospecting is manual",
-  "top_pain_n": 10,
+  "top_pain_n": 12,
   "top_success": "Signed clients, revenue or pipeline",
-  "top_success_n": 7,
+  "top_success_n": 12,
   "top_build": "Outreach",
-  "top_build_n": 9,
+  "top_build_n": 11,
   "looks": "Several tools used on purpose, Claude projects or custom GPTs, light automation. Projects tracked somewhere.",
   "needs": "Turn the prompts they already reuse into a scheduled agent with a review step. Clean up overlapping tools first."
  },
@@ -1436,14 +1397,14 @@
   "level": 4,
   "label": "Builder",
   "members": 12,
-  "prerev": 3,
+  "prerev": 1,
   "solo": 5,
-  "ai_outreach": 8,
+  "ai_outreach": 9,
   "head_or_sheet": 3,
-  "top_pain": "Content takes too long or sounds like AI",
-  "top_pain_n": 4,
+  "top_pain": "No steady lead flow; prospecting is manual",
+  "top_pain_n": 5,
   "top_success": "Signed clients, revenue or pipeline",
-  "top_success_n": 6,
+  "top_success_n": 5,
   "top_build": "Outreach",
   "top_build_n": 4,
   "looks": "Already builds automations or agents. Connected stack. Problems are reliability, scheduling and handoffs.",
