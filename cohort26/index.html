@@ -1218,7 +1218,9 @@
         });
         return;
       }
-      DRAW[current]();
+      // current comes from the address bar, so only a known tab is drawn.
+      var draw = Object.prototype.hasOwnProperty.call(DRAW, current) ? DRAW[current] : null;
+      if (typeof draw === 'function') draw();
     }
 
     dash.onData(render);
