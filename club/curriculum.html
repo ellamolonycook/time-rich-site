@@ -356,6 +356,21 @@
     .trp-cw-copy:focus-visible { outline: 2px solid var(--trp-green); outline-offset: 2px; }
     .trp-cw-pb-text { margin: 0; padding: 16px; font-family: var(--trp-mono); font-size: 13.5px; line-height: 1.65; color: var(--trp-deep); white-space: pre-wrap; overflow-wrap: break-word; }
 
+    /* The master drop-downs: the setup as one, and Week 1's lessons in five,
+       so the page is a short list of sections until a member opens one. */
+    .trp-cw-master { border: 1px solid var(--trp-line); border-radius: 22px; background: rgb(var(--c-surface)); }
+    .trp-cw-master[open] { border-color: var(--trp-green); }
+    .trp-cw-master > summary { display: flex; align-items: center; gap: 14px; min-height: 64px; padding: 14px 20px; cursor: pointer; list-style: none; border-radius: 22px; }
+    .trp-cw-master > summary::-webkit-details-marker { display: none; }
+    .trp-cw-master > summary:focus-visible { outline: 2px solid var(--trp-green); outline-offset: 2px; }
+    .trp-cw-master[open] > summary .trp-cw-chev { transform: rotate(180deg); }
+    .trp-cw-master-title { flex: 1 1 auto; min-width: 0; font-family: var(--trp-display); font-weight: 600; font-size: clamp(18px, 2.2vw, 22px); letter-spacing: -.02em; line-height: 1.2; color: var(--trp-deep); }
+    .trp-cw-master-count { flex: none; font-size: 12px; font-weight: 600; letter-spacing: .06em; text-transform: uppercase; color: var(--trp-soft); white-space: nowrap; }
+    .trp-cw-master.is-done .trp-cw-master-count { color: var(--trp-green); }
+    .trp-cw-master-body { display: flex; flex-direction: column; gap: 16px; padding: 0 16px 16px; }
+    .trp-cw-masters { display: flex; flex-direction: column; gap: 12px; }
+    @media (max-width: 640px) { .trp-cw-master > summary { padding: 12px 16px; } .trp-cw-master-body { padding: 0 10px 12px; } }
+
     /* a screenshot in a lesson */
     .trp-cw-shot { display: block; width: 100%; max-width: 520px; height: auto; border-radius: 12px; border: 1px solid var(--trp-line); }
 
@@ -389,15 +404,6 @@
     .trp-cw-detail .trp-cw-pb, .trp-cw-task-copy .trp-cw-pb { width: 100%; max-width: 72ch; }
     .trp-cw-pb-text { max-height: 360px; overflow: auto; }
 
-    /* the cohort's questions */
-    .trp-cw-qa { display: flex; flex-direction: column; gap: 8px; }
-    .trp-cw-qa-item { border: 1px solid var(--trp-line); border-radius: 14px; background: rgb(var(--c-surface)); }
-    .trp-cw-qa-item[open] { border-color: var(--trp-green); }
-    .trp-cw-qa-item > summary { display: flex; align-items: center; justify-content: space-between; gap: 12px; min-height: 52px; padding: 10px 16px; cursor: pointer; list-style: none; border-radius: 14px; font-size: 15.5px; font-weight: 600; color: var(--trp-deep); }
-    .trp-cw-qa-item > summary::-webkit-details-marker { display: none; }
-    .trp-cw-qa-item > summary:focus-visible { outline: 2px solid var(--trp-green); outline-offset: 2px; }
-    .trp-cw-qa-item[open] > summary .trp-cw-chev { transform: rotate(180deg); }
-    .trp-cw-qa-a { margin: 0; padding: 0 16px 16px; font-size: 15.5px; line-height: 1.65; color: var(--trp-soft); max-width: 72ch; }
 
 
     /* The tick button doubles as the lesson number: the number until it is
@@ -746,17 +752,18 @@
 
       <!-- WEEK 1, THE STATIC PART =========================================
            Ella's Week 1 content: the agent comparison, the ten growth
-           prompts and the cohort's questions. It is markup rather than
-           payload rows because the copy is long, exact and does not change
-           per member.
+           prompts. It is markup rather than payload rows because the copy
+           is long, exact and does not change per member.
 
            The agent comparison and the growth prompts are moved by the
            renderer into the lessons of the same name ("Pick your personal AI
            agent", "10 Growth Prompts"), and the audit table above into "Run
-           your Time Rich Audit", under the prompt. What is left, the cohort's
-           questions, closes the Week 1 panel. Every node is moved rather than
-           rebuilt, which is what lets a member keep typing in the audit
-           across a redraw: a tick anywhere on the page redraws the panel.
+           your Time Rich Audit", under the prompt. If one of those lessons is
+           missing, its block is drawn here instead, under its old address.
+           Every node is moved rather than rebuilt, which is what lets a
+           member keep typing in the audit across a redraw: a tick anywhere
+           on the page redraws the panel. (The cohort's questions used to
+           close this block; Ella took them off the page on 26 Oct.)
 
            Every prompt in here is a <pre> with a Copy button beside it,
            wired by the script at the foot of the page. -->
@@ -1120,119 +1127,6 @@ When you finish:
           </div>
         </details>
 
-        <section class="trp-cw-w1-sec" id="cohort-questions" aria-labelledby="cw-qa-h">
-          <h3 class="trp-cw-w1-h" id="cw-qa-h">Questions from the cohort</h3>
-          <p class="trp-cw-w1-lede">What you asked before we started, grouped by where it belongs. Open the one you need.</p>
-
-        <h4 class="trp-cw-gp-h">Agents</h4>
-        <div class="trp-cw-qa">
-          <details class="trp-cw-qa-item">
-            <summary><span>Where do I start, and can I build an agent with no technical background?</span><svg class="trp-cw-chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6"></path></svg></summary>
-            <p class="trp-cw-qa-a">Yes. Most agents in this cohort need no code. An agent is three parts: a trigger (when it runs), instructions plus context (what it knows and how to do the job), and an output (where the result lands: a doc, a sheet, a draft email). Start with a task you already do by hand and can describe in ten steps. Write those steps down. That document becomes the agent&#x27;s instructions. Build it first as a Claude Project you run manually. When the output is good three times in a row, connect it to your tools and put it on a schedule. Your profile in this program names a suggested first agent. Bring it to session 1 and we will build it live.</p>
-          </details>
-          <details class="trp-cw-qa-item">
-            <summary><span>How much time does this take, and what is the smallest first step with a real payoff?</span><svg class="trp-cw-chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6"></path></svg></summary>
-            <p class="trp-cw-qa-a">Plan for two to four hours to build your first agent, then 15 minutes a week to review and improve it. The first step with a real payoff: take one weekly task that eats an hour or more, write down how you do it, and turn that into a reusable Claude Project. That alone often cuts the task in half before anything is automated. Do it today, not after you have the perfect system.</p>
-          </details>
-          <details class="trp-cw-qa-item">
-            <summary><span>How do I make agents reliable so I review their work instead of redoing it?</span><svg class="trp-cw-chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6"></path></svg></summary>
-            <p class="trp-cw-qa-a">Unreliable agents usually have vague instructions. Fix it in this order. 1. Give it a template for the output, with every field named. 2. Give it two or three examples of excellent work. 3. Tell it what to do when information is missing: leave the field blank and flag it, never guess. 4. Add a checklist it runs on its own output before handing it over. 5. Keep a short log of every mistake you correct and add each one to the instructions as a rule. After two weeks of that, most agents go from redo to review. You will know a setup is done when it passes your checklist three runs in a row. Stop building at that point and use it.</p>
-          </details>
-          <details class="trp-cw-qa-item">
-            <summary><span>How do I get an agent to run on a schedule, and does my computer need to be on?</span><svg class="trp-cw-chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6"></path></svg></summary>
-            <p class="trp-cw-qa-a">An agent that only runs when you open a chat is a prompt, not an agent. To run without you it needs a trigger that lives in the cloud: a scheduled task in Claude, or a tool like Zapier, Make or n8n that starts it at a set time or when something happens (a new form entry, a new row, a new email). Cloud triggers run with your laptop closed, so you do not need a dedicated server, even if you travel. Keep a human approval step before anything is sent: the agent saves drafts to your inbox or a review column, and you press send. We will set up a scheduled run together in week 2.</p>
-          </details>
-          <details class="trp-cw-qa-item">
-            <summary><span>How do I get agents to work together and share context?</span><svg class="trp-cw-chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6"></path></svg></summary>
-            <p class="trp-cw-qa-a">Get one agent working first. Most people who ask this have zero agents running and are designing a team. When you do have two, connect them through a shared place, not through each other: agent one writes its output to a sheet or Notion database, agent two reads from it. Both read the same context documents from A2. That is how a research agent hands leads to an outreach agent without you copying anything. Keep a human checkpoint at each handoff until you trust it. Truly autonomous multi-agent teams are possible for builders using tools like Claude Code, but they need the single-agent basics nailed first.</p>
-          </details>
-          <details class="trp-cw-qa-item">
-            <summary><span>Can agents learn and improve on their own?</span><svg class="trp-cw-chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6"></path></svg></summary>
-            <p class="trp-cw-qa-a">Not in the way people imagine. An agent does not get smarter by itself between runs. It improves when you update its instructions, examples and rules. Build that loop in: keep a feedback document, add every correction to it, and have the agent read it each run. For builders, you can automate part of this by logging outcomes (replies, bookings, edits you made) and having a weekly review agent suggest rule changes for you to approve.</p>
-          </details>
-          <details class="trp-cw-qa-item">
-            <summary><span>What does this cost, and how do I stop running out of tokens?</span><svg class="trp-cw-chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6"></path></svg></summary>
-            <p class="trp-cw-qa-a">For most people here, one paid AI plan (around the price of a gym membership per month) covers a first agent. Costs climb when agents run constantly on huge amounts of context. To keep them down: give each agent only the documents it needs, not your whole drive. Run it on a schedule (daily or weekly), not every minute. Use a smaller, cheaper model for simple jobs like sorting and formatting, and the stronger model for writing and judgment. Check your usage weekly for the first month. If you are running autonomous agents at scale, track cost per task the same way you track cost per lead.</p>
-          </details>
-          <details class="trp-cw-qa-item">
-            <summary><span>Is my information safe, and can I use agents inside my company&#x27;s restrictions?</span><svg class="trp-cw-chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6"></path></svg></summary>
-            <p class="trp-cw-qa-a">Use a paid business plan, not a free account, and check that your provider does not train on your data under that plan. Connect agents only to the folders and inboxes they need. Never paste passwords, bank details, patient records or client confidential files into a prompt. If your employer locks down your systems, follow their policy and build your first agent on work that uses public or non-sensitive information, such as prospect research or content drafts. On IP: your instructions, data, process and customer relationships are the asset, not the platform you built on. Investors care that you own the customer and the know-how. On agents running amok: an agent that only drafts and never sends without your approval cannot do much damage.</p>
-          </details>
-          <details class="trp-cw-qa-item">
-            <summary><span>How do I stop AI making things up or using out-of-date information?</span><svg class="trp-cw-chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6"></path></svg></summary>
-            <p class="trp-cw-qa-a">Give it the source, do not ask it to remember. Put your latest decisions in a dated priorities document and tell the agent to treat the newest date as the truth. Tell it to cite where every fact came from and to say &#x27;not found&#x27; rather than guess. For anything regulated (legal, health, finance), add a rule that every claim must link to a named source, and keep a human expert review before anything goes out. No current AI is 100% accurate, so the safeguard is your review step, not the model. Ask the agent to show its sources and reasoning in the output if you want to see how it got there.</p>
-          </details>
-          <details class="trp-cw-qa-item">
-            <summary><span>My setup is a mess: too many chats, overlapping agents, worse answers than a blank chat. How do I fix it?</span><svg class="trp-cw-chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6"></path></svg></summary>
-            <p class="trp-cw-qa-a">Too much context makes AI worse, not better. Fix it without starting over. 1. List every project, agent and custom instruction you have. 2. Pick the three you actually use. 3. Archive the rest. 4. Rewrite the context for those three into the five short documents from A2. Delete old instructions that contradict each other. 5. Give each agent one job. If two agents do the same job, keep the better one. If you catch yourself designing org charts for AI employees, stop and ship one agent that does one task this week.</p>
-          </details>
-          <details class="trp-cw-qa-item">
-            <summary><span>Do agents even make sense for a small business like mine?</span><svg class="trp-cw-chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6"></path></svg></summary>
-            <p class="trp-cw-qa-a">They make sense if you repeat the same task every week and it follows rules. They do not make sense as a substitute for a clear offer or a sales habit. Agents are not the final form of anything; they are the current useful one, and the skill you build here (writing down how your work is done so a machine can do it) carries over to whatever comes next. You do not need avatars, hype or a digital twin. If an agent saves you two hours a week on a task you hate, it has paid for itself.</p>
-          </details>
-          <details class="trp-cw-qa-item">
-            <summary><span>Which tools do I actually need, and should I use several AI models?</span><svg class="trp-cw-chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6"></path></svg></summary>
-            <p class="trp-cw-qa-a">Fewer than you think. A core stack for this program: one main AI (Claude), the place your work already lives (Google Workspace or Notion), and, only if needed, one automation tool for schedules (Zapier, Make or n8n). Using two models is fine when each has a clear job, for example one for thinking and one for email. Using five is how you end up with 57 subscriptions. Add a tool only when a specific agent needs it. For visuals, use one design tool (Canva covers most of this cohort) before buying video or image add-ons. Tools change monthly, so learn the pattern, not the product.</p>
-          </details>
-          <details class="trp-cw-qa-item">
-            <summary><span>How do I maintain the system when something changes?</span><svg class="trp-cw-chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6"></path></svg></summary>
-            <p class="trp-cw-qa-a">Keep every agent&#x27;s instructions and context in documents you can edit, not buried in chat history. When something changes (a new offer, a new price, a new tool), update the one source document, and every agent that reads it picks up the change. Keep a simple list of your agents: name, job, trigger, where output goes, last checked. Review it monthly. If an agent breaks, the list tells you what it touches. Do not build what you cannot explain on one page.</p>
-          </details>
-          <details class="trp-cw-qa-item">
-            <summary><span>Can an agent research leads, funders or customers for me?</span><svg class="trp-cw-chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6"></path></svg></summary>
-            <p class="trp-cw-qa-a">Yes, and it is the most common first agent in this cohort. Give it a tight brief: who qualifies (sector, size, location, signals), where to look, and the exact fields to fill in a sheet (name, why they fit, source link, contact route). Tell it to skip anyone it cannot verify. Review the first 20 rows by hand, tighten the brief, then let it run weekly. It drafts the first message; you send it.</p>
-          </details>
-        </div>
-
-        <h4 class="trp-cw-gp-h">AI operating system</h4>
-        <div class="trp-cw-qa">
-          <details class="trp-cw-qa-item">
-            <summary><span>What is an AI operating system, and what can it actually do?</span><svg class="trp-cw-chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6"></path></svg></summary>
-            <p class="trp-cw-qa-a">It&#x27;s the set of documents, connections and agents that run one part of your business with you. In practice: your Business COMPASS (who you are, what you sell, who you sell to, how you sound, this quarter&#x27;s goal) lives in one Claude Project. Your tools (email, calendar, Notion or Drive, your CRM) are connected to it. And each agent has one job on a schedule: a morning brief at 7am, follow-up drafts every second day, a pipeline summary every Friday. Every chat starts from your context instead of a blank page, and nothing is sent without your yes. In Week 1 you build the first version: your COMPASS, your Business Hub project and one growth agent.</p>
-          </details>
-          <details class="trp-cw-qa-item">
-            <summary><span>Where should the brain live when my information is spread across Notion, Drive, Gmail, a CRM and several AI tools?</span><svg class="trp-cw-chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6"></path></svg></summary>
-            <p class="trp-cw-qa-a">Pick one home for your context and point everything else at it. For most of this cohort that is a Claude Project (or a set of Notion pages that Claude reads through a connector). Put five documents there: business overview, offer and pricing, ideal customer, voice guide with real examples, and current priorities. Leave the data where it already lives. Your pipeline stays in the spreadsheet or CRM, files stay in Drive. Connect the agent to those sources instead of copying them in. The rule: context in one place, data in its own place, agents read both. If you run two businesses, give each its own project with its own voice guide so they never mix. When your context changes, update one document, not five chats.</p>
-          </details>
-          <details class="trp-cw-qa-item">
-            <summary><span>Can I build one system that runs the whole business without me constantly prompting it?</span><svg class="trp-cw-chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6"></path></svg></summary>
-            <p class="trp-cw-qa-a">Not in four weeks, and anyone who says otherwise is selling something. The businesses that get there build it one agent at a time. Each agent does one job on a schedule: research leads every Monday, draft follow-ups every morning, summarise the pipeline every Friday. After three or four of those run reliably, they start to feel like a system. Start with the job you repeat most and hate most. Prove it saves you time for two weeks. Then add the next. Big architecture first is how people end up with a beautiful diagram and nothing running. Scale comes from repeating a working pattern, not from designing for millions of users on day one.</p>
-          </details>
-          <details class="trp-cw-qa-item">
-            <summary><span>What should I hand to agents, and what should always stay human?</span><svg class="trp-cw-chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6"></path></svg></summary>
-            <p class="trp-cw-qa-a">Hand off work that is repeatable, rules-based and cheap to fix if wrong: research, first drafts, summaries, data entry, reminders, formatting. Keep anything where one mistake costs a relationship or a decision: sending to investors, funds or key clients, pricing, hiring, legal or clinical claims, and anything that commits money. The simplest pattern: the agent drafts, you approve. That review step is where your judgment stays in the business. As an agent proves itself, you can sample its work instead of checking every item, for example reading 1 in 5 drafts. To decide what to automate first, list every task you did last week, mark the ones you did more than twice, and pick the one with the clearest rules.</p>
-          </details>
-        </div>
-
-        <h4 class="trp-cw-gp-h">Content</h4>
-        <div class="trp-cw-qa">
-          <details class="trp-cw-qa-item">
-            <summary><span>How do I make AI content sound like me and not like AI slop?</span><svg class="trp-cw-chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6"></path></svg></summary>
-            <p class="trp-cw-qa-a">AI sounds like AI when it has nothing of yours to work from. Fix the input, not the prompt. 1. Feed it your raw material: voice notes, call transcripts, your own rough bullet points. Do not ask it to invent ideas. 2. Build a voice guide with 5 to 10 of your best real posts, words you use, words you never use, and how you open and close. 3. Ban the giveaways: em dashes, &#x27;in today&#x27;s fast-paced world&#x27;, triple lists, &#x27;not X but Y&#x27;. 4. Edit the first draft by hand and feed your edits back into the guide. Your stories, opinions and specifics are what make it human. The AI handles structure and speed.</p>
-          </details>
-          <details class="trp-cw-qa-item">
-            <summary><span>How do I post consistently without content eating my week?</span><svg class="trp-cw-chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6"></path></svg></summary>
-            <p class="trp-cw-qa-a">Make one thing a week and let an agent turn it into many. Your one thing: a 10-minute voice note, a call transcript, a client result or a newsletter. The agent turns it into 3 to 5 platform drafts in your voice and drops them into a review queue (Notion or a doc). You spend 30 minutes approving and scheduling. Pick two platforms, not five, and post on a fixed cadence you can keep for 12 weeks. Consistency beats volume. Build your community by replying to comments and messages yourself; that part should not be automated. I use Stanley and we will be going through setting this up inside the Accelerator</p>
-          </details>
-          <details class="trp-cw-qa-item">
-            <summary><span>How do I get attention in the first few seconds?</span><svg class="trp-cw-chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6"></path></svg></summary>
-            <p class="trp-cw-qa-a">The hook is the first line, and it should name a specific problem your reader has, in their words. Pull hooks from your calls: what did a client say was driving them mad? Formats that work: a specific number (&#x27;I spent 14 hours a week on email&#x27;), a confession, a strong opinion, or the result first. Write ten hooks for every post and pick one; AI is good at generating options, you are good at picking. Hooks that work change, so track which of your posts get comments and reuse those patterns. On the algorithm: you cannot beat it, so build an email list you own alongside it.</p>
-          </details>
-          <details class="trp-cw-qa-item">
-            <summary><span>How do I make content bring in customers, not just likes?</span><svg class="trp-cw-chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6"></path></svg></summary>
-            <p class="trp-cw-qa-a">Every post needs a job and a next step. Use three types: posts that name the problem (reach), posts that show how you think (trust), and posts that show a result or invite people in (sales). Each post ends with one clear action: reply, book, subscribe, download. Then measure the right thing: replies, DMs, sign-ups and calls booked, not likes. Track it in a simple sheet weekly and do more of what led to conversations. If you have no defined offer yet, content cannot convert; fix the offer first. For a service or personalised product, show real customers, before and after, and behind the scenes.</p>
-          </details>
-          <details class="trp-cw-qa-item">
-            <summary><span>Which tools should I use for visuals and video, and do I have to show my face?</span><svg class="trp-cw-chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6"></path></svg></summary>
-            <p class="trp-cw-qa-a">Start with Canva for graphics and carousels and CapCut or your phone&#x27;s editor for short video. Add AI image or video tools only when a specific post needs them, and keep a human final check so designs do not look generic. Showing your face builds trust faster, but it is not required. Faceless options that work: carousels, screen recordings, voiceover over B-roll, written posts and newsletters. Start where you are comfortable and post consistently there.</p>
-          </details>
-          <details class="trp-cw-qa-item">
-            <summary><span>I hate self-promotion, I&#x27;m camera shy, or I feel my story isn&#x27;t interesting. How do I put myself out there?</span><svg class="trp-cw-chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6"></path></svg></summary>
-            <p class="trp-cw-qa-a">Talk about the problem you solve, not yourself. That reframe removes most of the cringe. Your story does not need to be dramatic; it needs to be specific. A small true detail beats a big generic claim. Start with low-exposure formats: write, comment thoughtfully on others&#x27; posts, share a client lesson. Practise your story out loud in a breakout before you post it. If you need to keep visibility low because of an employer, use channels where your buyers are, not public feeds. For presenting: use three points on a card, not a script, and rehearse with the agent playing your audience.</p>
-          </details>
-        </div>
-        </section>
-
       </div>
       <!-- end of the static Week 1 block -->
 
@@ -1394,7 +1288,8 @@ When you finish:
 
       function addWeek1(box) {
         if (!week1) return;
-        week1.hidden = false;
+        var showing = [].some.call(week1.children, function (c) { return !c.hidden; });
+        week1.hidden = !showing;
         box.appendChild(week1);
       }
 
@@ -1404,7 +1299,7 @@ When you finish:
          one open, so the hash has to pick the week before it can scroll.
          Honoured once, on the first draw: after that the member's own
          choice of week wins. */
-      var W1_SECTIONS = ['time-rich-audit', 'which-agent', 'growth-prompts', 'cohort-questions'];
+      var W1_SECTIONS = ['time-rich-audit', 'which-agent', 'growth-prompts'];
       var wantSection = null;
       try {
         var hash = (window.location.hash || '').replace(/^#/, '');
@@ -2100,6 +1995,52 @@ When you finish:
         return row;
       }
 
+      /* ---- master drop-downs ---------------------------------------------- */
+
+      /* Week 1's lessons, in five sections in the order of the week. By sort,
+         so a lesson Ella adds in Supabase lands in the section its place in
+         the week says. Other weeks are short enough to stay one list. */
+      var WEEK1_SECTIONS = [
+        { upto: 9, title: 'Start here' },
+        { upto: 49, title: 'Monday: set your goal and build your COMPASS' },
+        { upto: 79, title: "This week: your audit, your AI EA and Wednesday's prep" },
+        { upto: 89, title: 'Before Friday: your Audacious Action' },
+        { upto: Infinity, title: 'Build your Time Rich Agents and your voice' }
+      ];
+
+      // Which sections the member has opened or shut, kept across redraws.
+      var masterOpen = {};
+
+      /* One section: a drop-down with its title and how much of it is done.
+         Open by default when it holds the next thing to do; the member's own
+         open or shut wins after that. */
+      function masterBox(key, title, list, openByDefault, body) {
+        var trackable = list.filter(function (it) { return L.isTrackable(it); });
+        var done = trackable.filter(function (it) { return L.isItemDone(it); }).length;
+        var all = trackable.length > 0 && done === trackable.length;
+
+        var box = document.createElement('details');
+        box.className = 'trp-cw-master' + (all ? ' is-done' : '');
+        box.open = has(masterOpen, key) ? masterOpen[key] : openByDefault;
+        var initial = box.open;
+        box.addEventListener('toggle', function () {
+          if (box.open === initial && !has(masterOpen, key)) return;   // the open set above, not a click
+          masterOpen[key] = box.open;
+        });
+
+        var sum = document.createElement('summary');
+        sum.setAttribute('data-cw-focus', 'master-' + key);
+        sum.appendChild(L.el('span', 'trp-cw-master-title', title));
+        if (trackable.length) sum.appendChild(L.el('span', 'trp-cw-master-count', done + ' of ' + trackable.length + ' done'));
+        sum.appendChild(chevron());
+        box.appendChild(sum);
+
+        var inner = L.el('div', 'trp-cw-master-body');
+        inner.appendChild(body);
+        box.appendChild(inner);
+        return box;
+      }
+
       /* ---- the panel ------------------------------------------------------ */
 
       function sessionTile(session, now) {
@@ -2198,10 +2139,11 @@ When you finish:
         // builds. Once it is all ticked it drops under the lessons.
         var setupLeft = steps.some(function (it) { return L.isTrackable(it) && !L.isItemDone(it); });
 
+        // The setup is one drop-down of its own, open while any of it is left.
         function drawSetup(heading) {
           if (!steps.length) return;
           if (own.length) box.appendChild(L.el('h3', 'trp-cw-group', heading));
-          box.appendChild(setupSteps(steps));
+          box.appendChild(masterBox('setup', 'Your setup', steps, setupLeft, setupSteps(steps)));
         }
 
         if (!open) {
@@ -2221,17 +2163,39 @@ When you finish:
             if (nextKey === null && L.isTrackable(it) && !L.isItemDone(it)) nextKey = rowKey(it, i + 1);
           });
           if (steps.length) box.appendChild(L.el('h3', 'trp-cw-group', setupLeft ? 'Then, this week' : 'This week'));
-          var ul = L.el('ul', 'trp-cw-lessons');
-          own.forEach(function (it, i) { ul.appendChild(lessonRow(it, i + 1, rowKey(it, i + 1) === nextKey)); });
-          box.appendChild(ul);
+          if (n !== 1) {
+            var ul = L.el('ul', 'trp-cw-lessons');
+            own.forEach(function (it, i) { ul.appendChild(lessonRow(it, i + 1, rowKey(it, i + 1) === nextKey)); });
+            box.appendChild(ul);
+          } else {
+            // Week 1 in five sections. The one holding the next lesson to do
+            // opens by itself once the setup is done; the rest start shut.
+            var masters = L.el('div', 'trp-cw-masters');
+            var from = 0;
+            WEEK1_SECTIONS.forEach(function (sec, si) {
+              var list = [], rows = [];
+              own.forEach(function (it, i) {
+                var sort = L.num(it && it.sort);
+                if (sort > sec.upto || sort <= from) return;
+                list.push(it);
+                rows.push(lessonRow(it, i + 1, rowKey(it, i + 1) === nextKey));
+              });
+              from = sec.upto;
+              if (!rows.length) return;
+              var sul = L.el('ul', 'trp-cw-lessons');
+              rows.forEach(function (r) { sul.appendChild(r); });
+              var holdsNext = rows.some(function (r) { return r.classList.contains('is-open'); });
+              masters.appendChild(masterBox('w1-' + si, sec.title, list, holdsNext, sul));
+            });
+            box.appendChild(masters);
+          }
         }
 
         if (!setupLeft) drawSetup('Your setup, done');
 
         if (!total && !own.length && !steps.length && n !== 1) box.appendChild(L.el('p', 'trp-cw-empty', 'Nothing here yet.'));
 
-        // Week 1's questions from the cohort, last in the panel, with any
-        // block whose lesson is missing drawn above them.
+        // Any Week 1 block whose lesson is missing, last in the panel.
         if (n === 1) { blockHomes(); addWeek1(box); }
 
         return box;
@@ -2345,6 +2309,8 @@ When you finish:
           wantSection = null;
           // A block inside a lesson: open the lesson first, or there is
           // nothing to land on.
+          var master = target && target.closest ? target.closest('details.trp-cw-master') : null;
+          if (master && !master.open) master.open = true;
           var tog = target && target.classList.contains('trp-cw-lesson') ? target.querySelector('.trp-cw-toggle') : null;
           if (tog && tog.getAttribute('aria-expanded') !== 'true') tog.click();
           if (target && target.scrollIntoView) {

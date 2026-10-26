@@ -489,7 +489,12 @@ console.log("\nThis week's live calls are at the top of the panel");
   check('the calls are drawn', calls !== null, heads);
   check('and so are the lessons and the setup', lessons !== null && steps !== null);
 
-  const at = (n) => [...panel.children].indexOf(n);
+  // The lessons and the setup sit inside their master drop-downs, so each is
+  // placed by the panel child that holds it.
+  const at = (n) => {
+    while (n && n.parentNode !== panel) n = n.parentNode;
+    return [...panel.children].indexOf(n);
+  };
   check('the calls come above the lessons', at(calls) < at(lessons), [at(calls), at(lessons)]);
   check('and above the setup steps', at(calls) < at(steps), [at(calls), at(steps)]);
 
@@ -1016,6 +1021,32 @@ console.log('\nThe agent table and the growth prompts sit in their own lessons')
   const landed = q.lesson('10 Growth Prompts');
   check('a link to it opens that lesson',
     landed && landed.querySelector('.trp-cw-toggle').getAttribute('aria-expanded') === 'true');
+  q.w.close();
+  p.w.close();
+}
+
+console.log('\nThe setup and the week are master drop-downs');
+{
+  const p = open();
+  const masters = [...p.panel().querySelectorAll('details.trp-cw-master')];
+  const titles = masters.map((d) => d.querySelector('.trp-cw-master-title').textContent);
+  check('the setup is one, first, and open while any of it is left',
+    titles[0] === 'Your setup' && masters[0].open === true, titles);
+  check('the lessons are in sections of the week, all shut while the setup is left',
+    masters.slice(1).length > 0 && masters.slice(1).every((d) => d.open === false), titles);
+  check('every lesson is in a section',
+    [...p.panel().querySelectorAll('.trp-cw-lesson')].every((l) => l.closest('details.trp-cw-master')));
+  check('each section says how much of it is done',
+    masters.every((d) => /\d+ of \d+ done/.test(d.querySelector('.trp-cw-master-count').textContent)));
+
+  // Once the setup is done, it shuts and the section with the next lesson opens.
+  const q = open([STEP.id]);
+  const qm = [...q.panel().querySelectorAll('details.trp-cw-master')];
+  const setup = qm.find((d) => d.querySelector('.trp-cw-master-title').textContent === 'Your setup');
+  check('a finished setup is shut', setup && setup.open === false);
+  check('and the section holding the next lesson is open',
+    qm.filter((d) => d.open).length === 1 &&
+    qm.find((d) => d.open).querySelector('.trp-cw-lesson.is-open') !== null);
   q.w.close();
   p.w.close();
 }
