@@ -28,9 +28,9 @@
   var COLUMNS = ['Agent', 'Made by', 'Where it lives', 'Start with this task', 'Watch out for'];
   var WIDTHS = ['trp-ac-name', 'trp-ac-maker', 'trp-ac-where', 'trp-ac-task', 'trp-ac-watch'];
 
-  /* Each agent's name links to where you sign up, in a new tab. Hark has no
-     url: there is no confirmed link for it, and a guess in a members' resource
-     is worse than a name on its own. */
+  /* Each agent's name links to where you sign up, in a new tab. Hark's is
+     its own site, hark.com, checked on 26 Oct 2026: a guess in a members'
+     resource would be worse than a name on its own. */
   var AGENTS = [
     {
       name: 'Dots',
@@ -74,7 +74,7 @@
     },
     {
       name: 'Hark',
-      url: '',
+      url: 'https://hark.com/',
       maker: 'Hark Labs',
       where: 'Its own app, where you can watch each task as it runs',
       task: 'Travel and browser admin you want to watch it do',

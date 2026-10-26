@@ -175,9 +175,8 @@ const AGENT_ROWS = [
   ['Grok Bot', 'xAI', 'https://grok.com'],
   ['Instinct', 'Instinct', 'https://app.instinct.com/invite?t=uwtiwya74qy2r7ntq3mdmzrrxu&preview=imessage'],
   ['Town', 'Town', 'https://www.town.com'],
-  // No confirmed link for Hark, so it is a name and nothing else. A guess in
-  // a members' resource is worse than no link.
-  ['Hark', 'Hark Labs', ''],
+  // Hark's own site, checked on 26 Oct 2026.
+  ['Hark', 'Hark Labs', 'https://hark.com/'],
 ];
 
 console.log('\nThe agent comparison is built from one file, for both pages');
@@ -240,15 +239,16 @@ console.log('\nThe agent comparison is built from one file, for both pages');
       [...town.querySelectorAll('td')].map((td) => td.textContent));
 
     const links = [...block.querySelectorAll('.trp-agent-link')];
-    check(name + ': five links, Hark left out', links.length === 5, links.length);
+    check(name + ': six links, one per agent', links.length === 6, links.length);
     check(name + ': every one opens in a new tab, safely',
       links.every((a) => a.getAttribute('target') === '_blank' &&
         /noopener/.test(a.getAttribute('rel')) && a.href.startsWith('https://')),
       links.map((a) => [a.getAttribute('target'), a.getAttribute('rel')]));
     check(name + ': and each says so to a screen reader',
       links.every((a) => /opens in a new tab/.test(a.getAttribute('aria-label') || '')));
-    check(name + ': Hark is a name and nothing else',
-      rows[5].querySelector('a') === null && rows[5].querySelector('.trp-agent-name').textContent === 'Hark');
+    check(name + ': Hark links to its own site',
+      rows[5].querySelector('.trp-agent-link') !== null &&
+      rows[5].querySelector('.trp-agent-link').getAttribute('href') === 'https://hark.com/');
 
     // The 900px card layout draws each cell's heading from its data-label.
     check(name + ': every cell carries its column name for the phone layout',
@@ -430,33 +430,34 @@ function openWith(data, hash) {
   };
 }
 
-console.log('\nThe Time Rich Pep Talk is open for everyone');
+console.log('\nThe Time Rich Pep Talk starts shut for everyone');
 {
   const p = open();
   const toggle = p.live.querySelector('.trp-cw-pep-toggle');
   check('the toggle is still there', toggle !== null && toggle.textContent.includes('Time Rich Pep Talk'));
-  check('and it starts open', toggle && toggle.getAttribute('aria-expanded') === 'true',
+  check('and it starts shut, so the week is not pushed down',
+    toggle && toggle.getAttribute('aria-expanded') === 'false',
     toggle && toggle.getAttribute('aria-expanded'));
-  check('with the middle of the letter showing',
-    p.live.querySelector('#cw-pep-body') !== null &&
-    p.live.textContent.includes('The middle of the letter'));
+  check('with the letter not drawn yet', p.live.querySelector('#cw-pep-body') === null);
 
   // The member's own click still wins, this visit.
   toggle.dispatchEvent(new p.w.MouseEvent('click', { bubbles: true }));
   const after = p.live.querySelector('.trp-cw-pep-toggle');
-  check('clicking it shuts it', after.getAttribute('aria-expanded') === 'false',
+  check('clicking it opens it', after.getAttribute('aria-expanded') === 'true',
     after.getAttribute('aria-expanded'));
-  check('and the body goes with it', p.live.querySelector('#cw-pep-body') === null);
+  check('with the middle of the letter showing',
+    p.live.querySelector('#cw-pep-body') !== null &&
+    p.live.textContent.includes('The middle of the letter'));
   p.w.close();
 }
 
-console.log('\nA member who pressed the old "I\'m in" gets it open too');
+console.log('\nA member who pressed the old "I\'m in" gets it shut too');
 {
   // The letter row ticked is what used to shut the Pep Talk, which meant the
   // members who had been here longest never saw it.
   const p = open([LETTER.id]);
   const toggle = p.live.querySelector('.trp-cw-pep-toggle');
-  check('still open', toggle && toggle.getAttribute('aria-expanded') === 'true',
+  check('still shut', toggle && toggle.getAttribute('aria-expanded') === 'false',
     toggle && toggle.getAttribute('aria-expanded'));
   p.w.close();
 }
@@ -489,7 +490,12 @@ console.log("\nThis week's live calls are at the top of the panel");
   check('the calls are drawn', calls !== null, heads);
   check('and so are the lessons and the setup', lessons !== null && steps !== null);
 
-  const at = (n) => [...panel.children].indexOf(n);
+  // The lessons and the setup sit inside their master drop-downs, so each is
+  // placed by the panel child that holds it.
+  const at = (n) => {
+    while (n && n.parentNode !== panel) n = n.parentNode;
+    return [...panel.children].indexOf(n);
+  };
   check('the calls come above the lessons', at(calls) < at(lessons), [at(calls), at(lessons)]);
   check('and above the setup steps', at(calls) < at(steps), [at(calls), at(steps)]);
 
@@ -591,7 +597,7 @@ console.log('\nClicking anywhere on a row ticks it');
 
 /* ---- Week 1's static content ------------------------------------------- */
 
-console.log("\nWeek 1 carries the audit, the growth prompts and the questions");
+console.log("\nWeek 1's block carries the agents and the growth prompts when their lessons are missing");
 {
   const p = open();
   const extra = p.extra();
@@ -606,47 +612,46 @@ console.log("\nWeek 1 carries the audit, the growth prompts and the questions");
       const h = s.querySelector('.trp-cw-w1-h') || s.querySelector('.trp-section-title');
       return h ? h.textContent : s.id;
     });
-  check('the five sections, in Ella\'s order',
+  /* This payload has no "Pick your personal AI agent" or "10 Growth
+     Prompts" lesson, so their blocks are drawn here, where they always
+     were. With the lessons, they move into them (tested further down). */
+  check('the agents and the growth prompts, in Ella\'s order',
     JSON.stringify(order) === JSON.stringify([
-      'Run your Time Rich Audit',
       'Which personal AI agent should you start with?',
       'growth-prompts',
-      'Next steps',
-      'Questions from the cohort',
     ]), order);
+  check('and the cohort\'s questions are off the page',
+    p.doc.getElementById('cohort-questions') === null && !/Questions from the cohort/.test(p.live.textContent));
+  check('and no Next steps list: the lessons say all of it',
+    extra.querySelector('#cw-nextsteps-h') === null && !/Next steps/.test(extra.textContent));
 
-  // One audit on the page, and it is this one.
-  check('one audit table, in the audit section',
+  // One audit on the page, and it is in its lesson.
+  check('one audit table, in the audit lesson',
     p.live.querySelectorAll('.trp-cw-audit').length === 1 &&
-    extra.querySelector('#time-rich-audit .trp-cw-audit') !== null,
+    p.detail('Run your Time Rich Audit').querySelector('.trp-cw-audit') !== null,
     p.live.querySelectorAll('.trp-cw-audit').length);
   p.w.close();
 }
 
-console.log('\nThe Time Rich Audit is a section of its own, first in Week 1');
+console.log('\nThe Time Rich Audit is in its lesson: the prompt, then the table');
 {
-  /* It used to be folded into the lesson row of the same name, where Ella
-     could not find it. It is a section now, at the top of Week 1, and the
-     row points at it rather than repeating it. */
+  /* One audit, in the lesson of the same name: the prompt from the Supabase
+     row in its copy box, and the table under it, so the member types in the
+     place they are already reading. */
   const p = open();
-  const section = p.extra().querySelector('#time-rich-audit');
-  check('the section is there', section !== null);
-  check('with its heading',
-    section && section.querySelector('.trp-cw-w1-h').textContent === 'Run your Time Rich Audit',
-    section && section.querySelector('.trp-cw-w1-h').textContent);
-  check('and it opens the Week 1 block',
-    section && p.extra().firstElementChild === section,
-    p.extra().firstElementChild && p.extra().firstElementChild.className);
+  const row = p.lesson('Run your Time Rich Audit');
+  const detail = p.detail('Run your Time Rich Audit');
+  check('the lesson is there, with its tick',
+    row !== undefined && row.querySelector('.trp-check-box').tagName === 'BUTTON');
+  check('at the address Resources links to', row && row.id === 'time-rich-audit', row && row.id);
+  check('and no audit section is left in the Week 1 block',
+    p.extra().querySelector('#cw-audit-h') === null);
 
   const tool = p.tool();
-  check('the table is in it', tool !== null && section.contains(tool));
+  check('the table is in the lesson', tool !== null && detail.contains(tool));
   check('and it is shown', tool && !tool.hasAttribute('hidden'));
-  check('nothing is hiding it behind a toggle',
-    section.closest('details') === null);
 
-  /* The prompt comes from the Supabase row, so there is one prompt, written
-     once. It is in a copy box whether or not the row carries the marker. */
-  const box = section.querySelector('.trp-cw-pb');
+  const box = detail.querySelector('.trp-cw-pb');
   check('the prompt is in a copy box', box !== null);
   check('named Your audit prompt',
     box && box.querySelector('.trp-cw-pb-label').textContent === 'Your audit prompt',
@@ -655,31 +660,18 @@ console.log('\nThe Time Rich Audit is a section of its own, first in Week 1');
     box && box.querySelector('pre').textContent === AUDIT_PROMPT,
     box && JSON.stringify(box.querySelector('pre').textContent));
   check('and the prompt comes above the table',
-    [...section.children].indexOf(box.closest('[data-audit-prompt]')) <
-    [...section.children].indexOf(tool.closest('[data-audit-table]')));
+    box && tool && (box.compareDocumentPosition(tool) & p.w.Node.DOCUMENT_POSITION_FOLLOWING) !== 0);
 
   let copiedPrompt = null;
   p.w.navigator.clipboard = { writeText: (t) => { copiedPrompt = t; return Promise.resolve(); } };
   box.querySelector('[data-copy-target]').dispatchEvent(new p.w.MouseEvent('click', { bubbles: true }));
   check('Copy puts exactly that on the clipboard', copiedPrompt === AUDIT_PROMPT, copiedPrompt);
 
-  // The row keeps its tick, and sends the member to the section.
-  const detail = p.detail('Run your Time Rich Audit');
-  check('the row is still there, with its tick',
-    p.lesson('Run your Time Rich Audit').querySelector('.trp-check-box').tagName === 'BUTTON');
-  check('and it points at the section rather than repeating it',
-    detail.querySelector('a[href="#time-rich-audit"]') !== null &&
-    detail.querySelector('.trp-cw-audit') === null &&
-    detail.querySelector('.trp-cw-pb') === null,
-    detail.innerHTML.slice(0, 120));
-  check('with a button that says where it goes',
-    detail.querySelector('a[href="#time-rich-audit"]').textContent === 'Go to the Time Rich Audit');
-
   const heads = [...tool.querySelectorAll('thead th')].map((th) => th.textContent);
   check('the five columns from the Business COMPASS',
     JSON.stringify(heads) === JSON.stringify([
       'Task (last week)', 'Hours', '$ or not',
-      'Owner: Skill, Agent, Human or Me', 'COMPASS check',
+      'Owner: Skill, Agent, Human, Cut or Me', 'COMPASS check',
     ]), heads);
 
   const rows = [...tool.querySelectorAll('.trp-cw-audit-row')];
@@ -885,7 +877,7 @@ console.log('\nAudacious Action: one toggle, shut, with a drop-down per prompt')
      carried on Ella's Notion page. */
   const drops = [...section.querySelectorAll('.trp-cw-gpd')];
   check('ten drop-downs, one per prompt', drops.length === 10, drops.length);
-  check('all shut to begin with', drops.every((d) => d.open === false));
+  check('all open to begin with, so the prompts are laid out', drops.every((d) => d.open === true));
   check('each in the setup-step shape',
     drops.every((d) => d.tagName === 'DETAILS' && d.classList.contains('trp-cw-step')));
 
@@ -921,7 +913,13 @@ console.log('\nAudacious Action: one toggle, shut, with a drop-down per prompt')
   const first = boxes[0].querySelector('pre').textContent;
   check('the first prompt is the ICP one, word for word',
     first.startsWith('Build my ICP from my sales call notes in Wispr Flow.') &&
-    first.endsWith("then tell me the 3 points you're least sure about."), first.slice(0, 60));
+    first.includes("then tell me the 3 points you're least sure about."), first.slice(0, 60));
+  check('and every prompt ends with the master prompt',
+    boxes.every((b) => {
+      const t = b.querySelector('pre').textContent;
+      return t.includes('\n\nBefore you start:\n- Restate my goal in one line') &&
+        t.endsWith("saved to my Business COMPASS, so you're smarter next time.");
+    }));
   check('no prompt is indented', boxes.every((b) => !/^\s/.test(b.querySelector('pre').textContent)));
 
   /* The one link in here is a button, not a line of address text. */
@@ -952,59 +950,98 @@ console.log('\nAudacious Action: one toggle, shut, with a drop-down per prompt')
 }
 
 
-console.log('\nNext steps, and the questions from the cohort');
+console.log('\nThe agent table and the growth prompts sit in their own lessons');
+{
+  const AGENTS_LESSON = { id: 205, kind: 'text', title: 'Pick your personal AI agent', body: 'Pick one.', sort: 60 };
+  const GROWTH_LESSON = { id: 206, kind: 'text', title: '10 Growth Prompts', body: 'Run ONE before Friday.', sort: 80 };
+  const data = payload();
+  data.weeks[1].items.push(AGENTS_LESSON, GROWTH_LESSON);
+  const p = openWith(data);
+
+  const agents = p.lesson('Pick your personal AI agent');
+  check('the agent lesson carries the shared table',
+    agents && agents.querySelector('[data-agents-block] .trp-agents') !== null);
+  check('and answers to its address', agents && agents.id === 'which-agent', agents && agents.id);
+  check('the Week 1 block does not draw it a second time',
+    p.live.querySelectorAll('[data-agents-block]').length === 1);
+
+  const growth = p.lesson('10 Growth Prompts');
+  check('the growth lesson carries the ten prompts, without a toggle of its own',
+    growth && growth.querySelectorAll('.trp-cw-gpd').length === 10 &&
+    growth.querySelector('details#growth-prompts') === null);
+  check('and answers to its address', growth && growth.id === 'growth-prompts', growth && growth.id);
+  check('and it starts open', growth && growth.classList.contains('is-open'));
+  check('the empty toggle is hidden in the Week 1 block',
+    [...p.extra().querySelectorAll('details.trp-cw-w1-sec')].every((d) => d.hidden));
+  check('one element answers to each address',
+    p.doc.querySelectorAll('[id="growth-prompts"]').length === 1 &&
+    p.doc.querySelectorAll('[id="which-agent"]').length === 1);
+
+  // A link from Resources opens the lesson it lands on.
+  const q = openWith(data, '#growth-prompts');
+  const landed = q.lesson('10 Growth Prompts');
+  check('a link to it opens that lesson',
+    landed && landed.querySelector('.trp-cw-toggle').getAttribute('aria-expanded') === 'true');
+  q.w.close();
+  p.w.close();
+}
+
+console.log('\nA copy box marks the key words and drops "Copy" from its label');
+{
+  const LESSON = { id: 207, kind: 'text', title: 'Key words', sort: 45,
+    body: 'Try it.\n\n= Copy the prompt\nRead my COMPASS. **Never send anything.**\n=' };
+  const data = payload();
+  data.weeks[1].items.push(LESSON);
+  const p = openWith(data);
+  const box = p.detail('Key words').querySelector('.trp-cw-pb');
+  check('the label reads Prompt',
+    box && box.querySelector('.trp-cw-pb-label').textContent === 'Prompt',
+    box && box.querySelector('.trp-cw-pb-label').textContent);
+  const mark = box && box.querySelector('pre mark.trp-cw-key');
+  check('the starred words are marked', mark && mark.textContent === 'Never send anything.');
+  check('and the stars never reach the copy',
+    box && box.querySelector('pre').textContent === 'Read my COMPASS. Never send anything.',
+    box && box.querySelector('pre').textContent);
+  p.w.close();
+}
+
+console.log('\nThe setup and the week are master drop-downs');
 {
   const p = open();
-  const extra = p.extra();
+  const masters = [...p.panel().querySelectorAll('details.trp-cw-master')];
+  const titles = masters.map((d) => d.querySelector('.trp-cw-master-title').textContent);
+  check('the setup is one, first, and open while any of it is left',
+    titles[0] === 'Your setup' && masters[0].open === true, titles);
+  check('the lessons are in sections of the week, all shut while the setup is left',
+    masters.slice(1).length > 0 && masters.slice(1).every((d) => d.open === false), titles);
+  check('every lesson is in a section',
+    [...p.panel().querySelectorAll('.trp-cw-lesson')].every((l) => l.closest('details.trp-cw-master')));
+  check('each section says how much of it is done',
+    masters.every((d) => /\d+ of \d+ done/.test(d.querySelector('.trp-cw-master-count').textContent)));
 
-  const steps = [...extra.querySelectorAll('.trp-cw-w1-list li')].map((li) => li.textContent.trim());
-  check('two closing steps', steps.length === 2, steps);
-  check('post your audacious action in the channel',
-    steps[0] === 'Post your audacious action in #audacious-wins.', steps[0]);
-  check('no longer asks to bring the audit to Friday',
-    !steps.some((x) => /Bring your audit/.test(x)), steps);
-  check('then LaunchLemonade before Wednesday',
-    steps[1].startsWith('Before Wednesday’s live build session: sign up to LaunchLemonade (3 months free)'), steps[1]);
-  const ll = extra.querySelectorAll('.trp-cw-w1-list li')[1].querySelector('a.trp-cw-btn');
-  check('with a LaunchLemonade button on the TIMERICHLL voucher', ll !== null &&
-    ll.textContent === 'Sign up to LaunchLemonade' &&
-    new URL(ll.href).hostname === 'studio.launchlemonade.app' &&
-    new URL(ll.href).searchParams.get('voucher') === 'TIMERICHLL' && ll.target === '_blank', ll && ll.href);
+  // Once the setup is done, it shuts and the section with the next lesson opens.
+  const q = open([STEP.id]);
+  const qm = [...q.panel().querySelectorAll('details.trp-cw-master')];
+  const setup = qm.find((d) => d.querySelector('.trp-cw-master-title').textContent === 'Your setup');
+  check('a finished setup is shut', setup && setup.open === false);
+  check('and the section holding the next lesson is open',
+    qm.filter((d) => d.open).length === 1 &&
+    qm.find((d) => d.open).querySelector('.trp-cw-lesson.is-open') !== null);
+  q.w.close();
+  p.w.close();
+}
 
-  const qa = extra.querySelector('#cohort-questions');
-  check('the questions are in Week 1, after next steps', qa !== null &&
-    [...extra.children].indexOf(qa) > [...extra.children].indexOf(extra.querySelectorAll('.trp-cw-w1-sec')[2]));
-
-  const groups = [...qa.querySelectorAll('.trp-cw-gp-h')].map((h) => h.textContent);
-  check('grouped by section, in order',
-    JSON.stringify(groups) === JSON.stringify(['Agents', 'AI operating system', 'Content']), groups);
-
-  const items = [...qa.querySelectorAll('.trp-cw-qa-item')];
-  check('twenty-four questions', items.length === 24, items.length);
-  check('all collapsed to begin with', items.every((d) => !d.open));
-  check('each on a <details>, so the keyboard and in-page search are the browser\'s',
-    items.every((d) => d.tagName === 'DETAILS' && d.querySelector('summary')));
-
-  const counts = ['Agents', 'AI operating system', 'Content'].map((name) => {
-    const head = [...qa.querySelectorAll('.trp-cw-gp-h')].find((h) => h.textContent === name);
-    return head.nextElementSibling.querySelectorAll('.trp-cw-qa-item').length;
-  });
-  check('fourteen, four and six', JSON.stringify(counts) === JSON.stringify([14, 4, 6]), counts);
-
-  // One answer, word for word, so a reflow of this block cannot quietly
-  // rewrite Ella's words.
-  const first = items[0];
-  check('the first question is the first one asked',
-    first.querySelector('summary').textContent.trim() ===
-    'Where do I start, and can I build an agent with no technical background?',
-    first.querySelector('summary').textContent.trim());
-  const answer = first.querySelector('.trp-cw-qa-a').textContent;
-  check('and its answer is exactly as written',
-    answer.startsWith('Yes. Most agents in this cohort need no code.') &&
-    answer.endsWith('Bring it to session 1 and we will build it live.'), answer.slice(0, 50));
-
-  check('no answer sends a member off the page',
-    qa.querySelector('a[href]') === null, qa.innerHTML.slice(0, 80));
+console.log('\nAn open lesson folds from a click in its body, not from its controls');
+{
+  const p = open();
+  const toggle = () => p.lesson('Run your Time Rich Audit').querySelector('.trp-cw-toggle');
+  toggle().dispatchEvent(new p.w.MouseEvent('click', { bubbles: true }));
+  check('it opens from its title', toggle().getAttribute('aria-expanded') === 'true');
+  p.tool().querySelector('.trp-cw-audit-in').dispatchEvent(new p.w.MouseEvent('click', { bubbles: true }));
+  check('a click in the audit table leaves it open', toggle().getAttribute('aria-expanded') === 'true');
+  p.detail('Run your Time Rich Audit').querySelector('.trp-cw-lesson-body')
+    .dispatchEvent(new p.w.MouseEvent('click', { bubbles: true }));
+  check('a click on its text folds it', toggle().getAttribute('aria-expanded') === 'false');
   p.w.close();
 }
 

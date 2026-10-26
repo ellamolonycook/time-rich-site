@@ -120,6 +120,8 @@ function open(prepItems, doneIds) {
     frames: () => [...live.querySelectorAll('iframe')],
     links: () => [...live.querySelectorAll('a[href]')].map((a) => a.getAttribute('href')),
     cards: () => [...(band ? band.querySelectorAll('.trp-cw-mini') : [])],
+    // The small calendar button, and any other pinned link, beside the title.
+    pills: () => [...(hello ? hello.querySelectorAll('.trp-cw-welcome-head a.trp-cw-cal') : [])],
     steps: () => [...live.querySelectorAll('.trp-cw-task-title')].map((n) => n.textContent),
     // "x of y done" on the week panel, and on each setup step.
     panelCount: () => { const n = live.querySelector('.trp-cw-count'); return n ? n.textContent : null; },
@@ -169,7 +171,7 @@ console.log('\nThe portal exposes the embed builder, and it still checks before 
    Where the video and the calendar now live.
    --------------------------------------------------------------------------- */
 
-console.log('\nThe video and the calendar have a band of their own, under the welcome');
+console.log('\nThe video has a band of its own, under the welcome; the calendar sits by the title');
 {
   const p = open([LETTER, VIDEO, CALENDAR]);
   check('the welcome is drawn', Boolean(p.hello));
@@ -178,12 +180,13 @@ console.log('\nThe video and the calendar have a band of their own, under the we
   check('it comes directly after the welcome box',
     p.hello.nextElementSibling === p.band, p.hello.nextElementSibling && p.hello.nextElementSibling.className);
 
-  // The welcome is Ella's letter and the Pep Talk, and nothing else.
+  // The welcome is Ella's letter, the Pep Talk and the small calendar button.
   check('the welcome holds no player', p.hello.querySelector('iframe') === null);
   check('the welcome holds no card',
     p.hello.querySelector('.trp-cw-mini') === null && p.hello.querySelector('.trp-cw-side') === null);
-  check('and no link of any kind',
-    p.hello.querySelector('a[href]') === null, p.hello.innerHTML.slice(0, 80));
+  check('and its only link is the calendar, beside the title',
+    [...p.hello.querySelectorAll('a[href]')].length === 1 && p.pills().length === 1,
+    [...p.hello.querySelectorAll('a[href]')].map((a) => a.getAttribute('href')));
 
   p.w.close();
 }
@@ -225,35 +228,24 @@ console.log('\nThe player');
   p.w.close();
 }
 
-console.log('\nThe calendar card, stripped back to its title and its button');
+console.log('\nThe calendar is a small button beside the welcome title');
 {
   const p = open([LETTER, VIDEO, CALENDAR]);
-  const cards = p.cards();
-  check('one card in the band', cards.length === 1, cards.length);
-  const card = cards[0];
-  check('it keeps its title',
-    card.querySelector('.trp-cw-mini-title').textContent === 'Add every session to your calendar',
-    card.querySelector('.trp-cw-mini-title').textContent);
-  check('the body line is not drawn, though the row has one',
-    !card.textContent.includes('All 9 live sessions'), card.textContent);
-  check('and it is nowhere else on the page either',
-    !p.live.textContent.includes('All 9 live sessions'),
-    (p.live.textContent.match(/.{0,30}All 9 live sessions.{0,20}/) || [])[0]);
-
-  const btn = card.querySelector('a');
-  check('its button is the only other thing in the card',
-    card.children.length === 2 && card.children[1] === btn, [...card.children].map((n) => n.tagName));
-  check('saying what it does', btn.textContent === 'Add to my calendar', btn.textContent);
+  const pills = p.pills();
+  check('one, by the title', pills.length === 1, pills.length);
+  const btn = pills[0];
+  check('in the title row', btn.closest('.trp-cw-welcome-head').querySelector('.trp-cw-h2') !== null);
+  check('saying what it does', btn.textContent.includes('Add every session to your calendar'), btn.textContent);
   check('pointing at the stored URL', btn.getAttribute('href') === CALENDAR_URL, btn.getAttribute('href'));
   check('named for a screen reader',
-    (btn.getAttribute('aria-label') || '').startsWith('Add to my calendar: '), btn.getAttribute('aria-label'));
-
-  // The card is drawn after the video in the document, which is what puts
-  // it under the video on a phone and beside it on a desktop.
-  check('the video comes before the card in the band',
-    p.band.children[0].matches('.trp-cw-intro-vid') && p.band.children[1] === card,
-    [...p.band.children].map((n) => n.className));
-
+    btn.getAttribute('aria-label') === 'Add every session to your calendar', btn.getAttribute('aria-label'));
+  check('the body line is not drawn anywhere',
+    !p.live.textContent.includes('All 9 live sessions'),
+    (p.live.textContent.match(/.{0,30}All 9 live sessions.{0,20}/) || [])[0]);
+  check('and the band has no card left in it', p.cards().length === 0, p.cards().length);
+  check('so the video takes the band to itself',
+    p.band.children.length === 1 && p.band.children[0].matches('.trp-cw-intro-vid') &&
+    p.band.classList.contains('is-solo'), [...p.band.children].map((n) => n.className));
   p.w.close();
 }
 
@@ -273,10 +265,9 @@ console.log('\nA video URL embedSrc refuses draws nothing at all');
   check('its title is not drawn either',
     !p.live.textContent.includes('Welcome Video'), (p.live.textContent.match(/.{0,30}Welcome Video.{0,20}/) || [])[0]);
 
-  // The band is still there, because the calendar still belongs in it.
-  check('the calendar card is still drawn', p.cards().length === 1, p.cards().length);
-  check('and there is no empty video column',
-    p.band.querySelector('.trp-cw-intro-vid') === null);
+  // With no video, there is no band; the calendar is still by the title.
+  check('no band is drawn', p.band === null);
+  check('the calendar is still drawn', p.pills().length === 1, p.pills().length);
   p.w.close();
 }
 
@@ -296,8 +287,8 @@ console.log('\nThe kind and the sort still decide');
 {
   // An embeddable URL on a `link` row is a card, not a player.
   const asLink = open([LETTER, { ...VIDEO, kind: 'link' }, CALENDAR]);
-  check('an embeddable URL on a link row stays a card', asLink.frames().length === 0, asLink.frames().length);
-  check('and is drawn as one of the band\'s cards', asLink.cards().length === 2, asLink.cards().length);
+  check('an embeddable URL on a link row stays a link', asLink.frames().length === 0, asLink.frames().length);
+  check('and is drawn as a second button beside the title', asLink.pills().length === 2, asLink.pills().length);
   asLink.w.close();
 
   // Sort 100 and up is a setup step in Week 1's panel, not a pinned row.
@@ -375,8 +366,13 @@ console.log('\nThe letter and the Pep Talk are untouched');
   const p = open([LETTER, VIDEO, CALENDAR]);
   const toggle = p.hello.querySelector('.trp-cw-pep-toggle');
   check('the Pep Talk toggle is still there', Boolean(toggle) && toggle.textContent.includes('Time Rich Pep Talk'), toggle && toggle.textContent);
-  check('still open by default', toggle.getAttribute('aria-expanded') === 'true', toggle.getAttribute('aria-expanded'));
-  check('with the photo and the rest of the letter',
+  check('shut by default, so it never pushes the week down',
+    toggle.getAttribute('aria-expanded') === 'false', toggle.getAttribute('aria-expanded'));
+  check('with nothing of the letter drawn yet', p.hello.querySelector('.trp-cw-pep-body') === null);
+  toggle.dispatchEvent(new p.w.MouseEvent('click', { bubbles: true }));
+  p.hello = p.live.querySelector('.trp-cw-welcome');
+  p.band = p.live.querySelector('.trp-cw-intro');
+  check('opened, it has the photo and the rest of the letter',
     Boolean(p.hello.querySelector('.trp-cw-pep-body .trp-cw-letter-photo')) &&
     p.hello.querySelector('.trp-cw-pep-body').textContent.includes('The middle of the letter'));
   check('the title is still the letter\'s title',
@@ -384,14 +380,11 @@ console.log('\nThe letter and the Pep Talk are untouched');
   check('the lead line and the ask are still lifted out',
     p.hello.querySelector('.trp-cw-lead').textContent.startsWith("You're not here just to learn AI") &&
     p.hello.querySelector('.trp-cw-ask').textContent === 'How serious are you about becoming Time Rich?');
-  /* The WhatsApp card goes in between now: announcements and session links
-     land there, so it sits above the four weeks rather than below them. */
-  check('the WhatsApp card follows the band',
-    p.band.nextElementSibling && p.band.nextElementSibling.id === 'cw-whatsapp',
+  /* No WhatsApp card in between: the group and the onboarding questions
+     are off the curriculum page. */
+  check('the week tabs follow the band',
+    p.band.nextElementSibling && p.band.nextElementSibling.className === 'trp-cw-weeks',
     p.band.nextElementSibling && p.band.nextElementSibling.className);
-  check('and the week tabs follow that',
-    p.band.nextElementSibling.nextElementSibling.className === 'trp-cw-weeks',
-    p.band.nextElementSibling.nextElementSibling.className);
   p.w.close();
 }
 
@@ -403,7 +396,9 @@ console.log('\nThe loading placeholder holds the band\'s height');
   const skel = p.doc.querySelector('[data-curriculum-static] .trp-cw-intro');
   check('the placeholder has the band', Boolean(skel));
   check('with the video box in it', Boolean(skel && skel.querySelector('.trp-cw-intro-vid .trp-cw-video .trp-bar')));
-  check('and the small calendar card', Boolean(skel && skel.querySelector('.trp-cw-mini .trp-cw-mini-title')));
+  check('and no calendar card in it', Boolean(skel) && skel.querySelector('.trp-cw-mini') === null);
+  check('the small calendar button is in the placeholder title row',
+    Boolean(p.doc.querySelector('[data-curriculum-static] .trp-cw-welcome-head .trp-cw-cal')));
   check('the placeholder welcome no longer holds either',
     p.doc.querySelector('[data-curriculum-static] .trp-cw-welcome .trp-cw-video') === null &&
     p.doc.querySelector('[data-curriculum-static] .trp-cw-welcome .trp-cw-side') === null);
