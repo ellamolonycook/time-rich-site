@@ -1888,7 +1888,8 @@ When you finish:
         var before = el.getBoundingClientRect().top;
         change();
         var moved = el.getBoundingClientRect().top - before;
-        if (moved) window.scrollBy(0, moved);
+        // instant: the page scrolls smoothly, which would slide the header
+        if (moved) window.scrollTo({ top: window.scrollY + moved, behavior: 'instant' });
       }
       function shutOthers(box, mates, head) {
         holdStill(head, function () {
