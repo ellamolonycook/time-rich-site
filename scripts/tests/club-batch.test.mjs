@@ -1054,9 +1054,29 @@ console.log('\nThe Superhuman prizes sit above the week tabs');
     prizes.nextElementSibling && prizes.nextElementSibling.className === 'trp-cw-weeks');
   check('with all five prizes',
     prizes && prizes.querySelectorAll('.trp-cw-prize').length === 5);
+  check('in a drop-down that starts shut',
+    prizes && prizes.tagName === 'DETAILS' && prizes.open === false);
   p.pick(2);
   check('and they stay when another week is picked',
     p.doc.querySelectorAll('[data-curriculum-live] > .trp-cw-prizes').length === 1);
+  p.w.close();
+}
+
+console.log('\nLessons have a tick and a cross; setup tasks a tick only; the calls neither');
+{
+  const p = open();
+  const tasks = [...p.panel().querySelectorAll('.trp-cw-task')];
+  check('setup tasks have a tick and no cross',
+    tasks.length > 0 && tasks.every((t) => t.querySelector('.trp-check-box') && !t.querySelector('.trp-cw-cross')));
+  const lessons = [...p.panel().querySelectorAll('.trp-cw-lesson')].filter((l) => l.querySelector('button.trp-check-box'));
+  check('every lesson that can be ticked has a cross beside its tick',
+    lessons.length > 0 && lessons.every((l) => l.querySelector('.trp-cw-lesson-head .trp-cw-cross')));
+  check('the live calls have no tick box',
+    p.doc.querySelectorAll('.trp-cw-session .trp-check-box').length === 0);
+  const calls = [...p.doc.querySelectorAll('.trp-cw-session')];
+  check('a call with no recording yet shows a Recording button, marked Coming soon',
+    calls.length > 0 && calls.every((c) => c.querySelector('.trp-cw-btn') &&
+      (c.querySelector('a.trp-cw-btn') || c.querySelector('.trp-cw-soon'))));
   p.w.close();
 }
 

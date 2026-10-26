@@ -52,6 +52,8 @@
   </script>
 
   <title>Curriculum | Time Rich Club</title>
+  <link rel="icon" type="image/png" sizes="32x32" href="/rocketship-icon-32.png"/>
+  <link rel="apple-touch-icon" sizes="180x180" href="/rocketship-icon-180.png"/>
   <link rel="canonical" href="https://timerich.ai/club/curriculum" />
   <meta name="description" content="Your weekly steps, prompts and session recordings for the Superhuman Accelerator." />
   <meta property="og:type" content="website" />
@@ -91,7 +93,6 @@
     .trp-cw-head { display: flex; flex-wrap: wrap; align-items: flex-end; gap: 24px 48px; }
     .trp-cw-head-copy { flex: 999 1 520px; min-width: 0; display: flex; flex-direction: column; gap: 16px; }
     .trp-cw-head .trp-headbar { flex: 1 1 240px; max-width: 300px; }
-    .trp-cw-eyebrow { font-size: 12px; font-weight: 600; letter-spacing: .08em; text-transform: uppercase; color: var(--trp-soft); }
     .trp-cw-h1 { font-family: var(--trp-display); font-weight: 600; font-size: clamp(34px, 5.4vw, 54px); line-height: 1.06; letter-spacing: -.025em; margin: 0; color: var(--trp-deep); }
     .trp-cw-lede { font-size: 18px; line-height: 1.6; color: var(--trp-soft); margin: 0; max-width: 56ch; }
 
@@ -195,12 +196,19 @@
 
     /* this week's live sessions */
     .trp-cw-sessions { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 14px; }
-    .trp-cw-session { background: var(--trp-sage); border-radius: 16px; padding: 18px; display: flex; align-items: flex-start; gap: 14px; }
+    .trp-cw-session { position: relative; background: var(--trp-sage); border-radius: 16px; padding: 18px; display: flex; align-items: flex-start; gap: 14px; }
+    .trp-cw-session .trp-cw-btn.is-soon { opacity: .55; cursor: default; pointer-events: none; }
+    .trp-cw-soon { position: absolute; top: 14px; right: 14px; font-size: 10px; font-weight: 600; letter-spacing: .06em; text-transform: uppercase; border-radius: 999px; padding: 3px 8px; background: rgb(var(--c-surface)); color: var(--trp-soft); }
     .trp-cw-session.is-friday { background: var(--trp-sagelt); }
     .trp-cw-session-copy { flex: 1 1 auto; min-width: 0; display: flex; flex-direction: column; gap: 4px; }
     .trp-cw-session-when { font-size: 12px; font-weight: 600; letter-spacing: .08em; text-transform: uppercase; color: var(--trp-soft); }
+    .trp-cw-session:has(.trp-cw-soon) .trp-cw-session-when { padding-right: 96px; }
         .trp-cw-session-title { font-size: 16px; font-weight: 600; color: var(--trp-deep); }
-    .trp-cw-session .trp-cw-btn { margin-top: 8px; align-self: flex-start; background: rgb(var(--c-surface)); color: var(--trp-deep); }
+    /* The recording button sits at the foot of every card, so the buttons
+       line up across a row however long each call's title runs. */
+    .trp-cw-session .trp-cw-session-copy { align-self: stretch; }
+    .trp-cw-session-copy > :nth-last-child(2) { margin-bottom: 8px; }
+    .trp-cw-session .trp-cw-btn { margin-top: auto; align-self: flex-start; background: rgb(var(--c-surface)); color: var(--trp-deep); }
 
     /* the lessons */
     .trp-cw-group { font-size: 12px; font-weight: 600; letter-spacing: .08em; text-transform: uppercase; color: var(--trp-soft); margin: 6px 0 -2px; }
@@ -212,7 +220,8 @@
     .trp-cw-lesson.is-open { border-color: var(--trp-green); }
     .trp-cw-lesson-head { display: grid; grid-template-columns: auto minmax(0, 1fr); align-items: center; gap: 14px; padding: 8px 12px 8px 16px; }
     .trp-cw-toggle { display: flex; align-items: center; justify-content: space-between; gap: 12px; width: 100%; min-height: 48px; padding: 0; border: 0; background: none; font: inherit; color: inherit; text-align: left; cursor: pointer; border-radius: 10px; }
-    .trp-cw-toggle:focus-visible { outline: 2px solid var(--trp-green); outline-offset: 2px; }
+    .trp-cw-toggle:focus-visible { outline: none; }
+    .trp-cw-lesson-head:has(.trp-cw-toggle:focus-visible) { background: var(--trp-sagelt); }
     .trp-cw-chev { flex: none; width: 20px; height: 20px; color: var(--trp-soft); transition: transform .2s ease; }
     .trp-cw-toggle[aria-expanded="true"] .trp-cw-chev { transform: rotate(180deg); }
     .trp-cw-lesson-copy { min-width: 0; display: flex; flex-direction: column; gap: 2px; }
@@ -234,6 +243,13 @@
     /* Inside a section, one outline is enough: the section's. The rows
        lose their own, and the green header shows where each one starts. */
     .trp-cw-master-body .trp-cw-lesson, .trp-cw-master-body .trp-cw-step:not(.trp-cw-gpd) { border-color: transparent; box-shadow: none; }
+    /* The section and prize headers are always light green, and a step or
+       lesson keeps its green header while it is open. One line round the
+       card, no second line around the header: the fill shows focus too. */
+    .trp-cw-master > summary, .trp-cw-prizes > summary { background: var(--trp-sagelt); }
+    .trp-cw-master[open] > summary, .trp-cw-prizes[open] > summary { border-radius: 21px 21px 0 0; margin-bottom: 12px; }
+    .trp-cw-step[open]:not(.trp-cw-gpd) > summary { background: var(--trp-sagelt); border-radius: 19px 19px 0 0; }
+    .trp-cw-lesson.is-open > .trp-cw-lesson-head { background: var(--trp-sagelt); }
     @keyframes trp-cw-reveal { from { opacity: 0; transform: translateY(-6px); } to { opacity: 1; transform: none; } }
     .trp-cw-reveal { animation: trp-cw-reveal .22s ease; }
     @media (prefers-reduced-motion: reduce) { .trp-cw-reveal { animation: none; } .trp-cw-master > summary, .trp-cw-step > summary, .trp-cw-lesson-head { transition: none; } }
@@ -243,10 +259,9 @@
     .trp-cw-steps { display: flex; flex-direction: column; gap: 20px; }
     .trp-cw-step { border: 1px solid var(--trp-line); border-radius: 20px; background: rgb(var(--c-surface)); transition: border-color .18s ease; }
     .trp-cw-step[open] { border-color: var(--trp-green); box-shadow: 0 16px 34px -28px rgba(26, 24, 22, .4); }
-    .trp-cw-step.is-done { background: var(--trp-sagelt); }
     .trp-cw-step > summary { display: flex; align-items: center; gap: 14px; min-height: 72px; padding: 16px 20px; cursor: pointer; list-style: none; border-radius: 20px; }
     .trp-cw-step > summary::-webkit-details-marker { display: none; }
-    .trp-cw-step > summary:focus-visible { outline: 2px solid var(--trp-green); outline-offset: 2px; }
+    .trp-cw-step > summary:focus-visible { outline: none; background: var(--trp-sagelt); }
     .trp-cw-step-badge { flex: none; width: 36px; height: 36px; border-radius: 50%; display: inline-flex; align-items: center; justify-content: center; font-weight: 700; font-size: 14px; background: var(--trp-sage); color: var(--trp-green); }
     .trp-cw-step-badge svg { width: 18px; height: 18px; }
     .trp-cw-step.is-done .trp-cw-step-badge { background: var(--trp-green); color: var(--trp-offwhite); }
@@ -256,10 +271,18 @@
     .trp-cw-step-count { flex: none; font-size: 12px; font-weight: 600; letter-spacing: .06em; text-transform: uppercase; color: var(--trp-soft); white-space: nowrap; }
     .trp-cw-step[open] > summary .trp-cw-chev { transform: rotate(180deg); }
     .trp-cw-tasks { list-style: none; margin: 0; padding: 0 20px 8px 70px; display: flex; flex-direction: column; }
-    .trp-cw-task { display: grid; grid-template-columns: auto minmax(0, 1fr); gap: 14px; padding: 16px 0; border-top: 1px solid var(--trp-line); }
+    .trp-cw-task { display: grid; grid-template-columns: auto minmax(0, 1fr); gap: 14px; padding: 16px 12px; border-top: 1px solid var(--trp-line); transition: background-color .2s ease; }
     .trp-cw-task-copy { display: flex; flex-direction: column; align-items: flex-start; gap: 8px; min-width: 0; padding-top: 5px; }
     .trp-cw-task-title { font-size: 16px; font-weight: 600; color: var(--trp-deep); }
     .trp-cw-task.is-done .trp-cw-task-title { color: var(--trp-soft); }
+    /* The tick and the cross sit side by side; a crossed lesson is struck out. */
+    .trp-cw-pair { display: flex; align-items: flex-start; gap: 6px; }
+    .trp-cw-cross { display: inline-flex; align-items: center; justify-content: center; flex: none; width: 32px; height: 32px; border: 0; border-radius: 999px; background: rgb(var(--c-surface)); box-shadow: inset 0 0 0 2px var(--trp-line); color: var(--trp-soft); cursor: pointer; transition: background-color .2s ease, color .2s ease; }
+    .trp-cw-cross svg { width: 14px; height: 14px; }
+    .trp-cw-cross:hover { color: var(--trp-deep); }
+    .trp-cw-cross:focus-visible { outline: 2px solid var(--trp-green); outline-offset: 2px; }
+    .trp-cw-cross.is-on { background: var(--trp-soft); box-shadow: none; color: var(--trp-offwhite); }
+    .trp-cw-lesson.is-crossed .trp-cw-lesson-title { text-decoration: line-through; }
     .trp-cw-task .trp-cw-btn { margin-top: 4px; }
 
     /* a small drop-down inside a task: the Slack channels, the Club Code */
@@ -312,15 +335,33 @@
     .trp-cw-callout p { margin: 0; font-size: 16px; line-height: 1.6; color: var(--trp-deep); }
     .trp-cw-callout b { font-weight: 600; }
 
-    /* The prizes, above the week tabs, so they show whichever week is open. */
-    .trp-cw-prizes { padding: 20px 22px; border-radius: 22px; background: rgb(var(--c-lime) / .32); border: 1px solid rgb(var(--c-lime) / .6); }
-    .trp-cw-prizes-h { margin: 0; font-family: var(--trp-display); font-weight: 600; font-size: clamp(18px, 2.2vw, 22px); letter-spacing: -.02em; color: var(--trp-deep); }
-    .trp-cw-prizes-lead { margin: 4px 0 14px; font-size: 15px; line-height: 1.5; color: var(--trp-soft); }
-    .trp-cw-prizes-list { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(auto-fit, minmax(190px, 1fr)); gap: 10px; }
-    .trp-cw-prize { padding: 12px 14px; border-radius: 14px; background: rgb(var(--c-surface)); }
-    .trp-cw-prize-name { display: block; font-size: 15px; font-weight: 600; color: var(--trp-deep); }
-    .trp-cw-prize-how { display: block; margin-top: 4px; font-size: 14px; line-height: 1.5; color: var(--trp-soft); }
-    .trp-cw-prize-win { display: block; margin-top: 6px; font-size: 14px; font-weight: 600; line-height: 1.4; color: var(--trp-green); }
+    /* The prizes, above the week tabs, so they show whichever week is open:
+       a drop-down in the same plain card as the week's sections, one prize
+       to a row. */
+    .trp-cw-prizes { border: 1px solid var(--trp-line); border-radius: 22px; background: rgb(var(--c-surface)); }
+    .trp-cw-prizes[open] { border-color: var(--trp-green); }
+    .trp-cw-prizes > summary { display: flex; align-items: center; gap: 14px; min-height: 64px; padding: 14px 20px; cursor: pointer; list-style: none; border-radius: 22px; transition: background-color .18s ease; }
+    .trp-cw-prizes > summary::-webkit-details-marker { display: none; }
+    .trp-cw-prizes > summary:focus-visible { outline: none; }
+    @media (hover: hover) { .trp-cw-prizes > summary:hover { background: var(--trp-sagelt); } .trp-cw-prizes > summary:hover .trp-cw-chev { color: var(--trp-green); } }
+    .trp-cw-prizes[open] > summary .trp-cw-chev { transform: rotate(180deg); }
+    .trp-cw-prizes-h { flex: 1 1 auto; min-width: 0; font-family: var(--trp-display); font-weight: 600; font-size: clamp(18px, 2.2vw, 22px); letter-spacing: -.02em; line-height: 1.2; color: var(--trp-deep); }
+    .trp-cw-prizes-count { flex: none; font-size: 12px; font-weight: 600; letter-spacing: .06em; text-transform: uppercase; color: var(--trp-soft); white-space: nowrap; }
+    .trp-cw-prizes-body { padding: 0 20px 16px; }
+    .trp-cw-prizes-lead { margin: 0 0 6px; font-size: 14px; line-height: 1.5; color: var(--trp-soft); }
+    .trp-cw-prizes-list { list-style: none; margin: 0; padding: 0; }
+    .trp-cw-prize { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 15rem); gap: 4px 24px; align-items: baseline; padding: 14px 0; border-top: 1px solid var(--trp-line); }
+    .trp-cw-prize:first-child { border-top: 0; }
+    .trp-cw-prize-name { font-size: 16px; font-weight: 600; color: var(--trp-deep); }
+    .trp-cw-prize-label { font-size: 11px; letter-spacing: .06em; text-transform: uppercase; color: var(--trp-soft); }
+    .trp-cw-prize-how { grid-column: 1; font-size: 14px; line-height: 1.5; color: var(--trp-soft); }
+    .trp-cw-prize-win { grid-column: 2; grid-row: 1 / span 2; font-size: 14px; font-weight: 600; line-height: 1.45; color: var(--trp-green); }
+    @media (max-width: 640px) {
+      .trp-cw-prizes > summary { padding: 12px 16px; }
+      .trp-cw-prizes-body { padding: 0 16px 12px; }
+      .trp-cw-prize { grid-template-columns: minmax(0, 1fr); }
+      .trp-cw-prize-win { grid-column: 1; grid-row: auto; }
+    }
 
     /* the audit table: text boxes the member types into. It sits in the
        detail of the row that asks for it, under Ella's prompt, so the gap
@@ -396,7 +437,7 @@
     .trp-cw-master[open] { border-color: var(--trp-green); }
     .trp-cw-master > summary { display: flex; align-items: center; gap: 14px; min-height: 64px; padding: 14px 20px; cursor: pointer; list-style: none; border-radius: 22px; }
     .trp-cw-master > summary::-webkit-details-marker { display: none; }
-    .trp-cw-master > summary:focus-visible { outline: 2px solid var(--trp-green); outline-offset: 2px; }
+    .trp-cw-master > summary:focus-visible { outline: none; }
     .trp-cw-master[open] > summary .trp-cw-chev { transform: rotate(180deg); }
     .trp-cw-master-title { flex: 1 1 auto; min-width: 0; font-family: var(--trp-display); font-weight: 600; font-size: clamp(18px, 2.2vw, 22px); letter-spacing: -.02em; line-height: 1.2; color: var(--trp-deep); }
     .trp-cw-master-count { flex: none; font-size: 12px; font-weight: 600; letter-spacing: .06em; text-transform: uppercase; color: var(--trp-soft); white-space: nowrap; }
@@ -446,7 +487,7 @@
     /* Every tick shows a tick, faint until it is done; ticking it fills the
        circle green and turns the tick cream. The number is still written
        into the button for the page's own bookkeeping, just not shown. */
-    .trp-cw .trp-check-box { width: 32px; height: 32px; border: 0; background: var(--trp-sagelt); color: rgb(var(--c-ink) / .28); transition: background-color .25s ease, color .25s ease; }
+    .trp-cw .trp-check-box { width: 32px; height: 32px; border: 0; background: rgb(var(--c-surface)); box-shadow: inset 0 0 0 2px var(--trp-green); color: transparent; transition: background-color .2s ease, color .2s ease; }
     .trp-cw .trp-check-box::before { inset: -6px; }
     .trp-cw .trp-check-box svg { display: block; width: 16px; height: 16px; }
     .trp-cw .trp-check-box:hover { color: var(--trp-green); }
@@ -458,6 +499,9 @@
 
     /* the weeks and the panel, once drawn, keep the page's spacing */
     .trp-cw [data-curriculum-live]:not([hidden]) { display: flex; flex-direction: column; gap: 32px; }
+    /* The page keeps its own place after a redraw; the browser's scroll
+       anchoring on top of that nudged it a few pixels. */
+    .trp-cw [data-curriculum-live] { overflow-anchor: none; }
     .trp-cw-session .trp-check-box { box-shadow: inset 0 0 0 1.5px var(--trp-line); }
 
     /* On a phone the weeks sit two by two, the tasks use the full width,
@@ -628,7 +672,6 @@
            dashboard uses. -->
       <header class="trp-cw-head">
         <div class="trp-cw-head-copy">
-          <span class="trp-cw-eyebrow">Four weeks &middot; Mondays build &middot; Fridays hot seat &middot; 12pm ET</span>
           <h1 class="trp-cw-h1">Sales. Systems. Visibility.</h1>
           <p class="trp-cw-lede">Become ruthlessly efficient with AI in 4 weeks. Build live with us on Mondays, then bring your questions to the Friday hot seat.</p>
         </div>
@@ -1349,9 +1392,20 @@ When you finish:
 
       /* ---- the member's own bar, in the page header ---------------------- */
 
+      /* The bar counts lessons and setup tasks only: the live calls have no
+         box to tick any more, so counting them would stop everyone short. */
+      function itemProgress(data) {
+        var all = L.userProgress(data);
+        var calls = (data && Array.isArray(data.sessions) ? data.sessions : []).filter(function (c) { return L.sessionKey(c); });
+        var marked = calls.filter(function (c) { return L.isSessionMarked(c); }).length;
+        var total = all.total - calls.length;
+        var done = all.done - marked;
+        return { total: total, done: done, percent: total ? Math.round(done / total * 100) : 0 };
+      }
+
       function renderBar(root, data) {
         if (!root) return;
-        var you = L.userProgress(data);
+        var you = itemProgress(data);
         if (!you.total) { L.show(root, false); return; }
 
         L.clear(root);
@@ -1699,6 +1753,41 @@ When you finish:
         return !sel;
       }
 
+      /* A lesson can be ticked, or crossed off as not needed: the setup is
+         for everyone, but not every lesson fits every member. A cross counts
+         as done, so it never holds the member back, and both are saved to
+         the member's account, so they follow them to any device. */
+      function tickOrCross(item, n, name, row) {
+        if (!L.isTrackable(item)) return tickFor(item, n, name);
+        var pair = L.el('div', 'trp-cw-pair');
+        var tick = L.checkBox(
+          function () { return L.isItemDone(item) && !L.isItemCrossed(item); },
+          function () {
+            var ticked = L.isItemDone(item) && !L.isItemCrossed(item);
+            return L.markItem(item, !ticked, false);
+          },
+          name);
+        tick.appendChild(L.el('span', 'trp-cw-n', String(n)));
+        tick.setAttribute('data-cw-focus', 'item-' + L.itemKey(item));
+        pair.appendChild(tick);
+
+        var cross = L.el('button', 'trp-cw-cross');
+        cross.type = 'button';
+        cross.setAttribute('data-cw-focus', 'cross-' + L.itemKey(item));
+        cross.appendChild(icon('M6 6l12 12M18 6L6 18'));
+        var crossed = L.isItemCrossed(item);
+        cross.classList.toggle('is-on', crossed);
+        cross.setAttribute('aria-pressed', crossed ? 'true' : 'false');
+        cross.setAttribute('aria-label', 'Not needed: ' + name);
+        cross.addEventListener('click', function () {
+          var on = L.isItemCrossed(item);
+          L.markItem(item, !on, !on);
+        });
+        pair.appendChild(cross);
+        if (crossed) row.classList.add('is-crossed');
+        return pair;
+      }
+
       function tickFor(item, n, name) {
         if (L.isTrackable(item)) {
           var box = L.checkBox(
@@ -1843,32 +1932,57 @@ When you finish:
          the week tabs rather than inside one week's lessons. */
       var PRIZES = [
         ['Boldest Move', 'Post your most audacious win in #audacious-wins.', 'A 30-minute 1:1 with a mentor'],
-        ['Best Energy, drawn every Friday', 'Show up live and bring the energy.', 'A 1:1 with an expert'],
+        ['Best Energy, drawn every Friday', 'Show up live and bring the energy.', 'A 1:1 with a mentor'],
         ['Stanley VIP Prize', 'Post about the Accelerator on LinkedIn and Instagram across all 4 weeks. Tag Ella, Stanley, Wispr Flow and Time Rich.', 'A $1K Stanley setup and 12 months of Wispr Flow'],
         ['Testimonial Prize, 3 winners', 'Leave a LinkedIn recommendation and a video testimonial.', 'A 30-minute strategy call with mentors'],
         ['First 10 intros', 'Introduce yourself and give a LinkedIn testimonial on Day 1.', 'Instinct Assistant, 100% free']
       ];
+      var prizesOpen = false;   // shut to begin with, kept across redraws
+      var prizesNode = null;    // drawn once: nothing in it changes with a tick
       function prizes() {
-        var box = L.el('section', 'trp-cw-prizes');
-        box.setAttribute('aria-labelledby', 'cw-prizes-h');
-        var h = L.el('h2', 'trp-cw-prizes-h', '\uD83D\uDD25 Superhuman prizes');
-        h.id = 'cw-prizes-h';
-        box.appendChild(h);
-        box.appendChild(L.el('p', 'trp-cw-prizes-lead', 'Every prize winner also gets 1 year of Time Rich Club membership.'));
+        var box = document.createElement('details');
+        box.className = 'trp-cw-prizes';
+        box.open = prizesOpen;
+        box.addEventListener('toggle', function () {
+          prizesOpen = box.open;
+          if (box.open) reveal(inner);
+        });
+        var sum = document.createElement('summary');
+        sum.setAttribute('data-cw-focus', 'prizes');
+        sum.appendChild(L.el('span', 'trp-cw-prizes-h', '\uD83D\uDD25 Superhuman prizes'));
+        sum.appendChild(L.el('span', 'trp-cw-prizes-count', PRIZES.length + ' prizes'));
+        sum.appendChild(chevron());
+        box.appendChild(sum);
+        var inner = L.el('div', 'trp-cw-prizes-body');
+        inner.appendChild(L.el('p', 'trp-cw-prizes-lead', 'Every prize winner also gets 1 year of Time Rich Club membership.'));
         var ul = L.el('ul', 'trp-cw-prizes-list');
         PRIZES.forEach(function (p) {
           var li = L.el('li', 'trp-cw-prize');
           li.appendChild(L.el('span', 'trp-cw-prize-name', p[0]));
+          var win = L.el('span', 'trp-cw-prize-win');
+          win.appendChild(L.el('span', 'trp-cw-prize-label', 'Win: '));
+          win.appendChild(document.createTextNode(p[2]));
+          li.appendChild(win);
           li.appendChild(L.el('span', 'trp-cw-prize-how', p[1]));
-          li.appendChild(L.el('span', 'trp-cw-prize-win', 'Win: ' + p[2]));
           ul.appendChild(li);
         });
-        box.appendChild(ul);
+        inner.appendChild(ul);
+        box.appendChild(inner);
         return box;
       }
 
+      /* The welcome video is kept from one draw to the next while it is the
+         same video, so a tick never reloads the player. */
+      var introKept = null, introKey = null;
       function intro(parts) {
         if (!parts.video) return null;
+        var key = L.str(parts.video.url) + '|' + L.str(parts.video.title);
+        if (introKept && introKey === key) return introKept;
+        introKey = key;
+        introKept = introFresh(parts);
+        return introKept;
+      }
+      function introFresh(parts) {
 
         var box = L.el('div', 'trp-cw-intro is-solo');
         var name = L.str(parts.video.title) || 'Welcome Video';
@@ -1948,15 +2062,16 @@ When you finish:
         var trackable = list.filter(function (it) { return L.isTrackable(it); });
         var done = trackable.filter(function (it) { return L.isItemDone(it); }).length;
         var all = trackable.length > 0 && done === trackable.length;
-        if (all && stepWasDone[group] === false) { delete stepOpen[group]; delete stepOpen[group + 1]; }
         stepWasDone[group] = all;
 
         var box = document.createElement('details');
         box.className = 'trp-cw-step' + (all ? ' is-done' : '');
         box.open = has(stepOpen, group) ? stepOpen[group] : isNext;
-        var initial = box.open;
+        // A details drawn open fires one toggle of its own; that is the
+        // drawing, not a click, so it must not replay the open animation.
+        var drawnOpen = box.open;
         box.addEventListener('toggle', function () {
-          if (box.open === initial && !has(stepOpen, group)) return;   // the open set above, not a click
+          if (drawnOpen) { drawnOpen = false; if (box.open) return; }
           stepOpen[group] = box.open;
           if (box.open) {
             shutOthers(box, box.parentNode.querySelectorAll(':scope > details.trp-cw-step:not(.trp-cw-gpd)'), sum);
@@ -2042,7 +2157,7 @@ When you finish:
         var row = L.el('li', 'trp-cw-lesson' + (isOpenRow ? ' is-open' : ''));
         var head = L.el('div', 'trp-cw-lesson-head');
         tickOnRowClick(head, item);
-        head.appendChild(tickFor(item, n, name));
+        head.appendChild(tickOrCross(item, n, name, row));
 
         var detailId = 'cw-detail-' + key.replace(/[^a-z0-9_-]/gi, '-');
         var toggle = L.el('button', 'trp-cw-toggle');
@@ -2136,9 +2251,9 @@ When you finish:
         var box = document.createElement('details');
         box.className = 'trp-cw-master' + (all ? ' is-done' : '');
         box.open = has(masterOpen, key) ? masterOpen[key] : openByDefault;
-        var initial = box.open;
+        var drawnOpen = box.open;   // see stepBox: the first toggle is the drawing
         box.addEventListener('toggle', function () {
-          if (box.open === initial && !has(masterOpen, key)) return;   // the open set above, not a click
+          if (drawnOpen) { drawnOpen = false; if (box.open) return; }
           masterOpen[key] = box.open;
           if (box.open) {
             // the setup and the week's sections count as one set
@@ -2171,12 +2286,6 @@ When you finish:
 
         var tile = L.el('div', 'trp-cw-session' + (/^Fri/.test(when) ? ' is-friday' : ''));
 
-        var box = L.checkBox(
-          function () { return L.isSessionMarked(session); },
-          function () { return L.toggleSession(session); },
-          name);
-        box.setAttribute('data-cw-focus', 'session-' + L.sessionKey(session));
-        if (L.sessionKey(session)) tile.appendChild(box);
 
         var copy = L.el('div', 'trp-cw-session-copy');
         copy.appendChild(L.el('span', 'trp-cw-session-when',
@@ -2184,16 +2293,22 @@ When you finish:
         copy.appendChild(L.el('span', 'trp-cw-session-title', shown));
         if (bonus) copy.appendChild(L.el('span', 'trp-cw-tag', 'Bonus'));
 
-        // The recording, once the call has run; watching it marks the session.
-        if (L.isSessionPast(session, now)) {
-          var rec = L.linkTo(session.recording_url, 'Watch recording', 'trp-cw-btn is-sm');
-          if (rec) {
-            rec.setAttribute('aria-label', 'Watch recording of ' + name);
-            rec.addEventListener('click', function () {
-              Promise.resolve(L.markSession(session)).then(function () { if (box.refresh) box.refresh(); });
-            });
-            copy.appendChild(rec);
-          }
+        // The recording, once the call has run and its link is in; watching
+        // it marks the session. Until then the button is there but greyed,
+        // with Coming soon in the corner, so members know where to look.
+        var rec = L.isSessionPast(session, now) ? L.linkTo(session.recording_url, 'Watch recording', 'trp-cw-btn is-sm') : null;
+        if (rec) {
+          rec.setAttribute('aria-label', 'Watch recording of ' + name);
+          rec.addEventListener('click', function () {
+            L.markSession(session);
+          });
+          copy.appendChild(rec);
+        } else {
+          var soon = L.el('span', 'trp-cw-btn is-sm is-soon', 'Recording');
+          soon.setAttribute('aria-disabled', 'true');
+          soon.setAttribute('aria-label', 'Recording of ' + name + ': coming soon');
+          copy.appendChild(soon);
+          tile.appendChild(L.el('span', 'trp-cw-soon', 'Coming soon'));
         }
         tile.appendChild(copy);
         return tile;
@@ -2357,6 +2472,24 @@ When you finish:
 
       var lastData = null;
 
+      /* Puts the new children in place without moving the ones that stay,
+         so a kept iframe is never taken out of the page. */
+      function settle(live, out) {
+        var kids = [].slice.call(live.children);
+        // Old nodes above the last kept one go first, so nothing kept moves.
+        var lastKept = -1;
+        kids.forEach(function (k, i) { if (out.indexOf(k) !== -1) lastKept = i; });
+        kids.slice(0, lastKept + 1).forEach(function (k) { if (out.indexOf(k) === -1) live.removeChild(k); });
+        // New nodes go in before the old ones below are taken out, so the
+        // page never gets shorter for a moment: a shorter page pulls the
+        // scroll up, and that was the jump after a tick.
+        out.forEach(function (node, i) {
+          var at = live.children[i] || null;
+          if (at !== node) live.insertBefore(node, at);
+        });
+        [].slice.call(live.children).forEach(function (k) { if (out.indexOf(k) === -1) live.removeChild(k); });
+      }
+
       function render(data) {
         var live = document.querySelector('[data-curriculum-live]');
         var statik = document.querySelector('[data-curriculum-static]');
@@ -2378,14 +2511,17 @@ When you finish:
         var focusKey = document.activeElement && document.activeElement.getAttribute
           ? document.activeElement.getAttribute('data-cw-focus') : null;
 
-        L.clear(live);
+        // Built into a list first, then swapped in around the parts that
+        // stay: the welcome video and the prizes. Taking an iframe out of
+        // the page reloads it, which is what made a tick flash.
+        var out = [];
 
         var parts = pinnedParts(prep);
         var hello = welcome(parts);
-        if (hello) live.appendChild(hello);
+        if (hello) out.push(hello);
         var band = intro(parts);
-        if (band) live.appendChild(band);
-        live.appendChild(prizes());
+        if (band) out.push(band);
+        out.push(prizesNode || (prizesNode = prizes()));
 
         var tabs = L.el('div', 'trp-cw-weeks');
         tabs.setAttribute('role', 'tablist');
@@ -2409,12 +2545,13 @@ When you finish:
           e.preventDefault();
           pick(ids[to]);
         });
-        live.appendChild(tabs);
+        out.push(tabs);
 
-        live.appendChild(panel(data, week, prep));
+        out.push(panel(data, week, prep));
 
         var next = whatsNext(cards, prep);
-        if (next) live.appendChild(next);
+        if (next) out.push(next);
+        settle(live, out);
 
         L.show(live, true);
         L.show(statik, false);
@@ -2458,9 +2595,43 @@ When you finish:
       /* A tick changes the counts and the bar in the page header, so both
          are redrawn from the state the tick just wrote. */
       document.addEventListener('trportal:progress', function () {
+        // A tick leaves the page as it was: what is open stays open, and
+        // the box that was clicked stays under the pointer.
+        var held = holdOpen();
         if (window.TR_PORTAL_DATA) render(window.TR_PORTAL_DATA);
         else if (lastData) render(lastData);
+        if (held) {
+          var box = findBox(held.name);
+          var moved = box ? box.getBoundingClientRect().top - held.top : 0;
+          if (moved) window.scrollTo({ top: window.scrollY + moved, behavior: 'instant' });
+        }
       });
+
+      /* Writes down what is open right now, so the redraw after a tick
+         keeps it, instead of opening the next step or lesson on its own. */
+      function holdOpen() {
+        var live = document.querySelector('[data-curriculum-live]');
+        if (!live) return null;
+        [].forEach.call(live.querySelectorAll('summary[data-cw-focus]'), function (sum) {
+          var key = sum.getAttribute('data-cw-focus');
+          var open = sum.parentNode.open;
+          if (key.indexOf('step-') === 0) stepOpen[key.slice(5)] = open;
+          else if (key.indexOf('master-') === 0) masterOpen[key.slice(7)] = open;
+        });
+        if (!touched) {
+          touched = true;
+          [].forEach.call(live.querySelectorAll('.trp-cw-toggle[aria-expanded="true"]'), function (t) {
+            opened[t.getAttribute('data-cw-focus').replace(/^toggle-/, '')] = true;
+          });
+        }
+        var box = document.activeElement;
+        var key = box && box.getAttribute ? box.getAttribute('data-cw-focus') : null;
+        if (!key || !live.contains(box)) return null;
+        return { name: key, top: box.getBoundingClientRect().top };
+      }
+      function findBox(key) {
+        return document.querySelector('[data-curriculum-live] [data-cw-focus="' + key + '"]');
+      }
     })();
   </script>
 

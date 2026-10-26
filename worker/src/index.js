@@ -1898,6 +1898,11 @@ async function handlePortalProgress(request, env) {
   const itemId = body?.item_id == null ? null : Number(body.item_id);
   const sessionId = body?.session_id == null ? null : Number(body.session_id);
   const done = body?.done;
+  // A lesson crossed off as not needed: saved with the tick, items only.
+  const crossed = body?.crossed;
+  if (crossed != null && (typeof crossed !== "boolean" || itemId === null)) {
+    return json({ ok: false }, 400, cors);
+  }
 
   const setupStep = body?.setup_step;
   if (setupStep != null && (!['calendar', 'notion'].includes(setupStep) || itemId !== null || sessionId !== null)) {
@@ -1916,6 +1921,7 @@ async function handlePortalProgress(request, env) {
         p_token: token,
         ...(setupStep != null ? { p_step: setupStep } : { p_item_id: itemId, p_session_id: sessionId }),
         p_done: done,
+        ...(setupStep == null && typeof crossed === "boolean" ? { p_crossed: crossed } : {}),
       }),
     });
     if (!res.ok) return json({ ok: false, error: "unavailable" }, 503, cors);
