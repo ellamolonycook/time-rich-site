@@ -223,6 +223,18 @@
     .trp-cw-lesson:has(.trp-check-box.is-on) .trp-cw-lesson-title { color: var(--trp-soft); }
     @media (prefers-reduced-motion: reduce) { .trp-cw-chev, .trp-cw-step { transition: none; } }
 
+    /* A drop-down's header turns green under the pointer, so the whole bar
+       reads as the place to click, and what it opens fades in. */
+    .trp-cw-lesson-head { border-radius: 13px; }
+    .trp-cw-master > summary, .trp-cw-step > summary, .trp-cw-lesson-head { transition: background-color .18s ease; }
+    @media (hover: hover) {
+      .trp-cw-master > summary:hover, .trp-cw-step > summary:hover, .trp-cw-lesson-head:hover { background: var(--trp-sagelt); }
+      .trp-cw-master > summary:hover .trp-cw-chev, .trp-cw-step > summary:hover .trp-cw-chev, .trp-cw-lesson-head:hover .trp-cw-chev { color: var(--trp-green); }
+    }
+    @keyframes trp-cw-reveal { from { opacity: 0; transform: translateY(-6px); } to { opacity: 1; transform: none; } }
+    .trp-cw-reveal { animation: trp-cw-reveal .22s ease; }
+    @media (prefers-reduced-motion: reduce) { .trp-cw-reveal { animation: none; } .trp-cw-master > summary, .trp-cw-step > summary, .trp-cw-lesson-head { transition: none; } }
+
     /* Start here, as steps: each one a drop-down with its count, three
        short tasks inside, each task with its one button. */
     .trp-cw-steps { display: flex; flex-direction: column; gap: 20px; }
@@ -1866,6 +1878,30 @@ When you finish:
       var stepOpen = {};
       var stepWasDone = {};
 
+      /* One drop-down open at a time at each level: opening one shuts the
+         others beside it. The page holds still under the header that was
+         clicked, so it does not jump when a long one above it closes. */
+      function holdStill(el, change) {
+        var before = el.getBoundingClientRect().top;
+        change();
+        var moved = el.getBoundingClientRect().top - before;
+        if (moved) window.scrollBy(0, moved);
+      }
+      function shutOthers(box, mates, head) {
+        holdStill(head, function () {
+          for (var i = 0; i < mates.length; i++) {
+            if (mates[i] !== box && mates[i].open) mates[i].open = false;
+          }
+        });
+      }
+      function reveal(el) {
+        if (!el) return;
+        el.classList.remove('trp-cw-reveal');
+        void el.offsetWidth;   // restart the fade if it was mid-way
+        el.classList.add('trp-cw-reveal');
+        el.addEventListener('animationend', function () { el.classList.remove('trp-cw-reveal'); }, { once: true });
+      }
+
       function stepBox(n, group, list, isNext) {
         var trackable = list.filter(function (it) { return L.isTrackable(it); });
         var done = trackable.filter(function (it) { return L.isItemDone(it); }).length;
@@ -1880,6 +1916,10 @@ When you finish:
         box.addEventListener('toggle', function () {
           if (box.open === initial && !has(stepOpen, group)) return;   // the open set above, not a click
           stepOpen[group] = box.open;
+          if (box.open) {
+            shutOthers(box, box.parentNode.querySelectorAll(':scope > details.trp-cw-step:not(.trp-cw-gpd)'), sum);
+            reveal(ul);
+          }
         });
         box.addEventListener('click', function (event) {
           if (box.open && foldsCard(event, box)) box.open = false;
@@ -2014,6 +2054,12 @@ When you finish:
           toggle.setAttribute('aria-expanded', now ? 'true' : 'false');
           detail.hidden = !now;
           row.classList.toggle('is-open', now);
+          if (!now) return;
+          holdStill(head, function () {
+            var shown = document.querySelectorAll('.trp-cw-toggle[aria-expanded="true"]');
+            for (var i = 0; i < shown.length; i++) if (shown[i] !== toggle) shown[i].click();
+          });
+          reveal(detail);
         });
         // anywhere in the open body folds it, the same as its title
         detail.addEventListener('click', function (event) {
@@ -2052,6 +2098,11 @@ When you finish:
         box.addEventListener('toggle', function () {
           if (box.open === initial && !has(masterOpen, key)) return;   // the open set above, not a click
           masterOpen[key] = box.open;
+          if (box.open) {
+            // the setup and the week's sections count as one set
+            shutOthers(box, document.querySelectorAll('details.trp-cw-master'), sum);
+            reveal(inner);
+          }
         });
 
         var sum = document.createElement('summary');
@@ -2199,18 +2250,22 @@ When you finish:
             var masters = L.el('div', 'trp-cw-masters');
             var from = 0;
             WEEK1_SECTIONS.forEach(function (sec, si) {
-              var list = [], rows = [];
+              var list = [], rows = [], holdsNext = false;
               own.forEach(function (it, i) {
                 var sort = L.num(it && it.sort);
                 if (sort > sec.upto || sort <= from) return;
+                var isNext = rowKey(it, i + 1) === nextKey;
+                if (isNext) holdsNext = true;
                 list.push(it);
-                rows.push(lessonRow(it, i + 1, rowKey(it, i + 1) === nextKey));
+                rows.push(lessonRow(it, i + 1, isNext));
               });
               from = sec.upto;
               if (!rows.length) return;
               var sul = L.el('ul', 'trp-cw-lessons');
               rows.forEach(function (r) { sul.appendChild(r); });
-              var holdsNext = rows.some(function (r) { return r.classList.contains('is-open'); });
+              // Only the section with the next lesson opens by itself; the
+              // growth prompts start open but do not open their section.
+              if (touched) holdsNext = rows.some(function (r) { return r.classList.contains('is-open'); });
               masters.appendChild(masterBox('w1-' + si, sec.title, list, holdsNext, sul));
             });
             box.appendChild(masters);
