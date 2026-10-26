@@ -2,9 +2,9 @@
   "name": "time-rich-tests",
   "private": true,
   "type": "module",
-  "description": "Tests for the /sh-apply and grant application forms, the Cloudflare worker's Notion mapping, Time Rich Members, the portal member SQL, the /club and /clubform split, Ella 25 Oct batch, the portal link previews, the 25 Oct curriculum migration, the portal Prompt Library, the portal Resources page, the Join via Zoom rule, the dashboard, Ella's welcome video in the Curriculum, portal page-to-page smoothness, portal ambassadors, the /os page, the /os email gate, the Stanley sponsor lockup, the portal footer, the automatic onboarding emails, the /onboard plus-one page and the /contentworkshop workshop page.",
+  "description": "Tests for the /sh-apply and grant application forms, the Cloudflare worker's Notion mapping, Time Rich Members, the portal member SQL, the /club and /clubform split, Ella 25 Oct batch, the portal link previews, the 25 Oct curriculum migration, the portal Prompt Library, the portal Resources page, the Join via Zoom rule, the dashboard, Ella's welcome video in the Curriculum, portal page-to-page smoothness, portal ambassadors, the /os page, the /os email gate, the Stanley sponsor lockup, the portal footer, the automatic onboarding emails, the /onboard plus-one page, the /contentworkshop workshop page and the /cohort26 dashboard.",
   "scripts": {
-    "test": "node worker.test.mjs && node onboarding-emails.test.mjs && node onboard-page.test.mjs && node questionnaire-photo.test.mjs && node portal-login.test.mjs && node portal-progress.test.mjs && node portal-setup.test.mjs && node portal-nav.test.mjs && node portal-navigation.test.mjs && node club-route.test.mjs && node club-batch.test.mjs && node portal-share.test.mjs && node portal-calendar.test.mjs && node portal-join.test.mjs && node portal-dashboard.test.mjs && node portal-welcome-video.test.mjs && node portal-smooth.test.mjs && node portal-resources.test.mjs && node portal-passcode.test.mjs && node form.test.mjs && node grant-forms.test.mjs && node members.test.mjs && node portal-member.test.mjs && node week1-intro-migration.test.mjs && node prompts.test.mjs && node portal-skills.test.mjs && node portal-ambassadors.test.mjs && node os-page.test.mjs && node os-gate.test.mjs && node stanley-logo.test.mjs && node portal-footer.test.mjs && node contentworkshop.test.mjs",
+    "test": "node worker.test.mjs && node onboarding-emails.test.mjs && node onboard-page.test.mjs && node questionnaire-photo.test.mjs && node portal-login.test.mjs && node portal-progress.test.mjs && node portal-setup.test.mjs && node portal-nav.test.mjs && node portal-navigation.test.mjs && node club-route.test.mjs && node club-batch.test.mjs && node portal-share.test.mjs && node portal-calendar.test.mjs && node portal-join.test.mjs && node portal-dashboard.test.mjs && node portal-welcome-video.test.mjs && node portal-smooth.test.mjs && node portal-resources.test.mjs && node portal-passcode.test.mjs && node form.test.mjs && node grant-forms.test.mjs && node members.test.mjs && node portal-member.test.mjs && node week1-intro-migration.test.mjs && node prompts.test.mjs && node portal-skills.test.mjs && node portal-ambassadors.test.mjs && node os-page.test.mjs && node os-gate.test.mjs && node stanley-logo.test.mjs && node portal-footer.test.mjs && node contentworkshop.test.mjs && node cohort26.test.mjs",
     "test:worker": "node worker.test.mjs && node portal-passcode.test.mjs",
     "test:onboarding": "node onboarding-emails.test.mjs",
     "test:onboard": "node onboard-page.test.mjs",
@@ -31,6 +31,7 @@
     "test:footer": "node portal-footer.test.mjs && node contentworkshop.test.mjs",
     "test:club": "node club-route.test.mjs && node club-batch.test.mjs",
     "test:contentworkshop": "node contentworkshop.test.mjs",
+    "test:cohort26": "node cohort26.test.mjs",
     "test:share": "node portal-share.test.mjs",
     "test:migration": "node week1-intro-migration.test.mjs"
   },
