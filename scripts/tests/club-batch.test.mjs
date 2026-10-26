@@ -293,7 +293,7 @@ const LETTER = { id: 10, kind: 'text', title: 'Welcome to the Superhuman Acceler
 const STEP = { id: 110, kind: 'link', title: 'Join the Club Slack', body: 'Say hello.', url: 'https://join.slack.com/t/x/shared_invite/y', sort: 110 };
 
 // Week 1's own rows: one that can be ticked, and one video that cannot.
-const LESSON = { id: 201, kind: 'text', title: 'Diagnose your week', body: 'Watch, then do.\nVideo: https://www.loom.com/share/ad2afd7e10df492fbb8fca31558a3439\nThen tick it.', sort: 10 };
+const LESSON = { id: 201, kind: 'text', title: 'Diagnose your week', body: 'Watch, then do.\nVideo: https://www.loom.com/share/ad2afd7e10df492fbb8fca31558a3439\nThen tick it.', url: 'https://www.loom.com/share/ad2afd7e10df492fbb8fca31558a3439', sort: 10 };
 const LESSON_VIDEO = { id: 202, kind: 'video', title: 'Masterclass replay', url: 'https://vimeo.com/123456789', sort: 20 };
 
 /* The row the audit table belongs to. Its body is what the 25 Oct
@@ -454,6 +454,14 @@ console.log('\nA "Video:" line plays inside the lesson, and the lesson can still
   check('so it hides when the row is shut', frame && frame.closest('[hidden]') !== null);
   check('the line itself is not shown as text', !row.textContent.includes('Video: https'));
   check('and the row can be ticked', row && row.querySelector('.trp-cw-lesson-head').classList.contains('is-tickable'));
+}
+
+console.log('\nA button that opens a Loom says it is a video');
+{
+  const p = open();
+  p.pick(1);
+  const btn = p.lesson('Diagnose your week').querySelector('a.trp-cw-btn');
+  check('it reads Watch the video', btn && btn.textContent.trim() === 'Watch the video', btn && btn.textContent);
 }
 
 console.log('\nThe Time Rich Pep Talk starts shut for everyone');
