@@ -877,7 +877,7 @@ console.log('\nAudacious Action: one toggle, shut, with a drop-down per prompt')
      carried on Ella's Notion page. */
   const drops = [...section.querySelectorAll('.trp-cw-gpd')];
   check('ten drop-downs, one per prompt', drops.length === 10, drops.length);
-  check('all shut to begin with', drops.every((d) => d.open === false));
+  check('all open to begin with, so the prompts are laid out', drops.every((d) => d.open === true));
   check('each in the setup-step shape',
     drops.every((d) => d.tagName === 'DETAILS' && d.classList.contains('trp-cw-step')));
 
@@ -970,6 +970,7 @@ console.log('\nThe agent table and the growth prompts sit in their own lessons')
     growth && growth.querySelectorAll('.trp-cw-gpd').length === 10 &&
     growth.querySelector('details#growth-prompts') === null);
   check('and answers to its address', growth && growth.id === 'growth-prompts', growth && growth.id);
+  check('and it starts open', growth && growth.classList.contains('is-open'));
   check('the empty toggle is hidden in the Week 1 block',
     [...p.extra().querySelectorAll('details.trp-cw-w1-sec')].every((d) => d.hidden));
   check('one element answers to each address',

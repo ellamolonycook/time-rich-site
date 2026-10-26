@@ -684,7 +684,33 @@ Cien Solon is the co-founder and CEO of LaunchLemonade, a platform that helps bu
 LaunchLemonade is where you build agents that do the work for you, using more than one AI model. It isn't a chat window for prompts. It's only for agents.$tr$,
    $tr$https://studio.launchlemonade.app/signup?voucher=TIMERICHLL$tr$),
   (1, $tr$text$tr$, $tr$10 Growth Prompts$tr$, 80,
-   $tr$Run ONE before Friday 30 October. Small counts: the message you'd normally talk yourself out of sending is exactly the one.$tr$,
+   $tr$Superhuman prizes
+Every prize winner also gets 1 year of Time Rich Club membership.
+| Prize | How to win | You win |
+| Boldest Move | Post your most audacious win in #audacious-wins. | A 30-minute 1:1 with a mentor |
+| Best Energy, drawn every Friday | Show up live and bring the energy. | A 1:1 with an expert |
+| Stanley VIP Prize | Post about the Accelerator on LinkedIn and Instagram across all 4 weeks. Tag Ella, Stanley, Wispr Flow and Time Rich. | A $1K Stanley setup and 12 months of Wispr Flow |
+| Testimonial Prize, 3 winners | Leave a LinkedIn recommendation and a video testimonial. | A 30-minute strategy call with mentors |
+| First 10 intros | Introduce yourself and give a LinkedIn testimonial on Day 1. | Instinct Assistant, 100% free |
+
+Want to go in the draw? Run ONE prompt below before Friday 30 October. Small counts: the message you'd normally talk yourself out of sending is exactly the one. Then post what you did in #audacious-wins. This prompt writes the post for you:
+
+= Copy: Your win post
+Write my post for #audacious-wins in the Time Rich Club Slack. **Here is the Audacious Action I took this week:** (double-tap fn and say it with Wispr Flow).
+
+Say what I did, who I asked and what happened, in under 80 words, in my voice. **Name the number or the result.** End with one line on what I'll do next.
+
+Before you start:
+- Restate my goal in one line, and tell me if it's the right goal.
+- **Don't assume.** If you need more context, ask me up to 3 questions first.
+
+When you finish:
+- **Rate your work out of 10**. Say what would make it a 10, then fix it.
+- Push back on me: where is my thinking weak, what could go wrong, and what am I missing?
+- Tell me the one next step to take.
+- Tell me what you learned about me or my work that should be saved to my Business COMPASS, so you're smarter next time.
+=
+Post it in #audacious-wins before Friday's hot seat at 12pm ET. Every post goes in the draw.$tr$,
    null),
   (1, $tr$text$tr$, $tr$Give your AI your voice$tr$, 98,
    $tr$Your AI sounds generic until it has read you. Pick 3 to 5 pieces of your writing that sound most like you, like emails, posts or a proposal, and add them to your Business Hub's Files. Then teach it your voice once, and turn that into a skill so it's there every time.
@@ -781,8 +807,9 @@ begin
       or (week_id = 1 and title = 'Give your AI your voice' and body like '%= Copy the voice prompt%= Copy: Turn this into a skill%')
       or (week_id = 1 and title = 'Your first 3 Time Rich Agents' and body like '%+ Set up an agent in Claude%+ Set up an agent in ChatGPT%+ Set up an agent in Gemini%= Copy agent 1%= Copy agent 2%= Copy agent 3%')
       or (week_id = 1 and title = 'Your master prompt' and body like '%= Copy the master prompt%= Copy the shortcut setup prompt%! /portal/assets/master-prompt-shortcut.png%| xx | Your master prompt |%')
-      or (week_id = 1 and title = 'Your next Time Rich Agent' and body like '%= Copy the interview prompt%= Copy the test prompt%'));
-  if v <> 12 then raise exception 'expected 12 rows with their copy boxes or table, found %', v; end if;
+      or (week_id = 1 and title = 'Your next Time Rich Agent' and body like '%= Copy the interview prompt%= Copy the test prompt%')
+      or (week_id = 1 and title = '10 Growth Prompts' and body like '%| Boldest Move |%= Copy: Your win post%When you finish:%'));
+  if v <> 13 then raise exception 'expected 13 rows with their copy boxes or table, found %', v; end if;
 
   -- the master prompt's "When you finish" check rides on every agent prompt
   -- and on the voice prompt
