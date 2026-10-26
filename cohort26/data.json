@@ -28,13 +28,6 @@
   "desc": "Already builds automations or agents; connected tool stack"
  },
  {
-  "table": "levels",
-  "level": 5,
-  "label": "5 Advanced",
-  "members": 0,
-  "desc": "Ships agents in production; could co-teach"
- },
- {
   "table": "funnel",
   "order": 1,
   "step": "Has an AI tool in their stack",
@@ -1129,12 +1122,6 @@
   "members": 1
  },
  {
-  "table": "level_revenue",
-  "stage": "Pre-revenue",
-  "level": 5,
-  "members": 0
- },
- {
   "table": "revenue",
   "order": 2,
   "stage": "Under $100K",
@@ -1163,12 +1150,6 @@
   "stage": "Under $100K",
   "level": 4,
   "members": 8
- },
- {
-  "table": "level_revenue",
-  "stage": "Under $100K",
-  "level": 5,
-  "members": 0
  },
  {
   "table": "revenue",
@@ -1201,12 +1182,6 @@
   "members": 3
  },
  {
-  "table": "level_revenue",
-  "stage": "$100K to 500K",
-  "level": 5,
-  "members": 0
- },
- {
   "table": "revenue",
   "order": 4,
   "stage": "$500K to 2M",
@@ -1234,12 +1209,6 @@
   "table": "level_revenue",
   "stage": "$500K to 2M",
   "level": 4,
-  "members": 0
- },
- {
-  "table": "level_revenue",
-  "stage": "$500K to 2M",
-  "level": 5,
   "members": 0
  },
  {
@@ -1273,12 +1242,6 @@
   "members": 0
  },
  {
-  "table": "level_revenue",
-  "stage": "$2M to 5M",
-  "level": 5,
-  "members": 0
- },
- {
   "table": "revenue",
   "order": 6,
   "stage": "$5M+",
@@ -1306,12 +1269,6 @@
   "table": "level_revenue",
   "stage": "$5M+",
   "level": 4,
-  "members": 0
- },
- {
-  "table": "level_revenue",
-  "stage": "$5M+",
-  "level": 5,
   "members": 0
  },
  {
@@ -1409,23 +1366,5 @@
   "top_build_n": 4,
   "looks": "Already builds automations or agents. Connected stack. Problems are reliability, scheduling and handoffs.",
   "needs": "Stretch work: scheduling, QA checks, connecting tools, multi-agent handoffs. Use them as breakout leads so they stay engaged."
- },
- {
-  "table": "stage_detail",
-  "level": 5,
-  "label": "Advanced",
-  "members": 0,
-  "prerev": 0,
-  "solo": 0,
-  "ai_outreach": 0,
-  "head_or_sheet": 0,
-  "top_pain": "",
-  "top_pain_n": 0,
-  "top_success": "",
-  "top_success_n": 0,
-  "top_build": "",
-  "top_build_n": 0,
-  "looks": "Ships agents in production that run on schedules and could teach others.",
-  "needs": "Nobody is here yet. This is the end state the program points to: agents running reliably without the founder."
  }
 ]
