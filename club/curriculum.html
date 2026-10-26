@@ -471,18 +471,16 @@
     /* Every tick shows a tick, faint until it is done; ticking it fills the
        circle green and turns the tick cream. The number is still written
        into the button for the page's own bookkeeping, just not shown. */
-    .trp-cw .trp-check-box { width: 32px; height: 32px; border: 0; background: var(--trp-green); color: rgb(var(--c-offwhite) / .4); transition: background-color .2s ease, color .2s ease; }
+    .trp-cw .trp-check-box { width: 32px; height: 32px; border: 0; background: rgb(var(--c-surface)); box-shadow: inset 0 0 0 2px var(--trp-green); color: transparent; transition: background-color .2s ease, color .2s ease; }
     .trp-cw .trp-check-box::before { inset: -6px; }
     .trp-cw .trp-check-box svg { display: block; width: 16px; height: 16px; }
-    .trp-cw .trp-check-box:hover { color: rgb(var(--c-offwhite)); }
-    .trp-cw .trp-check-box.is-on { background: rgb(var(--c-plum)); color: rgb(var(--c-offwhite)); }
-    /* Done turns the whole row purple, so it reads as finished at a glance. */
-    .trp-cw-task.is-done { background: rgb(var(--c-plumbg)); border-radius: 14px; }
+    .trp-cw .trp-check-box:hover { color: var(--trp-green); }
+    .trp-cw .trp-check-box.is-on { background: var(--trp-green); color: var(--trp-offwhite); }
+    /* Done fills the whole row light green, so it reads as finished at a glance. */
+    .trp-cw-task.is-done { background: var(--trp-sagelt); border-radius: 14px; }
+    .trp-cw-task.is-done .trp-cw-more, .trp-cw-lesson:has(> .trp-cw-lesson-head .trp-check-box.is-on) .trp-cw-more { background: rgb(var(--c-surface)); }
     .trp-cw-lesson:has(> .trp-cw-lesson-head .trp-check-box.is-on),
-    .trp-cw-lesson:has(> .trp-cw-lesson-head .trp-check-box.is-on) > .trp-cw-lesson-head { background: rgb(var(--c-plumbg)); }
-    .trp-cw-step.is-done:not(.trp-cw-gpd), .trp-cw-step.is-done:not(.trp-cw-gpd) > summary { background: rgb(var(--c-plumbg)); }
-    .trp-cw-step.is-done .trp-cw-step-badge { background: rgb(var(--c-plum)); color: rgb(var(--c-offwhite)); }
-    .trp-cw-master.is-done .trp-cw-master-count { color: rgb(var(--c-plum)); }
+    .trp-cw-lesson:has(> .trp-cw-lesson-head .trp-check-box.is-on) > .trp-cw-lesson-head { background: var(--trp-sagelt); }
     .trp-cw-n { display: none; }
     .trp-cw-session .trp-check-box { background: rgb(var(--c-surface)); }
 
