@@ -961,8 +961,15 @@ console.log('\nNext steps, and the questions from the cohort');
   check('two closing steps', steps.length === 2, steps);
   check('post your audacious action in the channel',
     steps[0] === 'Post your audacious action in #audacious-wins.', steps[0]);
-  check('and bring the audit to Friday',
-    steps[1] === 'Bring your audit to Friday’s Q&A.', steps[1]);
+  check('no longer asks to bring the audit to Friday',
+    !steps.some((x) => /Bring your audit/.test(x)), steps);
+  check('then LaunchLemonade before Wednesday',
+    steps[1].startsWith('Before Wednesday’s live build session: sign up to LaunchLemonade (3 months free)'), steps[1]);
+  const ll = extra.querySelectorAll('.trp-cw-w1-list li')[1].querySelector('a.trp-cw-btn');
+  check('with a LaunchLemonade button on the TIMERICHLL voucher', ll !== null &&
+    ll.textContent === 'Sign up to LaunchLemonade' &&
+    new URL(ll.href).hostname === 'studio.launchlemonade.app' &&
+    new URL(ll.href).searchParams.get('voucher') === 'TIMERICHLL' && ll.target === '_blank', ll && ll.href);
 
   const qa = extra.querySelector('#cohort-questions');
   check('the questions are in Week 1, after next steps', qa !== null &&
