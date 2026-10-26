@@ -317,12 +317,14 @@
 
   /* ---- personal checklist (the signed-in member's account) ------------ */
 
-  var progress = { items: {}, sessions: {} };
+  // crossed: items the member crossed off as not needed. Each is also in
+  // items, since a cross counts as done.
+  var progress = { items: {}, sessions: {}, crossed: {} };
 
   function setProgress(data) {
     var saved = data && data.progress;
-    progress = { items: {}, sessions: {} };
-    ['items', 'sessions'].forEach(function (type) {
+    progress = { items: {}, sessions: {}, crossed: {} };
+    ['items', 'sessions', 'crossed'].forEach(function (type) {
       var ids = saved && Array.isArray(saved[type]) ? saved[type] : [];
       ids.forEach(function (id) {
         if (Number.isSafeInteger(Number(id)) && Number(id) > 0) progress[type][String(id)] = true;
@@ -349,6 +351,11 @@
     return Boolean(key && progress.items[key]);
   }
 
+  function isItemCrossed(item) {
+    var key = itemKey(item);
+    return Boolean(key && progress.items[key] && progress.crossed[key]);
+  }
+
   /* What counts toward progress: a row with an id, that is not a video.
      A video plays inside the page now, and a cross-origin player never
      tells us it reached the end, so a member could never tick it off.
@@ -364,33 +371,36 @@
     return Boolean(key && progress.sessions[key]);
   }
 
-  function setMark(mapName, key, value) {
+  // crossed is for items only: true or false saves how the item was done,
+  // and undefined leaves it as it was (a session, or a caller that does
+  // not know about crosses).
+  function setMark(mapName, key, value, crossed) {
     if (!key) return Promise.resolve(false);
     var wasDone = Boolean(progress[mapName][key]);
-    if (value) progress[mapName][key] = true;
-    else delete progress[mapName][key];
+    var wasCrossed = Boolean(progress.crossed[key]);
+    var cross = mapName === 'items' && typeof crossed === 'boolean';
+    function put(done, crossedNow) {
+      if (done) progress[mapName][key] = true;
+      else delete progress[mapName][key];
+      if (mapName === 'items') {
+        if (done && crossedNow) progress.crossed[key] = true;
+        else delete progress.crossed[key];
+      }
+    }
+    function undo() { put(wasDone, wasCrossed); announceProgress(); }
+    put(value, cross ? crossed : wasCrossed);
     announceProgress();
 
     var api = window.TRPortal;
     var target = { id: Number(key), kind: mapName === 'items' ? 'item' : 'session' };
-    if (!api || typeof api.setProgress !== 'function') {
-      if (wasDone) progress[mapName][key] = true;
-      else delete progress[mapName][key];
-      announceProgress();
-      return Promise.resolve(false);
-    }
+    if (!api || typeof api.setProgress !== 'function') { undo(); return Promise.resolve(false); }
 
-    return api.setProgress(target, value).then(function (saved) {
-      if (!saved) {
-        if (wasDone) progress[mapName][key] = true;
-        else delete progress[mapName][key];
-        announceProgress();
-      }
+    var send = cross ? api.setProgress(target, value, Boolean(value && crossed)) : api.setProgress(target, value);
+    return send.then(function (saved) {
+      if (!saved) undo();
       return saved;
     }, function () {
-      if (wasDone) progress[mapName][key] = true;
-      else delete progress[mapName][key];
-      announceProgress();
+      undo();
       return false;
     });
   }
@@ -398,6 +408,12 @@
   function toggleItem(item) {
     var key = itemKey(item);
     return setMark('items', key, !isItemDone(item));
+  }
+
+  // Sets an item to done or not, and whether it was crossed off as not
+  // needed, in one save.
+  function markItem(item, done, crossed) {
+    return setMark('items', itemKey(item), Boolean(done), Boolean(done && crossed));
   }
 
   function toggleSession(session) {
@@ -828,6 +844,8 @@
     isTrackable: isTrackable,
     sessionKey: sessionKey,
     isItemDone: isItemDone,
+    isItemCrossed: isItemCrossed,
+    markItem: markItem,
     isSessionMarked: isSessionMarked,
     toggleItem: toggleItem,
     toggleSession: toggleSession,

@@ -250,7 +250,7 @@
     clearPayloadCache();
   }
 
-  function setProgress(target, done) {
+  function setProgress(target, done, crossed) {
     var token = readCode();
     var endpoint = portalEndpoint('progressUrl');
     var id = target && Number(target.id);
@@ -260,6 +260,8 @@
 
     var payload = { token: token, done: Boolean(done) };
     payload[kind === 'item' ? 'item_id' : 'session_id'] = id;
+    // Ticked or crossed off as not needed: both are saved to the account.
+    if (kind === 'item' && typeof crossed === 'boolean') payload.crossed = crossed;
     return post(endpoint, payload).then(function (result) {
       return result.status === 200 && result.data && result.data.ok === true;
     });

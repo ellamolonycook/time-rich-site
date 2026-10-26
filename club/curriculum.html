@@ -275,14 +275,14 @@
     .trp-cw-task-copy { display: flex; flex-direction: column; align-items: flex-start; gap: 8px; min-width: 0; padding-top: 5px; }
     .trp-cw-task-title { font-size: 16px; font-weight: 600; color: var(--trp-deep); }
     .trp-cw-task.is-done .trp-cw-task-title { color: var(--trp-soft); }
-    /* The tick and the cross sit side by side; a crossed task is struck out. */
+    /* The tick and the cross sit side by side; a crossed lesson is struck out. */
     .trp-cw-pair { display: flex; align-items: flex-start; gap: 6px; }
     .trp-cw-cross { display: inline-flex; align-items: center; justify-content: center; flex: none; width: 32px; height: 32px; border: 0; border-radius: 999px; background: rgb(var(--c-surface)); box-shadow: inset 0 0 0 2px var(--trp-line); color: var(--trp-soft); cursor: pointer; transition: background-color .2s ease, color .2s ease; }
     .trp-cw-cross svg { width: 14px; height: 14px; }
     .trp-cw-cross:hover { color: var(--trp-deep); }
     .trp-cw-cross:focus-visible { outline: 2px solid var(--trp-green); outline-offset: 2px; }
     .trp-cw-cross.is-on { background: var(--trp-soft); box-shadow: none; color: var(--trp-offwhite); }
-    .trp-cw-task.is-crossed .trp-cw-task-title { text-decoration: line-through; }
+    .trp-cw-lesson.is-crossed .trp-cw-lesson-title { text-decoration: line-through; }
     .trp-cw-task .trp-cw-btn { margin-top: 4px; }
 
     /* a small drop-down inside a task: the Slack channels, the Club Code */
@@ -499,6 +499,9 @@
 
     /* the weeks and the panel, once drawn, keep the page's spacing */
     .trp-cw [data-curriculum-live]:not([hidden]) { display: flex; flex-direction: column; gap: 32px; }
+    /* The page keeps its own place after a redraw; the browser's scroll
+       anchoring on top of that nudged it a few pixels. */
+    .trp-cw [data-curriculum-live] { overflow-anchor: none; }
     .trp-cw-session .trp-check-box { box-shadow: inset 0 0 0 1.5px var(--trp-line); }
 
     /* On a phone the weeks sit two by two, the tasks use the full width,
@@ -1750,36 +1753,21 @@ When you finish:
         return !sel;
       }
 
-      /* A setup task can be ticked, or crossed off as not needed: someone
-         who already has Claude, say, has nothing to set up. A cross counts
-         as done, so it never holds the member back. The server only keeps
-         done or not done, so this browser remembers which done rows were
-         crossed rather than ticked. */
-      var SKIP_KEY = 'trp-cw-skipped';
-      function skippedIds() {
-        try { return JSON.parse(window.localStorage.getItem(SKIP_KEY) || '[]'); } catch (e) { return []; }
-      }
-      function isCrossed(item) {
-        return L.isItemDone(item) && skippedIds().indexOf(L.itemKey(item)) !== -1;
-      }
-      function setCrossed(item, on) {
-        var ids = skippedIds().filter(function (id) { return id !== L.itemKey(item); });
-        if (on) ids.push(L.itemKey(item));
-        try { window.localStorage.setItem(SKIP_KEY, JSON.stringify(ids)); } catch (e) { /* kept for this visit only */ }
-      }
-      function redraw() {
-        try { document.dispatchEvent(new CustomEvent('trportal:progress')); } catch (e) { /* the next draw catches up */ }
-      }
+      /* A lesson can be ticked, or crossed off as not needed: the setup is
+         for everyone, but not every lesson fits every member. A cross counts
+         as done, so it never holds the member back, and both are saved to
+         the member's account, so they follow them to any device. */
       function tickOrCross(item, n, name, row) {
         if (!L.isTrackable(item)) return tickFor(item, n, name);
         var pair = L.el('div', 'trp-cw-pair');
         var tick = L.checkBox(
-          function () { return L.isItemDone(item) && !isCrossed(item); },
+          function () { return L.isItemDone(item) && !L.isItemCrossed(item); },
           function () {
-            if (isCrossed(item)) { setCrossed(item, false); redraw(); return true; }
-            return L.toggleItem(item);
+            var ticked = L.isItemDone(item) && !L.isItemCrossed(item);
+            return L.markItem(item, !ticked, false);
           },
           name);
+        tick.appendChild(L.el('span', 'trp-cw-n', String(n)));
         tick.setAttribute('data-cw-focus', 'item-' + L.itemKey(item));
         pair.appendChild(tick);
 
@@ -1787,15 +1775,13 @@ When you finish:
         cross.type = 'button';
         cross.setAttribute('data-cw-focus', 'cross-' + L.itemKey(item));
         cross.appendChild(icon('M6 6l12 12M18 6L6 18'));
-        var crossed = isCrossed(item);
+        var crossed = L.isItemCrossed(item);
         cross.classList.toggle('is-on', crossed);
         cross.setAttribute('aria-pressed', crossed ? 'true' : 'false');
         cross.setAttribute('aria-label', 'Not needed: ' + name);
         cross.addEventListener('click', function () {
-          if (isCrossed(item)) { setCrossed(item, false); L.toggleItem(item); return; }
-          setCrossed(item, true);
-          if (L.isItemDone(item)) redraw();
-          else L.toggleItem(item);
+          var on = L.isItemCrossed(item);
+          L.markItem(item, !on, !on);
         });
         pair.appendChild(cross);
         if (crossed) row.classList.add('is-crossed');
@@ -2081,9 +2067,11 @@ When you finish:
         var box = document.createElement('details');
         box.className = 'trp-cw-step' + (all ? ' is-done' : '');
         box.open = has(stepOpen, group) ? stepOpen[group] : isNext;
-        var initial = box.open;
+        // A details drawn open fires one toggle of its own; that is the
+        // drawing, not a click, so it must not replay the open animation.
+        var drawnOpen = box.open;
         box.addEventListener('toggle', function () {
-          if (box.open === initial && !has(stepOpen, group)) return;   // the open set above, not a click
+          if (drawnOpen) { drawnOpen = false; if (box.open) return; }
           stepOpen[group] = box.open;
           if (box.open) {
             shutOthers(box, box.parentNode.querySelectorAll(':scope > details.trp-cw-step:not(.trp-cw-gpd)'), sum);
@@ -2112,7 +2100,7 @@ When you finish:
           var name = L.str(item && item.title) || 'Untitled';
           var row = L.el('li', 'trp-cw-task' + (L.isItemDone(item) ? ' is-done' : ''));
           tickOnRowClick(row, item);
-          row.appendChild(tickOrCross(item, i + 1, name, row));
+          row.appendChild(tickFor(item, i + 1, name));
           var copy = L.el('div', 'trp-cw-task-copy');
           var title = L.el('span', 'trp-cw-task-title', name);
           if (item && item.kind === 'skill') title.appendChild(L.el('span', 'trp-cw-tag', 'Skill'));
@@ -2169,7 +2157,7 @@ When you finish:
         var row = L.el('li', 'trp-cw-lesson' + (isOpenRow ? ' is-open' : ''));
         var head = L.el('div', 'trp-cw-lesson-head');
         tickOnRowClick(head, item);
-        head.appendChild(tickFor(item, n, name));
+        head.appendChild(tickOrCross(item, n, name, row));
 
         var detailId = 'cw-detail-' + key.replace(/[^a-z0-9_-]/gi, '-');
         var toggle = L.el('button', 'trp-cw-toggle');
@@ -2263,9 +2251,9 @@ When you finish:
         var box = document.createElement('details');
         box.className = 'trp-cw-master' + (all ? ' is-done' : '');
         box.open = has(masterOpen, key) ? masterOpen[key] : openByDefault;
-        var initial = box.open;
+        var drawnOpen = box.open;   // see stepBox: the first toggle is the drawing
         box.addEventListener('toggle', function () {
-          if (box.open === initial && !has(masterOpen, key)) return;   // the open set above, not a click
+          if (drawnOpen) { drawnOpen = false; if (box.open) return; }
           masterOpen[key] = box.open;
           if (box.open) {
             // the setup and the week's sections count as one set
@@ -2488,11 +2476,18 @@ When you finish:
          so a kept iframe is never taken out of the page. */
       function settle(live, out) {
         var kids = [].slice.call(live.children);
-        kids.forEach(function (k) { if (out.indexOf(k) === -1) live.removeChild(k); });
+        // Old nodes above the last kept one go first, so nothing kept moves.
+        var lastKept = -1;
+        kids.forEach(function (k, i) { if (out.indexOf(k) !== -1) lastKept = i; });
+        kids.slice(0, lastKept + 1).forEach(function (k) { if (out.indexOf(k) === -1) live.removeChild(k); });
+        // New nodes go in before the old ones below are taken out, so the
+        // page never gets shorter for a moment: a shorter page pulls the
+        // scroll up, and that was the jump after a tick.
         out.forEach(function (node, i) {
           var at = live.children[i] || null;
           if (at !== node) live.insertBefore(node, at);
         });
+        [].slice.call(live.children).forEach(function (k) { if (out.indexOf(k) === -1) live.removeChild(k); });
       }
 
       function render(data) {

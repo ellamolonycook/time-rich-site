@@ -8,6 +8,8 @@ const db = new PGlite({ extensions: { pgcrypto } });
 await db.exec(sql('portal_schema.sql'));
 await db.exec(sql('migrations/20261010090000_portal_email_login_and_addevent.sql'));
 await db.exec(sql('migrations/20261013100000_portal_member_progress.sql'));
+await db.exec(sql('migrations/20261016090000_portal_setup.sql'));
+await db.exec(sql('migrations/20261026150000_portal_progress_crossed.sql'));
 
 let pass = 0, fail = 0;
 function check(name, condition, extra) {
@@ -66,6 +68,31 @@ console.log('\nPortal progress — database model and RPC');
     ['bad-token', item.id]
   );
   check('an unknown token cannot write progress', badToken.rows[0].result.ok === false, badToken.rows[0].result);
+}
+
+console.log('\nPortal progress — a lesson crossed off as not needed');
+{
+  const set = async (done, crossed) => (await db.query(
+    'select public.portal_set_progress($1, $2, null, $3, $4) as result',
+    ['good-token', item.id, done, crossed])).rows[0].result;
+  const progress = async () => (await db.query("select public.portal_get_by_token('good-token') as result")).rows[0].result.progress;
+
+  check('a cross saves', (await set(true, true)).ok === true);
+  let p = await progress();
+  check('and counts as done, listed as crossed', p.items.includes(item.id) && p.crossed.includes(item.id), p);
+
+  check('a tick on a crossed item saves', (await set(true, false)).ok === true);
+  p = await progress();
+  check('and it is done, no longer crossed', p.items.includes(item.id) && !p.crossed.includes(item.id), p);
+
+  await set(true, true);
+  check('clearing a crossed item saves', (await set(false, false)).ok === true);
+  p = await progress();
+  check('and it is neither done nor crossed', !p.items.includes(item.id) && !p.crossed.includes(item.id), p);
+
+  check('a cross cannot be saved on an undone item', (await set(false, true)).ok === false);
+  check('the four-argument call still saves a tick',
+    (await db.query('select public.portal_set_progress($1, $2, null, true) as result', ['good-token', item.id])).rows[0].result.ok === true);
 }
 
 console.log('\n' + pass + ' passed, ' + fail + ' failed');
