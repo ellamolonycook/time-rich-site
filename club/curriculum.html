@@ -231,6 +231,9 @@
       .trp-cw-master > summary:hover, .trp-cw-step > summary:hover, .trp-cw-lesson-head:hover { background: var(--trp-sagelt); }
       .trp-cw-master > summary:hover .trp-cw-chev, .trp-cw-step > summary:hover .trp-cw-chev, .trp-cw-lesson-head:hover .trp-cw-chev { color: var(--trp-green); }
     }
+    /* Inside a section, one outline is enough: the section's. The rows
+       lose their own, and the green header shows where each one starts. */
+    .trp-cw-master-body .trp-cw-lesson, .trp-cw-master-body .trp-cw-step:not(.trp-cw-gpd) { border-color: transparent; box-shadow: none; }
     @keyframes trp-cw-reveal { from { opacity: 0; transform: translateY(-6px); } to { opacity: 1; transform: none; } }
     .trp-cw-reveal { animation: trp-cw-reveal .22s ease; }
     @media (prefers-reduced-motion: reduce) { .trp-cw-reveal { animation: none; } .trp-cw-master > summary, .trp-cw-step > summary, .trp-cw-lesson-head { transition: none; } }
