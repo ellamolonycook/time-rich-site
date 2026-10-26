@@ -312,15 +312,32 @@
     .trp-cw-callout p { margin: 0; font-size: 16px; line-height: 1.6; color: var(--trp-deep); }
     .trp-cw-callout b { font-weight: 600; }
 
-    /* The prizes, above the week tabs, so they show whichever week is open. */
-    .trp-cw-prizes { padding: 20px 22px; border-radius: 22px; background: rgb(var(--c-lime) / .32); border: 1px solid rgb(var(--c-lime) / .6); }
-    .trp-cw-prizes-h { margin: 0; font-family: var(--trp-display); font-weight: 600; font-size: clamp(18px, 2.2vw, 22px); letter-spacing: -.02em; color: var(--trp-deep); }
-    .trp-cw-prizes-lead { margin: 4px 0 14px; font-size: 15px; line-height: 1.5; color: var(--trp-soft); }
-    .trp-cw-prizes-list { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(auto-fit, minmax(190px, 1fr)); gap: 10px; }
-    .trp-cw-prize { padding: 12px 14px; border-radius: 14px; background: rgb(var(--c-surface)); }
-    .trp-cw-prize-name { display: block; font-size: 15px; font-weight: 600; color: var(--trp-deep); }
-    .trp-cw-prize-how { display: block; margin-top: 4px; font-size: 14px; line-height: 1.5; color: var(--trp-soft); }
-    .trp-cw-prize-win { display: block; margin-top: 6px; font-size: 14px; font-weight: 600; line-height: 1.4; color: var(--trp-green); }
+    /* The prizes, above the week tabs, so they show whichever week is open:
+       a drop-down in the same plain card as the week's sections, one prize
+       to a row. */
+    .trp-cw-prizes { border: 1px solid var(--trp-line); border-radius: 22px; background: rgb(var(--c-surface)); }
+    .trp-cw-prizes[open] { border-color: var(--trp-green); }
+    .trp-cw-prizes > summary { display: flex; align-items: center; gap: 14px; min-height: 64px; padding: 14px 20px; cursor: pointer; list-style: none; border-radius: 22px; transition: background-color .18s ease; }
+    .trp-cw-prizes > summary::-webkit-details-marker { display: none; }
+    .trp-cw-prizes > summary:focus-visible { outline: 2px solid var(--trp-green); outline-offset: 2px; }
+    @media (hover: hover) { .trp-cw-prizes > summary:hover { background: var(--trp-sagelt); } .trp-cw-prizes > summary:hover .trp-cw-chev { color: var(--trp-green); } }
+    .trp-cw-prizes[open] > summary .trp-cw-chev { transform: rotate(180deg); }
+    .trp-cw-prizes-h { flex: 1 1 auto; min-width: 0; font-family: var(--trp-display); font-weight: 600; font-size: clamp(18px, 2.2vw, 22px); letter-spacing: -.02em; line-height: 1.2; color: var(--trp-deep); }
+    .trp-cw-prizes-count { flex: none; font-size: 12px; font-weight: 600; letter-spacing: .06em; text-transform: uppercase; color: var(--trp-soft); white-space: nowrap; }
+    .trp-cw-prizes-body { padding: 0 20px 16px; }
+    .trp-cw-prizes-lead { margin: 0 0 6px; font-size: 14px; line-height: 1.5; color: var(--trp-soft); }
+    .trp-cw-prizes-list { list-style: none; margin: 0; padding: 0; }
+    .trp-cw-prize { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 15rem); gap: 4px 24px; align-items: baseline; padding: 14px 0; border-top: 1px solid var(--trp-line); }
+    .trp-cw-prize:first-child { border-top: 0; }
+    .trp-cw-prize-name { font-size: 16px; font-weight: 600; color: var(--trp-deep); }
+    .trp-cw-prize-how { grid-column: 1; font-size: 14px; line-height: 1.5; color: var(--trp-soft); }
+    .trp-cw-prize-win { grid-column: 2; grid-row: 1 / span 2; font-size: 14px; font-weight: 600; line-height: 1.45; color: var(--trp-green); }
+    @media (max-width: 640px) {
+      .trp-cw-prizes > summary { padding: 12px 16px; }
+      .trp-cw-prizes-body { padding: 0 16px 12px; }
+      .trp-cw-prize { grid-template-columns: minmax(0, 1fr); }
+      .trp-cw-prize-win { grid-column: 1; grid-row: auto; }
+    }
 
     /* the audit table: text boxes the member types into. It sits in the
        detail of the row that asks for it, under Ella's prompt, so the gap
@@ -1848,22 +1865,33 @@ When you finish:
         ['Testimonial Prize, 3 winners', 'Leave a LinkedIn recommendation and a video testimonial.', 'A 30-minute strategy call with mentors'],
         ['First 10 intros', 'Introduce yourself and give a LinkedIn testimonial on Day 1.', 'Instinct Assistant, 100% free']
       ];
+      var prizesOpen = false;   // shut to begin with, kept across redraws
       function prizes() {
-        var box = L.el('section', 'trp-cw-prizes');
-        box.setAttribute('aria-labelledby', 'cw-prizes-h');
-        var h = L.el('h2', 'trp-cw-prizes-h', '\uD83D\uDD25 Superhuman prizes');
-        h.id = 'cw-prizes-h';
-        box.appendChild(h);
-        box.appendChild(L.el('p', 'trp-cw-prizes-lead', 'Every prize winner also gets 1 year of Time Rich Club membership.'));
+        var box = document.createElement('details');
+        box.className = 'trp-cw-prizes';
+        box.open = prizesOpen;
+        box.addEventListener('toggle', function () {
+          prizesOpen = box.open;
+          if (box.open) reveal(inner);
+        });
+        var sum = document.createElement('summary');
+        sum.setAttribute('data-cw-focus', 'prizes');
+        sum.appendChild(L.el('span', 'trp-cw-prizes-h', '\uD83D\uDD25 Superhuman prizes'));
+        sum.appendChild(L.el('span', 'trp-cw-prizes-count', PRIZES.length + ' prizes'));
+        sum.appendChild(chevron());
+        box.appendChild(sum);
+        var inner = L.el('div', 'trp-cw-prizes-body');
+        inner.appendChild(L.el('p', 'trp-cw-prizes-lead', 'Every prize winner also gets 1 year of Time Rich Club membership.'));
         var ul = L.el('ul', 'trp-cw-prizes-list');
         PRIZES.forEach(function (p) {
           var li = L.el('li', 'trp-cw-prize');
           li.appendChild(L.el('span', 'trp-cw-prize-name', p[0]));
+          li.appendChild(L.el('span', 'trp-cw-prize-win', p[2]));
           li.appendChild(L.el('span', 'trp-cw-prize-how', p[1]));
-          li.appendChild(L.el('span', 'trp-cw-prize-win', 'Win: ' + p[2]));
           ul.appendChild(li);
         });
-        box.appendChild(ul);
+        inner.appendChild(ul);
+        box.appendChild(inner);
         return box;
       }
 

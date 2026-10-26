@@ -1054,6 +1054,8 @@ console.log('\nThe Superhuman prizes sit above the week tabs');
     prizes.nextElementSibling && prizes.nextElementSibling.className === 'trp-cw-weeks');
   check('with all five prizes',
     prizes && prizes.querySelectorAll('.trp-cw-prize').length === 5);
+  check('in a drop-down that starts shut',
+    prizes && prizes.tagName === 'DETAILS' && prizes.open === false);
   p.pick(2);
   check('and they stay when another week is picked',
     p.doc.querySelectorAll('[data-curriculum-live] > .trp-cw-prizes').length === 1);
