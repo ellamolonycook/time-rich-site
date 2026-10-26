@@ -263,7 +263,7 @@
     .trp-cw-step-count { flex: none; font-size: 12px; font-weight: 600; letter-spacing: .06em; text-transform: uppercase; color: var(--trp-soft); white-space: nowrap; }
     .trp-cw-step[open] > summary .trp-cw-chev { transform: rotate(180deg); }
     .trp-cw-tasks { list-style: none; margin: 0; padding: 0 20px 8px 70px; display: flex; flex-direction: column; }
-    .trp-cw-task { display: grid; grid-template-columns: auto minmax(0, 1fr); gap: 14px; padding: 16px 0; border-top: 1px solid var(--trp-line); }
+    .trp-cw-task { display: grid; grid-template-columns: auto minmax(0, 1fr); gap: 14px; padding: 16px 12px; border-top: 1px solid var(--trp-line); transition: background-color .2s ease; }
     .trp-cw-task-copy { display: flex; flex-direction: column; align-items: flex-start; gap: 8px; min-width: 0; padding-top: 5px; }
     .trp-cw-task-title { font-size: 16px; font-weight: 600; color: var(--trp-deep); }
     .trp-cw-task.is-done .trp-cw-task-title { color: var(--trp-soft); }
@@ -471,11 +471,18 @@
     /* Every tick shows a tick, faint until it is done; ticking it fills the
        circle green and turns the tick cream. The number is still written
        into the button for the page's own bookkeeping, just not shown. */
-    .trp-cw .trp-check-box { width: 32px; height: 32px; border: 0; background: var(--trp-sagelt); color: rgb(var(--c-ink) / .28); transition: background-color .25s ease, color .25s ease; }
+    .trp-cw .trp-check-box { width: 32px; height: 32px; border: 0; background: var(--trp-green); color: rgb(var(--c-offwhite) / .4); transition: background-color .2s ease, color .2s ease; }
     .trp-cw .trp-check-box::before { inset: -6px; }
     .trp-cw .trp-check-box svg { display: block; width: 16px; height: 16px; }
-    .trp-cw .trp-check-box:hover { color: var(--trp-green); }
-    .trp-cw .trp-check-box.is-on { background: var(--trp-green); color: var(--trp-offwhite); }
+    .trp-cw .trp-check-box:hover { color: rgb(var(--c-offwhite)); }
+    .trp-cw .trp-check-box.is-on { background: rgb(var(--c-plum)); color: rgb(var(--c-offwhite)); }
+    /* Done turns the whole row purple, so it reads as finished at a glance. */
+    .trp-cw-task.is-done { background: rgb(var(--c-plumbg)); border-radius: 14px; }
+    .trp-cw-lesson:has(> .trp-cw-lesson-head .trp-check-box.is-on),
+    .trp-cw-lesson:has(> .trp-cw-lesson-head .trp-check-box.is-on) > .trp-cw-lesson-head { background: rgb(var(--c-plumbg)); }
+    .trp-cw-step.is-done:not(.trp-cw-gpd), .trp-cw-step.is-done:not(.trp-cw-gpd) > summary { background: rgb(var(--c-plumbg)); }
+    .trp-cw-step.is-done .trp-cw-step-badge { background: rgb(var(--c-plum)); color: rgb(var(--c-offwhite)); }
+    .trp-cw-master.is-done .trp-cw-master-count { color: rgb(var(--c-plum)); }
     .trp-cw-n { display: none; }
     .trp-cw-session .trp-check-box { background: rgb(var(--c-surface)); }
 
@@ -1873,6 +1880,7 @@ When you finish:
         ['First 10 intros', 'Introduce yourself and give a LinkedIn testimonial on Day 1.', 'Instinct Assistant, 100% free']
       ];
       var prizesOpen = false;   // shut to begin with, kept across redraws
+      var prizesNode = null;    // drawn once: nothing in it changes with a tick
       function prizes() {
         var box = document.createElement('details');
         box.className = 'trp-cw-prizes';
@@ -1905,8 +1913,18 @@ When you finish:
         return box;
       }
 
+      /* The welcome video is kept from one draw to the next while it is the
+         same video, so a tick never reloads the player. */
+      var introKept = null, introKey = null;
       function intro(parts) {
         if (!parts.video) return null;
+        var key = L.str(parts.video.url) + '|' + L.str(parts.video.title);
+        if (introKept && introKey === key) return introKept;
+        introKey = key;
+        introKept = introFresh(parts);
+        return introKept;
+      }
+      function introFresh(parts) {
 
         var box = L.el('div', 'trp-cw-intro is-solo');
         var name = L.str(parts.video.title) || 'Welcome Video';
@@ -2395,6 +2413,17 @@ When you finish:
 
       var lastData = null;
 
+      /* Puts the new children in place without moving the ones that stay,
+         so a kept iframe is never taken out of the page. */
+      function settle(live, out) {
+        var kids = [].slice.call(live.children);
+        kids.forEach(function (k) { if (out.indexOf(k) === -1) live.removeChild(k); });
+        out.forEach(function (node, i) {
+          var at = live.children[i] || null;
+          if (at !== node) live.insertBefore(node, at);
+        });
+      }
+
       function render(data) {
         var live = document.querySelector('[data-curriculum-live]');
         var statik = document.querySelector('[data-curriculum-static]');
@@ -2416,14 +2445,17 @@ When you finish:
         var focusKey = document.activeElement && document.activeElement.getAttribute
           ? document.activeElement.getAttribute('data-cw-focus') : null;
 
-        L.clear(live);
+        // Built into a list first, then swapped in around the parts that
+        // stay: the welcome video and the prizes. Taking an iframe out of
+        // the page reloads it, which is what made a tick flash.
+        var out = [];
 
         var parts = pinnedParts(prep);
         var hello = welcome(parts);
-        if (hello) live.appendChild(hello);
+        if (hello) out.push(hello);
         var band = intro(parts);
-        if (band) live.appendChild(band);
-        live.appendChild(prizes());
+        if (band) out.push(band);
+        out.push(prizesNode || (prizesNode = prizes()));
 
         var tabs = L.el('div', 'trp-cw-weeks');
         tabs.setAttribute('role', 'tablist');
@@ -2447,12 +2479,13 @@ When you finish:
           e.preventDefault();
           pick(ids[to]);
         });
-        live.appendChild(tabs);
+        out.push(tabs);
 
-        live.appendChild(panel(data, week, prep));
+        out.push(panel(data, week, prep));
 
         var next = whatsNext(cards, prep);
-        if (next) live.appendChild(next);
+        if (next) out.push(next);
+        settle(live, out);
 
         L.show(live, true);
         L.show(statik, false);
