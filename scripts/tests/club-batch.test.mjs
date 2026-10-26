@@ -1074,9 +1074,8 @@ console.log('\nLessons have a tick and a cross; setup tasks a tick only; the cal
   check('the live calls have no tick box',
     p.doc.querySelectorAll('.trp-cw-session .trp-check-box').length === 0);
   const calls = [...p.doc.querySelectorAll('.trp-cw-session')];
-  check('a call with no recording yet shows a Recording button, marked Coming soon',
-    calls.length > 0 && calls.every((c) => c.querySelector('.trp-cw-btn') &&
-      (c.querySelector('a.trp-cw-btn') || c.querySelector('.trp-cw-soon'))));
+  check('the call cards have no recording button and no Coming soon tag (Ella, 26 Oct)',
+    calls.length > 0 && calls.every((c) => !c.querySelector('.trp-cw-btn') && !c.querySelector('.trp-cw-soon')));
   p.w.close();
 }
 
