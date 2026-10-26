@@ -204,7 +204,11 @@
     .trp-cw-session-when { font-size: 12px; font-weight: 600; letter-spacing: .08em; text-transform: uppercase; color: var(--trp-soft); }
     .trp-cw-session:has(.trp-cw-soon) .trp-cw-session-when { padding-right: 96px; }
         .trp-cw-session-title { font-size: 16px; font-weight: 600; color: var(--trp-deep); }
-    .trp-cw-session .trp-cw-btn { margin-top: 8px; align-self: flex-start; background: rgb(var(--c-surface)); color: var(--trp-deep); }
+    /* The recording button sits at the foot of every card, so the buttons
+       line up across a row however long each call's title runs. */
+    .trp-cw-session .trp-cw-session-copy { align-self: stretch; }
+    .trp-cw-session-copy > :nth-last-child(2) { margin-bottom: 8px; }
+    .trp-cw-session .trp-cw-btn { margin-top: auto; align-self: flex-start; background: rgb(var(--c-surface)); color: var(--trp-deep); }
 
     /* the lessons */
     .trp-cw-group { font-size: 12px; font-weight: 600; letter-spacing: .08em; text-transform: uppercase; color: var(--trp-soft); margin: 6px 0 -2px; }
