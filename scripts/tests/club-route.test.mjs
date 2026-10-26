@@ -1,26 +1,28 @@
-// /club — two pages at one address.
+// /club and /clubform: one address each.
 //
-// timerich.ai/club serves the public "Apply to the Time Rich Club" page to
-// everyone, and the member Club home to anyone carrying a portal session.
-// The site is static, so the choice is made in the browser: an inline script
-// at the top of club/index.html reads the stored session and, for a member,
-// drops a full-bleed iframe of /club/home over the page.
+// /club used to be two pages at one address. It served the public "Apply to
+// the Time Rich Club" page to everyone, and for a member an inline script
+// dropped a full-bleed iframe of /club/home over the top. That is gone. The
+// public application form has an address of its own at /clubform, and /club
+// is the member Club home itself: one document, the ordinary portal session
+// gate on it, and a visitor without a session sent to /club/signin like on
+// every other page inside.
 //
-// It is a frame rather than the same markup inlined because the Apply page
-// styles bare body, h1, p, a, section, nav and footer — those rules would
-// land on the Club home and restyle it. The frame boundary is what keeps
-// the two apart, and this suite is mostly about the seams that creates.
-//
-// The property worth protecting above all others: a visitor without a
-// session, which includes every crawler, must get the Apply page exactly as
-// it was. So most of what follows checks that the gate does nothing.
+// What this suite protects:
+//   - the application form still works, and nothing on it reads a session;
+//   - /club is a portal page, gated the way the others are;
+//   - a signed-out visitor goes to the sign-in page, not round in a circle;
+//   - the old addresses still land somewhere: /club/home redirects to /club;
+//   - the frame is really gone, so nothing is left reaching for window.top;
+//   - the day/night pill still works on the Club home.
 import { JSDOM } from 'jsdom';
 import { readFileSync } from 'node:fs';
 
 const read = (p) => readFileSync(new URL('../../' + p, import.meta.url), 'utf8');
 
-const APPLY = read('club/index.html');
-const CLUB = read('club/home.html');
+const FORM = read('clubform/index.html');
+const CLUB = read('club/index.html');
+const HOME = read('club/home.html');
 const ACCESS = read('club/portal-access.js');
 
 let pass = 0, fail = 0;
@@ -29,16 +31,36 @@ function check(name, cond, extra) {
   else { fail++; console.log('  FAIL ' + name + (extra !== undefined ? '  -> ' + JSON.stringify(extra) : '')); }
 }
 
-/* Loads club/index.html with a given localStorage, runs its scripts, and
-   reports what the page decided. The Apply page pulls two tracking scripts
-   and a pixel, so resources are left off: the gate is inline and runs
-   without them. */
-function open(storage) {
-  const dom = new JSDOM(APPLY, {
-    url: 'https://timerich.ai/club',
+/* ---- the application form, at its own address -------------------------- */
+
+console.log('\nThe application form moved to /clubform, otherwise untouched');
+{
+  check('the form itself is still there', /<form/.test(FORM));
+  check('and its endpoint with it', /FORM_ENDPOINT/.test(FORM));
+  check('the body still opens straight onto the page',
+    /<body>\s*\n\s*<nav>/.test(FORM),
+    (FORM.match(/<body>[\s\S]{0,60}/) || [])[0]);
+
+  // The gate is gone, not disabled: nothing on a public marketing page has
+  // any business reading a member's session token.
+  check('nothing reads the session token', !FORM.includes('tr_portal_session'));
+  check('no frame is left behind', !FORM.includes('trp-club-frame'));
+  check('and no member switch', !FORM.includes('data-trp-member'));
+
+  check('it says /clubform is its own address',
+    FORM.includes('<link rel="canonical" href="https://timerich.ai/clubform/" />'));
+  check('and shares that address, not the old one',
+    FORM.includes('content="https://timerich.ai/clubform/"') &&
+    FORM.split('https://timerich.ai/club/').length === 1);
+
+  // Driven, with a live session in storage: a member landing here gets the
+  // form like anybody else, because there is nothing left to switch.
+  const future = new Date(Date.now() + 86400e3).toISOString();
+  const dom = new JSDOM(FORM, {
+    url: 'https://timerich.ai/clubform',
     runScripts: 'dangerously',
     beforeParse(win) {
-      const store = Object.assign({}, storage);
+      const store = { tr_portal_session: JSON.stringify({ token: 't0ken', expires_at: future }) };
       Object.defineProperty(win, 'localStorage', {
         value: {
           getItem: (k) => (k in store ? store[k] : null),
@@ -49,173 +71,116 @@ function open(storage) {
       win.matchMedia = () => ({ matches: false, addListener() {}, removeListener() {} });
     },
   });
-  return dom;
-}
-
-/* The gate creates the frame on DOMContentLoaded, which has not fired by the
-   time the JSDOM constructor returns, so every member case waits a tick. */
-const tick = () => new Promise((r) => setTimeout(r, 0));
-
-const future = new Date(Date.now() + 86400e3).toISOString();
-const past = new Date(Date.now() - 86400e3).toISOString();
-const session = (extra) => ({ tr_portal_session: JSON.stringify(Object.assign({ token: 't0ken', expires_at: future }, extra)) });
-
-console.log('\nA visitor without a session gets the Apply page, untouched');
-{
-  for (const [what, storage] of [
-    ['no session at all', {}],
-    ['an expired session', { tr_portal_session: JSON.stringify({ token: 't', expires_at: past }) }],
-    ['a session with no token', { tr_portal_session: JSON.stringify({ expires_at: future }) }],
-    ['an empty token', { tr_portal_session: JSON.stringify({ token: '', expires_at: future }) }],
-    ['unparseable storage', { tr_portal_session: 'not json' }],
-  ]) {
-    const d = open(storage).window.document;
-    check(what + ': the page is not switched to the member view',
-      !d.documentElement.hasAttribute('data-trp-member'));
-    check(what + ': and no frame is created, so nothing is fetched',
-      d.getElementById('trp-club-frame') === null);
-  }
-
-  // Storage that throws on every touch — private mode, blocked site data.
-  {
-    const dom = new JSDOM(APPLY, {
-      url: 'https://timerich.ai/club',
-      runScripts: 'dangerously',
-      beforeParse(win) {
-        Object.defineProperty(win, 'localStorage', {
-          get() { throw new Error('blocked'); },
-        });
-      },
-    });
-    const d = dom.window.document;
-    check('storage that throws: still the Apply page, no frame',
-      !d.documentElement.hasAttribute('data-trp-member') &&
-      d.getElementById('trp-club-frame') === null);
-  }
-}
-
-console.log('\nThe Apply page itself is only added to, never edited');
-{
-  // The gate is additive. If this ever fails, something took copy or markup
-  // out of a live marketing page.
-  check('the apply form action is still there',
-    /FORM_ENDPOINT|<form/.test(APPLY));
-  check('the gate sits in <head>, above the page',
-    APPLY.indexOf('trp-club-frame') < APPLY.indexOf('<body'));
-  check('nothing in the body was wrapped or moved',
-    /<body>\s*\n\s*<nav>/.test(APPLY),
-    (APPLY.match(/<body>[\s\S]{0,60}/) || [])[0]);
-  check('the frame is hidden by default, whatever the markup order',
-    /#trp-club-frame\s*\{\s*display:\s*none/.test(APPLY));
-  check('the member rule only matches under the attribute',
-    /html\[data-trp-member\] #trp-club-frame/.test(APPLY));
-  check('and the Apply markup is hidden, not removed',
-    /html\[data-trp-member\] body > \*:not\(#trp-club-frame\)/.test(APPLY));
-}
-
-console.log('\nA member gets the Club home, in the frame');
-{
-  const dom = open(session());
   const d = dom.window.document;
-  check('the page is switched to the member view before the body is parsed',
-    d.documentElement.hasAttribute('data-trp-member'));
-  await tick();
-
-  const frame = d.getElementById('trp-club-frame');
-  check('a frame is created', frame !== null);
-  check('pointed at the portal page', frame && frame.getAttribute('src') === '/club/home');
-  check('and it is labelled for a screen reader',
-    frame && frame.getAttribute('title') === 'Time Rich Club');
-}
-
-console.log('\nIf the frame never loads, the Apply page comes back');
-{
-  const dom = open(session());
-  const win = dom.window;
-  const d = win.document;
-  await tick();
-  check('the member view is on to begin with',
-    d.documentElement.hasAttribute('data-trp-member'));
-
-  // Nothing answered. Run the timers the gate armed.
-  const frame = d.getElementById('trp-club-frame');
-  frame.dispatchEvent(new win.Event('error'));
-
-  check('an error on the frame puts Apply back',
+  check('a member with a session still gets the form',
+    d.querySelector('form') !== null && d.getElementById('trp-club-frame') === null);
+  check('and the page is not switched to anything else',
     !d.documentElement.hasAttribute('data-trp-member'));
-  check('and takes the frame out of the page',
-    d.getElementById('trp-club-frame') === null);
 }
 
-console.log('\nLeaving the portal from inside the frame');
+/* ---- /club is the Club home ------------------------------------------- */
+
+console.log('\n/club is the Club home, gated like every other portal page');
 {
-  // Only link and form navigation obeys a base target, so the two paths
-  // that leave by script have to move the top window themselves.
-  check('the Club home sets <base target="_top">',
-    /<base target="_top"\/?>/.test(CLUB));
-  check('and it is above everything that resolves a URL',
-    CLUB.indexOf('<base') < CLUB.indexOf('<link'));
+  check('it carries the session gate', /<html[^>]*data-trp-gate/.test(CLUB));
+  check('and loads the gate script', CLUB.includes('portal-access.js'));
+  check('with the portal config before it',
+    CLUB.indexOf('portal-config.js') < CLUB.indexOf('portal-access.js'));
 
-  check('portal-access.js can tell it is framed',
-    /function isFramed\(\)/.test(ACCESS) && /window\.top !== window\.self/.test(ACCESS));
-  check('and leaves by taking the TOP window to /club',
-    /window\.top\.location\.replace\('\/club'\)/.test(ACCESS));
-  // The sign-in page is /club/signin, extensionless like every address in
-  // the portal. Not "./": the directory is /club, which is the Apply page.
-  check('a rejected session goes that way rather than to the sign-in page',
-    /} else if \(!leaveFrame\(\)\) \{[\s\S]{0,200}?window\.location\.replace\('signin'\);/.test(ACCESS),
+  /* The base target that broke links out of the frame is gone. What is there
+     instead is a base href, and it is not a leftover: the Club home is the
+     one portal page served from a directory address, so a browser at /club --
+     before GitHub Pages has redirected to /club/ -- would resolve
+     "portal.css" to /portal.css and get nothing. */
+  check('no base target is left over', !/<base [^>]*target/.test(CLUB));
+  check('and the base href keeps every relative link right at /club',
+    /<base href="\/club\/"\/?>/.test(CLUB), (CLUB.match(/<base[^>]*>/) || [])[0]);
+  check('it comes before anything that resolves a URL',
+    CLUB.indexOf('<base') < CLUB.indexOf('<link rel="stylesheet"'));
+  check('and no apply markup came with it',
+    !CLUB.includes('FORM_ENDPOINT') && !CLUB.includes('trp-club-frame'));
+
+  check('it is the Club home, not the apply page',
+    CLUB.includes('<title>Time Rich Club</title>') && !CLUB.includes('Apply to the Time Rich Club'));
+  check('and it is the page the Club menu item points at',
+    /<a href="\/club" aria-current="page" class="trp-nav-link/.test(CLUB));
+}
+
+console.log('\nA visitor without a session is sent to the sign-in page');
+{
+  // The Club home has no login form of its own, so the gate redirects. The
+  // address is relative, which from /club/ is /club/signin.
+  check('signedOut() sends them to signin',
+    /function signedOut\(\)[\s\S]*?window\.location\.replace\('signin'\);/.test(ACCESS),
     (ACCESS.match(/function signedOut\(\)[\s\S]*?\n  \}/) || [])[0]);
-  check('and so does signing out, instead of reloading the frame',
-    /if \(!leaveFrame\(\)\) window\.location\.reload\(\);/.test(ACCESS));
-  // /club is the right destination: it shows Apply to anyone without a
-  // session, and signOut() has already cleared the token, so the gate on
-  // that page reads "visitor" and there is no loop back into the frame.
-  check('the token is cleared before either of those',
-    /clearCode\(\);/.test(ACCESS) && ACCESS.indexOf('function signOut()') < ACCESS.indexOf('clearMembersLinkCache();'));
+  check('and /club is no longer the destination for a refused session',
+    !ACCESS.includes("window.top.location.replace('/club')"));
 
-  check('Club links use native navigation without a competing scripted fade',
-    !CLUB.includes('data-trp-leaving'));
+  // Nothing is left reaching for the top window. This is what would send a
+  // member somewhere unexpected if a frame ever came back by accident.
+  check('the frame helpers are gone', !/isFramed|leaveFrame/.test(ACCESS));
+  check('signing out just reloads, and the gate does the rest',
+    /signOut\(\);\s*\n\s*window\.location\.reload\(\);/.test(ACCESS));
+  check('the theme no longer posts up to a parent',
+    !read('club/portal-theme.js').includes('postMessage'));
+}
+
+console.log('\nClean addresses still work, and the old ones still land');
+{
+  check('tidyAddress is still there, taking .html off the bar',
+    /function tidyAddress\(\)/.test(ACCESS) &&
+    ACCESS.includes("loc.pathname.replace(/\\.html$/, '')"));
+  check('and it is called before the DOM is waited on',
+    ACCESS.indexOf('tidyAddress();') < ACCESS.indexOf("document.addEventListener('DOMContentLoaded', mount)"));
+
+  check('/club/home redirects to /club', /window\.location\.replace\('\/club' \+/.test(HOME));
+  check('keeping the query and the hash',
+    HOME.includes('window.location.search + window.location.hash'));
+  check('with a refresh for a browser with scripts off',
+    /http-equiv="refresh" content="0; url=\/club"/.test(HOME));
+  check('and it is kept out of the index', /name="robots" content="noindex"/.test(HOME));
 }
 
 console.log('\nThe way in, and the way back');
 {
-  /* Signing in used to land on /club. It lands on the curriculum now --
-     13ab847, "Open the Accelerator on the curriculum instead of the
-     dashboard" -- and this had been left asserting the old destination ever
-     since, which failed the suite and stopped every file after it from
-     running at all. It follows the code, on the extensionless address. */
-  const index = read('club/signin.html');
+  const signin = read('club/signin.html');
   check('signing in lands on the curriculum',
-    /window\.location\.replace\('\/club\/curriculum'\);/.test(index),
-    (index.match(/window\.location\.replace\('[^']*'\)/g) || []));
-  check('the portal pages point their Club link at /club',
-    read('club/dashboard.html').includes('<a href="/club"'));
-  // The file is club/home.html; the address a member sees it at is /club.
-  check('club/home.html is still served, and is what /club frames',
-    CLUB.length > 0 && APPLY.includes("'/club/home'"));
+    /window\.location\.replace\('\/club\/curriculum'\);/.test(signin),
+    (signin.match(/window\.location\.replace\('[^']*'\)/g) || []));
+
+  // sessions is not in the list: it is a redirect to the Curriculum now,
+  // with no menu on it.
+  for (const page of ['dashboard', 'curriculum', 'resources', 'prompts', 'members']) {
+    check(page + ' points its Club link at /club',
+      read('club/' + page + '.html').includes('<a href="/club"'));
+  }
+
+  // Links meant for buyers go to the form; links meant for members stay on
+  // /club. These three are the public pages that carried an Apply link.
+  for (const [page, want] of [['call/index.html', 2], ['home/index.html', 2], ['brand/index.html', 1]]) {
+    const html = read(page);
+    const hits = (html.match(/\/clubform/g) || []).length;
+    check(page + ' sends applicants to /clubform', hits >= want, hits);
+    check(page + ' no longer sends them to /club',
+      !/href="\/club\/"/.test(html) && !/href="https:\/\/timerich\.ai\/club"/.test(html),
+      (html.match(/href="[^"]*timerich\.ai\/club[^f"]*"|href="\/club\/"/g) || []));
+  }
 }
 
-/* ---- the day/night toggle, on Club ------------------------------------- */
+/* ---- the day/night toggle, on the Club home ---------------------------- */
 
 // Iltifat's sun/moon pill worked on every portal page except this one. The
 // pill is drawn by portal-chrome.js and fires a `change` on the hidden
-// <select>; the thing that listens for that change and writes the choice was
-// copied into the foot of seven pages by hand, and Club never got the copy.
-// So on Club, and only on Club, clicking the pill did nothing at all.
-//
-// The listener is one shared file now. This runs it for real, on the Club
-// page, rather than reading the source for it.
-console.log('\nThe day/night toggle works on Club');
+// <select>; the thing that listens for that change and writes the choice is
+// one shared file now. This runs it for real, on the Club home.
+console.log('\nThe day/night toggle works on the Club home');
 {
   const CHROME = read('club/portal-chrome.js');
   const THEME = read('club/portal-theme.js');
 
-  /* The Club page in a window, with the two scripts it loads evaluated in
-     the order the browser runs them. Storage is a plain object the test can
-     look inside, which is also how the reload below is done. */
   function club(store = {}) {
     const dom = new JSDOM(CLUB, {
-      url: 'https://timerich.ai/club/home.html',
+      url: 'https://timerich.ai/club/',
       runScripts: 'outside-only',
       beforeParse(win) {
         Object.defineProperty(win, 'localStorage', {
@@ -229,8 +194,6 @@ console.log('\nThe day/night toggle works on Club');
     });
     const win = dom.window;
     win.matchMedia = () => ({ matches: false, addEventListener() {}, removeEventListener() {} });
-    win.posted = [];
-    win.parent = { postMessage: (data, origin) => win.posted.push({ data, origin }) };
 
     // The pre-paint script in <head> runs first, as it does in the browser.
     const prepaint = [...win.document.querySelectorAll('script:not([src])')]
@@ -243,7 +206,7 @@ console.log('\nThe day/night toggle works on Club');
     return { win, document: win.document, store };
   }
 
-  check('Club loads the shared theme file rather than a copy of its own',
+  check('the Club home loads the shared theme file rather than a copy of its own',
     /<script src="portal-theme\.js" defer><\/script>/.test(CLUB) &&
     !/localStorage\.setItem\('tr_portal_theme'/.test(CLUB));
   check('and it still sets the theme before first paint, inline',
@@ -251,13 +214,13 @@ console.log('\nThe day/night toggle works on Club');
 
   const { win, document, store } = club();
   const pill = document.querySelector('button.trp-day-night');
-  check('the pill is drawn on Club, the same as everywhere else', pill !== null);
+  check('the pill is drawn here, the same as everywhere else', pill !== null);
   check('and it starts on the stored default',
     document.documentElement.getAttribute('data-theme') === 'system',
     document.documentElement.getAttribute('data-theme'));
 
   pill.dispatchEvent(new win.MouseEvent('click', { bubbles: true }));
-  check('clicking it switches Club to dark',
+  check('clicking it switches to dark',
     document.documentElement.getAttribute('data-theme') === 'dark',
     document.documentElement.getAttribute('data-theme'));
   check('and the choice is written under the key every page reads',
@@ -271,7 +234,6 @@ console.log('\nThe day/night toggle works on Club');
     store.tr_portal_theme === 'light',
     [document.documentElement.getAttribute('data-theme'), store.tr_portal_theme]);
 
-  // The reload: the same storage, a brand new page.
   pill.dispatchEvent(new win.MouseEvent('click', { bubbles: true }));
   const after = club(store);
   check('the choice survives a reload',
@@ -280,60 +242,10 @@ console.log('\nThe day/night toggle works on Club');
   check('and the pill comes back showing it',
     after.document.querySelector('button.trp-day-night').getAttribute('aria-checked') === 'true');
 
-  // The same storage key is what keeps Club in step with the rest.
   check('every portal page reads and writes the one key',
-    ['dashboard', 'curriculum', 'sessions', 'resources', 'prompts', 'members', 'signin']
+    ['index', 'dashboard', 'curriculum', 'resources', 'prompts', 'members', 'signin']
       .every((p) => read('club/' + p + '.html').includes("getItem('tr_portal_theme')")) &&
     /var KEY = 'tr_portal_theme';/.test(read('club/portal-theme.js')));
-}
-
-console.log('\nThe frame follows the choice made inside it');
-{
-  // /club paints the iframe element itself in the theme's ground colour, so a
-  // dark-theme member does not get a white rectangle while the Club home
-  // loads. That colour was read once, when the frame was made, so a choice
-  // made inside the frame afterwards left it stale. The framed page posts the
-  // new theme up; the outer page repaints.
-  const THEME = read('club/portal-theme.js');
-  check('the framed page tells its parent when the theme changes',
-    /window\.top !== window\.self/.test(THEME) &&
-    /postMessage\(\{ type: 'trportal:theme', theme: value \}, window\.location\.origin\)/.test(THEME));
-  check('and only to its own origin', /window\.location\.origin\)/.test(THEME));
-
-  check('the outer page listens for exactly that message',
-    /data\.type !== 'trportal:theme'/.test(APPLY));
-  check('and refuses one from anywhere else',
-    /if \(event\.origin !== window\.location\.origin\) return;/.test(APPLY));
-  check('repainting the frame rather than reading storage again',
-    /function paint\(theme\)/.test(APPLY) &&
-    /frame\.style\.background = dark \? '#1C1D1A' : '#FFFDFB';/.test(APPLY));
-  check('the first paint still comes from what was stored',
-    /paint\(stored\(\)\);/.test(APPLY));
-
-  // Driven: a member with a session, the frame up, then the message.
-  const dom = open(session());
-  const win = dom.window;
-  await tick();
-  const frame = win.document.getElementById('trp-club-frame');
-  check('the frame starts on the light ground',
-    /255, ?253, ?251|#FFFDFB/i.test(frame.style.background), frame.style.background);
-
-  const post = (theme, origin) => win.dispatchEvent(new win.MessageEvent('message', {
-    data: { type: 'trportal:theme', theme: theme },
-    origin: origin,
-  }));
-
-  post('dark', 'https://timerich.ai');
-  check('the message from inside the frame repaints it dark',
-    /28, ?29, ?26|#1C1D1A/i.test(frame.style.background), frame.style.background);
-
-  post('light', 'https://evil.example');
-  check('a message from another origin is ignored',
-    /28, ?29, ?26|#1C1D1A/i.test(frame.style.background), frame.style.background);
-
-  post('light', 'https://timerich.ai');
-  check('and switching back repaints it light',
-    /255, ?253, ?251|#FFFDFB/i.test(frame.style.background), frame.style.background);
 }
 
 console.log('\n' + pass + ' passed, ' + fail + ' failed');

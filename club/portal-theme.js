@@ -35,28 +35,12 @@
       try { window.localStorage.setItem(KEY, value); } catch (e) { /* choice lasts the session */ }
       // Every other control on the page follows.
       Array.prototype.forEach.call(selects, function (other) { other.value = value; });
-      tell(value);
-    }
-
-    /* /club draws the member Club home in a full-bleed iframe and paints the
-     * frame element itself in the theme's ground colour, so a member on the
-     * dark theme does not get a white rectangle while the page loads. That
-     * colour is read once, when the frame is made, so a choice made in here
-     * afterwards would leave it stale. One message up puts it right. */
-    function tell(value) {
-      try {
-        if (window.top !== window.self && window.parent) {
-          window.parent.postMessage({ type: 'trportal:theme', theme: value }, window.location.origin);
-        }
-      } catch (e) { /* a frame we cannot reach is not worth a broken page */ }
     }
 
     Array.prototype.forEach.call(selects, function (select) {
       select.value = current;
       select.addEventListener('change', function () { apply(clean(select.value)); });
     });
-
-    tell(current);
   }
 
   if (document.readyState === 'loading') {

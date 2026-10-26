@@ -20,10 +20,14 @@ import { readFileSync, readdirSync } from 'node:fs';
 const read = (p) => readFileSync(new URL('../../' + p, import.meta.url), 'utf8');
 
 // Every page inside the gate. The sign-in page has no footer.
+//
+// club/index.html is the Club home, and it is in this list now: it used to
+// carry a footer of its own, which is why moving between it and the rest of
+// the portal felt like two sites. It carries the shared one.
 const PAGES = [
+  'club/index.html',
   'club/dashboard.html',
   'club/curriculum.html',
-  'club/sessions.html',
   'club/resources.html',
   'club/prompts.html',
   'club/members.html',
@@ -177,22 +181,22 @@ console.log('\nthe rule that keeps a separator off the head of a wrapped line');
 // help link, in the bad-code message in portal-access.js and twice in the
 // Resources questions.
 //
-// One address is deliberately not support. The Club page's "Want to partner on
+// One address is deliberately not support. The Club home's "Want to partner on
 // an event?" line goes to Ella's own emc@timerich.ai, which is what she asked
 // for: an event partnership is a note to her, not a support request. So the
 // sweep no longer bans the old address outright. It pins it to that one link
 // and fails on a second one anywhere, which is the thing that actually goes
 // wrong. emc@timerichclub.com does not contain emc@timerich.ai as a substring,
 // so the two counts never overlap.
-const PARTNER_FILE = 'home.html';
+const PARTNER_FILE = 'index.html';
 const PARTNER_LINK = 'mailto:emc@timerich.ai';
 const PARTNER_TEXT = 'Want to partner on an event?';
 console.log('\nthe support address, everywhere in club/');
 {
   const dir = new URL('../../club/', import.meta.url);
-  // club/index.html is the public Apply page at /club, not a portal page, and
-  // it has its own contact copy.
-  const files = readdirSync(dir).filter((f) => /\.(html|js|css)$/.test(f) && f !== 'index.html');
+  // club/home.html is the redirect that keeps the old /club/home address
+  // working. It is three lines and a <meta refresh>, with no contact copy.
+  const files = readdirSync(dir).filter((f) => /\.(html|js|css)$/.test(f) && f !== 'home.html');
 
   check('there are portal files to sweep', files.length > 10, files.length);
 
@@ -201,14 +205,14 @@ console.log('\nthe support address, everywhere in club/');
   const stale = files
     .map((f) => [f, readFileSync(new URL(f, dir), 'utf8')])
     .filter(([f, body]) => body.includes('emc@timerich.ai') && f !== PARTNER_FILE);
-  check('no file but the Club page carries emc@timerich.ai', stale.length === 0,
+  check('no file but the Club home carries emc@timerich.ai', stale.length === 0,
     stale.map(([f]) => f));
 
   // And on the Club page it is the partnership link and only that: one
   // occurrence, inside one mailto. A support line that crept back in would
   // show up as a second occurrence.
   const club = readFileSync(new URL(PARTNER_FILE, dir), 'utf8');
-  check('on the Club page it is the event-partnership link, exactly once',
+  check('on the Club home it is the event-partnership link, exactly once',
     count(club, 'emc@timerich.ai') === 1 && count(club, PARTNER_LINK) === 1,
     [count(club, 'emc@timerich.ai'), count(club, PARTNER_LINK)]);
 
@@ -239,10 +243,15 @@ console.log('\nthe support address, everywhere in club/');
 
   // Every mailto on a page goes to the new address, not just the text beside
   // it: the two drift apart the moment one is edited and the other is not.
+  // The Club home is the exception, and the one link above is why.
   for (const path of PAGES.concat(['club/signin.html'])) {
     const d = new JSDOM(read(path)).window.document;
     const mailtos = [...d.querySelectorAll('a[href^="mailto:"]')]
-      .map((a) => a.getAttribute('href').replace(/^mailto:/, '').split('?')[0]);
+      .map((a) => a.getAttribute('href').replace(/^mailto:/, '').split('?')[0])
+      .filter((m) => !(path === 'club/' + PARTNER_FILE && m === 'emc@timerich.ai'))
+      // LaunchLemonade's own support address, on its card. It is not a Time
+      // Rich mailbox and is not support for the portal.
+      .filter((m) => m !== 'wilfredsoriaga@launchlemonade.app');
     check(path + ': every mailto goes to the new address',
       mailtos.length > 0 && mailtos.every((m) => m === 'emc@timerichclub.com'),
       mailtos);

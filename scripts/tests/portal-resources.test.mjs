@@ -46,7 +46,8 @@ const doc = new JSDOM(HTML, {
 // Stanley and Wispr both hand over a code to type in by hand, and neither
 // puts it where you would expect, so the steps and the tip are the offer
 // here as much as the link is. LaunchLemonade's voucher travels in its URL,
-// so it needs no code and no tip.
+// so it needs no code -- its tip is who to email when the signup goes
+// wrong, which is the one thing a member cannot work out from the card.
 const PARTNERS = [
   {
     name: 'Stanley',
@@ -99,7 +100,7 @@ const PARTNERS = [
   },
   {
     name: 'LaunchLemonade',
-    href: 'https://studio.launchlemonade.app/signup?voucher=ACCELERATOR',
+    href: 'https://studio.launchlemonade.app/signup?voucher=TIMERICHLL',
     logo: '../brand/partners/launchlemonade-logo.jpg',
     title: 'LaunchLemonade \u00b7 3 months Pro',
     line: '3 months of LaunchLemonade included.',
@@ -108,9 +109,9 @@ const PARTNERS = [
       'Create your account (no card needed).',
       'Pro is active for 3 months.',
     ],
-    // Its voucher rides in the signup URL, so there is nothing to mistype
-    // and nothing to warn about.
-    tip: null,
+    // Its voucher rides in the signup URL, so there is nothing to mistype.
+    // The tip is who to ask when the signup itself goes wrong.
+    tip: 'Any issues? Email Wilfred Soriaga at wilfredsoriaga@launchlemonade.app or DM in Slack.',
     button: 'Sign up',
     code: null,
   },
@@ -123,7 +124,9 @@ console.log('\nResources: your partner offers');
     doc.getElementById('partners-heading') !== null &&
     doc.getElementById('partners-heading').textContent === 'Your partner offers');
 
-  const cards = [...doc.querySelectorAll('.trp-partner')];
+  // Scoped to the section: the three Superhuman agents further down the page
+  // use the same card, and they are not partner offers.
+  const cards = [...section.querySelectorAll('.trp-partner')];
   check('three cards, no more', cards.length === 3, cards.length);
 
   // First on the page: before the agent table, before the questions.
@@ -283,13 +286,24 @@ console.log('\nResources: the skill library is gone');
 
 console.log('\nResources: the page says what it is now');
 {
-  const lede = doc.querySelector('main header p') || doc.createElement('p');
-  check('the subtitle is the one from the brief',
-    lede.textContent.trim() === 'Your partner offers, agent guide and answers.',
-    lede.textContent.trim());
-  // The two parts it still has, both still on the page.
+  /* The subtitle under the heading is gone. Resources is a place in the top
+     menu now rather than a card at the foot of the course, and Ella asked for
+     the heading on its own: a member who tapped Resources does not need a
+     line telling them what Resources is. What sits under the heading instead
+     is the way back to the course. */
+  const header = doc.querySelector('main header');
+  check('no subtitle under the heading',
+    header.querySelector('p') === null,
+    header.querySelector('p') && header.querySelector('p').textContent.trim());
+  check('and the way back to the course is there instead',
+    header.querySelector('.trp-res-back') !== null);
+
+  // The two parts it still has, both still on the page. The agent guide is
+  // built by portal-agents.js now, which Week 1 of the Curriculum shares, so
+  // what is pinned here is the box it goes in and the file that fills it.
   check('the agent guide is still there',
-    doc.getElementById('agents-heading') !== null);
+    doc.querySelector('[data-agents-block]') !== null &&
+    read('club/resources.html').includes('portal-agents.js'));
   check('and the questions', doc.getElementById('faq-heading') !== null);
 }
 

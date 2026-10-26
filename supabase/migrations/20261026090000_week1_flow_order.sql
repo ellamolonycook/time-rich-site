@@ -40,9 +40,9 @@
 --   40  Build your Business COMPASS                    (was Start here)
 --   44  Build your ICP from your calls                 (new, Business Hub doc)
 --   50  Run your Time Rich Audit                       (copy the prompt)
---   60  Pick your personal AI agent                    (the agent table, inside)
+--   60  Pick your personal AI agent                    (the page draws the shared agent table in it)
 --   70  Preparation: Multi-LLM & Setting Your Harness  (was Wednesday 28 October: Meet Cien Solon ...)
---   80  10 Growth Prompts                              (was Take one Audacious Action)
+--   80  10 Growth Prompts                              (was Take one Audacious Action; the page draws the ten prompts in it)
 --   90  Set up your first three Time Rich Agents       (new: setup for Claude, ChatGPT and Gemini)
 --   94  Build your next Time Rich Agent                (new, Business Hub doc)
 --   98  Give your AI your voice                        (new: voice prompt, then a skill)
@@ -62,6 +62,16 @@
 -- (or the next "= " or "+ " line, or the end) closes it. Rows that point
 -- at Claude get a button that opens it.
 --
+-- Replaces 20261025200000_week1_intro_north_star.sql (Gideon's 25 Oct
+-- batch), which is not to be run: every row that file rewrites is written
+-- here in full, so this one stands on its own. If it did run first, this
+-- still works on top of it -- its "Introduce yourself in #introductions"
+-- row is renamed here, and its LaunchLemonade step 6 comes off the page
+-- because the Preparation lesson carries the same steps in Ella's words.
+-- Every LaunchLemonade link is moved to the TIMERICHLL voucher here too.
+-- The audit table, the agent comparison and the ten growth prompts are
+-- markup in curriculum.html, drawn inside the lessons of the same name.
+--
 -- Rows are matched on week and title and rewritten in place. Safe to run
 -- more than once.
 -- =====================================================================
@@ -77,6 +87,11 @@ update public.portal_items
 update public.portal_items
    set title = 'Make sure you introduce yourself'
  where week_id = 0 and title = 'Say hello in #introductions'
+   and not exists (select 1 from public.portal_items
+                    where week_id = 0 and title = 'Make sure you introduce yourself');
+update public.portal_items
+   set title = 'Make sure you introduce yourself'
+ where week_id = 0 and title = 'Introduce yourself in #introductions'
    and not exists (select 1 from public.portal_items
                     where week_id = 0 and title = 'Make sure you introduce yourself');
 update public.portal_items
@@ -100,6 +115,12 @@ update public.portal_items
  where week_id = 1 and title = 'Take one Audacious Action this week'
    and not exists (select 1 from public.portal_items
                     where week_id = 1 and title = '10 Growth Prompts');
+
+-- one LaunchLemonade offer, wherever the link is: the TIMERICHLL voucher
+update public.portal_items
+   set url = 'https://studio.launchlemonade.app/signup?voucher=TIMERICHLL'
+ where url like '%launchlemonade.app%'
+   and url <> 'https://studio.launchlemonade.app/signup?voucher=TIMERICHLL';
 
 update public.portal_weeks
    set summary = 'Set one goal with a number, see where your hours really go, and build the Business Hub every prompt runs in. On Friday, train your first agent on what it now knows about you.'
@@ -267,7 +288,9 @@ Once a month, update your COMPASS goal, offers and priorities.$tr$,
 = Copy the test prompt
 What are your instructions in this project? Tell me in three lines how you'll work with me.
 =
-If it plays back your rules, your Hub is ready. If it doesn't know them, check you clicked Save and that the chat sits inside Business Hub.$tr$,
+If it plays back your rules, your Hub is ready. If it doesn't know them, check you clicked Save and that the chat sits inside Business Hub.
+
+Then test your connectors: press the + button in the message box, check they're switched on, and ask "What's on my calendar this week?"$tr$,
    $tr$https://claude.ai/projects$tr$),
 
   -- ---- Start here, Step 5: Get ready for the week -------------------
@@ -451,6 +474,14 @@ Twice a day, scan my Slack since your last run. Read my Business COMPASS first s
 3. For each Reply today and Can wait message, draft a reply in my voice. Short, clear, no filler. Save it as a draft in the right conversation. Never send anything.
 4. Give me one list: who, what they need, your draft, and anything you need from me to finish it.
 If nothing needs me, say so in one line.
+
+Before you start: restate the goal of this run in one line.
+
+When you finish:
+- Rate your work out of 10, and say what would make it a 10.
+- Don't stop to ask me questions while you run. List anything you weren't sure about, and the questions you'd have asked me.
+- Tell me the one next step to take.
+- Tell me what you learned about me or my work that should be saved to my Business COMPASS, so you're smarter next time.
 = Copy agent 2: Hot and warm contacts
 Build my Hot + Warm Contacts list. Read my Business COMPASS and My ICP first, if I have one.
 1. Pull contacts from my CRM if it's connected, my email and calendar from the last 90 days, and any CSV I upload (Luma guest lists, event sign-ups).
@@ -461,6 +492,14 @@ Leave out everyone else, plus suppliers, team and personal contacts.
 3. Save it as a Google Sheet called "Hot + Warm Contacts" in my Drive, with these columns: Name, Company, Email, Temperature (Hot or Warm), Last touch, Source, Why hot or warm, Next step. If you can't write to my Drive, give me the table to paste in.
 4. Show me the first 10 rows before you save anything. On the weekly run, add new people and update Temperature and Last touch. Never delete a row.
 Finish with the 5 contacts I should reach out to this week, and why.
+
+Before you start: restate the goal of this run in one line.
+
+When you finish:
+- Rate your work out of 10, and say what would make it a 10.
+- Don't stop to ask me questions while you run. List anything you weren't sure about, and the questions you'd have asked me.
+- Tell me the one next step to take.
+- Tell me what you learned about me or my work that should be saved to my Business COMPASS, so you're smarter next time.
 = Copy agent 3: Follow-up agent
 Every second day, scan my email from the last 7 days. Read my Business COMPASS and my Hot + Warm Contacts sheet first.
 1. Find every thread that needs a follow-up:
@@ -471,8 +510,16 @@ Skip newsletters, receipts, notifications and anything already handled.
 2. Draft one follow-up per thread in my voice: short, warm, one clear ask. Save each as a Gmail draft in the same thread. Never send anything to anyone else.
 3. Then send one email to me only, subject "Your follow-ups: (today's date)", listing each draft: who, why it needs a follow-up, and the first line of the draft. Hot contacts first.
 If nothing needs a follow-up, send me a one-line email saying so.
+
+Before you start: restate the goal of this run in one line.
+
+When you finish:
+- Rate your work out of 10, and say what would make it a 10.
+- Don't stop to ask me questions while you run. List anything you weren't sure about, and the questions you'd have asked me.
+- Tell me the one next step to take.
+- Tell me what you learned about me or my work that should be saved to my Business COMPASS, so you're smarter next time.
 =
-Read the drafts before you send any of them. When one is off, tell the agent what to change in plain words, and it gets better each run.$tr$,
+Each agent ends with the master prompt, written for a run with nobody there to answer: it lists its questions in the report instead of stopping to ask. Read the drafts before you send any of them. When one is off, tell the agent what to change in plain words, and it gets better each run.$tr$,
    null),
   (1, $tr$text$tr$, $tr$Build your next Time Rich Agent$tr$, 94,
    $tr$Got a hand-off from your Time Rich Audit that none of the three covers? Your AI interviews you, writes the agent's brief, then you test it on a real example and put it on a schedule the same way as your first three.
@@ -487,11 +534,27 @@ Ask one question at a time, with an example answer so I can reply fast. Cover:
 5. Rhythm: when it runs and how it reports back.
 Stop after 10 questions, or sooner if I say "build".
 Then write the agent as one page called "Agent: (name)" with these sections: Job, Reads, Steps, Delivers, Never, Runs, Rules learned. Show it to me before I save it.
+
+When you finish:
+- Rate the brief out of 10. Say what would make it a 10, then fix it.
+- Push back on me: where is my thinking weak, what could go wrong, and what am I missing?
+- Tell me the one next step to take.
+- Tell me what you learned about me or my work that should be saved to my Business COMPASS, so you're smarter next time.
 =
 Save the page as a Google Doc in your Drive and add it to your Business Hub's Files. Then test it:
 
 = Copy the test prompt
 Run my new agent once on a real example from this week. Show me the result, then ask me the one change that would make it better. Add each change to Rules learned.
+
+Before you start:
+- Restate my goal in one line, and tell me if it's the right goal.
+- Don't assume. If you need more context, ask me up to 3 questions first.
+
+When you finish:
+- Rate your work out of 10. Say what would make it a 10, then fix it.
+- Push back on me: where is my thinking weak, what could go wrong, and what am I missing?
+- Tell me the one next step to take.
+- Tell me what you learned about me or my work that should be saved to my Business COMPASS, so you're smarter next time.
 =
 + Prefer to write the brief yourself?
 Job: (one line: what this agent is for)
@@ -502,39 +565,30 @@ Never: (what it must not do)
 Runs: (when)$tr$,
    null),
   (1, $tr$text$tr$, $tr$Pick your personal AI agent$tr$, 60,
-   $tr$An agent is an AI that does a job for you on its own, like sorting your inbox or booking meetings. Think of it as your first AI executive assistant. These five overlap a lot, so pick one, not all of them: the one that lives where your work already is.
+   $tr$An agent is an AI that does a job for you on its own, like sorting your inbox or booking meetings. Think of it as your first AI executive assistant. These overlap a lot, so pick one, not all of them: the one that lives where your work already is.
 
-| Agent | Made by | Where it lives | Start with this task | Watch out for |
-| Dots :: https://openai.com/index/introducing-dots/ | OpenAI | Inside ChatGPT (set up on desktop) | Email drafts, using the ChatGPT context you already have | Needs ChatGPT Pro ($100/month). Not yet open to Pro users in the UK or EU. |
-| Muse :: https://ai.meta.com/muse/ | Meta | App, web, WhatsApp and Mac | Turning your saved Instagram posts into a list you can use | US and Canada only. Trains on your chats unless you switch it off. Turn on approval for every action. |
-| Grok Bot :: https://x.ai/bot/guides/grok-bot-101 | xAI | Named "Bots" in the Grok app, linked to Gmail, Calendar, Drive and Slack | A daily brief Bot (we set this up in the Accelerator) | Paid plan needed. All your Bots share one cloud computer, so logins are not kept apart. |
-| Instinct :: https://instinct.com/ | Instinct | iMessage, WhatsApp and phone calls | A morning brief sent by text | Invite-only beta. Has sent an email without approval before. |
-| Hark :: https://hark.com/ | Hark Labs | Its own app, where you can watch each task as it runs | Travel and browser admin you want to watch it do | Newer and less proven. Check pricing before you rely on it. |
-Give it one hand-off from your Time Rich Audit, and keep approval on so nothing goes out without your yes.
-
-+ Three rules
-1. Start with one task you already do every week, like a morning brief or email drafts. Count how much you have to correct.
-2. Keep approval on for anything that sends a message, spends money or books something.
-3. Choose by where your context lives. Your agent is only as good as what it already knows about you.$tr$,
+Give it one hand-off from your Time Rich Audit, and keep approval on so nothing goes out without your yes. Every agent in the table links to where you sign up.$tr$,
    null),
   (1, $tr$link$tr$, $tr$Preparation: Multi-LLM & Setting Your Harness$tr$, 70,
-   $tr$Bonus session, live at 12pm ET on Zoom: using more than one AI model, and setting up your agents so they work safely.
+   $tr$Bonus session, Wednesday 28 October, live at 12pm ET on Zoom: using more than one AI model, and setting up your agents so they work safely.
 
+Before the session:
+1. Sign up to LaunchLemonade (3 months free) using the button below.
+2. Log in and check that you can access your account.
+
+That's all you need to do before the session. Once you're logged in, please don't do anything else on the platform yet. We'll work through the setup together during the masterclass.
+
+If you already have an account, just check that you can log in.
+
+Any issues? Email Wilfred Soriaga at wilfredsoriaga@launchlemonade.app or DM in Slack.
+
++ About Cien Solon and LaunchLemonade
 Cien Solon is the co-founder and CEO of LaunchLemonade, a platform that helps businesses build and manage AI teammates securely. She has 11 years across technology, product and growth, has led engineering teams of up to 100, and mentors founders through Techstars and the British Library.
-
-LaunchLemonade is where you build agents that do the work for you, using more than one AI model. It isn't a chat window for prompts. It's only for agents.
-
-Your accelerator includes 3 months free. Come to the call with it set up, so you can build along with Cien:
-
-1. Sign up with the button below. Your 3 months are included in the link.
-2. Log in once before Wednesday, so you're ready to build.
-3. Stuck? Email Wilfred Soriaga at LaunchLemonade support: wilfredsoriaga@launchlemonade.app$tr$,
-   $tr$https://studio.launchlemonade.app/signup?voucher=ACCELERATOR$tr$),
-  (1, $tr$link$tr$, $tr$10 Growth Prompts$tr$, 80,
-   $tr$Your first agent goes where the money is. Open the 10 growth prompts, pick ONE, run it in your Business Hub before Friday 30 October, and post what you did in #audacious-wins in the Club Slack. Small counts. The message you'd normally talk yourself out of sending is exactly the one.
-
-The prompts: know exactly who you sell to, Boardy (your AI superconnector), your warmest people in one list, never let a lead go quiet, a voice note instead of another email, give first, your partnerships strategy, get your name in the room, analyse your last sales call, and check your cashflow.$tr$,
-   $tr$https://superhumanos.notion.site/Audacious-Action-10-growth-prompts-Week-1-402ca5ebe55781b4a146dabc508ede72$tr$),
+LaunchLemonade is where you build agents that do the work for you, using more than one AI model. It isn't a chat window for prompts. It's only for agents.$tr$,
+   $tr$https://studio.launchlemonade.app/signup?voucher=TIMERICHLL$tr$),
+  (1, $tr$text$tr$, $tr$10 Growth Prompts$tr$, 80,
+   $tr$Run ONE before Friday 30 October. Small counts: the message you'd normally talk yourself out of sending is exactly the one.$tr$,
+   null),
   (1, $tr$text$tr$, $tr$Give your AI your voice$tr$, 98,
    $tr$Your AI sounds generic until it has read you. Pick 3 to 5 pieces of your writing that sound most like you, like emails, posts or a proposal, and add them to your Business Hub's Files. Then teach it your voice once, and turn that into a skill so it's there every time.
 
@@ -560,7 +614,7 @@ Blog URLs:
 =
 Paste a real draft after "My draft:", and links to anything you've published after "Blog URLs:". Correct any rule that's off and ask for the rewrite again until it sounds like you. Then, in the same chat:
 
-= Copy: turn this into a skill
+= Copy: Turn this into a skill
 Turn this into a skill called my-voice. Use the voice rules we just agreed and the writing samples in this project. Whenever I share a draft and say "in my voice", rewrite it this way and list the rules you followed.
 =
 + What is a skill?
@@ -586,6 +640,7 @@ select w.week_id, w.kind, w.title, w.body, w.url, w.sort, true
 update public.portal_items set published = false
  where (week_id = 0 and title in ('Fill it in by voice', 'Make your copy of the Business COMPASS',
                                   'Say hello in #introductions'))
+    or (week_id = 0 and title = 'Sign up to LaunchLemonade (3 months free)')
     or (week_id = 1 and title in ('This week: your photo and the TRC Club Code',
                                   'Audacious Action before Friday: finish your Business Hub'));
 
@@ -604,6 +659,12 @@ begin
      '110 TRC Slack | 120 Add your photo and name | 130 Make sure you introduce yourself | 210 Get a paid AI plan and the desktop app | 220 Lock down your privacy | 230 Tell your AI how you work | 310 Install Wispr Flow | 320 Turn it on | 330 Connect your tools to your AI | 410 Create your Business Hub | 420 Paste in your Hub''s rules | 430 Check your Hub works | 510 Record last week in 2 minutes | 520 Answer the onboarding questions | 530 Join the Superhuman WhatsApp group'
   then raise exception 'Start here is not in five steps: %', got; end if;
 
+  -- one LaunchLemonade link, on the voucher the 25 Oct migration set
+  select count(*) into v from public.portal_items
+   where published and url like '%launchlemonade.app%'
+     and url <> 'https://studio.launchlemonade.app/signup?voucher=TIMERICHLL';
+  if v <> 0 then raise exception '% published rows point at an old LaunchLemonade voucher', v; end if;
+
   select count(*) into v from public.portal_items where week_id = 0 and published and sort < 100;
   if v <> 2 then raise exception 'expected 2 pinned rows in Start here, found %', v; end if;
 
@@ -619,12 +680,22 @@ begin
           and url like 'https://docs.google.com/%/copy')
       or (week_id = 1 and title = 'Run your Time Rich Audit' and body like '%= Copy the prompt%')
       or (week_id = 1 and title = 'Build your ICP from your calls' and body like '%= Copy the prompt%')
-      or (week_id = 1 and title = 'Give your AI your voice' and body like '%= Copy the voice prompt%= Copy: turn this into a skill%')
-      or (week_id = 1 and title = 'Pick your personal AI agent' and body like '%| Agent | Made by |%| Hark :: https://hark.com/ |%')
+      or (week_id = 1 and title = 'Give your AI your voice' and body like '%= Copy the voice prompt%= Copy: Turn this into a skill%')
       or (week_id = 1 and title = 'Set up your first three Time Rich Agents' and body like '%+ Set up an agent in Claude%+ Set up an agent in ChatGPT%+ Set up an agent in Gemini%= Copy agent 1%= Copy agent 2%= Copy agent 3%')
       or (week_id = 1 and title = 'Your master prompt' and body like '%= Copy the master prompt%= Copy the shortcut setup prompt%! /portal/assets/master-prompt-shortcut.png%| xx | Your master prompt |%')
       or (week_id = 1 and title = 'Build your next Time Rich Agent' and body like '%= Copy the interview prompt%= Copy the test prompt%'));
-  if v <> 13 then raise exception 'expected 13 rows with their copy boxes or table, found %', v; end if;
+  if v <> 12 then raise exception 'expected 12 rows with their copy boxes or table, found %', v; end if;
+
+  -- the master prompt's "When you finish" check rides on every agent prompt
+  -- and on the voice prompt
+  select count(*) into v from public.portal_items
+   where week_id = 1 and published and (
+         (title = 'Set up your first three Time Rich Agents'
+          and (length(body) - length(replace(body, 'When you finish:', ''))) / length('When you finish:') = 3)
+      or (title = 'Build your next Time Rich Agent'
+          and (length(body) - length(replace(body, 'When you finish:', ''))) / length('When you finish:') = 2)
+      or (title = 'Give your AI your voice' and body like '%When you finish:%'));
+  if v <> 3 then raise exception 'expected the master prompt in the agent and voice prompts, found % rows', v; end if;
 
   select count(*) into v from public.portal_items
    where week_id in (0, 1) and published

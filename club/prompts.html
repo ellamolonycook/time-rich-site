@@ -51,12 +51,21 @@
     })();
   </script>
 
-  <title>Prompts | Time Rich Portal</title>
+  <title>Prompts | Time Rich Club</title>
+  <link rel="canonical" href="https://timerich.ai/club/prompts" />
+  <meta name="description" content="Your weekly steps, prompts and session recordings for the Superhuman Accelerator." />
+  <meta property="og:type" content="website" />
+  <meta property="og:site_name" content="Time Rich Club" />
+  <meta property="og:title" content="Prompts | Time Rich Club" />
+  <meta property="og:description" content="Your weekly steps, prompts and session recordings for the Superhuman Accelerator." />
+  <meta property="og:url" content="https://timerich.ai/club/prompts" />
   <meta property="og:image" content="https://timerich.ai/og-time-rich.png" />
   <meta property="og:image:width" content="1200" />
   <meta property="og:image:height" content="630" />
-  <meta name="twitter:image" content="https://timerich.ai/og-time-rich.png" />
   <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="Prompts | Time Rich Club" />
+  <meta name="twitter:description" content="Your weekly steps, prompts and session recordings for the Superhuman Accelerator." />
+  <meta name="twitter:image" content="https://timerich.ai/og-time-rich.png" />
   <link rel="stylesheet" href="portal.css"/>
   <!-- The two faces, served from this repo. They used to come from Google
        Fonts, which costs a DNS lookup, a stylesheet and only then the font
@@ -69,7 +78,7 @@
        twice. -->
   <link rel="preload" href="../brand/fonts/SpaceGrotesk-Variable.woff2" as="font" type="font/woff2" crossorigin/>
   <link rel="preload" href="../brand/fonts/Inter-Variable.woff2" as="font" type="font/woff2" crossorigin/>
-  <link rel="stylesheet" href="portal-content.css?v=20261021">
+  <link rel="stylesheet" href="portal-content.css?v=20261025">
   <!-- The session gate. Config first, then the library; both deferred so
        the DOM is ready when the script mounts. No valid code redirects to
        the sign-in page, because this page has no login form of its own. -->
@@ -132,6 +141,10 @@
           <svg class="w-4 h-4 shrink-0" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"></path></svg>
           Accelerator
         </a>
+        <a href="resources" class="flex items-center gap-3 px-4 py-3 rounded-[14px] text-sm font-medium text-brand-ink/70 hover:text-brand-ink hover:bg-brand-ink/5 transition-colors">
+          <svg class="w-4 h-4 shrink-0 text-brand-ink/50" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"></path></svg>
+          Resources
+        </a>
         <a href="members" data-portal-members-link class="flex items-center gap-3 px-4 py-3 rounded-[14px] text-sm font-medium text-brand-ink/70 hover:text-brand-ink hover:bg-brand-ink/5 transition-colors">
           <svg class="w-4 h-4 shrink-0 text-brand-ink/50" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"></path></svg>
           Members
@@ -167,6 +180,7 @@
       <nav class="hidden lg:flex items-center gap-0.5" aria-label="Portal">
         <a href="/club" class="trp-nav-link px-3.5 text-[13px] font-medium text-brand-ink/70 hover:text-brand-ink">Club</a>
         <a href="curriculum" aria-current="true" class="trp-nav-link px-3.5 text-[13px] font-medium">Accelerator</a>
+        <a href="resources" class="trp-nav-link px-3.5 text-[13px] font-medium text-brand-ink/70 hover:text-brand-ink">Resources</a>
         <a href="members" data-portal-members-link class="trp-nav-link gap-1.5 px-3.5 text-[13px] font-medium text-brand-ink/70 hover:text-brand-ink">Members <span class="trp-soon">Soon</span></a>
       </nav>
     </div>

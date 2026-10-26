@@ -234,7 +234,8 @@ console.log('\nPrompt Library — when the payload never arrives');
 
 console.log('\nPrompt Library — the page and the nav');
 {
-  check('the page is titled for the portal', /<title>Prompts \| Time Rich Portal<\/title>/.test(PROMPTS_HTML));
+  // It is the Club, not 'the Portal': one name, on every page a member can share.
+  check('the page is titled for the Club', /<title>Prompts \| Time Rich Club<\/title>/.test(PROMPTS_HTML));
   check('no em dashes in the page copy', !PROMPTS_HTML.includes(EM_DASH) && !PROMPTS_JS.includes(EM_DASH));
   check('no prompt tells a member to start from their COMPASS',
     !/Start from my Business COMPASS/.test(PROMPTS_JS));
