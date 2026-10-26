@@ -250,7 +250,6 @@
     .trp-cw-steps { display: flex; flex-direction: column; gap: 20px; }
     .trp-cw-step { border: 1px solid var(--trp-line); border-radius: 20px; background: rgb(var(--c-surface)); transition: border-color .18s ease; }
     .trp-cw-step[open] { border-color: var(--trp-green); box-shadow: 0 16px 34px -28px rgba(26, 24, 22, .4); }
-    .trp-cw-step.is-done { background: var(--trp-sagelt); }
     .trp-cw-step > summary { display: flex; align-items: center; gap: 14px; min-height: 72px; padding: 16px 20px; cursor: pointer; list-style: none; border-radius: 20px; }
     .trp-cw-step > summary::-webkit-details-marker { display: none; }
     .trp-cw-step > summary:focus-visible { outline: none; background: var(--trp-sagelt); }
@@ -267,6 +266,14 @@
     .trp-cw-task-copy { display: flex; flex-direction: column; align-items: flex-start; gap: 8px; min-width: 0; padding-top: 5px; }
     .trp-cw-task-title { font-size: 16px; font-weight: 600; color: var(--trp-deep); }
     .trp-cw-task.is-done .trp-cw-task-title { color: var(--trp-soft); }
+    /* The tick and the cross sit side by side; a crossed task is struck out. */
+    .trp-cw-pair { display: flex; align-items: flex-start; gap: 6px; }
+    .trp-cw-cross { display: inline-flex; align-items: center; justify-content: center; flex: none; width: 32px; height: 32px; border: 0; border-radius: 999px; background: rgb(var(--c-surface)); box-shadow: inset 0 0 0 2px var(--trp-line); color: var(--trp-soft); cursor: pointer; transition: background-color .2s ease, color .2s ease; }
+    .trp-cw-cross svg { width: 14px; height: 14px; }
+    .trp-cw-cross:hover { color: var(--trp-deep); }
+    .trp-cw-cross:focus-visible { outline: 2px solid var(--trp-green); outline-offset: 2px; }
+    .trp-cw-cross.is-on { background: var(--trp-soft); box-shadow: none; color: var(--trp-offwhite); }
+    .trp-cw-task.is-crossed .trp-cw-task-title { text-decoration: line-through; }
     .trp-cw-task .trp-cw-btn { margin-top: 4px; }
 
     /* a small drop-down inside a task: the Slack channels, the Club Code */
@@ -476,11 +483,6 @@
     .trp-cw .trp-check-box svg { display: block; width: 16px; height: 16px; }
     .trp-cw .trp-check-box:hover { color: var(--trp-green); }
     .trp-cw .trp-check-box.is-on { background: var(--trp-green); color: var(--trp-offwhite); }
-    /* Done fills the whole row light green, so it reads as finished at a glance. */
-    .trp-cw-task.is-done { background: var(--trp-sagelt); border-radius: 14px; }
-    .trp-cw-task.is-done .trp-cw-more, .trp-cw-lesson:has(> .trp-cw-lesson-head .trp-check-box.is-on) .trp-cw-more { background: rgb(var(--c-surface)); }
-    .trp-cw-lesson:has(> .trp-cw-lesson-head .trp-check-box.is-on),
-    .trp-cw-lesson:has(> .trp-cw-lesson-head .trp-check-box.is-on) > .trp-cw-lesson-head { background: var(--trp-sagelt); }
     .trp-cw-n { display: none; }
     .trp-cw-session .trp-check-box { background: rgb(var(--c-surface)); }
 
@@ -1378,9 +1380,20 @@ When you finish:
 
       /* ---- the member's own bar, in the page header ---------------------- */
 
+      /* The bar counts lessons and setup tasks only: the live calls have no
+         box to tick any more, so counting them would stop everyone short. */
+      function itemProgress(data) {
+        var all = L.userProgress(data);
+        var calls = (data && Array.isArray(data.sessions) ? data.sessions : []).filter(function (c) { return L.sessionKey(c); });
+        var marked = calls.filter(function (c) { return L.isSessionMarked(c); }).length;
+        var total = all.total - calls.length;
+        var done = all.done - marked;
+        return { total: total, done: done, percent: total ? Math.round(done / total * 100) : 0 };
+      }
+
       function renderBar(root, data) {
         if (!root) return;
-        var you = L.userProgress(data);
+        var you = itemProgress(data);
         if (!you.total) { L.show(root, false); return; }
 
         L.clear(root);
@@ -1728,6 +1741,58 @@ When you finish:
         return !sel;
       }
 
+      /* A setup task can be ticked, or crossed off as not needed: someone
+         who already has Claude, say, has nothing to set up. A cross counts
+         as done, so it never holds the member back. The server only keeps
+         done or not done, so this browser remembers which done rows were
+         crossed rather than ticked. */
+      var SKIP_KEY = 'trp-cw-skipped';
+      function skippedIds() {
+        try { return JSON.parse(window.localStorage.getItem(SKIP_KEY) || '[]'); } catch (e) { return []; }
+      }
+      function isCrossed(item) {
+        return L.isItemDone(item) && skippedIds().indexOf(L.itemKey(item)) !== -1;
+      }
+      function setCrossed(item, on) {
+        var ids = skippedIds().filter(function (id) { return id !== L.itemKey(item); });
+        if (on) ids.push(L.itemKey(item));
+        try { window.localStorage.setItem(SKIP_KEY, JSON.stringify(ids)); } catch (e) { /* kept for this visit only */ }
+      }
+      function redraw() {
+        try { document.dispatchEvent(new CustomEvent('trportal:progress')); } catch (e) { /* the next draw catches up */ }
+      }
+      function tickOrCross(item, n, name, row) {
+        if (!L.isTrackable(item)) return tickFor(item, n, name);
+        var pair = L.el('div', 'trp-cw-pair');
+        var tick = L.checkBox(
+          function () { return L.isItemDone(item) && !isCrossed(item); },
+          function () {
+            if (isCrossed(item)) { setCrossed(item, false); redraw(); return true; }
+            return L.toggleItem(item);
+          },
+          name);
+        tick.setAttribute('data-cw-focus', 'item-' + L.itemKey(item));
+        pair.appendChild(tick);
+
+        var cross = L.el('button', 'trp-cw-cross');
+        cross.type = 'button';
+        cross.setAttribute('data-cw-focus', 'cross-' + L.itemKey(item));
+        cross.appendChild(icon('M6 6l12 12M18 6L6 18'));
+        var crossed = isCrossed(item);
+        cross.classList.toggle('is-on', crossed);
+        cross.setAttribute('aria-pressed', crossed ? 'true' : 'false');
+        cross.setAttribute('aria-label', 'Not needed: ' + name);
+        cross.addEventListener('click', function () {
+          if (isCrossed(item)) { setCrossed(item, false); L.toggleItem(item); return; }
+          setCrossed(item, true);
+          if (L.isItemDone(item)) redraw();
+          else L.toggleItem(item);
+        });
+        pair.appendChild(cross);
+        if (crossed) row.classList.add('is-crossed');
+        return pair;
+      }
+
       function tickFor(item, n, name) {
         if (L.isTrackable(item)) {
           var box = L.checkBox(
@@ -2002,7 +2067,6 @@ When you finish:
         var trackable = list.filter(function (it) { return L.isTrackable(it); });
         var done = trackable.filter(function (it) { return L.isItemDone(it); }).length;
         var all = trackable.length > 0 && done === trackable.length;
-        if (all && stepWasDone[group] === false) { delete stepOpen[group]; delete stepOpen[group + 1]; }
         stepWasDone[group] = all;
 
         var box = document.createElement('details');
@@ -2039,7 +2103,7 @@ When you finish:
           var name = L.str(item && item.title) || 'Untitled';
           var row = L.el('li', 'trp-cw-task' + (L.isItemDone(item) ? ' is-done' : ''));
           tickOnRowClick(row, item);
-          row.appendChild(tickFor(item, i + 1, name));
+          row.appendChild(tickOrCross(item, i + 1, name, row));
           var copy = L.el('div', 'trp-cw-task-copy');
           var title = L.el('span', 'trp-cw-task-title', name);
           if (item && item.kind === 'skill') title.appendChild(L.el('span', 'trp-cw-tag', 'Skill'));
@@ -2225,12 +2289,6 @@ When you finish:
 
         var tile = L.el('div', 'trp-cw-session' + (/^Fri/.test(when) ? ' is-friday' : ''));
 
-        var box = L.checkBox(
-          function () { return L.isSessionMarked(session); },
-          function () { return L.toggleSession(session); },
-          name);
-        box.setAttribute('data-cw-focus', 'session-' + L.sessionKey(session));
-        if (L.sessionKey(session)) tile.appendChild(box);
 
         var copy = L.el('div', 'trp-cw-session-copy');
         copy.appendChild(L.el('span', 'trp-cw-session-when',
@@ -2244,7 +2302,7 @@ When you finish:
           if (rec) {
             rec.setAttribute('aria-label', 'Watch recording of ' + name);
             rec.addEventListener('click', function () {
-              Promise.resolve(L.markSession(session)).then(function () { if (box.refresh) box.refresh(); });
+              L.markSession(session);
             });
             copy.appendChild(rec);
           }
@@ -2527,9 +2585,43 @@ When you finish:
       /* A tick changes the counts and the bar in the page header, so both
          are redrawn from the state the tick just wrote. */
       document.addEventListener('trportal:progress', function () {
+        // A tick leaves the page as it was: what is open stays open, and
+        // the box that was clicked stays under the pointer.
+        var held = holdOpen();
         if (window.TR_PORTAL_DATA) render(window.TR_PORTAL_DATA);
         else if (lastData) render(lastData);
+        if (held) {
+          var box = findBox(held.name);
+          var moved = box ? box.getBoundingClientRect().top - held.top : 0;
+          if (moved) window.scrollTo({ top: window.scrollY + moved, behavior: 'instant' });
+        }
       });
+
+      /* Writes down what is open right now, so the redraw after a tick
+         keeps it, instead of opening the next step or lesson on its own. */
+      function holdOpen() {
+        var live = document.querySelector('[data-curriculum-live]');
+        if (!live) return null;
+        [].forEach.call(live.querySelectorAll('summary[data-cw-focus]'), function (sum) {
+          var key = sum.getAttribute('data-cw-focus');
+          var open = sum.parentNode.open;
+          if (key.indexOf('step-') === 0) stepOpen[key.slice(5)] = open;
+          else if (key.indexOf('master-') === 0) masterOpen[key.slice(7)] = open;
+        });
+        if (!touched) {
+          touched = true;
+          [].forEach.call(live.querySelectorAll('.trp-cw-toggle[aria-expanded="true"]'), function (t) {
+            opened[t.getAttribute('data-cw-focus').replace(/^toggle-/, '')] = true;
+          });
+        }
+        var box = document.activeElement;
+        var key = box && box.getAttribute ? box.getAttribute('data-cw-focus') : null;
+        if (!key || !live.contains(box)) return null;
+        return { name: key, top: box.getBoundingClientRect().top };
+      }
+      function findBox(key) {
+        return document.querySelector('[data-curriculum-live] [data-cw-focus="' + key + '"]');
+      }
     })();
   </script>
 

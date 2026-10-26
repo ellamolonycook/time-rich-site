@@ -1062,6 +1062,17 @@ console.log('\nThe Superhuman prizes sit above the week tabs');
   p.w.close();
 }
 
+console.log('\nSetup tasks have a tick and a cross; the calls have neither');
+{
+  const p = open();
+  const tasks = [...p.panel().querySelectorAll('.trp-cw-task')];
+  check('every setup task has a cross beside its tick',
+    tasks.length > 0 && tasks.every((t) => t.querySelector('.trp-check-box') && t.querySelector('.trp-cw-cross')));
+  check('the live calls have no tick box',
+    p.doc.querySelectorAll('.trp-cw-session .trp-check-box').length === 0);
+  p.w.close();
+}
+
 console.log('\nOne drop-down open at a time');
 {
   const data = payload();
