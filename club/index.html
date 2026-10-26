@@ -238,7 +238,7 @@
          because it is the hinge of the story. -->
     <section class="tc-letter" aria-labelledby="letter-heading">
       <!-- The eyebrow sits above the grid, so the portrait's top edge lines
-           up with the headline's and its foot with the signature's. The two
+           up with the headline's and its foot with the button's. The two
            are wrapped together so that, on a laptop or desktop, they can be
            sized to exactly one screen under the header. -->
       <div class="tc-letter-screen">
@@ -263,14 +263,6 @@
           <button type="button" class="tc-btn tc-btn-lime tc-letter-more" data-tc-story-open aria-haspopup="dialog">
             Read the founding story <span aria-hidden="true">&rarr;</span>
           </button>
-
-          <!-- The name is set in Caveat, the same script the accelerator page
-               signs Ella's letter with. -->
-          <div class="tc-sign">
-            <p class="tc-sign-love">Much Love,</p>
-            <p class="tc-sign-name">Ella Molony Cook</p>
-            <p class="tc-sign-role">Chief Energy Officer, Time Rich Club</p>
-          </div>
         </div>
 
         <figure class="tc-portrait">
@@ -346,6 +338,8 @@
             </p>
           </div>
 
+          <!-- The name is set in Caveat, the same script the accelerator page
+               signs Ella's letter with. -->
           <div class="tc-sign">
             <p class="tc-sign-love">Much Love,</p>
             <p class="tc-sign-name">Ella Molony Cook</p>
@@ -371,14 +365,14 @@
     </section>
 
     <!-- ---- the community ---------------------------------------------
-         The NYC row is filled by portal-chrome.js from the member's week 0
-         WhatsApp item, and stays hidden when there is none. -->
+         The eyebrow spans both columns, so the photo and the links start
+         on the same line and the links can run exactly as tall as it. -->
     <section class="tc-sec" aria-labelledby="community-heading" data-tc-rise>
       <div class="tc-wrap tc-community">
+        <p class="tc-eyebrow" id="community-heading">The community</p>
         <!-- A moment from the stage, with the member count set small on a
              card that overlaps the photo's foot. -->
         <div>
-          <p class="tc-eyebrow" id="community-heading">The community</p>
           <figure class="tc-moment">
             <img src="/portal/assets/events/web/ella-ledex-algarve.jpg" alt="Ella Molony Cook speaking on stage at the LEDEX Forum in the Algarve" width="1600" height="1067" loading="lazy" decoding="async"/>
             <figcaption class="tc-moment-cap">AI Content Machine | Algarve, Portugal</figcaption>
@@ -389,7 +383,7 @@
           </figure>
         </div>
 
-        <div>
+        <div class="tc-links">
           <p class="tc-trouble">Let&rsquo;s get into good trouble!</p>
 
           <div class="tc-doors">
@@ -407,7 +401,7 @@
               </span>
               <span class="tc-door-go">Join <span aria-hidden="true">&rarr;</span></span>
             </a>
-            <a data-portal-community hidden class="tc-door">
+            <a class="tc-door" href="https://chat.whatsapp.com/JARlXqDh2kd2JPs4vRvXbp?mode=gi_t" target="_blank" rel="noopener noreferrer">
               <span class="min-w-0">
                 <span class="tc-door-t">NYC Founders, Creators &amp; Investors</span>
                 <span class="tc-door-d">WhatsApp</span>
