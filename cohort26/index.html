@@ -1177,6 +1177,10 @@
     var tabs = Array.prototype.slice.call(document.querySelectorAll('.cx-tab'));
 
     function show(id) {
+      // id can come from the address bar, so it is swapped for the matching
+      // tab's own name. Anything that isn't a tab falls back to the first one.
+      var at = tabs.map(function (t) { return t.dataset.page; }).indexOf(id);
+      id = at < 0 ? 'stages' : tabs[at].dataset.page;
       if (!DRAW[id] || !document.getElementById(id)) id = 'stages';
       current = id;
       hideTip();
