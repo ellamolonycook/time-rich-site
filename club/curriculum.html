@@ -236,13 +236,34 @@
     .trp-cw-more > .trp-cw-lesson-body { padding: 0 14px 14px; font-size: 14.5px; }
     .trp-cw-empty { margin: 0; font-size: 15px; color: var(--trp-soft); }
 
-    /* Resources, at the foot of the page rather than in the menu */
-    .trp-cw-resources { display: flex; align-items: center; justify-content: space-between; gap: 16px; padding: 20px 24px; border-radius: 20px; border: 1px solid var(--trp-line); background: rgb(var(--c-surface)); color: var(--trp-deep); text-decoration: none; transition: box-shadow .18s ease; }
-    .trp-cw-resources:hover { box-shadow: 0 18px 40px -28px rgba(26, 24, 22, .45); }
-    .trp-cw-resources:focus-visible { outline: 2px solid var(--trp-green); outline-offset: 3px; }
-    .trp-cw-resources-copy { display: flex; flex-direction: column; gap: 4px; min-width: 0; }
-    .trp-cw-resources-title { font-family: var(--trp-display); font-weight: 600; font-size: 19px; letter-spacing: -.01em; }
-    .trp-cw-resources-note { font-size: 14px; color: var(--trp-soft); }
+    /* a prompt to paste, in its own box with a Copy button */
+    .trp-cw-copy { width: 100%; max-width: 68ch; border-radius: 12px; border: 1px solid var(--trp-line); background: var(--trp-sagelt); overflow: hidden; }
+    .trp-cw-copy-head { display: flex; align-items: center; justify-content: space-between; gap: 10px; padding: 6px 6px 6px 14px; border-bottom: 1px solid var(--trp-line); }
+    .trp-cw-copy-name { font-size: 12px; font-weight: 600; letter-spacing: .06em; text-transform: uppercase; color: var(--trp-soft); }
+    /* stays small beside its label, on a phone too */
+    .trp-cw-copy-head .trp-cw-btn.trp-cw-copy-btn { flex: none; width: auto; min-width: 96px; margin-top: 0; background: rgb(var(--c-surface)); }
+    /* a screenshot in a lesson */
+    .trp-cw-shot { display: block; width: 100%; max-width: 520px; height: auto; border-radius: 12px; border: 1px solid var(--trp-line); }
+
+    /* a table in a lesson, like the agent picker */
+    .trp-cw-table-wrap { width: 100%; border: 1px solid var(--trp-line); border-radius: 12px; overflow: hidden; }
+    .trp-cw-table { width: 100%; border-collapse: collapse; font-size: 14px; line-height: 1.5; color: var(--trp-deep); }
+    .trp-cw-table th, .trp-cw-table td { padding: 10px 12px; text-align: left; vertical-align: top; border-top: 1px solid var(--trp-line); }
+    .trp-cw-table thead th { border-top: 0; background: var(--trp-sagelt); font-size: 11px; font-weight: 600; letter-spacing: .06em; text-transform: uppercase; color: var(--trp-soft); }
+    .trp-cw-table tbody th { font-weight: 600; white-space: nowrap; }
+    @media (max-width: 760px) {
+      .trp-cw-table, .trp-cw-table tbody, .trp-cw-table tr, .trp-cw-table th, .trp-cw-table td { display: block; }
+      .trp-cw-table thead { display: none; }
+      .trp-cw-table tbody tr { padding: 12px 14px; border-top: 1px solid var(--trp-line); }
+      .trp-cw-table tbody tr:first-child { border-top: 0; }
+      .trp-cw-table tbody th, .trp-cw-table tbody td { padding: 2px 0; border-top: 0; }
+      .trp-cw-table tbody th { font-size: 16px; padding-bottom: 6px; }
+      .trp-cw-table tbody td::before { content: attr(data-label) ": "; font-weight: 600; color: var(--trp-soft); }
+    }
+    .trp-cw-copy-hint { margin: 0; padding: 0 14px; font-size: 13px; font-weight: 600; color: var(--trp-green); }
+    .trp-cw-copy-hint:not(:empty) { padding-bottom: 12px; }
+    .trp-cw-copy-text { margin: 0; padding: 12px 14px 14px; max-height: 320px; overflow: auto; font-family: inherit; font-size: 14.5px; line-height: 1.6; color: var(--trp-deep); white-space: pre-wrap; overflow-wrap: anywhere; }
+
 
     /* The tick button doubles as the lesson number: the number until it is
        done, a tick after. It is still the shared .trp-check-box from
@@ -285,6 +306,9 @@
     body { cursor: url('/portal/assets/fire-cursor.svg') 16 2, auto; }
     body a, body button, body summary, body [role="tab"], body label, body select { cursor: url('/portal/assets/fire-cursor.svg') 16 2, pointer; }
     body input, body textarea { cursor: text; }
+    /* an open card folds from anywhere on it, so all of it shows the pointer */
+    body .trp-cw-step[open], body .trp-cw-lesson.is-open { cursor: url('/portal/assets/fire-cursor.svg') 16 2, pointer; }
+    body .trp-cw-copy-text { cursor: text; }
 
     /* the loading placeholder is the same shapes, inked out */
     .trp-cw .trp-skel .trp-cw-week { cursor: default; }
@@ -426,7 +450,7 @@
         <div class="trp-cw-head-copy">
           <span class="trp-cw-eyebrow">Four weeks &middot; Mondays build &middot; Fridays hot seat &middot; 12pm ET</span>
           <h1 class="trp-cw-h1">Sales. Systems. Visibility.</h1>
-          <p class="trp-cw-lede">Become ruthlessly efficient with AI in 4 weeks. Monday masterclasses &amp; Friday Q&amp;A’s mean you’re learning the right way.</p>
+          <p class="trp-cw-lede">Become ruthlessly efficient with AI in 4 weeks. Build live with us on Mondays, then bring your questions to the Friday hot seat.</p>
         </div>
         <!-- Held open rather than hidden, so the weeks under it do not move
              when it fills in. -->
@@ -479,24 +503,16 @@
               <h2 class="trp-cw-h2"><span class="trp-bar">Get set up</span></h2>
             </div>
             <div class="trp-cw-steps">
-              <div class="trp-cw-step"><div style="display:flex;align-items:center;gap:14px;min-height:72px;padding:16px 20px"><span class="trp-bar is-tick"></span><span class="trp-cw-step-text"><span class="trp-cw-step-kicker"><span class="trp-bar">Step 1</span></span><span class="trp-cw-step-title"><span class="trp-bar">Join the Club Slack</span></span></span></div></div>
+              <div class="trp-cw-step"><div style="display:flex;align-items:center;gap:14px;min-height:72px;padding:16px 20px"><span class="trp-bar is-tick"></span><span class="trp-cw-step-text"><span class="trp-cw-step-kicker"><span class="trp-bar">Step 1</span></span><span class="trp-cw-step-title"><span class="trp-bar">Introduce yourself in the Club</span></span></span></div></div>
               <div class="trp-cw-step"><div style="display:flex;align-items:center;gap:14px;min-height:72px;padding:16px 20px"><span class="trp-bar is-tick"></span><span class="trp-cw-step-text"><span class="trp-cw-step-kicker"><span class="trp-bar">Step 2</span></span><span class="trp-cw-step-title"><span class="trp-bar">Set up your AI</span></span></span></div></div>
               <div class="trp-cw-step"><div style="display:flex;align-items:center;gap:14px;min-height:72px;padding:16px 20px"><span class="trp-bar is-tick"></span><span class="trp-cw-step-text"><span class="trp-cw-step-kicker"><span class="trp-bar">Step 3</span></span><span class="trp-cw-step-title"><span class="trp-bar">Install Wispr Flow</span></span></span></div></div>
-              <div class="trp-cw-step"><div style="display:flex;align-items:center;gap:14px;min-height:72px;padding:16px 20px"><span class="trp-bar is-tick"></span><span class="trp-cw-step-text"><span class="trp-cw-step-kicker"><span class="trp-bar">Step 4</span></span><span class="trp-cw-step-title"><span class="trp-bar">Build your Business COMPASS</span></span></span></div></div>
-              <div class="trp-cw-step"><div style="display:flex;align-items:center;gap:14px;min-height:72px;padding:16px 20px"><span class="trp-bar is-tick"></span><span class="trp-cw-step-text"><span class="trp-cw-step-kicker"><span class="trp-bar">Step 5</span></span><span class="trp-cw-step-title"><span class="trp-bar">Before Monday</span></span></span></div></div>
+              <div class="trp-cw-step"><div style="display:flex;align-items:center;gap:14px;min-height:72px;padding:16px 20px"><span class="trp-bar is-tick"></span><span class="trp-cw-step-text"><span class="trp-cw-step-kicker"><span class="trp-bar">Step 4</span></span><span class="trp-cw-step-title"><span class="trp-bar">Build your Business Hub</span></span></span></div></div>
+              <div class="trp-cw-step"><div style="display:flex;align-items:center;gap:14px;min-height:72px;padding:16px 20px"><span class="trp-bar is-tick"></span><span class="trp-cw-step-text"><span class="trp-cw-step-kicker"><span class="trp-bar">Step 5</span></span><span class="trp-cw-step-title"><span class="trp-bar">Get ready for the week</span></span></span></div></div>
             </div>
           </div>
         </div>
         <p class="trp-skel-say" role="status">Loading your curriculum&hellip;</p>
       </div>
-
-      <a class="trp-cw-resources" href="resources">
-        <span class="trp-cw-resources-copy">
-          <span class="trp-cw-resources-title">Resources</span>
-          <span class="trp-cw-resources-note">Every prompt, skill and guide from the accelerator, in one place.</span>
-        </span>
-        <svg class="trp-cw-chev" style="transform: rotate(-90deg)" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6"></path></svg>
-      </a>
 
     </div>
   </main>
@@ -579,11 +595,11 @@
          stored title or "Step n". */
       var PILLARS = { 1: 'Foundations', 2: 'Systems', 3: 'Visibility', 4: 'Sales' };
       var STEPS = {
-        1: 'Join the Club Slack',
+        1: 'Introduce yourself in the Club',
         2: 'Set up your AI',
         3: 'Install Wispr Flow',
-        4: 'Build your Business COMPASS',
-        5: 'Before Monday'
+        4: 'Build your Business Hub',
+        5: 'Get ready for the week'
       };
       var PIN_BELOW = 100;
       var BONUS_RE = /^bonus:\s*/i;
@@ -684,6 +700,10 @@
         [/docs\.google\.com\/.*\/copy/, 'Make my copy'],
         [/timerich\.ai\/superhuman/, 'Answer the questions'],
         [/linkedin\.com/, 'Connect on LinkedIn'],
+        [/claude\.ai\/download/, 'Get the Claude app'],
+        [/claude\.ai\/projects/, 'Open Claude Projects'],
+        [/claude\.ai\/settings/, 'Open Claude settings'],
+        [/\/club\/resources/, 'Open the table'],
         [/notion\.site|notion\.so/, 'Open the guide']
       ];
       function buttonLabel(item) {
@@ -719,21 +739,132 @@
         return p;
       }
 
+      /* A prompt the member pastes into their AI, in a box with its own
+         Copy button. The text is drawn as it is, never bolded, so what is
+         copied is what is shown. If the clipboard is refused, the text is
+         selected instead so Ctrl+C still works. */
+      function copyBox(name, text) {
+        var box = L.el('div', 'trp-cw-copy');
+        var head = L.el('div', 'trp-cw-copy-head');
+        head.appendChild(L.el('span', 'trp-cw-copy-name', name));
+        var btn = L.el('button', 'trp-cw-btn is-soft is-sm trp-cw-copy-btn', 'Copy');
+        btn.type = 'button';
+        btn.setAttribute('aria-label', name);
+        head.appendChild(btn);
+        box.appendChild(head);
+        var pre = L.el('pre', 'trp-cw-copy-text', text);
+        box.appendChild(pre);
+        // Shown once it is copied: where it goes next, for someone who has
+        // never pasted into an AI before.
+        var hint = L.el('p', 'trp-cw-copy-hint', '');
+        hint.setAttribute('role', 'status');
+        box.appendChild(hint);
+
+        var timer = null;
+        function say(word) {
+          btn.textContent = word;
+          if (timer) window.clearTimeout(timer);
+          timer = window.setTimeout(function () { btn.textContent = 'Copy'; }, 1800);
+        }
+        function selectIt() {
+          try {
+            var range = document.createRange();
+            range.selectNodeContents(pre);
+            var sel = window.getSelection();
+            sel.removeAllRanges();
+            sel.addRange(range);
+          } catch (e) { /* nothing to select with */ }
+          say('Press Ctrl+C');
+        }
+        btn.addEventListener('click', function () {
+          var clip = window.navigator.clipboard;
+          if (clip && clip.writeText) clip.writeText(text).then(function () {
+            say('Copied');
+            hint.textContent = 'Copied. Now paste it: Cmd+V on Mac, Ctrl+V on Windows.';
+          }, selectIt);
+          else selectIt();
+        });
+        return box;
+      }
+
       /* A body can carry small drop-downs: a line starting "+ " opens one,
          named by the rest of the line, holding the lines after it up to the
          next "+ " line. That is where the Slack channels and the Club Code
-         sit, so the task itself stays one line. */
+         sit, so the task itself stays one line.
+
+         A line starting "= " opens a copy box the same way, for a prompt
+         the member pastes. A line that is only "=" closes it, so the body
+         can carry on underneath. Lines written "| a | b |" are a table, and
+         a line "! /portal/assets/x.png | alt" is a picture. */
+      /* A table, from lines written "| a | b | c |". The first line is the
+         header. On a phone each row becomes a card, every cell labelled
+         with its column, so nothing scrolls sideways. */
+      function tableBox(lines) {
+        var rows = lines.map(function (line) {
+          return line.trim().replace(/^\|/, '').replace(/\|$/, '').split('|').map(function (c) { return c.trim(); });
+        });
+        var head = rows.shift() || [];
+        var wrap = L.el('div', 'trp-cw-table-wrap');
+        var table = L.el('table', 'trp-cw-table');
+        var thead = L.el('thead');
+        var tr = L.el('tr');
+        head.forEach(function (h) { var th = L.el('th', '', h); th.scope = 'col'; tr.appendChild(th); });
+        thead.appendChild(tr);
+        table.appendChild(thead);
+        var tbody = L.el('tbody');
+        rows.forEach(function (cells) {
+          var row = L.el('tr');
+          cells.forEach(function (c, i) {
+            var cell = i === 0 ? L.el('th', '', c) : L.el('td', '', c);
+            if (i === 0) cell.scope = 'row';
+            cell.setAttribute('data-label', head[i] || '');
+            row.appendChild(cell);
+          });
+          tbody.appendChild(row);
+        });
+        table.appendChild(tbody);
+        wrap.appendChild(table);
+        return wrap;
+      }
+
+      /* A picture in a lesson, from a line written "! /portal/assets/x.png
+         | what it shows". Only the site's own assets folder is allowed, so
+         a row can never pull an image from anywhere else. */
+      function imageBox(src, alt) {
+        var img = L.el('img', 'trp-cw-shot');
+        img.src = src;
+        img.alt = alt;
+        img.loading = 'lazy';
+        img.decoding = 'async';
+        return img;
+      }
+
       var moreOpen = {};   // drop-down -> open, kept across redraws
       function bodyBlocks(body, key) {
         var frag = document.createDocumentFragment();
         var parts = [{ name: '', lines: [] }];
         body.split('\n').forEach(function (line) {
-          var m = /^\+\s+(.+)$/.exec(line.trim());
-          if (m) parts.push({ name: m[1], lines: [] });
-          else parts[parts.length - 1].lines.push(line);
+          var t = line.trim();
+          var m = /^\+\s+(.+)$/.exec(t);
+          var c = /^=\s+(.+)$/.exec(t);
+          var last = parts[parts.length - 1];
+          var pic = /^!\s+(\/portal\/assets\/[\w.-]+\.(?:png|jpe?g|webp))\s*\|\s*(.+)$/.exec(t);
+          if (pic) { parts.push({ name: '', image: { src: pic[1], alt: pic[2] }, lines: [] }); parts.push({ name: '', lines: [] }); }
+          else if (/^\|.*\|$/.test(t)) {
+            if (last.table) last.lines.push(line);
+            else parts.push({ name: '', table: true, lines: [line] });
+          }
+          else if (m) parts.push({ name: m[1], lines: [] });
+          else if (c) parts.push({ name: c[1], copy: true, lines: [] });
+          else if (t === '=') parts.push({ name: '', lines: [] });
+          else if (last.table) parts.push({ name: '', lines: [line] });
+          else last.lines.push(line);
         });
         parts.forEach(function (part) {
+          if (part.table) { frag.appendChild(tableBox(part.lines)); return; }
+          if (part.image) { frag.appendChild(imageBox(part.image.src, part.image.alt)); return; }
           var text = part.lines.join('\n').replace(/^\s+|\s+$/g, '');
+          if (part.copy) { if (text) frag.appendChild(copyBox(part.name, text)); return; }
           if (!part.name) { if (text) frag.appendChild(bodyText(text)); return; }
           var id = key + '|' + part.name;
           var more = document.createElement('details');
@@ -749,6 +880,18 @@
           frag.appendChild(more);
         });
         return frag;
+      }
+
+      /* A click anywhere on an open card folds it up, except on what has a
+         job of its own (a link, a button, a tick, a small drop-down, a copy
+         box) or while the member is selecting text to copy by hand. */
+      function foldsCard(event, card) {
+        var t = event.target;
+        if (!t || !t.closest) return false;
+        var own = t.closest('a, button, input, label, summary, .trp-cw-more, .trp-cw-copy');
+        if (own && card.contains(own)) return false;
+        var sel = window.getSelection ? String(window.getSelection()) : '';
+        return !sel;
       }
 
       function tickFor(item, n, name) {
@@ -954,6 +1097,10 @@
           if (box.open === initial && !has(stepOpen, group)) return;   // the open set above, not a click
           stepOpen[group] = box.open;
         });
+        // the summary still opens and shuts it; the rest of an open step shuts it
+        box.addEventListener('click', function (event) {
+          if (box.open && foldsCard(event, box)) box.open = false;
+        });
 
         var sum = document.createElement('summary');
         sum.setAttribute('data-cw-focus', 'step-' + group);
@@ -1071,6 +1218,10 @@
           detail.hidden = !now;
           row.classList.toggle('is-open', now);
         });
+        // anywhere else on an open lesson folds it, the same as its title
+        row.addEventListener('click', function (event) {
+          if (toggle.getAttribute('aria-expanded') === 'true' && foldsCard(event, row)) toggle.click();
+        });
         return row;
       }
 
@@ -1153,7 +1304,7 @@
         copy.appendChild(L.el('span', 'trp-cw-label', 'Week ' + pad(n) + (pillar ? ' · ' + pillar : '')));
         copy.appendChild(L.el('h2', 'trp-cw-h2', setupOnly ? 'Get set up' : weekTitle(week)));
         var outcome = setupOnly
-          ? 'Five steps to finish before Week 1 goes live' + (starts ? ' on ' + starts : '') + '.'
+          ? 'Finish these before Week 1 goes live' + (starts ? ' on ' + starts : '') + '.'
           : L.str(week.summary);
         if (outcome) copy.appendChild(L.el('p', 'trp-cw-outcome', outcome));
         if (total) copy.appendChild(L.el('p', 'trp-cw-count', done + ' of ' + total + ' done'));
@@ -1187,21 +1338,33 @@
           return box;
         }
 
-        // the week's own lessons first, once it is open: that is where the member is
+        // The setup comes first while any of it is left: the week's lessons
+        // run in the Business Hub and with Wispr Flow, which the setup
+        // builds. Once it is all ticked it drops under the lessons.
+        var setupLeft = steps.some(function (it) { return L.isTrackable(it) && !L.isItemDone(it); });
+
+        function drawSetup(heading) {
+          if (!steps.length) return;
+          if (own.length) box.appendChild(L.el('h3', 'trp-cw-group', heading));
+          box.appendChild(setupSteps(steps));
+        }
+
+        if (setupLeft) drawSetup('First, your setup');
+
         if (own.length) {
           var nextKey = null;
-          own.forEach(function (it, i) {
+          // while the setup is left, no lesson opens by itself: the next
+          // setup step is the one already open
+          if (!setupLeft) own.forEach(function (it, i) {
             if (nextKey === null && L.isTrackable(it) && !L.isItemDone(it)) nextKey = rowKey(it, i + 1);
           });
+          if (steps.length) box.appendChild(L.el('h3', 'trp-cw-group', setupLeft ? 'Then, this week' : 'This week'));
           var ul = L.el('ul', 'trp-cw-lessons');
           own.forEach(function (it, i) { ul.appendChild(lessonRow(it, i + 1, rowKey(it, i + 1) === nextKey)); });
           box.appendChild(ul);
         }
 
-        if (steps.length) {
-          if (own.length) box.appendChild(L.el('h3', 'trp-cw-group', 'Your setup'));
-          box.appendChild(setupSteps(steps));
-        }
+        if (!setupLeft) drawSetup('Your setup, done');
 
         if (!total && !own.length && !steps.length) box.appendChild(L.el('p', 'trp-cw-empty', 'Nothing here yet.'));
 
