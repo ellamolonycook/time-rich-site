@@ -33,7 +33,7 @@
 --
 -- Week 1, in the order of the week, with the build-it-yourself lessons
 -- at the end:
---    5  Your master prompt                             (new: copy it, save it as the xx shortcut)
+--    5  Your master prompt                             (new: copy it, then the AI sets up xx and the other shortcuts)
 --   10  Open Business Surgery
 --   20  Write your North Star on paper
 --   30  Wispr your North Star into your Business Hub   (copy the prompt)
@@ -41,7 +41,7 @@
 --   44  Build your ICP from your calls                 (new, Business Hub doc)
 --   50  Run your Time Rich Audit                       (copy the prompt)
 --   60  Pick your personal AI agent                    (the agent table, inside)
---   70  Wednesday 28 October: Meet Cien Solon ...
+--   70  Preparation: Multi-LLM & Setting Your Harness  (was Wednesday 28 October: Meet Cien Solon ...)
 --   80  10 Growth Prompts                              (was Take one Audacious Action)
 --   90  Set up your first three Time Rich Agents       (new: setup for Claude, ChatGPT and Gemini)
 --   94  Build your next Time Rich Agent                (new, Business Hub doc)
@@ -90,6 +90,11 @@ update public.portal_items
    and not exists (select 1 from public.portal_items
                     where week_id = 1 and title = 'Open Business Surgery');
 
+update public.portal_items
+   set title = 'Preparation: Multi-LLM & Setting Your Harness'
+ where week_id = 1 and title = 'Wednesday 28 October: Meet Cien Solon and set up LaunchLemonade'
+   and not exists (select 1 from public.portal_items
+                    where week_id = 1 and title = 'Preparation: Multi-LLM & Setting Your Harness');
 update public.portal_items
    set title = '10 Growth Prompts'
  where week_id = 1 and title = 'Take one Audacious Action this week'
@@ -152,7 +157,7 @@ Storytelling, positioning and getting your offer to market.$tr$,
 
 New to AI? Open the drop-down below first, and every step after this will make more sense.
 
-+ New to AI? Six words you'll hear this week
++ New to AI? Seven words you'll hear this week
 Prompt
 What you type or say to the AI. Plain and specific beats clever. Say who it's for, what you want and what good looks like.
 Chat
@@ -165,6 +170,8 @@ Agent
 An AI that does a job for you on its own, like sorting your inbox, and checks with you before anything goes out.
 MCP
 The connection that lets Claude use your other apps, like Wispr Flow, your email and your calendar.
+Skill
+A how-to your AI saves and uses on its own whenever a task needs it, like rewriting a draft in your voice. You build it once instead of pasting the same prompt every time.
 
 Three tips
 When an answer is off, don't start over. Tell it what's wrong in plain words, like you would a new hire, and ask again.
@@ -276,7 +283,7 @@ If it plays back your rules, your Hub is ready. If it doesn't know them, check y
 
   -- ---- Week 1, in the order of the week -----------------------------
   (1, $tr$text$tr$, $tr$Your master prompt$tr$, 5,
-   $tr$Add this to the end of any prompt and your AI checks its own work: it asks before it guesses, rates itself out of 10 and pushes back on you. Save it as a shortcut once, then type xx anywhere to drop it in.
+   $tr$Add this to the end of any prompt and your AI checks its own work: it asks before it guesses, rates itself out of 10 and pushes back on you. Once your AI has set it up as a shortcut, you type xx anywhere and it appears.
 
 = Copy the master prompt
 Before you start:
@@ -289,13 +296,34 @@ When you finish:
 - Tell me the one next step to take.
 - Tell me what you learned about me or my work that should be saved to my Business COMPASS, so you're smarter next time.
 =
-Make it a shortcut on a Mac:
-1. Press Copy above.
-2. Open System Settings, then Keyboard, then Text Replacements.
-3. Click +. Under Replace, type xx. Under With, paste the master prompt.
-4. Click Done. Now type xx and a space in any app, and the master prompt appears.
+Now let your AI set up your shortcuts for you. Open a new chat in your Business Hub, paste this, and do each step as it asks:
+
+= Copy the shortcut setup prompt
+Help me set up text shortcuts on my computer, so I type a short code in any app and the full text appears.
+
+First ask me if I'm on a Mac or Windows. Then walk me through it one click at a time, and wait for me to say done before the next step.
+
+Set up these shortcuts. Write the text for each one from my Business COMPASS, and show it to me before I save it:
+- xx: my master prompt (I'll paste it in)
+- bio: my bio in 3 sentences
+- oneliner: what I do, who it's for and the result they get, in one sentence
+- linkedinurl: my full LinkedIn link
+- bookme: my booking or calendar link
+- signoff: how I sign off my emails
+
+When we're done, test one with me in this chat.
+=
+On a Mac, each shortcut ends up in System Settings, Keyboard, Text Replacements, like this:
 ! /portal/assets/master-prompt-shortcut.png | Text Replacements in System Settings, with xx set to the master prompt
-On Windows, save it as a snippet in Wispr Flow instead.$tr$,
+
+The shortcuts it sets up:
+| Type this | And you get |
+| xx | Your master prompt |
+| bio | Your bio in 3 sentences, for intros, speaker forms and podcasts |
+| oneliner | What you do, who it's for and the result, in one sentence |
+| linkedinurl | Your full LinkedIn link, so people can connect |
+| bookme | Your booking or calendar link |
+| signoff | How you sign off your emails |$tr$,
    null),
   (1, $tr$text$tr$, $tr$Open Business Surgery$tr$, 10,
    $tr$Today you set one goal and see where your hours really go. Every prompt below runs in a chat inside your Business Hub, from Step 4 of your setup. Speak your answers with Wispr Flow. If Wispr isn't working on the day, type them and fix it after the call.
@@ -477,11 +505,11 @@ Runs: (when)$tr$,
    $tr$An agent is an AI that does a job for you on its own, like sorting your inbox or booking meetings. Think of it as your first AI executive assistant. These five overlap a lot, so pick one, not all of them: the one that lives where your work already is.
 
 | Agent | Made by | Where it lives | Start with this task | Watch out for |
-| Dots | OpenAI | Inside ChatGPT (set up on desktop) | Email drafts, using the ChatGPT context you already have | Needs ChatGPT Pro ($100/month). Not yet open to Pro users in the UK or EU. |
-| Muse | Meta | App, web, WhatsApp and Mac | Turning your saved Instagram posts into a list you can use | US and Canada only. Trains on your chats unless you switch it off. Turn on approval for every action. |
-| Grok Bot | xAI | Named "Bots" in the Grok app, linked to Gmail, Calendar, Drive and Slack | A daily brief Bot (we set this up in the Accelerator) | Paid plan needed. All your Bots share one cloud computer, so logins are not kept apart. |
-| Instinct | Instinct | iMessage, WhatsApp and phone calls | A morning brief sent by text | Invite-only beta. Has sent an email without approval before. |
-| Hark | Hark Labs | Its own app, where you can watch each task as it runs | Travel and browser admin you want to watch it do | Newer and less proven. Check pricing before you rely on it. |
+| Dots :: https://openai.com/index/introducing-dots/ | OpenAI | Inside ChatGPT (set up on desktop) | Email drafts, using the ChatGPT context you already have | Needs ChatGPT Pro ($100/month). Not yet open to Pro users in the UK or EU. |
+| Muse :: https://ai.meta.com/muse/ | Meta | App, web, WhatsApp and Mac | Turning your saved Instagram posts into a list you can use | US and Canada only. Trains on your chats unless you switch it off. Turn on approval for every action. |
+| Grok Bot :: https://x.ai/bot/guides/grok-bot-101 | xAI | Named "Bots" in the Grok app, linked to Gmail, Calendar, Drive and Slack | A daily brief Bot (we set this up in the Accelerator) | Paid plan needed. All your Bots share one cloud computer, so logins are not kept apart. |
+| Instinct :: https://instinct.com/ | Instinct | iMessage, WhatsApp and phone calls | A morning brief sent by text | Invite-only beta. Has sent an email without approval before. |
+| Hark :: https://hark.com/ | Hark Labs | Its own app, where you can watch each task as it runs | Travel and browser admin you want to watch it do | Newer and less proven. Check pricing before you rely on it. |
 Give it one hand-off from your Time Rich Audit, and keep approval on so nothing goes out without your yes.
 
 + Three rules
@@ -489,7 +517,7 @@ Give it one hand-off from your Time Rich Audit, and keep approval on so nothing 
 2. Keep approval on for anything that sends a message, spends money or books something.
 3. Choose by where your context lives. Your agent is only as good as what it already knows about you.$tr$,
    null),
-  (1, $tr$link$tr$, $tr$Wednesday 28 October: Meet Cien Solon and set up LaunchLemonade$tr$, 70,
+  (1, $tr$link$tr$, $tr$Preparation: Multi-LLM & Setting Your Harness$tr$, 70,
    $tr$Bonus session, live at 12pm ET on Zoom: using more than one AI model, and setting up your agents so they work safely.
 
 Cien Solon is the co-founder and CEO of LaunchLemonade, a platform that helps businesses build and manage AI teammates securely. She has 11 years across technology, product and growth, has led engineering teams of up to 100, and mentors founders through Techstars and the British Library.
@@ -535,7 +563,10 @@ Paste a real draft after "My draft:", and links to anything you've published aft
 = Copy: turn this into a skill
 Turn this into a skill called my-voice. Use the voice rules we just agreed and the writing samples in this project. Whenever I share a draft and say "in my voice", rewrite it this way and list the rules you followed.
 =
-A skill is a set of instructions your AI saves and uses whenever it's needed, so you never paste this prompt again. In Claude, switch skills on first: Settings, Capabilities, Skills. From then on, share any draft and write "in my voice".$tr$,
++ What is a skill?
+A skill is a how-to your AI saves and uses on its own whenever a task needs it. A prompt you paste every time; a skill you build once, and it comes into every chat where it fits.
+Your voice makes a strong first skill, because almost everything you send should sound like you.
+In Claude, switch skills on first: Settings, Capabilities, Skills. From then on, share any draft and write "in my voice".$tr$,
    null);
 
 -- every row above: rewritten in place, so ids and ticks survive
@@ -564,7 +595,7 @@ begin
   select string_agg(title, ' | ' order by sort) into got
     from public.portal_items where week_id = 1 and published;
   if got is distinct from
-     'Your master prompt | Open Business Surgery | Write your North Star on paper | Wispr your North Star into your Business Hub | Build your Business COMPASS | Build your ICP from your calls | Run your Time Rich Audit | Pick your personal AI agent | Wednesday 28 October: Meet Cien Solon and set up LaunchLemonade | 10 Growth Prompts | Set up your first three Time Rich Agents | Build your next Time Rich Agent | Give your AI your voice'
+     'Your master prompt | Open Business Surgery | Write your North Star on paper | Wispr your North Star into your Business Hub | Build your Business COMPASS | Build your ICP from your calls | Run your Time Rich Audit | Pick your personal AI agent | Preparation: Multi-LLM & Setting Your Harness | 10 Growth Prompts | Set up your first three Time Rich Agents | Build your next Time Rich Agent | Give your AI your voice'
   then raise exception 'Week 1 is not in the order of the week: %', got; end if;
 
   select string_agg(sort || ' ' || title, ' | ' order by sort) into got
@@ -589,9 +620,9 @@ begin
       or (week_id = 1 and title = 'Run your Time Rich Audit' and body like '%= Copy the prompt%')
       or (week_id = 1 and title = 'Build your ICP from your calls' and body like '%= Copy the prompt%')
       or (week_id = 1 and title = 'Give your AI your voice' and body like '%= Copy the voice prompt%= Copy: turn this into a skill%')
-      or (week_id = 1 and title = 'Pick your personal AI agent' and body like '%| Agent | Made by |%| Hark |%')
+      or (week_id = 1 and title = 'Pick your personal AI agent' and body like '%| Agent | Made by |%| Hark :: https://hark.com/ |%')
       or (week_id = 1 and title = 'Set up your first three Time Rich Agents' and body like '%+ Set up an agent in Claude%+ Set up an agent in ChatGPT%+ Set up an agent in Gemini%= Copy agent 1%= Copy agent 2%= Copy agent 3%')
-      or (week_id = 1 and title = 'Your master prompt' and body like '%= Copy the master prompt%! /portal/assets/master-prompt-shortcut.png%')
+      or (week_id = 1 and title = 'Your master prompt' and body like '%= Copy the master prompt%= Copy the shortcut setup prompt%! /portal/assets/master-prompt-shortcut.png%| xx | Your master prompt |%')
       or (week_id = 1 and title = 'Build your next Time Rich Agent' and body like '%= Copy the interview prompt%= Copy the test prompt%'));
   if v <> 13 then raise exception 'expected 13 rows with their copy boxes or table, found %', v; end if;
 
