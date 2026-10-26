@@ -46,7 +46,8 @@ const doc = new JSDOM(HTML, {
 // Stanley and Wispr both hand over a code to type in by hand, and neither
 // puts it where you would expect, so the steps and the tip are the offer
 // here as much as the link is. LaunchLemonade's voucher travels in its URL,
-// so it needs no code and no tip.
+// so it needs no code -- its tip is who to email when the signup goes
+// wrong, which is the one thing a member cannot work out from the card.
 const PARTNERS = [
   {
     name: 'Stanley',
@@ -99,7 +100,7 @@ const PARTNERS = [
   },
   {
     name: 'LaunchLemonade',
-    href: 'https://studio.launchlemonade.app/signup?voucher=ACCELERATOR',
+    href: 'https://studio.launchlemonade.app/signup?voucher=TIMERICHLL',
     logo: '../brand/partners/launchlemonade-logo.jpg',
     title: 'LaunchLemonade \u00b7 3 months Pro',
     line: '3 months of LaunchLemonade included.',
@@ -108,9 +109,9 @@ const PARTNERS = [
       'Create your account (no card needed).',
       'Pro is active for 3 months.',
     ],
-    // Its voucher rides in the signup URL, so there is nothing to mistype
-    // and nothing to warn about.
-    tip: null,
+    // Its voucher rides in the signup URL, so there is nothing to mistype.
+    // The tip is who to ask when the signup itself goes wrong.
+    tip: 'Any issues? Email Wilfred Soriaga at wilfredsoriaga@launchlemonade.app or DM in Slack.',
     button: 'Sign up',
     code: null,
   },

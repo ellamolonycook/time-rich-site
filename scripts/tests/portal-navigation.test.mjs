@@ -5,7 +5,9 @@ import { readFileSync, existsSync, readdirSync } from 'node:fs';
 import assert from 'node:assert/strict';
 import { execFileSync } from 'node:child_process';
 
-const pages = ['index', 'dashboard', 'curriculum', 'resources', 'members', 'sessions', 'prompts', 'signin'];
+// sessions is not in here: Live Sessions is gone and club/sessions.html
+// is a four-line redirect to the Curriculum, with no menu to check.
+const pages = ['index', 'dashboard', 'curriculum', 'resources', 'members', 'prompts', 'signin'];
 
 /* The file a nav link is asking for. The links are extensionless now, so
    /club/resources is served from club/resources.html -- the same mapping
@@ -143,7 +145,7 @@ for (const [arrived, want] of [
   // The query and the hash come along.
   ['https://timerich.ai/club/signin.html?code=abc', 'https://timerich.ai/club/signin?code=abc'],
   ['https://timerich.ai/club/resources.html#faq', 'https://timerich.ai/club/resources#faq'],
-  ['https://timerich.ai/club/sessions.html?w=2#now', 'https://timerich.ai/club/sessions?w=2#now'],
+  ['https://timerich.ai/club/prompts.html?w=2#now', 'https://timerich.ai/club/prompts?w=2#now'],
   // A clean address is already right and must not be touched.
   ['https://timerich.ai/club/resources', 'https://timerich.ai/club/resources'],
   ['https://timerich.ai/club/signin', 'https://timerich.ai/club/signin'],
@@ -176,7 +178,7 @@ const MOVED = {
   'members': '/club/members',
   'prompts': '/club/prompts',
   'resources': '/club/resources',
-  'sessions': '/club/sessions',
+  'sessions': '/club/curriculum',
 };
 for (const [old, want] of Object.entries(MOVED)) {
   const html = readFileSync(new URL('../../portal/' + old + '.html', import.meta.url), 'utf8');

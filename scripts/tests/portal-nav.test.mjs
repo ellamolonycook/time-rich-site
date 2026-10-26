@@ -21,9 +21,10 @@ import { readFileSync } from 'node:fs';
 
 const read = (p) => readFileSync(new URL('../../' + p, import.meta.url), 'utf8');
 
-// club/index.html is the Club home; sessions and prompts are still here,
-// still carrying the menu, just no longer in it.
-const PAGES = ['index', 'dashboard', 'curriculum', 'sessions', 'resources', 'prompts', 'members'];
+// club/index.html is the Club home. Prompts is still here, still carrying
+// the menu, just no longer in it. Sessions is not: Live Sessions is gone
+// and club/sessions.html is a redirect to the Curriculum.
+const PAGES = ['index', 'dashboard', 'curriculum', 'resources', 'prompts', 'members'];
 
 // What the menu is, in order, on every page.
 const MENU = [
@@ -50,7 +51,6 @@ const LIT = {
   index: '/club',
   dashboard: 'curriculum',
   curriculum: 'curriculum',
-  sessions: 'curriculum',
   prompts: 'curriculum',
   resources: 'resources',
   members: 'members',
@@ -98,9 +98,11 @@ console.log('\nThe menu is the same four places on every page');
       JSON.stringify(mhrefs) === JSON.stringify(MENU.map((m) => m.href)), mhrefs);
   }
 
-  // The pages themselves are still served; only the way in changed.
-  check('sessions.html and prompts.html are still here',
-    docs.sessions.querySelector('title') !== null && docs.prompts.querySelector('title') !== null);
+  // Prompts is still served; only the way in changed. Sessions is a
+  // redirect now, and it still answers at its old address.
+  check('prompts.html is still here', docs.prompts.querySelector('title') !== null);
+  check('and sessions.html still answers, as a redirect',
+    /url=\/club\/curriculum/.test(read('club/sessions.html')));
 }
 
 console.log('\nNo portal page links to a .html address');

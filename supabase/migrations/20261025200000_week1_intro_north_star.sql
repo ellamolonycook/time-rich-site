@@ -3,7 +3,9 @@
 --
 -- Three rows, three edits, from Ella's review:
 --
--- 1. Start here, "Say hello in #introductions". The row asked for "who you
+-- 1. Start here, "Introduce yourself in #introductions" (it was "Say hello
+--    in #introductions"; said as an instruction it reads as a thing to do
+--    rather than a place to be friendly). The row asked for "who you
 --    are, what you sell, and your Q4 North Star" and got six different
 --    shapes of introduction back. It now carries the format itself, in a
 --    copy box: a line reading "= Copy: <label>" opens a text box with a
@@ -25,6 +27,19 @@
 --    goes in a copy box, with a Copy button on it. Not a word of the prompt
 --    changes: a marker line is inserted above it.
 --
+-- 5. Start here gains a sixth step, "Before Wednesday's live build": one
+--    row that signs the member up to LaunchLemonade before the Wednesday
+--    masterclass. Sort 610, so it is the first task of group 6.
+--
+-- 6. Every LaunchLemonade link in the portal moves to the TIMERICHLL
+--    voucher. The old one was ACCELERATOR.
+--
+-- 7. Start here, "Create your Business Hub". The row said how to make the
+--    project and nothing about connecting anything to it, so members built
+--    a Hub that could not read their calendar. The connectors go under it,
+--    in a "+ " drop-down, which is how a row holds a list without the task
+--    itself growing to five lines. Title, sort, kind and id are untouched.
+--
 -- Matched on week_id and title, rewritten in place: every row keeps its id,
 -- so every member's tick survives. Nothing is inserted and nothing is
 -- deleted. Safe to run more than once -- a second run finds the new text
@@ -34,7 +49,18 @@
 begin;
 
 -- ---------------------------------------------------------------------
--- 0. Line endings
+-- 0. The row's name
+-- ---------------------------------------------------------------------
+
+-- First, so every statement below names one row and one title only. A
+-- second run finds it already renamed and changes nothing.
+update public.portal_items
+   set title = 'Introduce yourself in #introductions'
+ where week_id = 0
+   and title = 'Say hello in #introductions';
+
+-- ---------------------------------------------------------------------
+-- 0a. Line endings
 -- ---------------------------------------------------------------------
 
 -- The migrations that wrote these rows are dollar-quoted SQL. Run from a
@@ -49,7 +75,7 @@ begin;
 update public.portal_items
    set body = replace(body, chr(13), '')
  where week_id in (0, 1)
-   and title in ('Say hello in #introductions',
+   and title in ('Introduce yourself in #introductions',
                  'Write your North Star on paper',
                  'Wispr your North Star into your Business Hub',
                  'Run your Time Rich Audit')
@@ -79,7 +105,7 @@ update public.portal_items
 
 $tr$, chr(13), '') || substring(body from position('+ The channels' in body))
  where week_id = 0
-   and title = 'Say hello in #introductions'
+   and title = 'Introduce yourself in #introductions'
    and position('+ The channels' in body) > 0;
 
 -- ---------------------------------------------------------------------
@@ -138,6 +164,102 @@ update public.portal_items
    and body not like '%= Copy: Your audit prompt%';
 
 -- ---------------------------------------------------------------------
+-- 5. Step 6: before Wednesday's live build
+-- ---------------------------------------------------------------------
+
+-- Start here is grouped by the hundreds digit of sort, so 610 is the first
+-- task of step 6. Matched on week and title like every other row in this
+-- folder, so a second run rewrites the same text in place and the row keeps
+-- its id: a member's tick survives.
+--
+-- The body is stripped of carriage returns for the reason step 0a gives.
+update public.portal_items
+   set kind = 'link',
+       sort = 610,
+       published = true,
+       url = 'https://studio.launchlemonade.app/signup?voucher=TIMERICHLL',
+       body = replace($tr$Before Wednesday's live build session with Multi LLM & Setting Up Your Harness:
+
+1. Sign up to LaunchLemonade (3 months free) using the button below.
+2. Log in and check that you can access your account.
+
+That's all you need to do before the session. Once you're logged in, please don't do anything else on the platform yet. We'll work through the setup together during the masterclass.
+
+If you already have an account, just check that you can log in.
+
+Any issues? Email Wilfred Soriaga at wilfredsoriaga@launchlemonade.app or DM in Slack.$tr$, chr(13), '')
+ where week_id = 0
+   and title = 'Sign up to LaunchLemonade (3 months free)';
+
+insert into public.portal_items (week_id, kind, title, body, url, sort, published)
+select 0, 'link', 'Sign up to LaunchLemonade (3 months free)',
+       replace($tr$Before Wednesday's live build session with Multi LLM & Setting Up Your Harness:
+
+1. Sign up to LaunchLemonade (3 months free) using the button below.
+2. Log in and check that you can access your account.
+
+That's all you need to do before the session. Once you're logged in, please don't do anything else on the platform yet. We'll work through the setup together during the masterclass.
+
+If you already have an account, just check that you can log in.
+
+Any issues? Email Wilfred Soriaga at wilfredsoriaga@launchlemonade.app or DM in Slack.$tr$, chr(13), ''),
+       'https://studio.launchlemonade.app/signup?voucher=TIMERICHLL', 610, true
+ where not exists (select 1 from public.portal_items
+                    where week_id = 0 and title = 'Sign up to LaunchLemonade (3 months free)');
+
+-- ---------------------------------------------------------------------
+-- 6. The LaunchLemonade voucher
+-- ---------------------------------------------------------------------
+
+-- Wherever it appears, and whatever the old voucher was: one link, or
+-- members land on different offers.
+update public.portal_items
+   set url = 'https://studio.launchlemonade.app/signup?voucher=TIMERICHLL'
+ where url like '%launchlemonade.app%'
+   and url <> 'https://studio.launchlemonade.app/signup?voucher=TIMERICHLL';
+
+-- ---------------------------------------------------------------------
+-- 7. The Business Hub, and how to connect it
+-- ---------------------------------------------------------------------
+
+-- The body only. The row keeps its title, its sort, its kind and its id, so
+-- a member who has already ticked it stays ticked.
+--
+-- `is distinct from` is what makes it idempotent: a second run finds the
+-- body already equal and updates nothing. The literal is stripped of
+-- carriage returns for the reason step 0a gives -- the "+ " line has to
+-- start a line and end one, or the drop-down never opens.
+update public.portal_items
+   set body = replace($tr$In Claude, open Projects, press New project and name it Business Hub. Paste this into the instructions, then add your COMPASS to the project's Files:
+
+"This is my Business Hub. Read my Business COMPASS in this project's files before any task. If something is missing, ask me before you guess."
+
+Every prompt in the accelerator runs in a chat inside your Business Hub.
+
++ How to add your connectors
+1. In Claude, open Settings, then Connectors.
+2. Press Browse connectors and add Gmail, Google Calendar and Google Drive, or Notion if that's where your docs live. Press Connect, sign in and allow access.
+3. Wispr Flow: in the Wispr Flow app, open Settings, MCP, then Add to Claude.
+4. In a chat inside your Business Hub, press the + button in the message box and check your connectors are switched on.
+5. Test it: ask "What's on my calendar this week?"
+Nothing sends, posts or deletes without your yes.$tr$, chr(13), '')
+ where week_id = 0
+   and title = 'Create your Business Hub'
+   and body is distinct from replace($tr$In Claude, open Projects, press New project and name it Business Hub. Paste this into the instructions, then add your COMPASS to the project's Files:
+
+"This is my Business Hub. Read my Business COMPASS in this project's files before any task. If something is missing, ask me before you guess."
+
+Every prompt in the accelerator runs in a chat inside your Business Hub.
+
++ How to add your connectors
+1. In Claude, open Settings, then Connectors.
+2. Press Browse connectors and add Gmail, Google Calendar and Google Drive, or Notion if that's where your docs live. Press Connect, sign in and allow access.
+3. Wispr Flow: in the Wispr Flow app, open Settings, MCP, then Add to Claude.
+4. In a chat inside your Business Hub, press the + button in the message box and check your connectors are switched on.
+5. Test it: ask "What's on my calendar this week?"
+Nothing sends, posts or deletes without your yes.$tr$, chr(13), '');
+
+-- ---------------------------------------------------------------------
 -- What should be true afterwards
 -- ---------------------------------------------------------------------
 
@@ -147,7 +269,7 @@ begin
   -- The intro row: the copy box, all six lines, and the drop-down still
   -- under it rather than inside it.
   select count(*) into v from public.portal_items
-   where week_id = 0 and published and title = 'Say hello in #introductions'
+   where week_id = 0 and published and title = 'Introduce yourself in #introductions'
      and body like '%= Copy: Your intro%'
      and body like '%1. Name, company, city.%'
      and body like '%6. LinkedIn. Full link, so people can connect.%'
@@ -158,7 +280,7 @@ begin
 
   -- And the wording it replaced is gone, or a member sees both.
   select count(*) into v from public.portal_items
-   where week_id = 0 and published and title = 'Say hello in #introductions'
+   where week_id = 0 and published and title = 'Introduce yourself in #introductions'
      and body like '%Who you are, what you sell%';
   if v <> 0 then raise exception 'the old #introductions line is still there'; end if;
 
@@ -199,11 +321,53 @@ begin
      and (length(body) - length(replace(body, '= Copy:', ''))) / length('= Copy:') <> 1;
   if v <> 0 then raise exception 'the audit row has more than one copy marker'; end if;
 
+  -- The old name is gone, or the row answers to two things at once.
+  select count(*) into v from public.portal_items
+   where week_id = 0 and title = 'Say hello in #introductions';
+  if v <> 0 then raise exception 'the #introductions row still has its old title'; end if;
+
+  -- Step 6 is there, once, with its link and the whole of Ella's text.
+  select count(*) into v from public.portal_items
+   where week_id = 0 and published and sort = 610
+     and title = 'Sign up to LaunchLemonade (3 months free)'
+     and kind = 'link'
+     and url = 'https://studio.launchlemonade.app/signup?voucher=TIMERICHLL'
+     and body like 'Before Wednesday''s live build session with Multi LLM & Setting Up Your Harness:%'
+     and body like '%1. Sign up to LaunchLemonade (3 months free) using the button below.%'
+     and body like '%wilfredsoriaga@launchlemonade.app%'
+     and body not like '%' || chr(13) || '%';
+  if v <> 1 then raise exception 'the LaunchLemonade step is missing or wrong (found % rows)', v; end if;
+
+  select count(*) into v from public.portal_items
+   where week_id = 0 and title = 'Sign up to LaunchLemonade (3 months free)';
+  if v <> 1 then raise exception 'there are % LaunchLemonade rows, expected 1', v; end if;
+
+  -- And no old voucher anywhere.
+  select count(*) into v from public.portal_items
+   where url like '%launchlemonade.app%'
+     and url <> 'https://studio.launchlemonade.app/signup?voucher=TIMERICHLL';
+  if v <> 0 then raise exception '% rows still point at the old LaunchLemonade voucher', v; end if;
+
+  -- The Business Hub row: the instructions it always had, the line about
+  -- where prompts run, and the connectors drop-down under them. The "+ "
+  -- has to be at the start of its own line or the portal draws it as copy
+  -- rather than opening a drop-down.
+  select count(*) into v from public.portal_items
+   where week_id = 0 and published and title = 'Create your Business Hub'
+     and sort = 430
+     and body like 'In Claude, open Projects, press New project and name it Business Hub.%'
+     and body like '%Every prompt in the accelerator runs in a chat inside your Business Hub.%'
+     and body like '%' || chr(10) || '+ How to add your connectors' || chr(10) || '1. In Claude, open Settings, then Connectors.%'
+     and body like '%5. Test it: ask "What''s on my calendar this week?"%'
+     and body like '%Nothing sends, posts or deletes without your yes.'
+     and body not like '%' || chr(13) || '%';
+  if v <> 1 then raise exception 'the Business Hub row is missing its connectors drop-down (found % rows)', v; end if;
+
   -- And no carriage returns left in any of them, or the copy box in the
   -- first row never opens: the marker line would read "= Copy: Your intro\r".
   select count(*) into v from public.portal_items
    where published and week_id in (0, 1)
-     and title in ('Say hello in #introductions',
+     and title in ('Introduce yourself in #introductions',
                    'Write your North Star on paper',
                    'Wispr your North Star into your Business Hub',
                    'Run your Time Rich Audit')
@@ -214,7 +378,7 @@ begin
   -- square brackets, nothing left marked TBC.
   select count(*) into v from public.portal_items
    where published and week_id in (0, 1)
-     and title in ('Say hello in #introductions',
+     and title in ('Introduce yourself in #introductions',
                    'Write your North Star on paper',
                    'Wispr your North Star into your Business Hub',
                    'Run your Time Rich Audit')

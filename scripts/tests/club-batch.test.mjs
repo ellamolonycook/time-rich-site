@@ -121,25 +121,40 @@ console.log('\nResources: the three Superhuman agents, as cards');
   });
 }
 
-console.log('\nResources: the FAQ points at a page members can reach');
+console.log('\nResources: the FAQ points at the Curriculum, and Live Sessions is gone');
 {
+  /* Live Sessions was a second place to look for a recording, and the only
+     page in the portal with no way in. Every call is on the Curriculum now,
+     in its week, with the recording under it -- so the FAQ sends members
+     there and the old page is a redirect. */
   const answers = [...resDoc.querySelectorAll('.trp-faq-answer')];
-  const missed = answers.filter((p) => /recorded and the recording appears/.test(p.textContent))[0];
+  const missed = answers.filter((p) => /Every session is recorded/.test(p.textContent))[0];
   check('the "what if I miss a session" answer is there', Boolean(missed));
   const link = missed && missed.querySelector('a[href]');
-  check('and it links to Live Sessions rather than naming a page with no way in',
-    link && link.getAttribute('href') === 'sessions' && link.textContent.includes('Live Sessions'),
+  check('and it sends them to the Curriculum',
+    link && link.getAttribute('href') === '/club/curriculum' &&
+    link.textContent.includes('Curriculum page'),
     link && link.getAttribute('href'));
 
-  // The page itself, and the course link that makes it reachable at all.
+  const where = answers.filter((p) => /A Watch recording button appears/.test(p.textContent))[0];
+  check('and so does "where are the recordings"',
+    where && where.querySelector('a[href]').getAttribute('href') === '/club/curriculum',
+    where && where.querySelector('a[href]').getAttribute('href'));
+
+  check('nothing on the page still says Live Sessions',
+    !/Live Sessions/.test(RES), (RES.match(/.{0,40}Live Sessions.{0,20}/) || [])[0]);
+  check('and nothing links to the old page',
+    !/href="sessions"/.test(RES) && !/href="sessions"/.test(HTML));
+
+  // The old address still lands somewhere, with the query and the hash.
   const sessions = read('club/sessions.html');
-  check('Live Sessions is really called that', sessions.includes('Live Sessions'));
-  check('and it carries a recording per call',
-    /with its Join link and recording/.test(sessions));
-  const cards = [...new JSDOM(HTML).window.document.querySelectorAll('a.trp-cw-resources')]
-    .map((a) => a.getAttribute('href'));
-  check('the curriculum links to it, so it is reachable without the menu',
-    cards.includes('sessions'), cards);
+  check('/club/sessions redirects to the Curriculum',
+    /window\.location\.replace\('\/club\/curriculum' \+/.test(sessions));
+  check('keeping the query and the hash',
+    sessions.includes('window.location.search + window.location.hash'));
+  check('with a refresh for a browser with scripts off',
+    /http-equiv="refresh" content="0; url=\/club\/curriculum"/.test(sessions));
+  check('and it is kept out of the index', /name="robots" content="noindex"/.test(sessions));
 }
 
 /* =========================================================================
@@ -240,8 +255,17 @@ console.log('\nThe agent comparison is built from one file, for both pages');
       rows.every((r) => [...r.querySelectorAll('td')].every((td) => td.hasAttribute('data-label'))));
 
     const rules = [...block.querySelectorAll('.trp-step-body')].map((n) => n.textContent);
-    check(name + ': the three rules come with it', rules.length === 3 &&
-      rules[0].startsWith('Start with one task you already do every week'), rules.length);
+    check(name + ': three rules come with it', rules.length === 3, rules.length);
+    check(name + ': and they are the ones Ella rewrote',
+      rules[0] === 'Connect your tools first. Give your agent your email, calendar and LinkedIn, so it works from what you already know, not a blank page.' &&
+      rules[1] === 'Delegate a growth task first. Start with one task that brings in money every week, like follow-ups or a morning lead brief, and count how much you have to correct.' &&
+      rules[2] === 'Keep approval on. Anything that sends a message, spends money or books something waits for your yes.',
+      rules);
+    // The lead of each one is the instruction, set apart from its reason.
+    check(name + ': each one leads with the instruction, in bold',
+      [...block.querySelectorAll('.trp-step-body b')].map((b) => b.textContent).join('|') ===
+      'Connect your tools first.|Delegate a growth task first.|Keep approval on.',
+      [...block.querySelectorAll('.trp-step-body b')].map((b) => b.textContent));
   }
 
   // The point of the shared file: the two are the same block.
@@ -582,47 +606,47 @@ console.log("\nWeek 1 carries the audit, the growth prompts and the questions");
       const h = s.querySelector('.trp-cw-w1-h') || s.querySelector('.trp-section-title');
       return h ? h.textContent : s.id;
     });
-  check('the four sections, in Ella\'s order',
+  check('the five sections, in Ella\'s order',
     JSON.stringify(order) === JSON.stringify([
+      'Run your Time Rich Audit',
       'Which personal AI agent should you start with?',
-      'Audacious Action: 10 growth prompts',
+      'growth-prompts',
       'Next steps',
       'Questions from the cohort',
     ]), order);
 
-  // The audit is not one of them: it belongs to the row that asks for it,
-  // which is further up the panel, and drawing it twice is the thing this
-  // is here to stop.
-  check('there is no second audit section',
-    extra.querySelector('.trp-cw-audit') === null &&
-    !/Run your Time Rich Audit/.test(extra.textContent));
-
-  // The comparison comes first, straight after the audit's row.
-  check('the agent comparison opens the block',
-    order[0] === 'Which personal AI agent should you start with?', order);
+  // One audit on the page, and it is this one.
+  check('one audit table, in the audit section',
+    p.live.querySelectorAll('.trp-cw-audit').length === 1 &&
+    extra.querySelector('#time-rich-audit .trp-cw-audit') !== null,
+    p.live.querySelectorAll('.trp-cw-audit').length);
   p.w.close();
 }
 
-console.log('\nThe audit table sits in the row that asks for it');
+console.log('\nThe Time Rich Audit is a section of its own, first in Week 1');
 {
+  /* It used to be folded into the lesson row of the same name, where Ella
+     could not find it. It is a section now, at the top of Week 1, and the
+     row points at it rather than repeating it. */
   const p = open();
-  const row = p.lesson('Run your Time Rich Audit');
-  check('Week 1 has that row', Boolean(row));
-  const detail = p.detail('Run your Time Rich Audit');
+  const section = p.extra().querySelector('#time-rich-audit');
+  check('the section is there', section !== null);
+  check('with its heading',
+    section && section.querySelector('.trp-cw-w1-h').textContent === 'Run your Time Rich Audit',
+    section && section.querySelector('.trp-cw-w1-h').textContent);
+  check('and it opens the Week 1 block',
+    section && p.extra().firstElementChild === section,
+    p.extra().firstElementChild && p.extra().firstElementChild.className);
+
   const tool = p.tool();
-  check('the table is in its detail', tool !== null && detail.contains(tool));
+  check('the table is in it', tool !== null && section.contains(tool));
   check('and it is shown', tool && !tool.hasAttribute('hidden'));
+  check('nothing is hiding it behind a toggle',
+    section.closest('details') === null);
 
-  /* Ella's prompt is still the row's body, untouched, above the table --
-     in a copy box of its own, whole. The prompt has blank lines between
-     its paragraphs, so this is the case that would break if a copy block
-     ended at the first blank line. */
-  const lead = detail.querySelector('.trp-cw-lesson-body');
-  check('the line of instructions stays outside the box',
-    lead && lead.textContent.trim() === 'Paste your 2-minute voice note of last week at the end of this prompt.',
-    lead && lead.textContent);
-
-  const box = detail.querySelector('.trp-cw-pb');
+  /* The prompt comes from the Supabase row, so there is one prompt, written
+     once. It is in a copy box whether or not the row carries the marker. */
+  const box = section.querySelector('.trp-cw-pb');
   check('the prompt is in a copy box', box !== null);
   check('named Your audit prompt',
     box && box.querySelector('.trp-cw-pb-label').textContent === 'Your audit prompt',
@@ -630,22 +654,26 @@ console.log('\nThe audit table sits in the row that asks for it');
   check('holding the whole prompt, blank lines and all',
     box && box.querySelector('pre').textContent === AUDIT_PROMPT,
     box && JSON.stringify(box.querySelector('pre').textContent));
-  check('so the paragraph breaks did not cut it short',
-    box && box.querySelector('pre').textContent.split('\n\n').length === 4,
-    box && box.querySelector('pre').textContent.split('\n\n').length);
+  check('and the prompt comes above the table',
+    [...section.children].indexOf(box.closest('[data-audit-prompt]')) <
+    [...section.children].indexOf(tool.closest('[data-audit-table]')));
 
   let copiedPrompt = null;
   p.w.navigator.clipboard = { writeText: (t) => { copiedPrompt = t; return Promise.resolve(); } };
   box.querySelector('[data-copy-target]').dispatchEvent(new p.w.MouseEvent('click', { bubbles: true }));
-  check('and Copy puts exactly that on the clipboard',
-    copiedPrompt === AUDIT_PROMPT, copiedPrompt);
+  check('Copy puts exactly that on the clipboard', copiedPrompt === AUDIT_PROMPT, copiedPrompt);
 
-  check('the prompt comes above the table',
-    [...detail.children].indexOf(box) < [...detail.children].indexOf(tool));
-
-  // And there is exactly one audit on the page.
-  check('one table, not two', p.live.querySelectorAll('.trp-cw-audit').length === 1,
-    p.live.querySelectorAll('.trp-cw-audit').length);
+  // The row keeps its tick, and sends the member to the section.
+  const detail = p.detail('Run your Time Rich Audit');
+  check('the row is still there, with its tick',
+    p.lesson('Run your Time Rich Audit').querySelector('.trp-check-box').tagName === 'BUTTON');
+  check('and it points at the section rather than repeating it',
+    detail.querySelector('a[href="#time-rich-audit"]') !== null &&
+    detail.querySelector('.trp-cw-audit') === null &&
+    detail.querySelector('.trp-cw-pb') === null,
+    detail.innerHTML.slice(0, 120));
+  check('with a button that says where it goes',
+    detail.querySelector('a[href="#time-rich-audit"]').textContent === 'Go to the Time Rich Audit');
 
   const heads = [...tool.querySelectorAll('thead th')].map((th) => th.textContent);
   check('the five columns from the Business COMPASS',
@@ -661,41 +689,15 @@ console.log('\nThe audit table sits in the row that asks for it');
   check('and nothing is filled in', inputs.every((i) => i.value === ''),
     inputs.map((i) => i.value).filter(Boolean));
 
-  // The example is a placeholder, so it is in front of the member without
-  // being something they have to delete.
   const first = [...rows[0].querySelectorAll('input')].map((i) => i.getAttribute('placeholder'));
   check('the example is the first row\'s placeholders',
     JSON.stringify(first) === JSON.stringify([
       'Example: rewrote sales page copy', '3', 'Not', 'Skill',
       "Sells an offer on my COMPASS, but the writing isn't mine to do",
     ]), first);
-  check('and no other row carries one',
-    rows.slice(1).every((r) => [...r.querySelectorAll('input')]
-      .every((i) => !i.hasAttribute('placeholder'))));
-
   check('every box is labelled for a screen reader',
     inputs.every((i) => (i.getAttribute('aria-label') || '').length > 3));
-
-  const rev = tool.querySelector('[data-audit-revenue]');
-  check('the revenue number is a box too', rev !== null && rev.value === '');
-  check('with its line from the appendix',
-    /\$ hours divided by total hours =/.test(tool.querySelector('.trp-cw-audit-rev').textContent),
-    tool.querySelector('.trp-cw-audit-rev').textContent.trim());
-
-  // Nothing is sent anywhere. There is no form and no endpoint in the block.
   check('the table is in no form', tool.closest('form') === null);
-
-  // Closing the row takes the table with it rather than leaving it loose.
-  const toggle = row.querySelector('.trp-cw-toggle');
-  const wasOpen = toggle.getAttribute('aria-expanded') === 'true';
-  if (!wasOpen) toggle.dispatchEvent(new p.w.MouseEvent('click', { bubbles: true }));
-  check('the detail is open, so the table is on screen',
-    p.detail('Run your Time Rich Audit').hidden === false);
-  p.lesson('Run your Time Rich Audit').querySelector('.trp-cw-toggle')
-    .dispatchEvent(new p.w.MouseEvent('click', { bubbles: true }));
-  check('and closing the row hides it with the rest of the detail',
-    p.detail('Run your Time Rich Audit').hidden === true);
-  p.w.close();
 }
 
 console.log('\nA row body can open a copy box of its own');
@@ -846,69 +848,104 @@ console.log('\nWhat is typed survives a redraw and a reload');
   p.w.close();
 }
 
-console.log('\nThe ten growth prompts, in Ella\'s words, each with a Copy button');
+console.log('\nAudacious Action: one toggle, shut, with a drop-down per prompt');
 {
   const p = open();
   const section = p.extra().querySelector('#growth-prompts');
   check('the section is there, at the address Resources links to', section !== null);
 
+  /* One toggle for the lot, shut to begin with: not every member is ready
+     for this in week 1, and ten open prompts read as homework. */
+  check('it is a toggle', section.tagName === 'DETAILS');
+  check('and it starts shut', section.open === false);
+  const summary = section.querySelector(':scope > summary');
+  check('whose title is Ella\'s',
+    summary.textContent.replace(/\s+/g, ' ').trim().startsWith('Audacious Action 10 growth prompts'),
+    summary.textContent.replace(/\s+/g, ' ').trim());
+  check('in the same shape as the setup steps above it',
+    section.classList.contains('trp-cw-step'));
+
+  // Open it and the intro and the challenge are the first things there.
   check('the intro line is hers',
     section.textContent.includes('Your first agent goes where the money is. Your moat is your expertise, trust, creativity and distribution, so growth comes first.'));
 
   const callout = section.querySelector('.trp-cw-callout');
-  check('the challenge is called out at the top', callout !== null);
-  check('and it comes before the first prompt',
-    callout && [...section.children].indexOf(callout) <
-      [...section.children].indexOf(section.querySelector('.trp-cw-gp')));
+  check('the challenge is called out', callout !== null);
+  const inner = section.querySelector(':scope > .trp-cw-gp-body');
+  check('and it comes before the first prompt drop-down',
+    [...inner.children].indexOf(callout) < [...inner.children].indexOf(inner.querySelector('.trp-cw-gpd')));
   check('it names the channel',
-    callout && callout.textContent.includes('#audacious-wins'), callout && callout.textContent);
+    callout.textContent.includes('#audacious-wins'), callout.textContent);
   check('and the one-prompt challenge, before Friday',
-    callout && /pick ONE prompt below, run it in a chat inside your Business Hub before Friday/.test(callout.textContent));
-
+    /pick ONE prompt below, run it in a chat inside your Business Hub before Friday/.test(callout.textContent));
   check('the Wispr Flow line is there',
     section.textContent.includes('Speak your answers with Wispr Flow.'));
 
-  const heads = [...section.querySelectorAll('.trp-cw-gp-h')].map((h) => h.textContent);
-  check('all ten headings, A to J',
-    heads.length === 10 && heads[0].startsWith('A.') && heads[9].startsWith('J.'), heads);
-  check('and they are Ella\'s own',
-    heads[1] === 'B. Boardy: your AI superconnector (free)' &&
-    heads[8] === 'I. Sales call analyser', [heads[1], heads[8]]);
+  /* Each prompt is a drop-down of its own, titled without the letters they
+     carried on Ella's Notion page. */
+  const drops = [...section.querySelectorAll('.trp-cw-gpd')];
+  check('ten drop-downs, one per prompt', drops.length === 10, drops.length);
+  check('all shut to begin with', drops.every((d) => d.open === false));
+  check('each in the setup-step shape',
+    drops.every((d) => d.tagName === 'DETAILS' && d.classList.contains('trp-cw-step')));
+
+  const titles = drops.map((d) => d.querySelector('.trp-cw-step-title').textContent);
+  check('titled in Ella\'s words, with no letters or numbers',
+    JSON.stringify(titles) === JSON.stringify([
+      'ICP agent: know exactly who you sell to',
+      'Boardy: your AI superconnector (free)',
+      'Hot lead extractor',
+      'Follow-up in AI',
+      'Audacious outbound',
+      'Audacious give',
+      'Partnerships strategy',
+      'Virtual calls',
+      'Sales call analyser',
+      'Cashflow check',
+    ]), titles);
 
   // A has two prompts (with calls, and without), the rest one each.
   const boxes = [...section.querySelectorAll('.trp-cw-pb')];
-  check('eleven prompt boxes: A has two', boxes.length === 11, boxes.length);
+  check('eleven prompt boxes: the ICP one keeps both', boxes.length === 11, boxes.length);
+  check('the ICP drop-down holds both of them',
+    drops[0].querySelectorAll('.trp-cw-pb').length === 2 &&
+    [...drops[0].querySelectorAll('.trp-cw-pb-label')].map((n) => n.textContent).join('|') ===
+      'With calls|No calls yet',
+    [...drops[0].querySelectorAll('.trp-cw-pb-label')].map((n) => n.textContent));
   check('every one has a Copy button',
     boxes.every((b) => b.querySelector('[data-copy-target]')));
   check('and each button points at its own prompt',
     boxes.every((b) => b.querySelector('[data-copy-target]').getAttribute('data-copy-target') ===
       b.querySelector('pre').id));
 
-  // The prompt text itself, verbatim, with no leading whitespace: Copy sends
-  // textContent straight to the clipboard.
   const first = boxes[0].querySelector('pre').textContent;
   check('the first prompt is the ICP one, word for word',
     first.startsWith('Build my ICP from my sales call notes in Wispr Flow.') &&
     first.endsWith("then tell me the 3 points you're least sure about."), first.slice(0, 60));
   check('no prompt is indented', boxes.every((b) => !/^\s/.test(b.querySelector('pre').textContent)));
 
-  // Boardy's is the one link in here, and it stays a link.
-  const boardy = [...section.querySelectorAll('a[href]')];
-  check('Boardy\'s sign-up stays a hyperlink, and it is the only link',
-    boardy.length === 1 && boardy[0].getAttribute('href') === 'https://boardy.ai/links/zTblS',
-    boardy.map((a) => a.getAttribute('href')));
-  check('shown as words, not as a bare address',
-    boardy[0].textContent === 'boardy.ai/links/zTblS', boardy[0].textContent);
+  /* The one link in here is a button, not a line of address text. */
+  const links = [...section.querySelectorAll('a[href]')];
+  check('Boardy is the only link, and it is a button',
+    links.length === 1 && links[0].classList.contains('trp-cw-btn'),
+    links.map((a) => [a.getAttribute('href'), a.className]));
+  check('it says what it does',
+    links[0].textContent === 'Sign up to Boardy', links[0].textContent);
+  check('goes where Ella sent it, in a new tab',
+    links[0].getAttribute('href') === 'https://boardy.ai/links/zTblS' &&
+    links[0].getAttribute('target') === '_blank' &&
+    /noopener/.test(links[0].getAttribute('rel')),
+    [links[0].getAttribute('href'), links[0].getAttribute('rel')]);
+  check('and no bare address is printed anywhere in the section',
+    !/boardy\.ai\/links/.test(section.textContent), section.textContent.slice(0, 80));
 
-  // Copy really copies.
+  // Copy really copies, from inside a shut drop-down.
   let copied = null;
   p.w.navigator.clipboard = { writeText: (t) => { copied = t; return Promise.resolve(); } };
   const btn = boxes[2].querySelector('[data-copy-target]');
   btn.dispatchEvent(new p.w.MouseEvent('click', { bubbles: true }));
   check('clicking Copy puts that prompt on the clipboard',
     copied === boxes[2].querySelector('pre').textContent, copied && copied.slice(0, 40));
-  // The button is relabelled when the clipboard write resolves, which is a
-  // microtask later.
   await new Promise((r) => setTimeout(r, 0));
   check('and the button says so', btn.textContent === 'Copied', btn.textContent);
   p.w.close();

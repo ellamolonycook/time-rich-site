@@ -82,10 +82,12 @@
     }
   ];
 
+  /* Ella's three rules, in her words. The lead of each one is bold: they
+     are an instruction, and the sentence after it is the reason. */
   var RULES = [
-    'Start with one task you already do every week, like a morning brief or email drafts. Count how much you have to correct.',
-    'Keep approval on for anything that sends a message, spends money or books something.',
-    'Choose by where your context lives. Your agent is only as good as what it already knows about you.'
+    ['Connect your tools first.', 'Give your agent your email, calendar and LinkedIn, so it works from what you already know, not a blank page.'],
+    ['Delegate a growth task first.', 'Start with one task that brings in money every week, like follow-ups or a morning lead brief, and count how much you have to correct.'],
+    ['Keep approval on.', 'Anything that sends a message, spends money or books something waits for your yes.']
   ];
 
   function el(tag, cls, text) {
@@ -179,7 +181,10 @@
       var n = el('span', 'trp-step', i < 9 ? '0' + (i + 1) : String(i + 1));
       n.setAttribute('aria-hidden', 'true');
       li.appendChild(n);
-      li.appendChild(el('p', 'trp-step-body', text));
+      var body = el('p', 'trp-step-body');
+      body.appendChild(el('b', '', text[0]));
+      body.appendChild(document.createTextNode(' ' + text[1]));
+      li.appendChild(body);
       ol.appendChild(li);
     });
     frag.appendChild(ol);

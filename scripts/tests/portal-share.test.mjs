@@ -30,7 +30,9 @@ const PAGES = {
   'club/signin.html':     ['Sign in | Time Rich Club',       'https://timerich.ai/club/signin'],
   'club/curriculum.html': ['Curriculum | Time Rich Club',    'https://timerich.ai/club/curriculum'],
   'club/resources.html':  ['Resources | Time Rich Club',     'https://timerich.ai/club/resources'],
-  'club/sessions.html':   ['Live Sessions | Time Rich Club', 'https://timerich.ai/club/sessions'],
+  // Live Sessions is gone: both of these are redirects to the Curriculum
+  // now, and they share as the page they land on.
+  'club/sessions.html':   ['Curriculum | Time Rich Club',    'https://timerich.ai/club/curriculum'],
   'club/prompts.html':    ['Prompts | Time Rich Club',       'https://timerich.ai/club/prompts'],
   'club/members.html':    ['Members | Time Rich Club',       'https://timerich.ai/club/members'],
   'club/dashboard.html':  ['Dashboard | Time Rich Club',     'https://timerich.ai/club/dashboard'],
@@ -41,7 +43,7 @@ const PAGES = {
   'portal/club.html':       ['Time Rich Club',                 'https://timerich.ai/club'],
   'portal/curriculum.html': ['Curriculum | Time Rich Club',    'https://timerich.ai/club/curriculum'],
   'portal/resources.html':  ['Resources | Time Rich Club',     'https://timerich.ai/club/resources'],
-  'portal/sessions.html':   ['Live Sessions | Time Rich Club', 'https://timerich.ai/club/sessions'],
+  'portal/sessions.html':   ['Curriculum | Time Rich Club',    'https://timerich.ai/club/curriculum'],
   'portal/prompts.html':    ['Prompts | Time Rich Club',       'https://timerich.ai/club/prompts'],
   'portal/members.html':    ['Members | Time Rich Club',       'https://timerich.ai/club/members'],
   'portal/dashboard.html':  ['Dashboard | Time Rich Club',     'https://timerich.ai/club/dashboard'],

@@ -59,6 +59,10 @@ Don't invent tasks, hours or offers. If something is missing, ask me before you 
 
 My last week:`;
 
+const BEFORE_HUB = `In Claude, open Projects, press New project and name it Business Hub. Paste this into the instructions, then add your COMPASS to the project's Files:
+
+"This is my Business Hub. Read my Business COMPASS in this project's files before any task. If something is missing, ask me before you guess."`;
+
 const BEFORE_WISPR = `Open a new chat in your Business Hub, paste this, then hold your Wispr key and read your Q4 and Q1 goals from your paper:
 
 Here is my North Star: (read out your Q4 and Q1 goals).
@@ -91,8 +95,14 @@ const seed = async () => {
        (1, 'Write your North Star on paper', $2, 20),
        (1, 'Wispr your North Star into your Business Hub', $3, 30),
        (1, 'Run your Time Rich Audit', $4, 40),
-       (1, 'Monday 26 October: Open Business Surgery', 'Untouched by this migration.', 10)`,
-    [BEFORE_INTRO, BEFORE_PAPER, BEFORE_WISPR, BEFORE_AUDIT]);
+       (1, 'Monday 26 October: Open Business Surgery', 'Untouched by this migration.', 10),
+       (0, 'Create your Business Hub', $5, 430)`,
+    [BEFORE_INTRO, BEFORE_PAPER, BEFORE_WISPR, BEFORE_AUDIT, BEFORE_HUB]);
+  // A row on the old voucher, so the sweep in step 6 has something to fix.
+  await db.query(
+    `insert into public.portal_items (week_id, kind, title, body, url, sort) values
+       (0, 'link', 'Claim 3 months of LaunchLemonade', 'An older row.',
+        'https://studio.launchlemonade.app/signup?voucher=ACCELERATOR', 520)`);
 };
 
 const bodyOf = async (title) =>
@@ -108,9 +118,12 @@ console.log('\nThe migration runs');
   check('without an error', error === null, error && String(error.message || error));
 }
 
-console.log('\n1. The #introductions row carries the format, in a copy box');
+console.log('\n1. The #introductions row is renamed, and carries the format');
 {
-  const row = await bodyOf('Say hello in #introductions');
+  check('it was seeded under the old name',
+    (await bodyOf('Say hello in #introductions')) === undefined);
+  const row = await bodyOf('Introduce yourself in #introductions');
+  check('and answers to the new one', Boolean(row));
   const body = row.body;
 
   check('it opens with the new line',
@@ -185,6 +198,91 @@ console.log('\n3. The Wispr prompt reads back the four answers');
     body.includes('Play each one back to me in one line.'));
 }
 
+console.log('\n7. The Business Hub row carries the connectors drop-down');
+{
+  const row = await bodyOf('Create your Business Hub');
+  check('the row is still there', Boolean(row));
+
+  const meta = (await db.query(
+    "select title, kind, sort from public.portal_items where title = 'Create your Business Hub'")).rows;
+  check('with its title, kind and sort untouched',
+    meta.length === 1 && meta[0].kind === 'text' && meta[0].sort === 430, meta);
+
+  const body = row.body;
+  check('the instructions it always had are still first',
+    body.startsWith('In Claude, open Projects, press New project and name it Business Hub.'),
+    body.slice(0, 60));
+  check('with the project instructions, in quotes',
+    body.includes('"This is my Business Hub. Read my Business COMPASS in this project\'s files before any task. If something is missing, ask me before you guess."'));
+  check('then the line about where prompts run',
+    body.includes('Every prompt in the accelerator runs in a chat inside your Business Hub.'));
+
+  /* The drop-down. A "+ " line opens one in bodyBlocks(), and it only does
+     so when the marker starts its own line, so that is what is checked
+     rather than the words alone. */
+  check('the connectors are a "+ " drop-down',
+    body.includes('\n+ How to add your connectors\n'), body);
+  check('named as Ella named it',
+    /^\+ How to add your connectors$/m.test(body));
+  for (const line of [
+    '1. In Claude, open Settings, then Connectors.',
+    '2. Press Browse connectors and add Gmail, Google Calendar and Google Drive, or Notion if that\'s where your docs live. Press Connect, sign in and allow access.',
+    '3. Wispr Flow: in the Wispr Flow app, open Settings, MCP, then Add to Claude.',
+    '4. In a chat inside your Business Hub, press the + button in the message box and check your connectors are switched on.',
+    '5. Test it: ask "What\'s on my calendar this week?"',
+  ]) {
+    check('it carries: ' + line.slice(0, 30) + '...', body.includes(line), body);
+  }
+  check('and ends on the line about approval',
+    body.trim().endsWith('Nothing sends, posts or deletes without your yes.'), body.slice(-60));
+
+  // Everything after the marker belongs to the drop-down, and the five
+  // steps are inside it rather than above it.
+  const inside = body.split('\n+ How to add your connectors\n')[1];
+  check('all five steps are inside the drop-down',
+    inside.includes('1. In Claude, open Settings') && inside.includes('5. Test it:'), inside.slice(0, 40));
+  check('and no carriage returns in it', !body.includes('\r'));
+}
+
+console.log('\n5. Step 6: before Wednesday\'s live build');
+{
+  const row = await bodyOf('Sign up to LaunchLemonade (3 months free)');
+  check('the row is there', Boolean(row));
+  const got = (await db.query(
+    "select kind, url, sort, published from public.portal_items where title = 'Sign up to LaunchLemonade (3 months free)'")).rows;
+  check('one of it, not two', got.length === 1, got.length);
+  check('a link, in step 6, published',
+    got[0].kind === 'link' && got[0].sort === 610 && got[0].published === true, got[0]);
+  check('pointing at the TIMERICHLL voucher',
+    got[0].url === 'https://studio.launchlemonade.app/signup?voucher=TIMERICHLL', got[0].url);
+
+  const body = row.body;
+  check('it opens on the session it is for',
+    body.startsWith("Before Wednesday's live build session with Multi LLM & Setting Up Your Harness:"),
+    body.slice(0, 60));
+  for (const line of [
+    '1. Sign up to LaunchLemonade (3 months free) using the button below.',
+    '2. Log in and check that you can access your account.',
+    "That's all you need to do before the session.",
+    'If you already have an account, just check that you can log in.',
+    'Any issues? Email Wilfred Soriaga at wilfredsoriaga@launchlemonade.app or DM in Slack.',
+  ]) {
+    check('it carries: ' + line.slice(0, 30) + '...', body.includes(line), body);
+  }
+  check('and no carriage returns in it', !body.includes('\r'));
+}
+
+console.log('\n6. The LaunchLemonade voucher, everywhere');
+{
+  const rows = (await db.query(
+    "select title, url from public.portal_items where url like '%launchlemonade.app%'")).rows;
+  check('every LaunchLemonade link is the TIMERICHLL one',
+    rows.length > 0 && rows.every((r) => r.url === 'https://studio.launchlemonade.app/signup?voucher=TIMERICHLL'),
+    rows);
+  check('and the old voucher is gone',
+    !rows.some((r) => /ACCELERATOR/.test(r.url)), rows.map((r) => r.url));
+}
+
 console.log('\n4. The audit prompt is in a copy box');
 {
   const body = (await bodyOf('Run your Time Rich Audit')).body;
@@ -225,9 +323,15 @@ console.log('\nNothing else moved, and no tick was lost');
 
   // Every row keeps its id, which is what a member's tick points at.
   const idsAfter = (await db.query('select id, title from public.portal_items order by id')).rows;
+  // Every row that was there keeps its id, which is what a member's tick
+  // points at. The title of one of them changed, so ids are compared alone.
   check('every row keeps its id',
-    JSON.stringify(idsAfter) === JSON.stringify(idsBefore), { idsBefore, idsAfter });
-  check('and nothing was inserted or deleted', idsAfter.length === 5, idsAfter.length);
+    JSON.stringify(idsBefore.map((r) => r.id)) ===
+    JSON.stringify(idsAfter.slice(0, idsBefore.length).map((r) => r.id)),
+    { idsBefore, idsAfter });
+  // One row goes in: step 6. Nothing is deleted.
+  check('only the new step was added', idsAfter.length === idsBefore.length + 1,
+    [idsBefore.length, idsAfter.length]);
 }
 
 console.log('\nRunning it a second time changes nothing');

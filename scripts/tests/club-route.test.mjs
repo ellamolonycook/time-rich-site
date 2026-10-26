@@ -148,7 +148,9 @@ console.log('\nThe way in, and the way back');
     /window\.location\.replace\('\/club\/curriculum'\);/.test(signin),
     (signin.match(/window\.location\.replace\('[^']*'\)/g) || []));
 
-  for (const page of ['dashboard', 'curriculum', 'sessions', 'resources', 'prompts', 'members']) {
+  // sessions is not in the list: it is a redirect to the Curriculum now,
+  // with no menu on it.
+  for (const page of ['dashboard', 'curriculum', 'resources', 'prompts', 'members']) {
     check(page + ' points its Club link at /club',
       read('club/' + page + '.html').includes('<a href="/club"'));
   }
@@ -241,7 +243,7 @@ console.log('\nThe day/night toggle works on the Club home');
     after.document.querySelector('button.trp-day-night').getAttribute('aria-checked') === 'true');
 
   check('every portal page reads and writes the one key',
-    ['index', 'dashboard', 'curriculum', 'sessions', 'resources', 'prompts', 'members', 'signin']
+    ['index', 'dashboard', 'curriculum', 'resources', 'prompts', 'members', 'signin']
       .every((p) => read('club/' + p + '.html').includes("getItem('tr_portal_theme')")) &&
     /var KEY = 'tr_portal_theme';/.test(read('club/portal-theme.js')));
 }

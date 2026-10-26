@@ -27,7 +27,9 @@ const SRC = read('club/portal-tailwind-src.css');
 const BUILT = read('club/portal.css');
 const ACCESS = read('club/portal-access.js');
 
-const PAGES = ['dashboard', 'curriculum', 'sessions', 'resources', 'prompts', 'members'];
+// sessions is not here: Live Sessions is gone and club/sessions.html is a
+// redirect to the Curriculum, with no chrome of its own to keep in step.
+const PAGES = ['dashboard', 'curriculum', 'resources', 'prompts', 'members'];
 const ALL = PAGES.concat(['signin']);
 
 let pass = 0, fail = 0;
@@ -136,7 +138,6 @@ console.log('\nEvery area the payload fills holds its space open');
     ['dashboard', '[data-dash-countdown]', 'the countdown pill'],
     ['curriculum', '[data-curriculum-static]', 'the weeks'],
     ['curriculum', '[data-curriculum-bar]', 'the progress bar'],
-    ['sessions', '#trSessionList', 'the schedule'],
     ['resources', '[data-res-links]', 'the quick links'],
     ['prompts', '#prompt-cards', 'the prompt grid'],
     ['prompts', '#prompt-ai-picker', 'the AI picker'],
@@ -179,13 +180,13 @@ console.log('\nEvery area the payload fills holds its space open');
   // Every placeholder is out of the reading order: there is nothing in one
   // to read, and the live region beside it says what is happening.
   const skels = PAGES.flatMap((p) => [...docs[p].querySelectorAll('.trp-skel')].map((n) => [p, n]));
-  // Eleven across the five pages that wait on data. Members waits on
-  // nothing, so it has none; the count is asserted so that deleting a
-  // placeholder cannot quietly pass this. It was thirteen before the
-  // dashboard redesign, which folded the next-step card and the sessions
-  // tile into the bar under the greeting.
-  check('eleven placeholders, and every one hidden from assistive tech',
-    skels.length === 11 && skels.every(([, n]) => n.getAttribute('aria-hidden') === 'true'),
+  // Ten across the pages that wait on data. Members waits on nothing, so it
+  // has none; the count is asserted so that deleting a placeholder cannot
+  // quietly pass this. It was thirteen before the dashboard redesign, which
+  // folded the next-step card and the sessions tile into the bar under the
+  // greeting, and eleven before Live Sessions went.
+  check('ten placeholders, and every one hidden from assistive tech',
+    skels.length === 10 && skels.every(([, n]) => n.getAttribute('aria-hidden') === 'true'),
     { count: skels.length,
       unlabelled: skels.filter(([, n]) => n.getAttribute('aria-hidden') !== 'true').map(([p]) => p) });
 

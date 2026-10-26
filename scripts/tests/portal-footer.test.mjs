@@ -28,7 +28,6 @@ const PAGES = [
   'club/index.html',
   'club/dashboard.html',
   'club/curriculum.html',
-  'club/sessions.html',
   'club/resources.html',
   'club/prompts.html',
   'club/members.html',
@@ -249,7 +248,10 @@ console.log('\nthe support address, everywhere in club/');
     const d = new JSDOM(read(path)).window.document;
     const mailtos = [...d.querySelectorAll('a[href^="mailto:"]')]
       .map((a) => a.getAttribute('href').replace(/^mailto:/, '').split('?')[0])
-      .filter((m) => !(path === 'club/' + PARTNER_FILE && m === 'emc@timerich.ai'));
+      .filter((m) => !(path === 'club/' + PARTNER_FILE && m === 'emc@timerich.ai'))
+      // LaunchLemonade's own support address, on its card. It is not a Time
+      // Rich mailbox and is not support for the portal.
+      .filter((m) => m !== 'wilfredsoriaga@launchlemonade.app');
     check(path + ': every mailto goes to the new address',
       mailtos.length > 0 && mailtos.every((m) => m === 'emc@timerichclub.com'),
       mailtos);

@@ -142,7 +142,10 @@
        on the page takes. */
     .trp-cw-mini { display: flex; flex-direction: column; align-items: flex-start; gap: 14px; padding: 20px; border-radius: 18px; border: 1px solid var(--trp-line); background: rgb(var(--c-surface)); }
     .trp-cw-mini-title { font-family: var(--trp-display); font-weight: 600; font-size: 17px; letter-spacing: -.01em; line-height: 1.25; color: var(--trp-deep); margin: 0; }
-    .trp-cw-mini .trp-cw-btn { width: 100%; }
+    /* The button is as wide as its words. It used to run the full width of
+       the card, which read as the card itself being a button. */
+    .trp-cw-mini-note { margin: -6px 0 0; font-size: 14.5px; line-height: 1.5; color: var(--trp-soft); }
+    .trp-cw-wide-card:not([hidden]) { display: flex; }
     @media (max-width: 760px) { .trp-cw-intro { grid-template-columns: 1fr; } }
 
     /* the four weeks: a slim row of tabs with no dates, so the page stays
@@ -329,6 +332,17 @@
     .trp-cw-agents { padding: clamp(20px, 3vw, 32px); display: flex; flex-direction: column; gap: 14px; }
     .trp-cw-agents .trp-agents-wrap { margin-top: 8px; }
 
+    /* Audacious Action: one toggle, and a drop-down per prompt inside it.
+       Both reuse .trp-cw-step, which is the setup steps' own shape, minus
+       the number badge -- these are not steps in an order. */
+    .trp-cw-gpd > summary { min-height: 60px; padding: 12px 20px; }
+    .trp-cw-gpd .trp-cw-step-title { font-size: clamp(16px, 1.8vw, 19px); }
+    .trp-cw-gp-body { display: flex; flex-direction: column; align-items: flex-start; gap: 12px; padding: 4px 20px 20px; }
+    .trp-cw-gp-body > .trp-cw-pb, .trp-cw-gp-body > .trp-cw-callout { align-self: stretch; }
+    #growth-prompts > .trp-cw-gp-body { gap: 16px; }
+    #growth-prompts > .trp-cw-gp-body > .trp-cw-gpd { align-self: stretch; }
+    @media (max-width: 760px) { .trp-cw-gp-body { padding: 4px 16px 16px; } }
+
     /* a prompt in a box, with its Copy button */
     .trp-cw-gp { display: flex; flex-direction: column; gap: 12px; }
     .trp-cw-gp-h { font-family: var(--trp-display); font-weight: 600; font-size: clamp(17px, 1.9vw, 20px); letter-spacing: -.01em; line-height: 1.25; margin: 20px 0 0; color: var(--trp-deep); }
@@ -352,7 +366,10 @@
     .trp-cw-qa-item[open] > summary .trp-cw-chev { transform: rotate(180deg); }
     .trp-cw-qa-a { margin: 0; padding: 0 16px 16px; font-size: 15.5px; line-height: 1.65; color: var(--trp-soft); max-width: 72ch; }
 
-    /* Resources, at the foot of the page rather than in the menu */
+    /* The two link cards under the page header: two columns on a laptop,
+       one on a phone. The cards themselves are .trp-cw-resources below and
+       are unchanged -- this only decides how the pair sits. */
+    /* The two link cards off this page */
     .trp-cw-resources { display: flex; align-items: center; justify-content: space-between; gap: 16px; padding: 20px 24px; border-radius: 20px; border: 1px solid var(--trp-line); background: rgb(var(--c-surface)); color: var(--trp-deep); text-decoration: none; transition: box-shadow .18s ease; }
     .trp-cw-resources:hover { box-shadow: 0 18px 40px -28px rgba(26, 24, 22, .45); }
     .trp-cw-resources:focus-visible { outline: 2px solid var(--trp-green); outline-offset: 3px; }
@@ -562,6 +579,31 @@
         </div>
       </header>
 
+
+      <!-- Resources, at the top and again at the foot: it is the page a
+           member leaves this one for most, and the foot of the Curriculum is
+           four weeks of panels away.
+
+           No line under the title. The one that was there described what is
+           on the Resources page, and it was not true. -->
+      <a class="trp-cw-resources" href="resources">
+        <span class="trp-cw-resources-copy">
+          <span class="trp-cw-resources-title">Resources</span>
+        </span>
+        <svg class="trp-cw-chev" style="transform: rotate(-90deg)" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6"></path></svg>
+      </a>
+
+      <!-- The WhatsApp group, above the four weeks: announcements and the
+           session links land there, so it is the thing a member needs before
+           they need any single week. Held here and moved into place by the
+           renderer, the same way the Week 1 block is, so it sits inside the
+           drawn page rather than above it. -->
+      <div id="cw-whatsapp" class="trp-cw-mini trp-cw-wide-card" hidden>
+        <p class="trp-cw-mini-title">Join the Superhuman WhatsApp group</p>
+        <p class="trp-cw-mini-note">Announcements and session links.</p>
+        <a class="trp-cw-btn is-primary is-sm" href="https://chat.whatsapp.com/E5GU1dvuHhFDI77yO88OIw?mode=gi_t" target="_blank" rel="noopener">Join on WhatsApp</a>
+      </div>
+
       <div data-curriculum-live hidden></div>
 
       <!-- The placeholder the renderer replaces. It is built from the real
@@ -716,6 +758,16 @@
            wired by the script at the foot of the page. -->
       <div id="cw-week1-extra" class="trp-cw-w1" hidden>
 
+        <!-- The Time Rich Audit, in plain sight. It used to be folded into
+             the lesson row of the same name, where Ella could not find it.
+             The table below is moved in here by the renderer, and so is the
+             prompt from that row, so there is still one audit and one
+             prompt, written once in Supabase. -->
+        <section class="trp-cw-w1-sec" id="time-rich-audit" aria-labelledby="cw-audit-h">
+          <h3 class="trp-cw-w1-h" id="cw-audit-h">Run your Time Rich Audit</h3>
+          <div data-audit-prompt></div>
+          <div data-audit-table></div>
+        </section>
 
         <!-- The agent comparison, built by portal-agents.js. The Resources
              page shows the same block from the same file, so the two cannot
@@ -724,56 +776,90 @@
           <div class="glass-card is-static trp-cw-agents" data-agents-block></div>
         </div>
 
-        <section class="trp-cw-w1-sec" id="growth-prompts" aria-labelledby="cw-growth-h">
-          <h3 class="trp-cw-w1-h" id="cw-growth-h">Audacious Action: 10 growth prompts</h3>
-          <p class="trp-cw-w1-lede">Your first agent goes where the money is. Your moat is your expertise, trust, creativity and distribution, so growth comes first.</p>
+        <!-- AUDACIOUS ACTION ===============================================
+             One toggle, shut to begin with. Not every member is ready for
+             this in week 1, and ten open prompts under the setup steps made
+             the page look like homework nobody asked for.
 
-          <div class="trp-cw-callout">
-            <span class="trp-cw-callout-icon" aria-hidden="true">&#127919;</span>
-            <p><b>The challenge:</b> pick ONE prompt below, run it in a chat inside your Business Hub before Friday, and post your audacious action in <b class="trp-cw-channel">#audacious-wins</b> in the Time Rich Club Slack.</p>
-          </div>
+             Inside, each prompt is a drop-down of its own, the same shape as
+             the setup steps above. The titles are Ella's, without the
+             letters they carried on her Notion page: a member reads a list
+             of things to do, not an index. -->
+        <details class="trp-cw-step trp-cw-w1-sec" id="growth-prompts">
+          <summary data-cw-focus="growth-prompts">
+            <span class="trp-cw-step-text">
+              <span class="trp-cw-step-kicker">Audacious Action</span>
+              <span class="trp-cw-step-title">10 growth prompts</span>
+            </span>
+            <svg class="trp-cw-chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6"></path></svg>
+          </summary>
 
-          <p class="trp-cw-w1-lede">Speak your answers with Wispr Flow. Every prompt reads your Business COMPASS first, and none of them sends, posts or deletes anything without your yes.</p>
+          <div class="trp-cw-gp-body">
+            <p class="trp-cw-w1-lede">Your first agent goes where the money is. Your moat is your expertise, trust, creativity and distribution, so growth comes first.</p>
 
-        <div class="trp-cw-gp">
-          <h4 class="trp-cw-gp-h">A. ICP agent: know exactly who you sell to</h4>
-          <p class="trp-cw-gp-lead">Recorded 3 to 5 sales calls with Wispr Flow&#x27;s notetaker? Use the first prompt. No calls yet? Use the second.</p>
-        <div class="trp-cw-pb">
-          <div class="trp-cw-pb-head">
-            <span class="trp-cw-pb-label">With calls</span>
-            <button type="button" class="trp-cw-copy" data-copy-target="cw-gp-a-1">Copy</button>
-          </div>
-          <pre id="cw-gp-a-1" class="trp-cw-pb-text">Build my ICP from my sales call notes in Wispr Flow. Read my Business COMPASS first. Give me who my ideal client is, the problem they feel, what makes them buy, their budget, their top objections and the exact phrases they use, quoting the calls. Save it as a page called &quot;My ICP&quot; in my Notion (or here in the chat if Notion isn&#x27;t connected), then tell me the 3 points you&#x27;re least sure about.</pre>
-        </div>
-        <div class="trp-cw-pb">
-          <div class="trp-cw-pb-head">
-            <span class="trp-cw-pb-label">No calls yet</span>
-            <button type="button" class="trp-cw-copy" data-copy-target="cw-gp-a-2">Copy</button>
-          </div>
-          <pre id="cw-gp-a-2" class="trp-cw-pb-text">Interview me to build my ICP. Read my Business COMPASS first and don&#x27;t ask what it already answers. Ask one question at a time, with an example answer so I can reply fast by voice. Cover: my best 3 clients so far and why, the problem they had before me, what made them buy, what they paid, their objections, and who I always say no to. Stop after 8 questions. Then write &quot;My ICP&quot; as a page in my Notion (or here in the chat if Notion isn&#x27;t connected) and tell me the 3 points you&#x27;re least sure about.</pre>
-        </div>
-        </div>
+            <div class="trp-cw-callout">
+              <span class="trp-cw-callout-icon" aria-hidden="true">&#127919;</span>
+              <p><b>The challenge:</b> pick ONE prompt below, run it in a chat inside your Business Hub before Friday, and post your audacious action in <b class="trp-cw-channel">#audacious-wins</b> in the Time Rich Club Slack.</p>
+            </div>
 
-        <div class="trp-cw-gp">
-          <h4 class="trp-cw-gp-h">B. Boardy: your AI superconnector (free)</h4>
-          <p class="trp-cw-gp-lead">Boardy calls or WhatsApps you, learns who you want to meet and makes warm intros. Sign up: <a class="trp-cw-slink" href="https://boardy.ai/links/zTblS" target="_blank" rel="noopener sponsored">boardy.ai/links/zTblS</a>. Use this to prep what you tell it:</p>
-        <div class="trp-cw-pb">
-          <div class="trp-cw-pb-head">
-            <span class="trp-cw-pb-label">Prep what you tell it</span>
-            <button type="button" class="trp-cw-copy" data-copy-target="cw-gp-b-1">Copy</button>
-          </div>
-          <pre id="cw-gp-b-1" class="trp-cw-pb-text">Read my Business COMPASS and My ICP. Write me a 60-second script to say to Boardy, my AI superconnector: who I am in one line, what I&#x27;m building, the 3 types of people I most want to meet this month (clients, partners, investors or experts) and why, and one thing I can offer the people it introduces me to. Plain spoken words, no jargon.</pre>
-        </div>
-        </div>
+            <p class="trp-cw-w1-lede">Speak your answers with Wispr Flow. Every prompt reads your Business COMPASS first, and none of them sends, posts or deletes anything without your yes.</p>
 
-        <div class="trp-cw-gp">
-          <h4 class="trp-cw-gp-h">C. Hot lead extractor: your warmest people, in one list</h4>
-        <div class="trp-cw-pb">
-          <div class="trp-cw-pb-head">
-            <span class="trp-cw-pb-label">Hot + Warm Contacts</span>
-            <button type="button" class="trp-cw-copy" data-copy-target="cw-gp-c-1">Copy</button>
-          </div>
-          <pre id="cw-gp-c-1" class="trp-cw-pb-text">Build my Hot + Warm Contacts list. Read my Business COMPASS and My ICP first.
+
+            <details class="trp-cw-step trp-cw-gpd">
+              <summary data-cw-focus="gp-a">
+                <span class="trp-cw-step-text"><span class="trp-cw-step-title">ICP agent: know exactly who you sell to</span></span>
+                <svg class="trp-cw-chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6"></path></svg>
+              </summary>
+              <div class="trp-cw-gp-body">
+                <p class="trp-cw-gp-lead">Recorded 3 to 5 sales calls with Wispr Flow&#x27;s notetaker? Use the first prompt. No calls yet? Use the second.</p>
+                <div class="trp-cw-pb">
+                  <div class="trp-cw-pb-head">
+                    <span class="trp-cw-pb-label">With calls</span>
+                    <button type="button" class="trp-cw-copy" data-copy-target="cw-gp-a-1">Copy</button>
+                  </div>
+                  <pre id="cw-gp-a-1" class="trp-cw-pb-text">Build my ICP from my sales call notes in Wispr Flow. Read my Business COMPASS first. Give me who my ideal client is, the problem they feel, what makes them buy, their budget, their top objections and the exact phrases they use, quoting the calls. Save it as a page called &quot;My ICP&quot; in my Notion (or here in the chat if Notion isn&#x27;t connected), then tell me the 3 points you&#x27;re least sure about.</pre>
+                </div>
+                <div class="trp-cw-pb">
+                  <div class="trp-cw-pb-head">
+                    <span class="trp-cw-pb-label">No calls yet</span>
+                    <button type="button" class="trp-cw-copy" data-copy-target="cw-gp-a-2">Copy</button>
+                  </div>
+                  <pre id="cw-gp-a-2" class="trp-cw-pb-text">Interview me to build my ICP. Read my Business COMPASS first and don&#x27;t ask what it already answers. Ask one question at a time, with an example answer so I can reply fast by voice. Cover: my best 3 clients so far and why, the problem they had before me, what made them buy, what they paid, their objections, and who I always say no to. Stop after 8 questions. Then write &quot;My ICP&quot; as a page in my Notion (or here in the chat if Notion isn&#x27;t connected) and tell me the 3 points you&#x27;re least sure about.</pre>
+                </div>
+              </div>
+            </details>
+
+            <details class="trp-cw-step trp-cw-gpd">
+              <summary data-cw-focus="gp-b">
+                <span class="trp-cw-step-text"><span class="trp-cw-step-title">Boardy: your AI superconnector (free)</span></span>
+                <svg class="trp-cw-chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6"></path></svg>
+              </summary>
+              <div class="trp-cw-gp-body">
+                <p class="trp-cw-gp-lead">Boardy calls or WhatsApps you, learns who you want to meet and makes warm intros.</p>
+                <a class="trp-cw-btn is-primary is-sm" href="https://boardy.ai/links/zTblS" target="_blank" rel="noopener sponsored">Sign up to Boardy</a>
+                <p class="trp-cw-gp-lead">Use this to prep what you tell it:</p>
+                <div class="trp-cw-pb">
+                  <div class="trp-cw-pb-head">
+                    <span class="trp-cw-pb-label">Prep what you tell it</span>
+                    <button type="button" class="trp-cw-copy" data-copy-target="cw-gp-b-1">Copy</button>
+                  </div>
+                  <pre id="cw-gp-b-1" class="trp-cw-pb-text">Read my Business COMPASS and My ICP. Write me a 60-second script to say to Boardy, my AI superconnector: who I am in one line, what I&#x27;m building, the 3 types of people I most want to meet this month (clients, partners, investors or experts) and why, and one thing I can offer the people it introduces me to. Plain spoken words, no jargon.</pre>
+                </div>
+              </div>
+            </details>
+
+            <details class="trp-cw-step trp-cw-gpd">
+              <summary data-cw-focus="gp-c">
+                <span class="trp-cw-step-text"><span class="trp-cw-step-title">Hot lead extractor</span></span>
+                <svg class="trp-cw-chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6"></path></svg>
+              </summary>
+              <div class="trp-cw-gp-body">
+                <div class="trp-cw-pb">
+                  <div class="trp-cw-pb-head">
+                    <span class="trp-cw-pb-label">Hot + Warm Contacts</span>
+                    <button type="button" class="trp-cw-copy" data-copy-target="cw-gp-c-1">Copy</button>
+                  </div>
+                  <pre id="cw-gp-c-1" class="trp-cw-pb-text">Build my Hot + Warm Contacts list. Read my Business COMPASS and My ICP first.
 1. Pull contacts from my CRM if it&#x27;s connected, my email and calendar from the last 90 days, and any CSV I upload (Luma guest lists, event sign-ups).
 2. Score each one:
 - Hot: replied, met me or showed buying intent in the last 30 days.
@@ -782,17 +868,22 @@ Leave out everyone else, plus suppliers, team and personal contacts.
 3. Put them in a table (a Notion database if Notion is connected) called &quot;Hot + Warm Contacts&quot; with these columns: Name, Company, Email, Temperature (Hot or Warm), Last touch, Source, Why hot or warm, Next step.
 4. Show me the first 10 rows before you save anything.
 Finish with the 5 contacts I should reach out to this week, and why.</pre>
-        </div>
-        </div>
+                </div>
+              </div>
+            </details>
 
-        <div class="trp-cw-gp">
-          <h4 class="trp-cw-gp-h">D. Follow-up in AI: never let a lead go quiet</h4>
-        <div class="trp-cw-pb">
-          <div class="trp-cw-pb-head">
-            <span class="trp-cw-pb-label">Follow-up drafts</span>
-            <button type="button" class="trp-cw-copy" data-copy-target="cw-gp-d-1">Copy</button>
-          </div>
-          <pre id="cw-gp-d-1" class="trp-cw-pb-text">Scan my email from the last 7 days. Read my Business COMPASS and my Hot + Warm Contacts list first.
+            <details class="trp-cw-step trp-cw-gpd">
+              <summary data-cw-focus="gp-d">
+                <span class="trp-cw-step-text"><span class="trp-cw-step-title">Follow-up in AI</span></span>
+                <svg class="trp-cw-chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6"></path></svg>
+              </summary>
+              <div class="trp-cw-gp-body">
+                <div class="trp-cw-pb">
+                  <div class="trp-cw-pb-head">
+                    <span class="trp-cw-pb-label">Follow-up drafts</span>
+                    <button type="button" class="trp-cw-copy" data-copy-target="cw-gp-d-1">Copy</button>
+                  </div>
+                  <pre id="cw-gp-d-1" class="trp-cw-pb-text">Scan my email from the last 7 days. Read my Business COMPASS and my Hot + Warm Contacts list first.
 1. Find every thread that needs a follow-up:
 - someone asked me something and I haven&#x27;t replied
 - I sent something and they haven&#x27;t replied in 3 days
@@ -800,91 +891,123 @@ Finish with the 5 contacts I should reach out to this week, and why.</pre>
 Skip newsletters, receipts, notifications and anything already handled.
 2. Draft one follow-up per thread in my voice: short, warm, one clear ask. Save each as a Gmail draft in the same thread. Never send anything.
 3. List each draft for me: who, why it needs a follow-up, and the first line. Hot contacts first.</pre>
-        </div>
-        </div>
+                </div>
+              </div>
+            </details>
 
-        <div class="trp-cw-gp">
-          <h4 class="trp-cw-gp-h">E. Audacious outbound: a voice note or video, not another email</h4>
-        <div class="trp-cw-pb">
-          <div class="trp-cw-pb-head">
-            <span class="trp-cw-pb-label">Audacious outbound</span>
-            <button type="button" class="trp-cw-copy" data-copy-target="cw-gp-e-1">Copy</button>
-          </div>
-          <pre id="cw-gp-e-1" class="trp-cw-pb-text">Read my Business COMPASS, My ICP and my Hot + Warm Contacts. Pick the 5 people most worth an audacious personal message this week, and tell me why for each.
+            <details class="trp-cw-step trp-cw-gpd">
+              <summary data-cw-focus="gp-e">
+                <span class="trp-cw-step-text"><span class="trp-cw-step-title">Audacious outbound</span></span>
+                <svg class="trp-cw-chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6"></path></svg>
+              </summary>
+              <div class="trp-cw-gp-body">
+                <div class="trp-cw-pb">
+                  <div class="trp-cw-pb-head">
+                    <span class="trp-cw-pb-label">Audacious outbound</span>
+                    <button type="button" class="trp-cw-copy" data-copy-target="cw-gp-e-1">Copy</button>
+                  </div>
+                  <pre id="cw-gp-e-1" class="trp-cw-pb-text">Read my Business COMPASS, My ICP and my Hot + Warm Contacts. Pick the 5 people most worth an audacious personal message this week, and tell me why for each.
 For each one, write a 30-second LinkedIn voice note or video script: open with something specific to them (a post, a result, a mutual connection I can verify), say in one line why I&#x27;m reaching out, and end with one easy ask.
 Only use details you can show me a source for. No flattery, no &quot;quick question&quot;. I record and send them myself.</pre>
-        </div>
-        </div>
+                </div>
+              </div>
+            </details>
 
-        <div class="trp-cw-gp">
-          <h4 class="trp-cw-gp-h">F. Audacious give: give first</h4>
-        <div class="trp-cw-pb">
-          <div class="trp-cw-pb-head">
-            <span class="trp-cw-pb-label">Audacious give</span>
-            <button type="button" class="trp-cw-copy" data-copy-target="cw-gp-f-1">Copy</button>
-          </div>
-          <pre id="cw-gp-f-1" class="trp-cw-pb-text">Read my Business COMPASS and my Hot + Warm Contacts, and scan my email and calendar from the last 90 days. Find 5 clients, friends or peers who&#x27;ve helped me or whom I rate.
+            <details class="trp-cw-step trp-cw-gpd">
+              <summary data-cw-focus="gp-f">
+                <span class="trp-cw-step-text"><span class="trp-cw-step-title">Audacious give</span></span>
+                <svg class="trp-cw-chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6"></path></svg>
+              </summary>
+              <div class="trp-cw-gp-body">
+                <div class="trp-cw-pb">
+                  <div class="trp-cw-pb-head">
+                    <span class="trp-cw-pb-label">Audacious give</span>
+                    <button type="button" class="trp-cw-copy" data-copy-target="cw-gp-f-1">Copy</button>
+                  </div>
+                  <pre id="cw-gp-f-1" class="trp-cw-pb-text">Read my Business COMPASS and my Hot + Warm Contacts, and scan my email and calendar from the last 90 days. Find 5 clients, friends or peers who&#x27;ve helped me or whom I rate.
 For each, suggest one give: a LinkedIn recommendation, an introduction to someone in my network, or sharing their work.
 Then draft it: the recommendation text (under 80 words, specific, in my voice) or the double opt-in intro email. Add a 20-second voice note script to send with it.
 Never send anything. Never invent results or praise I can&#x27;t back up.</pre>
-        </div>
-        </div>
+                </div>
+              </div>
+            </details>
 
-        <div class="trp-cw-gp">
-          <h4 class="trp-cw-gp-h">G. Partnerships strategy: interview me</h4>
-        <div class="trp-cw-pb">
-          <div class="trp-cw-pb-head">
-            <span class="trp-cw-pb-label">Partnerships strategy</span>
-            <button type="button" class="trp-cw-copy" data-copy-target="cw-gp-g-1">Copy</button>
-          </div>
-          <pre id="cw-gp-g-1" class="trp-cw-pb-text">Interview me to build my partnerships strategy. Read my Business COMPASS and My ICP first and don&#x27;t ask what they already answer. Ask one question at a time, with an example answer so I can reply fast by voice. Cover: who already has my ideal clients&#x27; attention (communities, brands, newsletters, podcasts, events), what I can give a partner, what I want from a partnership, and my capacity. Stop after 8 questions.
+            <details class="trp-cw-step trp-cw-gpd">
+              <summary data-cw-focus="gp-g">
+                <span class="trp-cw-step-text"><span class="trp-cw-step-title">Partnerships strategy</span></span>
+                <svg class="trp-cw-chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6"></path></svg>
+              </summary>
+              <div class="trp-cw-gp-body">
+                <div class="trp-cw-pb">
+                  <div class="trp-cw-pb-head">
+                    <span class="trp-cw-pb-label">Partnerships strategy</span>
+                    <button type="button" class="trp-cw-copy" data-copy-target="cw-gp-g-1">Copy</button>
+                  </div>
+                  <pre id="cw-gp-g-1" class="trp-cw-pb-text">Interview me to build my partnerships strategy. Read my Business COMPASS and My ICP first and don&#x27;t ask what they already answer. Ask one question at a time, with an example answer so I can reply fast by voice. Cover: who already has my ideal clients&#x27; attention (communities, brands, newsletters, podcasts, events), what I can give a partner, what I want from a partnership, and my capacity. Stop after 8 questions.
 Then give me 10 partner targets whose audience matches My ICP. For each: who, why they fit, what I offer, what I ask, and the first message (draft only). Save it as a page called &quot;Partnerships&quot; in my Notion (or here in the chat if Notion isn&#x27;t connected). Only name organisations you can show me a source for.</pre>
-        </div>
-        </div>
+                </div>
+              </div>
+            </details>
 
-        <div class="trp-cw-gp">
-          <h4 class="trp-cw-gp-h">H. Virtual calls: get your name in the room</h4>
-          <p class="trp-cw-gp-lead">Your team (or you) attends other people&#x27;s online events, drops their LinkedIn and positions yours.</p>
-        <div class="trp-cw-pb">
-          <div class="trp-cw-pb-head">
-            <span class="trp-cw-pb-label">Virtual calls</span>
-            <button type="button" class="trp-cw-copy" data-copy-target="cw-gp-h-1">Copy</button>
-          </div>
-          <pre id="cw-gp-h-1" class="trp-cw-pb-text">Read my Business COMPASS and My ICP. Find 5 online events, webinars or live sessions in the next 30 days where my ideal clients will be. For each: the event, the date, the link, and why my ICP will be there.
+            <details class="trp-cw-step trp-cw-gpd">
+              <summary data-cw-focus="gp-h">
+                <span class="trp-cw-step-text"><span class="trp-cw-step-title">Virtual calls</span></span>
+                <svg class="trp-cw-chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6"></path></svg>
+              </summary>
+              <div class="trp-cw-gp-body">
+                <p class="trp-cw-gp-lead">Your team (or you) attends other people&#x27;s online events, drops their LinkedIn and positions yours.</p>
+                <div class="trp-cw-pb">
+                  <div class="trp-cw-pb-head">
+                    <span class="trp-cw-pb-label">Virtual calls</span>
+                    <button type="button" class="trp-cw-copy" data-copy-target="cw-gp-h-1">Copy</button>
+                  </div>
+                  <pre id="cw-gp-h-1" class="trp-cw-pb-text">Read my Business COMPASS and My ICP. Find 5 online events, webinars or live sessions in the next 30 days where my ideal clients will be. For each: the event, the date, the link, and why my ICP will be there.
 Then write a brief for the person attending for me: a 2-line intro to drop in the chat (with my LinkedIn), one smart question to ask out loud that shows my expertise, and who to connect with afterwards.
 Only list events you found a real link for. Don&#x27;t invent dates.</pre>
-        </div>
-        </div>
+                </div>
+              </div>
+            </details>
 
-        <div class="trp-cw-gp">
-          <h4 class="trp-cw-gp-h">I. Sales call analyser</h4>
-        <div class="trp-cw-pb">
-          <div class="trp-cw-pb-head">
-            <span class="trp-cw-pb-label">Sales call analyser</span>
-            <button type="button" class="trp-cw-copy" data-copy-target="cw-gp-i-1">Copy</button>
-          </div>
-          <pre id="cw-gp-i-1" class="trp-cw-pb-text">Read my latest sales call notes in Wispr Flow. Read my Business COMPASS (sections 2 and 3) first.
+            <details class="trp-cw-step trp-cw-gpd">
+              <summary data-cw-focus="gp-i">
+                <span class="trp-cw-step-text"><span class="trp-cw-step-title">Sales call analyser</span></span>
+                <svg class="trp-cw-chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6"></path></svg>
+              </summary>
+              <div class="trp-cw-gp-body">
+                <div class="trp-cw-pb">
+                  <div class="trp-cw-pb-head">
+                    <span class="trp-cw-pb-label">Sales call analyser</span>
+                    <button type="button" class="trp-cw-copy" data-copy-target="cw-gp-i-1">Copy</button>
+                  </div>
+                  <pre id="cw-gp-i-1" class="trp-cw-pb-text">Read my latest sales call notes in Wispr Flow. Read my Business COMPASS (sections 2 and 3) first.
 Score the call 1 to 10 on: discovery (did I find their real problem and budget), listening (my talk time vs theirs), handling objections, and the next step agreed.
 Quote the moments that mattered, in their words. Then give me the 3 things to do differently on my next call, and draft the follow-up email with one clear next step. Never send it.</pre>
-        </div>
-        </div>
+                </div>
+              </div>
+            </details>
 
-        <div class="trp-cw-gp">
-          <h4 class="trp-cw-gp-h">J. Cashflow check</h4>
-        <div class="trp-cw-pb">
-          <div class="trp-cw-pb-head">
-            <span class="trp-cw-pb-label">Cashflow check</span>
-            <button type="button" class="trp-cw-copy" data-copy-target="cw-gp-j-1">Copy</button>
-          </div>
-          <pre id="cw-gp-j-1" class="trp-cw-pb-text">Check my cashflow from my email (and Stripe or my accounting tool if connected) for the last 90 days.
+            <details class="trp-cw-step trp-cw-gpd">
+              <summary data-cw-focus="gp-j">
+                <span class="trp-cw-step-text"><span class="trp-cw-step-title">Cashflow check</span></span>
+                <svg class="trp-cw-chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6"></path></svg>
+              </summary>
+              <div class="trp-cw-gp-body">
+                <div class="trp-cw-pb">
+                  <div class="trp-cw-pb-head">
+                    <span class="trp-cw-pb-label">Cashflow check</span>
+                    <button type="button" class="trp-cw-copy" data-copy-target="cw-gp-j-1">Copy</button>
+                  </div>
+                  <pre id="cw-gp-j-1" class="trp-cw-pb-text">Check my cashflow from my email (and Stripe or my accounting tool if connected) for the last 90 days.
 1. Money in: who paid, how much, when.
 2. Money owed to me: open or overdue invoices, oldest first.
 3. Money out: recurring tools and subscriptions, with the monthly total. Flag any I haven&#x27;t used in 30 days.
 4. My next 30 days: what&#x27;s due in and out.
 Only use numbers you found. If something is missing, list it instead of guessing. Draft polite reminders for overdue invoices as Gmail drafts. Never send.</pre>
-        </div>
-        </div>
-        </section>
+                </div>
+              </div>
+            </details>
+          </div>
+        </details>
 
         <section class="trp-cw-w1-sec" aria-labelledby="cw-nextsteps-h">
           <h3 class="trp-cw-w1-h" id="cw-nextsteps-h">Next steps</h3>
@@ -962,7 +1085,7 @@ Only use numbers you found. If something is missing, list it instead of guessing
         <div class="trp-cw-qa">
           <details class="trp-cw-qa-item">
             <summary><span>What is an AI operating system, and what can it actually do?</span><svg class="trp-cw-chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6"></path></svg></summary>
-            <p class="trp-cw-qa-a">An AI operating system is a set of documents and rules your AI reads before it does any work, plus the agents that use them. The documents cover who you are, what you sell, who you sell to, how you write, and your goals this quarter. Once that context lives in one place, every chat, project and agent starts from it instead of a blank page. What it can do today: draft emails and posts in your voice, research prospects, summarise calls, prepare briefs, flag what is stale, and fill in sheets or Notion. What it cannot do: make judgment calls you have not written down, or fix a business with no clear offer. Week 1 builds the first version of this for you.</p>
+            <p class="trp-cw-qa-a">It&#x27;s the set of documents, connections and agents that run one part of your business with you. In practice: your Business COMPASS (who you are, what you sell, who you sell to, how you sound, this quarter&#x27;s goal) lives in one Claude Project. Your tools (email, calendar, Notion or Drive, your CRM) are connected to it. And each agent has one job on a schedule: a morning brief at 7am, follow-up drafts every second day, a pipeline summary every Friday. Every chat starts from your context instead of a blank page, and nothing is sent without your yes. In Week 1 you build the first version: your COMPASS, your Business Hub project and one growth agent.</p>
           </details>
           <details class="trp-cw-qa-item">
             <summary><span>Where should the brain live when my information is spread across Notion, Drive, Gmail, a CRM and several AI tools?</span><svg class="trp-cw-chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6"></path></svg></summary>
@@ -1013,18 +1136,6 @@ Only use numbers you found. If something is missing, list it instead of guessing
       <a class="trp-cw-resources" href="resources">
         <span class="trp-cw-resources-copy">
           <span class="trp-cw-resources-title">Resources</span>
-          <span class="trp-cw-resources-note">Every prompt, skill and guide from the accelerator, in one place.</span>
-        </span>
-        <svg class="trp-cw-chev" style="transform: rotate(-90deg)" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6"></path></svg>
-      </a>
-
-      <!-- Live Sessions. The FAQ sends members here for recordings, and this
-           was the only page in the portal with no way in: not in the menu
-           and not linked from the course. -->
-      <a class="trp-cw-resources" href="sessions">
-        <span class="trp-cw-resources-copy">
-          <span class="trp-cw-resources-title">Live Sessions</span>
-          <span class="trp-cw-resources-note">Every call in the program, with its recording once it is up.</span>
         </span>
         <svg class="trp-cw-chev" style="transform: rotate(-90deg)" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6"></path></svg>
       </a>
@@ -1114,7 +1225,8 @@ Only use numbers you found. If something is missing, list it instead of guessing
         2: 'Set up your AI',
         3: 'Install Wispr Flow',
         4: 'Build your Business COMPASS',
-        5: 'Before Monday'
+        5: 'Finish your setup',
+        6: "Before Wednesday's live build"
       };
       var PIN_BELOW = 100;
       var BONUS_RE = /^bonus:\s*/i;
@@ -1136,6 +1248,40 @@ Only use numbers you found. If something is missing, list it instead of guessing
          twice or drawing it in the wrong place. */
       var auditTool = document.getElementById('cw-audit-tool');
       var AUDIT_ROW = /^run your time rich audit$/i;
+
+      /* The WhatsApp card, above the four week cards. Held and moved like
+         the blocks above, so it is drawn inside the page rather than
+         sitting above it while the payload is still on its way. */
+      var whatsapp = document.getElementById('cw-whatsapp');
+
+      /* The audit's own section: the prompt from the Supabase row, then the
+         table. Both slots are filled on every draw of Week 1, so a change
+         to the row in Supabase shows up here without a deploy. */
+      function fillAudit(item) {
+        if (!week1) return;
+        var promptSlot = week1.querySelector('[data-audit-prompt]');
+        var tableSlot = week1.querySelector('[data-audit-table]');
+
+        if (promptSlot) {
+          L.clear(promptSlot);
+          var body = L.str(item && item.body);
+          if (body) {
+            promptSlot.appendChild(bodyBlocks(body, 'audit-section'));
+            /* Until the migration that marks it up has run, the row is
+               plain text with no Copy button on it. The prompt is the whole
+               point of the section, so it gets one either way. */
+            if (!promptSlot.querySelector('.trp-cw-pb')) {
+              L.clear(promptSlot);
+              promptSlot.appendChild(copyBox('Your audit prompt', body, 'audit-section'));
+            }
+          }
+        }
+
+        if (tableSlot && auditTool) {
+          auditTool.hidden = false;
+          tableSlot.appendChild(auditTool);
+        }
+      }
 
       function addWeek1(box) {
         if (!week1) return;
@@ -1710,17 +1856,19 @@ Only use numbers you found. If something is missing, list it instead of guessing
         var detail = L.el('div', 'trp-cw-detail');
         detail.id = detailId;
         var body = L.str(item && item.body);
-        if (body) detail.appendChild(bodyBlocks(body, key));
+        /* The audit row is drawn in full in its own section further down,
+           table and all. Repeating its prompt here would give a member two
+           of everything, so the row sends them there instead. The row keeps
+           its tick. */
+        if (AUDIT_ROW.test(name.trim())) {
+          var go = L.el('a', 'trp-cw-btn is-primary is-sm', 'Go to the Time Rich Audit');
+          go.href = '#time-rich-audit';
+          detail.appendChild(go);
+        } else if (body) detail.appendChild(bodyBlocks(body, key));
         var open = L.linkTo(item && item.url, buttonLabel(item), 'trp-cw-btn is-primary is-sm');
         if (open) {
           open.setAttribute('aria-label', buttonLabel(item) + ': ' + name);
           detail.appendChild(open);
-        }
-        // The audit table goes under the prompt it belongs to, in the row's
-        // own detail, rather than in a second audit section of its own.
-        if (auditTool && AUDIT_ROW.test(name.trim())) {
-          auditTool.hidden = false;
-          detail.appendChild(auditTool);
         }
         detail.hidden = !isOpenRow;
         row.appendChild(detail);
@@ -1837,7 +1985,7 @@ Only use numbers you found. If something is missing, list it instead of guessing
 
         if (!open) {
           box.appendChild(L.el('p', 'trp-cw-empty', 'Lessons open ' + (starts || 'soon') + '.'));
-          if (n === 1) addWeek1(box);
+          if (n === 1) { fillAudit(null); addWeek1(box); }
           return box;
         }
 
@@ -1860,7 +2008,10 @@ Only use numbers you found. If something is missing, list it instead of guessing
         if (!total && !own.length && !steps.length && n !== 1) box.appendChild(L.el('p', 'trp-cw-empty', 'Nothing here yet.'));
 
         // Week 1's own audit, growth prompts and questions, last in the panel.
-        if (n === 1) addWeek1(box);
+        if (n === 1) {
+          fillAudit(own.filter(function (it) { return AUDIT_ROW.test(L.str(it && it.title).trim()); })[0]);
+          addWeek1(box);
+        }
 
         return box;
       }
@@ -1926,6 +2077,8 @@ Only use numbers you found. If something is missing, list it instead of guessing
         if (hello) live.appendChild(hello);
         var band = intro(parts);
         if (band) live.appendChild(band);
+
+        if (whatsapp) { whatsapp.hidden = false; live.appendChild(whatsapp); }
 
         var tabs = L.el('div', 'trp-cw-weeks');
         tabs.setAttribute('role', 'tablist');
