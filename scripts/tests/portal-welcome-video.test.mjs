@@ -348,7 +348,7 @@ console.log('\nA video that is a setup step is not counted or ticked either');
   check('the row is still drawn', p.steps().includes('Welcome Video'), p.steps());
   check('the step counts only the row that can be ticked',
     p.stepCounts().every((t) => t === '0 of 1 done'), p.stepCounts());
-  check('and so does the panel', p.panelCount() === '0 of 1 done', p.panelCount());
+  check('and the week has no done count under its summary (Ella, 26 Oct)', p.panelCount() === null, p.panelCount());
   check('the video row has no tick to press',
     p.tickFor('Welcome Video') !== null && p.tickFor('Welcome Video').tagName !== 'BUTTON',
     p.tickFor('Welcome Video') && p.tickFor('Welcome Video').tagName);

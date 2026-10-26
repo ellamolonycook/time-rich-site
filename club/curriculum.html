@@ -2291,23 +2291,7 @@ When you finish:
         copy.appendChild(L.el('span', 'trp-cw-session-title', shown));
         if (bonus) copy.appendChild(L.el('span', 'trp-cw-tag', 'Bonus'));
 
-        // The recording, once the call has run and its link is in; watching
-        // it marks the session. Until then the button is there but greyed,
-        // with Coming soon in the corner, so members know where to look.
-        var rec = L.isSessionPast(session, now) ? L.linkTo(session.recording_url, 'Watch recording', 'trp-cw-btn is-sm') : null;
-        if (rec) {
-          rec.setAttribute('aria-label', 'Watch recording of ' + name);
-          rec.addEventListener('click', function () {
-            L.markSession(session);
-          });
-          copy.appendChild(rec);
-        } else {
-          var soon = L.el('span', 'trp-cw-btn is-sm is-soon', 'Recording');
-          soon.setAttribute('aria-disabled', 'true');
-          soon.setAttribute('aria-label', 'Recording of ' + name + ': coming soon');
-          copy.appendChild(soon);
-          tile.appendChild(L.el('span', 'trp-cw-soon', 'Coming soon'));
-        }
+        // No recording button on the cards (Ella, 26 Oct).
         tile.appendChild(copy);
         return tile;
       }
@@ -2349,7 +2333,6 @@ When you finish:
           ? 'Finish these before Week 1 goes live' + (starts ? ' on ' + starts : '') + '.'
           : L.str(week.summary);
         if (outcome) copy.appendChild(L.el('p', 'trp-cw-outcome', outcome));
-        if (total) copy.appendChild(L.el('p', 'trp-cw-count', done + ' of ' + total + ' done'));
         head.appendChild(copy);
 
         // No Join button here. The Zoom link lives in the calendar invite,
