@@ -877,7 +877,7 @@ console.log('\nAudacious Action: one toggle, shut, with a drop-down per prompt')
      carried on Ella's Notion page. */
   const drops = [...section.querySelectorAll('.trp-cw-gpd')];
   check('ten drop-downs, one per prompt', drops.length === 10, drops.length);
-  check('all open to begin with, so the prompts are laid out', drops.every((d) => d.open === true));
+  check('all shut to begin with (Ella, 26 Oct)', drops.every((d) => d.open === false));
   check('each in the setup-step shape',
     drops.every((d) => d.tagName === 'DETAILS' && d.classList.contains('trp-cw-step')));
 
@@ -970,7 +970,7 @@ console.log('\nThe agent table and the growth prompts sit in their own lessons')
     growth && growth.querySelectorAll('.trp-cw-gpd').length === 10 &&
     growth.querySelector('details#growth-prompts') === null);
   check('and answers to its address', growth && growth.id === 'growth-prompts', growth && growth.id);
-  check('and it starts open', growth && growth.classList.contains('is-open'));
+  check('and it starts shut (Ella, 26 Oct)', growth && !growth.classList.contains('is-open'));
   check('the empty toggle is hidden in the Week 1 block',
     [...p.extra().querySelectorAll('details.trp-cw-w1-sec')].every((d) => d.hidden));
   check('one element answers to each address',
@@ -1010,8 +1010,8 @@ console.log('\nThe setup and the week are master drop-downs');
   const p = open();
   const masters = [...p.panel().querySelectorAll('details.trp-cw-master')];
   const titles = masters.map((d) => d.querySelector('.trp-cw-master-title').textContent);
-  check('the setup is one, first, and open while any of it is left',
-    titles[0] === 'Your setup' && masters[0].open === true, titles);
+  check('the setup is one, first, and shut until opened (Ella, 26 Oct)',
+    titles[0] === 'Your setup' && masters[0].open === false, titles);
   check('the lessons are in sections of the week, all shut while the setup is left',
     masters.slice(1).length > 0 && masters.slice(1).every((d) => d.open === false), titles);
   check('every lesson is in a section',
@@ -1024,9 +1024,8 @@ console.log('\nThe setup and the week are master drop-downs');
   const qm = [...q.panel().querySelectorAll('details.trp-cw-master')];
   const setup = qm.find((d) => d.querySelector('.trp-cw-master-title').textContent === 'Your setup');
   check('a finished setup is shut', setup && setup.open === false);
-  check('and the section holding the next lesson is open',
-    qm.filter((d) => d.open).length === 1 &&
-    qm.find((d) => d.open).querySelector('.trp-cw-lesson.is-open') !== null);
+  check('and every section is shut too (Ella, 26 Oct)',
+    qm.every((d) => d.open === false));
   q.w.close();
   p.w.close();
 }
@@ -1093,6 +1092,8 @@ console.log('\nOne drop-down open at a time');
   check('so one lesson is open',
     p.panel().querySelectorAll('.trp-cw-toggle[aria-expanded="true"]').length === 1);
 
+  // The lesson clicks redraw the panel a tick later: take the sections after that.
+  await new Promise((r) => setTimeout(r, 0));
   const masters = [...p.panel().querySelectorAll('details.trp-cw-master')];
   masters[1].open = true;
   await new Promise((r) => setTimeout(r, 0));

@@ -112,7 +112,7 @@ function open(prepItems, doneIds) {
   const doc = w.document;
   const live = doc.querySelector('[data-curriculum-live]');
   const hello = live && live.querySelector('.trp-cw-welcome');
-  const band = live && live.querySelector('.trp-cw-intro');
+  const band = live && live.querySelector('details.trp-cw-intro-drop');
   return {
     dom, w, doc, live, hello, band,
     // Every player and every outbound link on the whole page, so a stray
@@ -214,14 +214,11 @@ console.log('\nThe player');
   check('the player sits in the rounded 16:9 box',
     box.classList.contains('trp-video') && box.classList.contains('trp-cw-video'), box.className);
 
-  // The heading is the row's title, and nothing else is drawn with it.
-  const col = p.band.querySelector('.trp-cw-intro-vid');
-  check('the heading above it is the row title',
-    col.querySelector('.trp-cw-intro-title').textContent === 'Welcome Video',
-    col.querySelector('.trp-cw-intro-title').textContent);
-  check('the heading and the player are all there is',
-    col.children.length === 2 && col.children[0].matches('.trp-cw-intro-title') && col.children[1].matches('.trp-cw-video'),
-    [...col.children].map((n) => n.className));
+  // A drop-down, shut to begin with, headed by the dancer and the row title (Ella, 26 Oct).
+  check('the video sits in a drop-down that starts shut', p.band.tagName === 'DETAILS' && p.band.open === false);
+  check('its heading is the dancer and the row title',
+    p.band.querySelector('summary .trp-cw-prizes-h').textContent === '\uD83D\uDC83 Welcome Video',
+    p.band.querySelector('summary .trp-cw-prizes-h').textContent);
   check('the duration is not drawn under it',
     !p.band.textContent.includes('3 minutes'), p.band.textContent);
 
@@ -243,9 +240,8 @@ console.log('\nThe calendar is a small button beside the welcome title');
     !p.live.textContent.includes('All 9 live sessions'),
     (p.live.textContent.match(/.{0,30}All 9 live sessions.{0,20}/) || [])[0]);
   check('and the band has no card left in it', p.cards().length === 0, p.cards().length);
-  check('so the video takes the band to itself',
-    p.band.children.length === 1 && p.band.children[0].matches('.trp-cw-intro-vid') &&
-    p.band.classList.contains('is-solo'), [...p.band.children].map((n) => n.className));
+  check('so the drop-down holds only the video',
+    p.band.querySelectorAll('.trp-cw-video').length === 1 && p.band.querySelectorAll('.trp-cw-mini').length === 0);
   p.w.close();
 }
 
@@ -371,7 +367,7 @@ console.log('\nThe letter and the Pep Talk are untouched');
   check('with nothing of the letter drawn yet', p.hello.querySelector('.trp-cw-pep-body') === null);
   toggle.dispatchEvent(new p.w.MouseEvent('click', { bubbles: true }));
   p.hello = p.live.querySelector('.trp-cw-welcome');
-  p.band = p.live.querySelector('.trp-cw-intro');
+  p.band = p.live.querySelector('details.trp-cw-intro-drop');
   check('opened, it has the photo and the rest of the letter',
     Boolean(p.hello.querySelector('.trp-cw-pep-body .trp-cw-letter-photo')) &&
     p.hello.querySelector('.trp-cw-pep-body').textContent.includes('The middle of the letter'));
@@ -396,7 +392,7 @@ console.log('\nThe loading placeholder holds the band\'s height');
   const p = open([LETTER, VIDEO, CALENDAR]);
   const skel = p.doc.querySelector('[data-curriculum-static] .trp-cw-intro');
   check('the placeholder has the band', Boolean(skel));
-  check('with the video box in it', Boolean(skel && skel.querySelector('.trp-cw-intro-vid .trp-cw-video .trp-bar')));
+  check('with the video title line in it (the video is a drop-down now)', Boolean(skel && skel.querySelector('.trp-cw-intro-title .trp-bar')));
   check('and no calendar card in it', Boolean(skel) && skel.querySelector('.trp-cw-mini') === null);
   check('the small calendar button is in the placeholder title row',
     Boolean(p.doc.querySelector('[data-curriculum-static] .trp-cw-welcome-head .trp-cw-cal')));
