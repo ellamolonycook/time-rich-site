@@ -16,8 +16,6 @@ import { readFileSync } from 'node:fs';
 
 const read = (p) => readFileSync(new URL('../../' + p, import.meta.url), 'utf8');
 const LIVE = read('club/portal-live.js');
-const SESSIONS_JS = read('club/portal-sessions.js');
-const SESSIONS_HTML = read('club/sessions.html');
 const DASHBOARD_HTML = read('club/dashboard.html');
 
 let pass = 0, fail = 0;
@@ -79,22 +77,6 @@ function stateOf(card) {
     disabled: button ? button.disabled === true : null,
     note: note ? note.textContent : null,
   };
-}
-
-/* The real Live Sessions page: the shipped markup, the shipped renderer, and
-   the payload handed over the way portal-access.js hands it over. */
-function sessionsCard(nowIso) {
-  const dom = new JSDOM(SESSIONS_HTML, {
-    url: 'https://timerich.ai/club/sessions.html',
-    runScripts: 'outside-only',
-    virtualConsole: new VirtualConsole(),
-  });
-  const w = dom.window;
-  freeze(w, nowIso);
-  w.eval(LIVE);
-  w.eval(SESSIONS_JS);
-  w.document.dispatchEvent(new w.CustomEvent('trportal:data', { detail: PAYLOAD }));
-  return w.document.querySelector('#trSessionList .trp-next');
 }
 
 /* The real dashboard: its card is drawn by an inline script, so portal-live
@@ -187,78 +169,15 @@ console.log('\nThe line under a disabled button');
     noLink.note === null, noLink.note && noLink.note.textContent);
 }
 
-console.log('\nThe two pages, on the same clock');
-{
-  const MOMENTS = [
-    [-2880, 'two days before'],
-    [-600, 'the Eastern morning of the session'],
-    [-31, 'a minute before the window opens'],
-    [-30, 'the moment it opens'],
-    [-5, 'five minutes before the start'],
-    [0, 'at the start'],
-    [40, 'mid call'],
-    [74, 'a minute before the end'],
-  ];
+/* Two blocks used to sit here: the dashboard and the Live Sessions page
+   driven off one clock and compared minute by minute, and the rows on
+   that page checked against the card above them. Live Sessions is gone
+   -- every call is on the Curriculum now -- so there is no second page
+   left to disagree with.
 
-  for (const [minutes, when] of MOMENTS) {
-    const now = at(minutes);
-    const dash = stateOf(dashboardCard(now));
-    const sess = stateOf(sessionsCard(now));
-    check(when + ': both pages show the same Join state',
-      JSON.stringify(dash) === JSON.stringify(sess), { dash, sess });
-  }
-
-  // And the states are the right ones, not just the same wrong one.
-  const before = stateOf(dashboardCard(at(-31)));
-  check('before the window: disabled, with the line under it',
-    before.join === 'disabled' && before.disabled === true &&
-    before.note === 'Opens 30 minutes before the start.', before);
-  check('and it is the session that is coming, not the one after it',
-    before.session === 'Open Business Surgery', before.session);
-
-  const during = stateOf(sessionsCard(at(40)));
-  check('inside the window: a live link to Zoom, and no line',
-    during.join === 'live' && during.href === 'https://zoom.us/j/1' &&
-    during.note === null, during);
-  check('still on the session that is running, not the next one',
-    during.session === 'Open Business Surgery', during.session);
-
-  // After it ends the card moves on, and the next one is shut again.
-  const after = stateOf(dashboardCard(at(80)));
-  const afterSess = stateOf(sessionsCard(at(80)));
-  check('once it has ended both pages move to the next session',
-    after.session === 'Training Your Agent' && afterSess.session === 'Training Your Agent',
-    { after: after.session, afterSess: afterSess.session });
-  check('and both have it shut again',
-    JSON.stringify(after) === JSON.stringify(afterSess) &&
-    after.join === 'disabled' && after.note === 'Opens 30 minutes before the start.',
-    { after, afterSess });
-}
-
-console.log('\nThe rows on Live Sessions agree with the card above them');
-{
-  // A row that went live at Eastern midnight while the card above it read
-  // "Opens 30 minutes before the start" was the page disagreeing with itself.
-  const rowJoin = (doc) => {
-    const row = [...doc.querySelectorAll('.trp-wkcards .trp-srow')]
-      .find((r) => r.textContent.includes('Open Business Surgery'));
-    const link = row.querySelector('a');
-    const button = row.querySelector('.trp-sact button');
-    return link ? 'live' : (button ? 'disabled' : 'none');
-  };
-  const docAt = (minutes) => {
-    const card = sessionsCard(at(minutes));
-    return card.ownerDocument;
-  };
-
-  check('the Eastern morning: the row is dead, like the card',
-    rowJoin(docAt(-600)) === 'disabled');
-  check('a minute before the window: still dead',
-    rowJoin(docAt(-31)) === 'disabled');
-  check('inside the window: the row is live, like the card',
-    rowJoin(docAt(-30)) === 'live');
-  check('mid call: still live', rowJoin(docAt(40)) === 'live');
-}
+   The rule above is what mattered in those blocks, and it is tested
+   directly: one window, one helper, and every page that draws a Join
+   control gets it from there. */
 
 console.log('\n' + pass + ' passed, ' + fail + ' failed');
 process.exit(fail ? 1 : 0);

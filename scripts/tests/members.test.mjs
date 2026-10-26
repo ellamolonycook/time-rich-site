@@ -189,7 +189,9 @@ console.log('\nTime Rich Members page — copy');
 // club/portal-access.js.
 // ---------------------------------------------------------------------------
 const ACCESS_JS = readFileSync(new URL('../../club/portal-access.js', import.meta.url), 'utf8');
-const PAGES = ['dashboard', 'curriculum', 'sessions', 'resources'];
+// sessions is not here: Live Sessions is gone and club/sessions.html is a
+// redirect to the Curriculum, with no menu on it.
+const PAGES = ['dashboard', 'curriculum', 'resources'];
 
 async function openPortalPage(name, { directoryStatus = 200, cache, directoryThrows = false, holdDirectory = false } = {}) {
   const html = readFileSync(new URL(`../../club/${name}.html`, import.meta.url), 'utf8');
@@ -275,7 +277,7 @@ for (const name of PAGES) {
   const open200 = await openPortalPage('curriculum', { directoryStatus: 200 });
   check('directory 200 (switched on, or team): the link is shown', open200.links.every((a) => !a.hidden));
 
-  const cached = await openPortalPage('sessions', { cache: { ok: true, at: Date.now() } });
+  const cached = await openPortalPage('prompts', { cache: { ok: true, at: Date.now() } });
   check('a recent answer is reused: no extra call, link shown', cached.directoryCalls() === 0 && cached.links.every((a) => !a.hidden));
 
   const stale = await openPortalPage('dashboard', { cache: { ok: true, at: Date.now() - 11 * 60 * 1000 }, directoryStatus: 403 });
@@ -315,7 +317,7 @@ for (const name of PAGES) {
 
     // A remembered answer is applied before any request, so there is no
     // reserved box and nothing moves at all.
-    const remembered = await openPortalPage('sessions', { cache: { ok: true, at: Date.now() } });
+    const remembered = await openPortalPage('prompts', { cache: { ok: true, at: Date.now() } });
     check('a remembered answer never reserves anything',
       remembered.links.every((a) => !a.hidden && !a.hasAttribute('data-pending')));
   }

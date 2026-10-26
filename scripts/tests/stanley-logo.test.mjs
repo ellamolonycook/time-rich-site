@@ -35,7 +35,6 @@ const PAGES = [
   { path: 'club/signin.html', selector: '.trp-powered', spots: 1, themed: true },
   { path: 'club/dashboard.html', selector: '.trp-powered', spots: 1, themed: true },
   { path: 'club/curriculum.html', selector: '.trp-powered', spots: 1, themed: true },
-  { path: 'club/sessions.html', selector: '.trp-powered', spots: 1, themed: true },
   { path: 'club/prompts.html', selector: '.trp-powered', spots: 1, themed: true },
   { path: 'club/resources.html', selector: '.trp-powered', spots: 1, themed: true },
   { path: 'club/members.html', selector: '.trp-powered', spots: 1, themed: true },

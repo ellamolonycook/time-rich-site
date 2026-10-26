@@ -384,8 +384,14 @@ console.log('\nThe letter and the Pep Talk are untouched');
   check('the lead line and the ask are still lifted out',
     p.hello.querySelector('.trp-cw-lead').textContent.startsWith("You're not here just to learn AI") &&
     p.hello.querySelector('.trp-cw-ask').textContent === 'How serious are you about becoming Time Rich?');
-  check('the week tabs still follow the band',
-    p.band.nextElementSibling.classList.contains('trp-cw-weeks'), p.band.nextElementSibling.className);
+  /* The WhatsApp card goes in between now: announcements and session links
+     land there, so it sits above the four weeks rather than below them. */
+  check('the WhatsApp card follows the band',
+    p.band.nextElementSibling && p.band.nextElementSibling.id === 'cw-whatsapp',
+    p.band.nextElementSibling && p.band.nextElementSibling.className);
+  check('and the week tabs follow that',
+    p.band.nextElementSibling.nextElementSibling.className === 'trp-cw-weeks',
+    p.band.nextElementSibling.nextElementSibling.className);
   p.w.close();
 }
 

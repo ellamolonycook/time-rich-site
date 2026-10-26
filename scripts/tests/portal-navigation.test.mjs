@@ -5,15 +5,17 @@ import { readFileSync, existsSync, readdirSync } from 'node:fs';
 import assert from 'node:assert/strict';
 import { execFileSync } from 'node:child_process';
 
-const pages = ['home', 'dashboard', 'curriculum', 'resources', 'members', 'sessions', 'prompts', 'signin'];
+// sessions is not in here: Live Sessions is gone and club/sessions.html
+// is a four-line redirect to the Curriculum, with no menu to check.
+const pages = ['index', 'dashboard', 'curriculum', 'resources', 'members', 'prompts', 'signin'];
 
 /* The file a nav link is asking for. The links are extensionless now, so
    /club/resources is served from club/resources.html -- the same mapping
    GitHub Pages does. The .html form is still resolved too, because the files
    it names are all still there.
 
-   /club is its own page rather than a portal one: it serves Apply to anyone
-   without a session and frames the Club home for a member. */
+   /club is the Club home itself, which is club/index.html. The public
+   application form moved to /clubform. */
 function fileFor(url) {
   const path = url.pathname;
   if (path === '/club' || path === '/club/') return 'club/index.html';
@@ -55,7 +57,20 @@ for (const page of pages) {
     }
     linksChecked++;
   }
-  if (page === 'home') assert.equal(d.querySelector('base').target, '_top');
+  /* The Club home used to be framed at /club and carried <base target="_top">
+     to break its links out of the frame. There is no frame now, and what it
+     carries instead is a base href: it is the one portal page served from a
+     directory address, so a browser at /club -- before GitHub Pages has
+     redirected to /club/ -- would resolve "portal.css" to /portal.css and
+     get nothing. Every other page is a file and needs no base at all. */
+  if (page === 'index') {
+    const base = d.querySelector('base');
+    assert(base, 'the Club home should carry a base');
+    assert.equal(base.getAttribute('href'), '/club/');
+    assert.equal(base.getAttribute('target'), null, 'the frame target should be gone');
+  } else {
+    assert.equal(d.querySelector('base'), null, page + ': should need no base');
+  }
 
   /* The light/dark choice is one shared file, loaded by every portal page.
      It was copied into the foot of seven of the eight instead, and Club was
@@ -125,12 +140,12 @@ function arriveAt(url, { framed = false } = {}) {
 
 for (const [arrived, want] of [
   ['https://timerich.ai/club/resources.html', 'https://timerich.ai/club/resources'],
-  ['https://timerich.ai/club/home.html', 'https://timerich.ai/club/home'],
+  ['https://timerich.ai/club/dashboard.html', 'https://timerich.ai/club/dashboard'],
   ['https://timerich.ai/club/signin.html', 'https://timerich.ai/club/signin'],
   // The query and the hash come along.
   ['https://timerich.ai/club/signin.html?code=abc', 'https://timerich.ai/club/signin?code=abc'],
   ['https://timerich.ai/club/resources.html#faq', 'https://timerich.ai/club/resources#faq'],
-  ['https://timerich.ai/club/sessions.html?w=2#now', 'https://timerich.ai/club/sessions?w=2#now'],
+  ['https://timerich.ai/club/prompts.html?w=2#now', 'https://timerich.ai/club/prompts?w=2#now'],
   // A clean address is already right and must not be touched.
   ['https://timerich.ai/club/resources', 'https://timerich.ai/club/resources'],
   ['https://timerich.ai/club/signin', 'https://timerich.ai/club/signin'],
@@ -138,9 +153,13 @@ for (const [arrived, want] of [
   assert.equal(arriveAt(arrived), want, arrived + ' should settle on ' + want);
 }
 
-// Inside the /club frame there is no address bar of ours to tidy.
-assert.equal(arriveAt('https://timerich.ai/club/home.html', { framed: true }),
-  'https://timerich.ai/club/home.html', 'a framed page should be left alone');
+// The portal is never framed now, so a framed page is nothing special: the
+// address is still tidied. What this pins is that nothing is left reading
+// window.top to decide, which is what used to send a member to the wrong
+// window when the Club home was an iframe at /club.
+assert.equal(arriveAt('https://timerich.ai/club/resources.html', { framed: true }),
+  'https://timerich.ai/club/resources', 'a framed page is tidied like any other');
+assert(!ACCESS.includes('isFramed'), 'nothing should be asking whether it is framed');
 
 /* ---- the old /portal addresses ------------------------------------------
    The portal moved from /portal to /club. GitHub Pages has no server-side
@@ -159,7 +178,7 @@ const MOVED = {
   'members': '/club/members',
   'prompts': '/club/prompts',
   'resources': '/club/resources',
-  'sessions': '/club/sessions',
+  'sessions': '/club/curriculum',
 };
 for (const [old, want] of Object.entries(MOVED)) {
   const html = readFileSync(new URL('../../portal/' + old + '.html', import.meta.url), 'utf8');
@@ -182,4 +201,4 @@ const left = readdirSync(new URL('../../portal/', import.meta.url))
   .filter((f) => f !== 'assets' && !(f.replace(/\.html$/, '') in MOVED));
 assert.deepEqual(left, [], 'portal/ should hold only the redirects and assets/');
 
-console.log('Passed: ' + linksChecked + ' desktop/mobile/submenu links, rapid and modified clicks, Club frame target, the shared theme script on all ' + pages.length + ' pages, 9 old .html addresses tidying themselves, and ' + Object.keys(MOVED).length + ' old /portal addresses sending the member to /club.');
+console.log('Passed: ' + linksChecked + ' desktop/mobile/submenu links, rapid and modified clicks, no frame target on the Club home, the shared theme script on all ' + pages.length + ' pages, 9 old .html addresses tidying themselves, and ' + Object.keys(MOVED).length + ' old /portal addresses sending the member to /club.');
