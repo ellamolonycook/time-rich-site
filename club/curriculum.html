@@ -2175,18 +2175,14 @@ When you finish:
         head.appendChild(toggle);
         row.appendChild(head);
 
-        /* A video row shows its video under the title, outside the
-           drop-down, so it plays without opening anything (Ella, 26 Oct).
-           Only a video the portal can embed; it never links off the page. */
+        /* A video row plays its video at the top of its drop-down, so it
+           hides with the row (Ella, 26 Oct). Only a video the portal can
+           embed; it never links off the page. */
         var isVideo = !!(item && L.str(item.kind) === 'video');
-        if (isVideo && embedFor(item)) {
-          var watch = L.el('div', 'trp-cw-detail');
-          watch.appendChild(videoBox(item, name));
-          row.appendChild(watch);
-        }
 
         var detail = L.el('div', 'trp-cw-detail');
         detail.id = detailId;
+        if (isVideo && embedFor(item)) detail.appendChild(videoBox(item, name));
         var body = L.str(item && item.body);
         if (body) detail.appendChild(bodyBlocks(body, key));
         /* The audit table, the agent comparison or the growth prompts, for

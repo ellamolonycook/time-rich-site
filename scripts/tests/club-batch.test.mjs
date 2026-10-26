@@ -430,15 +430,15 @@ function openWith(data, hash) {
   };
 }
 
-console.log('\nA week 1 video row plays outside its drop-down');
+console.log('\nA week 1 video row plays inside its drop-down');
 {
   const p = open();
   p.pick(1);
   const row = p.lesson('Masterclass replay');
   const frame = row && row.querySelector('iframe');
   check('the video is in the row', frame !== null);
-  check('and not inside the drop-down, so it shows without opening it',
-    frame && !frame.closest('[hidden]'));
+  check('inside the drop-down, so it hides with the row',
+    frame && frame.closest('.trp-cw-detail') === p.detail('Masterclass replay') && frame.closest('[hidden]') !== null);
   check('and there is no button out to the video site',
     row && !row.querySelector('a.trp-cw-btn'));
 }
