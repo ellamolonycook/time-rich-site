@@ -1,0 +1,1268 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <script>
+    // Theme, applied before first paint so there is no flash of the wrong one.
+    // Same key and same values as every portal page, so a member who chose
+    // dark in the Club arrives here already dark.
+    (function () {
+      var t = 'system';
+      try { t = window.localStorage.getItem('tr_portal_theme') || 'system'; } catch (e) {}
+      if (t !== 'light' && t !== 'dark') t = 'system';
+      document.documentElement.setAttribute('data-theme', t);
+    })();
+  </script>
+  <meta charset="utf-8"/>
+  <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+
+  <title>Superhuman Cohort 26 | Time Rich</title>
+  <meta name="robots" content="noindex"/>
+  <link rel="canonical" href="https://timerich.ai/cohort26/"/>
+  <meta name="description" content="Anonymous view of the Superhuman Cohort 26 intake questionnaire."/>
+  <meta property="og:type" content="website"/>
+  <meta property="og:site_name" content="Time Rich"/>
+  <meta property="og:title" content="Superhuman Cohort 26 | Time Rich"/>
+  <meta property="og:description" content="Anonymous view of the Superhuman Cohort 26 intake questionnaire."/>
+  <meta property="og:url" content="https://timerich.ai/cohort26/"/>
+  <meta property="og:image" content="https://timerich.ai/og-time-rich.png"/>
+  <meta property="og:image:width" content="1200"/>
+  <meta property="og:image:height" content="630"/>
+  <meta name="twitter:card" content="summary_large_image"/>
+  <meta name="twitter:title" content="Superhuman Cohort 26 | Time Rich"/>
+  <meta name="twitter:description" content="Anonymous view of the Superhuman Cohort 26 intake questionnaire."/>
+  <meta name="twitter:image" content="https://timerich.ai/og-time-rich.png"/>
+
+  <link rel="icon" href="../favicon.svg" type="image/svg+xml"/>
+
+  <!-- The portal's own stylesheet, for the brand tokens, the two faces and the
+       light/dark theme. The @font-face rules inside it point at ../brand/fonts/
+       relative to the stylesheet, so they still resolve from this directory.
+
+       Only the component classes the Club already uses appear below
+       (glass-card, trp-btn, trp-tag, trp-wordmark, trp-theme). The Tailwind
+       build scans club/ only, so a utility class used nowhere in club/ would
+       have been purged out of portal.css: everything this page lays out is
+       plain CSS of its own, in the <style> block. -->
+  <link rel="stylesheet" href="../club/portal.css"/>
+  <link rel="preload" href="../brand/fonts/SpaceGrotesk-Variable.woff2" as="font" type="font/woff2" crossorigin/>
+  <link rel="preload" href="../brand/fonts/Inter-Variable.woff2" as="font" type="font/woff2" crossorigin/>
+
+  <style>
+    /* =====================================================================
+       Superhuman Cohort 26, the intake dashboard.
+
+       Ella's approved layout, rebuilt on the portal's tokens. The classes are
+       cx-*; the numbers all come from data.json at runtime, so there is not a
+       single count written into this file.
+
+       Charts are plain SVG built in the script below. No chart library: the
+       three shapes here (horizontal bars, stacked bars, a grid heat map) are
+       a few lines each, and a CDN request on a gated page is a dependency
+       with nothing to show for it.
+
+       Fills are written as var(--cx-c1..c5), so switching the theme recolours
+       every bar without redrawing anything.
+       ===================================================================== */
+
+    :root {
+      /* The categorical ramp, lowest AI level to highest: brand deep green up
+         to the brand lime. Ordered on purpose -- level 1 to level 4 is a
+         ladder, so the colour climbs with it. */
+      --cx-c1: #424B36;
+      --cx-c2: #67762E;
+      --cx-c3: #9BB35C;
+      --cx-c4: #CCEEA0;
+      --cx-c5: rgb(var(--c-dim) / 0.4);
+      /* The heat map mixes this with transparent, so on paper it wants the
+         darkest green and on a dark ground the lime. */
+      --cx-heat: #424B36;
+    }
+    :root[data-theme='dark'] {
+      /* Deep green disappears into a near-black ground, so the low end of the
+         ramp lifts. The top stays the brand lime in both themes. */
+      --cx-c1: #6E8050;
+      --cx-c2: #8CA45B;
+      --cx-c3: #AECB7C;
+      --cx-c4: #CCEEA0;
+      --cx-heat: #CCEEA0;
+    }
+    @media (prefers-color-scheme: dark) {
+      :root[data-theme='system'] {
+        --cx-c1: #6E8050;
+        --cx-c2: #8CA45B;
+        --cx-c3: #AECB7C;
+        --cx-c4: #CCEEA0;
+        --cx-heat: #CCEEA0;
+      }
+    }
+
+    html, body { margin: 0; }
+    body { color: rgb(var(--c-ink)); }
+    *:focus-visible { outline: 2px solid rgb(var(--c-ink)); outline-offset: 2px; }
+
+    /* The ramp twice over: as a background for the HTML swatches and bars,
+       and as a fill for the SVG rects. Both go through a class rather than an
+       attribute, because var() in an SVG presentation attribute is not
+       something every browser resolves. */
+    .cx-lv1 { background: var(--cx-c1); }
+    .cx-lv2 { background: var(--cx-c2); }
+    .cx-lv3 { background: var(--cx-c3); }
+    .cx-lv4 { background: var(--cx-c4); }
+    .cx-lv5 { background: var(--cx-c5); }
+    .cx-f1 { fill: var(--cx-c1); }
+    .cx-f2 { fill: var(--cx-c2); }
+    .cx-f3 { fill: var(--cx-c3); }
+    .cx-f4 { fill: var(--cx-c4); }
+    .cx-chart text { fill: rgb(var(--c-ink)); }
+    .cx-chart text.v { fill: rgb(var(--c-muted)); font-variant-numeric: tabular-nums; }
+    .cx-chart rect.hit { fill: transparent; }
+
+    /* ---- the page frame ------------------------------------------------- */
+
+    .cx-top {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 20px 20px 0;
+    }
+    @media (min-width: 640px) { .cx-top { padding: 28px 32px 0; } }
+    .cx-top .trp-wordmark { font-size: 24px; }
+
+    .cx {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 28px 20px 72px;
+      font-family: var(--trp-body);
+      color: rgb(var(--c-ink));
+    }
+    @media (min-width: 640px) { .cx { padding: 36px 32px 96px; } }
+    .cx[hidden] { display: none; }
+
+    .cx-head h1 {
+      font-family: var(--trp-face);
+      font-weight: 500;
+      font-size: clamp(27px, 5vw, 40px);
+      line-height: 1.05;
+      letter-spacing: -0.03em;
+      margin: 0 0 10px;
+      text-wrap: balance;
+    }
+    .cx-head p {
+      margin: 0;
+      color: rgb(var(--c-muted));
+      font-size: 15px;
+      line-height: 1.6;
+      max-width: 70ch;
+      text-wrap: pretty;
+    }
+
+    /* ---- tabs ----------------------------------------------------------- */
+
+    /* The strip scrolls sideways on a phone rather than wrapping to four
+       lines. overflow-x on the strip, never on the page. */
+    .cx-tabs {
+      display: flex;
+      gap: 2px;
+      margin: 26px 0 22px;
+      border-bottom: 1px solid var(--trp-rule);
+      overflow-x: auto;
+      scrollbar-width: none;
+    }
+    .cx-tabs::-webkit-scrollbar { display: none; }
+    .cx-tab {
+      flex: none;
+      font: inherit;
+      font-size: 14px;
+      font-weight: 500;
+      background: none;
+      border: 0;
+      border-bottom: 2px solid transparent;
+      color: rgb(var(--c-muted));
+      padding: 10px 14px;
+      min-height: 44px;
+      white-space: nowrap;
+      cursor: pointer;
+      transition: color var(--trp-t) ease, border-color var(--trp-t) ease;
+    }
+    .cx-tab:hover { color: rgb(var(--c-ink)); }
+    .cx-tab[aria-selected='true'] { color: rgb(var(--c-ink)); border-bottom-color: rgb(var(--c-ink)); }
+
+    .cx-page[hidden] { display: none; }
+
+    /* ---- the one-line take at the top of every tab ---------------------- */
+
+    .cx-take {
+      font-size: 17px;
+      line-height: 1.5;
+      margin: 0 0 20px;
+      max-width: 75ch;
+      text-wrap: pretty;
+    }
+    .cx-take b { font-weight: 600; }
+
+    /* ---- tiles and cards ------------------------------------------------ */
+
+    .cx-tiles {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(min(100%, 10rem), 1fr));
+      gap: 14px;
+      margin-bottom: 16px;
+    }
+    .cx-tile {
+      background: rgb(var(--c-surface));
+      border: 1px solid var(--trp-rule);
+      border-radius: 16px;
+      padding: 16px 18px;
+    }
+    .cx-tile .n {
+      font-family: var(--trp-face);
+      font-weight: 500;
+      font-size: 30px;
+      line-height: 1;
+      letter-spacing: -0.02em;
+      font-variant-numeric: tabular-nums;
+    }
+    .cx-tile .l { color: rgb(var(--c-muted)); font-size: 13px; line-height: 1.4; margin-top: 8px; }
+
+    .cx-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(min(100%, 24rem), 1fr));
+      gap: 16px;
+      margin-bottom: 16px;
+    }
+    .cx-card {
+      background: rgb(var(--c-surface));
+      border: 1px solid var(--trp-rule);
+      border-radius: 20px;
+      padding: 20px;
+      min-width: 0;
+      position: relative;
+    }
+    @media (min-width: 640px) { .cx-card { padding: 24px; } }
+    .cx-card h2 {
+      font-family: var(--trp-face);
+      font-size: 17px;
+      font-weight: 600;
+      letter-spacing: -0.01em;
+      margin: 0;
+    }
+    .cx-card .note { color: rgb(var(--c-muted)); font-size: 13px; line-height: 1.5; margin: 6px 0 16px; }
+    .cx-wide { grid-column: 1 / -1; }
+    .cx-chart { min-height: 120px; position: relative; }
+    .cx-chart svg { display: block; overflow: visible; }
+
+    .cx-legend {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px 16px;
+      font-size: 13px;
+      color: rgb(var(--c-muted));
+      margin-bottom: 12px;
+    }
+    .cx-legend i { display: inline-block; width: 10px; height: 10px; border-radius: 2px; margin-right: 6px; vertical-align: -1px; }
+
+    /* ---- tooltip -------------------------------------------------------- */
+
+    /* Positioned against its own card and clamped to it, so it can never
+       reach past the edge of the page. */
+    .cx-tip {
+      position: absolute;
+      pointer-events: none;
+      background: rgb(var(--c-surface));
+      border: 1px solid var(--trp-rule-2);
+      border-radius: 12px;
+      box-shadow: 0 10px 28px -16px rgba(26, 24, 22, 0.42);
+      padding: 8px 11px;
+      font-size: 13px;
+      line-height: 1.45;
+      z-index: 5;
+      max-width: 260px;
+    }
+    .cx-tip .k { font-weight: 600; }
+    .cx-tip div + div { color: rgb(var(--c-muted)); }
+
+    /* ---- theme lists ---------------------------------------------------- */
+
+    .cx-themes { display: grid; gap: 14px; }
+    .cx-theme {
+      border-top: 1px solid var(--trp-rule);
+      padding-top: 14px;
+      display: grid;
+      grid-template-columns: 3.4rem 1fr;
+      gap: 12px;
+    }
+    .cx-theme .cnt {
+      font-family: var(--trp-face);
+      font-weight: 500;
+      font-size: 26px;
+      font-variant-numeric: tabular-nums;
+      line-height: 1;
+    }
+    .cx-theme .cnt small {
+      display: block;
+      font-family: var(--trp-body);
+      font-size: 12px;
+      font-weight: 400;
+      color: rgb(var(--c-muted));
+      margin-top: 4px;
+    }
+    .cx-theme h3 { font-size: 15px; font-weight: 600; line-height: 1.4; margin: 0; }
+    .cx-theme .lv {
+      display: flex;
+      height: 6px;
+      border-radius: 3px;
+      overflow: hidden;
+      margin-top: 8px;
+      max-width: 220px;
+      background: var(--trp-rule);
+    }
+    .cx-theme .q { margin: 8px 0 0; color: rgb(var(--c-muted)); font-style: italic; font-size: 15px; line-height: 1.55; }
+    .cx-theme .why { margin: 6px 0 0; font-size: 15px; line-height: 1.55; }
+
+    /* ---- heat map ------------------------------------------------------- */
+
+    /* Seven columns do not fit a phone, so the grid gets a minimum width in
+       the script and this wrapper takes the scroll. The card scrolls; the
+       page does not. */
+    .cx-scroll {
+      overflow-x: auto;
+      overscroll-behavior-x: contain;
+      -webkit-overflow-scrolling: touch;
+    }
+    .cx-heat {
+      display: grid;
+      gap: 3px;
+      font-size: 13px;
+      font-variant-numeric: tabular-nums;
+    }
+    .cx-heat div { padding: 9px 4px; text-align: center; border-radius: 4px; }
+    .cx-heat .h { color: rgb(var(--c-muted)); background: none; }
+
+    /* ---- stage cards ---------------------------------------------------- */
+
+    .cx-stages { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 13.5rem), 1fr)); gap: 14px; }
+    .cx-stage {
+      border: 1px solid var(--trp-rule);
+      border-radius: 16px;
+      padding: 16px;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      background: rgb(var(--c-bg));
+    }
+    .cx-stage .sw { height: 4px; border-radius: 2px; }
+    .cx-stage .top { display: flex; justify-content: space-between; align-items: baseline; gap: 8px; }
+    .cx-stage .lvl { font-family: var(--trp-label); font-size: 11px; font-weight: 600; color: rgb(var(--c-muted)); text-transform: uppercase; letter-spacing: 0.14em; }
+    .cx-stage h3 { margin: 2px 0 0; font-family: var(--trp-face); font-size: 17px; font-weight: 600; }
+    .cx-stage .big { font-family: var(--trp-face); font-weight: 500; font-size: 26px; font-variant-numeric: tabular-nums; line-height: 1; }
+    .cx-stage p { margin: 0; font-size: 13px; line-height: 1.5; }
+    .cx-stage dl { margin: 0; display: grid; grid-template-columns: 1fr auto; gap: 3px 8px; font-size: 13px; font-variant-numeric: tabular-nums; }
+    .cx-stage dt { color: rgb(var(--c-muted)); }
+    .cx-stage dd { margin: 0; text-align: right; }
+    .cx-stage .lab { color: rgb(var(--c-muted)); font-size: 12px; margin-top: 6px; }
+    .cx-stage .need { border-top: 1px solid var(--trp-rule); padding-top: 10px; margin-top: auto; }
+    .cx-stage.empty { opacity: 0.7; }
+
+    /* ---- the two description lists under Success and pain --------------- */
+
+    .cx-list { margin: 16px 0 0; padding-left: 1.1em; font-size: 15px; line-height: 1.55; }
+    .cx-list li { margin-bottom: 8px; }
+    .cx-list b { font-weight: 600; }
+
+    /* ---- loading and failure -------------------------------------------- */
+
+    .cx-wait, .cx-fail {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 9px;
+      min-height: 120px;
+      color: rgb(var(--c-muted));
+      font-size: 13px;
+    }
+    .cx-fail::before {
+      content: '';
+      width: 0.375rem;
+      height: 0.375rem;
+      border-radius: 50%;
+      background: rgb(var(--c-error));
+    }
+
+    /* ---- the code gate -------------------------------------------------- */
+
+    .cx-gate {
+      min-height: 72vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 32px 20px 64px;
+    }
+    .cx-gate[hidden] { display: none; }
+    .cx-gate-card { width: 100%; max-width: 25rem; padding: 26px 22px 24px; }
+    @media (min-width: 640px) { .cx-gate-card { padding: 30px 28px 28px; } }
+    .cx-gate-card h1 {
+      font-family: var(--trp-face);
+      font-size: 26px;
+      font-weight: 600;
+      letter-spacing: -0.02em;
+      line-height: 1.15;
+      margin: 0 0 6px;
+    }
+    .cx-gate-card .sub { margin: 0 0 22px; font-size: 14px; line-height: 1.55; color: rgb(var(--c-muted)); }
+    .cx-gate-card label { display: block; margin-bottom: 8px; }
+
+    .cx-input {
+      width: 100%;
+      min-height: 44px;
+      padding: 12px 0;
+      border: 0;
+      border-bottom: 1px solid var(--trp-rule);
+      border-radius: 0;
+      background: transparent;
+      color: rgb(var(--c-ink));
+      font-family: var(--trp-face);
+      font-size: 16px;            /* under 16px iOS zooms the page in on focus */
+      font-weight: 500;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      transition: border-color var(--trp-t) ease;
+    }
+    .cx-input::placeholder { color: rgb(var(--c-dim)); font-weight: 400; letter-spacing: 0; text-transform: none; }
+    .cx-input:focus { outline: none; border-bottom-color: rgb(var(--c-ink)); }
+
+    .cx-gate-btn { width: 100%; margin-top: 14px; }
+    /* Two lines held open, so a message that wraps does not shift the card. */
+    .cx-gate-msg { margin: 12px 0 0; min-height: 2.6rem; font-size: 14px; line-height: 1.3rem; color: rgb(var(--c-error)); }
+    .cx-gate-note { margin: 2px 0 0; font-size: 13px; line-height: 1.5; color: rgb(var(--c-muted)); }
+
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after { animation-duration: 0.01ms !important; transition-duration: 0.01ms !important; }
+    }
+  </style>
+</head>
+
+<body>
+  <!-- No portal header on this page, so the theme control sits in the corner,
+       with the same markup and the same wiring as the one in the Club header. -->
+  <div class="cx-top">
+    <a href="/" class="trp-wordmark">TIME RICH<span class="trp-stop">.</span></a>
+    <div class="trp-theme">
+      <label class="sr-only" for="theme-cohort">Theme</label>
+      <select id="theme-cohort" data-theme-select>
+        <option value="system">System</option>
+        <option value="light">Light</option>
+        <option value="dark">Dark</option>
+      </select>
+      <svg class="trp-theme-caret" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7"></path></svg>
+    </div>
+  </div>
+
+  <!-- The gate. Everything below it stays hidden and data.json is not asked
+       for until the code checks out. -->
+  <div class="cx-gate" id="cx-gate">
+    <div class="glass-card is-static cx-gate-card">
+      <h1>Superhuman Cohort 26</h1>
+      <p class="sub">Enter the access code to open the cohort dashboard.</p>
+      <form id="cx-gate-form" novalidate>
+        <label class="trp-tag" for="cx-code">Access code</label>
+        <input class="cx-input"
+               id="cx-code"
+               type="text"
+               inputmode="text"
+               autocomplete="off"
+               autocapitalize="characters"
+               autocorrect="off"
+               spellcheck="false"
+               aria-describedby="cx-gate-msg"
+               required/>
+        <button type="submit" class="trp-btn trp-btn-pastel cx-gate-btn">Enter</button>
+      </form>
+      <p class="cx-gate-msg" id="cx-gate-msg" role="alert" aria-live="polite"></p>
+      <p class="cx-gate-note">Anonymous aggregates only. No names, emails or companies.</p>
+      <noscript><p class="cx-gate-note">This page needs JavaScript to open.</p></noscript>
+    </div>
+  </div>
+
+  <div class="cx" id="cx-shell" hidden>
+    <header class="cx-head" id="top">
+      <h1>Superhuman cohort: where everyone is</h1>
+      <p>Anonymous view of the intake questionnaire. No names or companies. Counts are members unless a chart says questions.</p>
+    </header>
+
+    <nav class="cx-tabs" role="tablist" aria-label="Dashboard pages">
+      <button class="cx-tab" role="tab" id="tab-stages" data-page="stages">Stages</button>
+      <button class="cx-tab" role="tab" id="tab-agents" data-page="agents">Agents</button>
+      <button class="cx-tab" role="tab" id="tab-aios" data-page="aios">AI operating system</button>
+      <button class="cx-tab" role="tab" id="tab-content" data-page="content">Content</button>
+      <button class="cx-tab" role="tab" id="tab-story" data-page="story">Storytelling and pitch</button>
+      <button class="cx-tab" role="tab" id="tab-leads" data-page="leads">Lead gen and tools</button>
+      <button class="cx-tab" role="tab" id="tab-outcomes" data-page="outcomes">Success and pain</button>
+    </nav>
+
+    <!-- STAGES -->
+    <section class="cx-page" id="stages" role="tabpanel" aria-labelledby="tab-stages">
+      <p class="cx-take"><b data-source="cohort" data-where="table=kpi&amp;key=l12" data-field="value">—</b> of <span data-source="cohort" data-where="table=kpi&amp;key=members" data-field="value">—</span> members are beginners or casual users. <b data-source="cohort" data-where="table=funnel&amp;order=4" data-field="members">—</b> already build automations, and <b data-source="cohort" data-where="table=funnel&amp;order=5" data-field="members">—</b> run agents in production. Teach to the middle, stretch the builders.</p>
+      <div class="cx-tiles">
+        <div class="cx-tile"><div class="n" data-source="cohort" data-where="table=kpi&amp;key=members" data-field="value">—</div><div class="l">Members</div></div>
+        <div class="cx-tile"><div class="n" data-source="cohort" data-where="table=kpi&amp;key=l12" data-field="value">—</div><div class="l">AI level 1 or 2</div></div>
+        <div class="cx-tile"><div class="n" data-source="cohort" data-where="table=kpi&amp;key=l4" data-field="value">—</div><div class="l">Already building (level 4)</div></div>
+        <div class="cx-tile"><div class="n" data-source="cohort" data-where="table=kpi&amp;key=prerev_u100" data-field="value">—</div><div class="l">Pre-revenue or under $100K</div></div>
+        <div class="cx-tile"><div class="n" data-source="cohort" data-where="table=kpi&amp;key=no_offer" data-field="value">—</div><div class="l">No defined offer yet</div></div>
+        <div class="cx-tile"><div class="n" data-source="cohort" data-where="table=kpi&amp;key=measurable" data-field="value">—</div><div class="l">Gave a measurable 20 Nov target</div></div>
+      </div>
+      <div class="cx-grid">
+        <div class="cx-card cx-wide" id="card-funnel"><h2>AI adoption ladder</h2><p class="note">How far up the ladder members are today. Each step is a subset of the one above.</p><div class="cx-chart" id="ch-funnel" data-source="cohort"></div></div>
+        <div class="cx-card cx-wide" id="card-stage-detail"><h2>Every stage in detail</h2><p class="note">Each AI level: who is there, what it looks like, their most common pain, success picture and build choice, and what they need from the trainer.</p><div class="cx-stages" id="st-detail" data-source="cohort"></div></div>
+        <div class="cx-card" id="card-levels"><h2>AI level</h2><p class="note">Scored 1 to 5 from tools, habits and the questions they asked.</p><div class="cx-chart" id="ch-levels" data-source="cohort"></div></div>
+        <div class="cx-card" id="card-heat"><h2>AI level by business stage</h2><p class="note">Members in each cell, every revenue stage shown. Darker means more.</p><div class="cx-chart" id="ch-heat" data-source="cohort"></div></div>
+        <div class="cx-card" id="card-build"><h2>What they said to build first</h2><p class="note">Bar is members. Label shows their average AI level.</p><div class="cx-chart" id="ch-build" data-source="cohort"></div></div>
+        <div class="cx-card" id="card-team"><h2>Team size</h2><p class="note">Half are solo. Their agent replaces work nobody else can do.</p><div class="cx-chart" id="ch-team" data-source="cohort"></div></div>
+      </div>
+    </section>
+
+    <!-- TOPIC PAGES -->
+    <section class="cx-page" id="agents" role="tabpanel" aria-labelledby="tab-agents" hidden>
+      <p class="cx-take"><b data-source="cohort" data-where="table=topic_summary&amp;topic=Agents" data-field="members_asked">—</b> members asked about agents. The biggest single gap is where to start. Reliability and multi-agent questions come from the people who already build.</p>
+      <div class="cx-grid">
+        <div class="cx-card cx-wide" id="card-agents-themes"><h2>Agent pain points, by AI level</h2><p class="note">Members whose agent question falls under each theme, split by their AI level.</p><div class="cx-legend lv-legend"></div><div class="cx-chart" id="ch-agents" data-source="cohort"></div></div>
+        <div class="cx-card cx-wide" id="card-auto"><h2>What they want agents to take off them</h2><p class="note">From their answers on recurring tasks and the one workflow they need. A member can need several.</p><div class="cx-chart" id="ch-auto" data-source="cohort"></div></div>
+        <div class="cx-card cx-wide" id="card-agents-detail"><h2>Each pain point in detail</h2><p class="note">Theme, members, a real question (anonymous), and what is underneath it.</p><div class="cx-themes" id="th-agents" data-source="cohort"></div></div>
+      </div>
+    </section>
+
+    <section class="cx-page" id="aios" role="tabpanel" aria-labelledby="tab-aios" hidden>
+      <p class="cx-take"><b data-source="cohort" data-where="table=topic_summary&amp;topic=AI%20operating%20system" data-field="unsure">—</b> members left this blank or said they do not know what an AI operating system is. Those who do know want one system that runs the business, before they have one agent running.</p>
+      <div class="cx-grid">
+        <div class="cx-card cx-wide" id="card-aios-themes"><h2>AI operating system pain points, by AI level</h2><p class="note">Members whose AI OS question falls under each theme.</p><div class="cx-legend lv-legend"></div><div class="cx-chart" id="ch-aios" data-source="cohort"></div></div>
+        <div class="cx-card cx-wide" id="card-aios-detail"><h2>Each pain point in detail</h2><p class="note">Theme, members, a real question (anonymous), and what is underneath it.</p><div class="cx-themes" id="th-aios" data-source="cohort"></div></div>
+      </div>
+    </section>
+
+    <section class="cx-page" id="content" role="tabpanel" aria-labelledby="tab-content" hidden>
+      <p class="cx-take">The top content fear sits at every AI level: drafts that read as AI. <b data-source="cohort" data-where="table=themes&amp;topic=Content&amp;theme_id=C1" data-field="members">—</b> members asked some version of it.</p>
+      <div class="cx-grid">
+        <div class="cx-card cx-wide" id="card-content-themes"><h2>Content pain points, by AI level</h2><p class="note">Members whose content question falls under each theme.</p><div class="cx-legend lv-legend"></div><div class="cx-chart" id="ch-content" data-source="cohort"></div></div>
+        <div class="cx-card cx-wide" id="card-content-detail"><h2>Each pain point in detail</h2><p class="note">Theme, members, a real question (anonymous), and what is underneath it.</p><div class="cx-themes" id="th-content" data-source="cohort"></div></div>
+      </div>
+    </section>
+
+    <section class="cx-page" id="story" role="tabpanel" aria-labelledby="tab-story" hidden>
+      <p class="cx-take">Storytelling ranks low as a goal, yet <b data-source="cohort" data-where="table=topic_summary&amp;topic=Storytelling%20and%20pitch" data-field="members_asked">—</b> members asked about it. The biggest gap is proof: they cannot tell whether their pitch works.</p>
+      <div class="cx-grid">
+        <div class="cx-card cx-wide" id="card-story-themes"><h2>Storytelling and pitch pain points, by AI level</h2><p class="note">Members whose storytelling question falls under each theme.</p><div class="cx-legend lv-legend"></div><div class="cx-chart" id="ch-story" data-source="cohort"></div></div>
+        <div class="cx-card" id="card-goals"><h2>How they ranked their goals</h2><p class="note">Average rank, 1 is most important. Shorter bar ranks higher.</p><div class="cx-chart" id="ch-goals" data-source="cohort"></div></div>
+        <div class="cx-card" id="card-first"><h2>Their number one goal</h2><p class="note">Members who ranked each goal first.</p><div class="cx-chart" id="ch-first" data-source="cohort"></div></div>
+        <div class="cx-card cx-wide" id="card-story-detail"><h2>Each pain point in detail</h2><p class="note">Theme, members, a real question (anonymous), and what is underneath it.</p><div class="cx-themes" id="th-story" data-source="cohort"></div></div>
+      </div>
+    </section>
+
+    <section class="cx-page" id="leads" role="tabpanel" aria-labelledby="tab-leads" hidden>
+      <p class="cx-take">LinkedIn is the main channel, but <b data-source="cohort" data-where="table=ai_outreach&amp;answer=Never" data-field="members">—</b> members never use AI for outreach. Projects mostly live in heads, spreadsheets or loose tools.</p>
+      <div class="cx-grid">
+        <div class="cx-card" id="card-channels"><h2>Where their leads come from</h2><p class="note">Members using each channel. Most use several.</p><div class="cx-chart" id="ch-channels" data-source="cohort"></div></div>
+        <div class="cx-card" id="card-outreach"><h2>Use AI for outreach</h2><p class="note">How often members use AI in daily outreach.</p><div class="cx-chart" id="ch-outreach" data-source="cohort"></div></div>
+        <div class="cx-card" id="card-tools"><h2>Tools in their stack</h2><p class="note">Members listing each tool.</p><div class="cx-chart" id="ch-tools" data-source="cohort"></div></div>
+        <div class="cx-card" id="card-pm"><h2>Where projects are managed</h2><p class="note">One answer per member.</p><div class="cx-chart" id="ch-pm" data-source="cohort"></div></div>
+      </div>
+    </section>
+
+    <section class="cx-page" id="outcomes" role="tabpanel" aria-labelledby="tab-outcomes" hidden>
+      <p class="cx-take">Only <b data-source="cohort" data-where="table=kpi&amp;key=measurable" data-field="value">—</b> members gave a target with a number. The biggest pain is lead flow, and the biggest success picture is signed clients.</p>
+      <div class="cx-grid">
+        <div class="cx-card" id="card-success"><h2>What success by 20 Nov looks like</h2><p class="note">Each member counted once, under their main theme.</p><div class="cx-chart" id="ch-success" data-source="cohort"></div><ul class="cx-list" id="ls-success" data-source="cohort"></ul></div>
+        <div class="cx-card" id="card-pains"><h2>Main pain points</h2><p class="note">Each member counted once, under their main pain.</p><div class="cx-chart" id="ch-pains" data-source="cohort"></div><ul class="cx-list" id="ls-pains" data-source="cohort"></ul></div>
+      </div>
+    </section>
+  </div>
+
+  <script src="../club/portal-theme.js" defer></script>
+
+  <script>
+  (function () {
+    'use strict';
+
+    /* ------------------------------------------------------------------
+       The code gate.
+
+       This is a light gate, not security. Everything behind it is
+       anonymous aggregates -- 181 rows of counts, with no names, emails or
+       companies -- so the gate exists to keep the page off a casual
+       shoulder, not to protect secrets. data.json sits next to this file
+       and anyone who wants it can read it directly.
+
+       The code itself is not in the page: the typed value is trimmed,
+       uppercased, hashed with SHA-256 and compared to the digest below.
+       That keeps the code out of the source a curious member would read,
+       which is all a hash can buy here.
+       ------------------------------------------------------------------ */
+    var CODE_HASH = 'd8ad17422363b711a1d4d4307760e73d18443703e320507fea53f17d3c0695e3';
+    var STORE_KEY = 'tr_cohort26_access';
+
+    var gate = document.getElementById('cx-gate');
+    var gateForm = document.getElementById('cx-gate-form');
+    var gateInput = document.getElementById('cx-code');
+    var gateMsg = document.getElementById('cx-gate-msg');
+    var shell = document.getElementById('cx-shell');
+
+    function stored() {
+      try { return window.sessionStorage.getItem(STORE_KEY); } catch (e) { return null; }
+    }
+    function remember() {
+      // The digest, never the code. Blocked storage only costs a re-entry.
+      try { window.sessionStorage.setItem(STORE_KEY, CODE_HASH); } catch (e) {}
+    }
+
+    function digest(value) {
+      var subtle = window.crypto && window.crypto.subtle;
+      if (!subtle) return Promise.reject(new Error('no subtle crypto'));
+      return Promise.resolve(subtle.digest('SHA-256', new window.TextEncoder().encode(value)))
+        .then(function (buf) {
+          var bytes = new Uint8Array(buf), out = '';
+          for (var i = 0; i < bytes.length; i++) out += (bytes[i] < 16 ? '0' : '') + bytes[i].toString(16);
+          return out;
+        });
+    }
+
+    // Raising the gate is the only thing that asks for data.json and the only
+    // thing that draws a tab. Both are idempotent, so a second call is free.
+    function unlock() {
+      gate.hidden = true;
+      shell.hidden = false;
+      load();
+      start();
+    }
+
+    /* ------------------------------------------------------------------
+       The data. One fetch, kept in `state`, read through a small shim with
+       the same shape the approved dashboard was built against: data(),
+       onData() and a colour list.
+       ------------------------------------------------------------------ */
+    var state = { status: 'missing', data: [] };
+    var listeners = [];
+    var asked = false;
+
+    var dash = {
+      // A class per level rather than a resolved colour, so the theme toggle
+      // recolours every bar with nothing to redraw.
+      colors: ['cx-f1', 'cx-f2', 'cx-f3', 'cx-f4'],
+      data: function () { return state; },
+      onData: function (fn) { listeners.push(fn); },
+      setLink: function (id) {
+        try { window.history.replaceState(null, '', '#' + id); } catch (e) {}
+      }
+    };
+
+    function emit() { listeners.forEach(function (fn) { fn(); }); }
+
+    function load() {
+      if (asked) return;
+      asked = true;
+      state = { status: 'loading', data: [] };
+      emit();
+      window.fetch('data.json', { cache: 'no-store' })
+        .then(function (res) {
+          if (!res.ok) throw new Error('HTTP ' + res.status);
+          return res.json();
+        })
+        .then(function (rows) {
+          state = { status: 'ok', data: Array.isArray(rows) ? rows : [] };
+          bindText();
+          emit();
+        })['catch'](function () {
+          state = { status: 'error', data: [] };
+          emit();
+        });
+    }
+
+    /* The sentences at the top of each tab name a row and a field rather
+       than carrying a number, so no count is written into the markup. */
+    function bindText() {
+      var nodes = document.querySelectorAll('[data-field][data-where]');
+      Array.prototype.forEach.call(nodes, function (el) {
+        var want = new window.URLSearchParams(el.getAttribute('data-where'));
+        var row = null;
+        for (var i = 0; i < state.data.length; i++) {
+          var match = true;
+          want.forEach(function (v, k) { if (String(state.data[i][k]) !== v) match = false; });
+          if (match) { row = state.data[i]; break; }
+        }
+        var v = row ? row[el.getAttribute('data-field')] : null;
+        if (v === null || v === undefined || v === '') { el.textContent = '—'; return; }
+        el.textContent = isFinite(Number(v)) ? fmt(Number(v)) : String(v);
+      });
+    }
+
+    /* ------------------------------------------------------------------
+       Plain-SVG chart helpers.
+       ------------------------------------------------------------------ */
+    var NS = 'http://www.w3.org/2000/svg';
+    var LVN = ['Beginner', 'Casual', 'Practitioner', 'Builder'];
+    var LV5 = LVN.concat(['Advanced']);
+
+    function el(name, attrs) {
+      var node = document.createElementNS(NS, name);
+      for (var k in attrs) if (Object.prototype.hasOwnProperty.call(attrs, k)) node.setAttribute(k, attrs[k]);
+      return node;
+    }
+    function num(v) { return Number(v) || 0; }
+    function fmt(n) { return String(n).replace(/\B(?=(\d{3})+(?!\d))/g, ','); }
+    function fmt1(n) { return Number(n).toFixed(1); }
+    function clear(node) { while (node.firstChild) node.removeChild(node.firstChild); }
+    function maxOf(rows, key) {
+      return rows.reduce(function (m, r) { return Math.max(m, num(r[key])); }, 0);
+    }
+    function fail(node) {
+      clear(node);
+      var f = document.createElement('div');
+      f.className = 'cx-fail';
+      f.textContent = 'Failed to load';
+      node.appendChild(f);
+    }
+    function wait(node) {
+      clear(node);
+      var w = document.createElement('div');
+      w.className = 'cx-wait';
+      w.textContent = 'Loading…';
+      node.appendChild(w);
+    }
+
+    // Text measurement, with an estimate behind it: a 12px label is about
+    // 6.3px a character, which is close enough to lay a column out with
+    // before the real face has arrived.
+    function textWidth(svg, text, node) {
+      var probe = node || el('text', { 'font-size': '12px' });
+      if (!node) { probe.textContent = String(text); svg.appendChild(probe); }
+      var w = typeof probe.getComputedTextLength === 'function' ? probe.getComputedTextLength() : 0;
+      if (!node) svg.removeChild(probe);
+      return w || String(text).length * 6.3;
+    }
+    function widest(svg, texts) {
+      return texts.reduce(function (m, t) { return Math.max(m, textWidth(svg, t)); }, 0);
+    }
+    // A label that will not fit its column loses characters off the end.
+    function fit(svg, node, text, room) {
+      var s = String(text);
+      node.textContent = s;
+      while (textWidth(svg, s, node) > room && s.length > 4) {
+        s = s.slice(0, -2);
+        node.textContent = s + '…';
+      }
+    }
+
+    var tip = null;
+    function showTip(card, lines, ev) {
+      if (!tip) { tip = document.createElement('div'); tip.className = 'cx-tip'; }
+      card.appendChild(tip);
+      tip.hidden = false;
+      clear(tip);
+      lines.forEach(function (line, i) {
+        var row = document.createElement('div');
+        if (i === 0) row.className = 'k';
+        row.textContent = line;
+        tip.appendChild(row);
+      });
+      // Clamped to the card on both axes, so it can never reach past the
+      // edge of the page and make it scroll.
+      var r = card.getBoundingClientRect();
+      var w = tip.offsetWidth, h = tip.offsetHeight;
+      var x = ev.clientX - r.left + 14, y = ev.clientY - r.top + 14;
+      if (x + w > r.width - 8) x = Math.max(8, ev.clientX - r.left - w - 14);
+      if (y + h > r.height - 8) y = Math.max(8, ev.clientY - r.top - h - 14);
+      tip.style.left = x + 'px';
+      tip.style.top = y + 'px';
+    }
+    function hideTip() { if (tip) tip.hidden = true; }
+
+    function hitRect(g, W, h, lines, card) {
+      var hit = el('rect', { x: 0, y: 0, width: W, height: h, 'class': 'hit' });
+      hit.addEventListener('mousemove', function (ev) { showTip(card, lines(), ev); });
+      hit.addEventListener('mouseleave', hideTip);
+      g.appendChild(hit);
+    }
+
+    // Horizontal bars: label, bar, value, one hit row.
+    function hbar(node, data, labelKey, valueKey, o) {
+      o = o || {};
+      clear(node);
+      if (!data.length) return;
+      var W = node.clientWidth || 600, bh = 22, gap = 10, H = data.length * (bh + gap);
+      var svg = el('svg', { width: '100%', viewBox: '0 0 ' + W + ' ' + H, role: 'img' });
+      node.appendChild(svg);
+      var valueText = function (d) { return o.text ? o.text(d) : fmt(num(d[valueKey])); };
+      var lw = Math.min(W * 0.45, widest(svg, data.map(function (d) { return d[labelKey]; })) + 12);
+      var vw = widest(svg, data.map(valueText)) + 8;
+      var max = o.max || maxOf(data, valueKey) || 1;
+      var span = Math.max(10, W - lw - vw - 4);
+      var x = function (v) { return v / max * span; };
+      var card = node.closest('.cx-card');
+
+      data.forEach(function (d, i) {
+        var g = el('g', { transform: 'translate(0,' + (i * (bh + gap)) + ')' });
+        svg.appendChild(g);
+
+        var label = el('text', {
+          x: lw - 8, y: bh / 2, dy: '0.35em', 'text-anchor': 'end', 'font-size': '12px'
+        });
+        g.appendChild(label);
+        fit(svg, label, d[labelKey], lw - 12);
+
+        var v = num(d[valueKey]);
+        g.appendChild(el('rect', {
+          x: lw, y: 2, height: bh - 4, rx: 4,
+          width: Math.max(v > 0 ? 2 : 0, x(v)),
+          'class': o.color ? o.color(d, i) : dash.colors[0]
+        }));
+
+        var value = el('text', {
+          x: lw + x(v) + 6, y: bh / 2, dy: '0.35em', 'font-size': '12px', 'class': 'v'
+        });
+        value.textContent = valueText(d);
+        g.appendChild(value);
+
+        hitRect(g, W, bh + gap, function () {
+          return o.tip ? o.tip(d) : [String(d[labelKey]), fmt(v) + (o.unit === undefined ? ' members' : o.unit)];
+        }, card);
+      });
+    }
+
+    // One bar per theme, split into the four AI levels.
+    function stacked(node, data) {
+      clear(node);
+      if (!data.length) return;
+      var W = node.clientWidth || 600, bh = 22, gap = 10, H = data.length * (bh + gap);
+      var svg = el('svg', { width: '100%', viewBox: '0 0 ' + W + ' ' + H, role: 'img' });
+      node.appendChild(svg);
+      var lw = Math.min(W * 0.5, widest(svg, data.map(function (d) { return d.theme; })) + 12);
+      var max = maxOf(data, 'members') || 1;
+      var span = Math.max(10, W - lw - 36);
+      var x = function (v) { return v / max * span; };
+      var card = node.closest('.cx-card');
+
+      data.forEach(function (d, i) {
+        var g = el('g', { transform: 'translate(0,' + (i * (bh + gap)) + ')' });
+        svg.appendChild(g);
+
+        var label = el('text', {
+          x: lw - 8, y: bh / 2, dy: '0.35em', 'text-anchor': 'end', 'font-size': '12px'
+        });
+        g.appendChild(label);
+        fit(svg, label, d.theme, lw - 12);
+
+        var x0 = lw;
+        [1, 2, 3, 4].forEach(function (l) {
+          var v = num(d['l' + l]);
+          if (!v) return;
+          g.appendChild(el('rect', {
+            x: x0, y: 2, height: bh - 4, width: Math.max(1, x(v) - 1), 'class': dash.colors[l - 1]
+          }));
+          x0 += x(v);
+        });
+
+        var total = el('text', {
+          x: x0 + 6, y: bh / 2, dy: '0.35em', 'font-size': '12px', 'class': 'v'
+        });
+        total.textContent = fmt(num(d.members));
+        g.appendChild(total);
+
+        hitRect(g, W, bh + gap, function () {
+          return [d.theme, fmt(num(d.members)) + ' members'].concat(
+            [1, 2, 3, 4].filter(function (l) { return num(d['l' + l]); })
+              .map(function (l) { return LVN[l - 1] + ': ' + fmt(num(d['l' + l])); })
+          );
+        }, card);
+      });
+    }
+
+    function legends() {
+      var nodes = document.querySelectorAll('.lv-legend');
+      Array.prototype.forEach.call(nodes, function (node) {
+        if (node.childElementCount) return;
+        LVN.forEach(function (name, i) {
+          var span = document.createElement('span');
+          var swatch = document.createElement('i');
+          swatch.className = 'cx-lv' + (i + 1);
+          span.appendChild(swatch);
+          span.appendChild(document.createTextNode('Level ' + (i + 1) + ' ' + name));
+          node.appendChild(span);
+        });
+      });
+    }
+
+    /* What sits underneath each theme, written for the trainer. Keyed by the
+       theme id in the data, so a theme that leaves the data takes its note
+       with it. */
+    var UNDER = {
+      A1: 'Mostly beginners and casual users. Start with a plain definition and one working example on screen.',
+      A2: 'Context is spread across tools and chats, so every new chat starts from zero. One home for context fixes most of it.',
+      A3: 'They want the whole business automated before one agent runs. Shrink the ask to one scheduled job.',
+      A4: 'Unclear where human judgment must stay. Teach draft, then approve.',
+      B1: 'Mostly casual users who have never built one. They need a first build done live, step by step.',
+      B2: 'Time is the real budget. Show the hours to build and the minutes a week to maintain.',
+      B3: 'Their agents guess and they redo the work. Templates, examples and a self-check fix it.',
+      B4: 'Agents only run when the chat is open. Cloud scheduling is the missing piece.',
+      B5: 'Builders hitting handoff problems, plus beginners designing agent teams before one agent works.',
+      B6: 'Expect agents to learn alone. They improve only when instructions are updated.',
+      B7: 'Fear of runaway credit costs. Show what one agent really costs to run.',
+      B8: 'Data safety and company restrictions. Answer it early or it blocks the build.',
+      B9: 'Hallucination and stale information. Give the source, ask for citations, keep the review step.',
+      B10: 'Too much context made output worse. Clean up before building more.',
+      B11: 'Doubt that agents are worth it for a small business. Prove it with hours saved.',
+      B12: 'Tool sprawl and subscription fatigue. One main AI, add tools only when an agent needs one.',
+      B13: 'Worried a change in one place breaks everything. One source document per agent.',
+      B14: 'Want research agents they can trust without checking every row.',
+      C1: 'The top fear at every level. Fix the input: voice guide, real examples, their own raw material.',
+      C2: 'Volume and consistency. One source piece a week, repurposed, beats daily creation.',
+      C3: 'Hooks and first-second attention. Pull hooks from client language, test ten per post.',
+      C4: 'Posting does not turn into sales. Every post needs a job and one next step.',
+      C5: 'Visual and video tools, and whether they must show their face.',
+      C6: 'Self-doubt about their own story and nerves on camera or stage.',
+      D1: 'Cannot say what they do in one sentence, especially for new or complex offers.',
+      D2: 'Fear of sounding salesy or overclaiming. Diagnose first, then tell one specific story.',
+      D3: 'Pitch too rarely to know what works. Track pitches, replies and closes.'
+    };
+
+    function themeList(node, data) {
+      clear(node);
+      data.forEach(function (d) {
+        var wrap = document.createElement('div');
+        wrap.className = 'cx-theme';
+
+        var count = document.createElement('div');
+        count.className = 'cnt';
+        count.textContent = fmt(num(d.members));
+        var unit = document.createElement('small');
+        unit.textContent = 'members';
+        count.appendChild(unit);
+
+        var body = document.createElement('div');
+        var h = document.createElement('h3');
+        h.textContent = d.theme;
+        body.appendChild(h);
+
+        var bar = document.createElement('div');
+        bar.className = 'lv';
+        [1, 2, 3, 4].forEach(function (l) {
+          var v = num(d['l' + l]);
+          if (!v) return;
+          var seg = document.createElement('span');
+          seg.className = 'cx-lv' + l;
+          seg.style.flex = String(v);
+          bar.appendChild(seg);
+        });
+        body.appendChild(bar);
+
+        if (d.example) {
+          var q = document.createElement('p');
+          q.className = 'q';
+          q.textContent = '"' + d.example + '"';
+          body.appendChild(q);
+        }
+        if (UNDER[d.theme_id]) {
+          var why = document.createElement('p');
+          why.className = 'why';
+          why.textContent = UNDER[d.theme_id];
+          body.appendChild(why);
+        }
+
+        wrap.appendChild(count);
+        wrap.appendChild(body);
+        node.appendChild(wrap);
+      });
+    }
+
+    function heat(node) {
+      clear(node);
+      var data = rows('level_revenue');
+      if (!data.length) return;
+      var stages = rows('revenue').sort(byOrder).map(function (r) { return r.stage; });
+      var max = maxOf(data, 'members') || 1;
+      var card = node.closest('.cx-card');
+
+      // Seven columns need more room than a phone has, so the grid carries a
+      // minimum width and this wrapper takes the sideways scroll. The page
+      // itself never scrolls sideways.
+      var scroller = document.createElement('div');
+      scroller.className = 'cx-scroll';
+      var grid = document.createElement('div');
+      grid.className = 'cx-heat';
+      grid.style.gridTemplateColumns = 'minmax(5.5rem,auto) repeat(' + stages.length + ',minmax(3.6rem,1fr))';
+      grid.style.minWidth = (stages.length * 62 + 92) + 'px';
+
+      grid.appendChild(headCell(''));
+      stages.forEach(function (s) { grid.appendChild(headCell(s)); });
+
+      [1, 2, 3, 4, 5].forEach(function (l) {
+        var h = headCell(l + ' ' + LV5[l - 1]);
+        h.style.textAlign = 'left';
+        grid.appendChild(h);
+        stages.forEach(function (s) {
+          var row = data.filter(function (d) { return d.stage === s && num(d.level) === l; })[0];
+          var v = row ? num(row.members) : 0;
+          var cell = document.createElement('div');
+          cell.textContent = fmt(v);
+          cell.setAttribute('data-members', String(v));
+          cell.style.background = 'color-mix(in srgb, var(--cx-heat) ' + Math.round(v / max * 85 + (v ? 8 : 0)) + '%, transparent)';
+          if (v / max > 0.55) cell.style.color = 'rgb(var(--c-bg))';
+          cell.addEventListener('mousemove', function (ev) {
+            showTip(card, [s + ', level ' + l + ' ' + LV5[l - 1], fmt(v) + ' members'], ev);
+          });
+          cell.addEventListener('mouseleave', hideTip);
+          grid.appendChild(cell);
+        });
+      });
+
+      scroller.appendChild(grid);
+      node.appendChild(scroller);
+    }
+    function headCell(text) {
+      var d = document.createElement('div');
+      d.className = 'h';
+      d.textContent = text;
+      return d;
+    }
+
+    function stageCards(node) {
+      clear(node);
+      rows('stage_detail').sort(function (a, b) { return a.level - b.level; }).forEach(function (d) {
+        var m = num(d.members);
+        var card = document.createElement('div');
+        card.className = 'cx-stage' + (m ? '' : ' empty');
+
+        var sw = document.createElement('div');
+        sw.className = 'sw cx-lv' + num(d.level);
+        card.appendChild(sw);
+
+        var top = document.createElement('div');
+        top.className = 'top';
+        var left = document.createElement('div');
+        var lvl = document.createElement('div');
+        lvl.className = 'lvl';
+        lvl.textContent = 'Level ' + d.level;
+        var h = document.createElement('h3');
+        h.textContent = d.label;
+        left.appendChild(lvl);
+        left.appendChild(h);
+        var big = document.createElement('div');
+        big.className = 'big';
+        big.textContent = fmt(m);
+        top.appendChild(left);
+        top.appendChild(big);
+        card.appendChild(top);
+
+        var looks = document.createElement('p');
+        looks.textContent = d.looks;
+        card.appendChild(looks);
+
+        if (m) {
+          var dl = document.createElement('dl');
+          [['Pre-revenue', d.prerev], ['Solo', d.solo], ['Use AI for outreach', d.ai_outreach], ['Projects in head or sheet', d.head_or_sheet]]
+            .forEach(function (pair) {
+              var dt = document.createElement('dt');
+              dt.textContent = pair[0];
+              var dd = document.createElement('dd');
+              dd.textContent = fmt(num(pair[1])) + ' of ' + fmt(m);
+              dl.appendChild(dt);
+              dl.appendChild(dd);
+            });
+          card.appendChild(dl);
+
+          [['Most common pain', d.top_pain, d.top_pain_n], ['Success picture', d.top_success, d.top_success_n], ['Said to build first', d.top_build, d.top_build_n]]
+            .forEach(function (trio) {
+              var lab = document.createElement('div');
+              lab.className = 'lab';
+              lab.textContent = trio[0] + ' (' + fmt(num(trio[2])) + ')';
+              card.appendChild(lab);
+              var val = document.createElement('p');
+              val.textContent = trio[1];
+              card.appendChild(val);
+            });
+        }
+
+        var needs = document.createElement('p');
+        needs.className = 'need';
+        needs.textContent = d.needs;
+        card.appendChild(needs);
+
+        node.appendChild(card);
+      });
+    }
+
+    function descList(node, data) {
+      clear(node);
+      data.forEach(function (d) {
+        var li = document.createElement('li');
+        var b = document.createElement('b');
+        b.textContent = d.theme + ': ';
+        li.appendChild(b);
+        li.appendChild(document.createTextNode(d.desc));
+        node.appendChild(li);
+      });
+    }
+
+    /* ------------------------------------------------------------------
+       The seven tabs.
+       ------------------------------------------------------------------ */
+    function rows(table) {
+      var d = dash.data();
+      return d.status === 'ok' ? d.data.filter(function (r) { return r.table === table; }) : [];
+    }
+    function byMembers(a, b) { return num(b.members) - num(a.members); }
+    function byOrder(a, b) { return num(a.order) - num(b.order); }
+    function pick(id) { return document.getElementById(id); }
+
+    var TOPICS = {
+      'Agents': 'agents',
+      'AI operating system': 'aios',
+      'Content': 'content',
+      'Storytelling and pitch': 'story'
+    };
+
+    var DRAW = {
+      stages: function () {
+        var f = rows('funnel').sort(byOrder);
+        var top = f.length ? num(f[0].members) : 1;
+        hbar(pick('ch-funnel'), f, 'step', 'members', {
+          max: top,
+          color: function (d, i) { return i === 3 ? dash.colors[1] : dash.colors[0]; }
+        });
+        stageCards(pick('st-detail'));
+        hbar(pick('ch-levels'), rows('levels').sort(function (a, b) { return a.level - b.level; }), 'label', 'members', {
+          tip: function (d) { return [d.label, fmt(num(d.members)) + ' members', d.desc]; }
+        });
+        heat(pick('ch-heat'));
+        hbar(pick('ch-build'), rows('build').sort(byMembers), 'priority', 'members', {
+          text: function (d) { return fmt(num(d.members)) + '  (avg level ' + fmt1(d.avg_level) + ')'; }
+        });
+        hbar(pick('ch-team'), rows('team').sort(byOrder), 'size', 'members');
+      },
+      leads: function () {
+        hbar(pick('ch-channels'), rows('channels').sort(byMembers), 'channel', 'members');
+        hbar(pick('ch-outreach'), rows('ai_outreach').sort(byOrder), 'answer', 'members');
+        hbar(pick('ch-tools'), rows('tools').sort(byMembers), 'tool', 'members');
+        hbar(pick('ch-pm'), rows('pm').sort(byMembers), 'method', 'members');
+      },
+      outcomes: function () {
+        var s = rows('success').sort(byMembers), p = rows('pains').sort(byMembers);
+        hbar(pick('ch-success'), s, 'theme', 'members');
+        descList(pick('ls-success'), s);
+        hbar(pick('ch-pains'), p, 'theme', 'members', { color: function () { return dash.colors[3]; } });
+        descList(pick('ls-pains'), p);
+      }
+    };
+
+    Object.keys(TOPICS).forEach(function (topic) {
+      var id = TOPICS[topic];
+      DRAW[id] = function () {
+        legends();
+        var t = rows('themes').filter(function (r) { return r.topic === topic; }).sort(byMembers);
+        stacked(pick('ch-' + id), t);
+        themeList(pick('th-' + id), t);
+        if (id === 'agents') hbar(pick('ch-auto'), rows('automation').sort(byMembers), 'need', 'members');
+        if (id === 'story') {
+          hbar(pick('ch-goals'), rows('goals').sort(function (a, b) { return a.avg_rank - b.avg_rank; }), 'goal', 'avg_rank', {
+            max: 5,
+            text: function (d) { return fmt1(d.avg_rank); },
+            tip: function (d) { return [d.goal, 'Average rank ' + fmt1(d.avg_rank)]; },
+            color: function () { return dash.colors[2]; }
+          });
+          hbar(pick('ch-first'), rows('goals').sort(function (a, b) { return num(b.first_choice) - num(a.first_choice); }), 'goal', 'first_choice');
+        }
+      };
+    });
+
+    var current = 'stages';
+    var tabs = Array.prototype.slice.call(document.querySelectorAll('.cx-tab'));
+
+    function show(id) {
+      if (!DRAW[id] || !document.getElementById(id)) id = 'stages';
+      current = id;
+      hideTip();
+      tabs.forEach(function (t) {
+        var on = t.dataset.page === id;
+        t.setAttribute('aria-selected', String(on));
+        t.tabIndex = on ? 0 : -1;
+      });
+      Array.prototype.forEach.call(document.querySelectorAll('.cx-page'), function (p) { p.hidden = p.id !== id; });
+      dash.setLink(id);
+      render();
+    }
+
+    tabs.forEach(function (t, i) {
+      t.addEventListener('click', function () { show(t.dataset.page); });
+      t.addEventListener('keydown', function (e) {
+        if (e.key !== 'ArrowRight' && e.key !== 'ArrowLeft') return;
+        var next = tabs[(i + (e.key === 'ArrowRight' ? 1 : tabs.length - 1)) % tabs.length];
+        next.focus();
+        show(next.dataset.page);
+      });
+    });
+
+    function render() {
+      if (shell.hidden) return;
+      var d = dash.data();
+      var page = document.getElementById(current);
+      if (!page) return;
+      var slots = page.querySelectorAll('.cx-chart, .cx-themes, .cx-list, .cx-stages');
+      if (d.status === 'error' || d.status === 'missing') {
+        Array.prototype.forEach.call(slots, function (s) {
+          if (s.classList.contains('cx-chart')) fail(s);
+        });
+        return;
+      }
+      if (d.status !== 'ok') {
+        Array.prototype.forEach.call(slots, function (s) {
+          if (s.classList.contains('cx-chart')) wait(s);
+        });
+        return;
+      }
+      DRAW[current]();
+    }
+
+    dash.onData(render);
+
+    // An SVG laid out at one width keeps that label column when the window
+    // changes, so the current tab is drawn again once the resize settles.
+    var resizeTimer = null;
+    window.addEventListener('resize', function () {
+      if (resizeTimer) window.clearTimeout(resizeTimer);
+      resizeTimer = window.setTimeout(function () {
+        resizeTimer = null;
+        hideTip();
+        if (!shell.hidden) render();
+      }, 180);
+    });
+
+    var started = false;
+    function start() {
+      if (started) return;
+      started = true;
+      show((window.location.hash || '').slice(1) || 'stages');
+    }
+
+    /* ------------------------------------------------------------------
+       Bootstrap. Last, so the gate never raises on a half-built page.
+       ------------------------------------------------------------------ */
+    if (stored() === CODE_HASH) {
+      unlock();
+    } else if (gateForm) {
+      gateForm.addEventListener('submit', function (ev) {
+        ev.preventDefault();
+        gateMsg.textContent = '';
+        digest(String(gateInput.value || '').trim().toUpperCase()).then(function (hex) {
+          if (hex === CODE_HASH) { remember(); unlock(); return; }
+          gateMsg.textContent = "That code isn't right.";
+          gateInput.select();
+        })['catch'](function () {
+          // crypto.subtle is only there on a secure origin, so say so rather
+          // than tell a member holding the right code that it is wrong.
+          gateMsg.textContent = 'The code cannot be checked here. Open this page over https.';
+        });
+      });
+    }
+  })();
+  </script>
+</body>
+</html>
