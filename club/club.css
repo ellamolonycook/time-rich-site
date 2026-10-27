@@ -264,9 +264,25 @@
   text-wrap: pretty;
 }
 .tc-letter-more { margin-top: 28px; }
+/* Ella's socials, under the button: small cream outline pills on the dark
+   ground, quieter than the button so it stays the main action. */
+.tc-letter-social { margin-top: 20px; display: flex; flex-wrap: wrap; gap: 8px; }
+.tc-letter-social a {
+  display: inline-flex; align-items: center; gap: 8px;
+  min-height: 40px; padding: 0 14px;
+  border: 1px solid rgb(244 241 230 / .28);
+  border-radius: 999px;
+  color: rgb(244 241 230 / .85);
+  font-size: 13px; font-weight: 500; text-decoration: none;
+  transition: border-color .2s, background-color .2s, color .2s;
+}
+.tc-letter-social a:hover { border-color: rgb(244 241 230 / .6); background: rgb(244 241 230 / .06); color: var(--tc-cream); }
+.tc-letter-social a:focus-visible { outline: 2px solid var(--tc-cream); outline-offset: 2px; }
+.tc-letter-social svg { width: 16px; height: 16px; fill: none; stroke: currentColor; stroke-width: 1.5; stroke-linecap: round; stroke-linejoin: round; }
 @media (min-width: 900px) and (min-height: 560px) {
   .tc-letter-lede { margin-top: clamp(16px, 3vh, 32px); font-size: clamp(15px, 2vh, 18px); }
   .tc-letter-more { margin-top: clamp(16px, 3vh, 32px); }
+  .tc-letter-social { margin-top: clamp(12px, 2vh, 20px); }
 }
 
 /* The founding story: the whole letter, full screen on the dark ground,
