@@ -349,6 +349,9 @@
     .trp-cw-prizes-body { padding: 0 20px 16px; }
     .trp-cw-prizes-lead { margin: 0 0 6px; font-size: 14px; line-height: 1.5; color: var(--trp-soft); }
     .trp-cw-prizes-list { list-style: none; margin: 0; padding: 0; }
+    .trp-cw-share-lead { margin: 0 0 10px; font-size: 15px; line-height: 1.55; color: var(--trp-deep); }
+    .trp-cw-share-steps { margin: 0 0 16px; padding-left: 22px; font-size: 15px; line-height: 1.55; color: var(--trp-deep); }
+    .trp-cw-share-steps li + li { margin-top: 6px; }
     .trp-cw-prize { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 15rem); gap: 4px 24px; align-items: baseline; padding: 14px 0; border-top: 1px solid var(--trp-line); }
     .trp-cw-prize:first-child { border-top: 0; }
     .trp-cw-prize-name { font-size: 16px; font-weight: 600; color: var(--trp-deep); }
@@ -1945,6 +1948,44 @@ When you finish:
       /* The band under the welcome: the video, wide. The calendar used to
          be a card beside it; it is a small button beside the welcome's
          title now. */
+      /* Post your Superhuman journey: a drop-down in the prizes' style, just
+         above them. One button opens Ella's Graphics folder in Drive, so new
+         assets show up without a code change (Ella, 27 Oct). */
+      var SHARE_ASSETS = 'https://drive.google.com/drive/folders/1AsuPpdgp4XlRfhIskiyZmjrXArj5gpb2?usp=sharing';
+      var SHARE_STEPS = [
+        'Download one of the graphics below.',
+        'Post it on LinkedIn or Instagram with one honest line: what you\u2019re building this week, or what nearly stopped you from joining.',
+        'Tag Ella Molony Cook, Stanley, Wispr Flow and Time Rich so we see it.'
+      ];
+      var shareOpen = false;
+      var shareNode = null;     // drawn once, like the prizes
+      function share() {
+        var box = document.createElement('details');
+        box.className = 'trp-cw-prizes trp-cw-share';
+        box.open = shareOpen;
+        box.addEventListener('toggle', function () {
+          shareOpen = box.open;
+          if (box.open) reveal(inner);
+        });
+        var sum = document.createElement('summary');
+        sum.setAttribute('data-cw-focus', 'share');
+        sum.appendChild(L.el('span', 'trp-cw-prizes-h', '\uD83D\uDCF8 Post your Superhuman journey'));
+        sum.appendChild(chevron());
+        box.appendChild(sum);
+        var inner = L.el('div', 'trp-cw-prizes-body');
+        inner.appendChild(L.el('p', 'trp-cw-share-lead', 'Post about your Superhuman journey to go in the draw to win the prizes below.'));
+        var ol = L.el('ol', 'trp-cw-share-steps');
+        SHARE_STEPS.forEach(function (t) { ol.appendChild(L.el('li', '', t)); });
+        inner.appendChild(ol);
+        var a = L.el('a', 'trp-cw-btn is-primary is-sm', 'Download the graphics');
+        a.href = SHARE_ASSETS;
+        a.target = '_blank';
+        a.rel = 'noopener';
+        inner.appendChild(a);
+        box.appendChild(inner);
+        return box;
+      }
+
       /* The Superhuman prizes run across all four weeks, so they sit above
          the week tabs rather than inside one week's lessons. */
       var PRIZES = [
@@ -2533,6 +2574,7 @@ When you finish:
         if (hello) out.push(hello);
         var band = intro(parts);
         if (band) out.push(band);
+        out.push(shareNode || (shareNode = share()));
         out.push(prizesNode || (prizesNode = prizes()));
 
         var tabs = L.el('div', 'trp-cw-weeks');
