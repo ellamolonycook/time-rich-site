@@ -16,7 +16,7 @@
 <meta property="og:image:height" content="630" />
 <meta name="twitter:image" content="https://timerich.ai/og-time-rich.png" />
 <meta name="twitter:card" content="summary_large_image" />
-<meta name="description" content="Your AI Superhuman Accelerator application is in. Next: book your call with Ella." />
+<meta name="description" content="Your AI Superhuman Accelerator application is in. Ella will be in touch by email soon." />
 <link rel="canonical" href="https://timerich.ai/sh-apply/thanks/" />
 <!-- Its own URL so it can be used as a conversion goal; not a page anyone should
      reach from search. -->
@@ -118,7 +118,7 @@ h1{font-size:clamp(30px,6vw,46px);letter-spacing:-.03em;font-weight:700}
     <section>
       <span class="eyebrow" id="confirmEyebrow">Application received</span>
       <h1 id="confirmHead" tabindex="-1">You&rsquo;re in.</h1>
-      <p class="lead" id="confirmSub">Your application is with Ella. Next step is booking your call.</p>
+      <p class="lead" id="confirmSub">Your application is with Ella. We&rsquo;ll be in touch by email soon.</p>
     </section>
 
     <!-- ===== Block 1.5 — pre-call video (VIDEO_ENABLED), Vimeo =====
@@ -146,7 +146,7 @@ h1{font-size:clamp(30px,6vw,46px);letter-spacing:-.03em;font-weight:700}
 
          Because the embed needs the script, the plain link sits ABOVE it and is
          never hidden: a blocked iframe here is a silently lost conversion. -->
-    <section class="block" id="bookingBlock">
+    <section class="block" id="bookingBlock" hidden>
       <h2>Book your call</h2>
       <p>Pick a time that works. It&rsquo;s 30 minutes, and you&rsquo;ll leave it knowing whether this is right for you either way.</p>
       <a class="fallback-link" id="bookingLink" href="https://cal.com/timerich/accelerator-call" target="_blank" rel="noopener">Open the calendar in a new tab &#8599;</a>
@@ -382,13 +382,15 @@ h1{font-size:clamp(30px,6vw,46px);letter-spacing:-.03em;font-weight:700}
   document.getElementById('videoBlock').hidden = !videoOn;
   document.getElementById('podcastBlock').hidden = !podcastOn;
   // No booker on a page that is about to say the call is already booked.
-  if (!arrivedBooked) mountBooking();
+  // Calendar removed at Ella's request, 28 Oct - mountBooking() is left in
+  // place (unused) so nothing else that references it breaks.
+  // if (!arrivedBooked) mountBooking();
 
   // ---- "You're in, {First name}." -----------------------------------------
   if (first) document.getElementById('confirmHead').textContent = 'You’re in, ' + first + '.';
   if (videoOn) {
     document.getElementById('confirmSub').textContent =
-      'Watch this before you book — it’s two minutes, and it’ll make the call better.';
+      'Watch this while you wait. It’s two minutes.';
   }
   if (arrivedBooked) markBooked(true);
 
