@@ -2347,7 +2347,41 @@ When you finish:
 
       /* ---- the panel ------------------------------------------------------ */
 
-      function sessionTile(session, now) {
+      /* The replay of a live call is a lesson in the same week whose title
+         starts with "Replay:" and carries the call's own date in brackets,
+         e.g. "Replay: Monday masterclass (Mon 26 Oct)". Its place in the
+         week's list is what names its drop-down, so the place comes back
+         with it. A call that has not happened yet matches nothing. */
+      function replayIn(items, when) {
+        if (!when) return -1;
+        for (var i = 0; i < items.length; i++) {
+          var t = L.str(items[i] && items[i].title);
+          if (/^Replay:/.test(t) && t.indexOf('(' + when + ')') !== -1) return i;
+        }
+        return -1;
+      }
+
+      /* Opens a lesson's drop-down from elsewhere in the panel and brings it
+         into view, so its video plays here on the page. Week 1's lessons sit
+         in sections that start shut, so the section opens first. */
+      function openLesson(key) {
+        var toggles = document.querySelectorAll('.trp-cw-toggle');
+        var toggle = null;
+        for (var i = 0; i < toggles.length; i++) {
+          if (toggles[i].getAttribute('data-cw-focus') === 'toggle-' + key) { toggle = toggles[i]; break; }
+        }
+        if (!toggle) return;
+        var master = toggle.closest ? toggle.closest('details.trp-cw-master') : null;
+        if (master && !master.open) master.open = true;
+        if (toggle.getAttribute('aria-expanded') !== 'true') toggle.click();
+        var land = (toggle.closest ? toggle.closest('.trp-cw-lesson') : null) || toggle;
+        if (land.scrollIntoView) {
+          try { land.scrollIntoView({ behavior: 'smooth', block: 'center' }); }
+          catch (e) { land.scrollIntoView(); }
+        }
+      }
+
+      function sessionTile(session, now, items) {
         var name = L.str(session && session.title) || 'Session';
         var bonus = BONUS_RE.test(name);
         var shown = bonus ? name.replace(BONUS_RE, '') : name;
@@ -2363,7 +2397,19 @@ When you finish:
         copy.appendChild(L.el('span', 'trp-cw-session-title', shown));
         if (bonus) copy.appendChild(L.el('span', 'trp-cw-tag', 'Bonus'));
 
-        // No recording button on the cards (Ella, 26 Oct).
+        /* Once its replay is up, the call carries it on the card again: a
+           button that opens the lesson's own drop-down, where the video
+           plays in the page -- never a link off it. A call with no replay
+           yet, like Friday before Friday, shows no button. */
+        var at = replayIn(items || [], when);
+        if (at !== -1) {
+          var key = rowKey(items[at], at + 1);
+          var play = L.el('button', 'trp-cw-btn', 'Watch replay');
+          play.type = 'button';
+          play.setAttribute('aria-label', 'Watch replay of ' + shown);
+          play.addEventListener('click', function () { openLesson(key); });
+          copy.appendChild(play);
+        }
         tile.appendChild(copy);
         return tile;
       }
@@ -2417,7 +2463,7 @@ When you finish:
         if (sessionList.length) {
           box.appendChild(L.el('h3', 'trp-cw-group', "This week's live calls"));
           var tiles = L.el('div', 'trp-cw-sessions');
-          sessionList.forEach(function (s) { tiles.appendChild(sessionTile(s, now)); });
+          sessionList.forEach(function (s) { tiles.appendChild(sessionTile(s, now, own)); });
           box.appendChild(tiles);
         }
 
