@@ -696,18 +696,17 @@ console.log('\n/contentworkshop — the ritual toggles');
   check('switching one back off un-completes it', count() === '0', count());
 }
 
-console.log('\n/contentworkshop — Mika\'s socials in the footer');
+console.log('\n/contentworkshop — Mika is off the page (Ella, 29 Oct)');
 {
   const { document } = load();
-  const box = document.getElementById('followmika');
-  check('the footer has a Follow Mika Reyes group', !!box && /Follow Mika Reyes/.test(box.textContent));
-  const hrefs = box ? [...box.querySelectorAll('a')].map((a) => a.getAttribute('href')) : [];
-  check('with her LinkedIn and Instagram, as she asked',
-    hrefs.length === 2 && hrefs[0] === 'https://linkedin.com/in/itsmikareyes' &&
-    hrefs[1] === 'https://instagram.com/its.mikareyes', hrefs);
-  check('opening in a new tab, so the workshop page stays open',
-    box && [...box.querySelectorAll('a')].every((a) => a.target === '_blank' && /noopener/.test(a.rel)));
-  check('and it sits inside the footer', !!box && !!box.closest('footer'));
+  const text = document.body.textContent;
+  check('no Mika, Reyes or Adeli anywhere a visitor can read',
+    !/mika|reyes|adeli/i.test(text), (text.match(/.{0,40}(mika|reyes|adeli).{0,40}/i) || [])[0]);
+  check('no link to her site or socials',
+    ![...document.querySelectorAll('a')].some((a) => /mikareyes|tryadeli/i.test(a.getAttribute('href') || '')));
+  check('the footer has no Follow Mika group', !document.getElementById('followmika'));
+  check('the hosts section introduces Ella alone',
+    /Meet Ella$/.test((document.getElementById('hostsh') || {}).textContent || ''));
 }
 
 console.log('\n/contentworkshop — phone first');
