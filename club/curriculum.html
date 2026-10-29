@@ -1486,7 +1486,8 @@ When you finish:
         [/claude\.ai\/download/, 'Get the Claude app'],
         [/claude\.ai\/projects/, 'Open Claude Projects'],
         [/loom\.com|vimeo\.com/, 'Watch the video'],
-        [/claude\.ai\/settings/, 'Open Claude settings']
+        [/claude\.ai\/settings/, 'Open Claude settings'],
+        [/getstanley\.ai/, 'Sign up for Stanley']
       ];
       function buttonLabel(item) {
         var url = L.str(item && item.url);
@@ -2297,15 +2298,27 @@ When you finish:
 
       /* ---- master drop-downs ---------------------------------------------- */
 
-      /* Week 1's lessons, in five sections in the order of the week. By sort,
+      /* A week's lessons in sections, in the order of the week. By sort,
          so a lesson Ella adds in Supabase lands in the section its place in
-         the week says. Other weeks are short enough to stay one list. */
-      var WEEK1_SECTIONS = [
-        { upto: 49, title: 'Monday: North Star & Business COMPASS' },
-        { upto: 79, title: 'This week: audit, AI EA, Wednesday prep' },
-        { upto: 89, title: 'Before Friday: Audacious Action' },
-        { upto: Infinity, title: 'Time Rich Agents and your voice' }
-      ];
+         the week says. Weeks not listed here stay one list.
+
+         Week 3 is the Content Workshop as a Club week, strategy first (Ella,
+         29 Oct); its rows come from the week 3 visibility migration. */
+      var WEEK_SECTIONS = {
+        1: [
+          { upto: 49, title: 'Monday: North Star & Business COMPASS' },
+          { upto: 79, title: 'This week: audit, AI EA, Wednesday prep' },
+          { upto: 89, title: 'Before Friday: Audacious Action' },
+          { upto: Infinity, title: 'Time Rich Agents and your voice' }
+        ],
+        3: [
+          { upto: 29, title: 'Step 1: Your content strategy' },
+          { upto: 69, title: 'Step 2: Give Stanley your context' },
+          { upto: 79, title: 'Step 3: Your LinkedIn skill' },
+          { upto: 99, title: 'Step 4: Your first post' },
+          { upto: Infinity, title: 'Step 5: Switch on your rituals' }
+        ]
+      };
 
       // Which sections the member has opened or shut, kept across redraws.
       var masterOpen = {};
@@ -2496,16 +2509,17 @@ When you finish:
             if (nextKey === null && L.isTrackable(it) && !L.isItemDone(it)) nextKey = rowKey(it, i + 1);
           });
           if (steps.length) box.appendChild(L.el('h3', 'trp-cw-group', setupLeft ? 'Then, this week' : 'This week'));
-          if (n !== 1) {
+          var sections = WEEK_SECTIONS[n];
+          if (!sections) {
             var ul = L.el('ul', 'trp-cw-lessons');
             own.forEach(function (it, i) { ul.appendChild(lessonRow(it, i + 1, rowKey(it, i + 1) === nextKey)); });
             box.appendChild(ul);
           } else {
-            // Week 1 in five sections. The one holding the next lesson to do
+            // The week in its sections. The one holding the next lesson to do
             // opens by itself once the setup is done; the rest start shut.
             var masters = L.el('div', 'trp-cw-masters');
             var from = 0;
-            WEEK1_SECTIONS.forEach(function (sec, si) {
+            sections.forEach(function (sec, si) {
               var list = [], rows = [], holdsNext = false;
               own.forEach(function (it, i) {
                 var sort = L.num(it && it.sort);
@@ -2522,7 +2536,7 @@ When you finish:
               // Only the section with the next lesson opens by itself; the
               // growth prompts start open but do not open their section.
               if (touched) holdsNext = rows.some(function (r) { return r.classList.contains('is-open'); });
-              masters.appendChild(masterBox('w1-' + si, sec.title, list, holdsNext, sul));
+              masters.appendChild(masterBox('w' + n + '-' + si, sec.title, list, holdsNext, sul));
             });
             box.appendChild(masters);
           }
