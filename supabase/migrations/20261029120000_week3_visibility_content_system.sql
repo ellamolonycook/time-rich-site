@@ -24,7 +24,7 @@ create temp table want (
 
 insert into want (week_id, kind, title, sort, body, url) values
   (3, $tr$text$tr$, $tr$Run the content strategy interview$tr$, 10,
-   $tr$Your strategy comes first: every post Stanley writes later reads it. Mika's prompt asks you questions one at a time, and you leave with your content strategy file. Built on principles from Hannah Zhang (@itshannahzhang), product marketer and creator.
+   $tr$Your strategy comes first: every post Stanley writes later reads it. The prompt asks you questions one at a time, and you leave with your content strategy file. Built on principles from Hannah Zhang (@itshannahzhang), product marketer and creator.
 
 1. Open a new chat in your Business Hub (or ChatGPT).
 2. Paste the prompt and send it.
