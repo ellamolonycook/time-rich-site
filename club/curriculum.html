@@ -209,6 +209,16 @@
     .trp-cw-session-copy > :nth-last-child(2) { margin-bottom: 8px; }
     .trp-cw-session .trp-cw-btn { margin-top: auto; align-self: flex-start; background: rgb(var(--c-surface)); color: var(--trp-deep); }
 
+    /* The replay lightbox: the video itself over the page, from a call
+       card's Watch replay button (Ella, 30 Oct). The box is a column, so
+       the Close button sits above the player at every width and never
+       hangs off the top of a phone. */
+    .trp-cw-lb { position: fixed; inset: 0; z-index: 200; display: flex; align-items: center; justify-content: center; padding: clamp(12px, 4vw, 32px); background: rgba(26, 24, 22, .78); }
+    .trp-cw-lb-box { display: flex; flex-direction: column; align-items: flex-end; gap: 10px; width: 100%; max-width: 960px; }
+    .trp-cw-lb-box .trp-cw-video { width: 100%; margin: 0; box-shadow: 0 40px 80px -40px rgba(0, 0, 0, .6); }
+    .trp-cw-lb-close { display: inline-flex; align-items: center; justify-content: center; min-height: 44px; padding: 0 18px; border-radius: 999px; border: 0; background: rgb(var(--c-surface)); color: var(--trp-deep); font: inherit; font-size: 14px; font-weight: 600; cursor: pointer; }
+    .trp-cw-lb-close:focus-visible { outline: 2px solid rgb(var(--c-surface)); outline-offset: 3px; }
+
     /* the lessons */
     .trp-cw-group { font-size: 12px; font-weight: 600; letter-spacing: .08em; text-transform: uppercase; color: var(--trp-soft); margin: 6px 0 -2px; }
     .trp-cw-lessons { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 8px; }
@@ -2065,6 +2075,77 @@ When you finish:
         return box;
       }
 
+      /* ---- the replay lightbox -------------------------------------------- */
+
+      /* The video itself, over the page, from a call card's Watch replay
+         button (Ella, 30 Oct). The iframe is built when it opens and thrown
+         away when it shuts, so the sound stops with it. Esc, the Close
+         button and a click on the backdrop all shut it, and the button that
+         opened it takes the focus back. */
+      var lightbox = null;
+
+      /* The 'Video: https://...' line in a row's body, as the portal's own
+         embed. '' when the row has none, or names a host we do not play:
+         the same rules the lesson body goes by. */
+      function bodyVideoSrc(item) {
+        var body = L.str(item && item.body);
+        var api = window.TRPortal;
+        if (!body || !api || typeof api.embedSrc !== 'function' || typeof api.videoFrame !== 'function') return '';
+        var parts = bodyParts(body);
+        for (var i = 0; i < parts.length; i++) {
+          if (parts[i].kind !== 'video') continue;
+          var src = api.embedSrc(parts[i].src) || '';
+          if (src) return src;
+        }
+        return '';
+      }
+
+      // Vimeo starts playing, since it is the member who asked for it.
+      function autoplaySrc(src) {
+        if (!/^https:\/\/player\.vimeo\.com\//.test(src)) return src;
+        return src + (src.indexOf('?') === -1 ? '?' : '&') + 'autoplay=1';
+      }
+
+      function shutLightbox() {
+        if (!lightbox) return;
+        var was = lightbox;
+        lightbox = null;
+        document.removeEventListener('keydown', lightboxKey);
+        // the wrap goes, and the iframe inside it with it
+        if (was.wrap.parentNode) was.wrap.parentNode.removeChild(was.wrap);
+        document.documentElement.style.overflow = was.wasOverflow;
+        if (was.opener && was.opener.focus) was.opener.focus();
+      }
+
+      function lightboxKey(event) {
+        if (event.key === 'Escape' || event.key === 'Esc') { event.preventDefault(); shutLightbox(); }
+      }
+
+      function openLightbox(src, name, opener) {
+        shutLightbox();
+        var wrap = L.el('div', 'trp-cw-lb');
+        wrap.setAttribute('role', 'dialog');
+        wrap.setAttribute('aria-modal', 'true');
+        wrap.setAttribute('aria-label', name || 'Replay');
+        var box = L.el('div', 'trp-cw-lb-box');
+        var shut = L.el('button', 'trp-cw-lb-close', 'Close');
+        shut.type = 'button';
+        shut.setAttribute('aria-label', 'Close the replay');
+        shut.addEventListener('click', shutLightbox);
+        box.appendChild(shut);
+        var player = window.TRPortal.videoFrame(autoplaySrc(src), name || 'Replay');
+        player.className = 'trp-video trp-cw-video';
+        box.appendChild(player);
+        wrap.appendChild(box);
+        // the backdrop only: a click on the box or the player stays open
+        wrap.addEventListener('click', function (event) { if (event.target === wrap) shutLightbox(); });
+        document.body.appendChild(wrap);
+        lightbox = { wrap: wrap, opener: opener || null, wasOverflow: document.documentElement.style.overflow };
+        document.documentElement.style.overflow = 'hidden';
+        document.addEventListener('keydown', lightboxKey);
+        shut.focus();
+      }
+
       /* ---- a week tab ----------------------------------------------------- */
 
       function weekCard(week, prep, isSel, isCurrent) {
@@ -2303,7 +2384,8 @@ When you finish:
       var WEEK1_SECTIONS = [
         { upto: 49, title: 'Monday: North Star & Business COMPASS' },
         { upto: 79, title: 'This week: audit, AI EA, Wednesday prep' },
-        { upto: 89, title: 'Before Friday: Audacious Action' },
+        { upto: 86, title: 'Before Friday: Audacious Action' },
+        { upto: 89, title: 'Friday: Train your agent' },
         { upto: Infinity, title: 'Time Rich Agents and your voice' }
       ];
 
@@ -2398,16 +2480,22 @@ When you finish:
         if (bonus) copy.appendChild(L.el('span', 'trp-cw-tag', 'Bonus'));
 
         /* Once its replay is up, the call carries it on the card again: a
-           button that opens the lesson's own drop-down, where the video
-           plays in the page -- never a link off it. A call with no replay
-           yet, like Friday before Friday, shows no button. */
+           button that plays the video itself, in a lightbox over the page
+           -- never a link off it (Ella, 30 Oct). A replay row with no
+           'Video:' line falls back to opening its drop-down. A call with
+           no replay yet, like Friday before Friday, shows no button. */
         var at = replayIn(items || [], when);
         if (at !== -1) {
-          var key = rowKey(items[at], at + 1);
+          var row = items[at];
+          var key = rowKey(row, at + 1);
+          var src = bodyVideoSrc(row);
           var play = L.el('button', 'trp-cw-btn', 'Watch replay');
           play.type = 'button';
           play.setAttribute('aria-label', 'Watch replay of ' + shown);
-          play.addEventListener('click', function () { openLesson(key); });
+          play.addEventListener('click', function () {
+            if (src) openLightbox(src, 'Replay: ' + shown, play);
+            else openLesson(key);
+          });
           copy.appendChild(play);
         }
         tile.appendChild(copy);
