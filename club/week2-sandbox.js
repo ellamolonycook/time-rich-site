@@ -56,12 +56,13 @@ Delegation mindset shift
 Delegating doesn't mean giving everything away. It starts with one question: does this need my expertise? If yes, it's your IP, so keep it. If not, it goes to AI, to someone who can learn it, or gets handed off ahead of time instead of at the last minute. Most founders hold on because "it's quicker if I just do it." It's quicker once. It's slower every week after that. And if your company needs you for everything, you're the one blocking its growth.`
     },
     {
-      upto: 59,
+      upto: 52,
       title: '3. Save it as a skill (I: IP)',
       lead: `"You've got to find one thing and be great at it. Because once you're great at something, doors open up wide." Mark Cuban
 
 Anything you've done twice should never need you again. A skill is your way of doing it, saved so AI or a person runs it by name. This is your IP.`
     },
+    { upto: 59, title: 'Content OS' },
     { upto: Infinity, title: 'This week, and what you\'ve built' }
   ];
 
@@ -109,6 +110,26 @@ This is how you build the fundamentals of any OS. The tool doesn't matter, the s
       body: `Your systems will keep changing as your business changes. What works at $10K a month breaks at $50K, and that's normal. So don't get caught building a beautiful system for a business that isn't making money yet. Delivery matters, but cash flow matters more.
 
 Right now, focus on one system: sales and partnerships. Your CRM, your daily list and the people who can send you business. Build the rest when money is coming in on a rhythm and you can see what actually needs a system.`
+    },
+    {
+      sort: 15,
+      title: 'Which system gives you the biggest ROI?',
+      body: `Paste this into a new chat, then add your North Star at the end.
+
+= Copy: Biggest ROI prompt
+Read my Business COMPASS. If you can't see it, ask me to paste it in. My North Star is below.
+
+Which one system, built now, would give me the biggest return on my time and money towards my North Star?
+
+1. List the systems I could build: sales and partnerships, content, delivery, operations and hiring.
+2. For each one, show me what it could bring in over the next 90 days, the hours it takes to build, and the hours a week it gives me back. Mark any guess (guess).
+3. Pick one. Tell me why that one, and what to ignore until money is coming in on a rhythm.
+4. Give me the first 3 steps, smallest first.
+
+Rules: only use my Business COMPASS and what I tell you. Never invent a number. Never edit section 9.
+
+My North Star is below:
+=`
     },
     {
       sort: 16,
@@ -223,6 +244,30 @@ Read my Tasks from this week, my CRM, and the messages I sent this week (Gmail S
 2. If I delegated tasks this week, find the one that came up most and turn it into a skill the same way. If I didn't, skip this step.
 3. Show me what you wrote. After my yes, save each as a row in Skills (Status Draft, Trigger = the one line). Then give me one line to add to my Sales Floor instructions: "When I say a skill's Trigger, open that row in Skills and follow it."
 Rules: don't create a new page or database. Never invent an example or a result.
+=`
+    },
+    {
+      sort: 55,
+      title: 'Sign up to Stanley',
+      url: 'https://x.getstanley.ai/r/mz4y9g',
+      body: `Stanley is your AI head of content, and you get 6 months free. Speak your idea with Wispr Flow, Stanley drafts it in your voice with the visuals and the timing, and nothing goes out until you approve it.
+
+! /portal/assets/content-os-stanley-wide.png | Your input goes from Wispr Flow to Stanley, which hooks into Notion, Google Calendar, Google Drive, Slack and Wispr Flow. Stanley drafts in your voice, makes carousels and visuals and schedules the week. You review and approve, then it publishes to LinkedIn, Instagram, X, Threads and Substack Notes.
+
++ How to get your 6 months free
+Don't click "Message Stanley" on the homepage. That route skips the code. Sign up on your laptop with email or Google instead, and connect iMessage, WhatsApp or Telegram later.
+1. Use the button below, click Log in, then Sign up.
+2. Pick the $49/month plan and click Start your 14-day free trial.
+3. At checkout, click Pay without Link to pay by card.
+4. Click Add promotion code, enter TIMERICH6 and click Apply. You should see 100% off for the next 6 billing cycles.`
+    },
+    {
+      sort: 57,
+      title: 'Build your Story Bank',
+      body: `= Copy: Story producer prompt
+You are my story producer. Find the real stories I already tell and bank them so I can use them again on stage, in posts and on sales calls. Look through the last 90 days of my calls, voice notes, podcast transcripts, posts and newsletters. A story is one specific moment with a before, a turning point and an after. Never invent: every detail must come from my material, and if something is missing, leave it blank and ask me. For each story give me: Story Name | The Hook (one line, in my words) | Type (Badass, Party, Tough, Shit to Shift, Core Story) | Status | Takeaway | Question it answers | Conflict | Resolution | How I fit in | Times told | Audience evidence | Next place to tell it | Source. Mark Tough stories "Hold". Leave out anything confidential. Put the table first and skip the intro.
+
+Before you start: restate my goal in one line and tell me if it's the right goal. Don't assume; if you need more context, ask me up to 3 questions first. When you finish: rate your work out of 10, say what would make it a 10, then fix it. Push back on me: where is my thinking weak, what could go wrong, what am I missing? Tell me the one thing to do next, and what you learned about me that should be saved to my Business COMPASS.
 =`
     },
     {
