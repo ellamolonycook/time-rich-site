@@ -27,7 +27,7 @@
   var SUMMARY = 'Time Rich OS is one framework: RICH. Four letters, one question each.';
 
   var SECTIONS = [
-    { upto: 19, title: 'Your Time Rich OS' },
+    { upto: 19, title: 'Your Superhuman OS' },
     {
       upto: 29,
       title: 'This week: three moves, five prompts',
