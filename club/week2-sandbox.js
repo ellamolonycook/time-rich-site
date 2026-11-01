@@ -254,6 +254,9 @@ Rules: don't create a new page or database. Never invent an example or a result.
 
 ! /portal/assets/content-os-stanley-wide.png | Your input goes from Wispr Flow to Stanley, which hooks into Notion, Google Calendar, Google Drive, Slack and Wispr Flow. Stanley drafts in your voice, makes carousels and visuals and schedules the week. You review and approve, then it publishes to LinkedIn, Instagram, X, Threads and Substack Notes.
 
+Watch the step-by-step video
+Video: https://www.loom.com/share/be6db9ceb94344afb9b56244c9e517f2
+
 + How to get your 6 months free
 Don't click "Message Stanley" on the homepage. That route skips the code. Sign up on your laptop with email or Google instead, and connect iMessage, WhatsApp or Telegram later.
 1. Use the button below, click Log in, then Sign up.
