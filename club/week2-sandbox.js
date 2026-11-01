@@ -28,7 +28,16 @@
 
   var SECTIONS = [
     { upto: 19, title: 'Your Time Rich OS' },
-    { upto: 29, title: 'How this week runs' },
+    {
+      upto: 29,
+      title: 'This week: three moves, five prompts',
+      lead: `The AI drafts everything; you approve it and hit send.
+
+Copy and paste each prompt into your Sales Floor project in Claude. No Sales Floor project yet? Create one in Claude called Sales Floor. Use Wispr Flow for everything you say back: your answers, your brain dump, your voice notes.
+
++ Not B2B?
+Your Sales Floor already knows who your leads are. DTC: stockists, creators and press. Apps: beta users and partners. Marketplaces: sellers first. Coaches: your people live in DMs, so drafts go in Notes and there's no web research on private people.`
+    },
     {
       upto: 39,
       title: '1. Build conviction by eliminating (R: Revenue)',
@@ -113,16 +122,6 @@ Right now, focus on one system: sales and partnerships. Your CRM, your daily lis
 | The business can't run without them | Their IP needs them. The company doesn't. |
 
 Superhuman is the start. Becoming Time Rich takes a different kind of discipline, the boring kind, where you run this every single day for months until you stop noticing you're doing it. Nobody gets there without the foundation, and this week is the foundation.`
-    },
-    {
-      sort: 20,
-      title: 'Three moves, five prompts',
-      body: `The AI drafts everything; you approve it and hit send.
-
-Copy and paste each prompt into your Sales Floor project in Claude. No Sales Floor project yet? Create one in Claude called Sales Floor. Use Wispr Flow for everything you say back: your answers, your brain dump, your voice notes.
-
-+ Not B2B?
-Your Sales Floor already knows who your leads are. DTC: stockists, creators and press. Apps: beta users and partners. Marketplaces: sellers first. Coaches: your people live in DMs, so drafts go in Notes and there's no web research on private people.`
     },
     {
       sort: 22,
