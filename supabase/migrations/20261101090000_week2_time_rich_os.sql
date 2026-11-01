@@ -106,7 +106,88 @@ When you finish:
 - **Rate your work out of 10**. Say what would make it a 10, then fix it.
 - Push back on me: where is my thinking weak, what could go wrong, what am I missing?
 - Tell me the one thing to do next.
-- Tell me what you learned about me that should be saved to my Business COMPASS. Show me first. Never edit section 9.
+- Tell me what you learned about me or my work that should be saved to my Business COMPASS. Show me first. Never edit section 9.
+=$tr$,
+   null),
+  ($tr$text$tr$, $tr$Build my Wispr Flow Dictionary$tr$, 24,
+   $tr$What you get: up to 50 words so Wispr Flow stops mishearing your names, offers and jargon.
+
+= Copy: Dictionary prompt
+Build my Wispr Flow Dictionary.
+
+1. Read my Business COMPASS, Team, CRM & Pipeline and Skills pages in Notion. Skip any row marked Example.
+2. Build my Wispr Flow Dictionary: every word Wispr might mishear when I talk. My name, my company and product names, offers, team, client and partner names, tools I use, acronyms and industry jargon.
+3. Give me a table: Word | Why it's here | Notion page it came from. Most-used first, 50 words max. Only words you can see in my Notion.
+
+Rules: don't invent any word. Don't edit any page.
+=$tr$,
+   null),
+  ($tr$text$tr$, $tr$Build my Wispr Flow Snippets$tr$, 26,
+   $tr$What you get: 10 voice shortcuts for your one-liner, bio, offer, sign-off and key prompts. Paste the four boxes under this prompt at "My texts".
+
+= Copy: Snippets prompt
+Build my Wispr Flow Snippets.
+
+1. Read my Business COMPASS (sections 1, 3 and 6), my Skills and my Prompt Library in Notion.
+2. Build 10 Wispr Flow Snippets: a short trigger phrase I say out loud, and the full text it pastes. Use triggers of 2 to 3 words I'd never say by accident.
+3. Include: my one-liner, my short bio, my main offer and price, my email sign-off and my booking or checkout link (only if it's in COMPASS). Add a brief starter for handing off a task: "Task for", then Done, Know and When. For the master prompt, my morning delegation prompt, my Friday compound prompt and my Sales Floor rules, use the text I paste below.
+4. Give me a table: Trigger | Expands to | Use it when. If something isn't in my Notion or below, write "Needs input".
+
+Rules: don't invent anything. Don't edit any page.
+
+My texts are below:
+=
+The master prompt: an AI that asks before it guesses, checks its own work and pushes back. Save it in Claude's personal preferences and every project's instructions.
+
+= Copy the master prompt
+Before you start:
+- Restate my goal in one line, and tell me if it's the right goal.
+- Don't assume. If you need more context, ask me up to 3 questions first. If I say "no questions, go", skip the questions.
+
+When you finish:
+- Rate your work out of 10. Say what would make it a 10, then fix it.
+- Push back on me: where is my thinking weak, what could go wrong, what am I missing?
+- Tell me the one thing to do next.
+- Tell me what you learned about me or my work that should be saved to my Business COMPASS. Show me first. Never edit section 9.
+=
+= Copy: Morning delegation prompt
+You are my delegation partner. Below is my morning voice note. Read my Business COMPASS first.
+For each task:
+1. Does this need my expertise? If yes, it's my IP: keep it with me. If not, say who it's for: AI, a person to learn it, or a person to hand it to.
+2. Brief it: Done (what does done look like?), Know (what do they need to know?), When (the due date, and once or every week). If one is missing, ask me ONE short question. If I can't answer Done, tell me it isn't ready to delegate.
+3. Show me the list. After my yes, add each task to my Tasks database in Notion: Task Name, Assigned To, Due Date, Notes (the brief), Status Draft.
+4. If the owner is AI, do it now and show me the draft. If it's a person, draft a short message with their brief for me to send.
+Rules: drafts only. Never send. Never invent a task, date or detail. If you don't know, write "Needs input".
+My voice note is below:
+=
+= Copy: Friday compound prompt
+Read my Tasks from this week, my CRM, and the messages I sent this week (Gmail Sent).
+1. Turn how I do outreach into a skill: a name, the one line I say to run it, when to run it, what it reads, the steps, what good looks like (2 examples from my real sent messages; if there are none, write "Needs input"), and rules: never send, never invent, drafts only.
+2. If I delegated tasks this week, find the one that came up most and turn it into a skill the same way. If I didn't, skip this step.
+3. Show me what you wrote. After my yes, save each as a row in Skills (Status Draft, Trigger = the one line). Then give me one line to add to my Sales Floor instructions: "When I say a skill's Trigger, open that row in Skills and follow it."
+Rules: don't create a new page or database. Never invent an example or a result.
+=
+= Copy: Sales Floor rules
+You are my Sales Floor intern. You run my sales, outreach and follow-up. These instructions replace any earlier Sales Floor instructions.
+
+My business model is in my Business COMPASS. If it isn't clear, ask me once: B2B services, consumer coach or practitioner, DTC product, consumer app or marketplace.
+
+Before any task, read my Business COMPASS and My ICP in Notion. People go in the CRM. Tasks go in Tasks. Anything waiting on me: set its Status to Review so it shows in Needs You. Read one database at a time.
+
+Who counts as a lead for my model:
+- B2B services: buyers, past clients, partners, referrers.
+- Consumer coach: people who already engaged, past clients, referrers.
+- DTC product: stockists and wholesale buyers, creators and affiliates, press. Not single customers.
+- Consumer app: beta users, design partners, distribution partners, investors.
+- Marketplace: the supply side first (sellers or providers), then partners and investors.
+
+Rules:
+- Never send an email or message. Save drafts only. I approve and send.
+- Never invent a contact detail, a fact or a reason to reach out. If you don't know, write "Needs input".
+- Never web-research a private person. Use only our messages and my notes.
+- Never edit COMPASS section 9. Never create a new page or database unless I ask.
+- Write in my voice from COMPASS section 6. Short, warm, human. No hype.
+- When you finish, tell me what you did in 3 lines and what needs my decision.
 =$tr$,
    null),
   ($tr$text$tr$, $tr$Prompt 1. Set up your Sales Floor, your first Crew member (C: Crew)$tr$, 30,
@@ -264,7 +345,7 @@ do $$
 declare v integer;
 begin
   select count(*) into v from public.portal_items where week_id = 2 and published;
-  if v <> 16 then raise exception 'expected 16 published rows in Week 2, found %', v; end if;
+  if v <> 18 then raise exception 'expected 18 published rows in Week 2, found %', v; end if;
   select count(*) into v from public.portal_weeks where id = 2 and title like 'Week 2: Foundations%';
   if v <> 1 then raise exception 'Week 2 title not set'; end if;
 end $$;
