@@ -23,7 +23,7 @@
     host === 'localhost' || host === '127.0.0.1';
   if (!sandbox) return;
 
-  var TITLE = 'Week 2: ☎️ Time Rich OS for founders becoming CEOs';
+  var TITLE = 'Week 2: Foundations of building your Time Rich OS for founders becoming CEOs';
   var SUMMARY = 'Time Rich OS is one framework: RICH. Four letters, one question each.';
 
   var SECTIONS = [
