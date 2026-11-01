@@ -460,6 +460,8 @@
 
     /* a screenshot in a lesson */
     .trp-cw-shot { display: block; width: 100%; max-width: 520px; height: auto; border-radius: 12px; border: 1px solid var(--trp-line); }
+    /* a wide diagram takes the lesson's full width, or its labels are too small to read */
+    .trp-cw-shot.is-wide { max-width: none; }
 
     /* a table in a lesson body, written "| a | b |" */
     .trp-cw-table-wrap { width: 100%; border: 1px solid var(--trp-line); border-radius: 12px; overflow: hidden; }
@@ -1488,6 +1490,7 @@ When you finish:
         [/join\.slack\.com/, 'Join the Slack'],
         [/chat\.whatsapp\.com/, 'Join the WhatsApp group'],
         [/wisprflow\.ai/, 'Get Wispr Flow'],
+        [/getstanley\.ai/, 'Sign up to Stanley'],
         [/launchlemonade\.app/, 'Claim 3 months of LaunchLemonade'],
         [/docs\.google\.com\/.*\/copy/, 'Make my copy'],
         [/timerich\.ai\/superhuman/, 'Answer the questions'],
@@ -1698,7 +1701,7 @@ When you finish:
       }
 
       function imageBox(src, alt) {
-        var img = L.el('img', 'trp-cw-shot');
+        var img = L.el('img', 'trp-cw-shot' + (/-wide\.\w+$/.test(src) ? ' is-wide' : ''));
         img.src = src;
         img.alt = alt;
         img.loading = 'lazy';
@@ -2380,7 +2383,8 @@ When you finish:
 
       /* Week 1's lessons, in five sections in the order of the week. By sort,
          so a lesson Ella adds in Supabase lands in the section its place in
-         the week says. Other weeks are short enough to stay one list. */
+         the week says. Week 2 is the same. The other weeks are short enough
+         to stay one list. */
       var WEEK1_SECTIONS = [
         { upto: 49, title: 'Monday: North Star & Business COMPASS' },
         { upto: 79, title: 'This week: audit, AI EA, Wednesday prep' },
@@ -2388,6 +2392,48 @@ When you finish:
         { upto: 89, title: 'Friday: Train your agent' },
         { upto: Infinity, title: 'Time Rich Agents and your voice' }
       ];
+
+      var WEEK2_SECTIONS = [
+        { upto: 19, title: 'Your Superhuman OS' },
+        {
+          upto: 29,
+          title: 'This week: three moves, five prompts',
+          lead: `The AI drafts everything; you approve it and hit send.
+
+Copy and paste each prompt into your Sales Floor project in Claude. No Sales Floor project yet? Create one in Claude called Sales Floor. Use Wispr Flow for everything you say back: your answers, your brain dump, your voice notes.
+
++ Not B2B?
+Your Sales Floor already knows who your leads are. DTC: stockists, creators and press. Apps: beta users and partners. Marketplaces: sellers first. Coaches: your people live in DMs, so drafts go in Notes and there's no web research on private people.`
+        },
+        {
+          upto: 39,
+          title: '1. Build conviction by eliminating (R: Revenue)',
+          lead: `"If you can go door to door and sell, you can do anything." Mark Cuban
+
+Conviction comes from cutting, not adding. Every lead, idea and task is either a distraction or a conviction. Cut the distractions and you're left with a short list of the right people, one number and one offer. That's when selling stops feeling like pushing.`
+        },
+        {
+          upto: 49,
+          title: '2. Delegate (H: Hand-off)',
+          lead: `"AI doesn't know the consequences of its actions. AI doesn't have inherent ethics." Mark Cuban. That's why AI drafts and you decide.
+
+Every morning, speak your to-do list into Wispr Flow and paste it in. The AI decides what needs you and briefs the rest.
+
+Delegation mindset shift
+Delegating doesn't mean giving everything away. It starts with one question: does this need my expertise? If yes, it's your IP, so keep it. If not, it goes to AI, to someone who can learn it, or gets handed off ahead of time instead of at the last minute. Most founders hold on because "it's quicker if I just do it." It's quicker once. It's slower every week after that. And if your company needs you for everything, you're the one blocking its growth.`
+        },
+        {
+          upto: 52,
+          title: '3. Save it as a skill (I: IP)',
+          lead: `"You've got to find one thing and be great at it. Because once you're great at something, doors open up wide." Mark Cuban
+
+Anything you've done twice should never need you again. A skill is your way of doing it, saved so AI or a person runs it by name. This is your IP.`
+        },
+        { upto: 59, title: 'Content OS' },
+        { upto: Infinity, title: 'This week, and what you\'ve built' }
+      ];
+
+      var WEEK_SECTIONS = { 1: WEEK1_SECTIONS, 2: WEEK2_SECTIONS };
 
       // Which sections the member has opened or shut, kept across redraws.
       var masterOpen = {};
@@ -2584,7 +2630,8 @@ When you finish:
             if (nextKey === null && L.isTrackable(it) && !L.isItemDone(it)) nextKey = rowKey(it, i + 1);
           });
           if (steps.length) box.appendChild(L.el('h3', 'trp-cw-group', setupLeft ? 'Then, this week' : 'This week'));
-          if (n !== 1) {
+          var sections = WEEK_SECTIONS[n];
+          if (!sections) {
             var ul = L.el('ul', 'trp-cw-lessons');
             own.forEach(function (it, i) { ul.appendChild(lessonRow(it, i + 1, rowKey(it, i + 1) === nextKey)); });
             box.appendChild(ul);
@@ -2593,7 +2640,7 @@ When you finish:
             // opens by itself once the setup is done; the rest start shut.
             var masters = L.el('div', 'trp-cw-masters');
             var from = 0;
-            WEEK1_SECTIONS.forEach(function (sec, si) {
+            sections.forEach(function (sec, si) {
               var list = [], rows = [], holdsNext = false;
               own.forEach(function (it, i) {
                 var sort = L.num(it && it.sort);
@@ -2610,7 +2657,10 @@ When you finish:
               // Only the section with the next lesson opens by itself; the
               // growth prompts start open but do not open their section.
               if (touched) holdsNext = rows.some(function (r) { return r.classList.contains('is-open'); });
-              masters.appendChild(masterBox('w1-' + si, sec.title, list, holdsNext, sul));
+              var inner = document.createDocumentFragment();
+              if (sec.lead) inner.appendChild(bodyBlocks(sec.lead, 'lead-' + n + '-' + si));
+              inner.appendChild(sul);
+              masters.appendChild(masterBox('w' + n + '-' + si, sec.title, list, holdsNext, inner));
             });
             box.appendChild(masters);
           }
