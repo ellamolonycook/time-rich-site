@@ -12,7 +12,7 @@ import { readFileSync, existsSync } from 'node:fs';
 const HTML = readFileSync(new URL('../../contentworkshop/index.html', import.meta.url), 'utf8');
 
 // The five the brief names, by the data-copy key each button carries.
-const COPY_KEYS = ['wifi', 'wispr', 'stanley', 'sk', 'tags'];
+const COPY_KEYS = ['wispr', 'stanley', 'sk'];
 
 let pass = 0, fail = 0;
 function check(name, cond, extra) {
@@ -145,9 +145,10 @@ console.log('\n/contentworkshop — the prizes, and who gets what');
 
   check('it reads exactly as Ella wrote it, draw date and all',
     vip !== null && vip.textContent.replace(/\s+/g, ' ').trim() ===
-      'Best post wins: a VIP setup by the Stanley team: brain, voice and rituals ' +
-      'built with you ($1,000 value), plus 6 months of Stanley Premium. ' +
-      'We draw the winner on Tuesday 27 October at 12pm ET.',
+      'Best post wins: 1 seat in the Superhuman Accelerator, a VIP setup by the Stanley team: ' +
+      'brain, voice and rituals built with you ($1,000 value), plus 6 months of Stanley Premium. ' +
+      '12 months of Wispr Flow Pro. ' +
+      'Winners announced Thursday at 5pm ET.',
     vip && vip.textContent.replace(/\s+/g, ' ').trim());
 
   check('it is one prize for the best post, not another five-seat line',
@@ -162,7 +163,7 @@ console.log('\n/contentworkshop — the prizes, and who gets what');
   check('so both lines say the same thing',
     document.getElementById('vipwhen').textContent ===
     document.getElementById('winnerswhen').textContent &&
-    document.getElementById('vipwhen').textContent === 'Tuesday 27 October at 12pm ET',
+    document.getElementById('vipwhen').textContent === 'Thursday at 5pm ET',
     [document.getElementById('vipwhen').textContent,
      document.getElementById('winnerswhen').textContent]);
 
@@ -249,7 +250,7 @@ console.log('\n/contentworkshop — the WORKSHOP config, one place for the open 
   check('the Step 1 prompt is rendered into the page',
     document.getElementById('mikaprompt').textContent.trim().length > 0);
   check('the winners line is rendered into the page',
-    document.getElementById('winnerswhen').textContent === 'Tuesday 27 October at 12pm ET',
+    document.getElementById('winnerswhen').textContent === 'Thursday at 5pm ET',
     document.getElementById('winnerswhen').textContent);
 }
 
@@ -286,20 +287,15 @@ console.log('\n/contentworkshop — copying actually copies, and says so');
   check('and it is not stuck on Copied forever',
     HTML.includes('1600') || HTML.includes('2000'));
 
-  clickCopy(document, 'wifi');
-  check('the Wi-Fi button copies the network name', copied[1] === 'P57_wifi_public', copied);
-
-  clickCopy(document, 'tags');
-  check('the tags button copies all four tags',
-    copied[2] && ['Ella Molony Cook', 'Mika Reyes', 'Stanley', 'Wispr Flow']
-      .every((t) => copied[2].includes(t)), copied[2]);
+  check('the Wi-Fi card is gone', document.getElementById('wifivalue') === null &&
+    !/P57_wifi_public/.test(HTML));
 
   clickCopy(document, 'sk');
   check('the skill button copies the whole skill, not a summary',
-    copied[3] && copied[3].startsWith('# Create LinkedIn Content') && copied[3].length > 5000,
-    copied[3] && copied[3].length);
+    copied[1] && copied[1].startsWith('# Create LinkedIn Content') && copied[1].length > 5000,
+    copied[1] && copied[1].length);
   check('the copied skill is the same text the page shows',
-    copied[3] === document.getElementById('skilltext').textContent);
+    copied[1] === document.getElementById('skilltext').textContent);
   // Unused, but it keeps the idle label in the assertion record.
   check('the idle label was not blank to begin with', idle.length > 0, idle);
 }
@@ -351,10 +347,9 @@ console.log('\n/contentworkshop — the build is four numbered dropdowns');
   check('and it comes before the first dropdown',
     before !== null && boxes.length > 0 &&
     (before.compareDocumentPosition(boxes[0]) & 4) !== 0);
-  check('it carries the Wi-Fi, the codes and the set-up list',
+  check('it carries the set-up list',
     HTML.includes('BEFORE YOU START') &&
-    document.getElementById('setuplist') !== null &&
-    document.getElementById('wifivalue') !== null);
+    document.getElementById('setuplist') !== null);
 
   const titles = boxes.map((b) => b.querySelector('.steptitle').textContent.trim());
   check('the four build steps are the ones from the call',
