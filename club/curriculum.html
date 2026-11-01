@@ -553,6 +553,9 @@
        the sign-in page, because this page has no login form of its own. -->
   <script src="portal-config.js" defer></script>
   <script src="portal-access.js" defer></script>
+  <!-- Week 2 as a draft, on the sandbox only. It has to load before anything
+       that listens for the portal data; on timerich.ai it does nothing. -->
+  <script src="week2-sandbox.js"></script>
   <script src="portal-live.js"></script>
   <script src="portal-chrome.js?v=20261021" defer></script>
 
@@ -2380,7 +2383,8 @@ When you finish:
 
       /* Week 1's lessons, in five sections in the order of the week. By sort,
          so a lesson Ella adds in Supabase lands in the section its place in
-         the week says. Other weeks are short enough to stay one list. */
+         the week says. A week that carries sections of its own uses those;
+         the others are short enough to stay one list. */
       var WEEK1_SECTIONS = [
         { upto: 49, title: 'Monday: North Star & Business COMPASS' },
         { upto: 79, title: 'This week: audit, AI EA, Wednesday prep' },
@@ -2584,7 +2588,8 @@ When you finish:
             if (nextKey === null && L.isTrackable(it) && !L.isItemDone(it)) nextKey = rowKey(it, i + 1);
           });
           if (steps.length) box.appendChild(L.el('h3', 'trp-cw-group', setupLeft ? 'Then, this week' : 'This week'));
-          if (n !== 1) {
+          var sections = week.sections || (n === 1 ? WEEK1_SECTIONS : null);
+          if (!sections) {
             var ul = L.el('ul', 'trp-cw-lessons');
             own.forEach(function (it, i) { ul.appendChild(lessonRow(it, i + 1, rowKey(it, i + 1) === nextKey)); });
             box.appendChild(ul);
@@ -2593,7 +2598,7 @@ When you finish:
             // opens by itself once the setup is done; the rest start shut.
             var masters = L.el('div', 'trp-cw-masters');
             var from = 0;
-            WEEK1_SECTIONS.forEach(function (sec, si) {
+            sections.forEach(function (sec, si) {
               var list = [], rows = [], holdsNext = false;
               own.forEach(function (it, i) {
                 var sort = L.num(it && it.sort);
@@ -2610,7 +2615,10 @@ When you finish:
               // Only the section with the next lesson opens by itself; the
               // growth prompts start open but do not open their section.
               if (touched) holdsNext = rows.some(function (r) { return r.classList.contains('is-open'); });
-              masters.appendChild(masterBox('w1-' + si, sec.title, list, holdsNext, sul));
+              var inner = document.createDocumentFragment();
+              if (sec.lead) inner.appendChild(bodyBlocks(sec.lead, 'lead-' + n + '-' + si));
+              inner.appendChild(sul);
+              masters.appendChild(masterBox('w' + n + '-' + si, sec.title, list, holdsNext, inner));
             });
             box.appendChild(masters);
           }
