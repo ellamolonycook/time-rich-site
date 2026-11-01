@@ -196,10 +196,10 @@ console.log('\n/contentworkshop — how Wispr Flow is described');
   check('and recording a call is asked for in their words',
     recording.length === 1, recording.length);
 
-  // The Connectors sub-step is the one place that asks for it, so the line
+  // The Notetaker sub-step is the one place that asks for it, so the line
   // has to be on that row rather than loose somewhere on the page.
-  const row = document.querySelector('[data-item="i2b"]');
-  check('the line sits on the Connectors sub-step',
+  const row = document.querySelector('[data-item="i3n"]');
+  check('the line sits on the Notetaker sub-step',
     row !== null && /Record, with everyone\u2019s OK/.test(row.textContent),
     row && row.textContent.replace(/\s+/g, ' ').trim());
   check('which also names the Notetaker rather than just "your meetings"',
@@ -247,7 +247,7 @@ console.log('\n/contentworkshop — the WORKSHOP config, one place for the open 
   check('mikaPrompt is in it', /mikaPrompt\s*:/.test(HTML));
   check('winnersWhen is in it', /winnersWhen\s*:/.test(HTML));
   const { document } = load();
-  check('the Step 1 prompt is rendered into the page',
+  check('the strategy prompt is rendered into the page',
     document.getElementById('mikaprompt').textContent.trim().length > 0);
   check('the winners line is rendered into the page',
     document.getElementById('winnerswhen').textContent === 'Thursday at 5pm ET',
@@ -300,7 +300,7 @@ console.log('\n/contentworkshop — copying actually copies, and says so');
   check('the idle label was not blank to begin with', idle.length > 0, idle);
 }
 
-console.log('\n/contentworkshop — Open Claude / Open ChatGPT carry the Step 1 prompt');
+console.log('\n/contentworkshop — Open Claude / Open ChatGPT carry the strategy prompt');
 {
   const { dom, document, copied } = load();
   const prompt = document.getElementById('mikaprompt').textContent;
@@ -323,7 +323,7 @@ console.log('\n/contentworkshop — Open Claude / Open ChatGPT carry the Step 1 
   check('clicking also copies the prompt, in case an AI ignores ?q=', copied[0] === prompt);
   check('and it says so', /Prompt copied/.test((document.getElementById('cwtoast') || {}).textContent || ''));
   const p1row = document.querySelector('[data-item="p1"]');
-  check('and ticks the Step 1 copy row', !!p1row && p1row.getAttribute('aria-pressed') === 'true');
+  check('and ticks the strategy copy row', !!p1row && p1row.getAttribute('aria-pressed') === 'true');
 }
 
 console.log('\n/contentworkshop — the build is four numbered dropdowns');
@@ -331,10 +331,10 @@ console.log('\n/contentworkshop — the build is four numbered dropdowns');
   const { document } = load();
   const boxes = [...document.querySelectorAll('details.stepbox')];
 
-  check('there are five dropdowns: Step 1 to 4, then After tonight',
-    boxes.length === 5, boxes.length);
+  check('there are six dropdowns: Step 1 to 4, Go deeper, then After tonight',
+    boxes.length === 6, boxes.length);
   check('and they are numbered in order',
-    boxes.map((b) => b.id).join(',') === 'step-1,step-2,step-3,step-4,step-5',
+    boxes.map((b) => b.id).join(',') === 'step-1,step-2,step-3,step-4,step-6,step-5',
     boxes.map((b) => b.id));
 
   check('each one is a real <details>, so it works without JavaScript',
@@ -354,30 +354,34 @@ console.log('\n/contentworkshop — the build is four numbered dropdowns');
   const titles = boxes.map((b) => b.querySelector('.steptitle').textContent.trim());
   check('the four build steps are the ones from the call',
     titles.slice(0, 4).join(' | ') ===
-      'Content strategy brain | Give Stanley your context | ' +
-      'The linkedin-content skill | Your first post',
+      'Connect your tools | Give Stanley your context | ' +
+      'Wispr Flow your story | Prompt Stanley',
     titles);
   check('and Rituals is last, as "After tonight"',
-    titles[4] === 'Turn on your rituals' &&
-    boxes[4].querySelector('.stepkicker').textContent.includes('After tonight'),
-    boxes[4].querySelector('.stepkicker').textContent);
+    titles[5] === 'Turn on your rituals' &&
+    boxes[5].querySelector('.stepkicker').textContent.includes('After tonight'),
+    boxes[5].querySelector('.stepkicker').textContent);
+  check('and the strategy interview sits in Go deeper, after the build',
+    titles[4] === 'Content strategy brain' &&
+    boxes[4].querySelector('.stepkicker').textContent === 'Go deeper',
+    titles[4]);
 
   check('only Step 1 is open to begin with',
     boxes.filter((b) => b.open).map((b) => b.id).join(',') === 'step-1',
     boxes.filter((b) => b.open).map((b) => b.id));
 
   // Each step's rich content moved inside its own dropdown.
-  check('Step 1 holds Mika\'s prompt and its copy button',
-    boxes[0].querySelector('#mikaprompt') !== null &&
-    boxes[0].querySelector('[data-copy="p1"]') !== null);
-  check('Step 3 holds the skill and its copy button',
-    boxes[2].querySelector('#skilltext') !== null &&
-    boxes[2].querySelector('[data-copy="sk"]') !== null);
+  check('Go deeper holds the strategy prompt and its copy button',
+    boxes[4].querySelector('#mikaprompt') !== null &&
+    boxes[4].querySelector('[data-copy="p1"]') !== null);
+  check('Step 4 holds the skill and its copy button',
+    boxes[3].querySelector('#skilltext') !== null &&
+    boxes[3].querySelector('[data-copy="sk"]') !== null);
   check('Step 4 holds the funnel tabs and its copy button',
     boxes[3].querySelector('#funneltabs') !== null &&
     boxes[3].querySelector('[data-copy="p2"]') !== null);
   check('After tonight holds the ritual toggles',
-    boxes[4].querySelector('#ritualcards') !== null);
+    boxes[5].querySelector('#ritualcards') !== null);
 }
 
 console.log('\n/contentworkshop — each step is a checklist');
@@ -390,14 +394,16 @@ console.log('\n/contentworkshop — each step is a checklist');
   const countOf = (n) => box(n).querySelector('.stepcount').textContent;
   const badge = (n) => box(n).querySelector('.stepbadge').textContent;
 
-  for (const n of [1, 2, 3, 4]) {
-    check('Step ' + n + ' has three tickable sub-steps', items(n).length === 3, items(n).length);
+  const rowCounts = { 1: 2, 2: 2, 3: 3, 4: 4, 6: 4 };
+  for (const n of [1, 2, 3, 4, 6]) {
+    check('Step ' + n + ' has ' + rowCounts[n] + ' tickable sub-steps',
+      items(n).length === rowCounts[n], items(n).length);
   }
 
   check('every row starts un-ticked',
     [1, 2, 3, 4].every((n) => items(n).every((i) => i.getAttribute('aria-pressed') === 'false')));
   check('the header counts them, long and short',
-    countOf(1) === '0 of 3 done0/3', countOf(1));
+    countOf(1) === '0 of 2 done0/2', countOf(1));
   check('and shows the step number while it is unfinished',
     badge(1) === '1' && box(1).getAttribute('data-done') === 'no', badge(1));
 
@@ -410,7 +416,7 @@ console.log('\n/contentworkshop — each step is a checklist');
   // Ticking every item in a step marks it done and opens the next.
   check('Step 2 is shut while Step 1 is unfinished', box(2).open === false);
   items(1).forEach(click);
-  check('every item ticked reads 3 of 3', countOf(1) === '3 of 3 done3/3', countOf(1));
+  check('every item ticked reads 2 of 2', countOf(1) === '2 of 2 done2/2', countOf(1));
   check('and the step is marked done, with a tick for its number',
     box(1).getAttribute('data-done') === 'yes' && badge(1) === '✓',
     badge(1));
@@ -419,21 +425,16 @@ console.log('\n/contentworkshop — each step is a checklist');
   // Un-ticking takes it back, and does not shut the next step under anyone.
   click(items(1)[0]);
   check('un-ticking a row drops the step again',
-    box(1).getAttribute('data-done') === 'no' && countOf(1) === '2 of 3 done2/3', countOf(1));
+    box(1).getAttribute('data-done') === 'no' && countOf(1) === '1 of 2 done1/2', countOf(1));
   check('and the step it opened stays open', box(2).open === true);
 
-  // Step 2's third row is the optional one: counted, but not required.
-  const optional = items(2)[2];
-  check('Step 2\'s third row is marked optional',
-    optional.textContent.toLowerCase().includes('optional'), optional.textContent.trim().slice(0, 60));
-  click(items(2)[0]);
-  click(items(2)[1]);
-  check('the two required rows alone complete Step 2',
-    box(2).getAttribute('data-done') === 'yes' && box(3).open === true);
-  check('while the count still says 2 of 3', countOf(2) === '2 of 3 done2/3', countOf(2));
-  click(optional);
-  check('ticking the optional one moves the count, not the verdict',
-    countOf(2) === '3 of 3 done3/3' && box(2).getAttribute('data-done') === 'yes', countOf(2));
+  // Go deeper has a header of its own but no dot, and sits outside the count.
+  check('Go deeper shows a plus, not a step number', badge(6) === '+', badge(6));
+  items(6).forEach(click);
+  check('finishing Go deeper marks it done', box(6).getAttribute('data-done') === 'yes');
+  check('without moving the top bar count',
+    document.getElementById('donecount').textContent === '0',
+    document.getElementById('donecount').textContent);
 }
 
 console.log('\n/contentworkshop — the copy buttons tick their own row');
@@ -482,17 +483,15 @@ console.log('\n/contentworkshop — the step progress count');
   check('finishing Step 1 advances the count by exactly one', count() === '2', count());
 
   const ctx = () => [...document.querySelectorAll('#step-2 [data-item]')];
-  check('there are three Step 2 rows', ctx().length === 3, ctx().length);
+  check('there are two Step 2 rows', ctx().length === 2, ctx().length);
   check('Step 2 is not done on the back of Step 1',
     ctx().every((c) => c.getAttribute('aria-pressed') === 'false'));
   click(ctx()[0]);
   check('one Step 2 row ticked is not yet a done step', count() === '2', count());
   click(ctx()[1]);
-  check('both required Step 2 rows ticked completes Step 2', count() === '3', count());
-  click(ctx()[2]);
-  check('the optional third row does not double-count', count() === '3', count());
+  check('both Step 2 rows ticked completes Step 2', count() === '3', count());
   click(ctx()[1]);
-  check('un-ticking a required row drops Step 2 again', count() === '2', count());
+  check('un-ticking a row drops Step 2 again', count() === '2', count());
 
   // Ticking a setup row back off takes that step away again.
   click(rows()[0]);
@@ -554,7 +553,7 @@ console.log('\n/contentworkshop — storage that is blocked costs nothing');
   // draw, and ticking has to work; it simply does not remember.
   const { document } = loadWithoutStorage();
   check('the page still renders its steps',
-    document.querySelectorAll('details.stepbox').length === 5);
+    document.querySelectorAll('details.stepbox').length === 6);
   const rows = [...document.querySelectorAll('#step-1 [data-item]')];
   rows.forEach((el) => el.dispatchEvent(
     new document.defaultView.MouseEvent('click', { bubbles: true })));
@@ -583,7 +582,7 @@ console.log('\n/contentworkshop — the screenshots, on the page');
 
   check('they are the files in contentworkshop/img/, named by step and order',
     shots.map((f) => f.querySelector('img').getAttribute('src')).join(',') ===
-      'img/step2-1.png,img/step2-2.png,img/step3-1.png',
+      'img/step2-2.png,img/step3-1.png,img/step2-1.png',
     shots.map((f) => f.querySelector('img').getAttribute('src')));
 
   check('and every one of those files is actually there',
@@ -629,12 +628,12 @@ console.log('\n/contentworkshop — the screenshots, on the page');
   check('the image fills the card on a phone',
     /\.shot img\{[^}]*width:100%/.test(HTML));
 
-  // Steps 1 and 4 have no screenshots yet, so the page says where they go
+  // The strategy interview and Step 2 have no screenshots yet, so the page says where they go
   // rather than inventing any.
   check('the steps with nothing supplied carry a TODO instead of an invented image',
-    (HTML.match(/TODO screenshots/g) || []).length === 2 &&
-    document.querySelectorAll('#step-1 figure.shot').length === 0 &&
-    document.querySelectorAll('#step-4 figure.shot').length === 0,
+    (HTML.match(/TODO screenshots/g) || []).length === 1 &&
+    document.querySelectorAll('#step-2 figure.shot').length === 0 &&
+    document.querySelectorAll('#step-3 figure.shot').length === 0,
     (HTML.match(/TODO screenshots/g) || []).length);
 }
 
