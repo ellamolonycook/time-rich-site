@@ -90,6 +90,13 @@ My North Star is below:
 
 Superhuman is the start. Becoming Time Rich takes a different kind of discipline, the boring kind, where you run this every single day for months until you stop noticing you're doing it. Nobody gets there without the foundation, and this week is the foundation.$tr$,
    null),
+  ($tr$text$tr$, $tr$Three principles run through every step$tr$, 17,
+   $tr$Audacious Action. One bold move a week, the one you've been putting off. The question: "What's the move I'm scared to make this week?"
+
+Distraction or Conviction. The filter for every task and every yes. The question: "Am I doing what I want to do, or what my business needs me to do?"
+
+Your Inner Circle. Nobody becomes a CEO alone, and nobody grows on compliments. The question: "Do I have people who have grown businesses and raised capital, and who will tell me the truth, not what I want to hear?"$tr$,
+   null),
   ($tr$text$tr$, $tr$First 5 minutes of the call$tr$, 22,
    $tr$Nobody has time before the call, so we do this together at the start.
 
@@ -240,7 +247,22 @@ Every weekday after this, when I say "today's list", run step 2 only.
 Rules: never send. Never invent a reason to reach out. Never edit section 9.
 =$tr$,
    null),
-  ($tr$text$tr$, $tr$Prompt 4. Morning delegation (any morning your to-do list is full)$tr$, 40,
+  ($tr$text$tr$, $tr$Who is this for? Five questions, then brief it$tr$, 40,
+   $tr$| Ask | If yes |
+| Does this need my expertise? | It's your IP. Keep it, build it, and capture it so it can become a skill later |
+| Is this for AI? | Repeatable, clear rules, a draft is fine. It becomes a skill or an agent |
+| Is this for a human to learn? | Someone on the team should own this skill. Teach it once, and they grow into it |
+| Is this for a human to integrate? | AI does the work, a person puts it into the business: checks it, sends it, connects it to clients and tools |
+| Is this for me to hand off ahead of time? | It's coming, it isn't urgent yet. Plan it and delegate it now, before it becomes a last-minute job |
+
+Then brief it. Three questions, in a 30-second voice note in Wispr Flow:
+Done: what does done look like?
+Know: what do they need to know?
+When: once, or every week?
+
+If you can't answer "Done", you're not ready to delegate it yet.$tr$,
+   null),
+  ($tr$text$tr$, $tr$Prompt 4. Morning delegation (any morning your to-do list is full)$tr$, 42,
    $tr$= Copy: Prompt 4
 You are my delegation partner. Below is my morning voice note. Read my Business COMPASS first.
 For each task:
@@ -345,7 +367,7 @@ do $$
 declare v integer;
 begin
   select count(*) into v from public.portal_items where week_id = 2 and published;
-  if v <> 18 then raise exception 'expected 18 published rows in Week 2, found %', v; end if;
+  if v <> 20 then raise exception 'expected 20 published rows in Week 2, found %', v; end if;
   select count(*) into v from public.portal_weeks where id = 2 and title like 'Week 2: Foundations%';
   if v <> 1 then raise exception 'Week 2 title not set'; end if;
 end $$;
