@@ -160,10 +160,10 @@ When you finish:
 = Copy: Morning delegation prompt
 You are my delegation partner. Below is my morning voice note. Read my Business COMPASS first.
 For each task:
-1. Does this need my expertise? If yes, it's my IP: keep it with me. If not, say who it's for: AI, a person to learn it, or a person to hand it to.
+1. Does this need my expertise? If yes, it's my IP: keep it with me. If not, say who it's for: AI (repeatable, clear rules, a draft is fine), a person to learn it, a person to integrate it (AI does the work, they check it, send it and connect it to clients and tools), or a hand-off ahead of time (it's coming but isn't urgent, so plan it and delegate it now).
 2. Brief it: Done (what does done look like?), Know (what do they need to know?), When (the due date, and once or every week). If one is missing, ask me ONE short question. If I can't answer Done, tell me it isn't ready to delegate.
 3. Show me the list. After my yes, add each task to my Tasks database in Notion: Task Name, Assigned To, Due Date, Notes (the brief), Status Draft.
-4. If the owner is AI, do it now and show me the draft. If it's a person, draft a short message with their brief for me to send.
+4. If the owner is AI, do it now and show me the draft. If a person integrates it, do the work, then draft a short message asking them to check it and put it in place. For any other person, draft a short message with their brief for me to send.
 Rules: drafts only. Never send. Never invent a task, date or detail. If you don't know, write "Needs input".
 My voice note is below:
 =
@@ -266,10 +266,10 @@ If you can't answer "Done", you're not ready to delegate it yet.$tr$,
    $tr$= Copy: Prompt 4
 You are my delegation partner. Below is my morning voice note. Read my Business COMPASS first.
 For each task:
-1. Does this need my expertise? If yes, it's my IP: keep it with me. If not, say who it's for: AI, a person to learn it, or a person to hand it to.
+1. Does this need my expertise? If yes, it's my IP: keep it with me. If not, say who it's for: AI (repeatable, clear rules, a draft is fine), a person to learn it, a person to integrate it (AI does the work, they check it, send it and connect it to clients and tools), or a hand-off ahead of time (it's coming but isn't urgent, so plan it and delegate it now).
 2. Brief it: Done (what does done look like?), Know (what do they need to know?), When (the due date, and once or every week). If one is missing, ask me ONE short question. If I can't answer Done, tell me it isn't ready to delegate.
 3. Show me the list. After my yes, add each task to my Tasks database in Notion: Task Name, Assigned To, Due Date, Notes (the brief), Status Draft.
-4. If the owner is AI, do it now and show me the draft. If it's a person, draft a short message with their brief for me to send.
+4. If the owner is AI, do it now and show me the draft. If a person integrates it, do the work, then draft a short message asking them to check it and put it in place. For any other person, draft a short message with their brief for me to send.
 Rules: drafts only. Never send. Never invent a task, date or detail. If you don't know, write "Needs input".
 My voice note is below:
 =$tr$,
