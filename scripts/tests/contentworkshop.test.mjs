@@ -249,6 +249,11 @@ console.log('\n/contentworkshop — the WORKSHOP config, one place for the open 
   const { document } = load();
   check('the strategy prompt is rendered into the page',
     document.getElementById('mikaprompt').textContent.trim().length > 0);
+  check('the top banner and the draw form say the same line',
+    ['anncwhen', 'enterwhen'].every((id) =>
+      document.getElementById(id).textContent === 'Thursday at 5pm ET' &&
+      /Winners announced Thursday at 5pm ET\./.test(document.getElementById(id).parentElement.textContent)));
+  check('the old 12pm deadline is gone', !/12pm/.test(HTML));
   check('the winners line is rendered into the page',
     document.getElementById('winnerswhen').textContent === 'Thursday at 5pm ET',
     document.getElementById('winnerswhen').textContent);

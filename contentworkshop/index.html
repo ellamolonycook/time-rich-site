@@ -120,7 +120,7 @@ a{color:#424B36}a:hover{color:#333A28}
 <div style="font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; color: #1A1816; background: #FFFDFB; min-height: 100vh; container-type: inline-size; container-name: page">
 
 <div style="position: sticky; top: 0; z-index: 10">
-<a href="#win" class="annc" style="display: block; background: #424B36; color: #FFFDFB; text-decoration: none; text-align: center; font-size: 13.5px; line-height: 1.4; padding: 9px 16px">Tonight: <strong style="font-weight: 600">win 1 Accelerator seat</strong> →</a>
+<a href="#win" class="annc" style="display: block; background: #424B36; color: #FFFDFB; text-decoration: none; text-align: center; font-size: 13.5px; line-height: 1.4; padding: 9px 16px"><strong style="font-weight: 600">Win 1 Accelerator seat.</strong> Winners announced <span id="anncwhen"></span>. →</a>
 <nav aria-label="Workshop steps" style="background: rgba(255,253,251,.96); border-bottom: 1px solid rgba(26,24,22,.12)">
 <div style="max-width: 1120px; margin: 0 auto; padding: 0 24px; display: flex; align-items: center; gap: 16px; min-height: 60px">
 <span style="flex: 0 0 auto; font-weight: 500; font-size: 18px; letter-spacing: -.03em; line-height: 1">Time Rich<span style="color: #424B36">.</span></span>
@@ -150,7 +150,7 @@ a{color:#424B36}a:hover{color:#333A28}
 <div>
 <span class="drawkicker">Win 1 seat in the Superhuman Accelerator</span>
 <h2 id="enterh">Submit your LinkedIn post URL to enter the draw!</h2>
-<p>Post on LinkedIn and submit your post before 12pm EST tomorrow to go in the draw. <a href="#win">How it works &darr;</a></p>
+<p>Post on LinkedIn and submit your post to go in the draw. Winners announced <span id="enterwhen"></span>. <a href="#win">How it works &darr;</a></p>
 </div>
 <form class="drawform" data-drawform novalidate>
 <label><span>Your name</span><input name="Name" type="text" autocomplete="name" required></label>
@@ -885,6 +885,8 @@ Start the interview now.`,
   one('#mikaprompt').textContent = WORKSHOP.mikaPrompt;
   one('#winnerswhen').textContent = WORKSHOP.winnersWhen;
   one('#vipwhen').textContent = WORKSHOP.winnersWhen;
+  one('#anncwhen').textContent = WORKSHOP.winnersWhen;
+  one('#enterwhen').textContent = WORKSHOP.winnersWhen;
 
   // The draw: both forms post to the forms worker, which files the entry in
   // Notion ("Content Workshop Draw Entries"). Only a linkedin.com link goes.
