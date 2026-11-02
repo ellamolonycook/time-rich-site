@@ -248,6 +248,26 @@ console.log('\nResources: the Superhuman AI Dictionary');
     words.length === 36 && wrong.length === 0,
     wrong.map((w) => w.querySelector('.trp-dict-term').textContent.trim()));
 
+  /* The word carries a lime marker (Ella, 2 Nov). It is on the word itself,
+     not the card or the line, so a long word is highlighted over both lines
+     it breaks across rather than in one bar. */
+  check('every word carries the highlight, on the word itself',
+    words.length === 36 && words.every((w) => {
+      const term = w.querySelector('.trp-dict-term');
+      const mark = term && term.querySelector('.trp-dict-mark');
+      return mark && mark.textContent.trim() === term.textContent.trim();
+    }),
+    words.filter((w) => !w.querySelector('.trp-dict-term .trp-dict-mark'))
+      .map((w) => w.querySelector('.trp-dict-term').textContent.trim()));
+  check('and the three labels are left alone',
+    [...dict.querySelectorAll('.trp-dict-label .trp-dict-mark')].length === 0);
+  // The lime does not flip with the theme and --trp-deep does, so the type on
+  // the marker is pinned for the dark theme or it would read cream on lime.
+  check('the marker is lime with deep type, in both themes',
+    /\.trp-dict-mark \{[^}]*background: var\(--trp-lime\)/.test(RES) &&
+    /data-theme='dark'\] \.trp-dict-mark \{ --trp-dict-on-lime: #1A1816/.test(RES) &&
+    /data-theme='system'\] \.trp-dict-mark \{ --trp-dict-on-lime: #1A1816/.test(RES));
+
   const table = dict && dict.querySelector('.trp-dict-table');
   check('the "Start with these words" table is there', Boolean(table) &&
     dict.querySelector('#dictionary-start').textContent.trim() === 'Start with these words',
@@ -1254,6 +1274,20 @@ console.log('\nThe Superhuman prizes sit above the week tabs');
   p.pick(2);
   check('and they stay when another week is picked', prizeDrops(p.doc).length === 1);
   p.w.close();
+}
+
+console.log('\nThe Week 2 section titles carry no RICH bracket');
+{
+  /* Ella took the (R: Revenue) style bracket off the section titles on
+     2 Nov. The letters still head the RICH table in the week's own rows;
+     what is gone is the bracket repeated after a section title. */
+  check('no section title in the page has one',
+    !/\((?:R: Revenue|I: IP|C: Crew|H: Hand-off)/.test(HTML),
+    (HTML.match(/.{0,60}\((?:R: Revenue|I: IP|C: Crew|H: Hand-off).{0,10}/) || [])[0]);
+  check('and the three Week 2 titles read as she rewrote them',
+    /title: '1\. Build conviction by eliminating',/.test(HTML) &&
+    /title: '2\. Delegate',/.test(HTML) &&
+    /title: '3\. Save it as a skill',/.test(HTML));
 }
 
 console.log('\nLessons have a tick and a cross; setup tasks a tick only; the calls neither');
