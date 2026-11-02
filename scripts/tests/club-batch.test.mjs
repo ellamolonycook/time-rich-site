@@ -121,6 +121,84 @@ console.log('\nResources: the three Superhuman agents, as cards');
   });
 }
 
+console.log('\nResources: the Build library groups are drop-downs');
+{
+  /* Sixteen prompts open at once made the page very long (Ella, 2 Nov), so
+     each group is a disclosure now. The prompts themselves did not change,
+     and the two checks that matter most here are that every one is still
+     reachable and that every Copy and Open still points at its own prompt. */
+  const lib = resDoc.querySelector('.trp-builds');
+  check('the Build library is there', lib !== null);
+  const groups = lib ? [...lib.children] : [];
+  check('five groups, every one a drop-down',
+    groups.length === 5 && groups.every((g) => g.tagName === 'DETAILS'),
+    groups.map((g) => g.tagName));
+  check('every one shut on load', groups.length > 0 && groups.every((g) => g.open === false));
+  check('and each is still the card it was, so the copy boxes keep their styles',
+    groups.every((g) => g.classList.contains('trp-build') &&
+                        g.classList.contains('glass-card') &&
+                        g.classList.contains('trp-acc')));
+
+  check('each summary keeps the group title and its one line',
+    groups.every((g) => {
+      const sum = g.querySelector(':scope > summary.trp-acc-head');
+      return sum && sum.querySelector('.trp-build-title').textContent.trim().length > 0 &&
+             sum.querySelector('.trp-build-sub').textContent.trim().length > 0;
+    }));
+  check('the titles are the five Ella named',
+    groups.map((g) => g.querySelector('.trp-build-title').textContent.trim()).join('|') ===
+    ['Relationships and the client journey', 'Sales, partnerships and speaking',
+     'Website and client materials', 'Business support', 'New income'].join('|'),
+    groups.map((g) => g.querySelector('.trp-build-title').textContent.trim()));
+
+  // The count on the summary is what it holds, so a group can never say
+  // three and open on four.
+  const counts = groups.map((g) => ({
+    said: g.querySelector(':scope > summary .trp-tag').textContent.trim(),
+    held: g.querySelectorAll('.trp-copybox').length,
+  }));
+  check('each one says how many prompts it holds',
+    counts.every((c) => c.said === c.held + (c.held === 1 ? ' prompt' : ' prompts')),
+    counts);
+  check('and that is 3, 4, 4, 3 and 2',
+    counts.map((c) => c.held).join(',') === '3,4,4,3,2',
+    counts.map((c) => c.held));
+
+  // Nothing inside moved: the same sixteen ids, in the same order, each one
+  // still the id of a <pre> on the page.
+  const WANT = ['bl-1-1', 'bl-1-2', 'bl-1-3', 'bl-2-1', 'bl-2-2', 'bl-2-3', 'bl-2-4',
+                'bl-3-1', 'bl-3-2', 'bl-3-3', 'bl-3-4', 'bl-4-1', 'bl-4-2', 'bl-4-3',
+                'bl-5-1', 'bl-5-2'];
+  const copies = [...resDoc.querySelectorAll('[data-copy-target]')].map((n) => n.getAttribute('data-copy-target'));
+  const opens = [...resDoc.querySelectorAll('[data-open-prompt]')].map((n) => n.getAttribute('data-open-prompt'));
+  check('all sixteen Copy buttons, pointing at the same ids',
+    copies.join(',') === WANT.join(','), copies);
+  check('all sixteen Open in Claude links, pointing at the same ids',
+    opens.join(',') === WANT.join(','), opens);
+  check('and every id is a prompt on the page',
+    WANT.every((id) => {
+      const pre = resDoc.getElementById(id);
+      return pre && pre.tagName === 'PRE' && pre.textContent.trim().length > 0;
+    }),
+    WANT.filter((id) => !resDoc.getElementById(id)));
+  // Copy sends textContent straight to the clipboard, so a <pre> that picked
+  // up the indent of its new depth would paste an indented prompt.
+  check('no prompt gained leading whitespace from the move',
+    WANT.every((id) => {
+      const t = resDoc.getElementById(id).textContent;
+      return t === t.replace(/^[ \n]+/, '');
+    }),
+    WANT.filter((id) => {
+      const t = resDoc.getElementById(id).textContent;
+      return t !== t.replace(/^[ \n]+/, '');
+    }));
+  check('and every prompt is inside its own group, in the open panel',
+    WANT.every((id) => {
+      const pre = resDoc.getElementById(id);
+      return pre.closest('.trp-acc-body') !== null && pre.closest('details.trp-build') !== null;
+    }));
+}
+
 console.log('\nResources: the Superhuman AI Dictionary');
 {
   /* Five groups, 36 words, every word read three ways. The section is found
