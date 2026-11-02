@@ -197,7 +197,7 @@ Rules:
 - When you finish, tell me what you did in 3 lines and what needs my decision.
 =$tr$,
    null),
-  ($tr$text$tr$, $tr$Prompt 1. Set up your Sales Floor, your first Crew member (C: Crew)$tr$, 30,
+  ($tr$text$tr$, $tr$Prompt 1. Set up your Sales Floor, your first Crew member$tr$, 30,
    $tr$Paste once into the project instructions.
 
 = Copy: Prompt 1

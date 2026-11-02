@@ -102,6 +102,30 @@
     .trp-reslink-title { font-family: var(--trp-face); font-weight: 600; font-size: 19px; letter-spacing: -.01em; }
     .trp-reslink-note { font-size: 14px; color: var(--trp-muted); }
     .trp-reslink-chev { width: 20px; height: 20px; flex: none; color: var(--trp-muted); }
+
+    /* The AI Dictionary (Ella, 2 Nov), scoped here for the same reason as
+       the two pieces above: portal.css is not rebuilt for a handful of
+       rules, and every colour and face is a --trp-* token, so the dark
+       theme needs nothing of its own. */
+    .trp-dict-words { display: grid; gap: 12px; grid-template-columns: repeat(auto-fit, minmax(min(240px, 100%), 1fr)); }
+    .trp-dict-word { padding: 16px 18px; border: 1px solid var(--trp-rule); border-radius: 16px; background: rgb(var(--c-surface)); }
+    .trp-dict-term { margin: 0; font-family: var(--trp-face); font-weight: 600; font-size: 16px; letter-spacing: -.01em; color: var(--trp-ink); }
+    .trp-dict-lines { margin: 10px 0 0; display: grid; gap: 7px; }
+    .trp-dict-line { margin: 0; font-size: 14px; line-height: 1.5; color: var(--trp-muted); }
+    .trp-dict-label { font-weight: 600; color: var(--trp-ink); }
+
+    .trp-dict-start { margin-top: 24px; }
+    .trp-dict-start-title { margin: 0 0 12px; font-family: var(--trp-face); font-weight: 600; font-size: 17px; letter-spacing: -.01em; color: var(--trp-ink); }
+    .trp-dict-table { width: 100%; border-collapse: collapse; font-size: 14px; }
+    .trp-dict-table th, .trp-dict-table td { padding: 10px 12px; text-align: left; vertical-align: top; border-bottom: 1px solid var(--trp-rule); }
+    .trp-dict-table thead th { font-size: 12px; font-weight: 600; letter-spacing: .04em; text-transform: uppercase; color: var(--trp-muted); }
+    .trp-dict-table tbody th { font-weight: 600; color: var(--trp-ink); line-height: 1.45; }
+    .trp-dict-table td { color: var(--trp-muted); line-height: 1.45; }
+    .trp-dict-table tbody tr:last-child th, .trp-dict-table tbody tr:last-child td { border-bottom: 0; }
+    @media (max-width: 420px) {
+      .trp-dict-table { font-size: 13px; }
+      .trp-dict-table th, .trp-dict-table td { padding: 10px 6px; }
+    }
   </style>
   <!-- The session gate. Config first, then the library; both deferred so
        the DOM is ready when the script mounts. No valid code redirects to
@@ -573,6 +597,386 @@
                     <pre id="bl-5-2" class="trp-copybox-text">After a client session I want to offer a next step. Create 3 service bundles or follow-on offers with names, what's included and prices, plus a short message I can send the day after the session. My main service: [what you deliver].</pre>
                   </div>
                 </article>
+              </div>
+            </section>
+
+            <!-- The Superhuman AI Dictionary (Ella, 2 Nov). 36 words in five
+                 groups, each group a disclosure that starts shut, so the section
+                 is five lines until a member opens one.
+            
+                 The markup is this page's own: .trp-acc for the groups, the same
+                 disclosure the Questions below are built from, and the word cards
+                 take every colour and face from the --trp-* palette, so both
+                 themes follow without rules of their own.
+            
+                 Each word is read three ways on purpose: what it is, a picture to
+                 remember it by, and one thing to try this week. The three labels
+                 are part of the copy Ella approved. -->
+            <section class="glass-card is-static p-7 lg:p-8" aria-labelledby="dictionary-heading">
+              <div class="space-y-2">
+                <h2 id="dictionary-heading" class="trp-section-title">The Superhuman AI Dictionary</h2>
+                <p class="trp-lede">36 AI words you'll hear in the program, explained like a smart friend would over coffee. Each one has a picture to remember it by and one thing to try this week.</p>
+              </div>
+            
+              <details class="trp-acc">
+                <summary class="trp-acc-head">
+                  <span class="trp-acc-title">The basics</span>
+                  <svg class="trp-acc-caret" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7"></path></svg>
+                </summary>
+                <div class="trp-acc-body">
+                  <div class="trp-dict-words">
+                    <article class="trp-dict-word">
+                      <h3 class="trp-dict-term">AI model (or LLM)</h3>
+                      <div class="trp-dict-lines">
+                        <p class="trp-dict-line"><span class="trp-dict-label">What it is:</span> the brain behind Claude, ChatGPT or Gemini. LLM stands for large language model: it learned from a huge pile of text and predicts the best next words.</p>
+                        <p class="trp-dict-line"><span class="trp-dict-label">Think of it like:</span> a brilliant new hire who has read the whole internet but has never met your customers.</p>
+                        <p class="trp-dict-line"><span class="trp-dict-label">Try it:</span> ask the same question in two models and see which one sounds more like you.</p>
+                      </div>
+                    </article>
+                    <article class="trp-dict-word">
+                      <h3 class="trp-dict-term">Prompt</h3>
+                      <div class="trp-dict-lines">
+                        <p class="trp-dict-line"><span class="trp-dict-label">What it is:</span> what you ask the AI to do.</p>
+                        <p class="trp-dict-line"><span class="trp-dict-label">Think of it like:</span> ordering at a restaurant. "Food please" gets you anything. "Grilled salmon, no butter, extra greens" gets you dinner.</p>
+                        <p class="trp-dict-line"><span class="trp-dict-label">Try it:</span> say who it's for, what good looks like and what to avoid, every time.</p>
+                      </div>
+                    </article>
+                    <article class="trp-dict-word">
+                      <h3 class="trp-dict-term">Master prompt</h3>
+                      <div class="trp-dict-lines">
+                        <p class="trp-dict-line"><span class="trp-dict-label">What it is:</span> the short checklist you add to the end of any prompt so the AI asks before guessing, rates its own work and pushes back.</p>
+                        <p class="trp-dict-line"><span class="trp-dict-label">Think of it like:</span> the "measure twice, cut once" sign on a carpenter's wall.</p>
+                        <p class="trp-dict-line"><span class="trp-dict-label">Try it:</span> type xx after your prompt (your shortcut from Week 1).</p>
+                      </div>
+                    </article>
+                    <article class="trp-dict-word">
+                      <h3 class="trp-dict-term">Context</h3>
+                      <div class="trp-dict-lines">
+                        <p class="trp-dict-line"><span class="trp-dict-label">What it is:</span> everything the AI knows about you and your business when it answers.</p>
+                        <p class="trp-dict-line"><span class="trp-dict-label">Think of it like:</span> briefing a babysitter. No brief, and the kids get ice cream for dinner.</p>
+                        <p class="trp-dict-line"><span class="trp-dict-label">Try it:</span> point your AI at your Business COMPASS before any task.</p>
+                      </div>
+                    </article>
+                    <article class="trp-dict-word">
+                      <h3 class="trp-dict-term">Context window</h3>
+                      <div class="trp-dict-lines">
+                        <p class="trp-dict-line"><span class="trp-dict-label">What it is:</span> how much the AI can hold in its head in one chat.</p>
+                        <p class="trp-dict-line"><span class="trp-dict-label">Think of it like:</span> a desk. Pile on too many papers and the early ones fall off the back.</p>
+                        <p class="trp-dict-line"><span class="trp-dict-label">Try it:</span> when a chat gets long and the answers get worse, start a fresh chat.</p>
+                      </div>
+                    </article>
+                    <article class="trp-dict-word">
+                      <h3 class="trp-dict-term">Hallucination</h3>
+                      <div class="trp-dict-lines">
+                        <p class="trp-dict-line"><span class="trp-dict-label">What it is:</span> when the AI makes something up and says it with total confidence.</p>
+                        <p class="trp-dict-line"><span class="trp-dict-label">Think of it like:</span> the friend who gives directions to a restaurant that closed in 2019.</p>
+                        <p class="trp-dict-line"><span class="trp-dict-label">Try it:</span> add "if you don't know, write Needs input". Check every number and name before it goes out.</p>
+                      </div>
+                    </article>
+                    <article class="trp-dict-word">
+                      <h3 class="trp-dict-term">Token</h3>
+                      <div class="trp-dict-lines">
+                        <p class="trp-dict-line"><span class="trp-dict-label">What it is:</span> the small chunks of words the AI reads and writes. Usage limits are counted in tokens.</p>
+                        <p class="trp-dict-line"><span class="trp-dict-label">Think of it like:</span> coins in an arcade. Long chats and big files spend more coins.</p>
+                        <p class="trp-dict-line"><span class="trp-dict-label">Try it:</span> upload the one page that matters, not your whole Drive.</p>
+                      </div>
+                    </article>
+                  </div>
+                </div>
+              </details>
+            
+              <details class="trp-acc">
+                <summary class="trp-acc-head">
+                  <span class="trp-acc-title">Your setup</span>
+                  <svg class="trp-acc-caret" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7"></path></svg>
+                </summary>
+                <div class="trp-acc-body">
+                  <div class="trp-dict-words">
+                    <article class="trp-dict-word">
+                      <h3 class="trp-dict-term">Personal preferences</h3>
+                      <div class="trp-dict-lines">
+                        <p class="trp-dict-line"><span class="trp-dict-label">What it is:</span> standing instructions your AI reads before every chat: who you are and how you like answers.</p>
+                        <p class="trp-dict-line"><span class="trp-dict-label">Think of it like:</span> your coffee order the barista already knows.</p>
+                        <p class="trp-dict-line"><span class="trp-dict-label">Try it:</span> paste your master prompt in here once.</p>
+                      </div>
+                    </article>
+                    <article class="trp-dict-word">
+                      <h3 class="trp-dict-term">Project</h3>
+                      <div class="trp-dict-lines">
+                        <p class="trp-dict-line"><span class="trp-dict-label">What it is:</span> a room in your AI with its own instructions and files, for one area of your business.</p>
+                        <p class="trp-dict-line"><span class="trp-dict-label">Think of it like:</span> separate notebooks for sales, content and ops, instead of one messy one.</p>
+                        <p class="trp-dict-line"><span class="trp-dict-label">Try it:</span> run every sales prompt in your Sales Floor project.</p>
+                      </div>
+                    </article>
+                    <article class="trp-dict-word">
+                      <h3 class="trp-dict-term">Memory</h3>
+                      <div class="trp-dict-lines">
+                        <p class="trp-dict-line"><span class="trp-dict-label">What it is:</span> what your AI remembers about you between chats.</p>
+                        <p class="trp-dict-line"><span class="trp-dict-label">Think of it like:</span> a colleague who remembers your kid's name. Lovely, until it remembers the wrong detail.</p>
+                        <p class="trp-dict-line"><span class="trp-dict-label">Try it:</span> check what it remembers in settings, and keep sensitive topics off.</p>
+                      </div>
+                    </article>
+                    <article class="trp-dict-word">
+                      <h3 class="trp-dict-term">Connector</h3>
+                      <div class="trp-dict-lines">
+                        <p class="trp-dict-line"><span class="trp-dict-label">What it is:</span> a bridge that lets your AI read (and sometimes write to) your tools: Notion, Gmail, your calendar.</p>
+                        <p class="trp-dict-line"><span class="trp-dict-label">Think of it like:</span> giving your assistant a key to the filing cabinet, not the whole house.</p>
+                        <p class="trp-dict-line"><span class="trp-dict-label">Try it:</span> ask "Can you see my Notion and my Gmail?" before a session.</p>
+                      </div>
+                    </article>
+                    <article class="trp-dict-word">
+                      <h3 class="trp-dict-term">MCP</h3>
+                      <div class="trp-dict-lines">
+                        <p class="trp-dict-line"><span class="trp-dict-label">What it is:</span> the plug standard most connectors use (Model Context Protocol).</p>
+                        <p class="trp-dict-line"><span class="trp-dict-label">Think of it like:</span> USB-C for AI. One shape of plug, lots of tools.</p>
+                        <p class="trp-dict-line"><span class="trp-dict-label">Try it:</span> you don't need to build one. Just know it's why new connectors keep appearing.</p>
+                      </div>
+                    </article>
+                    <article class="trp-dict-word">
+                      <h3 class="trp-dict-term">Business COMPASS</h3>
+                      <div class="trp-dict-lines">
+                        <p class="trp-dict-line"><span class="trp-dict-label">What it is:</span> the one page that tells your AI who you are, who you serve, what you sell and your current goal.</p>
+                        <p class="trp-dict-line"><span class="trp-dict-label">Think of it like:</span> your business's passport. No passport, no entry.</p>
+                        <p class="trp-dict-line"><span class="trp-dict-label">Try it:</span> update it whenever your offer or price changes.</p>
+                      </div>
+                    </article>
+                    <article class="trp-dict-word">
+                      <h3 class="trp-dict-term">Voice dictation</h3>
+                      <div class="trp-dict-lines">
+                        <p class="trp-dict-line"><span class="trp-dict-label">What it is:</span> speaking instead of typing (Wispr Flow in this program).</p>
+                        <p class="trp-dict-line"><span class="trp-dict-label">Think of it like:</span> leaving a voice note for your business instead of writing it an essay.</p>
+                        <p class="trp-dict-line"><span class="trp-dict-label">Try it:</span> speak your next prompt. You'll give three times the context in half the time.</p>
+                      </div>
+                    </article>
+                  </div>
+                </div>
+              </details>
+            
+              <details class="trp-acc">
+                <summary class="trp-acc-head">
+                  <span class="trp-acc-title">Inside your AI</span>
+                  <svg class="trp-acc-caret" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7"></path></svg>
+                </summary>
+                <div class="trp-acc-body">
+                  <div class="trp-dict-words">
+                    <article class="trp-dict-word">
+                      <h3 class="trp-dict-term">Chat</h3>
+                      <div class="trp-dict-lines">
+                        <p class="trp-dict-line"><span class="trp-dict-label">What it is:</span> one conversation with your AI. It remembers what's said in that chat, not in your other chats.</p>
+                        <p class="trp-dict-line"><span class="trp-dict-label">Think of it like:</span> a phone call. Hang up, and the next call starts fresh.</p>
+                        <p class="trp-dict-line"><span class="trp-dict-label">Try it:</span> one chat per job: one for your offer, one for this week's posts.</p>
+                      </div>
+                    </article>
+                    <article class="trp-dict-word">
+                      <h3 class="trp-dict-term">Artifact</h3>
+                      <div class="trp-dict-lines">
+                        <p class="trp-dict-line"><span class="trp-dict-label">What it is:</span> something finished your AI builds next to the chat: a doc, deck, page or small tool you can edit, share or download.</p>
+                        <p class="trp-dict-line"><span class="trp-dict-label">Think of it like:</span> the chat is the kitchen, the artifact is the plate that goes out.</p>
+                        <p class="trp-dict-line"><span class="trp-dict-label">Try it:</span> ask for your client onboarding checklist "as an artifact".</p>
+                      </div>
+                    </article>
+                    <article class="trp-dict-word">
+                      <h3 class="trp-dict-term">Project instructions</h3>
+                      <div class="trp-dict-lines">
+                        <p class="trp-dict-line"><span class="trp-dict-label">What it is:</span> the standing rules every chat inside a project follows.</p>
+                        <p class="trp-dict-line"><span class="trp-dict-label">Think of it like:</span> the house rules on the fridge.</p>
+                        <p class="trp-dict-line"><span class="trp-dict-label">Try it:</span> paste your Sales Floor rules once, instead of in every prompt.</p>
+                      </div>
+                    </article>
+                    <article class="trp-dict-word">
+                      <h3 class="trp-dict-term">Web search</h3>
+                      <div class="trp-dict-lines">
+                        <p class="trp-dict-line"><span class="trp-dict-label">What it is:</span> your AI looks something up online and shows you where it found it.</p>
+                        <p class="trp-dict-line"><span class="trp-dict-label">Think of it like:</span> a friend who checks before answering, and shows you the receipt.</p>
+                        <p class="trp-dict-line"><span class="trp-dict-label">Try it:</span> ask for today's prices on a tool you use, with sources, then click one.</p>
+                      </div>
+                    </article>
+                    <article class="trp-dict-word">
+                      <h3 class="trp-dict-term">Research</h3>
+                      <div class="trp-dict-lines">
+                        <p class="trp-dict-line"><span class="trp-dict-label">What it is:</span> a longer search in several steps that comes back as a report with sources.</p>
+                        <p class="trp-dict-line"><span class="trp-dict-label">Think of it like:</span> sending an intern to the library for the afternoon instead of asking one quick question.</p>
+                        <p class="trp-dict-line"><span class="trp-dict-label">Try it:</span> a report on 5 competitors' offers and prices.</p>
+                      </div>
+                    </article>
+                    <article class="trp-dict-word">
+                      <h3 class="trp-dict-term">Browser agent (Claude in Chrome)</h3>
+                      <div class="trp-dict-lines">
+                        <p class="trp-dict-line"><span class="trp-dict-label">What it is:</span> AI that works inside your web browser, reading pages and clicking for you.</p>
+                        <p class="trp-dict-line"><span class="trp-dict-label">Think of it like:</span> lending someone your laptop while you watch over their shoulder.</p>
+                        <p class="trp-dict-line"><span class="trp-dict-label">Try it:</span> let it copy your event sign-ups into a sheet, and check before it submits anything.</p>
+                      </div>
+                    </article>
+                    <article class="trp-dict-word">
+                      <h3 class="trp-dict-term">Plugin</h3>
+                      <div class="trp-dict-lines">
+                        <p class="trp-dict-line"><span class="trp-dict-label">What it is:</span> a ready-made bundle of skills and connectors for one role.</p>
+                        <p class="trp-dict-line"><span class="trp-dict-label">Think of it like:</span> a starter kit instead of buying every tool one by one.</p>
+                        <p class="trp-dict-line"><span class="trp-dict-label">Try it:</span> look for one that fits your business before you build your own.</p>
+                      </div>
+                    </article>
+                    <article class="trp-dict-word">
+                      <h3 class="trp-dict-term">Styles</h3>
+                      <div class="trp-dict-lines">
+                        <p class="trp-dict-line"><span class="trp-dict-label">What it is:</span> presets that change how your AI writes: tone, length and format.</p>
+                        <p class="trp-dict-line"><span class="trp-dict-label">Think of it like:</span> choosing the outfit for your words.</p>
+                        <p class="trp-dict-line"><span class="trp-dict-label">Try it:</span> make a style from 5 of your best posts.</p>
+                      </div>
+                    </article>
+                  </div>
+                </div>
+              </details>
+            
+              <details class="trp-acc">
+                <summary class="trp-acc-head">
+                  <span class="trp-acc-title">Getting work done</span>
+                  <svg class="trp-acc-caret" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7"></path></svg>
+                </summary>
+                <div class="trp-acc-body">
+                  <div class="trp-dict-words">
+                    <article class="trp-dict-word">
+                      <h3 class="trp-dict-term">Skill</h3>
+                      <div class="trp-dict-lines">
+                        <p class="trp-dict-line"><span class="trp-dict-label">What it is:</span> a saved set of steps your AI runs by name, so you explain it once, not every week.</p>
+                        <p class="trp-dict-line"><span class="trp-dict-label">Think of it like:</span> a recipe card. Same dish, every time, whoever's cooking.</p>
+                        <p class="trp-dict-line"><span class="trp-dict-label">Try it:</span> turn the task you repeat most into a skill on Friday.</p>
+                      </div>
+                    </article>
+                    <article class="trp-dict-word">
+                      <h3 class="trp-dict-term">SOP</h3>
+                      <div class="trp-dict-lines">
+                        <p class="trp-dict-line"><span class="trp-dict-label">What it is:</span> standard operating procedure: the same steps written for a person.</p>
+                        <p class="trp-dict-line"><span class="trp-dict-label">Think of it like:</span> the skill's twin, for humans.</p>
+                        <p class="trp-dict-line"><span class="trp-dict-label">Try it:</span> ask your AI for the SOP version of every skill you save.</p>
+                      </div>
+                    </article>
+                    <article class="trp-dict-word">
+                      <h3 class="trp-dict-term">Workflow</h3>
+                      <div class="trp-dict-lines">
+                        <p class="trp-dict-line"><span class="trp-dict-label">What it is:</span> a chain of steps that gets one job done, start to finish.</p>
+                        <p class="trp-dict-line"><span class="trp-dict-label">Think of it like:</span> a relay race. Each runner hands the baton to the next.</p>
+                        <p class="trp-dict-line"><span class="trp-dict-label">Try it:</span> write your client onboarding as steps before you automate any of it.</p>
+                      </div>
+                    </article>
+                    <article class="trp-dict-word">
+                      <h3 class="trp-dict-term">Automation</h3>
+                      <div class="trp-dict-lines">
+                        <p class="trp-dict-line"><span class="trp-dict-label">What it is:</span> a workflow that runs on a trigger, the same way every time ("when a form comes in, add a row").</p>
+                        <p class="trp-dict-line"><span class="trp-dict-label">Think of it like:</span> a light on a timer. Great at one job, no opinions.</p>
+                        <p class="trp-dict-line"><span class="trp-dict-label">Try it:</span> automate the step you do exactly the same every time.</p>
+                      </div>
+                    </article>
+                    <article class="trp-dict-word">
+                      <h3 class="trp-dict-term">Agent</h3>
+                      <div class="trp-dict-lines">
+                        <p class="trp-dict-line"><span class="trp-dict-label">What it is:</span> AI that can plan, use your tools and take several steps toward a goal, deciding the order itself.</p>
+                        <p class="trp-dict-line"><span class="trp-dict-label">Think of it like:</span> the difference between a light on a timer and an intern with a to-do list.</p>
+                        <p class="trp-dict-line"><span class="trp-dict-label">Try it:</span> give an agent one clear goal and the rule "drafts only".</p>
+                      </div>
+                    </article>
+                    <article class="trp-dict-word">
+                      <h3 class="trp-dict-term">AI intern</h3>
+                      <div class="trp-dict-lines">
+                        <p class="trp-dict-line"><span class="trp-dict-label">What it is:</span> our name for an agent with a job, like your Sales Floor intern.</p>
+                        <p class="trp-dict-line"><span class="trp-dict-label">Think of it like:</span> a keen intern: fast, tireless, needs a good brief and someone to check the work.</p>
+                        <p class="trp-dict-line"><span class="trp-dict-label">Try it:</span> brief it with Done, Know, When.</p>
+                      </div>
+                    </article>
+                    <article class="trp-dict-word">
+                      <h3 class="trp-dict-term">Scheduled task</h3>
+                      <div class="trp-dict-lines">
+                        <p class="trp-dict-line"><span class="trp-dict-label">What it is:</span> a prompt your AI runs on its own at a set time.</p>
+                        <p class="trp-dict-line"><span class="trp-dict-label">Think of it like:</span> an alarm clock that also makes the coffee.</p>
+                        <p class="trp-dict-line"><span class="trp-dict-label">Try it:</span> a Monday 8am pipeline review.</p>
+                      </div>
+                    </article>
+                    <article class="trp-dict-word">
+                      <h3 class="trp-dict-term">Human in the loop</h3>
+                      <div class="trp-dict-lines">
+                        <p class="trp-dict-line"><span class="trp-dict-label">What it is:</span> a person approves before anything goes out.</p>
+                        <p class="trp-dict-line"><span class="trp-dict-label">Think of it like:</span> the AI writes the card, you sign it.</p>
+                        <p class="trp-dict-line"><span class="trp-dict-label">Try it:</span> every prompt in this program says "drafts only, never send". Keep it that way.</p>
+                      </div>
+                    </article>
+                    <article class="trp-dict-word">
+                      <h3 class="trp-dict-term">Guardrails</h3>
+                      <div class="trp-dict-lines">
+                        <p class="trp-dict-line"><span class="trp-dict-label">What it is:</span> the rules you give your AI about what it must never do.</p>
+                        <p class="trp-dict-line"><span class="trp-dict-label">Think of it like:</span> bumpers at the bowling alley.</p>
+                        <p class="trp-dict-line"><span class="trp-dict-label">Try it:</span> "Never invent a name, number or reason. Never send. Never delete."</p>
+                      </div>
+                    </article>
+                  </div>
+                </div>
+              </details>
+            
+              <details class="trp-acc">
+                <summary class="trp-acc-head">
+                  <span class="trp-acc-title">Words you'll hear around the room</span>
+                  <svg class="trp-acc-caret" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7"></path></svg>
+                </summary>
+                <div class="trp-acc-body">
+                  <div class="trp-dict-words">
+                    <article class="trp-dict-word">
+                      <h3 class="trp-dict-term">Multi-LLM</h3>
+                      <div class="trp-dict-lines">
+                        <p class="trp-dict-line"><span class="trp-dict-label">What it is:</span> using more than one AI model and picking the best one for each job.</p>
+                        <p class="trp-dict-line"><span class="trp-dict-label">Think of it like:</span> a toolbox, not one hammer.</p>
+                        <p class="trp-dict-line"><span class="trp-dict-label">Try it:</span> draft in one, fact-check in another.</p>
+                      </div>
+                    </article>
+                    <article class="trp-dict-word">
+                      <h3 class="trp-dict-term">Knowledge base</h3>
+                      <div class="trp-dict-lines">
+                        <p class="trp-dict-line"><span class="trp-dict-label">What it is:</span> the files and pages your AI can search for answers (your COMPASS, your SOPs, past proposals).</p>
+                        <p class="trp-dict-line"><span class="trp-dict-label">Think of it like:</span> giving it the company handbook instead of letting it guess.</p>
+                        <p class="trp-dict-line"><span class="trp-dict-label">Try it:</span> add your best three proposals to your Sales Floor project.</p>
+                      </div>
+                    </article>
+                    <article class="trp-dict-word">
+                      <h3 class="trp-dict-term">Fine-tuning</h3>
+                      <div class="trp-dict-lines">
+                        <p class="trp-dict-line"><span class="trp-dict-label">What it is:</span> retraining a model on your own data. Expensive and almost never needed for a founder.</p>
+                        <p class="trp-dict-line"><span class="trp-dict-label">Think of it like:</span> sending your new hire back to university when a good brief would do.</p>
+                        <p class="trp-dict-line"><span class="trp-dict-label">Try it:</span> don't. Better context gets you 95% of the way.</p>
+                      </div>
+                    </article>
+                    <article class="trp-dict-word">
+                      <h3 class="trp-dict-term">Vibe coding</h3>
+                      <div class="trp-dict-lines">
+                        <p class="trp-dict-line"><span class="trp-dict-label">What it is:</span> building an app or website by describing it to AI in plain words.</p>
+                        <p class="trp-dict-line"><span class="trp-dict-label">Think of it like:</span> telling an architect what you want and watching the house appear.</p>
+                        <p class="trp-dict-line"><span class="trp-dict-label">Try it:</span> describe one tiny tool you wish existed, like a client intake form.</p>
+                      </div>
+                    </article>
+                    <article class="trp-dict-word">
+                      <h3 class="trp-dict-term">AI slop</h3>
+                      <div class="trp-dict-lines">
+                        <p class="trp-dict-line"><span class="trp-dict-label">What it is:</span> generic AI content that sounds like everyone else.</p>
+                        <p class="trp-dict-line"><span class="trp-dict-label">Think of it like:</span> beige.</p>
+                        <p class="trp-dict-line"><span class="trp-dict-label">Try it:</span> give the AI your real stories and words, and cut anything you'd never say out loud.</p>
+                      </div>
+                    </article>
+                  </div>
+                </div>
+              </details>
+            
+              <!-- Which three words to learn first, rather than all 36. A real
+                   table: two short columns wrap at narrow widths rather than
+                   reflow, so it keeps its semantics at every size. -->
+              <div class="trp-dict-start">
+                <h3 class="trp-dict-start-title" id="dictionary-start">Start with these words</h3>
+                <table class="trp-dict-table" aria-labelledby="dictionary-start">
+                  <thead>
+                    <tr><th scope="col">If you are a</th><th scope="col">Start with</th></tr>
+                  </thead>
+                  <tbody>
+                    <tr><th scope="row">Coach or service business</th><td>Context, Skill, Human in the loop</td></tr>
+                    <tr><th scope="row">DTC brand</th><td>Workflow, Automation, AI slop</td></tr>
+                    <tr><th scope="row">App founder</th><td>Agent, Vibe coding, Multi-LLM</td></tr>
+                    <tr><th scope="row">Marketplace</th><td>Workflow, Agent, Guardrails</td></tr>
+                  </tbody>
+                </table>
               </div>
             </section>
 

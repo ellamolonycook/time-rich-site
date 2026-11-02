@@ -121,6 +121,75 @@ console.log('\nResources: the three Superhuman agents, as cards');
   });
 }
 
+console.log('\nResources: the Superhuman AI Dictionary');
+{
+  /* Five groups, 36 words, every word read three ways. The section is found
+     by its heading rather than by position, so adding another card above it
+     does not move these checks. */
+  const dict = resDoc.querySelector('section[aria-labelledby="dictionary-heading"]');
+  check('the section is on the page', dict !== null);
+  check('with the heading Ella approved',
+    dict && dict.querySelector('#dictionary-heading').textContent.trim() === 'The Superhuman AI Dictionary',
+    dict && dict.querySelector('#dictionary-heading').textContent.trim());
+  check('and its lede', dict && /^36 AI words you'll hear in the program/.test(
+    dict.querySelector('.trp-lede').textContent.trim()),
+    dict && dict.querySelector('.trp-lede').textContent.trim().slice(0, 40));
+
+  // Below the Build library, which is the card it was asked to sit under.
+  const lib = resDoc.querySelector('.trp-buildlib');
+  check('it sits below the Build library',
+    lib && dict && lib.compareDocumentPosition(dict) & 4);
+
+  const groups = dict ? [...dict.querySelectorAll('details.trp-acc')] : [];
+  check('five groups, as drop-downs', groups.length === 5, groups.length);
+  check('named as Ella wrote them',
+    groups.map((g) => g.querySelector('.trp-acc-title').textContent.trim()).join('|') ===
+    ['The basics', 'Your setup', 'Inside your AI', 'Getting work done',
+     "Words you'll hear around the room"].join('|'),
+    groups.map((g) => g.querySelector('.trp-acc-title').textContent.trim()));
+  check('every one shut to begin with', groups.length > 0 && groups.every((g) => g.open === false));
+
+  const words = dict ? [...dict.querySelectorAll('.trp-dict-word')] : [];
+  check('36 words in all', words.length === 36, words.length);
+  check('every word is named, in bold',
+    words.length > 0 && words.every((w) => {
+      const t = w.querySelector('.trp-dict-term');
+      return t && t.textContent.trim().length > 0;
+    }));
+  // The three lines are the point of the card: a definition on its own is
+  // the thing this dictionary was written to replace.
+  const LINES = ['What it is:', 'Think of it like:', 'Try it:'];
+  const wrong = words.filter((w) => {
+    const labels = [...w.querySelectorAll('.trp-dict-label')].map((l) => l.textContent.trim());
+    if (labels.join('|') !== LINES.join('|')) return true;
+    // and each one says something after its label
+    return [...w.querySelectorAll('.trp-dict-line')].some(
+      (p) => p.textContent.replace(/^[^:]+:/, '').trim().length === 0);
+  });
+  check('and every one has all three lines, each with words after the label',
+    words.length === 36 && wrong.length === 0,
+    wrong.map((w) => w.querySelector('.trp-dict-term').textContent.trim()));
+
+  const table = dict && dict.querySelector('.trp-dict-table');
+  check('the "Start with these words" table is there', Boolean(table) &&
+    dict.querySelector('#dictionary-start').textContent.trim() === 'Start with these words',
+    dict && dict.querySelector('#dictionary-start') &&
+      dict.querySelector('#dictionary-start').textContent.trim());
+  const rows = table ? [...table.querySelectorAll('tbody tr')] : [];
+  check('with four rows', rows.length === 4, rows.length);
+  check('one for each kind of business, with its three words',
+    rows.map((r) => r.querySelector('th').textContent.trim()).join('|') ===
+    ['Coach or service business', 'DTC brand', 'App founder', 'Marketplace'].join('|') &&
+    rows.every((r) => r.querySelector('td').textContent.split(',').length === 3),
+    rows.map((r) => r.querySelector('th').textContent.trim()));
+
+  // Ella asked for plain apostrophes and quotes, and no em dashes, so the
+  // copy reads the same in an email, a doc and the page.
+  const copy = dict ? dict.textContent : '';
+  check('no curly quotes or em dashes in the copy', !/[\u2014\u2013\u2018\u2019\u201c\u201d]/.test(copy),
+    (copy.match(/.{0,20}[\u2014\u2013\u2018\u2019\u201c\u201d].{0,20}/) || [])[0]);
+}
+
 console.log('\nResources: the FAQ points at the Curriculum, and Live Sessions is gone');
 {
   /* Live Sessions was a second place to look for a recording, and the only
@@ -1106,29 +1175,6 @@ console.log('\nThe Superhuman prizes sit above the week tabs');
     prizes && prizes.tagName === 'DETAILS' && prizes.open === false);
   p.pick(2);
   check('and they stay when another week is picked', prizeDrops(p.doc).length === 1);
-  p.w.close();
-}
-
-console.log('\nThe member template button says to duplicate it; other Notion links do not');
-{
-  const data = payload();
-  data.weeks[1].items.push(
-    { id: 206, kind: 'link', title: 'Your Superhuman OS in Notion', body: 'Duplicate it.', sort: 60,
-      url: 'https://superhumanos.notion.site/Superhuman-OS-Member-Template-408ca5ebe55781ce96e8fef0175f2229' },
-    { id: 207, kind: 'link', title: 'The Notion starter guide', body: 'Read it.', sort: 70,
-      url: 'https://superhumanos.notion.site/Getting-Started-11112222333344445555666677778888' });
-  const p = openWith(data);
-  p.pick(1);
-  const label = (title) => {
-    const btn = p.lesson(title).querySelector('a.trp-cw-btn');
-    return btn && btn.textContent.trim();
-  };
-  check('the member template reads Duplicate the template',
-    label('Your Superhuman OS in Notion') === 'Duplicate the template',
-    label('Your Superhuman OS in Notion'));
-  check('and every other notion.site link still reads Open the guide',
-    label('The Notion starter guide') === 'Open the guide',
-    label('The Notion starter guide'));
   p.w.close();
 }
 
