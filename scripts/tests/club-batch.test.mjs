@@ -1081,17 +1081,54 @@ console.log('\nAn open lesson folds from a click in its body, not from its contr
 console.log('\nThe Superhuman prizes sit above the week tabs');
 {
   const p = open();
-  const prizes = p.doc.querySelector('[data-curriculum-live] > .trp-cw-prizes');
+  const prizeDrops = (doc) => [...doc.querySelectorAll('[data-curriculum-live] > .trp-cw-prizes')]
+    .filter((d) => d.querySelector('summary[data-cw-focus="prizes"]'));
+  const prizes = prizeDrops(p.doc)[0] || null;
   check('they are drawn once, outside the weeks', prizes !== null &&
-    p.doc.querySelectorAll('.trp-cw-prizes').length === 1 &&
+    prizeDrops(p.doc).length === 1 &&
     prizes.nextElementSibling && prizes.nextElementSibling.className === 'trp-cw-weeks');
-  check('with all five prizes',
-    prizes && prizes.querySelectorAll('.trp-cw-prize').length === 5);
+  check('with two prizes, after Ella cut three on 2 Nov',
+    prizes && prizes.querySelectorAll('.trp-cw-prize').length === 2,
+    prizes && prizes.querySelectorAll('.trp-cw-prize').length);
+  const names = prizes ? [...prizes.querySelectorAll('.trp-cw-prize-name')].map((n) => n.textContent) : [];
+  check('and the three she cut are gone',
+    names.length === 2 &&
+    !names.some((n) => /Boldest Move|Best Energy|First 10 intros/.test(n)),
+    names);
+  check('the two she kept are still there',
+    names.some((n) => n.startsWith('Stanley VIP Prize')) &&
+    names.some((n) => n.startsWith('Testimonial Prize')),
+    names);
+  check('and the count beside the heading reads two',
+    prizes && prizes.querySelector('.trp-cw-prizes-count').textContent === '2 prizes',
+    prizes && prizes.querySelector('.trp-cw-prizes-count').textContent);
   check('in a drop-down that starts shut',
     prizes && prizes.tagName === 'DETAILS' && prizes.open === false);
   p.pick(2);
-  check('and they stay when another week is picked',
-    p.doc.querySelectorAll('[data-curriculum-live] > .trp-cw-prizes').length === 1);
+  check('and they stay when another week is picked', prizeDrops(p.doc).length === 1);
+  p.w.close();
+}
+
+console.log('\nThe member template button says to duplicate it; other Notion links do not');
+{
+  const data = payload();
+  data.weeks[1].items.push(
+    { id: 206, kind: 'link', title: 'Your Superhuman OS in Notion', body: 'Duplicate it.', sort: 60,
+      url: 'https://superhumanos.notion.site/Superhuman-OS-Member-Template-408ca5ebe55781ce96e8fef0175f2229' },
+    { id: 207, kind: 'link', title: 'The Notion starter guide', body: 'Read it.', sort: 70,
+      url: 'https://superhumanos.notion.site/Getting-Started-11112222333344445555666677778888' });
+  const p = openWith(data);
+  p.pick(1);
+  const label = (title) => {
+    const btn = p.lesson(title).querySelector('a.trp-cw-btn');
+    return btn && btn.textContent.trim();
+  };
+  check('the member template reads Duplicate the template',
+    label('Your Superhuman OS in Notion') === 'Duplicate the template',
+    label('Your Superhuman OS in Notion'));
+  check('and every other notion.site link still reads Open the guide',
+    label('The Notion starter guide') === 'Open the guide',
+    label('The Notion starter guide'));
   p.w.close();
 }
 
