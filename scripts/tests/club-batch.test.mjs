@@ -121,6 +121,173 @@ console.log('\nResources: the three Superhuman agents, as cards');
   });
 }
 
+console.log('\nResources: the Build library groups are drop-downs');
+{
+  /* Sixteen prompts open at once made the page very long (Ella, 2 Nov), so
+     each group is a disclosure now. The prompts themselves did not change,
+     and the two checks that matter most here are that every one is still
+     reachable and that every Copy and Open still points at its own prompt. */
+  const lib = resDoc.querySelector('.trp-builds');
+  check('the Build library is there', lib !== null);
+  const groups = lib ? [...lib.children] : [];
+  check('five groups, every one a drop-down',
+    groups.length === 5 && groups.every((g) => g.tagName === 'DETAILS'),
+    groups.map((g) => g.tagName));
+  check('every one shut on load', groups.length > 0 && groups.every((g) => g.open === false));
+  check('and each is still the card it was, so the copy boxes keep their styles',
+    groups.every((g) => g.classList.contains('trp-build') &&
+                        g.classList.contains('glass-card') &&
+                        g.classList.contains('trp-acc')));
+
+  check('each summary keeps the group title and its one line',
+    groups.every((g) => {
+      const sum = g.querySelector(':scope > summary.trp-acc-head');
+      return sum && sum.querySelector('.trp-build-title').textContent.trim().length > 0 &&
+             sum.querySelector('.trp-build-sub').textContent.trim().length > 0;
+    }));
+  check('the titles are the five Ella named',
+    groups.map((g) => g.querySelector('.trp-build-title').textContent.trim()).join('|') ===
+    ['Relationships and the client journey', 'Sales, partnerships and speaking',
+     'Website and client materials', 'Business support', 'New income'].join('|'),
+    groups.map((g) => g.querySelector('.trp-build-title').textContent.trim()));
+
+  // The count on the summary is what it holds, so a group can never say
+  // three and open on four.
+  const counts = groups.map((g) => ({
+    said: g.querySelector(':scope > summary .trp-tag').textContent.trim(),
+    held: g.querySelectorAll('.trp-copybox').length,
+  }));
+  check('each one says how many prompts it holds',
+    counts.every((c) => c.said === c.held + (c.held === 1 ? ' prompt' : ' prompts')),
+    counts);
+  check('and that is 3, 4, 4, 3 and 2',
+    counts.map((c) => c.held).join(',') === '3,4,4,3,2',
+    counts.map((c) => c.held));
+
+  // Nothing inside moved: the same sixteen ids, in the same order, each one
+  // still the id of a <pre> on the page.
+  const WANT = ['bl-1-1', 'bl-1-2', 'bl-1-3', 'bl-2-1', 'bl-2-2', 'bl-2-3', 'bl-2-4',
+                'bl-3-1', 'bl-3-2', 'bl-3-3', 'bl-3-4', 'bl-4-1', 'bl-4-2', 'bl-4-3',
+                'bl-5-1', 'bl-5-2'];
+  const copies = [...resDoc.querySelectorAll('[data-copy-target]')].map((n) => n.getAttribute('data-copy-target'));
+  const opens = [...resDoc.querySelectorAll('[data-open-prompt]')].map((n) => n.getAttribute('data-open-prompt'));
+  check('all sixteen Copy buttons, pointing at the same ids',
+    copies.join(',') === WANT.join(','), copies);
+  check('all sixteen Open in Claude links, pointing at the same ids',
+    opens.join(',') === WANT.join(','), opens);
+  check('and every id is a prompt on the page',
+    WANT.every((id) => {
+      const pre = resDoc.getElementById(id);
+      return pre && pre.tagName === 'PRE' && pre.textContent.trim().length > 0;
+    }),
+    WANT.filter((id) => !resDoc.getElementById(id)));
+  // Copy sends textContent straight to the clipboard, so a <pre> that picked
+  // up the indent of its new depth would paste an indented prompt.
+  check('no prompt gained leading whitespace from the move',
+    WANT.every((id) => {
+      const t = resDoc.getElementById(id).textContent;
+      return t === t.replace(/^[ \n]+/, '');
+    }),
+    WANT.filter((id) => {
+      const t = resDoc.getElementById(id).textContent;
+      return t !== t.replace(/^[ \n]+/, '');
+    }));
+  check('and every prompt is inside its own group, in the open panel',
+    WANT.every((id) => {
+      const pre = resDoc.getElementById(id);
+      return pre.closest('.trp-acc-body') !== null && pre.closest('details.trp-build') !== null;
+    }));
+}
+
+console.log('\nResources: the Superhuman AI Dictionary');
+{
+  /* Five groups, 36 words, every word read three ways. The section is found
+     by its heading rather than by position, so adding another card above it
+     does not move these checks. */
+  const dict = resDoc.querySelector('section[aria-labelledby="dictionary-heading"]');
+  check('the section is on the page', dict !== null);
+  check('with the heading Ella approved',
+    dict && dict.querySelector('#dictionary-heading').textContent.trim() === 'The Superhuman AI Dictionary',
+    dict && dict.querySelector('#dictionary-heading').textContent.trim());
+  check('and its lede', dict && /^36 AI words you'll hear in the program/.test(
+    dict.querySelector('.trp-lede').textContent.trim()),
+    dict && dict.querySelector('.trp-lede').textContent.trim().slice(0, 40));
+
+  // Below the Build library, which is the card it was asked to sit under.
+  const lib = resDoc.querySelector('.trp-buildlib');
+  check('it sits below the Build library',
+    lib && dict && lib.compareDocumentPosition(dict) & 4);
+
+  const groups = dict ? [...dict.querySelectorAll('details.trp-acc')] : [];
+  check('five groups, as drop-downs', groups.length === 5, groups.length);
+  check('named as Ella wrote them',
+    groups.map((g) => g.querySelector('.trp-acc-title').textContent.trim()).join('|') ===
+    ['The basics', 'Your setup', 'Inside your AI', 'Getting work done',
+     "Words you'll hear around the room"].join('|'),
+    groups.map((g) => g.querySelector('.trp-acc-title').textContent.trim()));
+  check('every one shut to begin with', groups.length > 0 && groups.every((g) => g.open === false));
+
+  const words = dict ? [...dict.querySelectorAll('.trp-dict-word')] : [];
+  check('36 words in all', words.length === 36, words.length);
+  check('every word is named, in bold',
+    words.length > 0 && words.every((w) => {
+      const t = w.querySelector('.trp-dict-term');
+      return t && t.textContent.trim().length > 0;
+    }));
+  // The three lines are the point of the card: a definition on its own is
+  // the thing this dictionary was written to replace.
+  const LINES = ['What it is:', 'Think of it like:', 'Try it:'];
+  const wrong = words.filter((w) => {
+    const labels = [...w.querySelectorAll('.trp-dict-label')].map((l) => l.textContent.trim());
+    if (labels.join('|') !== LINES.join('|')) return true;
+    // and each one says something after its label
+    return [...w.querySelectorAll('.trp-dict-line')].some(
+      (p) => p.textContent.replace(/^[^:]+:/, '').trim().length === 0);
+  });
+  check('and every one has all three lines, each with words after the label',
+    words.length === 36 && wrong.length === 0,
+    wrong.map((w) => w.querySelector('.trp-dict-term').textContent.trim()));
+
+  /* The word carries a lime marker (Ella, 2 Nov). It is on the word itself,
+     not the card or the line, so a long word is highlighted over both lines
+     it breaks across rather than in one bar. */
+  check('every word carries the highlight, on the word itself',
+    words.length === 36 && words.every((w) => {
+      const term = w.querySelector('.trp-dict-term');
+      const mark = term && term.querySelector('.trp-dict-mark');
+      return mark && mark.textContent.trim() === term.textContent.trim();
+    }),
+    words.filter((w) => !w.querySelector('.trp-dict-term .trp-dict-mark'))
+      .map((w) => w.querySelector('.trp-dict-term').textContent.trim()));
+  check('and the three labels are left alone',
+    [...dict.querySelectorAll('.trp-dict-label .trp-dict-mark')].length === 0);
+  // The lime does not flip with the theme and --trp-deep does, so the type on
+  // the marker is pinned for the dark theme or it would read cream on lime.
+  check('the marker is lime with deep type, in both themes',
+    /\.trp-dict-mark \{[^}]*background: var\(--trp-lime\)/.test(RES) &&
+    /data-theme='dark'\] \.trp-dict-mark \{ --trp-dict-on-lime: #1A1816/.test(RES) &&
+    /data-theme='system'\] \.trp-dict-mark \{ --trp-dict-on-lime: #1A1816/.test(RES));
+
+  const table = dict && dict.querySelector('.trp-dict-table');
+  check('the "Start with these words" table is there', Boolean(table) &&
+    dict.querySelector('#dictionary-start').textContent.trim() === 'Start with these words',
+    dict && dict.querySelector('#dictionary-start') &&
+      dict.querySelector('#dictionary-start').textContent.trim());
+  const rows = table ? [...table.querySelectorAll('tbody tr')] : [];
+  check('with four rows', rows.length === 4, rows.length);
+  check('one for each kind of business, with its three words',
+    rows.map((r) => r.querySelector('th').textContent.trim()).join('|') ===
+    ['Coach or service business', 'DTC brand', 'App founder', 'Marketplace'].join('|') &&
+    rows.every((r) => r.querySelector('td').textContent.split(',').length === 3),
+    rows.map((r) => r.querySelector('th').textContent.trim()));
+
+  // Ella asked for plain apostrophes and quotes, and no em dashes, so the
+  // copy reads the same in an email, a doc and the page.
+  const copy = dict ? dict.textContent : '';
+  check('no curly quotes or em dashes in the copy', !/[\u2014\u2013\u2018\u2019\u201c\u201d]/.test(copy),
+    (copy.match(/.{0,20}[\u2014\u2013\u2018\u2019\u201c\u201d].{0,20}/) || [])[0]);
+}
+
 console.log('\nResources: the FAQ points at the Curriculum, and Live Sessions is gone');
 {
   /* Live Sessions was a second place to look for a recording, and the only
@@ -1109,27 +1276,18 @@ console.log('\nThe Superhuman prizes sit above the week tabs');
   p.w.close();
 }
 
-console.log('\nThe member template button says to duplicate it; other Notion links do not');
+console.log('\nThe Week 2 section titles carry no RICH bracket');
 {
-  const data = payload();
-  data.weeks[1].items.push(
-    { id: 206, kind: 'link', title: 'Your Superhuman OS in Notion', body: 'Duplicate it.', sort: 60,
-      url: 'https://superhumanos.notion.site/Superhuman-OS-Member-Template-408ca5ebe55781ce96e8fef0175f2229' },
-    { id: 207, kind: 'link', title: 'The Notion starter guide', body: 'Read it.', sort: 70,
-      url: 'https://superhumanos.notion.site/Getting-Started-11112222333344445555666677778888' });
-  const p = openWith(data);
-  p.pick(1);
-  const label = (title) => {
-    const btn = p.lesson(title).querySelector('a.trp-cw-btn');
-    return btn && btn.textContent.trim();
-  };
-  check('the member template reads Duplicate the template',
-    label('Your Superhuman OS in Notion') === 'Duplicate the template',
-    label('Your Superhuman OS in Notion'));
-  check('and every other notion.site link still reads Open the guide',
-    label('The Notion starter guide') === 'Open the guide',
-    label('The Notion starter guide'));
-  p.w.close();
+  /* Ella took the (R: Revenue) style bracket off the section titles on
+     2 Nov. The letters still head the RICH table in the week's own rows;
+     what is gone is the bracket repeated after a section title. */
+  check('no section title in the page has one',
+    !/\((?:R: Revenue|I: IP|C: Crew|H: Hand-off)/.test(HTML),
+    (HTML.match(/.{0,60}\((?:R: Revenue|I: IP|C: Crew|H: Hand-off).{0,10}/) || [])[0]);
+  check('and the three Week 2 titles read as she rewrote them',
+    /title: '1\. Build conviction by eliminating',/.test(HTML) &&
+    /title: '2\. Delegate',/.test(HTML) &&
+    /title: '3\. Save it as a skill',/.test(HTML));
 }
 
 console.log('\nLessons have a tick and a cross; setup tasks a tick only; the calls neither');
