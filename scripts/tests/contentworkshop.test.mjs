@@ -252,6 +252,9 @@ console.log('\n/contentworkshop — the WORKSHOP config, one place for the open 
   check('mikaPrompt is in it', /mikaPrompt\s*:/.test(HTML));
   check('winnersWhen is in it', /winnersWhen\s*:/.test(HTML));
   const { document } = load();
+  check('the strategy reaches Stanley as a shared Google Drive link, not Brain → Files',
+    ['Put your strategy on Google Drive', 'Copy the link', 'Make sure it is open to sharing', 'Paste the link to Stanley']
+      .every((t) => HTML.includes(t)) && !/Brain → Files/.test(HTML));
   check('the strategy prompt is written for founders',
     /Interview me, a founder who/.test(HTML) && !/Growing my career|Pivoting my career/.test(HTML));
   check('the strategy prompt is rendered into the page',
@@ -367,7 +370,7 @@ console.log('\n/contentworkshop — the build is four numbered dropdowns');
   check('the four build steps are the ones from the call',
     titles.slice(0, 4).join(' | ') ===
       'Introduce yourself | Connect your tools | ' +
-      'Give Stanley your context | Prompt Stanley',
+      'Give Stanley your strategy and context | Prompt Stanley',
     titles);
   check('and Rituals is last, as "After tonight"',
     titles[4] === 'Turn on your rituals' &&
@@ -402,7 +405,7 @@ console.log('\n/contentworkshop — each step is a checklist');
   const countOf = (n) => box(n).querySelector('.stepcount').textContent;
   const badge = (n) => box(n).querySelector('.stepbadge').textContent;
 
-  const rowCounts = { 1: 5, 2: 2, 3: 3, 4: 4 };
+  const rowCounts = { 1: 5, 2: 2, 3: 6, 4: 4 };
   for (const n of [1, 2, 3, 4]) {
     check('Step ' + n + ' has ' + rowCounts[n] + ' tickable sub-steps',
       items(n).length === rowCounts[n], items(n).length);
@@ -572,7 +575,7 @@ console.log('\n/contentworkshop — the screenshots, on the page');
     !/workshop notes/i.test(HTML) && !HTML.includes('Content-Creation-Workshop-10-26'));
 
   const shots = [...document.querySelectorAll('figure.shot')];
-  check('three screenshots are drawn', shots.length === 3, shots.length);
+  check('two screenshots are drawn', shots.length === 2, shots.length);
 
   check('each sits under the sub-step it belongs to',
     shots.every((f) => {
@@ -583,7 +586,7 @@ console.log('\n/contentworkshop — the screenshots, on the page');
 
   check('they are the files in contentworkshop/img/, named by step and order',
     shots.map((f) => f.querySelector('img').getAttribute('src')).join(',') ===
-      'img/step2-2.png,img/step2-1.png,img/step3-1.png',
+      'img/step2-2.png,img/step3-1.png',
     shots.map((f) => f.querySelector('img').getAttribute('src')));
 
   check('and every one of those files is actually there',
