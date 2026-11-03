@@ -218,7 +218,7 @@ a{color:#424B36}a:hover{color:#333A28}
 </section>
 
 <!-- ============================================================
-     THE BUILD: Step 1 to Step 4, then Go deeper, each a dropdown that is
+     THE BUILD: Step 1 to Step 4, each a numbered dropdown that is
      also a checklist. The <details> shell and the rich panels are
      written here; the tickable rows and their screenshots are
      rendered into [data-items] by the script at the foot of the
@@ -229,14 +229,42 @@ a{color:#424B36}a:hover{color:#333A28}
 <span class="stepbadge" data-stepbadge="1"></span>
 <span class="stepsumtext">
 <span class="stepkicker">Step 1</span>
-<span class="steptitle" id="h1s">Connect your tools</span>
+<span class="steptitle" id="h1s">Introduce yourself</span>
 </span>
 <span class="stepcount" data-stepcount="1"></span>
 <svg class="stepchev" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6"></path></svg>
 </summary>
 <div class="stepbody">
-<p style="font-size: 17px; line-height: 1.6; color: #57534E; margin: 0; max-width: 62ch">Stanley writes in your voice once it knows you. Plug it in first.</p>
+<p style="font-size: 17px; line-height: 1.6; color: #57534E; margin: 0; max-width: 62ch">Turn on Wispr Flow, introduce yourself to the person next to you, then turn what you said into your content strategy. The prompt is built on principles from Hannah Zhang (@itshannahzhang), product marketer and creator.</p>
+<div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(min(260px, 100%), 1fr)); gap: 16px">
+<div style="background: #E5E6CF; border-radius: 16px; padding: 18px 20px; display: flex; flex-direction: column; gap: 8px">
+<span style="font-family: 'Inter', sans-serif; font-size: 12px; letter-spacing: .08em; font-weight: 600; text-transform: uppercase; color: #57534E">Option 1 · Wispr Flow dictation</span>
+<span style="font-size: 15.5px; line-height: 1.55">Hold <strong style="font-weight: 600">fn</strong>, speak, let go. Your words appear wherever your cursor is. Mac without fn: <strong style="font-weight: 600">Ctrl + Opt</strong>. Windows: <strong style="font-weight: 600">Ctrl + Win</strong>.</span>
+</div>
+<div id="wisprnotetaker" style="background: #E5E6CF; border-radius: 16px; padding: 18px 20px; display: flex; flex-direction: column; gap: 8px">
+<span style="font-family: 'Inter', sans-serif; font-size: 12px; letter-spacing: .08em; font-weight: 600; text-transform: uppercase; color: #57534E">Option 2 · Wispr Flow Notetaker</span>
+<span style="font-size: 15.5px; line-height: 1.55">Open <strong style="font-weight: 600">Wispr Flow Notetaker</strong> to record your intro. No bot joins: it records from your laptop and gives you a summary and transcript. Record, with everyone’s OK.</span>
+</div>
+</div>
+<div style="background: #333A28; color: #FFFDFB; border-radius: 20px; padding: clamp(16px, 3cqi, 24px); display: flex; flex-direction: column; gap: 14px">
+<div style="display: flex; align-items: center; justify-content: space-between; gap: 12px; flex-wrap: wrap">
+<span style="font-family: 'Inter', sans-serif; font-size: 12px; letter-spacing: .08em; font-weight: 600; text-transform: uppercase; color: #D8D9B9">Prompt · Content strategy interview</span>
+<div style="display: flex; gap: 8px; flex-wrap: wrap">
+<a href="https://claude.ai/new" data-ai="claude" target="_blank" rel="noopener" class="ghostbtn" style="display: inline-flex; align-items: center; color: #FFFDFB; text-decoration: none; border: 1px solid rgba(216,217,185,.4); border-radius: 10px; padding: 0 14px; font-size: 14px; font-weight: 500; min-height: 44px">Open Claude</a>
+<a href="https://chatgpt.com/" data-ai="chatgpt" target="_blank" rel="noopener" class="ghostbtn" style="display: inline-flex; align-items: center; color: #FFFDFB; text-decoration: none; border: 1px solid rgba(216,217,185,.4); border-radius: 10px; padding: 0 14px; font-size: 14px; font-weight: 500; min-height: 44px">Open ChatGPT</a>
+<button type="button" class="copylt" data-copy="p1" style="font: 500 13px 'Inter', sans-serif; letter-spacing: .06em; text-transform: uppercase; background: #D8D9B9; color: #1A1816; border: 0; border-radius: 10px; padding: 0 16px; min-height: 44px; cursor: pointer">Copy prompt</button>
+</div>
+</div>
+<pre style="margin: 0; white-space: pre-wrap; font-family: 'Inter', sans-serif; font-size: 15.5px; line-height: 1.65; color: #FFFDFB; background: rgba(255,253,251,.07); border-radius: 12px; padding: 18px; max-height: 340px; overflow-y: auto" id="mikaprompt" tabindex="0" aria-label="The Step 1 prompt"></pre>
+<div style="font-size: 14px; line-height: 1.5; color: #D8D9B9">Tip: hold fn and talk like you're telling a friend. Messy is fine.</div>
+</div>
 <ol class="itemlist" data-items="1"></ol>
+
+<!-- TODO screenshots: nothing has been supplied for this step yet.
+     Drop the files into contentworkshop/img/ named step1-1.png,
+     step1-2.png and so on, then add a shot/alt pair to the matching
+     item in the STEPS table at the foot of this page. They will be
+     drawn under the sub-step they belong to. -->
 </div>
 </details>
 
@@ -245,13 +273,13 @@ a{color:#424B36}a:hover{color:#333A28}
 <span class="stepbadge" data-stepbadge="2"></span>
 <span class="stepsumtext">
 <span class="stepkicker">Step 2</span>
-<span class="steptitle" id="h2s">Give Stanley your context</span>
+<span class="steptitle" id="h2t">Connect your tools</span>
 </span>
 <span class="stepcount" data-stepcount="2"></span>
 <svg class="stepchev" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6"></path></svg>
 </summary>
 <div class="stepbody">
-<p style="font-size: 17px; line-height: 1.6; color: #57534E; margin: 0; max-width: 62ch">More context, better tone.</p>
+<p style="font-size: 17px; line-height: 1.6; color: #57534E; margin: 0; max-width: 62ch">Stanley writes in your voice once it knows you. Plug it in first.</p>
 <ol class="itemlist" data-items="2"></ol>
 </div>
 </details>
@@ -261,13 +289,13 @@ a{color:#424B36}a:hover{color:#333A28}
 <span class="stepbadge" data-stepbadge="3"></span>
 <span class="stepsumtext">
 <span class="stepkicker">Step 3</span>
-<span class="steptitle" id="h3k">Wispr Flow your story</span>
+<span class="steptitle" id="h2s">Give Stanley your strategy and context</span>
 </span>
 <span class="stepcount" data-stepcount="3"></span>
 <svg class="stepchev" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6"></path></svg>
 </summary>
 <div class="stepbody">
-<p style="font-size: 17px; line-height: 1.6; color: #57534E; margin: 0; max-width: 62ch">Pick a story you lived in the last 2 weeks and tell it out loud for 2 minutes. Your real words are what Stanley writes from.</p>
+<p style="font-size: 17px; line-height: 1.6; color: #57534E; margin: 0; max-width: 62ch">Share the strategy you made in Step 1, then everything else. More context, better tone.</p>
 <ol class="itemlist" data-items="3"></ol>
 </div>
 </details>
@@ -472,39 +500,6 @@ Keep the assessment brief and outside the post.
 </div>
 </details>
 
-<details class="stepbox" id="step-6" data-step="6">
-<summary class="stepsum" data-sum="6">
-<span class="stepbadge" data-stepbadge="6"></span>
-<span class="stepsumtext">
-<span class="stepkicker">Go deeper</span>
-<span class="steptitle" id="h6s">Content strategy brain</span>
-</span>
-<span class="stepcount" data-stepcount="6"></span>
-<svg class="stepchev" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6"></path></svg>
-</summary>
-<div class="stepbody">
-<p style="font-size: 17px; line-height: 1.6; color: #57534E; margin: 0; max-width: 62ch">Open Claude or ChatGPT and paste the prompt. It asks you questions one at a time. Wispr your answers instead of typing, and you leave with your content strategy file. Built on principles from Hannah Zhang (@itshannahzhang), product marketer and creator.</p>
-<div style="background: #333A28; color: #FFFDFB; border-radius: 20px; padding: clamp(16px, 3cqi, 24px); display: flex; flex-direction: column; gap: 14px">
-<div style="display: flex; align-items: center; justify-content: space-between; gap: 12px; flex-wrap: wrap">
-<span style="font-family: 'Inter', sans-serif; font-size: 12px; letter-spacing: .08em; font-weight: 600; text-transform: uppercase; color: #D8D9B9">Prompt · Content strategy interview</span>
-<div style="display: flex; gap: 8px; flex-wrap: wrap">
-<a href="https://claude.ai/new" data-ai="claude" target="_blank" rel="noopener" class="ghostbtn" style="display: inline-flex; align-items: center; color: #FFFDFB; text-decoration: none; border: 1px solid rgba(216,217,185,.4); border-radius: 10px; padding: 0 14px; font-size: 14px; font-weight: 500; min-height: 44px">Open Claude</a>
-<a href="https://chatgpt.com/" data-ai="chatgpt" target="_blank" rel="noopener" class="ghostbtn" style="display: inline-flex; align-items: center; color: #FFFDFB; text-decoration: none; border: 1px solid rgba(216,217,185,.4); border-radius: 10px; padding: 0 14px; font-size: 14px; font-weight: 500; min-height: 44px">Open ChatGPT</a>
-<button type="button" class="copylt" data-copy="p1" style="font: 500 13px 'Inter', sans-serif; letter-spacing: .06em; text-transform: uppercase; background: #D8D9B9; color: #1A1816; border: 0; border-radius: 10px; padding: 0 16px; min-height: 44px; cursor: pointer">Copy prompt</button>
-</div>
-</div>
-<pre style="margin: 0; white-space: pre-wrap; font-family: 'Inter', sans-serif; font-size: 15.5px; line-height: 1.65; color: #FFFDFB; background: rgba(255,253,251,.07); border-radius: 12px; padding: 18px; max-height: 340px; overflow-y: auto" id="mikaprompt" tabindex="0" aria-label="The content strategy prompt"></pre>
-<div style="font-size: 14px; line-height: 1.5; color: #D8D9B9">Tip: hold your Wispr key and talk like you're telling a friend. Dictate the story with Wispr Flow. Messy is fine.</div>
-</div>
-<!-- TODO screenshots: nothing has been supplied for this step yet.
-     Drop the files into contentworkshop/img/ named step1-1.png,
-     step1-2.png and so on, then add a shot/alt pair to the matching
-     item in the STEPS table at the foot of this page. They will be
-     drawn under the sub-step they belong to. -->
-<ol class="itemlist" data-items="6"></ol>
-</div>
-</details>
-
 <!-- ============================================================
      AFTER TONIGHT. The last dropdown, and the one nobody has to
      finish in the room: the rituals run from here on.
@@ -644,11 +639,11 @@ Keep the assessment brief and outside the post.
   var WORKSHOP = {
 
     /* 1. The Step 1 prompt. Shown in the dark panel and copied by its button. */
-    mikaPrompt: `You are a warm, sharp personal-brand strategist. Interview me, a person who may know nothing about personal branding or content, and at the end fill out my Personal Branding worksheet using my answers. The whole thing should take about 10 minutes.
+    mikaPrompt: `You are the best personal brand strategist in the world: warm, sharp, and focused on founders building a business. Interview me, a founder who may know nothing about personal branding or content, and at the end fill out my Personal Branding worksheet using my answers. The whole thing should take about 10 minutes.
 
 ## How to run the interview
 
-- Start with a 2-sentence intro (about 10 minutes, 5 quick sections, you'll hand me a finished worksheet at the end), then ask my name and what I do today.
+- Start with a 2-sentence intro (about 10 minutes, 5 quick sections, you'll hand me a finished worksheet at the end), then ask my name, my company and what it does.
 - Keep every message short and in plain language. Explain any term like "funnel" or "positioning" in one line.
 - Do the heavy lifting for me: draft, suggest, and pre-fill, so I mostly react and edit instead of starting from a blank page.
 - If an answer is vague, ask one quick follow-up for a real example, number, or result. Then move on.
@@ -659,18 +654,18 @@ Keep the assessment brief and outside the post.
 
 ### Section 1 · Your goal
 Ask me to pick the ONE that matters most right now:
-1. Growing my career (recruiters and better roles find me via inbound)
-2. Pivoting my career (my content proves I belong in a new field before my resume does)
-3. Earning money (brand deals, offerings)
-4. Networking (access to people I could never cold-email)
-5. Building a business (a founder brand that attracts customers, hires, investors)
-6. A creative outlet (a place to explore things beyond my day job)
+1. Winning customers (the right buyers find me through inbound)
+2. Raising money (investors know who I am before I pitch)
+3. Hiring (great people want to work for my company)
+4. Partnerships (the right partners and distributors come to me)
+5. Launching something new (my content proves demand before I build it)
+6. Owning my market (I'm the name people think of in my category)
 
 ### Section 2 · Your topic Venn diagram
 Explain in one line: your topic sits where four circles overlap. Then ask all four in a single message, so I can answer them together:
-- PROOF: credibility you have that others don't (jobs, results, numbers, things you've built or lived through)
+- PROOF: credibility you have that others don't (companies you've built, results, numbers, things you've lived through)
 - DEMAND: what people already ask you about
-- PERSON: who cares most about what you say (often a younger you)
+- PERSON: who cares most about what you say (often your ideal customer)
 - PASSION: what you'd talk about for an hour, for free
 Then propose a one-line overlap ("what I could post about") and ask me to confirm or tweak it.
 
@@ -688,7 +683,7 @@ Once I confirm, combine it into one sentence I'd say out loud or put in my Linke
 Explain the three pillars in one line each:
 - Reach (top of funnel): brings new people in. Broad, easy-to-share topics.
 - Trust (middle of funnel): turns viewers into followers. My story, opinions, how I think.
-- Proof (bottom of funnel): turns followers into opportunities. Results, receipts, work shown in public.
+- Proof (bottom of funnel): turns followers into customers, investors and hires. Results, receipts, work shown in public.
 Don't ask me to come up with these. Using everything so far, suggest a topic and a sample hook (the first line of a post that stops the scroll) for each pillar, specific to me. Ask me to keep, tweak, or swap any of them.
 
 ### Section 5 · Your platform and cadence
@@ -699,17 +694,17 @@ Ask in one message:
 If my number sounds like a best-week number, push back once.
 
 ## Final output
-Fill in the worksheet below using my words wherever possible. Output it as ONE markdown code block so I can copy it and paste it straight into my Notion page. Mark the goal I picked with [x] and leave the rest as [ ]. Keep every heading and label exactly as written. Don't add commentary inside the block.
+Fill in the worksheet below using my words wherever possible. Output it as ONE markdown code block so I can copy it and paste it straight into a Google Doc. Mark the goal I picked with [x] and leave the rest as [ ]. Keep every heading and label exactly as written. Don't add commentary inside the block.
 
 # Personal Branding
 
 ## Your Goal
-- [ ] Growing my career (recruiters and better roles find me via inbound)
-- [ ] Pivoting my career (my content proves I belong in a new field before my resume does)
-- [ ] Earning money (brand deals, offerings)
-- [ ] Networking (access to people I could never cold-email)
-- [ ] Building a business (a founder brand that attracts customers, hires, investors)
-- [ ] A creative outlet (a place to explore things beyond my day job)
+- [ ] Winning customers (the right buyers find me through inbound)
+- [ ] Raising money (investors know who I am before I pitch)
+- [ ] Hiring (great people want to work for my company)
+- [ ] Partnerships (the right partners and distributors come to me)
+- [ ] Launching something new (my content proves demand before I build it)
+- [ ] Owning my market (I'm the name people think of in my category)
 
 ## Part 1 · Your topic Venn diagram
 **PROOF — credibility you have that others don't:** ...
@@ -745,7 +740,7 @@ Sample hook: "..."
 **Posts per week I can sustain on a busy week:** ...
 **When I'll write or film (day and time I'm protecting):** ...
 
-After the block, tell me to paste the worksheet into my Notion page.
+After the block, tell me to paste the worksheet into a Google Doc on my Google Drive.
 
 Start the interview now.`,
 
@@ -800,7 +795,7 @@ Start the interview now.`,
     'Phone with iMessage or WhatsApp (for Stanley)'
   ];
 
-  var STEP_NAMES = ['Set up', 'Tools', 'Context', 'Story', 'Stanley', 'Rituals'];
+  var STEP_NAMES = ['Set up', 'Intro', 'Tools', 'Context', 'Stanley', 'Rituals'];
 
   /* ---- the sub-steps, one list per dropdown ---------------------------
      `key`   the tick's name in state.done. Three of them -- p1, sk, p2 --
@@ -811,10 +806,22 @@ Start the interview now.`,
      `shot`  a file in contentworkshop/img/, drawn under the row it
              belongs to. `alt` is what it says with images off.
 
-     Steps 2 and 3 have no screenshots yet: nothing was supplied for them.
+     Step 1 has no screenshots yet: nothing was supplied for it.
      Add a file to contentworkshop/img/ and a `shot`/`alt` pair here. */
   var STEPS = [
     { n: 1, items: [
+      { key: 'i3w', name: 'Turn on Wispr Flow',
+        help: 'Wispr Flow dictation or Wispr Flow Notetaker, your pick. How to do both is at the top of this step.' },
+      { key: 'i3s', name: 'Introduce yourself to the person next to you',
+        help: 'Then tell them a story from the last 2 weeks. 2 minutes each, then swap.' },
+      { key: 'p1', name: 'Copy the prompt and open Claude or ChatGPT',
+        help: 'The buttons above open either one in a new tab.' },
+      { key: 'i1b', name: 'Answer its questions out loud with Wispr',
+        help: 'Dictate with Wispr Flow, or paste in your Wispr Flow Notetaker transcript from the intro. Messy is fine.' },
+      { key: 'i1c', name: 'Save the worksheet it hands you at the end',
+        help: 'It comes back as one block. You share it with Stanley in Step 3.' }
+    ] },
+    { n: 2, items: [
       { key: 'i2b', name: 'Connect your tools',
         help: 'In Connectors, add Slack, your calendar, email and the platforms you already post to.',
         shot: 'step2-2.png', w: 1146, h: 907,
@@ -822,19 +829,19 @@ Start the interview now.`,
       { key: 'i1t', name: 'Decide how you prefer to text',
         help: 'Stanley works over iMessage, WhatsApp or Telegram. Pick the one you already open all day.' }
     ] },
-    { n: 2, items: [
+    { n: 3, items: [
+      { key: 'i2a', name: 'Put your strategy on Google Drive',
+        help: 'Paste the worksheet from Step 1 into a Google Doc.' },
+      { key: 'i2l', name: 'Copy the link',
+        help: 'Share, then Copy link.' },
+      { key: 'i2o', name: 'Make sure it is open to sharing',
+        help: 'Set it to anyone with the link can view, so Stanley can open it.' },
+      { key: 'i2p', name: 'Paste the link to Stanley',
+        help: 'In iMessage or WhatsApp, or straight into Stanley.' },
       { key: 'i2w', name: 'Add your website',
         help: '' },
       { key: 'i2c', name: 'Connect any other context',
         help: "Existing posts, newsletters, or other people's posts you take inspiration from." }
-    ] },
-    { n: 3, items: [
-      { key: 'i3s', name: 'Pick your story',
-        help: 'Something that happened to you in the last 2 weeks.' },
-      { key: 'i3t', name: 'Hold your Wispr key and talk for 2 minutes',
-        help: "Talk like you're telling a friend. Messy is fine." },
-      { key: 'i3n', name: 'Turn on Wispr Flow Notetaker',
-        help: 'In Connectors, add Wispr Flow Notetaker for your meetings. Record, with everyone’s OK.' }
     ] },
     { n: 4, items: [
       { key: 'sk', name: 'Copy the skill',
@@ -847,18 +854,6 @@ Start the interview now.`,
         help: 'From then on it collects your context, interviews you, offers angles and hooks, and scores the draft.' },
       { key: 'p2', name: 'Prompt Stanley with your story',
         help: 'Answer its interview with Wispr, then refine the draft.' }
-    ] },
-    { n: 6, items: [
-      { key: 'p1', name: 'Copy the prompt and open Claude or ChatGPT',
-        help: 'The buttons above open either one in a new tab.' },
-      { key: 'i1b', name: 'Answer its questions out loud with Wispr',
-        help: 'Hold your Wispr key and talk like you are telling a friend. Messy is fine.' },
-      { key: 'i1c', name: 'Save the worksheet it hands you at the end',
-        help: 'It comes back as one block you can paste straight into Notion.' },
-      { key: 'i2a', name: 'Drop your strategy into Stanley',
-        help: 'Go to Brain → Files and click + to add the strategy file.',
-        shot: 'step2-1.png', w: 503, h: 403,
-        alt: "Stanley's Brain panel: the Files section is open with a + button beside it, and two files listed under it." }
     ] }
   ];
 
@@ -948,7 +943,7 @@ Start the interview now.`,
      Both AIs read a ?q= on their new-chat URL and drop it into the message
      box, so the button carries Mika's prompt with it. The prompt is long, so
      past MAX_URL the button falls back to the plain new-chat page. Either
-     way the click also copies the prompt, ticks the Go deeper row and says so,
+     way the click also copies the prompt, ticks the Step 1 row and says so,
      so if an AI ever ignores ?q= the member just pastes. Real links, opened
      by the browser: no window.open for a popup blocker to stop. */
   var AIS = {
@@ -1121,7 +1116,7 @@ Start the interview now.`,
      rituals are the two the member has to switch on.
 
      The copy buttons feed the same map of ticks, under the key their own
-     row carries, so copying the strategy prompt ticks that row and nothing
+     row carries, so copying the Step 1 prompt ticks that row and nothing
      else -- the trigger that used to complete the whole step. */
   function itemsDone(items) {
     var done = 0;
@@ -1137,8 +1132,7 @@ Start the interview now.`,
     return RITUALS.filter(function (_, i) { return !!state.rituals[i]; }).length;
   }
 
-  /* Index 0 is set-up, 1 to 4 are the build, 5 is the rituals. 6 is Go
-     deeper: it has a header of its own but no dot, and does not count. */
+  /* Index 0 is set-up, 1 to 4 are the build, 5 is the rituals. */
   function stepDone() {
     return [
       SETUP_KEYS.every(function (key) { return !!state.done[key]; }),
@@ -1146,8 +1140,7 @@ Start the interview now.`,
       stepReady(ITEMS_BY_STEP[2]),
       stepReady(ITEMS_BY_STEP[3]),
       stepReady(ITEMS_BY_STEP[4]),
-      ritualsOn() >= RITUALS_NEEDED,
-      stepReady(ITEMS_BY_STEP[6])
+      ritualsOn() >= RITUALS_NEEDED
     ];
   }
 
@@ -1157,7 +1150,7 @@ Start the interview now.`,
     var badge = one('[data-stepbadge="' + n + '"]');
     var label = one('[data-stepcount="' + n + '"]');
     if (box) { box.setAttribute('data-done', done ? 'yes' : 'no'); }
-    if (badge) { badge.textContent = done ? '✓' : (n === 6 ? '+' : String(n)); }
+    if (badge) { badge.textContent = done ? '✓' : String(n); }
     if (label) {
       label.innerHTML = '<span class="countlong">' + count + ' of ' + total + ' ' + word + '</span>'
         + '<span class="countshort">' + count + '/' + total + '</span>';
@@ -1175,7 +1168,7 @@ Start the interview now.`,
       badge.setAttribute('style', badgeStyle(dn[i]));
       badge.textContent = dn[i] ? '✓' : String(i);
     });
-    one('#donecount').textContent = dn.slice(0, STEP_NAMES.length).filter(Boolean).length;
+    one('#donecount').textContent = dn.filter(Boolean).length;
 
     SETUP.forEach(function (label, i) {
       var on = !!state.done[SETUP_KEYS[i]];
@@ -1231,7 +1224,7 @@ Start the interview now.`,
        nothing to compare against, so it opens nothing. */
     if (wasDone) {
       dn.forEach(function (done, i) {
-        if (i < 5 && done && !wasDone[i]) {
+        if (done && !wasDone[i]) {
           var next = document.getElementById('step-' + (i + 1));
           if (next && next.tagName === 'DETAILS') { next.open = true; }
         }
