@@ -97,7 +97,7 @@ Distraction or Conviction. The filter for every task and every yes. The question
 
 Your Inner Circle. Nobody becomes a CEO alone, and nobody grows on compliments. The question: "Do I have people who have grown businesses and raised capital, and who will tell me the truth, not what I want to hear?"$tr$,
    null),
-  ($tr$text$tr$, $tr$First 5 minutes of the call$tr$, 22,
+  ($tr$text$tr$, $tr$Master Prompt$tr$, 22,
    $tr$Nobody has time before the call, so we do this together at the start.
 
 1. Ask your AI: "Can you see my Notion and my Gmail?" A no goes to the help room.
