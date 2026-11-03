@@ -203,7 +203,9 @@ console.log('\n/contentworkshop — how Wispr Flow is described');
     row !== null && /Record, with everyone\u2019s OK/.test(row.textContent),
     row && row.textContent.replace(/\s+/g, ' ').trim());
   check('which also names the Notetaker rather than just "your meetings"',
-    row !== null && /Notetaker/.test(row.textContent) && /Wispr Flow/.test(row.textContent));
+    row !== null && /Wispr Flow Notetaker/.test(row.textContent));
+  check('Step 1 never says Notetaker without Wispr Flow in front of it',
+    !/(?<!Wispr Flow )Notetaker/.test(document.getElementById('step-1').textContent.replace(/\s+/g, ' ')));
   check('Step 1 says how to turn on dictation, on Mac and Windows',
     /Hold <strong[^>]*>fn<\/strong>, speak, let go/.test(HTML) &&
     /Ctrl \+ Opt/.test(HTML) && /Ctrl \+ Win/.test(HTML));
