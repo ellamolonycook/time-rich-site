@@ -246,8 +246,6 @@ a{color:#424B36}a:hover{color:#333A28}
 <span style="font-size: 15.5px; line-height: 1.55">Open <strong style="font-weight: 600">Wispr Flow Notetaker</strong> to record your intro. No bot joins: it records from your laptop and gives you a summary and transcript. Record, with everyone’s OK.</span>
 </div>
 </div>
-<ol class="itemlist" data-items="1"></ol>
-
 <div style="background: #333A28; color: #FFFDFB; border-radius: 20px; padding: clamp(16px, 3cqi, 24px); display: flex; flex-direction: column; gap: 14px">
 <div style="display: flex; align-items: center; justify-content: space-between; gap: 12px; flex-wrap: wrap">
 <span style="font-family: 'Inter', sans-serif; font-size: 12px; letter-spacing: .08em; font-weight: 600; text-transform: uppercase; color: #D8D9B9">Prompt · Content strategy interview</span>
@@ -260,6 +258,8 @@ a{color:#424B36}a:hover{color:#333A28}
 <pre style="margin: 0; white-space: pre-wrap; font-family: 'Inter', sans-serif; font-size: 15.5px; line-height: 1.65; color: #FFFDFB; background: rgba(255,253,251,.07); border-radius: 12px; padding: 18px; max-height: 340px; overflow-y: auto" id="mikaprompt" tabindex="0" aria-label="The Step 1 prompt"></pre>
 <div style="font-size: 14px; line-height: 1.5; color: #D8D9B9">Tip: hold fn and talk like you're telling a friend. Messy is fine.</div>
 </div>
+<ol class="itemlist" data-items="1"></ol>
+
 <!-- TODO screenshots: nothing has been supplied for this step yet.
      Drop the files into contentworkshop/img/ named step1-1.png,
      step1-2.png and so on, then add a shot/alt pair to the matching
@@ -639,7 +639,7 @@ Keep the assessment brief and outside the post.
   var WORKSHOP = {
 
     /* 1. The Step 1 prompt. Shown in the dark panel and copied by its button. */
-    mikaPrompt: `You are a warm, sharp personal-brand strategist. Interview me, a founder who may know nothing about personal branding or content, and at the end fill out my Personal Branding worksheet using my answers. The whole thing should take about 10 minutes.
+    mikaPrompt: `You are the best personal brand strategist in the world: warm, sharp, and focused on founders building a business. Interview me, a founder who may know nothing about personal branding or content, and at the end fill out my Personal Branding worksheet using my answers. The whole thing should take about 10 minutes.
 
 ## How to run the interview
 
@@ -656,10 +656,10 @@ Keep the assessment brief and outside the post.
 Ask me to pick the ONE that matters most right now:
 1. Winning customers (the right buyers find me through inbound)
 2. Raising money (investors know who I am before I pitch)
-3. Hiring (great people want to work with me)
-4. Networking (access to people I could never cold-email)
+3. Hiring (great people want to work for my company)
+4. Partnerships (the right partners and distributors come to me)
 5. Launching something new (my content proves demand before I build it)
-6. A creative outlet (a place to explore things beyond running the company)
+6. Owning my market (I'm the name people think of in my category)
 
 ### Section 2 · Your topic Venn diagram
 Explain in one line: your topic sits where four circles overlap. Then ask all four in a single message, so I can answer them together:
@@ -701,10 +701,10 @@ Fill in the worksheet below using my words wherever possible. Output it as ONE m
 ## Your Goal
 - [ ] Winning customers (the right buyers find me through inbound)
 - [ ] Raising money (investors know who I am before I pitch)
-- [ ] Hiring (great people want to work with me)
-- [ ] Networking (access to people I could never cold-email)
+- [ ] Hiring (great people want to work for my company)
+- [ ] Partnerships (the right partners and distributors come to me)
 - [ ] Launching something new (my content proves demand before I build it)
-- [ ] A creative outlet (a place to explore things beyond running the company)
+- [ ] Owning my market (I'm the name people think of in my category)
 
 ## Part 1 · Your topic Venn diagram
 **PROOF — credibility you have that others don't:** ...
@@ -811,11 +811,11 @@ Start the interview now.`,
   var STEPS = [
     { n: 1, items: [
       { key: 'i3w', name: 'Turn on Wispr Flow',
-        help: 'Wispr Flow dictation or Wispr Flow Notetaker, your pick. How to do both is above.' },
+        help: 'Wispr Flow dictation or Wispr Flow Notetaker, your pick. How to do both is at the top of this step.' },
       { key: 'i3s', name: 'Introduce yourself to the person next to you',
         help: 'Then tell them a story from the last 2 weeks. 2 minutes each, then swap.' },
       { key: 'p1', name: 'Copy the prompt and open Claude or ChatGPT',
-        help: 'The buttons below open either one in a new tab.' },
+        help: 'The buttons above open either one in a new tab.' },
       { key: 'i1b', name: 'Answer its questions out loud with Wispr',
         help: 'Dictate with Wispr Flow, or paste in your Wispr Flow Notetaker transcript from the intro. Messy is fine.' },
       { key: 'i1c', name: 'Save the worksheet it hands you at the end',
