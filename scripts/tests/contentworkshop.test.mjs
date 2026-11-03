@@ -255,6 +255,15 @@ console.log('\n/contentworkshop — the WORKSHOP config, one place for the open 
   check('the strategy reaches Stanley as a shared Google Drive link, not Brain → Files',
     ['Put your strategy on Google Drive', 'Copy the link', 'Make sure it is open to sharing', 'Paste the link to Stanley']
       .every((t) => HTML.includes(t)) && !/Brain → Files/.test(HTML));
+  check('Step 4 carries Hannah Zhang\'s Stanley quote and spotlight screenshot',
+    (() => { const { document } = load(); const q = document.querySelector('#step-4 #hannahquote');
+      return q !== null && /Before, I would just use Claude for drafts\./.test(q.textContent) &&
+        q.querySelector('img').getAttribute('src') === 'img/hannah-stanley.webp' &&
+        existsSync(new URL('../../contentworkshop/img/hannah-stanley.webp', import.meta.url)); })());
+  check('no markdown # headings in the prompt or the skill',
+    (() => { const { document } = load();
+      return !/^#/m.test(document.getElementById('mikaprompt').textContent) &&
+        !/^#/m.test(document.getElementById('skilltext').textContent); })());
   check('the strategy prompt is written for founders',
     /Interview me, a founder who/.test(HTML) && !/Growing my career|Pivoting my career/.test(HTML));
   check('the strategy prompt is rendered into the page',
@@ -307,7 +316,7 @@ console.log('\n/contentworkshop — copying actually copies, and says so');
 
   clickCopy(document, 'sk');
   check('the skill button copies the whole skill, not a summary',
-    copied[1] && copied[1].startsWith('# Create LinkedIn Content') && copied[1].length > 5000,
+    copied[1] && copied[1].startsWith('Create LinkedIn Content') && copied[1].length > 5000,
     copied[1] && copied[1].length);
   check('the copied skill is the same text the page shows',
     copied[1] === document.getElementById('skilltext').textContent);
