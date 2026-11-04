@@ -2433,9 +2433,10 @@ const ONBOARDING_KICKOFF_MS = Date.UTC(2026, 9, 26, 16, 0, 0);
 // Every link either email is allowed to carry, named once so the copy below
 // and the tests both read from the same list.
 //
-// There is deliberately no Club or portal link here. The portal is not live
-// for new members yet, so announcements go to WhatsApp instead, and a link
-// that cannot be added by accident is the cheapest way to keep it that way.
+// The Club is live and a buyer is added to it on purchase, so after kickoff
+// both emails point there: it is where a late joiner finds the replays and
+// this week's steps. Before kickoff there is nothing to catch up on, so the
+// Club is left out and announcements go to WhatsApp instead.
 const ONBOARDING_LINKS = {
   onboard: "https://timerich.ai/onboard/",
   calendar: "https://www.addevent.com/calendar/z0j4nlqbgt6b",
@@ -2447,6 +2448,7 @@ const ONBOARDING_LINKS = {
   compass: "https://docs.google.com/document/d/1c50ST_FSASEOCIh1z3GQhkdNl9eqFjY0asvk-MC1X5s/copy",
   whatsapp: "https://chat.whatsapp.com/E5GU1dvuHhFDI77yO88OIw?mode=gi_t",
   slack: "https://join.slack.com/t/timerichclub/shared_invite/zt-4dry4ppfn-yV~VNRrHW_z3K3AFtbnOJQ",
+  club: "https://timerich.ai/club",
 };
 
 function onboardingEmailsEnabled(env) {
@@ -2522,6 +2524,12 @@ function buildOnboardingWelcomeEmail({ greeting, role, at }) {
     ? "You're in! Welcome to the Superhuman Accelerator. We kicked off on Monday 26 October, and we're live on Zoom every Monday and Friday at 12pm ET until Friday 20 November."
     : "You're in! Welcome to the Superhuman Accelerator. We kick off on Monday 26 October at 12pm ET, and we're live on Zoom every Monday and Friday at 12pm ET until Friday 20 November.";
 
+  // A late joiner is already a Club member, so the replays and the current
+  // week's steps are waiting for them. Only worth saying once the cohort has
+  // started, which is why this sits behind `after`.
+  const clubHtml = `<p>You're already in the Club: ${onboardingLink(L.club, "log in at timerich.ai/club")} with this email address to watch every session replay and find this week's steps.</p>`;
+  const clubText = `You're already in the Club: ${onboardingLinkText(L.club, "log in at timerich.ai/club")} with this email address to watch every session replay and find this week's steps.`;
+
   // A buyer is told about their +1; the +1 is told that they are one. The
   // paragraph above already opens with "You're in!", so the +1's line does not
   // say it a second time.
@@ -2539,6 +2547,7 @@ function buildOnboardingWelcomeEmail({ greeting, role, at }) {
     [
       `<p>${htmlEscape(greeting)}</p>`,
       `<p>${opening}</p>`,
+      ...(after ? [clubHtml] : []),
       seatHtml,
       `<p><strong>Your next steps</strong></p>`,
       `<ol style="padding-left:20px;margin:0 0 16px;">`,
@@ -2557,6 +2566,7 @@ function buildOnboardingWelcomeEmail({ greeting, role, at }) {
     greeting,
     "",
     opening,
+    ...(after ? ["", clubText] : []),
     "",
     seatText,
     "",
@@ -2578,22 +2588,35 @@ function buildOnboardingWelcomeEmail({ greeting, role, at }) {
 }
 
 function buildOnboardingPrepEmail({ greeting, at }) {
+  const after = onboardingAfterKickoff(at);
   const L = ONBOARDING_LINKS;
   const signOff = onboardingSignOff(at);
+
+  // Someone who buys mid-cohort is not preparing for Day 1, they are catching
+  // up, so the framing of the work changes even though the work does not.
+  const intro = after
+    ? "Set aside about an hour for these steps so you can catch up and build with us live. Bring a pen and paper to every call."
+    : "Set aside about an hour for these steps, so on Day 1 we build instead of setting up. Bring a pen and paper to every call.";
+
+  // The live audit was Week 1. A late joiner does it from the Club instead.
+  const auditLine = after
+    ? "You'll use it for the Time Rich Audit in Week 1 of the Club."
+    : "We'll run the Time Rich Audit on it live.";
 
   const html = onboardingHtmlDocument(
     "Preparation to Become Superhuman",
     [
       `<p>${htmlEscape(greeting)}</p>`,
-      `<p>Set aside about an hour for these steps, so on Day 1 we build instead of setting up. Bring a pen and paper to every call.</p>`,
+      `<p>${intro}</p>`,
       `<ol style="padding-left:20px;margin:0 0 16px;">`,
       `<li style="margin-bottom:10px;"><strong>Use a paid AI plan with the desktop app:</strong> Claude Pro or ChatGPT Plus.</li>`,
       `<li style="margin-bottom:10px;"><strong>Install Wispr Flow</strong> (6 months Pro on us). ${onboardingLink(L.wispr, "Download it here")} on your Mac or PC, then follow ${onboardingLink(L.wisprGuide, "this step-by-step guide")}. When the desktop app asks for a code, enter TIMERICH6. Wispr will ask for a card to activate it, but you won't be charged for the 6 months.</li>`,
       `<li style="margin-bottom:10px;"><strong>Connect your tools to your AI.</strong> In Wispr Flow, open Settings, then MCP, and add it to Claude. For your other tools, ${onboardingLink(L.toolsGuide, "here is the guide")}.</li>`,
-      `<li style="margin-bottom:10px;"><strong>Record last week.</strong> Turn on Wispr Flow's notetaker and talk for 2 minutes about last week, day by day: what you did and where the hours went. We'll run the Time Rich Audit on it live.</li>`,
+      `<li style="margin-bottom:10px;"><strong>Record last week.</strong> Turn on Wispr Flow's notetaker and talk for 2 minutes about last week, day by day: what you did and where the hours went. ${auditLine}</li>`,
       `<li style="margin-bottom:10px;"><strong>Your Business COMPASS</strong> is the most important setup of the week: it's the page your AI reads before it does anything for you. ${onboardingLink(L.compass, "Make your copy here")}, click into each section and talk it through with Wispr.</li>`,
       `<li style="margin-bottom:10px;"><strong>Join the ${onboardingLink(L.whatsapp, "Superhuman WhatsApp group")}</strong> for announcements.</li>`,
-      `<li style="margin-bottom:10px;"><strong>Join the ${onboardingLink(L.slack, "Time Rich Club Slack")}</strong>, where the cohort, our experts and the team work together. Add your photo by the end of Wednesday 28 October. Please read the TRC Club Code pinned in #superhuman-accelerator.</li>`,
+      `<li style="margin-bottom:10px;"><strong>Join the ${onboardingLink(L.slack, "Time Rich Club Slack")}</strong>, where the cohort, our experts and the team work together. Add your photo so the cohort knows who you are. Please read the TRC Club Code pinned in #superhuman-accelerator.</li>`,
+      ...(after ? [`<li style="margin-bottom:10px;"><strong>Catch up in the ${onboardingLink(L.club, "Club")}</strong>: watch the session replays and start this week's steps.</li>`] : []),
       `</ol>`,
       `<p>${htmlEscape(signOff)}</p>`,
       `<p>Time Rich Team</p>`,
@@ -2603,15 +2626,16 @@ function buildOnboardingPrepEmail({ greeting, at }) {
   const text = [
     greeting,
     "",
-    "Set aside about an hour for these steps, so on Day 1 we build instead of setting up. Bring a pen and paper to every call.",
+    intro,
     "",
     "1. Use a paid AI plan with the desktop app: Claude Pro or ChatGPT Plus.",
     `2. Install Wispr Flow (6 months Pro on us). ${onboardingLinkText(L.wispr, "Download it here")} on your Mac or PC, then follow ${onboardingLinkText(L.wisprGuide, "this step-by-step guide")}. When the desktop app asks for a code, enter TIMERICH6. Wispr will ask for a card to activate it, but you won't be charged for the 6 months.`,
     `3. Connect your tools to your AI. In Wispr Flow, open Settings, then MCP, and add it to Claude. For your other tools, ${onboardingLinkText(L.toolsGuide, "here is the guide")}.`,
-    "4. Record last week. Turn on Wispr Flow's notetaker and talk for 2 minutes about last week, day by day: what you did and where the hours went. We'll run the Time Rich Audit on it live.",
+    `4. Record last week. Turn on Wispr Flow's notetaker and talk for 2 minutes about last week, day by day: what you did and where the hours went. ${auditLine}`,
     `5. Your Business COMPASS is the most important setup of the week: it's the page your AI reads before it does anything for you. ${onboardingLinkText(L.compass, "Make your copy here")}, click into each section and talk it through with Wispr.`,
     `6. Join the ${onboardingLinkText(L.whatsapp, "Superhuman WhatsApp group")} for announcements.`,
-    `7. Join the ${onboardingLinkText(L.slack, "Time Rich Club Slack")}, where the cohort, our experts and the team work together. Add your photo by the end of Wednesday 28 October. Please read the TRC Club Code pinned in #superhuman-accelerator.`,
+    `7. Join the ${onboardingLinkText(L.slack, "Time Rich Club Slack")}, where the cohort, our experts and the team work together. Add your photo so the cohort knows who you are. Please read the TRC Club Code pinned in #superhuman-accelerator.`,
+    ...(after ? [`8. Catch up in the ${onboardingLinkText(L.club, "Club")}: watch the session replays and start this week's steps.`] : []),
     "",
     signOff,
     "",

@@ -343,9 +343,31 @@ console.log('\nthe wording changes at kickoff');
   check('after kickoff: the welcome says we kicked off',
     w && visible(w.body.html).includes('We kicked off on Monday 26 October, and we\'re live on Zoom every Monday and Friday at 12pm ET until Friday 20 November.'),
     w && visible(w.body.html).slice(0, 320));
-  check('and still does not mention recordings or the Club',
+  check('and still does not mention recordings',
     w && !visible(w.body.html).includes('Catch up on the recordings') &&
     !w.body.text.includes('Catch up on the recordings'));
+  // A late joiner has replays to watch and a week already in progress, so
+  // after kickoff the Club is exactly where both emails send them.
+  check('after kickoff: the welcome points at the Club',
+    w && visible(w.body.html).includes("You're already in the Club: log in at timerich.ai/club") &&
+    w.body.text.includes('log in at timerich.ai/club (https://timerich.ai/club)'),
+    w && visible(w.body.html).slice(0, 400));
+  check('after kickoff: the prep email reframes the hour as catching up',
+    p && visible(p.body.html).includes('Set aside about an hour for these steps so you can catch up and build with us live.') &&
+    p.body.text.includes('Set aside about an hour for these steps so you can catch up and build with us live.'),
+    p && visible(p.body.html).slice(0, 400));
+  check('and drops "Day 1"',
+    p && !p.body.html.includes('Day 1') && !p.body.text.includes('Day 1'));
+  check('after kickoff: the recording step sends them to Week 1 of the Club',
+    p && visible(p.body.html).includes("You'll use it for the Time Rich Audit in Week 1 of the Club.") &&
+    p.body.text.includes("You'll use it for the Time Rich Audit in Week 1 of the Club."));
+  check('and no longer promises the audit live',
+    p && !p.body.html.includes('run the Time Rich Audit on it live') &&
+    !p.body.text.includes('run the Time Rich Audit on it live'));
+  check('after kickoff: the prep email ends on a catch-up step',
+    p && visible(p.body.html).includes("Catch up in the Club: watch the session replays and start this week's steps.") &&
+    p.body.text.includes("8. Catch up in the Club (https://timerich.ai/club): watch the session replays and start this week's steps."),
+    p && visible(p.body.html).slice(-400));
   check('and drops the old kick-off sentence', w && !visible(w.body.html).includes('We kick off on Monday'));
   check('after kickoff: both sign off "See you at the next session!"',
     w && visible(w.body.html).includes('See you at the next session!') &&
@@ -357,6 +379,9 @@ console.log('\nthe wording changes at kickoff');
     p && !visible(p.body.html).includes('Saturday 24 October'));
   check('but still says to join the group',
     p && visible(p.body.html).includes('Join the Superhuman WhatsApp group for announcements.'));
+  check('after kickoff: the Slack step asks for a photo without a passed date',
+    p && visible(p.body.html).includes('Add your photo so the cohort knows who you are.') &&
+    p.body.text.includes('Add your photo so the cohort knows who you are.'));
 
   // Each email is built against its own send time, not against "now".
   await run('/thrivecart-webhook', TC, { now: STRADDLE });
@@ -385,6 +410,7 @@ console.log('\nevery link is hyperlinked text, and goes where Ella said');
     'https://docs.google.com/document/d/1c50ST_FSASEOCIh1z3GQhkdNl9eqFjY0asvk-MC1X5s/copy',
     'https://chat.whatsapp.com/E5GU1dvuHhFDI77yO88OIw?mode=gi_t',
     'https://join.slack.com/t/timerichclub/shared_invite/zt-4dry4ppfn-yV~VNRrHW_z3K3AFtbnOJQ',
+    'https://timerich.ai/club',
   ]);
 
   // Both roles, both sides of kickoff: between them every conditional branch
@@ -418,24 +444,27 @@ console.log('\nevery link is hyperlinked text, and goes where Ella said');
     }
   }
 
-  check('between them the two emails use all ten links',
+  check('between them the two emails use all eleven links',
     seen.size === ALLOWED.size, { used: seen.size, expected: ALLOWED.size });
 }
 
-/* ---- no Club, no portal, anywhere --------------------------------------- */
+/* ---- the Club, before and after kickoff -------------------------------- */
 
-// The portal is not live for new members yet, so Ella's rule is that neither
-// email points at it: announcements go to WhatsApp instead. This is the test
-// that keeps a Club link from drifting back in, on either side of kickoff.
-console.log('\nneither email sends anybody to the Club or the portal');
+// Buyers are added to the Club on purchase and the Club is live, so after
+// kickoff both emails send a late joiner there for the replays and the week
+// in progress. Before kickoff there is nothing to catch up on, so the Club
+// stays out and announcements go to WhatsApp instead. The portal is never
+// linked on either side, and neither is a date that has already passed.
+console.log('\nthe Club after kickoff, and nowhere else');
 {
   const FORBIDDEN = [
-    'https://timerich.ai/club/',
     'timerich.ai/portal',
     'Time Rich Club under Start here',
     'Log in to the',
     'Saturday 24 October',
+    '28 October',
   ];
+  const CLUB = 'https://timerich.ai/club';
 
   for (const [path, body] of [['/thrivecart-webhook', TC], ['/onboard', ONB]]) {
     for (const now of [BEFORE, AFTER]) {
@@ -451,6 +480,20 @@ console.log('\nneither email sends anybody to the Club or the portal');
           check(`${where}: no "${phrase}"`,
             haystacks.every((h) => !h.includes(phrase)),
             haystacks.map((h) => h.includes(phrase)));
+        }
+
+        // One Club link per email: enough to find the replays, not so many
+        // that the copy turns into a list of the same address.
+        const clubHrefs = hrefs(email.body.html).filter((h) => h === CLUB);
+        if (when === 'after') {
+          check(`${where}: exactly one Club link`, clubHrefs.length === 1, clubHrefs);
+          check(`${where}: and the text alternative carries it once`,
+            email.body.text.split(CLUB).length - 1 === 1,
+            email.body.text.split(CLUB).length - 1);
+        } else {
+          check(`${where}: no Club link before kickoff`,
+            !haystacks.some((h) => h.includes('timerich.ai/club')),
+            haystacks.map((h) => h.includes('timerich.ai/club')));
         }
       }
     }
