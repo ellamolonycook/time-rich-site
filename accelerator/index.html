@@ -1199,28 +1199,7 @@ html{scroll-padding-top:110px}
 
 <!-- ANNOUNCEMENT BAR + NAV: one sticky block -->
 <div class="topstick">
-<a class="annc" href="/join/" onclick="openJoinModal(event); track('join_announce')"><span class="annc-price">Save $300 &middot; <s>$1,297</s> <strong>$997</strong><span class="annc-seats"> &middot; 2 Seats For 1</span></span><span class="annc-cd" id="anncCd" hidden><span class="sep" aria-hidden="true">|</span><span id="anncCdText"></span></span></a>
-<script>
-// ---- Announcement countdown -------------------------------------------------
-// Counts down to the early-bird deadline (11:59pm ET, fixed offset so it is the
-// same instant everywhere). Hides the whole bar at zero. Without JS the span
-// stays [hidden] and only the price text shows.
-(function(){
-  var bar = document.querySelector('.annc'), wrap = document.getElementById('anncCd'), out = document.getElementById('anncCdText');
-  if (!bar || !wrap || !out) return;
-  var END = Date.parse('2026-10-19T23:59:00-04:00');
-  var pad = function(n){ return (n < 10 ? '0' : '') + n; };
-  function tick(){
-    var ms = END - Date.now();
-    if (ms <= 0) { bar.hidden = true; clearInterval(timer); return; }
-    var t = Math.floor(ms / 1000);
-    out.textContent = Math.floor(t / 86400) + 'd ' + pad(Math.floor(t % 86400 / 3600)) + 'h ' + pad(Math.floor(t % 3600 / 60)) + 'm ' + pad(t % 60) + 's';
-    wrap.hidden = false;
-  }
-  var timer = setInterval(tick, 1000);
-  tick();
-})();
-</script>
+<a class="annc" href="/join/" onclick="openJoinModal(event); track('join_announce')"><span class="annc-price"><strong>$1,297</strong><span class="annc-seats"> &middot; 2 Seats For 1</span></span></a>
 
 <!-- NAV -->
 <nav class="v2 nav2" aria-label="Page">
@@ -1233,7 +1212,7 @@ html{scroll-padding-top:110px}
       <a href="#includes">What's included</a>
     </div>
     <div class="nav-right">
-      <a class="cta" href="/join/" onclick="openJoinModal(event); track('join_nav')">Join the cohort &middot; $997 &middot; 2 seats</a>
+      <a class="cta" href="/join/" onclick="openJoinModal(event); track('join_nav')">Join the cohort &middot; $1,297 &middot; 2 seats</a>
       <button class="nav-burger" id="navBurger" type="button" aria-label="Menu" aria-haspopup="dialog" aria-controls="navMenu">
         <svg width="22" height="22" viewBox="0 0 22 22" aria-hidden="true"><path d="M3 6h16M3 11h16M3 16h16" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
       </button>
@@ -1249,7 +1228,7 @@ html{scroll-padding-top:110px}
       <a href="#proof">Proof</a>
       <a href="#includes">What's included</a>
     </div>
-    <a class="cta cta-lg" href="/join/" onclick="openJoinModal(event); track('join_menu')">Join the cohort &middot; $997 &middot; 2 seats</a>
+    <a class="cta cta-lg" href="/join/" onclick="openJoinModal(event); track('join_menu')">Join the cohort &middot; $1,297 &middot; 2 seats</a>
   </dialog>
   <script>
   (function(){
@@ -1276,7 +1255,7 @@ html{scroll-padding-top:110px}
       <div class="hero-copy">
       <h1>Imagine your own AI Operating System, built by you in 4 weeks.</h1>
       <p class="sub"><span class="l s-quiet">Think of the money, stress and time you&rsquo;ll save once you learn how to become superhuman with AI.</span> <span class="l s-welcome">Welcome to Superhuman Accelerator.</span> <span class="l s-cred">A 4-week live intensive, designed by exited founders.</span></p>
-      <a class="cta cta-lg" href="/join/" onclick="openJoinModal(event); track('join_hero')">Join the cohort &middot; $997 &middot; 2 seats</a>
+      <a class="cta cta-lg" href="/join/" onclick="openJoinModal(event); track('join_hero')">Join the cohort &middot; $1,297 &middot; 2 seats</a>
       <p class="two"><strong>BONUS: 2 seats for the price of 1</strong> - bring who you want to win beside you.</p>
       <!-- Anchor sponsor. The same lockup closes the page. -->
       <a class="powered" href="https://x.getstanley.ai/r/mz4y9g" target="_blank" rel="noopener sponsored" onclick="track('stanley_hero')">
@@ -1576,8 +1555,8 @@ html{scroll-padding-top:110px}
     </ol>
     <p class="wk-foot">All sessions 12pm ET.</p>
     <div class="act">
-      <a class="cta cta-lg" href="/join/" onclick="openJoinModal(event); track('join_weeks')">Join the cohort &middot; $997 &middot; 2 seats</a>
-      <p class="cta-note">Early bird ends Monday 19 October. Payment plan available.</p>
+      <a class="cta cta-lg" href="/join/" onclick="openJoinModal(event); track('join_weeks')">Join the cohort &middot; $1,297 &middot; 2 seats</a>
+      <p class="cta-note">Payment plan available.</p>
     </div>
   </div>
 </section>
@@ -1634,8 +1613,8 @@ html{scroll-padding-top:110px}
          unlocks Stanley is a member thing and lives in the portal. -->
     <p class="cta-note incl-perks">Plus partner perks: 6 months of Stanley, your AI head of content, and 6 months of Wispr Flow Pro.</p>
     <div class="act">
-      <a class="cta cta-lg" href="/join/" onclick="openJoinModal(event); track('join_includes')">Join the cohort &middot; $997 &middot; 2 seats</a>
-      <p class="cta-note">Early bird ends Monday 19 October. Payment plan available.</p>
+      <a class="cta cta-lg" href="/join/" onclick="openJoinModal(event); track('join_includes')">Join the cohort &middot; $1,297 &middot; 2 seats</a>
+      <p class="cta-note">Payment plan available.</p>
     </div>
   </div>
   <script>
@@ -1675,10 +1654,10 @@ html{scroll-padding-top:110px}
         <li><span class="tick" aria-hidden="true">&#10003;</span>Both get their own portal login</li>
         <li><span class="tick" aria-hidden="true">&#10003;</span>Both keep the Notion operating system and the community</li>
       </ul>
-      <p>$997 for two seats until Monday 19 October. That's under $500 a head.</p>
+      <p>$1,297 for two seats. That's under $650 a head.</p>
     </div>
     <div class="act">
-      <a class="cta cta-lg" href="/join/" onclick="openJoinModal(event); track('join_seats')">Claim both seats &middot; $997</a>
+      <a class="cta cta-lg" href="/join/" onclick="openJoinModal(event); track('join_seats')">Claim both seats &middot; $1,297</a>
     </div>
   </div>
 </section>
@@ -2049,7 +2028,7 @@ html{scroll-padding-top:110px}
       </div>
       <div class="faq-item">
         <div class="faq-summary"><h3>What does it cost?</h3></div><div class="faq-a-wrap">
-        <div class="faq-a"><div class="faq-a-inner"><p>$997 for two seats until Mon 19 Oct, then $1,297. Founding-cohort pricing is the lowest this programme will ever run at.</p></div></div></div>
+        <div class="faq-a"><div class="faq-a-inner"><p>$1,297 for two seats. Payment plan available.</p></div></div></div>
       </div>
     </div>
   </div>
@@ -2063,8 +2042,8 @@ html{scroll-padding-top:110px}
       <h2 class="final-line">One part of your business, running on AI.</h2>
       <p class="final-meta">4 weeks &middot; 10 live sessions &middot; 2 seats for the price of 1</p>
       <div class="act">
-        <a class="cta cta-lg" href="/join/" onclick="openJoinModal(event); track('join_final')">Join the cohort &middot; $997 &middot; 2 seats</a>
-        <p class="cta-note">Early bird ends Monday 19 October. $1,297 after. Payment plan available.</p>
+        <a class="cta cta-lg" href="/join/" onclick="openJoinModal(event); track('join_final')">Join the cohort &middot; $1,297 &middot; 2 seats</a>
+        <p class="cta-note">Payment plan available.</p>
       </div>
       <!-- Anchor sponsor, same lockup as the hero. It sits inside the closing
            band rather than in a strip of its own: the band's wash is a pair of
@@ -2089,7 +2068,7 @@ html{scroll-padding-top:110px}
 <!-- STICKY APPLY BAR -->
 <div class="stickybar" id="stickybar" aria-hidden="true">
   <span class="sb-txt">Founding cohort &middot; Limited spots</span>
-  <a class="btn" href="/join/" onclick="openJoinModal(event); track('join_sticky')">Join the cohort &middot; $997 &middot; 2 seats</a>
+  <a class="btn" href="/join/" onclick="openJoinModal(event); track('join_sticky')">Join the cohort &middot; $1,297 &middot; 2 seats</a>
 </div>
 
 <script>
