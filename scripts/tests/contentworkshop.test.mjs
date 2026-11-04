@@ -252,8 +252,8 @@ console.log('\n/contentworkshop — the WORKSHOP config, one place for the open 
   check('mikaPrompt is in it', /mikaPrompt\s*:/.test(HTML));
   check('winnersWhen is in it', /winnersWhen\s*:/.test(HTML));
   const { document } = load();
-  check('the strategy reaches Stanley as a shared Google Drive link, not Brain → Files',
-    ['Put your strategy on Google Drive', 'Copy the link', 'Make sure it is open to sharing', 'Paste the link to Stanley']
+  check('the strategy reaches Stanley as a shared Google Doc link, not Brain → Files',
+    ['Put it into a Google Doc', 'Copy the link', 'Make sure it is open to sharing', 'Paste the link to Stanley']
       .every((t) => HTML.includes(t)) && !/Brain → Files/.test(HTML));
   check('Step 4 carries Hannah Zhang\'s Stanley quote and spotlight screenshot',
     (() => { const { document } = load(); const q = document.querySelector('#step-4 #hannahquote');
