@@ -362,7 +362,25 @@
      Counting it would hold everyone one short of 100% for ever. Rows that
      do not count are not ticked either -- a tick that moves no number
      reads as a bug. */
+  /* Two kinds of week row the member never ticks, so neither is counted
+     and neither is drawn as a lesson (Ella, 4 Nov). The week's homework has
+     its own open block at the top of the week, and a "Replay:" row only
+     exists to put a Watch replay button on its call card. Both rules live
+     here, because the curriculum panel and all three progress counts have
+     to agree about them or the count stops adding up. */
+  var HOMEWORK_RE = /^Week \d+ homework/i;
+  var REPLAY_RE = /^Replay:/;
+
+  function isHomeworkRow(item) {
+    return HOMEWORK_RE.test(str(item && item.title));
+  }
+
+  function isReplayRow(item) {
+    return REPLAY_RE.test(str(item && item.title));
+  }
+
   function isTrackable(item) {
+    if (isHomeworkRow(item) || isReplayRow(item)) return false;
     return Boolean(itemKey(item)) && str(item && item.kind) !== 'video';
   }
 
@@ -851,6 +869,8 @@
     toggleSession: toggleSession,
     markSession: markSession,
     userProgress: userProgress,
+    isHomeworkRow: isHomeworkRow,
+    isReplayRow: isReplayRow,
     setProgress: setProgress,
     doneToggle: doneToggle,
     checkBox: checkBox,

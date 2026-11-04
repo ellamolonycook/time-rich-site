@@ -219,6 +219,14 @@
     .trp-cw-lb-close { display: inline-flex; align-items: center; justify-content: center; min-height: 44px; padding: 0 18px; border-radius: 999px; border: 0; background: rgb(var(--c-surface)); color: var(--trp-deep); font: inherit; font-size: 14px; font-weight: 600; cursor: pointer; }
     .trp-cw-lb-close:focus-visible { outline: 2px solid rgb(var(--c-surface)); outline-offset: 3px; }
 
+    /* The week's homework, open at the top of the week rather than behind a
+       drop-down (Ella, 4 Nov). Its button is borrowed from the call cards,
+       so the Loom opens the same way a replay does. */
+    .trp-cw-homework { display: flex; flex-direction: column; align-items: flex-start; gap: 10px; }
+    .trp-cw-homework .trp-cw-btn { background: var(--trp-sagelt); color: var(--trp-deep); }
+    .trp-cw-homework .trp-cw-btn:hover { background: var(--trp-sage); }
+    .trp-cw-homework > :last-child { margin-bottom: 0; }
+
     /* the lessons */
     .trp-cw-group { font-size: 12px; font-weight: 600; letter-spacing: .08em; text-transform: uppercase; color: var(--trp-soft); margin: 6px 0 -2px; }
     .trp-cw-lessons { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 8px; }
@@ -2100,6 +2108,15 @@ When you finish:
         return '';
       }
 
+      /* The same body with its 'Video:' line dropped. The homework block
+         plays that video from a button, so embedding it underneath as well
+         would be the same Loom twice. */
+      function bodyWithoutVideo(body) {
+        return L.str(body).replace(/\r\n?/g, '\n').split('\n')
+          .filter(function (line) { return !VID_RE.test(line.trim()); })
+          .join('\n');
+      }
+
       // Vimeo starts playing, since it is the member who asked for it.
       function autoplaySrc(src) {
         if (!/^https:\/\/player\.vimeo\.com\//.test(src)) return src;
@@ -2481,7 +2498,7 @@ Anything you've done twice should never need you again. A skill is your way of d
         if (!when) return -1;
         for (var i = 0; i < items.length; i++) {
           var t = L.str(items[i] && items[i].title);
-          if (/^Replay:/.test(t) && t.indexOf('(' + when + ')') !== -1) return i;
+          if (L.isReplayRow(items[i]) && t.indexOf('(' + when + ')') !== -1) return i;
         }
         return -1;
       }
@@ -2545,6 +2562,32 @@ Anything you've done twice should never need you again. A skill is your way of d
         return tile;
       }
 
+      /* The week's homework: a heading, a small button that plays the Loom
+         in the lightbox the way a call's replay does, and the rest of the
+         body under it. An open block, not a drop-down: it is the thing to
+         do this week, so it is not worth a click to find (Ella, 4 Nov). */
+      function homeworkBlock(item) {
+        var frag = document.createDocumentFragment();
+        var title = L.str(item && item.title) || 'Homework';
+        frag.appendChild(L.el('h3', 'trp-cw-group', title));
+
+        var wrap = L.el('div', 'trp-cw-homework');
+        var src = bodyVideoSrc(item);
+        if (src) {
+          var play = L.el('button', 'trp-cw-btn is-sm', '\u25B6 5 min video');
+          play.type = 'button';
+          play.setAttribute('aria-label', 'Watch the ' + title + ' video');
+          play.addEventListener('click', function () { openLightbox(src, title, play); });
+          wrap.appendChild(play);
+        }
+        var rest = bodyWithoutVideo(item && item.body);
+        if (rest.replace(/^\s+|\s+$/g, '')) {
+          wrap.appendChild(bodyBlocks(rest, 'homework-' + (L.itemKey(item) || title)));
+        }
+        frag.appendChild(wrap);
+        return frag;
+      }
+
       function panel(data, week, prep) {
         var n = L.num(week.id);
         var open = isOpen(week, prep);
@@ -2563,8 +2606,23 @@ Anything you've done twice should never need you again. A skill is your way of d
         var own = week.unlocked === true ? L.items(week) : [];
         var sessionList = week.unlocked === true ? L.sessionsForWeek(data, week.id) : [];
 
+        /* `own` stays whole, because replayIn() looks a Replay: row up in it
+           by index to put a Watch replay button on its call card. What the
+           lesson list gets is narrower: the homework has its own block at
+           the top of the week, and a Replay: row is already on its card, so
+           drawing either as a drop-down is a double-up (Ella, 4 Nov). Each
+           lesson keeps its position in `own` as its number, so the keys its
+           drop-down is remembered by do not move.  */
+        var homework = null;
+        var lessons = [];
+        own.forEach(function (it, i) {
+          if (L.isHomeworkRow(it)) { if (!homework) homework = it; return; }
+          if (L.isReplayRow(it)) return;
+          lessons.push({ it: it, n: i + 1 });
+        });
+
         var done = 0, total = 0;
-        steps.concat(own).forEach(function (it) {
+        steps.concat(lessons.map(function (p) { return p.it; })).forEach(function (it) {
           if (!L.isTrackable(it)) return;
           total += 1; if (L.isItemDone(it)) done += 1;
         });
@@ -2598,6 +2656,9 @@ Anything you've done twice should never need you again. A skill is your way of d
           box.appendChild(tiles);
         }
 
+        // The homework sits between the calls and the week's lessons.
+        if (homework) box.appendChild(homeworkBlock(homework));
+
         // The setup comes first while any of it is left: the week's lessons
         // run in the Business Hub and with Wispr Flow, which the setup
         // builds. Once it is all ticked it drops under the lessons.
@@ -2606,7 +2667,7 @@ Anything you've done twice should never need you again. A skill is your way of d
         // The setup is one drop-down of its own, open while any of it is left.
         function drawSetup(heading) {
           if (!steps.length) return;
-          if (own.length) box.appendChild(L.el('h3', 'trp-cw-group', heading));
+          if (lessons.length) box.appendChild(L.el('h3', 'trp-cw-group', heading));
           box.appendChild(masterBox('setup', 'Your setup', steps, setupLeft, setupSteps(steps)));
         }
 
@@ -2619,18 +2680,18 @@ Anything you've done twice should never need you again. A skill is your way of d
 
         if (setupLeft) drawSetup('Your setup');
 
-        if (own.length) {
+        if (lessons.length) {
           var nextKey = null;
           // while the setup is left, no lesson opens by itself: the next
           // setup step is the one already open
-          if (!setupLeft) own.forEach(function (it, i) {
-            if (nextKey === null && L.isTrackable(it) && !L.isItemDone(it)) nextKey = rowKey(it, i + 1);
+          if (!setupLeft) lessons.forEach(function (p) {
+            if (nextKey === null && L.isTrackable(p.it) && !L.isItemDone(p.it)) nextKey = rowKey(p.it, p.n);
           });
           if (steps.length) box.appendChild(L.el('h3', 'trp-cw-group', setupLeft ? 'Then, this week' : 'This week'));
           var sections = WEEK_SECTIONS[n];
           if (!sections) {
             var ul = L.el('ul', 'trp-cw-lessons');
-            own.forEach(function (it, i) { ul.appendChild(lessonRow(it, i + 1, rowKey(it, i + 1) === nextKey)); });
+            lessons.forEach(function (p) { ul.appendChild(lessonRow(p.it, p.n, rowKey(p.it, p.n) === nextKey)); });
             box.appendChild(ul);
           } else {
             // Week 1 in five sections. The one holding the next lesson to do
@@ -2639,13 +2700,14 @@ Anything you've done twice should never need you again. A skill is your way of d
             var from = 0;
             sections.forEach(function (sec, si) {
               var list = [], rows = [], holdsNext = false;
-              own.forEach(function (it, i) {
+              lessons.forEach(function (p) {
+                var it = p.it;
                 var sort = L.num(it && it.sort);
                 if (sort > sec.upto || sort <= from) return;
-                var isNext = rowKey(it, i + 1) === nextKey;
+                var isNext = rowKey(it, p.n) === nextKey;
                 if (isNext) holdsNext = true;
                 list.push(it);
-                rows.push(lessonRow(it, i + 1, isNext));
+                rows.push(lessonRow(it, p.n, isNext));
               });
               from = sec.upto;
               if (!rows.length) return;
@@ -2665,7 +2727,7 @@ Anything you've done twice should never need you again. A skill is your way of d
 
         if (!setupLeft) drawSetup('Your setup, done');
 
-        if (!total && !own.length && !steps.length && n !== 1) box.appendChild(L.el('p', 'trp-cw-empty', 'Nothing here yet.'));
+        if (!total && !lessons.length && !steps.length && n !== 1) box.appendChild(L.el('p', 'trp-cw-empty', 'Nothing here yet.'));
 
         // Any Week 1 block whose lesson is missing, last in the panel.
         if (n === 1) { blockHomes(); addWeek1(box); }

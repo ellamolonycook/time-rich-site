@@ -711,6 +711,151 @@ console.log("\nThis week's live calls are at the top of the panel");
   p.w.close();
 }
 
+/* ---- the homework block, and no double-up drop-downs -------------------
+   Ella, 4 Nov: the week's homework belongs at the top of the week, open,
+   with a small button for her Loom -- not inside a drop-down. A Replay:
+   row already puts a Watch replay button on its call card, so drawing it
+   as a lesson as well is the same video listed twice. */
+
+// A Loom share id is 32 hex characters, or embedSrc refuses it.
+const HOMEWORK = {
+  id: 301, kind: 'text', title: 'Week 1 homework', sort: 5,
+  body: [
+    'Video: https://www.loom.com/share/0123456789abcdef0123456789abcdef',
+    '',
+    'Write your three offers and post them in #introductions.',
+  ].join('\n'),
+};
+
+// The title has to carry the call's date in brackets: that is how
+// replayIn() ties a replay row to the call card it belongs on.
+const REPLAY = {
+  id: 302, kind: 'text', title: 'Replay: Monday masterclass (Mon 26 Oct)', sort: 6,
+  body: 'Video: https://vimeo.com/987654321',
+};
+
+function withHomework() {
+  const data = payload();
+  data.weeks[1].items = [HOMEWORK, REPLAY].concat(data.weeks[1].items);
+  return data;
+}
+
+console.log("\nthe week's homework is an open block at the top of the week");
+{
+  const p = openWith(withHomework());
+  const panel = p.panel();
+
+  const heads = [...panel.querySelectorAll('.trp-cw-group')].map((n) => n.textContent);
+  check('the week carries a homework heading', heads.includes('Week 1 homework'), heads);
+
+  const block = panel.querySelector('.trp-cw-homework');
+  check('and the homework is drawn as a block', block !== null, heads);
+  check('not as a drop-down',
+    block !== null && block.tagName !== 'DETAILS' && block.closest('details') === null);
+
+  // Where it sits: under the calls, above the lessons and the setup.
+  const at = (n) => {
+    while (n && n.parentNode !== panel) n = n.parentNode;
+    return [...panel.children].indexOf(n);
+  };
+  const calls = panel.querySelector('.trp-cw-sessions');
+  const lessons = panel.querySelector('.trp-cw-lessons');
+  const steps = panel.querySelector('.trp-cw-steps');
+  check('the calls still come above it', at(calls) < at(block), [at(calls), at(block)]);
+  check('and it comes above the lessons', at(block) < at(lessons), [at(block), at(lessons)]);
+  check('and above the setup steps', at(block) < at(steps), [at(block), at(steps)]);
+
+  const heading = [...panel.querySelectorAll('.trp-cw-group')]
+    .find((n) => n.textContent === 'Week 1 homework');
+  check('the heading is directly above the block', heading && heading.nextElementSibling === block);
+
+  // One button, and it plays the Loom here on the page rather than
+  // leaving it. The body's Video: line is not embedded underneath as well.
+  const buttons = [...block.querySelectorAll('button')];
+  check('it carries exactly one button', buttons.length === 1,
+    buttons.map((b) => b.textContent));
+  const play = buttons[0];
+  check('and the button is the small one Ella asked for',
+    play && play.className === 'trp-cw-btn is-sm', play && play.className);
+  check('it says what it does', play && play.textContent === '\u25B6 5 min video',
+    play && play.textContent);
+  check('the rest of the body is drawn under it',
+    /Write your three offers/.test(block.textContent), block.textContent.slice(0, 120));
+  check('but the video is not embedded twice',
+    block.querySelector('iframe') === null);
+
+  play.dispatchEvent(new p.w.MouseEvent('click', { bubbles: true }));
+  const lb = p.doc.querySelector('.trp-cw-lb');
+  check('clicking it opens the video over the page', lb !== null);
+  const frame = lb && lb.querySelector('iframe');
+  check('and the video is the homework Loom',
+    frame && /loom\.com\/embed\/0123456789abcdef0123456789abcdef/.test(frame.getAttribute('src')),
+    frame && frame.getAttribute('src'));
+  p.w.close();
+}
+
+console.log('\nneither the homework nor a replay doubles up as a lesson');
+{
+  const p = openWith(withHomework());
+  const panel = p.panel();
+  const titles = [...panel.querySelectorAll('.trp-cw-lesson-title')].map((n) => n.textContent);
+
+  check('the homework is not in the lesson list',
+    !titles.some((t) => /^Week 1 homework/.test(t)), titles);
+  check('and neither is the replay row',
+    !titles.some((t) => /^Replay:/.test(t)), titles);
+  const REAL = ['Diagnose your week', 'Masterclass replay', 'Run your Time Rich Audit', 'Say hello in #introductions'];
+  check('the week\'s real lessons are all still there',
+    REAL.every((t) => titles.some((x) => x.startsWith(t))),
+    REAL.filter((t) => !titles.some((x) => x.startsWith(t))));
+
+  // The replay row is still doing its job: the call card carries it.
+  const cards = [...panel.querySelectorAll('.trp-cw-session')];
+  const monday = cards.find((c) =>
+    c.querySelector('.trp-cw-session-title').textContent === 'Monday masterclass');
+  const watch = monday && [...monday.querySelectorAll('button')]
+    .find((b) => b.textContent === 'Watch replay');
+  check('Monday\'s card still shows Watch replay', watch != null,
+    monday && monday.textContent);
+
+  watch.dispatchEvent(new p.w.MouseEvent('click', { bubbles: true }));
+  const frame = p.doc.querySelector('.trp-cw-lb iframe');
+  check('and it still plays the replay the row points at',
+    frame && /player\.vimeo\.com\/video\/987654321/.test(frame.getAttribute('src')),
+    frame && frame.getAttribute('src'));
+
+  // Friday has no replay row, so its card is unchanged.
+  const friday = cards.find((c) =>
+    c.querySelector('.trp-cw-session-title').textContent === 'Friday hot seat');
+  check('a call with no replay row still shows no button',
+    friday && friday.querySelector('button') === null);
+  p.w.close();
+}
+
+console.log('\nthe progress count leaves out what is no longer a lesson');
+{
+  // The count a member reads is the head bar. A homework row and a Replay:
+  // row draw no tick box any more, so counting them would stop everyone
+  // short of 100% for the life of the cohort.
+  const plain = openWith(payload());
+  const before = plain.doc.querySelector('.trp-headbar-count').textContent;
+  plain.w.close();
+
+  const p = openWith(withHomework());
+  const count = p.doc.querySelector('.trp-headbar-count');
+  check('the count is drawn', count !== null && /\d+ of \d+ done/.test(count.textContent),
+    count && count.textContent);
+  check('and two rows that draw nothing add nothing to it',
+    count.textContent === before, [before, count.textContent]);
+
+  // And the same tally everywhere, so the dashboard agrees with the week.
+  const you = p.w.TRLive.userProgress(withHomework());
+  const was = p.w.TRLive.userProgress(payload());
+  check('every page that counts reads the same total', you.total === was.total,
+    [was.total, you.total]);
+  p.w.close();
+}
+
 console.log("\nWhat's next: one line per week, with the date it opens");
 {
   const p = open();
