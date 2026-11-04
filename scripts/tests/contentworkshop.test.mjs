@@ -396,7 +396,7 @@ console.log('\n/contentworkshop — the build is four numbered dropdowns');
     boxes[1].querySelector('[data-copy="p1"]') !== null);
   check('Step 2 gives them what to say in the intro',
     boxes[1].querySelector('#introprompts') !== null &&
-    boxes[1].querySelectorAll('#introprompts li').length >= 5);
+    boxes[1].querySelectorAll('#introprompts li').length === 3);
   check('Step 1 is the tools: Wispr Flow, LinkedIn, and how Stanley talks to you',
     /add Wispr Flow, LinkedIn and any other platforms/.test(HTML) &&
     /Choose how Stanley talks to you/.test(HTML) && /iMessage or text message/.test(HTML));
