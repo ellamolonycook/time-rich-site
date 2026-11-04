@@ -396,11 +396,15 @@ console.log('\n/contentworkshop — the build is three numbered dropdowns');
   check('Step 2 gives them what to say in the intro',
     boxes[1].querySelector('#introprompts') !== null &&
     boxes[1].querySelectorAll('#introprompts li').length === 3);
-  // Wispr Flow and the intro are ticked above the prompt; the rest below it.
+  // Step 2's rows up to answering sit above the prompt; saving and context below.
   const s2 = [...boxes[1].querySelectorAll('[data-item], #mikaprompt')]
     .map((e) => e.id || e.getAttribute('data-item')).join(',');
-  check('Step 2 runs Wispr Flow, intro, then the prompt and its rows',
-    s2 === 'i3w,i3s,mikaprompt,p1,i1b,i2a,i2c', s2);
+  check('Step 2 ticks Wispr Flow, the intro, copy and answer above the prompt',
+    s2 === 'i3w,i3s,p1,i1b,mikaprompt,i2a,i2c', s2);
+  const s3 = [...boxes[2].querySelectorAll('[data-item], #skilltext')]
+    .map((e) => e.id || e.getAttribute('data-item')).join(',');
+  check('Step 3 puts the story row under the skill',
+    s3 === 'sk,i3b,i3c,skilltext,p2', s3);
   check('Step 1 is the tools: Wispr Flow, LinkedIn, and how Stanley talks to you',
     /add Wispr Flow, LinkedIn and any other platforms/.test(HTML) &&
     /Choose how Stanley talks to you/.test(HTML) && /iMessage or text message/.test(HTML));
