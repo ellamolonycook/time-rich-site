@@ -253,7 +253,7 @@ console.log('\n/contentworkshop — the WORKSHOP config, one place for the open 
   check('winnersWhen is in it', /winnersWhen\s*:/.test(HTML));
   const { document } = load();
   check('the strategy reaches Stanley as a shared Google Doc link, not Brain → Files',
-    ['Put it into a Google Doc', 'Copy the link', 'Make sure it is open to sharing', 'Paste the link to Stanley']
+    ['Put your strategy on a Google Doc', 'anyone with the link', 'paste it to Stanley', 'Share your website']
       .every((t) => HTML.includes(t)) && !/Brain → Files/.test(HTML));
   check('Step 4 carries Hannah Zhang\'s Stanley quote and spotlight screenshot',
     (() => { const { document } = load(); const q = document.querySelector('#step-4 #hannahquote');
@@ -420,7 +420,7 @@ console.log('\n/contentworkshop — each step is a checklist');
   const countOf = (n) => box(n).querySelector('.stepcount').textContent;
   const badge = (n) => box(n).querySelector('.stepbadge').textContent;
 
-  const rowCounts = { 1: 2, 2: 5, 3: 6, 4: 4 };
+  const rowCounts = { 1: 2, 2: 5, 3: 2, 4: 4 };
   for (const n of [1, 2, 3, 4]) {
     check('Step ' + n + ' has ' + rowCounts[n] + ' tickable sub-steps',
       items(n).length === rowCounts[n], items(n).length);
