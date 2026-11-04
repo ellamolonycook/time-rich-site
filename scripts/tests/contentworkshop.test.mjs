@@ -101,7 +101,7 @@ console.log('\n/contentworkshop — the page basics');
 
 console.log('\n/contentworkshop — the page says how many steps it has');
 {
-  // The build is "Before you start", then Steps 1 to 4. The page used to say
+  // The build is "Before you start", then Steps 1 to 3. The page used to say
   // "five steps" in three places, written before the steps were numbered.
   const { document } = load();
 
@@ -109,14 +109,14 @@ console.log('\n/contentworkshop — the page says how many steps it has');
     !/five steps/i.test(HTML), (HTML.match(/.{0,50}five steps.{0,50}/i) || [])[0]);
 
   const hero = document.querySelector('h1').parentElement.querySelector('p');
-  check('it describes the set-up and the four steps instead',
-    /set up first, then four steps/i.test(hero.textContent), hero.textContent.trim());
+  check('it describes the set-up and the three steps instead',
+    /set up first, then three steps/i.test(hero.textContent), hero.textContent.trim());
 
   const desc = (sel) => (document.querySelector(sel) || {}).content || '';
   check('the meta description says the same thing',
-    /set up, then four steps/i.test(desc('meta[name="description"]')), desc('meta[name="description"]'));
+    /set up, then three steps/i.test(desc('meta[name="description"]')), desc('meta[name="description"]'));
   check('and so does the og description, which is what a share card reads',
-    /set up, then four steps/i.test(desc('meta[property="og:description"]')),
+    /set up, then three steps/i.test(desc('meta[property="og:description"]')),
     desc('meta[property="og:description"]'));
   check('the two are word for word the same',
     desc('meta[name="description"]') === desc('meta[property="og:description"]'));
@@ -126,10 +126,10 @@ console.log('\n/contentworkshop — the page says how many steps it has');
     desc('meta[name="twitter:card"]') === 'summary_large_image' &&
     document.querySelector('meta[name="twitter:description"]') === null);
 
-  // The count the page actually keeps is six groups: Before you start, the
-  // four steps, and After tonight. That is what the top bar totals.
-  check('and the progress total still counts all six groups',
-    HTML.includes('/6 done'));
+  // The count the page actually keeps is five groups: Before you start, the
+  // three steps, and After tonight. That is what the top bar totals.
+  check('and the progress total counts all five groups',
+    HTML.includes('/5 done'));
 }
 
 console.log('\n/contentworkshop — the prizes, and who gets what');
@@ -253,10 +253,10 @@ console.log('\n/contentworkshop — the WORKSHOP config, one place for the open 
   check('winnersWhen is in it', /winnersWhen\s*:/.test(HTML));
   const { document } = load();
   check('the strategy reaches Stanley as a shared Google Doc link, not Brain → Files',
-    ['Put your strategy on a Google Doc', 'anyone with the link', 'paste it to Stanley', 'Share your website']
+    ['Save the worksheet as a Google Doc', 'anyone with the link', 'paste it to Stanley', 'Share your website']
       .every((t) => HTML.includes(t)) && !/Brain → Files/.test(HTML));
-  check('Step 4 carries Hannah Zhang\'s Stanley quote and spotlight screenshot',
-    (() => { const { document } = load(); const q = document.querySelector('#step-4 #hannahquote');
+  check('Step 3 carries Hannah Zhang\'s Stanley quote and spotlight screenshot',
+    (() => { const { document } = load(); const q = document.querySelector('#step-3 #hannahquote');
       return q !== null && /Before, I would just use Claude for drafts\./.test(q.textContent) &&
         q.querySelector('img').getAttribute('src') === 'img/hannah-stanley.webp' &&
         existsSync(new URL('../../contentworkshop/img/hannah-stanley.webp', import.meta.url)); })());
@@ -350,15 +350,15 @@ console.log('\n/contentworkshop — Open Claude / Open ChatGPT carry the strateg
   check('and ticks the strategy copy row', !!p1row && p1row.getAttribute('aria-pressed') === 'true');
 }
 
-console.log('\n/contentworkshop — the build is four numbered dropdowns');
+console.log('\n/contentworkshop — the build is three numbered dropdowns');
 {
   const { document } = load();
   const boxes = [...document.querySelectorAll('details.stepbox')];
 
-  check('there are five dropdowns: Step 1 to 4, then After tonight',
-    boxes.length === 5, boxes.length);
+  check('there are four dropdowns: Step 1 to 3, then After tonight',
+    boxes.length === 4, boxes.length);
   check('and they are numbered in order',
-    boxes.map((b) => b.id).join(',') === 'step-1,step-2,step-3,step-4,step-5',
+    boxes.map((b) => b.id).join(',') === 'step-1,step-2,step-3,step-4',
     boxes.map((b) => b.id));
 
   check('each one is a real <details>, so it works without JavaScript',
@@ -376,15 +376,14 @@ console.log('\n/contentworkshop — the build is four numbered dropdowns');
     document.getElementById('setuplist') !== null);
 
   const titles = boxes.map((b) => b.querySelector('.steptitle').textContent.trim());
-  check('the four build steps are the ones from the call',
-    titles.slice(0, 4).join(' | ') ===
-      'Connect your tools | Introduce yourself | ' +
-      'Give Stanley your strategy and context | Prompt Stanley',
+  check('the three build steps are the ones from the call',
+    titles.slice(0, 3).join(' | ') ===
+      'Connect your tools | Introduce yourself | Prompt Stanley',
     titles);
   check('and Rituals is last, as "After tonight"',
-    titles[4] === 'Turn on your rituals' &&
-    boxes[4].querySelector('.stepkicker').textContent.includes('After tonight'),
-    boxes[4].querySelector('.stepkicker').textContent);
+    titles[3] === 'Turn on your rituals' &&
+    boxes[3].querySelector('.stepkicker').textContent.includes('After tonight'),
+    boxes[3].querySelector('.stepkicker').textContent);
 
   check('only Step 1 is open to begin with',
     boxes.filter((b) => b.open).map((b) => b.id).join(',') === 'step-1',
@@ -397,17 +396,22 @@ console.log('\n/contentworkshop — the build is four numbered dropdowns');
   check('Step 2 gives them what to say in the intro',
     boxes[1].querySelector('#introprompts') !== null &&
     boxes[1].querySelectorAll('#introprompts li').length === 3);
+  // Wispr Flow and the intro are ticked above the prompt; the rest below it.
+  const s2 = [...boxes[1].querySelectorAll('[data-item], #mikaprompt')]
+    .map((e) => e.id || e.getAttribute('data-item')).join(',');
+  check('Step 2 runs Wispr Flow, intro, then the prompt and its rows',
+    s2 === 'i3w,i3s,mikaprompt,p1,i1b,i2a,i2c', s2);
   check('Step 1 is the tools: Wispr Flow, LinkedIn, and how Stanley talks to you',
     /add Wispr Flow, LinkedIn and any other platforms/.test(HTML) &&
     /Choose how Stanley talks to you/.test(HTML) && /iMessage or text message/.test(HTML));
-  check('Step 4 holds the skill and its copy button',
-    boxes[3].querySelector('#skilltext') !== null &&
-    boxes[3].querySelector('[data-copy="sk"]') !== null);
-  check('Step 4 holds the funnel tabs and its copy button',
-    boxes[3].querySelector('#funneltabs') !== null &&
-    boxes[3].querySelector('[data-copy="p2"]') !== null);
+  check('Step 3 holds the skill and its copy button',
+    boxes[2].querySelector('#skilltext') !== null &&
+    boxes[2].querySelector('[data-copy="sk"]') !== null);
+  check('Step 3 holds the funnel tabs and its copy button',
+    boxes[2].querySelector('#funneltabs') !== null &&
+    boxes[2].querySelector('[data-copy="p2"]') !== null);
   check('After tonight holds the ritual toggles',
-    boxes[4].querySelector('#ritualcards') !== null);
+    boxes[3].querySelector('#ritualcards') !== null);
 }
 
 console.log('\n/contentworkshop — each step is a checklist');
@@ -420,14 +424,14 @@ console.log('\n/contentworkshop — each step is a checklist');
   const countOf = (n) => box(n).querySelector('.stepcount').textContent;
   const badge = (n) => box(n).querySelector('.stepbadge').textContent;
 
-  const rowCounts = { 1: 2, 2: 5, 3: 2, 4: 4 };
-  for (const n of [1, 2, 3, 4]) {
+  const rowCounts = { 1: 2, 2: 6, 3: 4 };
+  for (const n of [1, 2, 3]) {
     check('Step ' + n + ' has ' + rowCounts[n] + ' tickable sub-steps',
       items(n).length === rowCounts[n], items(n).length);
   }
 
   check('every row starts un-ticked',
-    [1, 2, 3, 4].every((n) => items(n).every((i) => i.getAttribute('aria-pressed') === 'false')));
+    [1, 2, 3].every((n) => items(n).every((i) => i.getAttribute('aria-pressed') === 'false')));
   check('the header counts them, long and short',
     countOf(1) === '0 of 2 done0/2', countOf(1));
   check('and shows the step number while it is unfinished',
@@ -465,7 +469,7 @@ console.log('\n/contentworkshop — the copy buttons tick their own row');
   const box = (n) => document.getElementById('step-' + n);
   const row = (key) => document.querySelector('[data-item="' + key + '"]');
 
-  for (const [key, step] of [['p1', 1], ['sk', 3], ['p2', 4]]) {
+  for (const [key, step] of [['p1', 2], ['sk', 3], ['p2', 3]]) {
     check('Step ' + step + ' has a row driven by the ' + key + ' copy button',
       row(key) !== null);
     clickCopy(document, key);
@@ -484,9 +488,9 @@ console.log('\n/contentworkshop — the step progress count');
   const click = (el) => el.dispatchEvent(
     new document.defaultView.MouseEvent('click', { bubbles: true }));
 
-  // Six groups on the page -- Before you start, Steps 1 to 4, After tonight
-  // -- so the total still says six.
-  check('the total counts all six', HTML.includes('/6 done'));
+  // Five groups on the page -- Before you start, Steps 1 to 3, After tonight
+  // -- so the total says five.
+  check('the total counts all five', HTML.includes('/5 done'));
   check('starts at 0 done', count() === '0', count());
 
   // Before you start only ticks once all four setup rows are ticked.
@@ -502,14 +506,14 @@ console.log('\n/contentworkshop — the step progress count');
   check('finishing Step 1 advances the count by exactly one', count() === '2', count());
 
   const ctx = () => [...document.querySelectorAll('#step-2 [data-item]')];
-  check('there are five Step 2 rows', ctx().length === 5, ctx().length);
+  check('there are six Step 2 rows', ctx().length === 6, ctx().length);
   check('Step 2 is not done on the back of Step 1',
     ctx().every((c) => c.getAttribute('aria-pressed') === 'false'));
-  ctx().slice(0, 4).forEach(click);
-  check('four of five Step 2 rows ticked is not yet a done step', count() === '2', count());
-  click(ctx()[4]);
-  check('all five Step 2 rows ticked completes Step 2', count() === '3', count());
-  click(ctx()[4]);
+  ctx().slice(0, 5).forEach(click);
+  check('five of six Step 2 rows ticked is not yet a done step', count() === '2', count());
+  click(ctx()[5]);
+  check('all six Step 2 rows ticked completes Step 2', count() === '3', count());
+  click(ctx()[5]);
   check('un-ticking a row drops Step 2 again', count() === '2', count());
 
   // Ticking a setup row back off takes that step away again.
@@ -529,7 +533,7 @@ console.log('\n/contentworkshop — the count can never pass its total');
   const rituals = [...document.querySelectorAll('[data-ritual]')];
   rituals.filter((r) => r.getAttribute('aria-pressed') === 'false').forEach(click);
 
-  check('everything done reads exactly 6, the total', count() === '6', count());
+  check('everything done reads exactly 5, the total', count() === '5', count());
   check('every step badge in the top bar shows a tick',
     [...document.querySelectorAll('[data-badge]')].every((b) => b.textContent === '✓'),
     [...document.querySelectorAll('[data-badge]')].map((b) => b.textContent));
@@ -572,7 +576,7 @@ console.log('\n/contentworkshop — storage that is blocked costs nothing');
   // draw, and ticking has to work; it simply does not remember.
   const { document } = loadWithoutStorage();
   check('the page still renders its steps',
-    document.querySelectorAll('details.stepbox').length === 5);
+    document.querySelectorAll('details.stepbox').length === 4);
   const rows = [...document.querySelectorAll('#step-1 [data-item]')];
   rows.forEach((el) => el.dispatchEvent(
     new document.defaultView.MouseEvent('click', { bubbles: true })));
@@ -695,14 +699,14 @@ console.log('\n/contentworkshop — the ritual toggles');
   check('no [RITUAL 3] placeholder is left', !HTML.includes('RITUAL 3'));
   check('one ritual on is not yet enough for the last step', count() === '0', count());
   check('and its header counts them as switched on, not as done',
-    document.querySelector('#step-5 .stepcount').textContent === '1 of 3 on1/3',
-    document.querySelector('#step-5 .stepcount').textContent);
+    document.querySelector('#step-4 .stepcount').textContent === '1 of 3 on1/3',
+    document.querySelector('#step-4 .stepcount').textContent);
 
   cards()[1].dispatchEvent(new document.defaultView.MouseEvent('click', { bubbles: true }));
   check('switching a second one on', on() === 2, on());
   check('two rituals on completes the last step', count() === '1', count());
   check('and the dropdown header says so',
-    document.getElementById('step-5').getAttribute('data-done') === 'yes');
+    document.getElementById('step-4').getAttribute('data-done') === 'yes');
 
   cards()[0].dispatchEvent(new document.defaultView.MouseEvent('click', { bubbles: true }));
   check('switching one back off un-completes it', count() === '0', count());
