@@ -395,7 +395,39 @@ console.log('\n/contentworkshop — the build is three numbered dropdowns');
     boxes[1].querySelector('[data-copy="p1"]') !== null);
   check('Step 2 gives them what to say in the intro',
     boxes[1].querySelector('#introprompts') !== null &&
-    boxes[1].querySelectorAll('#introprompts li').length === 3);
+    boxes[1].querySelectorAll('#introprompts li').length === 7,
+    boxes[1].querySelectorAll('#introprompts li').length);
+  check('and all seven questions read as Ella wrote them',
+    [...boxes[1].querySelectorAll('#introprompts li')].map((n) => n.textContent).join('|') ===
+    [
+      'Who you are, and what your company does.',
+      'What you want most from your content right now: customers, investors, hires or partners.',
+      "What you've done that most people haven't: the results, the numbers, the companies you've built.",
+      'What people always ask you about.',
+      'Who your ideal customer is.',
+      'What you could talk about for an hour, for free.',
+      'A story from the last 2 weeks: a win, a mistake, or a customer conversation that stuck with you.',
+    ].join('|'),
+    [...boxes[1].querySelectorAll('#introprompts li')].map((n) => n.textContent));
+
+  // Ella's video opens the step, and plays here rather than sending
+  // anybody to Loom to watch it (Ella, 4 Nov).
+  const LOOM = '73d3636a71e14dfb9872d35c62f04e68';
+  const player = [...boxes[1].querySelectorAll('iframe')]
+    .find((f) => (f.getAttribute('src') || '').includes(LOOM));
+  check("Step 2 plays Ella's video on the page", player != null,
+    [...boxes[1].querySelectorAll('iframe')].map((f) => f.getAttribute('src')));
+  check('and it is embedded with the chrome hidden, like the other one',
+    player && /^https:\/\/www\.loom\.com\/embed\/[0-9a-f]{32}\?hide_owner=true&hide_share=true&hide_title=true&hideEmbedTopBar=true$/
+      .test(player.getAttribute('src')), player && player.getAttribute('src'));
+  check('it is introduced by name', /Watch this video/.test(boxes[1].textContent));
+  // Ella's order: watch the video, then build the strategy, then the
+  // seven questions. So the player comes before the intro box.
+  const order = [...boxes[1].querySelectorAll('iframe, #introprompts')]
+    .map((n) => (n.id === 'introprompts' ? 'questions' : 'video'));
+  check('and it sits above what to say in the intro',
+    order.indexOf('video') !== -1 && order.indexOf('video') < order.indexOf('questions'),
+    order);
   // Step 2's rows up to answering sit above the prompt; saving and context below.
   const s2 = [...boxes[1].querySelectorAll('[data-item], #mikaprompt')]
     .map((e) => e.id || e.getAttribute('data-item')).join(',');
