@@ -568,9 +568,10 @@ console.log('\nthe pill steps aside rather than covering anything');
   check('it is showing to begin with', !pill.classList.contains('is-away'));
 
   api.setFooterInView(true);
-  check('the footer coming into view puts it away', pill.classList.contains('is-away'));
+  check('the footer coming into view keeps it on screen and clickable', !pill.classList.contains('is-away'));
+  check('and lifts it above the footer', pill.style.getPropertyValue('--trp-pill-lift') !== '');
   api.setFooterInView(false);
-  check('and it comes back when the footer goes', !pill.classList.contains('is-away'));
+  check('back to its place when the footer goes', pill.style.getPropertyValue('--trp-pill-lift') === '0px');
 
   const lb = doc.createElement('div');
   lb.className = 'trp-cw-lb';

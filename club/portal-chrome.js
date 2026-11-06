@@ -793,7 +793,6 @@
 
     function blocked() {
       if (open) return true;
-      if (footerSeen) return true;
       if (document.querySelector('.trp-cw-lb')) return true;      // the video lightbox
       if (menuOpen()) return true;
       if (document.querySelector('.trp-toast[data-show]')) return true;
@@ -827,14 +826,34 @@
       refresh();
     }, 2000);
 
-    // The footer already carries "Give feedback", so the pill steps aside
-    // rather than sitting on top of footer links.
+    /* When the footer comes on screen the pill rides up above it, so it
+       never sits on the footer links and never disappears either: a member
+       on a short page can still find it (Gideon, 6 Nov). It used to step
+       aside, and a CSS slip left it showing but unclickable. */
     var footer = document.querySelector('footer');
+    var lift = -1;
+    function place() {
+      var by = 0;
+      if (footer && footerSeen) {
+        by = Math.max(0, Math.round(window.innerHeight - footer.getBoundingClientRect().top));
+      }
+      if (by === lift) return;
+      lift = by;
+      pill.style.setProperty('--trp-pill-lift', by + 'px');
+    }
+    var placing = false;
+    function placeSoon() {
+      if (placing) return;
+      placing = true;
+      window.requestAnimationFrame(function () { placing = false; place(); });
+    }
     if (footer && typeof window.IntersectionObserver === 'function') {
       new window.IntersectionObserver(function (entries) {
         for (var i = 0; i < entries.length; i++) footerSeen = entries[i].isIntersecting;
-        refresh();
+        place();
       }).observe(footer);
+      window.addEventListener('scroll', function () { if (footerSeen) placeSoon(); }, { passive: true });
+      window.addEventListener('resize', placeSoon);
     }
 
     // The lightbox, the toast and the menu are all added, removed or
@@ -940,7 +959,7 @@
       open: function () { setOpen(true); },
       close: function () { setOpen(false); },
       askToClose: askToClose,
-      setFooterInView: function (yes2) { footerSeen = Boolean(yes2); refresh(); },
+      setFooterInView: function (yes2) { footerSeen = Boolean(yes2); place(); refresh(); },
       isOpen: function () { return open; }
     };
   }
