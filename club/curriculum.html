@@ -2800,8 +2800,22 @@ Save the skill once. Then hand Stanley a story and it drafts in your voice.`
          title, and the date it opens. It replaces a "Coming up" card that
          said how many weeks were left without saying which, or when. */
 
-      function whatsNext(cards, prep) {
-        var shut = cards.filter(function (w) { return !isOpen(w, prep); });
+      /* A week opened early (Week 3 on Fri 6 Nov) is open but has not
+         started, so it is still next: it stays in this list, marked open,
+         with the day its first call starts (Gideon, 6 Nov). */
+      function firstCall(data, week) {
+        var first = null;
+        L.sessionsForWeek(data, week.id).forEach(function (s) {
+          var d = L.toDate(s && s.starts_at);
+          if (d && (first === null || d.getTime() < first.getTime())) first = d;
+        });
+        return first;
+      }
+
+      function whatsNext(cards, prep, data) {
+        var shut = cards.filter(function (w) {
+          return !isOpen(w, prep) || (data && !L.weekStarted(data, w));
+        });
         if (!shut.length) return null;
 
         var box = L.el('section', 'trp-cw-next');
@@ -2816,8 +2830,16 @@ Save the skill once. Then hand Stanley a story and it drafts in your voice.`
           var row = L.el('li', 'trp-cw-next-row');
           row.appendChild(L.el('span', 'trp-cw-next-n', 'Week ' + pad(n)));
           row.appendChild(L.el('span', 'trp-cw-next-title', PILLARS[n] || weekTitle(week)));
-          var opens = L.etDate(week.release_at);
-          row.appendChild(L.el('span', 'trp-cw-next-when', opens ? 'Opens ' + opens : 'Opens soon'));
+          var when;
+          if (isOpen(week, prep)) {
+            var call = data ? firstCall(data, week) : null;
+            var starts = call ? L.etDate(call.toISOString()) : '';
+            when = starts ? 'Open now · starts ' + starts : 'Open now';
+          } else {
+            var opens = L.etDate(week.release_at);
+            when = opens ? 'Opens ' + opens : 'Opens soon';
+          }
+          row.appendChild(L.el('span', 'trp-cw-next-when', when));
           ul.appendChild(row);
         });
         box.appendChild(ul);
@@ -2906,7 +2928,7 @@ Save the skill once. Then hand Stanley a story and it drafts in your voice.`
 
         out.push(panel(data, week, prep));
 
-        var next = whatsNext(cards, prep);
+        var next = whatsNext(cards, prep, data);
         if (next) out.push(next);
         settle(live, out);
 
