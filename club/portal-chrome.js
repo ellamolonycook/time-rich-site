@@ -248,7 +248,6 @@
    */
 
   var FB_ENDPOINT = 'https://time-rich-forms.timerich.workers.dev/feedback';
-  var FB_SENT_KEY = 'tr_feedback_sent';
 
   // How long the thank-you sits before it settles into its calm state. A
   // seam for the tests, which would otherwise wait three real seconds.
@@ -262,15 +261,6 @@
     if (cls) node.className = cls;
     if (text != null) node.textContent = text;
     return node;
-  }
-
-  function sentThisVisit() {
-    try { return window.sessionStorage.getItem(FB_SENT_KEY) === '1'; }
-    catch (err) { return false; }
-  }
-  function markSent() {
-    try { window.sessionStorage.setItem(FB_SENT_KEY, '1'); }
-    catch (err) { /* the pill just comes back next page, which is survivable */ }
   }
 
   // The same test the content workshop draw uses, so a member is told the
@@ -641,7 +631,6 @@
     }
 
     function succeed(data) {
-      markSent();
       form.classList.add('trp-fb-anim-out');
       stepper.hidden = true;
       window.setTimeout(function () {
@@ -731,7 +720,6 @@
 
   function mountFeedbackPill() {
     if (NO_PILL.test(window.location.pathname)) return;
-    if (sentThisVisit()) return;
 
     var pill = el('button', 'trp-pill');
     pill.type = 'button';
@@ -823,7 +811,6 @@
        it and spin forever. */
     function refresh() {
       if (!letIn) return;
-      if (sentThisVisit()) { pill.hidden = true; return; }
       var away = blocked();
       if (away === wasAway) return;
       wasAway = away;
@@ -833,7 +820,6 @@
 
     /* It arrives a couple of seconds in, once, and never moves again. */
     window.setTimeout(function () {
-      if (sentThisVisit()) return;
       letIn = true;
       pill.hidden = false;
       void pill.offsetWidth;
@@ -907,9 +893,14 @@
           built = buildFeedback({
             idSuffix: 'panel',
             onSettled: function () {
-              // It closes itself once the thank-you has settled, and the
-              // pill does not come back for the rest of the visit.
-              window.setTimeout(function () { setOpen(false); pill.hidden = true; }, 400);
+              // It closes itself once the thank-you has settled. The pill
+              // stays, so a member can send more feedback later; the next
+              // open starts a fresh form (Gideon, 6 Nov).
+              window.setTimeout(function () {
+                setOpen(false);
+                if (built && built.root.parentNode) built.root.parentNode.removeChild(built.root);
+                built = null;
+              }, 400);
             }
           });
           body.appendChild(built.root);

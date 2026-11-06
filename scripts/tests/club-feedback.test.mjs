@@ -43,9 +43,6 @@ function openPage(file, opts = {}) {
       // The settle is shortened so nothing waits on a real three seconds.
       window.TR_FEEDBACK_SETTLE_MS = opts.settleMs ?? 5;
       window.TR_PORTAL_DATA = { ok: true, member: { first_name: 'Eve' }, weeks: [], sessions: [] };
-      if (opts.alreadySent) {
-        try { window.sessionStorage.setItem('tr_feedback_sent', '1'); } catch (e) { /* ignore */ }
-      }
       window.posts = [];
       window.fetch = (url, init) => {
         window.posts.push({ url: String(url), body: JSON.parse(init.body) });
@@ -752,34 +749,16 @@ console.log('\na submit from the panel posts the same fields as the page');
     panel.querySelector('[data-feedback-thanks]').hidden === false);
   await new Promise((r) => setTimeout(r, 500));
   check('then closes itself', !api.isOpen());
-  check('and the pill is gone for the rest of the visit', api.el.hidden === true);
-  check('which is remembered, safely',
-    /sessionStorage\.setItem\(FB_SENT_KEY/.test(CHROME) &&
-    /function markSent\(\) \{\s*try \{/.test(CHROME));
+  check('and the pill stays, so more feedback can be sent', api.el.hidden === false);
+  check('nothing is remembered that would hide it',
+    !/sessionStorage/.test(CHROME));
+  // Opening it again starts a fresh form, not the settled thank-you.
+  api.open();
+  await new Promise((r) => setTimeout(r, 50));
+  check('the next open is a fresh form',
+    panel.querySelector('[data-feedback-thanks]') === null ||
+    panel.querySelector('[data-feedback-thanks]').hidden === true);
   dom.window.close();
-}
-
-console.log('\nand it does not come back on the next page of that visit');
-{
-  const dom = await openPage('curriculum.html');
-  try { dom.window.sessionStorage.setItem('tr_feedback_sent', '1'); } catch (e) { /* ignore */ }
-  dom.window.close();
-
-  // A fresh page, with the flag already set, builds no pill at all.
-  const again = new JSDOM(read('club/curriculum.html'), {
-    url: 'https://timerich.ai/club/curriculum',
-    runScripts: 'dangerously',
-    pretendToBeVisual: true,
-    virtualConsole: new VirtualConsole(),
-    beforeParse(window) {
-      window.tailwind = {};
-      window.gtag = () => {};
-      try { window.sessionStorage.setItem('tr_feedback_sent', '1'); } catch (e) { /* ignore */ }
-    },
-  });
-  check('no pill once feedback has been sent this visit',
-    again.window.document.querySelector('[data-feedback-pill]') === null);
-  again.window.close();
 }
 
 /* ---- the way in -------------------------------------------------------- */
