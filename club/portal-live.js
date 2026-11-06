@@ -166,9 +166,25 @@
     return list;
   }
 
-  // The newest week the member can actually open.
-  function latestUnlockedWeek(data) {
+  /* A week opened early, so members and Ella can see it ahead of time,
+     isn't "this week" yet: that is the week whose live calls have begun.
+     A week starts at midnight ET on the day of its first call (12 hours
+     before a 12pm ET call). A week with no calls keeps the old rule. */
+  function weekStarted(data, week, now) {
+    var at = (now || new Date()).getTime();
+    var first = null;
+    sessionsForWeek(data, week && week.id).forEach(function (s) {
+      var d = toDate(s && s.starts_at);
+      if (d && (first === null || d.getTime() < first)) first = d.getTime();
+    });
+    return first === null || first - 12 * 3600 * 1000 <= at;
+  }
+
+  // The newest week the member can actually open and that has started.
+  function latestUnlockedWeek(data, now) {
     var open = weeks(data).filter(function (w) { return w && w.unlocked === true; });
+    var started = open.filter(function (w) { return weekStarted(data, w, now); });
+    if (started.length) return started[started.length - 1];
     return open.length ? open[open.length - 1] : null;
   }
 
@@ -851,6 +867,7 @@
     sessions: sessions,
     items: items,
     latestUnlockedWeek: latestUnlockedWeek,
+    weekStarted: weekStarted,
     nextSession: nextSession,
     dateKey: dateKey,
     isSessionUnlocked: isSessionUnlocked,
