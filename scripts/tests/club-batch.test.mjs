@@ -856,6 +856,99 @@ console.log('\nthe progress count leaves out what is no longer a lesson');
   p.w.close();
 }
 
+/* ---- several drop-downs open at once -----------------------------------
+   A member, passed on by Ella 5 Nov: "when I click a tab, the other tabs
+   close... I keep losing my place." Opening one lesson used to close every
+   other one. It does not any more. */
+
+console.log('\nopening a lesson leaves the others alone');
+{
+  const p = open();
+  const panel = p.panel();
+  const toggles = [...panel.querySelectorAll('.trp-cw-toggle')];
+  check('there are at least three lessons to try it with', toggles.length >= 3, toggles.length);
+
+  const isOpen = (t) => t.getAttribute('aria-expanded') === 'true';
+  const openCount = () => panel.querySelectorAll('.trp-cw-toggle[aria-expanded="true"]').length;
+
+  check('every row starts shut', openCount() === 0, openCount());
+
+  const click = (t) => t.dispatchEvent(new p.w.MouseEvent('click', { bubbles: true }));
+
+  click(toggles[0]);
+  check('the first row opens', isOpen(toggles[0]));
+
+  click(toggles[1]);
+  check('the second opens too', isOpen(toggles[1]));
+  check('and the first is still open', isOpen(toggles[0]),
+    toggles.map((t) => t.getAttribute('aria-expanded')));
+
+  click(toggles[2]);
+  check('a third makes three', openCount() === 3, openCount());
+
+  // The bodies, not just the attribute: hidden is what the member sees.
+  const bodies = toggles.slice(0, 3)
+    .map((t) => t.closest('.trp-cw-lesson').querySelector('.trp-cw-detail'));
+  check('all three bodies are showing', bodies.every((b) => b.hidden === false),
+    bodies.map((b) => b.hidden));
+  check('and all three rows are marked open',
+    toggles.slice(0, 3).every((t) => t.closest('.trp-cw-lesson').classList.contains('is-open')));
+
+  // Closing is still one row at a time, and still only the one clicked.
+  click(toggles[1]);
+  check('closing the middle one closes only it',
+    !isOpen(toggles[1]) && isOpen(toggles[0]) && isOpen(toggles[2]),
+    toggles.slice(0, 3).map((t) => t.getAttribute('aria-expanded')));
+
+  check('the page no longer clicks other toggles shut',
+    !/shown\[i\] !== toggle\) shown\[i\]\.click\(\)/.test(HTML));
+  p.w.close();
+}
+
+console.log('\na deep link opens its own row and leaves the rest open');
+{
+  const p = open();
+  const panel = p.panel();
+  const toggles = [...panel.querySelectorAll('.trp-cw-toggle')];
+  const click = (t) => t.dispatchEvent(new p.w.MouseEvent('click', { bubbles: true }));
+
+  // A row the member already had open, before anything is deep-linked to.
+  click(toggles[0]);
+  check('a row is open to begin with', toggles[0].getAttribute('aria-expanded') === 'true');
+
+  /* The call card's Watch replay button is the deep link inside the page:
+     with no video on the row it opens that row's drop-down instead. Here it
+     is driven the way the page drives it, through the same openLesson path,
+     by clicking a replay row's own toggle from elsewhere. */
+  const target = toggles[toggles.length - 1];
+  click(target);
+  check('the row that was linked to is open',
+    target.getAttribute('aria-expanded') === 'true');
+  check('and the one that was already open still is',
+    toggles[0].getAttribute('aria-expanded') === 'true',
+    toggles.map((t) => t.getAttribute('aria-expanded')));
+  p.w.close();
+}
+
+console.log('\nthe foot of every week asks how it is going');
+{
+  const p = open();
+  const ask = p.panel().querySelector('.trp-cw-ask');
+  check('the line is there', ask !== null);
+  check('it reads as Ella wrote it',
+    ask && ask.textContent === "How's it going? Tell us in 2 minutes", ask && ask.textContent);
+  check('and it goes to the feedback form',
+    ask && ask.getAttribute('href') === '/club/feedback', ask && ask.getAttribute('href'));
+  check('it is the last thing in the panel',
+    ask === p.panel().lastElementChild, p.panel().lastElementChild.className);
+
+  // Every week, not just the one that happens to be showing.
+  p.pick(2);
+  const two = p.panel().querySelector('.trp-cw-ask');
+  check('week 2 carries it too', two !== null && two.getAttribute('href') === '/club/feedback');
+  p.w.close();
+}
+
 console.log("\nWhat's next: one line per week, with the date it opens");
 {
   const p = open();
@@ -950,8 +1043,13 @@ console.log("\nWeek 1's block carries the agents and the growth prompts when the
   check('the block is in the page', extra !== null);
   check('and it is shown', extra && !extra.hasAttribute('hidden'));
   check('inside the Week 1 panel', extra && p.panel().contains(extra));
-  check('last in it, under the lessons and the setup',
-    extra && p.panel().lastElementChild === extra, extra && p.panel().lastElementChild.className);
+  // The feedback line is the only thing under it now (Ella, 5 Nov), so the
+  // block is still the last of the week's own content.
+  check('last of the week\'s content, under the lessons and the setup',
+    extra && extra.nextElementSibling !== null &&
+    extra.nextElementSibling.classList.contains('trp-cw-ask') &&
+    extra.nextElementSibling === p.panel().lastElementChild,
+    extra && extra.nextElementSibling && extra.nextElementSibling.className);
 
   const order = [...extra.querySelectorAll('.trp-cw-w1-sec')]
     .map((s) => {
@@ -1452,7 +1550,7 @@ console.log('\nLessons have a tick and a cross; setup tasks a tick only; the cal
   p.w.close();
 }
 
-console.log('\nOne drop-down open at a time');
+console.log('\nNothing on a week page closes anything else');
 {
   const data = payload();
   data.weeks[1].items.push({ id: 205, kind: 'text', title: 'Pick your AI agent', body: 'Pick one.', sort: 60 });
@@ -1460,11 +1558,16 @@ console.log('\nOne drop-down open at a time');
   const t = (title) => p.lesson(title).querySelector('.trp-cw-toggle');
   if (t('Run your Time Rich Audit').getAttribute('aria-expanded') !== 'true') t('Run your Time Rich Audit').click();
   t('Pick your AI agent').click();
-  check('opening a lesson shuts the one that was open',
+  // Lessons used to be one at a time. A member kept losing their place, so
+  // opening one now leaves the rest exactly as they were (Ella, 5 Nov).
+  check('opening a lesson leaves the one that was open alone',
     t('Pick your AI agent').getAttribute('aria-expanded') === 'true' &&
-    t('Run your Time Rich Audit').getAttribute('aria-expanded') === 'false');
-  check('so one lesson is open',
-    p.panel().querySelectorAll('.trp-cw-toggle[aria-expanded="true"]').length === 1);
+    t('Run your Time Rich Audit').getAttribute('aria-expanded') === 'true',
+    [t('Pick your AI agent').getAttribute('aria-expanded'),
+     t('Run your Time Rich Audit').getAttribute('aria-expanded')]);
+  check('so two lessons are open',
+    p.panel().querySelectorAll('.trp-cw-toggle[aria-expanded="true"]').length === 2,
+    p.panel().querySelectorAll('.trp-cw-toggle[aria-expanded="true"]').length);
 
   // The lesson clicks redraw the panel a tick later: take the sections after that.
   await new Promise((r) => setTimeout(r, 0));
@@ -1473,10 +1576,53 @@ console.log('\nOne drop-down open at a time');
   await new Promise((r) => setTimeout(r, 0));
   masters[2].open = true;
   await new Promise((r) => setTimeout(r, 0));
-  check('opening a section shuts the one that was open',
+  check('opening a section leaves the section that was open alone',
+    masters[2].open === true && masters[1].open === true,
+    masters.map((d) => d.open));
+  check('so two sections are open',
+    p.panel().querySelectorAll('details.trp-cw-master[open]').length === 2,
+    p.panel().querySelectorAll('details.trp-cw-master[open]').length);
+
+  // And closing one is still only that one.
+  masters[1].open = false;
+  await new Promise((r) => setTimeout(r, 0));
+  check('closing a section closes only it',
     masters[2].open === true && masters[1].open === false,
     masters.map((d) => d.open));
   p.w.close();
+}
+
+console.log('\nthe setup steps stay open together too');
+{
+  const p = open();
+  const steps = [...p.panel().querySelectorAll('details.trp-cw-step:not(.trp-cw-gpd)')];
+  check('there are at least two setup steps', steps.length >= 2, steps.length);
+  check('and they start shut', steps.every((d) => !d.open), steps.map((d) => d.open));
+
+  steps[0].open = true;
+  await new Promise((r) => setTimeout(r, 0));
+  steps[1].open = true;
+  await new Promise((r) => setTimeout(r, 0));
+  check('opening a second step leaves the first open',
+    steps[0].open === true && steps[1].open === true, steps.map((d) => d.open));
+
+  steps[0].open = false;
+  await new Promise((r) => setTimeout(r, 0));
+  check('and closing one closes only it',
+    steps[0].open === false && steps[1].open === true, steps.map((d) => d.open));
+  p.w.close();
+}
+
+console.log('\nnothing in the page closes a drop-down on its neighbour');
+{
+  // The mechanism, not just the behaviour: shutOthers is what used to do
+  // this, at every level, and it is gone rather than merely unused.
+  check('shutOthers is not defined', !/function shutOthers/.test(HTML));
+  check('and nothing calls it', !/shutOthers\(/.test(HTML));
+  check('holdStill is still there, keeping the clicked header still',
+    /function holdStill/.test(HTML));
+  check('no handler sets .open = false on a sibling',
+    !/mates\[i\]\.open = false/.test(HTML));
 }
 
 console.log('\nA link from Resources lands on the growth prompts');

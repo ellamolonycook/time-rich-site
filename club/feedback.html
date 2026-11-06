@@ -1,0 +1,552 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth" data-trp-gate>
+<head>
+  <script>
+    // Theme, applied before first paint so there is no flash of the wrong one.
+    // "system" follows the device; the CSS reads this attribute.
+    (function () {
+      var t = 'system';
+      try { t = window.localStorage.getItem('tr_portal_theme') || 'system'; } catch (e) {}
+      if (t !== 'light' && t !== 'dark') t = 'system';
+      document.documentElement.setAttribute('data-theme', t);
+    })();
+  </script>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <!-- Google tag (gtag.js). The library is fetched once the page is
+       interactive: it is the heaviest request here and nothing on screen
+       waits on it. The consent defaults below are set first, so the queue
+       it replays on arrival already respects them. -->
+  <script>
+    window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}
+    // Consent Mode v2. Region-specific default first, then the global fallback,
+    // which is the order Google's docs specify: the narrower region wins.
+    gtag('consent','default',{ad_storage:'denied',ad_user_data:'denied',ad_personalization:'denied',analytics_storage:'denied',region:['AT','BE','BG','HR','CY','CZ','DK','EE','FI','FR','DE','GR','HU','IS','IE','IT','LV','LI','LT','LU','MT','NL','NO','PL','PT','RO','SK','SI','ES','SE','GB','CH']});
+    gtag('consent','default',{ad_storage:'denied',ad_user_data:'denied',ad_personalization:'denied',analytics_storage:'granted'});
+    gtag('js',new Date());
+    gtag('config','G-CTZLQ4R388');
+
+    // The library, once the page has loaded and the main thread is free.
+    // requestIdleCallback's own timeout and the setTimeout fallback are both
+    // 2000ms, so it never waits longer than that on a busy page.
+    (function () {
+      var asked = false;
+      function loadGtag() {
+        if (asked) return;
+        asked = true;
+        var s = document.createElement('script');
+        s.async = true;
+        s.src = 'https://www.googletagmanager.com/gtag/js?id=G-CTZLQ4R388';
+        document.head.appendChild(s);
+      }
+      function schedule() {
+        if (typeof window.requestIdleCallback === 'function') {
+          window.requestIdleCallback(loadGtag, { timeout: 2000 });
+        } else {
+          window.setTimeout(loadGtag, 2000);
+        }
+      }
+      if (document.readyState === 'complete') schedule();
+      else window.addEventListener('load', schedule);
+    })();
+  </script>
+
+  <title>Feedback | Time Rich Club</title>
+  <link rel="icon" type="image/png" sizes="32x32" href="/rocketship-icon-32.png"/>
+  <link rel="apple-touch-icon" sizes="180x180" href="/rocketship-icon-180.png"/>
+  <link rel="canonical" href="https://timerich.ai/club/feedback" />
+  <meta name="description" content="Tell us how the Superhuman Accelerator is going, in two minutes." />
+  <meta property="og:type" content="website" />
+  <meta property="og:site_name" content="Time Rich Club" />
+  <meta property="og:title" content="Feedback | Time Rich Club" />
+  <meta property="og:description" content="Tell us how the Superhuman Accelerator is going, in two minutes." />
+  <meta property="og:url" content="https://timerich.ai/club/feedback" />
+  <meta property="og:image" content="https://timerich.ai/og-time-rich.png" />
+  <meta property="og:image:width" content="1200" />
+  <meta property="og:image:height" content="630" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="Feedback | Time Rich Club" />
+  <meta name="twitter:description" content="Tell us how the Superhuman Accelerator is going, in two minutes." />
+  <meta name="twitter:image" content="https://timerich.ai/og-time-rich.png" />
+  <link rel="stylesheet" href="portal.css"/>
+  <!-- The two faces, served from this repo. They used to come from Google
+       Fonts, which costs a DNS lookup, a stylesheet and only then the font
+       itself: three round trips before a heading could be drawn in the right
+       face, and a reflow when it finally was. Preloading the files directly
+       starts them with the stylesheet instead.
+
+       crossorigin is required on a font preload even for a same-origin file:
+       fonts are fetched in CORS mode, and a preload without it is fetched
+       twice. -->
+  <link rel="preload" href="../brand/fonts/SpaceGrotesk-Variable.woff2" as="font" type="font/woff2" crossorigin/>
+  <link rel="preload" href="../brand/fonts/Inter-Variable.woff2" as="font" type="font/woff2" crossorigin/>
+  <link rel="stylesheet" href="portal-content.css?v=20261025">
+
+  <!-- Two small pieces this page owns: the link back to the course and the
+       link card to the growth prompts. Both are scoped here rather than
+       added to the Tailwind source, so portal.css is not rebuilt for two
+       rules, and both take their colours from the --trp-* palette in
+       portal-content.css so the dark theme follows without rules of its own.
+       The card is deliberately the same shape as .trp-cw-resources on the
+       curriculum, which is the card that points the other way. -->
+  <!-- This page's own pieces, scoped here for the same reason as the ones
+       on Resources: portal.css is not rebuilt for one form, and every colour
+       and face is a --trp-* token, so the dark theme follows with no rules
+       of its own. -->
+  <style>
+    .trp-fb-back { display: inline-flex; align-items: center; gap: 8px; min-height: 44px; font-size: 14px; font-weight: 600; color: var(--trp-muted); text-decoration: none; transition: color .18s ease; }
+    .trp-fb-back:hover { color: var(--trp-ink); }
+    .trp-fb-back:focus-visible { outline: 2px solid var(--trp-green); outline-offset: 3px; border-radius: 6px; }
+    .trp-fb-back svg { width: 18px; height: 18px; flex: none; }
+
+    .trp-fb-form { display: flex; flex-direction: column; gap: 28px; max-width: 720px; }
+    .trp-fb-part { display: flex; flex-direction: column; gap: 18px; padding: 22px; border: 1px solid var(--trp-rule); border-radius: 20px; background: rgb(var(--c-surface)); }
+    .trp-fb-part-head { display: flex; flex-direction: column; gap: 4px; }
+    .trp-fb-part-name { font-size: 12px; font-weight: 600; letter-spacing: .08em; text-transform: uppercase; color: var(--trp-muted); }
+    .trp-fb-part-title { margin: 0; font-family: var(--trp-face); font-weight: 600; font-size: 19px; letter-spacing: -.01em; color: var(--trp-ink); }
+    .trp-fb-part-note { margin: 0; font-size: 14px; line-height: 1.5; color: var(--trp-muted); }
+
+    .trp-fb-field { display: flex; flex-direction: column; gap: 8px; }
+    .trp-fb-label { font-size: 15px; font-weight: 600; color: var(--trp-ink); }
+    .trp-fb-opt { font-weight: 400; color: var(--trp-muted); }
+    .trp-fb-hint { font-size: 13.5px; line-height: 1.5; color: var(--trp-muted); }
+    .trp-fb-input, .trp-fb-area { width: 100%; font: inherit; font-size: 15px; color: var(--trp-ink); background: rgb(var(--c-page)); border: 1px solid var(--trp-rule); border-radius: 12px; padding: 12px 14px; min-height: 48px; }
+    .trp-fb-area { min-height: 84px; resize: vertical; }
+    .trp-fb-input:focus-visible, .trp-fb-area:focus-visible { outline: 2px solid var(--trp-green); outline-offset: 1px; }
+
+    /* One tap, 1 to 10. A radio each, so the keyboard and a screen reader
+       get a real group and the arrow keys move through it; the dot itself is
+       hidden and the label is the button. */
+    .trp-fb-scale { display: grid; grid-template-columns: repeat(auto-fit, minmax(44px, 1fr)); gap: 8px; }
+    .trp-fb-scale input { position: absolute; width: 1px; height: 1px; opacity: 0; pointer-events: none; }
+    .trp-fb-num { display: flex; align-items: center; justify-content: center; min-height: 48px; border: 1px solid var(--trp-rule); border-radius: 12px; background: rgb(var(--c-page)); font-size: 15px; font-weight: 600; color: var(--trp-ink); cursor: pointer; transition: background-color .15s ease, border-color .15s ease; }
+    .trp-fb-num:hover { border-color: var(--trp-green); }
+    .trp-fb-scale input:checked + .trp-fb-num { background: var(--trp-green); border-color: var(--trp-green); color: rgb(var(--c-page)); }
+    .trp-fb-scale input:focus-visible + .trp-fb-num { outline: 2px solid var(--trp-green); outline-offset: 2px; }
+    .trp-fb-ends { display: flex; justify-content: space-between; font-size: 13px; color: var(--trp-muted); }
+
+    /* Done / Not yet, and the Yes / No of the sharing box: the same pair of
+       pills, narrower than the 1-10 row. */
+    .trp-fb-pair { display: flex; flex-wrap: wrap; gap: 8px; }
+    .trp-fb-pair input { position: absolute; width: 1px; height: 1px; opacity: 0; pointer-events: none; }
+    .trp-fb-pill { display: inline-flex; align-items: center; min-height: 48px; padding: 0 20px; border: 1px solid var(--trp-rule); border-radius: 999px; background: rgb(var(--c-page)); font-size: 15px; font-weight: 600; color: var(--trp-ink); cursor: pointer; transition: background-color .15s ease, border-color .15s ease; }
+    .trp-fb-pill:hover { border-color: var(--trp-green); }
+    .trp-fb-pair input:checked + .trp-fb-pill { background: var(--trp-green); border-color: var(--trp-green); color: rgb(var(--c-page)); }
+    .trp-fb-pair input:focus-visible + .trp-fb-pill { outline: 2px solid var(--trp-green); outline-offset: 2px; }
+
+    .trp-fb-linkedin { display: inline-flex; align-items: center; gap: 10px; align-self: flex-start; min-height: 48px; padding: 0 20px; border-radius: 999px; border: 0; background: var(--trp-green); color: rgb(var(--c-page)); font-size: 15px; font-weight: 600; text-decoration: none; }
+    .trp-fb-linkedin:hover { background: var(--trp-mid); }
+    .trp-fb-linkedin:focus-visible { outline: 2px solid var(--trp-ink); outline-offset: 2px; }
+    .trp-fb-linkedin svg { width: 18px; height: 18px; flex: none; }
+
+    .trp-fb-share { display: flex; flex-direction: column; gap: 10px; }
+    .trp-fb-foot { display: flex; flex-wrap: wrap; align-items: center; gap: 14px; }
+    .trp-fb-send { display: inline-flex; align-items: center; justify-content: center; min-height: 52px; padding: 0 28px; border-radius: 999px; border: 0; background: var(--trp-green); color: rgb(var(--c-page)); font: inherit; font-size: 16px; font-weight: 600; cursor: pointer; }
+    .trp-fb-send:hover { background: var(--trp-mid); }
+    .trp-fb-send:disabled { opacity: .6; cursor: default; }
+    .trp-fb-send:focus-visible { outline: 2px solid var(--trp-ink); outline-offset: 2px; }
+    .trp-fb-msg { margin: 0; font-size: 15px; line-height: 1.5; color: var(--trp-muted); }
+    .trp-fb-msg.is-err { color: #B3261E; }
+    .trp-fb-msg.is-ok { color: var(--trp-ink); font-weight: 600; }
+    :root[data-theme='dark'] .trp-fb-msg.is-err { color: #F2B8B5; }
+    @media (prefers-color-scheme: dark) {
+      :root[data-theme='system'] .trp-fb-msg.is-err { color: #F2B8B5; }
+    }
+
+    /* The honeypot. Off-screen rather than display:none, because some bots
+       skip what is not rendered at all. */
+    .trp-fb-pot { position: absolute; left: -9999px; width: 1px; height: 1px; overflow: hidden; }
+  </style>
+  <!-- The session gate. Config first, then the library; both deferred so
+       the DOM is ready when the script mounts. No valid code redirects to
+       the sign-in page, because this page has no login form of its own. -->
+  <script src="portal-config.js" defer></script>
+  <script src="portal-access.js" defer></script>
+  <script src="portal-live.js"></script>
+  <script src="portal-chrome.js?v=20261021" defer></script>
+
+  <!-- Warm the next page while the pointer is still travelling to the link.
+       "moderate" is roughly 200ms of hover, which is long enough that a
+       pointer crossing the nav does not fetch all six. Only portal pages are
+       listed: a rule that matched everything would also warm sign-out and
+       the partner links.
+
+       Both address forms are matched. The nav links are extensionless now
+       (/club/resources), so a rule naming only the .html form would warm
+       nothing; the .html form stays because an old bookmark or an emailed
+       link can still be one. ":page" is a single segment, so it stops at the
+       pages themselves, and the images under /portal/assets are outside it
+       altogether. -->
+  <script type="speculationrules">
+  {
+    "prefetch": [{
+      "where": { "or": [
+        { "href_matches": "/club/:page" },
+        { "href_matches": "/club/*.html" }
+      ] },
+      "eagerness": "moderate"
+    }]
+  }
+  </script>
+</head>
+
+
+
+<body class="text-brand-deep font-sans min-h-screen flex flex-col selection:bg-brand-lime selection:text-brand-deep">
+
+  <!-- Noise Texture Overlay -->
+
+  <!-- MOBILE MENU -->
+  <div id="mobile-menu-overlay" class="fixed inset-0 bg-brand-ink/25 z-[100] opacity-0 pointer-events-none transition-opacity duration-300 lg:hidden"></div>
+
+  <div id="mobile-menu" class="fixed top-0 left-0 bottom-0 w-[82%] max-w-[300px] bg-brand-page border-r border-brand-ink/10 z-[101] -translate-x-full transition-transform duration-300 ease-out flex flex-col lg:hidden" role="dialog" aria-modal="true" aria-label="Menu">
+    <div class="flex-1 overflow-y-auto p-5 pt-6 flex flex-col">
+      <a href="/club" class="trp-wordmark text-[22px] mb-8 px-1">
+        TIME RICH<span class="trp-stop">.</span>
+      </a>
+      <nav class="space-y-1">
+        <a href="/club" class="flex items-center gap-3 px-4 py-3 rounded-[14px] text-sm font-medium text-brand-ink/70 hover:text-brand-ink hover:bg-brand-ink/5 transition-colors">
+          <svg class="w-4 h-4 shrink-0 text-brand-ink/50" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"></path></svg>
+          Club
+        </a>
+        <a href="curriculum" class="flex items-center gap-3 px-4 py-3 rounded-[14px] text-sm font-medium text-brand-ink/70 hover:text-brand-ink hover:bg-brand-ink/5 transition-colors">
+          <svg class="w-4 h-4 shrink-0 text-brand-ink/50" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"></path></svg>
+          Accelerator
+        </a>
+        <a href="resources" class="flex items-center gap-3 px-4 py-3 rounded-[14px] text-sm font-medium text-brand-ink/70 hover:text-brand-ink hover:bg-brand-ink/5 transition-colors">
+          <svg class="w-4 h-4 shrink-0" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"></path></svg>
+          Resources
+        </a>
+        <a href="members" data-portal-members-link class="flex items-center gap-3 px-4 py-3 rounded-[14px] text-sm font-medium text-brand-ink/70 hover:text-brand-ink hover:bg-brand-ink/5 transition-colors">
+          <svg class="w-4 h-4 shrink-0 text-brand-ink/50" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"></path></svg>
+          Members
+          <span class="trp-soon ml-auto">Soon</span>
+        </a>
+      </nav>
+      <div class="mt-auto pt-8 border-t border-brand-ink/10">
+        <button type="button" data-portal-signout class="w-full text-left px-4 py-3 rounded-[14px] text-sm font-medium text-brand-ink/70 hover:text-brand-ink hover:bg-brand-ink/5 transition-colors">Sign out</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- TOP NAVBAR -->
+  <header id="top-nav" class="trp-header h-14 sm:h-16 shrink-0 sticky top-0 z-50">
+    <div class="mx-auto max-w-[1120px] h-full flex items-center justify-between gap-3 px-4 sm:px-6 lg:px-8">
+
+    <!-- Left: the wordmark, then the nav pills beside it. The nav used to be
+         absolutely centred in the header, which left the right-hand side no
+         room for the sponsor credit, the member's name and Sign out all at
+         once. It flows after the wordmark now, which is also the order the
+         design asks for: logo, nav pills, then the right-hand group. -->
+    <div class="flex items-center gap-2 lg:gap-6 min-w-0">
+      <button id="mobile-menu-btn" type="button" aria-expanded="false" aria-controls="mobile-menu" aria-label="Menu" class="lg:hidden flex items-center justify-center w-11 h-11 -ml-2.5 rounded-full text-brand-ink hover:bg-brand-ink/5 transition-colors">
+        <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5"></path></svg>
+      </button>
+
+      <a href="/club" class="trp-wordmark text-[17px] sm:text-[20px] whitespace-nowrap rounded focus:outline-none focus-visible:ring-2 focus-visible:ring-brand-ink/30">
+        TIME RICH<span class="trp-stop">.</span>
+      </a>
+
+      <span class="trp-head-div" aria-hidden="true"></span>
+
+      <nav class="hidden lg:flex items-center gap-0.5" aria-label="Portal">
+        <a href="/club" class="trp-nav-link px-3.5 text-[13px] font-medium text-brand-ink/70 hover:text-brand-ink">Club</a>
+        <a href="curriculum" class="trp-nav-link px-3.5 text-[13px] font-medium text-brand-ink/70 hover:text-brand-ink">Accelerator</a>
+        <a href="resources" class="trp-nav-link px-3.5 text-[13px] font-medium text-brand-ink/70 hover:text-brand-ink">Resources</a>
+        <a href="members" data-portal-members-link class="trp-nav-link gap-1.5 px-3.5 text-[13px] font-medium text-brand-ink/70 hover:text-brand-ink">Members <span class="trp-soon">Soon</span></a>
+      </nav>
+    </div>
+
+    <!-- Right: the theme control, a thin divider, the member and Sign out.
+         The sponsor credit is no longer here; it sits beside the wordmark on
+         the left, which is the only place it appears on the page. -->
+    <div class="trp-head-right">
+      <!-- Filled in by portal-chrome.js, and only while a session is live or
+           about to start. Stays hidden the rest of the time. -->
+      <a data-portal-join hidden class="hidden xl:inline-flex items-center px-3.5 py-1.5 rounded-full bg-brand-green text-brand-bg text-[11px] font-medium tracking-[0.04em] whitespace-nowrap hover:bg-brand-green/90 transition-colors"></a>
+
+      <div class="trp-theme">
+        <label class="sr-only" for="theme-feedback">Theme</label>
+        <select id="theme-feedback" data-theme-select>
+          <option value="system">System</option>
+          <option value="light">Light</option>
+          <option value="dark">Dark</option>
+        </select>
+        <svg class="trp-theme-caret" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7"></path></svg>
+      </div>
+
+      <span class="trp-head-div hidden md:block" aria-hidden="true"></span>
+
+      <span data-portal-name class="hidden md:inline text-xs font-medium text-brand-ink/70 whitespace-nowrap"></span>
+
+      <button type="button" data-portal-signout class="hidden lg:inline-flex items-center h-11 text-[13px] font-medium text-brand-ink/70 hover:text-brand-ink transition-colors">Sign out</button>
+      </div>
+    </div>
+  </header>
+
+  <!-- MAIN APP AREA -->
+  <div class="flex-1 flex">
+    
+    <!-- LEFT SIDEBAR -->
+    
+    <!-- CENTER SCROLLABLE CONTENT -->
+    <main class="flex-1 relative bg-transparent">
+        <div class="relative z-10 px-3 sm:px-6 lg:px-12 py-8 lg:py-12 flex justify-center w-full">
+          <div class="w-full space-y-16 max-w-[1200px]">
+            <header class="space-y-4">
+              <!-- Back to the week, which is where the link to this page is. -->
+              <a href="curriculum" class="trp-fb-back">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M19 12H5m0 0l7-7m-7 7l7 7"></path></svg>
+                Back to the course
+              </a>
+              <span class="trp-kicker">Feedback</span>
+              <h1 class="trp-title">Tell us how it&rsquo;s going<span class="trp-stop">.</span></h1>
+              <p class="trp-fb-part-note">2 minutes. It shapes the next cohort.</p>
+            </header>
+
+            <form class="trp-fb-form" data-feedback-form novalidate>
+              <!-- Name comes from the member's session. Email is typed: the
+                   browser only keeps the session token after sign-in, never
+                   the address, so there is nothing here to prefill it from. -->
+              <input type="hidden" name="Name" data-feedback-name value="">
+              <input type="hidden" name="Source" value="club-feedback">
+              <div class="trp-fb-pot" aria-hidden="true">
+                <label for="fb-gotcha">Leave this empty</label>
+                <input id="fb-gotcha" type="text" name="_gotcha" tabindex="-1" autocomplete="off">
+              </div>
+
+              <section class="trp-fb-part">
+                <div class="trp-fb-part-head">
+                  <span class="trp-fb-part-name">Part 1</span>
+                  <h2 class="trp-fb-part-title">Feedback</h2>
+                </div>
+
+                <fieldset class="trp-fb-field" style="border: 0; margin: 0; padding: 0">
+                  <legend class="trp-fb-label">How&rsquo;s the accelerator going for you?</legend>
+                  <div class="trp-fb-scale">
+                  <label><input type="radio" name="Rating" value="1" required><span class="trp-fb-num">1</span></label>
+                  <label><input type="radio" name="Rating" value="2"><span class="trp-fb-num">2</span></label>
+                  <label><input type="radio" name="Rating" value="3"><span class="trp-fb-num">3</span></label>
+                  <label><input type="radio" name="Rating" value="4"><span class="trp-fb-num">4</span></label>
+                  <label><input type="radio" name="Rating" value="5"><span class="trp-fb-num">5</span></label>
+                  <label><input type="radio" name="Rating" value="6"><span class="trp-fb-num">6</span></label>
+                  <label><input type="radio" name="Rating" value="7"><span class="trp-fb-num">7</span></label>
+                  <label><input type="radio" name="Rating" value="8"><span class="trp-fb-num">8</span></label>
+                  <label><input type="radio" name="Rating" value="9"><span class="trp-fb-num">9</span></label>
+                  <label><input type="radio" name="Rating" value="10"><span class="trp-fb-num">10</span></label>
+                  </div>
+                  <div class="trp-fb-ends"><span>1 &middot; not great</span><span>10 &middot; brilliant</span></div>
+                </fieldset>
+
+                <div class="trp-fb-field">
+                  <label class="trp-fb-label" for="fb-useful">What&rsquo;s been most useful so far? <span class="trp-fb-opt">(optional)</span></label>
+                  <textarea class="trp-fb-area" id="fb-useful" name="Most useful" rows="2"></textarea>
+                </div>
+
+                <div class="trp-fb-field">
+                  <label class="trp-fb-label" for="fb-change">One thing we should change? <span class="trp-fb-opt">(optional)</span></label>
+                  <textarea class="trp-fb-area" id="fb-change" name="One thing to change" rows="2"></textarea>
+                </div>
+
+                <div class="trp-fb-field">
+                  <label class="trp-fb-label" for="fb-email">Your email</label>
+                  <input class="trp-fb-input" id="fb-email" type="email" name="Email" autocomplete="email" inputmode="email" required>
+                  <span class="trp-fb-hint">So we can thank you, and reach you about the Testimonial Prize.</span>
+                </div>
+              </section>
+
+              <section class="trp-fb-part">
+                <div class="trp-fb-part-head">
+                  <span class="trp-fb-part-name">Part 2 &middot; optional</span>
+                  <h2 class="trp-fb-part-title">Your testimonial on LinkedIn</h2>
+                  <p class="trp-fb-part-note">This is how you enter the Testimonial Prize. Do both halves to be in the running.</p>
+                </div>
+
+                <div class="trp-fb-field">
+                  <span class="trp-fb-label">Written</span>
+                  <a class="trp-fb-linkedin" href="https://www.linkedin.com/in/ellamolonycook/" target="_blank" rel="noopener">
+                    <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M19 3A2 2 0 0121 5v14a2 2 0 01-2 2H5a2 2 0 01-2-2V5a2 2 0 012-2h14zM8.34 18.34v-7.9H5.76v7.9h2.58zM7.05 9.31a1.5 1.5 0 100-3 1.5 1.5 0 000 3zm11.29 9.03v-4.33c0-2.24-1.2-3.28-2.79-3.28a2.41 2.41 0 00-2.18 1.2v-1.03h-2.58v7.44h2.58v-4.18c0-1.1.21-2.17 1.57-2.17 1.34 0 1.36 1.26 1.36 2.24v4.11h2.04z"/></svg>
+                    Write Ella a recommendation on LinkedIn
+                  </a>
+                  <span class="trp-fb-hint">On Ella&rsquo;s profile, click More, then Recommend.</span>
+                </div>
+
+                <fieldset class="trp-fb-field" style="border: 0; margin: 0; padding: 0">
+                  <legend class="trp-fb-label">Have you written it? <span class="trp-fb-opt">(optional)</span></legend>
+                  <div class="trp-fb-pair">
+                    <label><input type="radio" name="LinkedIn recommendation" value="Done"><span class="trp-fb-pill">Done</span></label>
+                    <label><input type="radio" name="LinkedIn recommendation" value="Not yet"><span class="trp-fb-pill">Not yet</span></label>
+                  </div>
+                </fieldset>
+
+                <div class="trp-fb-field">
+                  <label class="trp-fb-label" for="fb-rec">Link to it <span class="trp-fb-opt">(if you have one)</span></label>
+                  <input class="trp-fb-input" id="fb-rec" type="url" name="LinkedIn recommendation link" placeholder="https://www.linkedin.com/in/ellamolonycook/" autocomplete="off">
+                </div>
+
+                <div class="trp-fb-field">
+                  <span class="trp-fb-label">Video</span>
+                  <span class="trp-fb-hint">Post a 30 to 60 second video on LinkedIn about what you&rsquo;ve built, tag Ella Molony Cook and use #trcsuperhuman.</span>
+                  <label class="trp-fb-label" for="fb-video">Paste your LinkedIn post link</label>
+                  <input class="trp-fb-input" id="fb-video" type="url" name="LinkedIn video post" placeholder="https://www.linkedin.com/posts/..." autocomplete="off">
+                </div>
+
+                <fieldset class="trp-fb-share" style="border: 0; margin: 0; padding: 0">
+                  <legend class="trp-fb-label">Time Rich can share my feedback and testimonial</legend>
+                  <div class="trp-fb-pair">
+                    <label><input type="radio" name="OK to feature" value="Yes"><span class="trp-fb-pill">Yes</span></label>
+                    <label><input type="radio" name="OK to feature" value="No"><span class="trp-fb-pill">No</span></label>
+                  </div>
+                </fieldset>
+              </section>
+
+              <div class="trp-fb-foot">
+                <button class="trp-fb-send" type="submit">Send it</button>
+                <p class="trp-fb-msg" data-feedback-msg role="status" aria-live="polite"></p>
+              </div>
+            </form>
+          </div>
+      </div>
+      </main> <!-- CLOSE main -->
+    </div> <!-- CLOSE h-screen container -->
+
+  <footer class="shrink-0 px-4 sm:px-6 lg:px-8 py-2 border-t border-brand-ink/10 text-[12px] text-brand-ink/70">
+    <!-- One quiet line. The second "Powered by Stanley" lockup that used to
+         sit under this is gone: the credit is in the header now, once per
+         page, which is the rule on every page inside.
+
+         The separators are their own elements so .trp-foot-sep can take all
+         of them out at once on a narrow screen, where the line wraps and a
+         separator would otherwise be left stranded at the head of the second
+         line. See .trp-foot in portal-tailwind-src.css. -->
+    <p class="trp-foot flex flex-wrap items-center justify-center text-center">
+      <span>&copy; 2026 Time Rich</span>
+      <span class="trp-foot-sep" aria-hidden="true">&middot;</span>
+      <a href="/privacy/" class="trp-foot-link">Privacy</a>
+      <span class="trp-foot-sep" aria-hidden="true">&middot;</span>
+      <a href="/terms/" class="trp-foot-link">Terms</a>
+      <!-- Href comes from the week 0 link item; hidden when there is none. -->
+      <span data-portal-community hidden class="trp-foot-sep" aria-hidden="true">&middot;</span>
+      <a data-portal-community hidden class="trp-foot-link">WhatsApp community</a>
+      <span class="trp-foot-sep" aria-hidden="true">&middot;</span>
+      <a href="/club/feedback" class="trp-foot-link">Give feedback</a>
+      <span class="trp-foot-sep" aria-hidden="true">&middot;</span>
+      <span>Need help? <a href="mailto:emc@timerichclub.com" class="trp-foot-link">emc@timerichclub.com</a></span>
+      <span class="trp-foot-sep" aria-hidden="true">&middot;</span>
+      <!-- The two sponsors, read as one credit: "Powered by" is said once over
+           the pair. Stanley is the presenting sponsor, Wispr Flow the official
+           voice partner. Both are the real marks in their own colours, at the
+           line's own height -- the script that used to swap in a cropped,
+           greyed-out Stanley is gone, and so is the bare Wispr tile that read
+           as a stray black square with nothing to name it.
+
+           Stanley ships two files because its wordmark is black and vanishes on
+           the dark theme; both sit in the markup and the theme picks, since an
+           img's src is not something CSS can swap. -->
+      <span class="trp-credits">
+        <span class="trp-powered-label">Powered by</span>
+        <a class="trp-powered trp-powered-foot" href="https://x.getstanley.ai/r/mz4y9g" target="_blank" rel="noopener sponsored">
+          <img class="trp-powered-pos" src="../brand/partners/stanley-logo.png" alt="Stanley" width="765" height="203" loading="lazy" decoding="async"/>
+          <img class="trp-powered-rev" src="../brand/partners/stanley-logo-dark.png" alt="Stanley" width="765" height="203" loading="lazy" decoding="async"/>
+        </a>
+        <span class="trp-credit-dot" aria-hidden="true">&middot;</span>
+        <a class="trp-credit" href="https://wisprflow.ai/info/redeem-promo?code=TIMERICH6&amp;months=6" target="_blank" rel="noopener sponsored">
+          <img class="trp-credit-tile" src="../os/img/wispr-flow.png" alt="" width="256" height="256" loading="lazy" decoding="async"/>
+          <span class="trp-credit-name">Wispr Flow</span>
+        </a>
+      </span>
+    </p>
+  </footer>
+
+  <script>
+    /* The feedback form. Posts to the forms worker, which files the entry in
+       Notion ("Superhuman Feedback & Testimonials"). The field names are the
+       Notion property names: createApplication maps them by name, so a
+       rename here is a rename of the contract and the column both.
+
+       Nothing is validated twice for the sake of it. The rating and the
+       LinkedIn post are checked here so a member is told on the page, and
+       again in the worker, which is what holds when the page is bypassed. */
+    (function () {
+      var ENDPOINT = 'https://time-rich-forms.timerich.workers.dev/feedback';
+      var form = document.querySelector('[data-feedback-form]');
+      if (!form) return;
+      var msg = form.querySelector('[data-feedback-msg]');
+      var btn = form.querySelector('button[type="submit"]');
+
+      function say(text, kind) {
+        msg.textContent = text;
+        msg.classList.toggle('is-err', kind === 'err');
+        msg.classList.toggle('is-ok', kind === 'ok');
+      }
+
+      /* The member's first name, off the session the portal already loaded.
+         The hidden Name field is what posts, so the form still sends a name
+         when the payload has not arrived; the worker falls back to
+         "Applicant" if it is empty. */
+      function fillName(data) {
+        var first = data && data.member && data.member.first_name;
+        if (!first) return;
+        var field = form.querySelector('[data-feedback-name]');
+        if (field && !field.value) field.value = String(first);
+      }
+      document.addEventListener('trportal:data', function (event) { fillName(event.detail); });
+      if (window.TR_PORTAL_DATA) fillName(window.TR_PORTAL_DATA);
+
+      // The same check the content workshop draw uses, so a member is told
+      // the same thing in both places.
+      function isLinkedIn(value) { return /linkedin\.com\/./i.test(value); }
+
+      form.addEventListener('submit', function (event) {
+        event.preventDefault();
+
+        var data = {};
+        Array.prototype.forEach.call(form.elements, function (el) {
+          if (!el.name) return;
+          if (el.type === 'radio' && !el.checked) return;
+          var value = String(el.value || '').trim();
+          if (value) data[el.name] = value;
+        });
+
+        if (!/^([1-9]|10)$/.test(data['Rating'] || '')) {
+          return say('Please pick a number from 1 to 10.', 'err');
+        }
+        if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(data['Email'] || '')) {
+          return say('Add your email so we can reach you.', 'err');
+        }
+        if (data['LinkedIn video post'] && !isLinkedIn(data['LinkedIn video post'])) {
+          return say('Paste the link to your LinkedIn post, like https://www.linkedin.com/posts/...', 'err');
+        }
+
+        btn.disabled = true;
+        say('Sending\u2026');
+        fetch(ENDPOINT, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(data)
+        })
+          .then(function (r) {
+            return r.json().catch(function () { return {}; }).then(function (j) {
+              return { ok: r.ok && j.ok !== false, body: j };
+            });
+          })
+          .then(function (res) {
+            btn.disabled = false;
+            if (!res.ok) {
+              return say((res.body && res.body.error) || 'That didn\u2019t go through. Try again in a moment.', 'err');
+            }
+            form.reset();
+            say('Thank you!! \uD83D\uDC9A You\u2019re in the running for the Testimonial Prize if you did both.', 'ok');
+          })
+          .catch(function () {
+            btn.disabled = false;
+            say('That didn\u2019t go through. Check your connection and try again.', 'err');
+          });
+      });
+    })();
+  </script>
+  <script src="portal-theme.js" defer></script>
+
+</body>
+</html>
+

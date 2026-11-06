@@ -163,3 +163,12 @@ NOTION_SUPERHUMAN_QUESTIONNAIRE_DATABASE_ID = "a4b3fdd6-c528-47a8-8ff6-ab27924b2
 # IMPORTANT: connect the SAME Notion integration (NOTION_TOKEN) to this
 # database (••• -> Connections) or writes will 404.
 NOTION_DRAW_DATABASE_ID = "46244286-6aca-436a-a8aa-51320500e1a0"
+
+# Club feedback and testimonials (POST /feedback) -> "Superhuman Feedback &
+# Testimonials" in Time Rich Club OS. The short form on /club/feedback: the
+# 1-10 rating, the two written answers, and the LinkedIn recommendation and
+# video post that enter the Testimonial Prize. The route stamps Status = New
+# and Source = club-feedback.
+# IMPORTANT: connect the SAME Notion integration (NOTION_TOKEN) to this
+# database (••• -> Connections) or writes will 404.
+NOTION_FEEDBACK_DATABASE_ID = "177859e4-4d01-4dfb-a036-7ca89fadc168"

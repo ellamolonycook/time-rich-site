@@ -227,6 +227,12 @@
     .trp-cw-homework .trp-cw-btn:hover { background: var(--trp-sage); }
     .trp-cw-homework > :last-child { margin-bottom: 0; }
 
+    /* The feedback ask at the foot of a week. Quiet: it sits under the
+       week's work and is not competing with it. */
+    .trp-cw-ask { display: inline-flex; align-items: center; min-height: 44px; font-size: 14px; font-weight: 600; color: var(--trp-soft); text-decoration: underline; text-underline-offset: 3px; }
+    .trp-cw-ask:hover { color: var(--trp-deep); }
+    .trp-cw-ask:focus-visible { outline: 2px solid var(--trp-green); outline-offset: 3px; border-radius: 6px; }
+
     /* the lessons */
     .trp-cw-group { font-size: 12px; font-weight: 600; letter-spacing: .08em; text-transform: uppercase; color: var(--trp-soft); margin: 6px 0 -2px; }
     .trp-cw-lessons { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 8px; }
@@ -1245,6 +1251,8 @@ When you finish:
       <span data-portal-community hidden class="trp-foot-sep" aria-hidden="true">&middot;</span>
       <a data-portal-community hidden class="trp-foot-link">WhatsApp community</a>
       <span class="trp-foot-sep" aria-hidden="true">&middot;</span>
+      <a href="/club/feedback" class="trp-foot-link">Give feedback</a>
+      <span class="trp-foot-sep" aria-hidden="true">&middot;</span>
       <span>Need help? <a href="mailto:emc@timerichclub.com" class="trp-foot-link">emc@timerichclub.com</a></span>
       <span class="trp-foot-sep" aria-hidden="true">&middot;</span>
       <!-- The two sponsors, read as one credit: "Powered by" is said once over
@@ -2195,22 +2203,21 @@ When you finish:
       var stepOpen = {};
       var stepWasDone = {};
 
-      /* One drop-down open at a time at each level: opening one shuts the
-         others beside it. The page holds still under the header that was
-         clicked, so it does not jump when a long one above it closes. */
+      /* Nothing on a week page closes anything else any more. A member had
+         been losing their place every time they opened something, so a
+         lesson, a Week 1 section and a setup step all stay open until the
+         member shuts them (Ella, 5 Nov). shutOthers, which used to close
+         the rest of a level, is gone with it.
+
+         holdStill stays: it keeps the page still under the header that was
+         clicked, so a body opening or closing does not move the thing the
+         pointer is on. */
       function holdStill(el, change) {
         var before = el.getBoundingClientRect().top;
         change();
         var moved = el.getBoundingClientRect().top - before;
         // instant: the page scrolls smoothly, which would slide the header
         if (moved) window.scrollTo({ top: window.scrollY + moved, behavior: 'instant' });
-      }
-      function shutOthers(box, mates, head) {
-        holdStill(head, function () {
-          for (var i = 0; i < mates.length; i++) {
-            if (mates[i] !== box && mates[i].open) mates[i].open = false;
-          }
-        });
       }
       function reveal(el) {
         if (!el) return;
@@ -2235,10 +2242,8 @@ When you finish:
         box.addEventListener('toggle', function () {
           if (drawnOpen) { drawnOpen = false; if (box.open) return; }
           stepOpen[group] = box.open;
-          if (box.open) {
-            shutOthers(box, box.parentNode.querySelectorAll(':scope > details.trp-cw-step:not(.trp-cw-gpd)'), sum);
-            reveal(ul);
-          }
+          // Opening a step leaves the steps beside it as they are.
+          if (box.open) reveal(ul);
         });
         box.addEventListener('click', function (event) {
           if (box.open && foldsCard(event, box)) box.open = false;
@@ -2377,13 +2382,16 @@ When you finish:
           }
           opened[key] = now;
           toggle.setAttribute('aria-expanded', now ? 'true' : 'false');
-          detail.hidden = !now;
-          row.classList.toggle('is-open', now);
-          if (!now) return;
+          /* Opening a lesson leaves every other lesson exactly as it is. It
+             used to close the rest, which lost a member their place every
+             time they opened something ("I keep losing my place", 5 Nov).
+             holdStill still wraps the change, so the header that was clicked
+             does not move out from under the pointer. */
           holdStill(head, function () {
-            var shown = document.querySelectorAll('.trp-cw-toggle[aria-expanded="true"]');
-            for (var i = 0; i < shown.length; i++) if (shown[i] !== toggle) shown[i].click();
+            detail.hidden = !now;
+            row.classList.toggle('is-open', now);
           });
+          if (!now) return;
           reveal(detail);
         });
         // anywhere in the open body folds it, the same as its title
@@ -2467,11 +2475,9 @@ Anything you've done twice should never need you again. A skill is your way of d
         box.addEventListener('toggle', function () {
           if (drawnOpen) { drawnOpen = false; if (box.open) return; }
           masterOpen[key] = box.open;
-          if (box.open) {
-            // the setup and the week's sections count as one set
-            shutOthers(box, document.querySelectorAll('details.trp-cw-master'), sum);
-            reveal(inner);
-          }
+          // The setup and the week's sections used to count as one set, only
+          // one of which could be open. They are independent now.
+          if (box.open) reveal(inner);
         });
 
         var sum = document.createElement('summary');
@@ -2588,6 +2594,17 @@ Anything you've done twice should never need you again. A skill is your way of d
         return frag;
       }
 
+      /* The ask for feedback, at the foot of every week: a member who has
+         just worked through one is the member worth asking (Ella, 5 Nov).
+         Last in the panel, so it never comes before the week's own work, and
+         on a week that has not opened yet as well -- the form asks how the
+         accelerator is going, which is a fair question either way. */
+      function feedbackAsk() {
+        var ask = L.el('a', 'trp-cw-ask', "How's it going? Tell us in 2 minutes");
+        ask.href = '/club/feedback';
+        return ask;
+      }
+
       function panel(data, week, prep) {
         var n = L.num(week.id);
         var open = isOpen(week, prep);
@@ -2675,6 +2692,7 @@ Anything you've done twice should never need you again. A skill is your way of d
           drawSetup('Your setup');
           box.appendChild(L.el('p', 'trp-cw-empty', 'Lessons open ' + (starts || 'soon') + '.'));
           if (n === 1) { blockHomes(); addWeek1(box); }
+          box.appendChild(feedbackAsk());
           return box;
         }
 
@@ -2731,6 +2749,8 @@ Anything you've done twice should never need you again. A skill is your way of d
 
         // Any Week 1 block whose lesson is missing, last in the panel.
         if (n === 1) { blockHomes(); addWeek1(box); }
+
+        box.appendChild(feedbackAsk());
 
         return box;
       }
