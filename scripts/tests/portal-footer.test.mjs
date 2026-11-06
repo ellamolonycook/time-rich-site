@@ -31,6 +31,7 @@ const PAGES = [
   'club/resources.html',
   'club/prompts.html',
   'club/members.html',
+  'club/feedback.html',
 ];
 
 let pass = 0, fail = 0;
@@ -55,11 +56,12 @@ for (const path of PAGES) {
     row !== null && /\btrp-foot\b/.test(row.className) && /\bflex-wrap\b/.test(row.className),
     row && row.className);
 
-  // Five separators: after the copyright, after Privacy, after Terms, the
-  // conditional one before the WhatsApp link, and the one before the Stanley
-  // credit that came back down from the header.
+  // Six separators: after the copyright, after Privacy, after Terms, the
+  // conditional one before the WhatsApp link, the one before Give feedback,
+  // and the one before the Stanley credit that came back down from the
+  // header.
   const seps = [...row.querySelectorAll('.trp-foot-sep')];
-  check('five separators, every one of them named', seps.length === 5, seps.length);
+  check('six separators, every one of them named', seps.length === 6, seps.length);
 
   check('and every one is the middle dot, hidden from assistive tech',
     seps.every((s) => s.textContent.trim() === '·' &&
@@ -137,8 +139,15 @@ for (const path of PAGES) {
 
   const text = row.textContent.replace(/\s+/g, ' ').trim();
   check('the line still reads as the brief sets it, with the credit last',
-    /^© 2026 Time Rich · Privacy · Terms · WhatsApp community · Need help\? emc@timerichclub\.com · Powered by · Wispr Flow$/.test(text),
+    /^© 2026 Time Rich · Privacy · Terms · WhatsApp community · Give feedback · Need help\? emc@timerichclub\.com · Powered by · Wispr Flow$/.test(text),
     text);
+
+  // Every Club page carries the way in to the feedback form (Ella, 5 Nov).
+  const give = [...row.querySelectorAll('a')]
+    .filter((a) => a.textContent.trim() === 'Give feedback');
+  check('one Give feedback link, and it goes to the form',
+    give.length === 1 && give[0].getAttribute('href') === '/club/feedback',
+    give.map((a) => a.getAttribute('href')));
 }
 
 /* ---- the rule ----------------------------------------------------------- */
