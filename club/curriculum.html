@@ -556,6 +556,10 @@
     /* an open lesson folds from anywhere in its body, so the body shows the pointer */
     body .trp-cw-lesson.is-open .trp-cw-detail { cursor: url('/portal/assets/fire-cursor.svg') 16 2, pointer; }
     body .trp-cw-pb-text { cursor: text; }
+    /* A link turns the flame into the hand, so a member can tell a link
+       (Stanley, Wispr Flow, a Loom) from the text around it, which shows
+       the flame too inside an open lesson (Gideon, 6 Nov). */
+    body a[href], body .trp-cw-link { cursor: pointer; }
 
     /* the loading placeholder is the same shapes, inked out */
     .trp-cw .trp-skel .trp-cw-week { cursor: default; }
