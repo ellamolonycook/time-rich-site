@@ -472,3 +472,270 @@ body { animation: trp-fade-in 180ms ease-out both; }
   outline-offset: 3px;
   border-radius: 3px;
 }
+
+/* =====================================================================
+ * The feedback form, the pill and the side panel.
+ *
+ * One component, three places: the full page at /club/feedback, the panel
+ * that slides in from the pill on every other Club page, and the thank-you
+ * both of them end on. Everything here is built by portal-chrome.js, which
+ * every Club page already loads, so no page carries any of it itself.
+ *
+ * Every colour is a token. In the dark theme --c-green is a light cream and
+ * --c-page is near-black, so "green fill, paper type" inverts on its own and
+ * nothing below needs a dark rule of its own.
+ *
+ * Motion lives at the bottom, in one place, so prefers-reduced-motion can
+ * take all of it off at once.
+ * ------------------------------------------------------------------- */
+
+/* ---- the column the form sits in ----------------------------------- */
+
+.trp-fb-wrap { width: 100%; max-width: 600px; margin: 0 auto; padding: 0 16px; }
+@media (min-width: 640px) { .trp-fb-wrap { padding: 0; } }
+
+.trp-fb-back { display: inline-flex; align-items: center; gap: 8px; min-height: 44px; font-size: 14px; font-weight: 600; color: var(--trp-muted); text-decoration: none; }
+.trp-fb-back:hover { color: var(--trp-ink); }
+.trp-fb-back:focus-visible { outline: 2px solid rgb(var(--c-green)); outline-offset: 3px; border-radius: 6px; }
+.trp-fb-back svg { width: 18px; height: 18px; flex: none; }
+
+/* The heading block: smaller than a page title, and centred over the
+   column. The h1 is ~30% down from the .trp-title it used to be. */
+.trp-fb-head { display: flex; flex-direction: column; align-items: center; gap: 8px; text-align: center; margin: 20px 0 24px; }
+.trp-fb-eyebrow { font-size: 12px; font-weight: 600; letter-spacing: .08em; text-transform: uppercase; color: var(--trp-muted); }
+.trp-fb-h1 { margin: 0; font-family: var(--trp-face); font-weight: 600; font-size: clamp(24px, 4vw, 30px); line-height: 1.15; letter-spacing: -.02em; color: var(--trp-ink); }
+.trp-fb-h1 .trp-stop { color: rgb(var(--c-olive)); }
+.trp-fb-lede { margin: 0; font-size: 14px; line-height: 1.5; color: var(--trp-muted); }
+
+/* ---- the two-step indicator ---------------------------------------- */
+
+.trp-fb-steps { display: flex; align-items: center; justify-content: center; gap: 10px; margin: 0 0 20px; }
+.trp-fb-step { display: inline-flex; align-items: center; gap: 7px; font-size: 13px; font-weight: 600; color: var(--trp-muted); }
+.trp-fb-step-n { display: inline-flex; align-items: center; justify-content: center; width: 22px; height: 22px; border-radius: 999px; border: 1px solid var(--trp-rule); font-size: 12px; line-height: 1; }
+.trp-fb-step.is-on { color: var(--trp-ink); }
+.trp-fb-step.is-on .trp-fb-step-n { background: rgb(var(--c-green)); border-color: rgb(var(--c-green)); color: rgb(var(--c-page)); }
+.trp-fb-step-line { width: 36px; height: 1px; background: var(--trp-rule); flex: none; }
+
+/* ---- the card ------------------------------------------------------- */
+
+.trp-fb-card { position: relative; background: rgb(var(--c-surface)); border: 1px solid var(--trp-rule); border-radius: 20px; padding: 24px; }
+@media (min-width: 640px) { .trp-fb-card { padding: 28px; } }
+
+/* 32px between a card's sections, 24px between the fields inside one. */
+.trp-fb-sections { display: flex; flex-direction: column; gap: 32px; }
+.trp-fb-section { display: flex; flex-direction: column; gap: 24px; }
+.trp-fb-field { display: flex; flex-direction: column; gap: 8px; border: 0; margin: 0; padding: 0; min-width: 0; }
+.trp-fb-label { font-size: 15px; font-weight: 600; color: var(--trp-ink); padding: 0; }
+.trp-fb-help { font-size: 13px; line-height: 1.45; color: var(--trp-muted); }
+.trp-fb-opt { font-weight: 400; color: var(--trp-muted); }
+
+.trp-fb-input, .trp-fb-area {
+  width: 100%; font: inherit; font-size: 15px; color: var(--trp-ink);
+  background: rgb(var(--c-page)); border: 1px solid var(--trp-rule);
+  border-radius: 12px; padding: 11px 14px; min-height: 46px;
+}
+.trp-fb-area { min-height: 62px; resize: none; overflow: hidden; line-height: 1.5; }
+.trp-fb-input:focus-visible, .trp-fb-area:focus-visible { outline: 2px solid rgb(var(--c-green)); outline-offset: 1px; }
+.trp-fb-input[aria-invalid='true'] { border-color: #B3261E; }
+
+/* ---- the 1 to 10 chips ---------------------------------------------- */
+
+/* Ten equal columns that fill the row. On a narrow phone they wrap to two
+   even rows of five rather than shrinking to nothing or scrolling. */
+.trp-fb-scale { display: grid; grid-template-columns: repeat(10, minmax(0, 1fr)); gap: 6px; }
+@media (max-width: 420px) { .trp-fb-scale { grid-template-columns: repeat(5, minmax(0, 1fr)); } }
+.trp-fb-scale input { position: absolute; width: 1px; height: 1px; opacity: 0; pointer-events: none; }
+.trp-fb-chip {
+  display: flex; align-items: center; justify-content: center;
+  min-height: 38px; border: 1px solid var(--trp-rule); border-radius: 10px;
+  background: rgb(var(--c-page)); font-size: 14px; font-weight: 600;
+  color: var(--trp-ink); cursor: pointer;
+}
+.trp-fb-chip:hover { border-color: rgb(var(--c-green)); }
+.trp-fb-scale input:checked + .trp-fb-chip { background: rgb(var(--c-green)); border-color: rgb(var(--c-green)); color: rgb(var(--c-page)); }
+.trp-fb-scale input:focus-visible + .trp-fb-chip { outline: 2px solid rgb(var(--c-green)); outline-offset: 2px; }
+.trp-fb-ends { display: flex; justify-content: space-between; font-size: 12px; color: var(--trp-muted); }
+
+/* ---- the two short answers, side by side on a laptop ---------------- */
+
+.trp-fb-two { display: grid; grid-template-columns: minmax(0, 1fr); gap: 24px; }
+@media (min-width: 640px) { .trp-fb-two { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+
+/* ---- the card's footer ---------------------------------------------- */
+
+.trp-fb-foot { display: flex; flex-wrap: wrap; align-items: center; gap: 12px; margin-top: 32px; }
+.trp-fb-foot.is-end { justify-content: flex-end; }
+.trp-fb-foot-right { display: flex; flex-wrap: wrap; align-items: center; gap: 12px; margin-left: auto; }
+
+.trp-fb-btn {
+  display: inline-flex; align-items: center; justify-content: center; gap: 8px;
+  min-height: 48px; padding: 0 22px; border: 0; border-radius: 999px;
+  font: inherit; font-size: 15px; font-weight: 600; cursor: pointer; text-decoration: none;
+  background: rgb(var(--c-green)); color: rgb(var(--c-page));
+}
+.trp-fb-btn:hover { background: var(--trp-mid); }
+.trp-fb-btn:disabled { opacity: .5; cursor: default; }
+.trp-fb-btn:focus-visible { outline: 2px solid var(--trp-ink); outline-offset: 2px; }
+
+.trp-fb-btn.is-soft { background: rgb(var(--c-page)); color: var(--trp-ink); border: 1px solid var(--trp-rule); }
+.trp-fb-btn.is-soft:hover { background: rgb(var(--c-ink) / .04); }
+
+.trp-fb-quiet {
+  display: inline-flex; align-items: center; min-height: 44px; padding: 0 4px;
+  background: none; border: 0; font: inherit; font-size: 14px; font-weight: 600;
+  color: var(--trp-muted); cursor: pointer; text-decoration: underline; text-underline-offset: 3px;
+}
+.trp-fb-quiet:hover { color: var(--trp-ink); }
+.trp-fb-quiet:focus-visible { outline: 2px solid rgb(var(--c-green)); outline-offset: 2px; border-radius: 6px; }
+
+@media (max-width: 480px) {
+  .trp-fb-foot, .trp-fb-foot-right { flex-direction: column; align-items: stretch; margin-left: 0; }
+  .trp-fb-btn, .trp-fb-quiet { width: 100%; }
+}
+
+/* The spinner in Send it while the POST is in flight. */
+.trp-fb-spin { width: 15px; height: 15px; flex: none; border: 2px solid currentColor; border-right-color: transparent; border-radius: 999px; }
+
+.trp-fb-msg { margin: 0; font-size: 14px; line-height: 1.45; color: var(--trp-muted); }
+.trp-fb-msg[hidden] { display: none; }
+.trp-fb-msg.is-err { color: #B3261E; }
+:root[data-theme='dark'] .trp-fb-msg.is-err { color: #F2B8B5; }
+@media (prefers-color-scheme: dark) {
+  :root[data-theme='system'] .trp-fb-msg.is-err { color: #F2B8B5; }
+}
+
+/* ---- step 2: the prize banner and the two tiles --------------------- */
+
+.trp-fb-prize { display: flex; align-items: flex-start; gap: 10px; padding: 12px 14px; border-radius: 14px; background: var(--trp-sagelt); font-size: 13.5px; line-height: 1.45; color: var(--trp-deep); }
+
+.trp-fb-tiles { display: grid; grid-template-columns: minmax(0, 1fr); gap: 16px; align-items: stretch; }
+@media (min-width: 640px) { .trp-fb-tiles { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+.trp-fb-tile { display: flex; flex-direction: column; gap: 10px; height: 100%; padding: 18px; border: 1px solid var(--trp-rule); border-radius: 16px; background: rgb(var(--c-page)); }
+.trp-fb-tile-title { font-size: 15px; font-weight: 600; color: var(--trp-ink); }
+.trp-fb-tile-foot { margin-top: auto; }
+
+/* The "I've done it" switch. A real checkbox, hidden, with the track as its
+   label, so the keyboard and a screen reader get a checkbox either way. */
+.trp-fb-switch { display: inline-flex; align-items: center; gap: 10px; font-size: 14px; font-weight: 600; color: var(--trp-ink); cursor: pointer; }
+.trp-fb-switch input { position: absolute; width: 1px; height: 1px; opacity: 0; pointer-events: none; }
+.trp-fb-track { position: relative; width: 42px; height: 24px; flex: none; border-radius: 999px; background: rgb(var(--c-ink) / .14); }
+.trp-fb-track::after { content: ''; position: absolute; top: 3px; left: 3px; width: 18px; height: 18px; border-radius: 999px; background: rgb(var(--c-surface)); }
+.trp-fb-switch input:checked + .trp-fb-track { background: rgb(var(--c-green)); }
+.trp-fb-switch input:checked + .trp-fb-track::after { left: 21px; }
+.trp-fb-switch input:focus-visible + .trp-fb-track { outline: 2px solid rgb(var(--c-green)); outline-offset: 2px; }
+
+.trp-fb-check { display: flex; align-items: flex-start; gap: 10px; font-size: 14px; line-height: 1.45; color: var(--trp-ink); cursor: pointer; }
+.trp-fb-check input { width: 18px; height: 18px; flex: none; margin: 1px 0 0; accent-color: rgb(var(--c-green)); }
+
+/* ---- the thank-you -------------------------------------------------- */
+
+.trp-fb-thanks { display: flex; flex-direction: column; align-items: center; gap: 12px; text-align: center; padding: 40px 24px; }
+.trp-fb-thanks-ring { display: flex; align-items: center; justify-content: center; width: 60px; height: 60px; border-radius: 999px; background: var(--trp-sagelt); }
+.trp-fb-thanks-ring svg { width: 30px; height: 30px; }
+.trp-fb-thanks-ring path { fill: none; stroke: rgb(var(--c-olive)); stroke-width: 2.5; stroke-linecap: round; stroke-linejoin: round; }
+.trp-fb-thanks-title { margin: 0; font-family: var(--trp-face); font-weight: 600; font-size: 22px; letter-spacing: -.01em; color: var(--trp-ink); }
+.trp-fb-thanks-line { margin: 0; font-size: 15px; line-height: 1.5; color: var(--trp-muted); max-width: 36ch; }
+
+/* The calm state it settles into, in the same spot. */
+.trp-fb-settled { display: flex; flex-direction: column; align-items: center; gap: 14px; text-align: center; padding: 28px 24px; }
+.trp-fb-settled-line { margin: 0; font-size: 14px; font-weight: 600; color: var(--trp-muted); }
+
+/* ---- the pill ------------------------------------------------------- */
+
+/* 150: under the lightbox, the toast and the mobile menu, which are all 200. */
+.trp-pill {
+  position: fixed; z-index: 150;
+  right: calc(20px + env(safe-area-inset-right));
+  bottom: calc(20px + env(safe-area-inset-bottom));
+  display: inline-flex; align-items: center; justify-content: center; gap: 8px;
+  height: 40px; padding: 0 16px; border: 0; border-radius: 999px;
+  font: inherit; font-size: 13.5px; font-weight: 500; cursor: pointer;
+  background: rgb(var(--c-green)); color: rgb(var(--c-page));
+  box-shadow: 0 10px 30px -10px rgb(var(--c-ink) / .45);
+}
+.trp-pill svg { width: 17px; height: 17px; flex: none; }
+.trp-pill:hover { background: var(--trp-mid); }
+.trp-pill:focus-visible { outline: 2px solid var(--trp-ink); outline-offset: 3px; }
+
+/* Hidden until it is let in, and whenever anything would be covered by it. */
+.trp-pill[hidden] { display: none; }
+.trp-pill.is-away { opacity: 0; pointer-events: none; }
+
+@media (max-width: 639px) {
+  .trp-pill {
+    right: calc(16px + env(safe-area-inset-right));
+    bottom: calc(16px + env(safe-area-inset-bottom));
+    width: 44px; height: 44px; padding: 0; gap: 0;
+  }
+  .trp-pill .trp-pill-text { display: none; }
+}
+
+/* The last line of any page clears the pill, so nothing ever ends under it. */
+html.trp-has-pill main { padding-bottom: 72px; }
+
+/* ---- the side panel ------------------------------------------------- */
+
+.trp-panel-dim { position: fixed; inset: 0; z-index: 180; background: rgb(0 0 0 / .3); }
+.trp-panel-dim[hidden], .trp-panel[hidden] { display: none; }
+
+.trp-panel {
+  position: fixed; z-index: 181; top: 0; right: 0; bottom: 0;
+  width: 100%; max-width: 440px;
+  display: flex; flex-direction: column;
+  background: rgb(var(--c-page)); border-left: 1px solid var(--trp-rule);
+  box-shadow: -20px 0 60px -30px rgb(var(--c-ink) / .5);
+}
+.trp-panel-head { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 16px 20px; border-bottom: 1px solid var(--trp-rule); }
+.trp-panel-title { margin: 0; font-family: var(--trp-face); font-weight: 600; font-size: 17px; letter-spacing: -.01em; color: var(--trp-ink); }
+.trp-panel-x { display: inline-flex; align-items: center; justify-content: center; width: 40px; height: 40px; flex: none; border: 0; border-radius: 999px; background: none; color: var(--trp-muted); cursor: pointer; }
+.trp-panel-x:hover { background: rgb(var(--c-ink) / .06); color: var(--trp-ink); }
+.trp-panel-x:focus-visible { outline: 2px solid rgb(var(--c-green)); outline-offset: 2px; }
+.trp-panel-x svg { width: 18px; height: 18px; }
+.trp-panel-body { flex: 1 1 auto; overflow-y: auto; padding: 20px; }
+
+/* In the panel the card is the panel, so it drops its own frame. */
+.trp-panel-body .trp-fb-card { border: 0; background: none; padding: 0; }
+.trp-panel-body .trp-fb-wrap { max-width: none; padding: 0; }
+
+/* "Close without sending?" -- inline, never a browser dialog. */
+.trp-panel-confirm { display: flex; flex-wrap: wrap; align-items: center; gap: 10px; padding: 12px 20px; border-bottom: 1px solid var(--trp-rule); background: var(--trp-sagelt); font-size: 14px; color: var(--trp-deep); }
+.trp-panel-confirm[hidden] { display: none; }
+
+/* ---- motion, all of it in one place --------------------------------- */
+
+.trp-fb-anim-out { opacity: 0; transform: translateY(-8px); transition: opacity 200ms ease, transform 200ms ease; }
+.trp-fb-anim-in { animation: trp-fb-in 280ms ease-out both; }
+.trp-fb-anim-settle { animation: trp-fb-settle 300ms ease-out both; }
+.trp-fb-thanks-ring path { stroke-dasharray: 32; stroke-dashoffset: 0; }
+.trp-fb-anim-in .trp-fb-thanks-ring path { animation: trp-fb-draw 400ms ease-out both; }
+.trp-fb-spin { animation: trp-fb-spin 700ms linear infinite; }
+
+.trp-pill { opacity: 0; transform: translateY(8px); transition: opacity 250ms ease, transform 250ms ease, background-color .18s ease; }
+.trp-pill.is-shown { opacity: 1; transform: translateY(0); }
+.trp-pill.is-shown:hover { transform: translateY(-1px); }
+
+.trp-panel { transform: translateX(100%); transition: transform 280ms ease-out; }
+.trp-panel.is-open { transform: translateX(0); }
+.trp-panel-dim { opacity: 0; transition: opacity 280ms ease-out; }
+.trp-panel-dim.is-open { opacity: 1; }
+
+@keyframes trp-fb-in { from { opacity: 0; transform: scale(.96); } to { opacity: 1; transform: scale(1); } }
+@keyframes trp-fb-settle { from { opacity: .6; transform: scale(1.04); } to { opacity: 1; transform: scale(1); } }
+@keyframes trp-fb-draw { from { stroke-dashoffset: 32; } to { stroke-dashoffset: 0; } }
+@keyframes trp-fb-spin { to { transform: rotate(360deg); } }
+
+/* Nothing moves. The same states, reached without travel: every transform
+   above is cancelled here rather than merely slowed, so a member who asks
+   for no motion gets none at all. */
+@media (prefers-reduced-motion: reduce) {
+  .trp-fb-anim-out, .trp-fb-anim-in, .trp-fb-anim-settle,
+  .trp-pill, .trp-pill.is-shown, .trp-pill.is-shown:hover,
+  .trp-panel, .trp-panel.is-open, .trp-panel-dim, .trp-fb-spin {
+    transform: none;
+    animation: none;
+    transition-property: opacity;
+    transition-duration: 120ms;
+  }
+  .trp-fb-anim-in, .trp-fb-anim-settle { opacity: 1; }
+  .trp-fb-thanks-ring path { stroke-dashoffset: 0; }
+}
