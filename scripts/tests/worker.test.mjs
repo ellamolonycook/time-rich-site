@@ -2445,5 +2445,153 @@ console.log('\nThe /os email gate: POST /os-email');
 
 globalThis.fetch = baseFetch;
 
+/* ---- /feedback: the Club feedback and testimonial form ------------------
+   Everything past the rating is optional, so the tests below are mostly
+   about what the route refuses: a rating that would make the average
+   meaningless, and a "LinkedIn" link that is not one. */
+
+console.log('\n/feedback — the Club feedback and testimonial form');
+{
+  // The real database's columns, so the mapping is tested against the
+  // schema the route will actually meet rather than a two-column stub.
+  const fbSchema = {
+    properties: {
+      Name: { type: 'title' },
+      Email: { type: 'email' },
+      Rating: { type: 'number' },
+      'Most useful': { type: 'rich_text' },
+      'One thing to change': { type: 'rich_text' },
+      'LinkedIn recommendation': { type: 'select' },
+      'LinkedIn recommendation link': { type: 'url' },
+      'LinkedIn video post': { type: 'url' },
+      'OK to feature': { type: 'select' },
+      Status: { type: 'select' },
+      Source: { type: 'rich_text' },
+    },
+  };
+  const fbEnv = { ...env, NOTION_FEEDBACK_DATABASE_ID: 'db-feedback' };
+  const fbFetch = async (url, init) => {
+    calls.push({ url: String(url), init });
+    if (String(url).includes('/v1/databases/')) {
+      return new Response(JSON.stringify(fbSchema), { status: 200 });
+    }
+    return new Response(JSON.stringify({ id: 'page-fb' }), { status: 200 });
+  };
+
+  async function feedback(body) {
+    globalThis.fetch = fbFetch;
+    calls = [];
+    const res = await worker.fetch(new Request('https://w.dev/feedback', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', Origin: 'https://timerich.ai' },
+      body: JSON.stringify(body),
+    }), fbEnv);
+    globalThis.fetch = baseFetch;
+    return res;
+  }
+
+  const GOOD = {
+    Name: 'Eve',
+    Email: 'eve@example.com',
+    Rating: '9',
+    'Most useful': 'The hot seats.',
+    'One thing to change': 'More time on the prompts.',
+    'LinkedIn recommendation': 'Done',
+    'LinkedIn recommendation link': 'https://www.linkedin.com/in/ellamolonycook/',
+    'LinkedIn video post': 'https://www.linkedin.com/posts/eve-mcdavid_trcsuperhuman-activity-123?utm_source=share',
+    'OK to feature': 'Yes',
+    Source: 'club-feedback',
+    _gotcha: '',
+  };
+
+  let res = await feedback(GOOD);
+  check('a good submission is accepted', res.status === 200, res.status);
+
+  const page = JSON.parse(calls.find((c) => c.url.endsWith('/v1/pages')).init.body);
+  check('it is filed in the feedback database',
+    page.parent.database_id === 'db-feedback', page.parent);
+
+  const props = page.properties;
+  check('the name is the title', props.Name.title[0].text.content === 'Eve', props.Name);
+  check('the email lands on the email column', props.Email.email === 'eve@example.com', props.Email);
+  check('the rating is a number, not text', props.Rating.number === 9, props.Rating);
+  check('both written answers are mapped',
+    props['Most useful'].rich_text[0].text.content === 'The hot seats.' &&
+    props['One thing to change'].rich_text[0].text.content === 'More time on the prompts.',
+    [props['Most useful'], props['One thing to change']]);
+  check('the recommendation is Done', props['LinkedIn recommendation'].select.name === 'Done',
+    props['LinkedIn recommendation']);
+  check('the recommendation link is kept', props['LinkedIn recommendation link'].url ===
+    'https://www.linkedin.com/in/ellamolonycook/', props['LinkedIn recommendation link']);
+  check('the video post is kept, with the share tracking stripped',
+    props['LinkedIn video post'].url ===
+    'https://www.linkedin.com/posts/eve-mcdavid_trcsuperhuman-activity-123',
+    props['LinkedIn video post']);
+  check('OK to feature is Yes', props['OK to feature'].select.name === 'Yes', props['OK to feature']);
+  check('the route stamps Status = New', props.Status.select.name === 'New', props.Status);
+  check('and Source = club-feedback',
+    props.Source.rich_text[0].text.content === 'club-feedback', props.Source);
+
+  // The rating is the one required answer, and the one that has to be a
+  // whole 1 to 10: Notion's number column would take 40 or 7.5 happily.
+  for (const bad of ['0', '11', '40', '7.5', '', 'nine', '-3']) {
+    res = await feedback({ ...GOOD, Rating: bad });
+    const body = await res.json();
+    check('a rating of "' + bad + '" is refused',
+      res.status === 400 && body.error === 'Please pick a number from 1 to 10.',
+      [res.status, body.error]);
+  }
+  for (const ok of ['1', '10', '5']) {
+    res = await feedback({ ...GOOD, Rating: ok });
+    check('a rating of ' + ok + ' is accepted', res.status === 200, res.status);
+  }
+
+  // The video post is the Testimonial Prize entry, so a link nobody can
+  // read is refused rather than filed.
+  for (const bad of ['https://example.com/post/1', 'https://twitter.com/eve/status/1', 'not a link',
+                     'https://linkedin.com.evil.test/posts/1']) {
+    res = await feedback({ ...GOOD, 'LinkedIn video post': bad });
+    const body = await res.json();
+    check('a video link of "' + bad.slice(0, 34) + '" is refused',
+      res.status === 400 && /LinkedIn post/.test(body.error || ''),
+      [res.status, body.error]);
+  }
+  res = await feedback({ ...GOOD, 'LinkedIn video post': 'linkedin.com/posts/eve_123' });
+  check('a bare linkedin.com address is accepted and made absolute',
+    res.status === 200 &&
+    JSON.parse(calls.find((c) => c.url.endsWith('/v1/pages')).init.body)
+      .properties['LinkedIn video post'].url === 'https://linkedin.com/posts/eve_123',
+    res.status);
+
+  // Half a testimonial is still worth having, so an empty video field is
+  // not an error.
+  res = await feedback({ ...GOOD, 'LinkedIn video post': '' });
+  check('no video link at all is fine', res.status === 200, res.status);
+
+  /* The recommendation link is a convenience, not the entry: the
+     recommendation lives on Ella's profile either way. So a wrong one is
+     dropped rather than failing a form somebody has already filled in. */
+  res = await feedback({ ...GOOD, 'LinkedIn recommendation link': 'https://example.com/nope' });
+  const dropped = JSON.parse(calls.find((c) => c.url.endsWith('/v1/pages')).init.body);
+  check('a non-LinkedIn recommendation link is dropped, not refused',
+    res.status === 200 && !('LinkedIn recommendation link' in dropped.properties),
+    [res.status, Object.keys(dropped.properties)]);
+  check('and it is not written into the page body either',
+    !JSON.stringify(dropped.children).includes('example.com/nope'),
+    dropped.children);
+
+  // The honeypot answers before anything is validated, so a bot never
+  // learns which field it got wrong.
+  res = await feedback({ ...GOOD, Rating: '', _gotcha: 'i am a robot' });
+  check('the honeypot is accepted silently', res.status === 200, res.status);
+  check('and nothing is written to Notion',
+    !calls.some((c) => c.url.endsWith('/v1/pages')),
+    calls.map((c) => c.url));
+
+  // Email is what the generic intake requires of every form.
+  res = await feedback({ ...GOOD, Email: '' });
+  check('a submission with no email is refused', res.status === 400, res.status);
+}
+
 console.log('\n' + pass + ' passed, ' + fail + ' failed');
 process.exit(fail ? 1 : 0);

@@ -303,17 +303,57 @@ export default {
     // database. One field that matters, the LinkedIn post, so it is checked
     // here as well as on the page: only a linkedin.com link is accepted.
     if (path.endsWith("/draw-entry")) {
-      const post = String(data["LinkedIn post"] || "").trim();
-      let ok = false;
-      try {
-        const u = new URL(/^https?:\/\//i.test(post) ? post : "https://" + post);
-        ok = /(^|\.)linkedin\.com$/i.test(u.hostname) && u.pathname.length > 1;
-        if (ok) data = { ...data, "LinkedIn post": u.origin + u.pathname };
-      } catch {}
-      if (!ok) {
+      const post = linkedinPostUrl(data["LinkedIn post"]);
+      if (!post) {
         return json({ ok: false, error: "Please paste the link to your LinkedIn post, like https://www.linkedin.com/posts/..." }, 400, cors);
       }
+      data = { ...data, "LinkedIn post": post };
       return createApplication(data, env, cors, env.NOTION_DRAW_DATABASE_ID, { Status: "New", Source: "contentworkshop" });
+    }
+
+    // Route: Club feedback and testimonials (POST /feedback) -> its own
+    // Notion database. Everything past the rating is optional: the point of
+    // the form is that it takes two minutes, so a member who answers only
+    // the rating is still a submission worth having.
+    if (path.endsWith("/feedback")) {
+      // The honeypot is answered before anything is checked, so a bot gets
+      // the same silent 200 as everywhere else rather than a 400 telling it
+      // which field it got wrong.
+      if (data._gotcha) {
+        return createApplication(data, env, cors, env.NOTION_FEEDBACK_DATABASE_ID, { Status: "New", Source: "club-feedback" });
+      }
+
+      // 1 to 10, whole numbers. Notion's number column would take 7.5 or
+      // 40 quite happily, and then the average means nothing.
+      const rating = String(data["Rating"] || "").trim();
+      if (!/^\d+$/.test(rating) || Number(rating) < 1 || Number(rating) > 10) {
+        return json({ ok: false, error: "Please pick a number from 1 to 10." }, 400, cors);
+      }
+
+      // The video post is the Testimonial Prize entry, so it is held to the
+      // same check as the content workshop draw: a linkedin.com link or
+      // nothing. Empty is fine -- the video half is optional.
+      const post = String(data["LinkedIn video post"] || "").trim();
+      if (post) {
+        const cleaned = linkedinPostUrl(post);
+        if (!cleaned) {
+          return json({ ok: false, error: "Please paste the link to your LinkedIn post, like https://www.linkedin.com/posts/..." }, 400, cors);
+        }
+        data = { ...data, "LinkedIn video post": cleaned };
+      }
+
+      /* The recommendation link is a convenience, not the entry: the
+         recommendation itself is on Ella's profile either way. So a link
+         that is not a LinkedIn one is dropped rather than failing a form
+         somebody has already filled in. */
+      const rec = String(data["LinkedIn recommendation link"] || "").trim();
+      if (rec) {
+        const cleaned = linkedinPostUrl(rec);
+        if (cleaned) data = { ...data, "LinkedIn recommendation link": cleaned };
+        else { data = { ...data }; delete data["LinkedIn recommendation link"]; }
+      }
+
+      return createApplication(data, env, cors, env.NOTION_FEEDBACK_DATABASE_ID, { Status: "New", Source: "club-feedback" });
     }
 
     // Route: AI Revenue Accelerator application -> its own Notion database.
@@ -350,6 +390,24 @@ export default {
     return createApplication(data, env, cors, env.NOTION_DATABASE_ID);
   },
 };
+
+/* A link to something on LinkedIn, cleaned, or "" if it is not one. Used by
+   the content workshop draw and the Club feedback form, which both take a
+   post link off a member and both have to refuse everything else: the whole
+   point of the field is that somebody can go and read it. The query string
+   goes, so the tracking people copy out of the app never reaches Notion. */
+function linkedinPostUrl(raw) {
+  const value = String(raw == null ? "" : raw).trim();
+  if (!value) return "";
+  try {
+    const u = new URL(/^https?:\/\//i.test(value) ? value : "https://" + value);
+    if (!/(^|\.)linkedin\.com$/i.test(u.hostname)) return "";
+    if (u.pathname.length <= 1) return "";
+    return u.origin + u.pathname;
+  } catch {
+    return "";
+  }
+}
 
 // Generic application intake: reads the target database schema, maps matching
 // fields, and always dumps the full submission into the page body.
