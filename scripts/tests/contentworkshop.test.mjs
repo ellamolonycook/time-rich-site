@@ -410,24 +410,10 @@ console.log('\n/contentworkshop — the build is three numbered dropdowns');
     ].join('|'),
     [...boxes[1].querySelectorAll('#introprompts li')].map((n) => n.textContent));
 
-  // Ella's video opens the step, and plays here rather than sending
-  // anybody to Loom to watch it (Ella, 4 Nov).
-  const LOOM = '73d3636a71e14dfb9872d35c62f04e68';
-  const player = [...boxes[1].querySelectorAll('iframe')]
-    .find((f) => (f.getAttribute('src') || '').includes(LOOM));
-  check("Step 2 plays Ella's video on the page", player != null,
-    [...boxes[1].querySelectorAll('iframe')].map((f) => f.getAttribute('src')));
-  check('and it is embedded with the chrome hidden, like the other one',
-    player && /^https:\/\/www\.loom\.com\/embed\/[0-9a-f]{32}\?hide_owner=true&hide_share=true&hide_title=true&hideEmbedTopBar=true$/
-      .test(player.getAttribute('src')), player && player.getAttribute('src'));
-  check('it is introduced by name', /Watch this video/.test(boxes[1].textContent));
-  // Ella's order: watch the video, then build the strategy, then the
-  // seven questions. So the player comes before the intro box.
-  const order = [...boxes[1].querySelectorAll('iframe, #introprompts')]
-    .map((n) => (n.id === 'introprompts' ? 'questions' : 'video'));
-  check('and it sits above what to say in the intro',
-    order.indexOf('video') !== -1 && order.indexOf('video') < order.indexOf('questions'),
-    order);
+  // Ella's Loom of 4 Nov was her instructions to the team, not for members
+  // (Gideon, 6 Nov), so it must not be on this page.
+  check("Ella's internal Loom is not on the page",
+    !HTML.includes('73d3636a71e14dfb9872d35c62f04e68'));
   // Step 2's rows up to answering sit above the prompt; saving and context below.
   const s2 = [...boxes[1].querySelectorAll('[data-item], #mikaprompt')]
     .map((e) => e.id || e.getAttribute('data-item')).join(',');
