@@ -556,6 +556,10 @@
     /* an open lesson folds from anywhere in its body, so the body shows the pointer */
     body .trp-cw-lesson.is-open .trp-cw-detail { cursor: url('/portal/assets/fire-cursor.svg') 16 2, pointer; }
     body .trp-cw-pb-text { cursor: text; }
+    /* A link turns the flame into the hand, so a member can tell a link
+       (Stanley, Wispr Flow, a Loom) from the text around it, which shows
+       the flame too inside an open lesson (Gideon, 6 Nov). */
+    body a[href], body .trp-cw-link { cursor: pointer; }
 
     /* the loading placeholder is the same shapes, inked out */
     .trp-cw .trp-skel .trp-cw-week { cursor: default; }
@@ -1466,8 +1470,14 @@ When you finish:
         return week.unlocked === true || (L.num(week.id) === 1 && !!prep);
       }
 
-      function defaultWeek(cards, prep) {
+      /* The week that opens by itself and is labelled "This week": the
+         newest open week whose live calls have started. Week 3 opened on
+         Fri 6 Nov so members could see it early, but Week 2 stays "This
+         week" until Monday's call day (Gideon, 6 Nov). */
+      function defaultWeek(cards, prep, data) {
         var open = cards.filter(function (w) { return isOpen(w, prep); });
+        var started = data ? open.filter(function (w) { return L.weekStarted(data, w); }) : open;
+        if (started.length) open = started;
         return L.num((open.length ? open[open.length - 1] : cards[0]).id);
       }
 
@@ -1551,8 +1561,11 @@ When you finish:
       }
 
       // Tool names in a lesson's text link to where you get them.
-      var NAME_LINKS = { 'Wispr Flow': 'https://wisprflow.ai/info/redeem-promo?code=TIMERICH6&months=6' };
-      var NAME_RE = /(Wispr Flow)/;
+      var NAME_LINKS = {
+        'Wispr Flow': 'https://wisprflow.ai/info/redeem-promo?code=TIMERICH6&months=6',
+        'Stanley': 'https://x.getstanley.ai/r/mz4y9g'   // Stanley's tracking link (Ella, 6 Nov)
+      };
+      var NAME_RE = /(Wispr Flow|Stanley)/;
       function linkNames(p, line) {
         line.split(NAME_RE).forEach(function (bit, n) {
           if (!bit) return;
@@ -2455,7 +2468,34 @@ Anything you've done twice should never need you again. A skill is your way of d
         { upto: Infinity, title: 'This week, and what you\'ve built' }
       ];
 
-      var WEEK_SECTIONS = { 1: WEEK1_SECTIONS, 2: WEEK2_SECTIONS };
+      /* Week 3 in the same shape as Week 2 (Ella, 6 Nov: "We need
+         consistency"). Strategy first, then tools, as Ella's Loom asks;
+         then the first post, Content OS and the week's wrap-up. The rows
+         sit at 30s, 40s, 50s, 60-89 and 90+. */
+      var WEEK3_SECTIONS = [
+        { upto: 29, title: 'Start here' },
+        {
+          upto: 39,
+          title: '1. Build your content strategy',
+          lead: `Say who you are out loud. AI turns it into your content strategy, and Stanley writes every post from it.`
+        },
+        {
+          upto: 49,
+          title: '2. Connect your tools',
+          lead: `Stanley is your AI head of content. Set it up free for 6 months with code TIMERICH6, then hand it your strategy.`
+        },
+        {
+          upto: 59,
+          title: '3. Write your first post',
+          lead: `"Its deep knowledge of your past LinkedIn performance is what differentiates it from any other tool I've used." Hannah Zhang, who tripled her LinkedIn audience in one year
+
+Save the skill once. Then hand Stanley a story and it drafts in your voice.`
+        },
+        { upto: 89, title: 'Content OS' },
+        { upto: Infinity, title: 'This week, and what you\'ve built' }
+      ];
+
+      var WEEK_SECTIONS = { 1: WEEK1_SECTIONS, 2: WEEK2_SECTIONS, 3: WEEK3_SECTIONS };
 
       // Which sections the member has opened or shut, kept across redraws.
       var masterOpen = {};
@@ -2760,8 +2800,22 @@ Anything you've done twice should never need you again. A skill is your way of d
          title, and the date it opens. It replaces a "Coming up" card that
          said how many weeks were left without saying which, or when. */
 
-      function whatsNext(cards, prep) {
-        var shut = cards.filter(function (w) { return !isOpen(w, prep); });
+      /* A week opened early (Week 3 on Fri 6 Nov) is open but has not
+         started, so it is still next: it stays in this list, marked open,
+         with the day its first call starts (Gideon, 6 Nov). */
+      function firstCall(data, week) {
+        var first = null;
+        L.sessionsForWeek(data, week.id).forEach(function (s) {
+          var d = L.toDate(s && s.starts_at);
+          if (d && (first === null || d.getTime() < first.getTime())) first = d;
+        });
+        return first;
+      }
+
+      function whatsNext(cards, prep, data) {
+        var shut = cards.filter(function (w) {
+          return !isOpen(w, prep) || (data && !L.weekStarted(data, w));
+        });
         if (!shut.length) return null;
 
         var box = L.el('section', 'trp-cw-next');
@@ -2776,8 +2830,16 @@ Anything you've done twice should never need you again. A skill is your way of d
           var row = L.el('li', 'trp-cw-next-row');
           row.appendChild(L.el('span', 'trp-cw-next-n', 'Week ' + pad(n)));
           row.appendChild(L.el('span', 'trp-cw-next-title', PILLARS[n] || weekTitle(week)));
-          var opens = L.etDate(week.release_at);
-          row.appendChild(L.el('span', 'trp-cw-next-when', opens ? 'Opens ' + opens : 'Opens soon'));
+          var when;
+          if (isOpen(week, prep)) {
+            var call = data ? firstCall(data, week) : null;
+            var starts = call ? L.etDate(call.toISOString()) : '';
+            when = starts ? 'Open now · starts ' + starts : 'Open now';
+          } else {
+            var opens = L.etDate(week.release_at);
+            when = opens ? 'Opens ' + opens : 'Opens soon';
+          }
+          row.appendChild(L.el('span', 'trp-cw-next-when', when));
           ul.appendChild(row);
         });
         box.appendChild(ul);
@@ -2818,7 +2880,7 @@ Anything you've done twice should never need you again. A skill is your way of d
 
         var prep = prepWeek(data);
         var ids = cards.map(function (w) { return L.num(w.id); });
-        var current = defaultWeek(cards, prep);
+        var current = defaultWeek(cards, prep, data);
         if (selected === null || ids.indexOf(selected) === -1) selected = current;
         if (wantSection && ids.indexOf(1) !== -1) selected = 1;
         var week = cards[ids.indexOf(selected)];
@@ -2866,7 +2928,7 @@ Anything you've done twice should never need you again. A skill is your way of d
 
         out.push(panel(data, week, prep));
 
-        var next = whatsNext(cards, prep);
+        var next = whatsNext(cards, prep, data);
         if (next) out.push(next);
         settle(live, out);
 

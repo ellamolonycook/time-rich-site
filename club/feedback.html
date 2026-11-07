@@ -82,81 +82,9 @@
   <link rel="preload" href="../brand/fonts/Inter-Variable.woff2" as="font" type="font/woff2" crossorigin/>
   <link rel="stylesheet" href="portal-content.css?v=20261025">
 
-  <!-- Two small pieces this page owns: the link back to the course and the
-       link card to the growth prompts. Both are scoped here rather than
-       added to the Tailwind source, so portal.css is not rebuilt for two
-       rules, and both take their colours from the --trp-* palette in
-       portal-content.css so the dark theme follows without rules of its own.
-       The card is deliberately the same shape as .trp-cw-resources on the
-       curriculum, which is the card that points the other way. -->
-  <!-- This page's own pieces, scoped here for the same reason as the ones
-       on Resources: portal.css is not rebuilt for one form, and every colour
-       and face is a --trp-* token, so the dark theme follows with no rules
-       of its own. -->
-  <style>
-    .trp-fb-back { display: inline-flex; align-items: center; gap: 8px; min-height: 44px; font-size: 14px; font-weight: 600; color: var(--trp-muted); text-decoration: none; transition: color .18s ease; }
-    .trp-fb-back:hover { color: var(--trp-ink); }
-    .trp-fb-back:focus-visible { outline: 2px solid var(--trp-green); outline-offset: 3px; border-radius: 6px; }
-    .trp-fb-back svg { width: 18px; height: 18px; flex: none; }
-
-    .trp-fb-form { display: flex; flex-direction: column; gap: 28px; max-width: 720px; }
-    .trp-fb-part { display: flex; flex-direction: column; gap: 18px; padding: 22px; border: 1px solid var(--trp-rule); border-radius: 20px; background: rgb(var(--c-surface)); }
-    .trp-fb-part-head { display: flex; flex-direction: column; gap: 4px; }
-    .trp-fb-part-name { font-size: 12px; font-weight: 600; letter-spacing: .08em; text-transform: uppercase; color: var(--trp-muted); }
-    .trp-fb-part-title { margin: 0; font-family: var(--trp-face); font-weight: 600; font-size: 19px; letter-spacing: -.01em; color: var(--trp-ink); }
-    .trp-fb-part-note { margin: 0; font-size: 14px; line-height: 1.5; color: var(--trp-muted); }
-
-    .trp-fb-field { display: flex; flex-direction: column; gap: 8px; }
-    .trp-fb-label { font-size: 15px; font-weight: 600; color: var(--trp-ink); }
-    .trp-fb-opt { font-weight: 400; color: var(--trp-muted); }
-    .trp-fb-hint { font-size: 13.5px; line-height: 1.5; color: var(--trp-muted); }
-    .trp-fb-input, .trp-fb-area { width: 100%; font: inherit; font-size: 15px; color: var(--trp-ink); background: rgb(var(--c-page)); border: 1px solid var(--trp-rule); border-radius: 12px; padding: 12px 14px; min-height: 48px; }
-    .trp-fb-area { min-height: 84px; resize: vertical; }
-    .trp-fb-input:focus-visible, .trp-fb-area:focus-visible { outline: 2px solid var(--trp-green); outline-offset: 1px; }
-
-    /* One tap, 1 to 10. A radio each, so the keyboard and a screen reader
-       get a real group and the arrow keys move through it; the dot itself is
-       hidden and the label is the button. */
-    .trp-fb-scale { display: grid; grid-template-columns: repeat(auto-fit, minmax(44px, 1fr)); gap: 8px; }
-    .trp-fb-scale input { position: absolute; width: 1px; height: 1px; opacity: 0; pointer-events: none; }
-    .trp-fb-num { display: flex; align-items: center; justify-content: center; min-height: 48px; border: 1px solid var(--trp-rule); border-radius: 12px; background: rgb(var(--c-page)); font-size: 15px; font-weight: 600; color: var(--trp-ink); cursor: pointer; transition: background-color .15s ease, border-color .15s ease; }
-    .trp-fb-num:hover { border-color: var(--trp-green); }
-    .trp-fb-scale input:checked + .trp-fb-num { background: var(--trp-green); border-color: var(--trp-green); color: rgb(var(--c-page)); }
-    .trp-fb-scale input:focus-visible + .trp-fb-num { outline: 2px solid var(--trp-green); outline-offset: 2px; }
-    .trp-fb-ends { display: flex; justify-content: space-between; font-size: 13px; color: var(--trp-muted); }
-
-    /* Done / Not yet, and the Yes / No of the sharing box: the same pair of
-       pills, narrower than the 1-10 row. */
-    .trp-fb-pair { display: flex; flex-wrap: wrap; gap: 8px; }
-    .trp-fb-pair input { position: absolute; width: 1px; height: 1px; opacity: 0; pointer-events: none; }
-    .trp-fb-pill { display: inline-flex; align-items: center; min-height: 48px; padding: 0 20px; border: 1px solid var(--trp-rule); border-radius: 999px; background: rgb(var(--c-page)); font-size: 15px; font-weight: 600; color: var(--trp-ink); cursor: pointer; transition: background-color .15s ease, border-color .15s ease; }
-    .trp-fb-pill:hover { border-color: var(--trp-green); }
-    .trp-fb-pair input:checked + .trp-fb-pill { background: var(--trp-green); border-color: var(--trp-green); color: rgb(var(--c-page)); }
-    .trp-fb-pair input:focus-visible + .trp-fb-pill { outline: 2px solid var(--trp-green); outline-offset: 2px; }
-
-    .trp-fb-linkedin { display: inline-flex; align-items: center; gap: 10px; align-self: flex-start; min-height: 48px; padding: 0 20px; border-radius: 999px; border: 0; background: var(--trp-green); color: rgb(var(--c-page)); font-size: 15px; font-weight: 600; text-decoration: none; }
-    .trp-fb-linkedin:hover { background: var(--trp-mid); }
-    .trp-fb-linkedin:focus-visible { outline: 2px solid var(--trp-ink); outline-offset: 2px; }
-    .trp-fb-linkedin svg { width: 18px; height: 18px; flex: none; }
-
-    .trp-fb-share { display: flex; flex-direction: column; gap: 10px; }
-    .trp-fb-foot { display: flex; flex-wrap: wrap; align-items: center; gap: 14px; }
-    .trp-fb-send { display: inline-flex; align-items: center; justify-content: center; min-height: 52px; padding: 0 28px; border-radius: 999px; border: 0; background: var(--trp-green); color: rgb(var(--c-page)); font: inherit; font-size: 16px; font-weight: 600; cursor: pointer; }
-    .trp-fb-send:hover { background: var(--trp-mid); }
-    .trp-fb-send:disabled { opacity: .6; cursor: default; }
-    .trp-fb-send:focus-visible { outline: 2px solid var(--trp-ink); outline-offset: 2px; }
-    .trp-fb-msg { margin: 0; font-size: 15px; line-height: 1.5; color: var(--trp-muted); }
-    .trp-fb-msg.is-err { color: #B3261E; }
-    .trp-fb-msg.is-ok { color: var(--trp-ink); font-weight: 600; }
-    :root[data-theme='dark'] .trp-fb-msg.is-err { color: #F2B8B5; }
-    @media (prefers-color-scheme: dark) {
-      :root[data-theme='system'] .trp-fb-msg.is-err { color: #F2B8B5; }
-    }
-
-    /* The honeypot. Off-screen rather than display:none, because some bots
-       skip what is not rendered at all. */
-    .trp-fb-pot { position: absolute; left: -9999px; width: 1px; height: 1px; overflow: hidden; }
-  </style>
+  <!-- This page has no styles of its own. The form, the pill and the panel
+       all live in portal-content.css, which every Club page loads, because
+       the same component is mounted here and in the side panel. -->
   <!-- The session gate. Config first, then the library; both deferred so
        the DOM is ready when the script mounts. No valid code redirects to
        the sign-in page, because this page has no login form of its own. -->
@@ -292,121 +220,28 @@
     <!-- CENTER SCROLLABLE CONTENT -->
     <main class="flex-1 relative bg-transparent">
         <div class="relative z-10 px-3 sm:px-6 lg:px-12 py-8 lg:py-12 flex justify-center w-full">
-          <div class="w-full space-y-16 max-w-[1200px]">
-            <header class="space-y-4">
-              <!-- Back to the week, which is where the link to this page is. -->
-              <a href="curriculum" class="trp-fb-back">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M19 12H5m0 0l7-7m-7 7l7 7"></path></svg>
-                Back to the course
-              </a>
-              <span class="trp-kicker">Feedback</span>
-              <h1 class="trp-title">Tell us how it&rsquo;s going<span class="trp-stop">.</span></h1>
-              <p class="trp-fb-part-note">2 minutes. It shapes the next cohort.</p>
-            </header>
+          <div class="trp-fb-wrap">
+            <!-- Back to the week, which is one of the two places this page is
+                 linked from; the other is the footer on every Club page. -->
+            <a href="curriculum" class="trp-fb-back">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M19 12H5m0 0l7-7m-7 7l7 7"></path></svg>
+              Back to the course
+            </a>
 
-            <form class="trp-fb-form" data-feedback-form novalidate>
-              <!-- Name comes from the member's session. Email is typed: the
-                   browser only keeps the session token after sign-in, never
-                   the address, so there is nothing here to prefill it from. -->
-              <input type="hidden" name="Name" data-feedback-name value="">
-              <input type="hidden" name="Source" value="club-feedback">
-              <div class="trp-fb-pot" aria-hidden="true">
-                <label for="fb-gotcha">Leave this empty</label>
-                <input id="fb-gotcha" type="text" name="_gotcha" tabindex="-1" autocomplete="off">
-              </div>
+            <div class="trp-fb-head">
+              <span class="trp-fb-eyebrow">Feedback</span>
+              <h1 class="trp-fb-h1">Tell us how it&rsquo;s going<span class="trp-stop">.</span></h1>
+              <p class="trp-fb-lede">2 minutes. It shapes the next cohort.</p>
+            </div>
 
-              <section class="trp-fb-part">
-                <div class="trp-fb-part-head">
-                  <span class="trp-fb-part-name">Part 1</span>
-                  <h2 class="trp-fb-part-title">Feedback</h2>
-                </div>
-
-                <fieldset class="trp-fb-field" style="border: 0; margin: 0; padding: 0">
-                  <legend class="trp-fb-label">How&rsquo;s the accelerator going for you?</legend>
-                  <div class="trp-fb-scale">
-                  <label><input type="radio" name="Rating" value="1" required><span class="trp-fb-num">1</span></label>
-                  <label><input type="radio" name="Rating" value="2"><span class="trp-fb-num">2</span></label>
-                  <label><input type="radio" name="Rating" value="3"><span class="trp-fb-num">3</span></label>
-                  <label><input type="radio" name="Rating" value="4"><span class="trp-fb-num">4</span></label>
-                  <label><input type="radio" name="Rating" value="5"><span class="trp-fb-num">5</span></label>
-                  <label><input type="radio" name="Rating" value="6"><span class="trp-fb-num">6</span></label>
-                  <label><input type="radio" name="Rating" value="7"><span class="trp-fb-num">7</span></label>
-                  <label><input type="radio" name="Rating" value="8"><span class="trp-fb-num">8</span></label>
-                  <label><input type="radio" name="Rating" value="9"><span class="trp-fb-num">9</span></label>
-                  <label><input type="radio" name="Rating" value="10"><span class="trp-fb-num">10</span></label>
-                  </div>
-                  <div class="trp-fb-ends"><span>1 &middot; not great</span><span>10 &middot; brilliant</span></div>
-                </fieldset>
-
-                <div class="trp-fb-field">
-                  <label class="trp-fb-label" for="fb-useful">What&rsquo;s been most useful so far? <span class="trp-fb-opt">(optional)</span></label>
-                  <textarea class="trp-fb-area" id="fb-useful" name="Most useful" rows="2"></textarea>
-                </div>
-
-                <div class="trp-fb-field">
-                  <label class="trp-fb-label" for="fb-change">One thing we should change? <span class="trp-fb-opt">(optional)</span></label>
-                  <textarea class="trp-fb-area" id="fb-change" name="One thing to change" rows="2"></textarea>
-                </div>
-
-                <div class="trp-fb-field">
-                  <label class="trp-fb-label" for="fb-email">Your email</label>
-                  <input class="trp-fb-input" id="fb-email" type="email" name="Email" autocomplete="email" inputmode="email" required>
-                  <span class="trp-fb-hint">So we can thank you, and reach you about the Testimonial Prize.</span>
-                </div>
-              </section>
-
-              <section class="trp-fb-part">
-                <div class="trp-fb-part-head">
-                  <span class="trp-fb-part-name">Part 2 &middot; optional</span>
-                  <h2 class="trp-fb-part-title">Your testimonial on LinkedIn</h2>
-                  <p class="trp-fb-part-note">This is how you enter the Testimonial Prize. Do both halves to be in the running.</p>
-                </div>
-
-                <div class="trp-fb-field">
-                  <span class="trp-fb-label">Written</span>
-                  <a class="trp-fb-linkedin" href="https://www.linkedin.com/in/ellamolonycook/" target="_blank" rel="noopener">
-                    <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M19 3A2 2 0 0121 5v14a2 2 0 01-2 2H5a2 2 0 01-2-2V5a2 2 0 012-2h14zM8.34 18.34v-7.9H5.76v7.9h2.58zM7.05 9.31a1.5 1.5 0 100-3 1.5 1.5 0 000 3zm11.29 9.03v-4.33c0-2.24-1.2-3.28-2.79-3.28a2.41 2.41 0 00-2.18 1.2v-1.03h-2.58v7.44h2.58v-4.18c0-1.1.21-2.17 1.57-2.17 1.34 0 1.36 1.26 1.36 2.24v4.11h2.04z"/></svg>
-                    Write Ella a recommendation on LinkedIn
-                  </a>
-                  <span class="trp-fb-hint">On Ella&rsquo;s profile, click More, then Recommend.</span>
-                </div>
-
-                <fieldset class="trp-fb-field" style="border: 0; margin: 0; padding: 0">
-                  <legend class="trp-fb-label">Have you written it? <span class="trp-fb-opt">(optional)</span></legend>
-                  <div class="trp-fb-pair">
-                    <label><input type="radio" name="LinkedIn recommendation" value="Done"><span class="trp-fb-pill">Done</span></label>
-                    <label><input type="radio" name="LinkedIn recommendation" value="Not yet"><span class="trp-fb-pill">Not yet</span></label>
-                  </div>
-                </fieldset>
-
-                <div class="trp-fb-field">
-                  <label class="trp-fb-label" for="fb-rec">Link to it <span class="trp-fb-opt">(if you have one)</span></label>
-                  <input class="trp-fb-input" id="fb-rec" type="url" name="LinkedIn recommendation link" placeholder="https://www.linkedin.com/in/ellamolonycook/" autocomplete="off">
-                </div>
-
-                <div class="trp-fb-field">
-                  <span class="trp-fb-label">Video</span>
-                  <span class="trp-fb-hint">Post a 30 to 60 second video on LinkedIn about what you&rsquo;ve built, tag Ella Molony Cook and use #trcsuperhuman.</span>
-                  <label class="trp-fb-label" for="fb-video">Paste your LinkedIn post link</label>
-                  <input class="trp-fb-input" id="fb-video" type="url" name="LinkedIn video post" placeholder="https://www.linkedin.com/posts/..." autocomplete="off">
-                </div>
-
-                <fieldset class="trp-fb-share" style="border: 0; margin: 0; padding: 0">
-                  <legend class="trp-fb-label">Time Rich can share my feedback and testimonial</legend>
-                  <div class="trp-fb-pair">
-                    <label><input type="radio" name="OK to feature" value="Yes"><span class="trp-fb-pill">Yes</span></label>
-                    <label><input type="radio" name="OK to feature" value="No"><span class="trp-fb-pill">No</span></label>
-                  </div>
-                </fieldset>
-              </section>
-
-              <div class="trp-fb-foot">
-                <button class="trp-fb-send" type="submit">Send it</button>
-                <p class="trp-fb-msg" data-feedback-msg role="status" aria-live="polite"></p>
-              </div>
-            </form>
+            <!-- The form itself is built by portal-chrome.js, which every Club
+                 page loads, and which builds the same component into the panel
+                 the feedback pill opens. This page carries no JavaScript of
+                 its own: it is the one container, and the component does the
+                 rest. -->
+            <div data-feedback-mount></div>
           </div>
-      </div>
+        </div>
       </main> <!-- CLOSE main -->
     </div> <!-- CLOSE h-screen container -->
 
@@ -458,93 +293,6 @@
     </p>
   </footer>
 
-  <script>
-    /* The feedback form. Posts to the forms worker, which files the entry in
-       Notion ("Superhuman Feedback & Testimonials"). The field names are the
-       Notion property names: createApplication maps them by name, so a
-       rename here is a rename of the contract and the column both.
-
-       Nothing is validated twice for the sake of it. The rating and the
-       LinkedIn post are checked here so a member is told on the page, and
-       again in the worker, which is what holds when the page is bypassed. */
-    (function () {
-      var ENDPOINT = 'https://time-rich-forms.timerich.workers.dev/feedback';
-      var form = document.querySelector('[data-feedback-form]');
-      if (!form) return;
-      var msg = form.querySelector('[data-feedback-msg]');
-      var btn = form.querySelector('button[type="submit"]');
-
-      function say(text, kind) {
-        msg.textContent = text;
-        msg.classList.toggle('is-err', kind === 'err');
-        msg.classList.toggle('is-ok', kind === 'ok');
-      }
-
-      /* The member's first name, off the session the portal already loaded.
-         The hidden Name field is what posts, so the form still sends a name
-         when the payload has not arrived; the worker falls back to
-         "Applicant" if it is empty. */
-      function fillName(data) {
-        var first = data && data.member && data.member.first_name;
-        if (!first) return;
-        var field = form.querySelector('[data-feedback-name]');
-        if (field && !field.value) field.value = String(first);
-      }
-      document.addEventListener('trportal:data', function (event) { fillName(event.detail); });
-      if (window.TR_PORTAL_DATA) fillName(window.TR_PORTAL_DATA);
-
-      // The same check the content workshop draw uses, so a member is told
-      // the same thing in both places.
-      function isLinkedIn(value) { return /linkedin\.com\/./i.test(value); }
-
-      form.addEventListener('submit', function (event) {
-        event.preventDefault();
-
-        var data = {};
-        Array.prototype.forEach.call(form.elements, function (el) {
-          if (!el.name) return;
-          if (el.type === 'radio' && !el.checked) return;
-          var value = String(el.value || '').trim();
-          if (value) data[el.name] = value;
-        });
-
-        if (!/^([1-9]|10)$/.test(data['Rating'] || '')) {
-          return say('Please pick a number from 1 to 10.', 'err');
-        }
-        if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(data['Email'] || '')) {
-          return say('Add your email so we can reach you.', 'err');
-        }
-        if (data['LinkedIn video post'] && !isLinkedIn(data['LinkedIn video post'])) {
-          return say('Paste the link to your LinkedIn post, like https://www.linkedin.com/posts/...', 'err');
-        }
-
-        btn.disabled = true;
-        say('Sending\u2026');
-        fetch(ENDPOINT, {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify(data)
-        })
-          .then(function (r) {
-            return r.json().catch(function () { return {}; }).then(function (j) {
-              return { ok: r.ok && j.ok !== false, body: j };
-            });
-          })
-          .then(function (res) {
-            btn.disabled = false;
-            if (!res.ok) {
-              return say((res.body && res.body.error) || 'That didn\u2019t go through. Try again in a moment.', 'err');
-            }
-            form.reset();
-            say('Thank you!! \uD83D\uDC9A You\u2019re in the running for the Testimonial Prize if you did both.', 'ok');
-          })
-          .catch(function () {
-            btn.disabled = false;
-            say('That didn\u2019t go through. Check your connection and try again.', 'err');
-          });
-      });
-    })();
-  </script>
   <script src="portal-theme.js" defer></script>
 
 </body>
