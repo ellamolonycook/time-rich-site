@@ -2849,8 +2849,11 @@ Save the skill once. Then hand Stanley a story and it drafts in your voice.`
         return first;
       }
 
-      function whatsNext(cards, prep, data) {
+      function whatsNext(cards, prep, data, afterId) {
+        // Only the weeks after the tab on screen: the tab's own week is
+        // already in its header card (Gideon, 8 Nov).
         var shut = cards.filter(function (w) {
+          if (afterId != null && L.num(w.id) <= L.num(afterId)) return false;
           return !isOpen(w, prep) || (data && !L.weekStarted(data, w));
         });
         if (!shut.length) return null;
@@ -2965,7 +2968,7 @@ Save the skill once. Then hand Stanley a story and it drafts in your voice.`
 
         out.push(panel(data, week, prep, Number(week.id) === Number(current)));
 
-        var next = whatsNext(cards, prep, data);
+        var next = whatsNext(cards, prep, data, week.id);
         if (next) out.push(next);
         settle(live, out);
 
