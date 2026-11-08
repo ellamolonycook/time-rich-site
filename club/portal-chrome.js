@@ -718,7 +718,19 @@
 
   var NO_PILL = /\/club\/(feedback|signin)(\.html)?\/?$/;
 
+  /* The pill and every "Give feedback" link are switched off until Ella
+     approves the new feedback form (8 Nov). The /club/feedback page still
+     works if someone has the link. Set FEEDBACK_ON to true to bring back
+     the pill and the footer links together. */
+  var FEEDBACK_ON = false;
+  if (!FEEDBACK_ON) {
+    var hideFb = document.createElement('style');
+    hideFb.textContent = 'a.trp-foot-link[href="/club/feedback"]{display:none!important}';
+    (document.head || document.documentElement).appendChild(hideFb);
+  }
+
   function mountFeedbackPill() {
+    if (!FEEDBACK_ON) return;
     if (NO_PILL.test(window.location.pathname)) return;
 
     var pill = el('button', 'trp-pill');

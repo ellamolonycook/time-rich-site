@@ -179,6 +179,17 @@
     .trp-cw-label { font-size: 12px; font-weight: 600; letter-spacing: .08em; text-transform: uppercase; color: var(--trp-soft); }
     .trp-cw-h2 { font-family: var(--trp-display); font-weight: 600; font-size: clamp(26px, 3.8vw, 36px); letter-spacing: -.02em; line-height: 1.1; margin: 0; color: var(--trp-deep); }
     .trp-cw-outcome { font-size: 16.5px; line-height: 1.6; color: var(--trp-soft); margin: 0; }
+    .trp-cw-headcard { padding: clamp(20px, 3.5vw, 32px); border-radius: 24px; background: var(--trp-sagelt); border: 1px solid var(--trp-line); }
+    .trp-cw-headcard .trp-cw-panel-copy { max-width: none; width: 100%; gap: 10px; }
+    .trp-cw-headcard .trp-cw-outcome { max-width: 60ch; color: var(--trp-deep); opacity: .82; }
+    .trp-cw-head-top { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 8px 12px; }
+    .trp-cw-badge { display: inline-flex; align-items: center; gap: 6px; min-height: 28px; padding: 0 12px; border-radius: 999px; font-size: 12px; font-weight: 600; letter-spacing: .04em; background: rgb(var(--c-surface)); color: var(--trp-deep); border: 1px solid var(--trp-line); white-space: nowrap; }
+    .trp-cw-badge.is-now { background: var(--trp-deep); color: rgb(var(--c-surface)); border-color: var(--trp-deep); }
+    .trp-cw-badge.is-locked::before { content: ""; width: 10px; height: 10px; background: currentColor; -webkit-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M7 10V7a5 5 0 0 1 10 0v3h1a1 1 0 0 1 1 1v10a1 1 0 0 1-1 1H6a1 1 0 0 1-1-1V11a1 1 0 0 1 1-1h1zm2 0h6V7a3 3 0 0 0-6 0v3z'/%3E%3C/svg%3E") center/contain no-repeat; mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M7 10V7a5 5 0 0 1 10 0v3h1a1 1 0 0 1 1 1v10a1 1 0 0 1-1 1H6a1 1 0 0 1-1-1V11a1 1 0 0 1 1-1h1zm2 0h6V7a3 3 0 0 0-6 0v3z'/%3E%3C/svg%3E") center/contain no-repeat; }
+    .trp-cw-head-calls { list-style: none; margin: 8px 0 0; padding: 14px 0 0; border-top: 1px solid var(--trp-line); display: grid; gap: 10px; }
+    .trp-cw-head-call { display: flex; flex-wrap: wrap; gap: 4px 14px; align-items: baseline; }
+    .trp-cw-head-when { font-size: 12px; font-weight: 600; letter-spacing: .08em; text-transform: uppercase; color: var(--trp-soft); min-width: 160px; }
+    .trp-cw-head-what { font-size: 15px; font-weight: 600; color: var(--trp-deep); }
     .trp-cw-count { font-size: 14px; color: var(--trp-soft); margin: 0; }
     .trp-cw-actions { display: flex; flex-wrap: wrap; gap: 10px; align-items: flex-start; }
     .trp-cw-join { display: flex; flex-direction: column; gap: 6px; }
@@ -222,10 +233,20 @@
     /* The week's homework, open at the top of the week rather than behind a
        drop-down (Ella, 4 Nov). Its button is borrowed from the call cards,
        so the Loom opens the same way a replay does. */
-    .trp-cw-homework { display: flex; flex-direction: column; align-items: flex-start; gap: 10px; }
+    .trp-cw-homework { display: flex; flex-direction: column; gap: 14px; padding: clamp(18px, 3vw, 28px); border-radius: 24px; border: 1px solid var(--trp-line); background: rgb(var(--c-surface)); }
     .trp-cw-homework .trp-cw-btn { background: var(--trp-sagelt); color: var(--trp-deep); }
     .trp-cw-homework .trp-cw-btn:hover { background: var(--trp-sage); }
     .trp-cw-homework > :last-child { margin-bottom: 0; }
+    .trp-cw-hw-top { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 10px; }
+    .trp-cw-hw-label { margin: 0; }
+    .trp-cw-hw-intro { margin: 0; font-size: 17px; font-weight: 600; line-height: 1.5; color: var(--trp-deep); white-space: pre-line; }
+    .trp-cw-hw-steps { list-style: none; margin: 0; padding: 0; display: grid; gap: 14px; }
+    .trp-cw-hw-step { display: flex; align-items: flex-start; gap: 14px; }
+    .trp-cw-hw-num { flex: none; display: inline-flex; align-items: center; justify-content: center; width: 28px; height: 28px; border-radius: 999px; background: var(--trp-sage); color: var(--trp-deep); font-size: 14px; font-weight: 700; }
+    .trp-cw-hw-body { display: flex; flex-direction: column; gap: 2px; min-width: 0; padding-top: 3px; }
+    .trp-cw-hw-lead { font-size: 15.5px; font-weight: 600; line-height: 1.45; color: var(--trp-deep); }
+    .trp-cw-hw-more { font-size: 15px; line-height: 1.55; color: var(--trp-soft); }
+    .trp-cw-hw-foot { margin: 0; padding-top: 14px; border-top: 1px solid var(--trp-line); font-size: 14px; line-height: 1.6; color: var(--trp-soft); white-space: pre-line; }
 
     /* The feedback ask at the foot of a week. Quiet: it sits under the
        week's work and is not competing with it. */
@@ -2612,26 +2633,84 @@ Save the skill once. Then hand Stanley a story and it drafts in your voice.`
          in the lightbox the way a call's replay does, and the rest of the
          body under it. An open block, not a drop-down: it is the thing to
          do this week, so it is not worth a click to find (Ella, 4 Nov). */
-      function homeworkBlock(item) {
-        var frag = document.createDocumentFragment();
-        var title = L.str(item && item.title) || 'Homework';
-        frag.appendChild(L.el('h3', 'trp-cw-group', title));
+      /* The week's homework as one card: the label and the video button on
+         top, the opening line, the numbered steps, and anything after the
+         steps underneath in smaller grey text. Styling only: every word of
+         the homework row is shown, in its order. A body with a copy box,
+         table, image or drop-down in it keeps the old layout, so nothing in
+         it can be dropped (Gideon, 8 Nov). */
+      var STEP_RE = /^\s*(?:\u2022|-|\*|\d+[.)])\s+(.*)$/;
+      function homeworkSteps(rest) {
+        var parts = bodyParts(rest);
+        if (!parts.every(function (pt) { return pt.kind === 'text'; })) return null;
+        var lines = parts.reduce(function (all, pt) { return all.concat(pt.lines); }, []);
+        var before = [], steps = [], after = [];
+        lines.forEach(function (line) {
+          var m = STEP_RE.exec(line);
+          if (m && after.length === 0) { steps.push(m[1]); return; }
+          if (!steps.length) before.push(line); else after.push(line);
+        });
+        if (!steps.length) return null;
+        return { before: before, steps: steps, after: after };
+      }
+      function hwText(cls, lines) {
+        var text = lines.join('\n').replace(/^\s+|\s+$/g, '');
+        if (!text) return null;
+        var p = L.el('p', cls);
+        text.split('\n').forEach(function (line, i) {
+          if (i) p.appendChild(document.createTextNode('\n'));
+          linkNames(p, line);
+        });
+        return p;
+      }
 
-        var wrap = L.el('div', 'trp-cw-homework');
+      function homeworkBlock(item) {
+        var title = L.str(item && item.title) || 'Homework';
+        var wrap = L.el('section', 'trp-cw-homework');
+        var top = L.el('div', 'trp-cw-hw-top');
+        top.appendChild(L.el('h3', 'trp-cw-group trp-cw-hw-label', title));
         var src = bodyVideoSrc(item);
         if (src) {
           var play = L.el('button', 'trp-cw-btn is-sm', '\u25B6 5 min video');
           play.type = 'button';
           play.setAttribute('aria-label', 'Watch the ' + title + ' video');
           play.addEventListener('click', function () { openLightbox(src, title, play); });
-          wrap.appendChild(play);
+          top.appendChild(play);
         }
+        wrap.appendChild(top);
+
         var rest = bodyWithoutVideo(item && item.body);
-        if (rest.replace(/^\s+|\s+$/g, '')) {
+        if (!rest.replace(/^\s+|\s+$/g, '')) return wrap;
+        var hw = homeworkSteps(rest);
+        if (!hw) {
           wrap.appendChild(bodyBlocks(rest, 'homework-' + (L.itemKey(item) || title)));
+          return wrap;
         }
-        frag.appendChild(wrap);
-        return frag;
+        var intro = hwText('trp-cw-hw-intro', hw.before);
+        if (intro) wrap.appendChild(intro);
+        var ol = L.el('ol', 'trp-cw-hw-steps');
+        hw.steps.forEach(function (step, i) {
+          var li = L.el('li', 'trp-cw-hw-step');
+          li.appendChild(L.el('span', 'trp-cw-hw-num', String(i + 1)));
+          var body = L.el('div', 'trp-cw-hw-body');
+          var m = /^([^:]{2,48}:)\s+(.+)$/.exec(step);
+          if (m) {
+            body.appendChild(L.el('strong', 'trp-cw-hw-lead', m[1]));
+            var rest2 = L.el('span', 'trp-cw-hw-more');
+            linkNames(rest2, m[2]);
+            body.appendChild(rest2);
+          } else {
+            var whole = L.el('span', 'trp-cw-hw-lead');
+            linkNames(whole, step);
+            body.appendChild(whole);
+          }
+          li.appendChild(body);
+          ol.appendChild(li);
+        });
+        wrap.appendChild(ol);
+        var foot = hwText('trp-cw-hw-foot', hw.after);
+        if (foot) wrap.appendChild(foot);
+        return wrap;
       }
 
       /* The ask for feedback, at the foot of every week: a member who has
@@ -2639,13 +2718,17 @@ Save the skill once. Then hand Stanley a story and it drafts in your voice.`
          Last in the panel, so it never comes before the week's own work, and
          on a week that has not opened yet as well -- the form asks how the
          accelerator is going, which is a fair question either way. */
+      /* Switched off until Ella approves the new feedback form (8 Nov).
+         Turn back on by setting FEEDBACK_ON to true. */
+      var FEEDBACK_ON = false;
       function feedbackAsk() {
+        if (!FEEDBACK_ON) return document.createDocumentFragment();
         var ask = L.el('a', 'trp-cw-ask', "How's it going? Tell us in 2 minutes");
         ask.href = '/club/feedback';
         return ask;
       }
 
-      function panel(data, week, prep) {
+      function panel(data, week, prep, isCurrent) {
         var n = L.num(week.id);
         var open = isOpen(week, prep);
         var now = new Date();
@@ -2689,14 +2772,36 @@ Save the skill once. Then hand Stanley a story and it drafts in your voice.`
         var setupOnly = steps.length && week.unlocked !== true;
         var starts = L.etDate(week.release_at);
 
-        var head = L.el('div', 'trp-cw-panel-head');
+        /* The week's header is one card: label and status badge on top,
+           the title and what the week builds, and on a week that has not
+           opened yet, its calls, so the tab is never just "Lessons open"
+           (Gideon, 8 Nov). The badge says what the tab says. */
+        var head = L.el('div', 'trp-cw-panel-head trp-cw-headcard' + (open ? '' : ' is-locked'));
         var copy = L.el('div', 'trp-cw-panel-copy');
-        copy.appendChild(L.el('span', 'trp-cw-label', 'Week ' + pad(n) + (pillar ? ' · ' + pillar : '')));
+        var top = L.el('div', 'trp-cw-head-top');
+        top.appendChild(L.el('span', 'trp-cw-label', 'Week ' + pad(n) + (pillar ? ' · ' + pillar : '')));
+        var badgeText = !open ? 'Opens ' + (starts || 'soon') : (isCurrent ? 'This week' : 'Open');
+        top.appendChild(L.el('span', 'trp-cw-badge' + (!open ? ' is-locked' : (isCurrent ? ' is-now' : '')), badgeText));
+        copy.appendChild(top);
         copy.appendChild(L.el('h2', 'trp-cw-h2', setupOnly ? 'Get set up' : weekTitle(week)));
         var outcome = setupOnly
           ? 'Finish these before Week 1 goes live' + (starts ? ' on ' + starts : '') + '.'
           : L.str(week.summary);
         if (outcome) copy.appendChild(L.el('p', 'trp-cw-outcome', outcome));
+        if (!open) {
+          var upcoming = L.sessionsForWeek(data, week.id);
+          if (upcoming.length) {
+            var ul = L.el('ul', 'trp-cw-head-calls');
+            upcoming.forEach(function (s) {
+              var d = L.etDate(s && s.starts_at), t = L.etTime(s && s.starts_at);
+              var li = L.el('li', 'trp-cw-head-call');
+              li.appendChild(L.el('span', 'trp-cw-head-when', d ? (t ? d + ' · ' + t + ' ET' : d) : 'Date to come'));
+              li.appendChild(L.el('span', 'trp-cw-head-what', L.str(s && s.title) || 'Session'));
+              ul.appendChild(li);
+            });
+            copy.appendChild(ul);
+          }
+        }
         head.appendChild(copy);
 
         // No Join button here. The Zoom link lives in the calendar invite,
@@ -2730,7 +2835,7 @@ Save the skill once. Then hand Stanley a story and it drafts in your voice.`
 
         if (!open) {
           drawSetup('Your setup');
-          box.appendChild(L.el('p', 'trp-cw-empty', 'Lessons open ' + (starts || 'soon') + '.'));
+          if (n !== 1 && !L.sessionsForWeek(data, week.id).length) box.appendChild(L.el('p', 'trp-cw-empty', 'Lessons open ' + (starts || 'soon') + '.'));
           if (n === 1) { blockHomes(); addWeek1(box); }
           box.appendChild(feedbackAsk());
           return box;
@@ -2812,8 +2917,11 @@ Save the skill once. Then hand Stanley a story and it drafts in your voice.`
         return first;
       }
 
-      function whatsNext(cards, prep, data) {
+      function whatsNext(cards, prep, data, afterId) {
+        // Only the weeks after the tab on screen: the tab's own week is
+        // already in its header card (Gideon, 8 Nov).
         var shut = cards.filter(function (w) {
+          if (afterId != null && L.num(w.id) <= L.num(afterId)) return false;
           return !isOpen(w, prep) || (data && !L.weekStarted(data, w));
         });
         if (!shut.length) return null;
@@ -2926,9 +3034,9 @@ Save the skill once. Then hand Stanley a story and it drafts in your voice.`
         });
         out.push(tabs);
 
-        out.push(panel(data, week, prep));
+        out.push(panel(data, week, prep, Number(week.id) === Number(current)));
 
-        var next = whatsNext(cards, prep, data);
+        var next = whatsNext(cards, prep, data, week.id);
         if (next) out.push(next);
         settle(live, out);
 
