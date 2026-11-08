@@ -179,6 +179,17 @@
     .trp-cw-label { font-size: 12px; font-weight: 600; letter-spacing: .08em; text-transform: uppercase; color: var(--trp-soft); }
     .trp-cw-h2 { font-family: var(--trp-display); font-weight: 600; font-size: clamp(26px, 3.8vw, 36px); letter-spacing: -.02em; line-height: 1.1; margin: 0; color: var(--trp-deep); }
     .trp-cw-outcome { font-size: 16.5px; line-height: 1.6; color: var(--trp-soft); margin: 0; }
+    .trp-cw-headcard { padding: clamp(20px, 3.5vw, 32px); border-radius: 24px; background: var(--trp-sagelt); border: 1px solid var(--trp-line); }
+    .trp-cw-headcard .trp-cw-panel-copy { max-width: none; width: 100%; gap: 10px; }
+    .trp-cw-headcard .trp-cw-outcome { max-width: 60ch; color: var(--trp-deep); opacity: .82; }
+    .trp-cw-head-top { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 8px 12px; }
+    .trp-cw-badge { display: inline-flex; align-items: center; gap: 6px; min-height: 28px; padding: 0 12px; border-radius: 999px; font-size: 12px; font-weight: 600; letter-spacing: .04em; background: rgb(var(--c-surface)); color: var(--trp-deep); border: 1px solid var(--trp-line); white-space: nowrap; }
+    .trp-cw-badge.is-now { background: var(--trp-deep); color: rgb(var(--c-surface)); border-color: var(--trp-deep); }
+    .trp-cw-badge.is-locked::before { content: ""; width: 10px; height: 10px; background: currentColor; -webkit-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M7 10V7a5 5 0 0 1 10 0v3h1a1 1 0 0 1 1 1v10a1 1 0 0 1-1 1H6a1 1 0 0 1-1-1V11a1 1 0 0 1 1-1h1zm2 0h6V7a3 3 0 0 0-6 0v3z'/%3E%3C/svg%3E") center/contain no-repeat; mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M7 10V7a5 5 0 0 1 10 0v3h1a1 1 0 0 1 1 1v10a1 1 0 0 1-1 1H6a1 1 0 0 1-1-1V11a1 1 0 0 1 1-1h1zm2 0h6V7a3 3 0 0 0-6 0v3z'/%3E%3C/svg%3E") center/contain no-repeat; }
+    .trp-cw-head-calls { list-style: none; margin: 8px 0 0; padding: 14px 0 0; border-top: 1px solid var(--trp-line); display: grid; gap: 10px; }
+    .trp-cw-head-call { display: flex; flex-wrap: wrap; gap: 4px 14px; align-items: baseline; }
+    .trp-cw-head-when { font-size: 12px; font-weight: 600; letter-spacing: .08em; text-transform: uppercase; color: var(--trp-soft); min-width: 160px; }
+    .trp-cw-head-what { font-size: 15px; font-weight: 600; color: var(--trp-deep); }
     .trp-cw-count { font-size: 14px; color: var(--trp-soft); margin: 0; }
     .trp-cw-actions { display: flex; flex-wrap: wrap; gap: 10px; align-items: flex-start; }
     .trp-cw-join { display: flex; flex-direction: column; gap: 6px; }
@@ -2639,13 +2650,17 @@ Save the skill once. Then hand Stanley a story and it drafts in your voice.`
          Last in the panel, so it never comes before the week's own work, and
          on a week that has not opened yet as well -- the form asks how the
          accelerator is going, which is a fair question either way. */
+      /* Switched off until Ella approves the new feedback form (8 Nov).
+         Turn back on by setting FEEDBACK_ON to true. */
+      var FEEDBACK_ON = false;
       function feedbackAsk() {
+        if (!FEEDBACK_ON) return document.createDocumentFragment();
         var ask = L.el('a', 'trp-cw-ask', "How's it going? Tell us in 2 minutes");
         ask.href = '/club/feedback';
         return ask;
       }
 
-      function panel(data, week, prep) {
+      function panel(data, week, prep, isCurrent) {
         var n = L.num(week.id);
         var open = isOpen(week, prep);
         var now = new Date();
@@ -2689,14 +2704,36 @@ Save the skill once. Then hand Stanley a story and it drafts in your voice.`
         var setupOnly = steps.length && week.unlocked !== true;
         var starts = L.etDate(week.release_at);
 
-        var head = L.el('div', 'trp-cw-panel-head');
+        /* The week's header is one card: label and status badge on top,
+           the title and what the week builds, and on a week that has not
+           opened yet, its calls, so the tab is never just "Lessons open"
+           (Gideon, 8 Nov). The badge says what the tab says. */
+        var head = L.el('div', 'trp-cw-panel-head trp-cw-headcard' + (open ? '' : ' is-locked'));
         var copy = L.el('div', 'trp-cw-panel-copy');
-        copy.appendChild(L.el('span', 'trp-cw-label', 'Week ' + pad(n) + (pillar ? ' · ' + pillar : '')));
+        var top = L.el('div', 'trp-cw-head-top');
+        top.appendChild(L.el('span', 'trp-cw-label', 'Week ' + pad(n) + (pillar ? ' · ' + pillar : '')));
+        var badgeText = !open ? 'Opens ' + (starts || 'soon') : (isCurrent ? 'This week' : 'Open');
+        top.appendChild(L.el('span', 'trp-cw-badge' + (!open ? ' is-locked' : (isCurrent ? ' is-now' : '')), badgeText));
+        copy.appendChild(top);
         copy.appendChild(L.el('h2', 'trp-cw-h2', setupOnly ? 'Get set up' : weekTitle(week)));
         var outcome = setupOnly
           ? 'Finish these before Week 1 goes live' + (starts ? ' on ' + starts : '') + '.'
           : L.str(week.summary);
         if (outcome) copy.appendChild(L.el('p', 'trp-cw-outcome', outcome));
+        if (!open) {
+          var upcoming = L.sessionsForWeek(data, week.id);
+          if (upcoming.length) {
+            var ul = L.el('ul', 'trp-cw-head-calls');
+            upcoming.forEach(function (s) {
+              var d = L.etDate(s && s.starts_at), t = L.etTime(s && s.starts_at);
+              var li = L.el('li', 'trp-cw-head-call');
+              li.appendChild(L.el('span', 'trp-cw-head-when', d ? (t ? d + ' · ' + t + ' ET' : d) : 'Date to come'));
+              li.appendChild(L.el('span', 'trp-cw-head-what', L.str(s && s.title) || 'Session'));
+              ul.appendChild(li);
+            });
+            copy.appendChild(ul);
+          }
+        }
         head.appendChild(copy);
 
         // No Join button here. The Zoom link lives in the calendar invite,
@@ -2730,7 +2767,7 @@ Save the skill once. Then hand Stanley a story and it drafts in your voice.`
 
         if (!open) {
           drawSetup('Your setup');
-          box.appendChild(L.el('p', 'trp-cw-empty', 'Lessons open ' + (starts || 'soon') + '.'));
+          if (n !== 1 && !L.sessionsForWeek(data, week.id).length) box.appendChild(L.el('p', 'trp-cw-empty', 'Lessons open ' + (starts || 'soon') + '.'));
           if (n === 1) { blockHomes(); addWeek1(box); }
           box.appendChild(feedbackAsk());
           return box;
@@ -2926,7 +2963,7 @@ Save the skill once. Then hand Stanley a story and it drafts in your voice.`
         });
         out.push(tabs);
 
-        out.push(panel(data, week, prep));
+        out.push(panel(data, week, prep, Number(week.id) === Number(current)));
 
         var next = whatsNext(cards, prep, data);
         if (next) out.push(next);
