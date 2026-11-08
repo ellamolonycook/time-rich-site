@@ -233,10 +233,20 @@
     /* The week's homework, open at the top of the week rather than behind a
        drop-down (Ella, 4 Nov). Its button is borrowed from the call cards,
        so the Loom opens the same way a replay does. */
-    .trp-cw-homework { display: flex; flex-direction: column; align-items: flex-start; gap: 10px; }
+    .trp-cw-homework { display: flex; flex-direction: column; gap: 14px; padding: clamp(18px, 3vw, 28px); border-radius: 24px; border: 1px solid var(--trp-line); background: rgb(var(--c-surface)); }
     .trp-cw-homework .trp-cw-btn { background: var(--trp-sagelt); color: var(--trp-deep); }
     .trp-cw-homework .trp-cw-btn:hover { background: var(--trp-sage); }
     .trp-cw-homework > :last-child { margin-bottom: 0; }
+    .trp-cw-hw-top { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 10px; }
+    .trp-cw-hw-label { margin: 0; }
+    .trp-cw-hw-intro { margin: 0; font-size: 17px; font-weight: 600; line-height: 1.5; color: var(--trp-deep); white-space: pre-line; }
+    .trp-cw-hw-steps { list-style: none; margin: 0; padding: 0; display: grid; gap: 14px; }
+    .trp-cw-hw-step { display: flex; align-items: flex-start; gap: 14px; }
+    .trp-cw-hw-num { flex: none; display: inline-flex; align-items: center; justify-content: center; width: 28px; height: 28px; border-radius: 999px; background: var(--trp-sage); color: var(--trp-deep); font-size: 14px; font-weight: 700; }
+    .trp-cw-hw-body { display: flex; flex-direction: column; gap: 2px; min-width: 0; padding-top: 3px; }
+    .trp-cw-hw-lead { font-size: 15.5px; font-weight: 600; line-height: 1.45; color: var(--trp-deep); }
+    .trp-cw-hw-more { font-size: 15px; line-height: 1.55; color: var(--trp-soft); }
+    .trp-cw-hw-foot { margin: 0; padding-top: 14px; border-top: 1px solid var(--trp-line); font-size: 14px; line-height: 1.6; color: var(--trp-soft); white-space: pre-line; }
 
     /* The feedback ask at the foot of a week. Quiet: it sits under the
        week's work and is not competing with it. */
@@ -2623,26 +2633,84 @@ Save the skill once. Then hand Stanley a story and it drafts in your voice.`
          in the lightbox the way a call's replay does, and the rest of the
          body under it. An open block, not a drop-down: it is the thing to
          do this week, so it is not worth a click to find (Ella, 4 Nov). */
-      function homeworkBlock(item) {
-        var frag = document.createDocumentFragment();
-        var title = L.str(item && item.title) || 'Homework';
-        frag.appendChild(L.el('h3', 'trp-cw-group', title));
+      /* The week's homework as one card: the label and the video button on
+         top, the opening line, the numbered steps, and anything after the
+         steps underneath in smaller grey text. Styling only: every word of
+         the homework row is shown, in its order. A body with a copy box,
+         table, image or drop-down in it keeps the old layout, so nothing in
+         it can be dropped (Gideon, 8 Nov). */
+      var STEP_RE = /^\s*(?:\u2022|-|\*|\d+[.)])\s+(.*)$/;
+      function homeworkSteps(rest) {
+        var parts = bodyParts(rest);
+        if (!parts.every(function (pt) { return pt.kind === 'text'; })) return null;
+        var lines = parts.reduce(function (all, pt) { return all.concat(pt.lines); }, []);
+        var before = [], steps = [], after = [];
+        lines.forEach(function (line) {
+          var m = STEP_RE.exec(line);
+          if (m && after.length === 0) { steps.push(m[1]); return; }
+          if (!steps.length) before.push(line); else after.push(line);
+        });
+        if (!steps.length) return null;
+        return { before: before, steps: steps, after: after };
+      }
+      function hwText(cls, lines) {
+        var text = lines.join('\n').replace(/^\s+|\s+$/g, '');
+        if (!text) return null;
+        var p = L.el('p', cls);
+        text.split('\n').forEach(function (line, i) {
+          if (i) p.appendChild(document.createTextNode('\n'));
+          linkNames(p, line);
+        });
+        return p;
+      }
 
-        var wrap = L.el('div', 'trp-cw-homework');
+      function homeworkBlock(item) {
+        var title = L.str(item && item.title) || 'Homework';
+        var wrap = L.el('section', 'trp-cw-homework');
+        var top = L.el('div', 'trp-cw-hw-top');
+        top.appendChild(L.el('h3', 'trp-cw-group trp-cw-hw-label', title));
         var src = bodyVideoSrc(item);
         if (src) {
           var play = L.el('button', 'trp-cw-btn is-sm', '\u25B6 5 min video');
           play.type = 'button';
           play.setAttribute('aria-label', 'Watch the ' + title + ' video');
           play.addEventListener('click', function () { openLightbox(src, title, play); });
-          wrap.appendChild(play);
+          top.appendChild(play);
         }
+        wrap.appendChild(top);
+
         var rest = bodyWithoutVideo(item && item.body);
-        if (rest.replace(/^\s+|\s+$/g, '')) {
+        if (!rest.replace(/^\s+|\s+$/g, '')) return wrap;
+        var hw = homeworkSteps(rest);
+        if (!hw) {
           wrap.appendChild(bodyBlocks(rest, 'homework-' + (L.itemKey(item) || title)));
+          return wrap;
         }
-        frag.appendChild(wrap);
-        return frag;
+        var intro = hwText('trp-cw-hw-intro', hw.before);
+        if (intro) wrap.appendChild(intro);
+        var ol = L.el('ol', 'trp-cw-hw-steps');
+        hw.steps.forEach(function (step, i) {
+          var li = L.el('li', 'trp-cw-hw-step');
+          li.appendChild(L.el('span', 'trp-cw-hw-num', String(i + 1)));
+          var body = L.el('div', 'trp-cw-hw-body');
+          var m = /^([^:]{2,48}:)\s+(.+)$/.exec(step);
+          if (m) {
+            body.appendChild(L.el('strong', 'trp-cw-hw-lead', m[1]));
+            var rest2 = L.el('span', 'trp-cw-hw-more');
+            linkNames(rest2, m[2]);
+            body.appendChild(rest2);
+          } else {
+            var whole = L.el('span', 'trp-cw-hw-lead');
+            linkNames(whole, step);
+            body.appendChild(whole);
+          }
+          li.appendChild(body);
+          ol.appendChild(li);
+        });
+        wrap.appendChild(ol);
+        var foot = hwText('trp-cw-hw-foot', hw.after);
+        if (foot) wrap.appendChild(foot);
+        return wrap;
       }
 
       /* The ask for feedback, at the foot of every week: a member who has
