@@ -576,16 +576,16 @@ console.log('\nthe pill looks and sits where Ella asked');
     pill.querySelector('.trp-pill-text').textContent === 'Feedback');
   check('and an accessible name for the icon-only phone version',
     pill.getAttribute('aria-label') === 'Give feedback');
-  check('fixed bottom-right, with the safe-area inset',
-    /\.trp-pill \{[\s\S]*?position: fixed[\s\S]*?env\(safe-area-inset-right\)[\s\S]*?env\(safe-area-inset-bottom\)/.test(CSS));
+  check('the row is fixed bottom-right, with the safe-area inset',
+    /\.trp-pills \{[\s\S]*?position: fixed[\s\S]*?env\(safe-area-inset-right\)[\s\S]*?env\(safe-area-inset-bottom\)/.test(CSS));
   check('40px tall, fully rounded, dark green on off-white',
     /\.trp-pill \{[\s\S]*?height: 40px[\s\S]*?border-radius: 999px[\s\S]*?background: rgb\(var\(--c-green\)\);\s*color: rgb\(var\(--c-page\)\)/.test(CSS));
   check('with a soft shadow',
     /\.trp-pill \{[\s\S]*?box-shadow: 0 10px 30px/.test(CSS));
   check('under the lightbox, the toast and the menu at 150',
-    /\.trp-pill \{[\s\S]*?z-index: 150/.test(CSS));
+    /\.trp-pills \{[\s\S]*?z-index: 150/.test(CSS));
   check('an icon-only circle under 640px',
-    /@media \(max-width: 639px\) \{[\s\S]*?width: 44px; height: 44px[\s\S]*?\.trp-pill-text \{ display: none/.test(CSS));
+    /@media \(max-width: 639px\) \{[\s\S]*?\.trp-pill \{ height: 44px; \}[\s\S]*?\.trp-pill\.is-feedback \{ width: 44px; padding: 0; gap: 0; \}[\s\S]*?\.trp-pill\.is-feedback \.trp-pill-text \{ display: none/.test(CSS));
   check('no hard-coded colour anywhere in its rules',
     !/\.trp-pill[^{]*\{[^}]*#[0-9a-fA-F]{3,6}/.test(CSS));
 
@@ -611,9 +611,11 @@ console.log('\nthe pill steps aside rather than covering anything');
 
   api.setFooterInView(true);
   check('the footer coming into view keeps it on screen and clickable', !pill.classList.contains('is-away'));
-  check('and lifts it above the footer', pill.style.getPropertyValue('--trp-pill-lift') !== '');
+  check('and lifts the row above the footer',
+    api.row.style.getPropertyValue('--trp-pill-lift') !== '');
   api.setFooterInView(false);
-  check('back to its place when the footer goes', pill.style.getPropertyValue('--trp-pill-lift') === '0px');
+  check('back to its place when the footer goes',
+    api.row.style.getPropertyValue('--trp-pill-lift') === '0px');
 
   const lb = doc.createElement('div');
   lb.className = 'trp-cw-lb';
@@ -1109,23 +1111,42 @@ console.log('\nthe testimonial pill is on every Club page, beside the feedback o
   check('it is a link to the testimonial page, not a button',
     win.tagName === 'A' && win.getAttribute('href') === '/club/testimonial',
     [win.tagName, win.getAttribute('href')]);
-  check('reading as Ella wrote it',
-    win.querySelector('.trp-pill-text').textContent === 'Upload your video testimonial to WIN' &&
-    win.querySelector('.trp-pill-emoji').textContent === '🏆',
+  check('reading 🏆 Win, short enough to sit beside the other pill',
+    win.querySelector('.trp-pill-emoji').textContent === '🏆' &&
+    win.querySelector('.trp-pill-text').textContent === 'Win',
     win.textContent);
   check('with an accessible name for the phone version',
     win.getAttribute('aria-label') === 'Upload your video testimonial to WIN');
   check('it wears the same pill styling', win.classList.contains('trp-pill'));
-  check('and stacks a pill\'s height above the feedback one',
-    /\.trp-pill\.is-second \{ bottom: calc\(20px \+ env\(safe-area-inset-bottom\) \+ var\(--trp-pill-lift, 0px\) \+ 50px\)/.test(CSS));
-  check('still clear of each other on a phone, where both are circles',
-    /@media \(max-width: 639px\) \{[\s\S]*?\.trp-pill\.is-second \{ bottom: calc\(16px[\s\S]*?\+ 54px\)/.test(CSS));
-  check('the emoji stays when the words are hidden on a phone',
-    /@media \(max-width: 639px\)[\s\S]*?\.trp-pill-text \{ display: none/.test(CSS) &&
+
+  // Side by side in one row, not stacked.
+  const row = doc.querySelector('[data-feedback-pills]');
+  const fbPill = doc.querySelector('[data-feedback-pill]');
+  check('both pills are in one row', row !== null &&
+    win.parentNode === row && fbPill.parentNode === row);
+  check('the testimonial pill first, feedback nearest the corner',
+    [...row.children].map((c) => (c.getAttribute('data-testimonial-pill') === null
+      ? 'feedback' : 'win')).join('|') === 'win|feedback',
+    [...row.children].map((c) => c.className));
+  check('laid out as a row with a gap, right at the bottom corner',
+    /\.trp-pills \{[\s\S]*?display: flex; align-items: center; gap: 10px/.test(CSS));
+  check('nothing positions the pills themselves any more',
+    !/\.trp-pill \{[^}]*position: fixed/.test(CSS) &&
+    !/is-second/.test(CSS) && !/is-second/.test(CHROME));
+  check('so both are the same height, 40px on a laptop and 44px on a phone',
+    /\.trp-pill \{[\s\S]*?height: 40px/.test(CSS) &&
+    /@media \(max-width: 639px\) \{[\s\S]*?\.trp-pill \{ height: 44px; \}/.test(CSS));
+  check('under 480px the trophy carries it alone',
+    /@media \(max-width: 479px\) \{\s*\.trp-pill\.is-win \{ width: 44px; padding: 0; gap: 0; \}\s*\.trp-pill\.is-win \.trp-pill-text \{ display: none/.test(CSS));
+  check('and the word is still there between 480px and 640px',
+    !/\.trp-pill\.is-win \.trp-pill-text \{ display: none/
+      .test(CSS.slice(CSS.indexOf('@media (max-width: 639px)'),
+                      CSS.indexOf('@media (max-width: 479px)'))));
+  check('the emoji is never hidden, so the circle still says something',
     !/\.trp-pill-emoji \{[^}]*display: none/.test(CSS));
-  check('and the page leaves room for both, so nothing ends under them',
-    /html\.trp-has-pills main \{ padding-bottom: 126px/.test(CSS) &&
-    doc.documentElement.classList.contains('trp-has-pills'));
+  check('and the page leaves room for the row',
+    /html\.trp-has-pill main \{ padding-bottom: 72px/.test(CSS) &&
+    doc.documentElement.classList.contains('trp-has-pill'));
 
   // Both come in together and go away together.
   const api = dom.window.TRFeedbackPill;
@@ -1145,11 +1166,11 @@ console.log('\nthe testimonial pill is on every Club page, beside the feedback o
   check('and brings both back',
     !api.el.classList.contains('is-away') && !win.classList.contains('is-away'));
   api.setFooterInView(true);
-  check('the footer lifts both',
-    api.el.style.getPropertyValue('--trp-pill-lift') !== '' &&
-    win.style.getPropertyValue('--trp-pill-lift') ===
-      api.el.style.getPropertyValue('--trp-pill-lift'),
-    win.style.getPropertyValue('--trp-pill-lift'));
+  check('the footer lifts the row, so both move together',
+    api.row.style.getPropertyValue('--trp-pill-lift') !== '' &&
+    win.style.getPropertyValue('--trp-pill-lift') === '' &&
+    api.el.style.getPropertyValue('--trp-pill-lift') === '',
+    api.row.style.getPropertyValue('--trp-pill-lift'));
   dom.window.close();
 }
 

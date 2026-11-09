@@ -671,49 +671,61 @@ body { animation: trp-fade-in 180ms ease-out both; }
 .trp-fb-settled { display: flex; flex-direction: column; align-items: center; gap: 14px; text-align: center; padding: 28px 24px; }
 .trp-fb-settled-line { margin: 0; font-size: 14px; font-weight: 600; color: var(--trp-muted); }
 
-/* ---- the pill ------------------------------------------------------- */
+/* ---- the pills ------------------------------------------------------ */
 
-/* 150: under the lightbox, the toast and the mobile menu, which are all 200. */
-.trp-pill {
+/* Both pills ride in one row at the bottom right: the testimonial one, then
+   feedback nearest the corner, where feedback has always been. The row is
+   what is placed, so the two keep their gap however wide either gets, and
+   one --trp-pill-lift moves both when the footer comes up.
+
+   150: under the lightbox, the toast and the mobile menu, which are all 200. */
+.trp-pills {
   position: fixed; z-index: 150;
   right: calc(20px + env(safe-area-inset-right));
   bottom: calc(20px + env(safe-area-inset-bottom) + var(--trp-pill-lift, 0px));
+  display: flex; align-items: center; gap: 10px;
+}
+.trp-pills[hidden] { display: none; }
+
+.trp-pill {
   display: inline-flex; align-items: center; justify-content: center; gap: 8px;
   height: 40px; padding: 0 16px; border: 0; border-radius: 999px;
   font: inherit; font-size: 13.5px; font-weight: 500; cursor: pointer;
+  text-decoration: none;                 /* the testimonial pill is a link */
   background: rgb(var(--c-green)); color: rgb(var(--c-page));
   box-shadow: 0 10px 30px -10px rgb(var(--c-ink) / .45);
 }
 .trp-pill svg { width: 17px; height: 17px; flex: none; }
 .trp-pill:hover { background: var(--trp-mid); }
 .trp-pill:focus-visible { outline: 2px solid var(--trp-ink); outline-offset: 3px; }
+.trp-pill-emoji { font-size: 15px; line-height: 1; }
 
 /* Hidden until it is let in, and whenever anything would be covered by it. */
 .trp-pill[hidden] { display: none; }
 .trp-pill.is-away { opacity: 0; pointer-events: none; }
 
 @media (max-width: 639px) {
-  .trp-pill {
+  .trp-pills {
     right: calc(16px + env(safe-area-inset-right));
     bottom: calc(16px + env(safe-area-inset-bottom) + var(--trp-pill-lift, 0px));
-    width: 44px; height: 44px; padding: 0; gap: 0;
+    gap: 8px;
   }
-  .trp-pill .trp-pill-text { display: none; }
+  /* Both grow to 44px together, so the row stays one height. */
+  .trp-pill { height: 44px; }
+  /* Feedback has been an icon-only circle on a phone since it shipped. */
+  .trp-pill.is-feedback { width: 44px; padding: 0; gap: 0; }
+  .trp-pill.is-feedback .trp-pill-text { display: none; }
 }
 
-/* The testimonial pill sits above the feedback one, a pill's height clear of
-   it, and rides the footer with it through the same --trp-pill-lift. */
-.trp-pill.is-second { bottom: calc(20px + env(safe-area-inset-bottom) + var(--trp-pill-lift, 0px) + 50px); }
-.trp-pill-emoji { font-size: 15px; line-height: 1; }
-
-@media (max-width: 639px) {
-  .trp-pill.is-second { bottom: calc(16px + env(safe-area-inset-bottom) + var(--trp-pill-lift, 0px) + 54px); }
+/* Narrower than this there is no room for two labelled pills side by side,
+   so the trophy carries it alone. The aria-label says the rest. */
+@media (max-width: 479px) {
+  .trp-pill.is-win { width: 44px; padding: 0; gap: 0; }
+  .trp-pill.is-win .trp-pill-text { display: none; }
 }
 
-/* The last line of any page clears the pill, so nothing ever ends under it,
-   and clears both where both are there. */
+/* The last line of any page clears the row, so nothing ever ends under it. */
 html.trp-has-pill main { padding-bottom: 72px; }
-html.trp-has-pills main { padding-bottom: 126px; }
 
 /* ---- the side panel ------------------------------------------------- */
 

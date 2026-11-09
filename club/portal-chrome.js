@@ -1099,32 +1099,38 @@
     if (!FEEDBACK_ON) return;
     if (NO_PILL.test(window.location.pathname)) return;
 
-    var pill = el('button', 'trp-pill');
+    var pill = el('button', 'trp-pill is-feedback');
     pill.type = 'button';
     pill.setAttribute('data-feedback-pill', '');
     pill.hidden = true;
     pill.appendChild(icon('M21 11.5a8.38 8.38 0 01-.9 3.8 8.5 8.5 0 01-7.6 4.7 8.38 8.38 0 01-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 01-.9-3.8 8.5 8.5 0 014.7-7.6 8.38 8.38 0 013.8-.9h.5a8.48 8.48 0 018 8v.5z'));
     pill.appendChild(el('span', 'trp-pill-text', 'Feedback'));
     pill.setAttribute('aria-label', 'Give feedback');
-    document.body.appendChild(pill);
-    document.documentElement.classList.add('trp-has-pill');
 
     /* The way to the video testimonial, on every Club page (Ella, 9 Nov).
        A link rather than a button: it goes to a page of its own, so a
        middle click should open it in a tab like any other link.
 
-       It stacks above the feedback pill rather than sitting beside it, so
-       neither covers the other or the page behind them on a phone, where
-       both shrink to a circle. */
-    var winPill = el('a', 'trp-pill is-second');
+       Its label is short because it sits beside the feedback pill rather
+       than above it; the aria-label carries the whole of what it does, and
+       on a narrow phone the trophy carries it alone. */
+    var winPill = el('a', 'trp-pill is-win');
     winPill.setAttribute('data-testimonial-pill', '');
     winPill.href = TESTIMONIAL_PAGE;
     winPill.hidden = true;
     winPill.appendChild(el('span', 'trp-pill-emoji', '🏆'));
-    winPill.appendChild(el('span', 'trp-pill-text', 'Upload your video testimonial to WIN'));
+    winPill.appendChild(el('span', 'trp-pill-text', 'Win'));
     winPill.setAttribute('aria-label', 'Upload your video testimonial to WIN');
-    document.body.appendChild(winPill);
-    document.documentElement.classList.add('trp-has-pills');
+
+    /* One row holds both, so the gap between them is the row's and neither
+       has to know how wide the other is. Feedback sits nearest the corner,
+       where it has always been. */
+    var pills = el('div', 'trp-pills');
+    pills.setAttribute('data-feedback-pills', '');
+    pills.appendChild(winPill);
+    pills.appendChild(pill);
+    document.body.appendChild(pills);
+    document.documentElement.classList.add('trp-has-pill');
 
     var dim = el('div', 'trp-panel-dim');
     dim.hidden = true;
@@ -1238,8 +1244,7 @@
       }
       if (by === lift) return;
       lift = by;
-      pill.style.setProperty('--trp-pill-lift', by + 'px');
-      winPill.style.setProperty('--trp-pill-lift', by + 'px');
+      pills.style.setProperty('--trp-pill-lift', by + 'px');
     }
     var placing = false;
     function placeSoon() {
@@ -1355,6 +1360,7 @@
     window.TRFeedbackPill = {
       el: pill,
       testimonial: winPill,
+      row: pills,
       panel: panel,
       refresh: refresh,
       open: function () { setOpen(true); },
