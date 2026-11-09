@@ -119,6 +119,49 @@ console.log('\nthe page is one centred column, and carries no form of its own');
     /function buildFeedback/.test(CHROME) && HTML.includes('portal-chrome.js'));
 }
 
+console.log('\nthe honeypot is off-screen, not a box above "Your email"');
+{
+  const dom = await openPage('feedback.html');
+  const doc = dom.window.document;
+  const pot = doc.querySelector('.trp-fb-pot');
+
+  check('the honeypot is in the form', pot !== null && pot.name === '_gotcha');
+  /* It sits ahead of the email field in the markup, which is exactly why an
+     unstyled one drew as a box above "Your email". */
+  const inputs = [...doc.querySelector('[data-feedback-form]').querySelectorAll('input')];
+  check('it comes before the email field in the markup',
+    pot !== null && inputs.indexOf(pot) < inputs.indexOf(doc.querySelector('input[name="Email"]')),
+    [inputs.indexOf(pot), inputs.map((i) => i.name)]);
+
+  // The rule that takes it out of the page. jsdom has no layout, so the
+  // stylesheet is what is read -- which is the whole bug: there was no rule.
+  const rule = (CSS.match(/\.trp-fb-pot \{[^}]*\}/) || [''])[0];
+  check('it has a rule of its own at all', rule !== '', rule);
+  check('parked 10000px off to the left, out of the flow',
+    /position: absolute !important/.test(rule) &&
+    /left: -10000px !important/.test(rule) &&
+    /top: auto/.test(rule), rule);
+  check('and given no size or ink',
+    /width: 1px/.test(rule) && /height: 1px/.test(rule) &&
+    /overflow: hidden/.test(rule) && /opacity: 0/.test(rule), rule);
+  check('it is still rendered, so a bot will fill it in',
+    !/display: none/.test(rule) && !/visibility: hidden/.test(rule), rule);
+  check('and still hidden from a screen reader and the Tab key',
+    pot.getAttribute('aria-hidden') === 'true' && pot.tabIndex === -1,
+    [pot.getAttribute('aria-hidden'), pot.tabIndex]);
+
+  // It is the same component in the panel, so it is covered there too.
+  check('the testimonial form has one as well, with the same class',
+    read('club/portal-chrome.js').includes("el('input', 'trp-fb-pot')") &&
+    (CHROME.match(/function honeypot/g) || []).length === 1);
+
+  check('every Club page asks for today’s stylesheet, so the rule arrives',
+    ['index', 'dashboard', 'curriculum', 'resources', 'prompts', 'members',
+     'feedback', 'testimonial'].every((name) =>
+      read('club/' + name + '.html').includes('portal-content.css?v=20261109')));
+  dom.window.close();
+}
+
 console.log('\nthe component mounts on the page, in two steps');
 {
   const dom = await openPage('feedback.html');

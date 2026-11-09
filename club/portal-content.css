@@ -529,6 +529,13 @@ body { animation: trp-fade-in 180ms ease-out both; }
 .trp-fb-help { font-size: 13px; line-height: 1.45; color: var(--trp-muted); }
 .trp-fb-opt { font-weight: 400; color: var(--trp-muted); }
 
+/* The honeypot. It had no rules at all, so it drew as an empty box above
+   "Your email" (Ella, 9 Nov). Taken off-screen rather than display:none or
+   hidden: some bots skip what is not rendered, and the whole point of the
+   field is that a bot fills it in. A screen reader does not reach it
+   either -- the input carries aria-hidden and tabindex -1. */
+.trp-fb-pot { position: absolute !important; left: -10000px !important; top: auto; width: 1px; height: 1px; overflow: hidden; opacity: 0; }
+
 .trp-fb-input, .trp-fb-area {
   width: 100%; font: inherit; font-size: 15px; color: var(--trp-ink);
   background: rgb(var(--c-page)); border: 1px solid var(--trp-rule);
