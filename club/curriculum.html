@@ -1584,9 +1584,10 @@ When you finish:
       // Tool names in a lesson's text link to where you get them.
       var NAME_LINKS = {
         'Wispr Flow': 'https://wisprflow.ai/info/redeem-promo?code=TIMERICH6&months=6',
-        'Stanley': 'https://x.getstanley.ai/r/mz4y9g'   // Stanley's tracking link (Ella, 6 Nov)
+        'Stanley': 'https://x.getstanley.ai/r/mz4y9g',  // Stanley's tracking link (Ella, 6 Nov)
+        'timerichclub.com': 'https://www.timerichclub.com/subscribe'   // Club sign-up (Ella, 9 Nov)
       };
-      var NAME_RE = /(Wispr Flow|Stanley)/;
+      var NAME_RE = /(Wispr Flow|Stanley|timerichclub\.com)/;
       function linkNames(p, line) {
         line.split(NAME_RE).forEach(function (bit, n) {
           if (!bit) return;
