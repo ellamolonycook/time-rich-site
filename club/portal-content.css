@@ -556,6 +556,37 @@ body { animation: trp-fade-in 180ms ease-out both; }
 .trp-fb-scale input:focus-visible + .trp-fb-chip { outline: 2px solid rgb(var(--c-green)); outline-offset: 2px; }
 .trp-fb-ends { display: flex; justify-content: space-between; font-size: 12px; color: var(--trp-muted); }
 
+/* The chips a question is answered with: checkboxes where more than one
+   answer is true, radios where only one is. They wrap rather than sit on a
+   grid, because the labels are words of very different lengths -- a grid
+   would set every chip to the width of "Not sure what to do next". */
+.trp-fb-chips { display: flex; flex-wrap: wrap; gap: 8px; }
+.trp-fb-chips input { position: absolute; width: 1px; height: 1px; opacity: 0; pointer-events: none; }
+.trp-fb-chips .trp-fb-chip { padding: 0 14px; }
+.trp-fb-chips input:checked + .trp-fb-chip { background: rgb(var(--c-green)); border-color: rgb(var(--c-green)); color: rgb(var(--c-page)); }
+.trp-fb-chips input:focus-visible + .trp-fb-chip { outline: 2px solid rgb(var(--c-green)); outline-offset: 2px; }
+
+/* A founder per row: three fields side by side with room for them, stacked
+   on a phone where three boxes on one line would each be 80px wide. */
+.trp-fb-rows { display: flex; flex-direction: column; gap: 16px; }
+.trp-fb-row { display: grid; grid-template-columns: minmax(0, 1fr); gap: 10px; }
+@media (min-width: 640px) { .trp-fb-row { grid-template-columns: minmax(0, 1fr) minmax(0, 1.2fr) minmax(0, 1.2fr); gap: 8px; } }
+.trp-fb-rowlabel { font-size: 12px; font-weight: 600; color: var(--trp-muted); }
+
+/* A link inside a label or a line of copy, where the words around it carry
+   the weight and only the link itself is marked. */
+.trp-fb-link { color: var(--trp-ink); text-decoration: underline; text-underline-offset: 2px; }
+.trp-fb-link:hover { color: rgb(var(--c-green)); }
+.trp-fb-link:focus-visible { outline: 2px solid rgb(var(--c-green)); outline-offset: 2px; border-radius: 4px; }
+
+/* The quiet line that points somewhere else: the testimonial page from the
+   feedback form, the VIP prize under the testimonial form. */
+.trp-fb-nudge { margin: 4px 0 0; font-size: 13.5px; line-height: 1.5; color: var(--trp-muted); text-align: center; }
+.trp-fb-settled .trp-fb-nudge, .trp-fb-thanks .trp-fb-nudge { margin-top: 10px; }
+
+/* The points a video should hit. */
+.trp-fb-points { margin: 0; padding-left: 20px; display: flex; flex-direction: column; gap: 4px; font-size: 13.5px; line-height: 1.45; color: var(--trp-muted); }
+
 /* ---- the two short answers, side by side on a laptop ---------------- */
 
 .trp-fb-two { display: grid; grid-template-columns: minmax(0, 1fr); gap: 24px; }
@@ -670,8 +701,19 @@ body { animation: trp-fade-in 180ms ease-out both; }
   .trp-pill .trp-pill-text { display: none; }
 }
 
-/* The last line of any page clears the pill, so nothing ever ends under it. */
+/* The testimonial pill sits above the feedback one, a pill's height clear of
+   it, and rides the footer with it through the same --trp-pill-lift. */
+.trp-pill.is-second { bottom: calc(20px + env(safe-area-inset-bottom) + var(--trp-pill-lift, 0px) + 50px); }
+.trp-pill-emoji { font-size: 15px; line-height: 1; }
+
+@media (max-width: 639px) {
+  .trp-pill.is-second { bottom: calc(16px + env(safe-area-inset-bottom) + var(--trp-pill-lift, 0px) + 54px); }
+}
+
+/* The last line of any page clears the pill, so nothing ever ends under it,
+   and clears both where both are there. */
 html.trp-has-pill main { padding-bottom: 72px; }
+html.trp-has-pills main { padding-bottom: 126px; }
 
 /* ---- the side panel ------------------------------------------------- */
 

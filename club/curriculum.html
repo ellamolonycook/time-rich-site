@@ -2720,9 +2720,10 @@ Anything you've done twice should never need you again. A skill is your way of d
          Last in the panel, so it never comes before the week's own work, and
          on a week that has not opened yet as well -- the form asks how the
          accelerator is going, which is a fair question either way. */
-      /* Switched off until Ella approves the new feedback form (8 Nov).
-         Turn back on by setting FEEDBACK_ON to true. */
-      var FEEDBACK_ON = false;
+      /* Switched off on 8 Nov until Ella approved the new feedback form;
+         her 9 Nov brief is that approval, so the ask is back. Set
+         FEEDBACK_ON to false to take it off the foot of the week again. */
+      var FEEDBACK_ON = true;
       function feedbackAsk() {
         if (!FEEDBACK_ON) return document.createDocumentFragment();
         var ask = L.el('a', 'trp-cw-ask', "How's it going? Tell us in 2 minutes");

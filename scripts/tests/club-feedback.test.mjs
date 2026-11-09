@@ -128,8 +128,8 @@ console.log('\nthe component mounts on the page, in two steps');
 
   const steps = [...doc.querySelectorAll('.trp-fb-step')];
   check('there is a two-step indicator', steps.length === 2, steps.length);
-  check('reading Feedback then Testimonial',
-    steps.map((s) => s.textContent).join('|') === '1Feedback|2Testimonial',
+  check('reading Feedback then Next cohort',
+    steps.map((s) => s.textContent).join('|') === '1Feedback|2Next cohort',
     steps.map((s) => s.textContent));
   check('step 1 is the one filled in', steps[0].classList.contains('is-on') &&
     !steps[1].classList.contains('is-on'));
@@ -143,54 +143,113 @@ console.log('\nthe component mounts on the page, in two steps');
     doc.querySelector('[data-feedback-step="1"]').hidden === false &&
     doc.querySelector('[data-feedback-step="2"]').hidden === true);
 
-  // Step 1's shape.
-  check('email is first, and slim', form.querySelector('input[name="Email"]') !== null);
-  const chips = [...form.querySelectorAll('input[name="Rating"]')];
-  check('ten rating chips, 1 to 10',
-    chips.length === 10 && chips.map((c) => c.value).join(',') === '1,2,3,4,5,6,7,8,9,10',
-    chips.map((c) => c.value));
-  check('they fill the row in ten equal columns',
-    /\.trp-fb-scale \{[^}]*grid-template-columns: repeat\(10, minmax\(0, 1fr\)\)/.test(CSS));
-  check('and wrap to two rows of five on a narrow phone',
-    /@media \(max-width: 420px\) \{ \.trp-fb-scale \{ grid-template-columns: repeat\(5/.test(CSS));
+  /* ---- step 1's shape: Ella's six questions, mostly tapped ---- */
+
+  const step1 = doc.querySelector('[data-feedback-step="1"]');
+  const text1 = step1.textContent.replace(/\s+/g, ' ');
+  check('it opens by asking how it is going, and says to tap',
+    /How’s it going\?/.test(text1) && /Tap to answer\./.test(text1), text1.slice(0, 80));
+  check('email is first, and still required',
+    form.querySelector('input[name="Email"]') !== null &&
+    form.querySelector('input[name="Email"]').required === true);
+  check('with the helper line Ella asked for',
+    /So we can thank you, and reach you about the Testimonial Prize\./.test(text1));
+
+  // The questions, in order, with the labels the brief gives.
+  const legends = [...step1.querySelectorAll('legend')].map((l) => l.textContent);
+  check('four tapped questions, in Ella\'s order',
+    legends.length === 4 &&
+    legends[0] === 'What have you built so far? (tap all that apply)' &&
+    legends[1] === 'Time saved this week?' &&
+    legends[2] === 'What’s slowing you down?' &&
+    legends[3] === 'Would you tell a founder friend to join the next cohort?',
+    legends);
+
+  const groups = [...step1.querySelectorAll('.trp-fb-chips')];
+  check('each is a row of chips', groups.length === 4, groups.length);
+  const vals = (i) => [...groups[i].querySelectorAll('input')].map((n) => n.value);
+  check('"built so far" is multi-select, with the seven things',
+    [...groups[0].querySelectorAll('input')].every((n) => n.type === 'checkbox') &&
+    vals(0).join('|') === ['Business Hub', 'Business COMPASS', 'Sales Floor / CRM',
+      'Daily number', 'Stanley set up', 'First post live', 'An agent running'].join('|'),
+    vals(0));
+  check('time saved is one of four, single choice',
+    [...groups[1].querySelectorAll('input')].every((n) => n.type === 'radio') &&
+    vals(1).join('|') === 'None yet|1–2 hours|3–5 hours|6+ hours', vals(1));
+  check('what is slowing them down is one of five',
+    [...groups[2].querySelectorAll('input')].every((n) => n.type === 'radio') &&
+    vals(2).join('|') === ['Finding the time', 'Tech setup', 'Not sure what to do next',
+      'Knowing what to post', 'Nothing, I’m flying'].join('|'), vals(2));
+  check('and the recommendation is Yes, Maybe or Not yet',
+    [...groups[3].querySelectorAll('input')].every((n) => n.type === 'radio') &&
+    vals(3).join('|') === 'Yes|Maybe|Not yet', vals(3));
+  check('a radio group is one group, so only one chip can be on at a time',
+    new Set([...groups[1].querySelectorAll('input')].map((n) => n.name)).size === 1);
+  check('the chips wrap rather than sitting on a grid of equal columns',
+    /\.trp-fb-chips \{ display: flex; flex-wrap: wrap/.test(CSS));
   check('the chosen chip fills dark green',
-    /input:checked \+ \.trp-fb-chip \{[^}]*background: rgb\(var\(--c-green\)\)/.test(CSS));
-  const ends = form.querySelector('.trp-fb-ends');
-  check('the two ends are captioned under it',
-    ends !== null && /1 · not great/.test(ends.textContent) && /10 · brilliant/.test(ends.textContent),
-    ends && ends.textContent);
+    /\.trp-fb-chips input:checked \+ \.trp-fb-chip \{[^}]*background: rgb\(var\(--c-green\)\)/.test(CSS));
 
-  const two = form.querySelector('.trp-fb-two');
-  check('the two short answers are side by side on a laptop',
-    two !== null && /@media \(min-width: 640px\) \{ \.trp-fb-two \{ grid-template-columns: repeat\(2/.test(CSS));
-  check('and both are textareas that grow as you type',
-    two.querySelectorAll('textarea').length === 2 && /function autoGrow/.test(CHROME));
-  check('capped around six lines', /line \* 6/.test(CHROME));
+  // The two written answers.
+  const areas = [...step1.querySelectorAll('textarea')];
+  check('two written answers, named for the Notion columns',
+    areas.length === 2 && areas[0].name === 'Learn in last sessions' &&
+    areas[1].name === 'Win or change', areas.map((a) => a.name));
+  check('both grow as you type, capped around six lines',
+    /function autoGrow/.test(CHROME) && /line \* 6/.test(CHROME));
+  const learnLabel = doc.querySelector('label[for="' + areas[0].id + '"]');
+  check('the sessions question says to say it with Wispr Flow',
+    /What do you want to learn in our last two sessions\? \(say it with Wispr Flow\)/
+      .test(learnLabel.textContent.replace(/\s+/g, ' ')), learnLabel.textContent);
+  const wispr = learnLabel.querySelector('a');
+  check('and Wispr Flow is the promo link, in a new tab',
+    wispr.getAttribute('href') === 'https://wisprflow.ai/info/redeem-promo?code=TIMERICH6&months=6' &&
+    wispr.getAttribute('target') === '_blank' && /noopener/.test(wispr.getAttribute('rel')),
+    wispr.getAttribute('href'));
+  check('the win-or-change answer is marked optional',
+    /One win, or one thing to change \(optional\)/
+      .test(doc.querySelector('label[for="' + areas[1].id + '"]').textContent.replace(/\s+/g, ' ')));
 
-  // The field nobody needed is gone.
-  check('the "Link to it" field is gone',
-    form.querySelector('[name="LinkedIn recommendation link"]') === null);
-  check('and nothing on the page mentions it',
-    !/LinkedIn recommendation link/.test(HTML) && !/LinkedIn recommendation link/.test(CHROME));
+  // What the old form had and this one does not.
+  check('the 1 to 10 rating is gone',
+    form.querySelector('[name="Rating"]') === null && !/name = .Rating./.test(CHROME));
+  check('and so are the old written answers',
+    form.querySelector('[name="Most useful"]') === null &&
+    form.querySelector('[name="One thing to change"]') === null);
+  check('the old testimonial step is off this form',
+    form.querySelector('[name="LinkedIn video post"]') === null &&
+    form.querySelector('[data-feedback-rec]') === null);
+  check('and "Link to it" is still gone',
+    form.querySelector('[name="LinkedIn recommendation link"]') === null &&
+    !/LinkedIn recommendation link/.test(HTML));
   dom.window.close();
 }
 
 /* ---- step 1 to step 2 to sent ------------------------------------------ */
 
-function fill(doc, { email = 'eve@example.com', rating = '9', useful, change } = {}) {
+/* Email is the only thing step 1 insists on now, so the helper fills that
+   by default and takes the taps and the typing as extras. */
+function fill(doc, { email = 'eve@example.com', built, saved, slowing,
+                     recommend, learn, win } = {}) {
   const form = doc.querySelector('[data-feedback-form]');
+  const view = doc.defaultView;
   const set = (node, value) => {
     node.value = value;
-    node.dispatchEvent(new doc.defaultView.Event('input', { bubbles: true }));
+    node.dispatchEvent(new view.Event('input', { bubbles: true }));
+  };
+  const tap = (groupIndex, value) => {
+    const group = [...form.querySelectorAll('.trp-fb-chips')][groupIndex];
+    const input = [...group.querySelectorAll('input')].find((n) => n.value === value);
+    input.checked = true;
+    input.dispatchEvent(new view.Event('change', { bubbles: true }));
   };
   if (email !== null) set(form.querySelector('input[name="Email"]'), email);
-  if (rating !== null) {
-    const chip = form.querySelector('input[name="Rating"][value="' + rating + '"]');
-    chip.checked = true;
-    chip.dispatchEvent(new doc.defaultView.Event('change', { bubbles: true }));
-  }
-  if (useful) set(form.querySelector('textarea[name="Most useful"]'), useful);
-  if (change) set(form.querySelector('textarea[name="One thing to change"]'), change);
+  if (built) built.forEach((v) => tap(0, v));
+  if (saved) tap(1, saved);
+  if (slowing) tap(2, slowing);
+  if (recommend) tap(3, recommend);
+  if (learn) set(form.querySelector('textarea[name="Learn in last sessions"]'), learn);
+  if (win) set(form.querySelector('textarea[name="Win or change"]'), win);
   return form;
 }
 const clickOn = (doc, sel) => {
@@ -199,7 +258,7 @@ const clickOn = (doc, sel) => {
   return node;
 };
 
-console.log('\nNext is blocked until there is an email and a rating');
+console.log('\nNext is blocked until there is an email');
 {
   const dom = await openPage('feedback.html');
   const doc = dom.window.document;
@@ -210,20 +269,15 @@ console.log('\nNext is blocked until there is an email and a rating');
   check('tapping it early does not advance',
     doc.querySelector('[data-feedback-step="2"]').hidden === true);
   const hint = doc.querySelector('[data-feedback-step="1"] .trp-fb-msg');
-  check('and a hint says why', hint.hidden === false && /email/i.test(hint.textContent),
+  check('and a hint asks for the email', hint.hidden === false && /email/i.test(hint.textContent),
     hint.textContent);
 
-  // Email only: still blocked, and the hint now names the rating.
-  fill(doc, { rating: null });
-  check('with just an email it is still unavailable',
-    next.getAttribute('aria-disabled') === 'true');
-  clickOn(doc, '[data-feedback-next]');
-  check('still on step 1', doc.querySelector('[data-feedback-step="2"]').hidden === true);
-  check('and the hint asks for the number', /1 to 10/.test(hint.textContent), hint.textContent);
+  check('a half-typed address is not enough',
+    (fill(doc, { email: 'eve@' }), next.getAttribute('aria-disabled') === 'true'));
 
-  // Rating too: now it goes.
+  // An email is all it wants: the taps are Ella's questions, not a gate.
   fill(doc);
-  check('with both, Next becomes available', next.getAttribute('aria-disabled') === 'false');
+  check('with an email, Next becomes available', next.getAttribute('aria-disabled') === 'false');
   check('and the hint is put away', hint.hidden === true);
   clickOn(doc, '[data-feedback-next]');
   check('step 2 replaces step 1',
@@ -241,7 +295,7 @@ console.log('\nNext is blocked until there is an email and a rating');
   dom.window.close();
 }
 
-console.log('\nstep 2 is the testimonial, and it is optional');
+console.log('\nstep 2 asks who should be in the next cohort, and is optional');
 {
   const dom = await openPage('feedback.html');
   const doc = dom.window.document;
@@ -250,60 +304,49 @@ console.log('\nstep 2 is the testimonial, and it is optional');
   const step2 = doc.querySelector('[data-feedback-step="2"]');
   const text = step2.textContent.replace(/\s+/g, ' ');
 
-  check('a slim prize banner is at the top',
-    /Do both to enter the Testimonial Prize: a 30-minute strategy call with our mentors\./.test(text));
-  const tiles = [...step2.querySelectorAll('.trp-fb-tile')];
-  check('two tiles', tiles.length === 2, tiles.length);
-  check('side by side on a laptop, stacked on a phone, equal height',
-    /@media \(min-width: 640px\) \{ \.trp-fb-tiles \{ grid-template-columns: repeat\(2/.test(CSS) &&
-    /\.trp-fb-tile \{[^}]*height: 100%/.test(CSS));
+  check('the heading says so, and marks itself optional',
+    /Who should be in the next cohort\? \(optional\)/.test(text), text.slice(0, 80));
+  check('and it asks for the founders',
+    /Which founders in your network should join the next cohort\?/.test(text));
 
-  check('the written tile is Recommend Ella',
-    tiles[0].textContent.includes('Recommend Ella') &&
-    tiles[0].textContent.includes('On her profile: More, then Recommend.'));
-  const ella = tiles[0].querySelector('a');
-  check('with a secondary button to her profile, in a new tab',
-    ella.getAttribute('href') === 'https://www.linkedin.com/in/ellamolonycook/' &&
-    ella.getAttribute('target') === '_blank' && /noopener/.test(ella.getAttribute('rel')) &&
-    ella.classList.contains('is-soft'),
-    [ella.getAttribute('href'), ella.className]);
-  check('and a toggle that says "I\'ve done it"',
-    tiles[0].querySelector('[data-feedback-rec]') !== null &&
-    tiles[0].textContent.includes("I've done it"));
+  const rows = () => [...step2.querySelectorAll('[data-feedback-founder-row]')];
+  check('one row to begin with', rows().length === 1, rows().length);
+  check('of Name, LinkedIn and Email',
+    rows()[0].querySelectorAll('input').length === 3 &&
+    [...rows()[0].querySelectorAll('label')].map((l) => l.textContent).join('|') ===
+      'Name|LinkedIn|Email',
+    [...rows()[0].querySelectorAll('label')].map((l) => l.textContent));
+  check('side by side on a laptop, stacked on a phone',
+    /@media \(min-width: 640px\) \{ \.trp-fb-row \{ grid-template-columns: minmax\(0, 1fr\)/.test(CSS) &&
+    /\.trp-fb-row \{ display: grid; grid-template-columns: minmax\(0, 1fr\); gap: 10px/.test(CSS));
 
-  check('the video tile is Post a video',
-    tiles[1].textContent.includes('Post a video') &&
-    tiles[1].textContent.includes('30 to 60 seconds on LinkedIn about what you’ve built.') &&
-    tiles[1].textContent.includes('Tag Ella Molony Cook and use #trcsuperhuman.'));
-  check('with one field for the post link',
-    tiles[1].querySelector('[name="LinkedIn video post"]') !== null);
+  const add = step2.querySelector('[data-feedback-founder-add]');
+  check('with a way to add another', add !== null && add.textContent === '+ Add another');
+  for (let i = 0; i < 4; i++) add.dispatchEvent(new dom.window.MouseEvent('click', { bubbles: true }));
+  check('up to five rows', rows().length === 5, rows().length);
+  check('and then the button takes itself away', add.hidden === true);
+  add.dispatchEvent(new dom.window.MouseEvent('click', { bubbles: true }));
+  check('so a sixth cannot be added', rows().length === 5, rows().length);
 
-  check('one checkbox under the tiles, unticked',
+  check('one checkbox under them, unticked',
     doc.querySelector('[data-feedback-feature]').checked === false &&
-    text.includes('Time Rich can share my feedback and testimonial'));
+    /Time Rich can share my feedback/.test(text));
+  check('and it no longer says "and testimonial", which is its own page now',
+    !/share my feedback and testimonial/.test(text));
 
-  check('the footer has Back on the left',
-    step2.querySelector('[data-feedback-back]') !== null);
-  check('and Skip plus Send it on the right',
-    step2.querySelector('.trp-fb-foot-right [data-feedback-skip]') !== null &&
+  const go = step2.querySelector('[data-feedback-testimonial-link]');
+  check('a line points at the testimonial page',
+    go !== null && go.getAttribute('href') === '/club/testimonial' &&
+    go.textContent === 'Upload your video testimonial to WIN',
+    go && go.getAttribute('href'));
+  check('introduced the way Ella wrote it',
+    /🏆 Got a minute later\? Upload your video testimonial to WIN/.test(text), text);
+
+  check('the footer has Back on the left', step2.querySelector('[data-feedback-back]') !== null);
+  check('and Send it on the right',
     step2.querySelector('.trp-fb-foot-right [data-feedback-send]') !== null);
-  check('Skip reads as Ella wrote it',
-    step2.querySelector('[data-feedback-skip]').textContent === 'Skip, just send my feedback');
-
-  // The LinkedIn check, inline under the field.
-  const video = tiles[1].querySelector('[name="LinkedIn video post"]');
-  video.value = 'https://example.com/post';
-  video.dispatchEvent(new dom.window.FocusEvent('blur'));
-  const vErr = doc.querySelector('[data-feedback-video-error]');
-  check('a link that is not LinkedIn is refused inline',
-    vErr.hidden === false && /linkedin\.com\/posts/.test(vErr.textContent), vErr.textContent);
-  check('and the field is marked invalid', video.getAttribute('aria-invalid') === 'true');
-  video.value = 'https://www.linkedin.com/posts/eve_123';
-  video.dispatchEvent(new dom.window.FocusEvent('blur'));
-  check('a LinkedIn link clears it', vErr.hidden === true);
-  check('it is the same check the draw uses',
-    CHROME.includes('/linkedin\\.com\\/./i') &&
-    read('contentworkshop/index.html').includes('/linkedin\\.com\\/./i'));
+  check('the Skip button is gone: step 2 is optional in itself',
+    step2.querySelector('[data-feedback-skip]') === null);
   dom.window.close();
 }
 
@@ -311,11 +354,25 @@ console.log('\nSend posts once, with the names the Worker expects');
 {
   const dom = await openPage('feedback.html');
   const doc = dom.window.document;
-  fill(doc, { useful: 'The hot seats.', change: 'More prompts.' });
+  fill(doc, {
+    built: ['Business Hub', 'Daily number'],
+    saved: '3–5 hours',
+    slowing: 'Finding the time',
+    recommend: 'Yes',
+    learn: 'More on agents.',
+    win: 'The hot seats.',
+  });
   clickOn(doc, '[data-feedback-next]');
 
-  doc.querySelector('[data-feedback-rec]').checked = true;
-  doc.querySelector('[name="LinkedIn video post"]').value = 'https://www.linkedin.com/posts/eve_123';
+  const rows = [...doc.querySelectorAll('[data-feedback-founder-row]')];
+  const type = (row, i, value) => { row.querySelectorAll('input')[i].value = value; };
+  type(rows[0], 0, 'Ada');
+  type(rows[0], 1, 'linkedin.com/in/ada');
+  type(rows[0], 2, 'ada@example.com');
+  doc.querySelector('[data-feedback-founder-add]')
+    .dispatchEvent(new dom.window.MouseEvent('click', { bubbles: true }));
+  const second = [...doc.querySelectorAll('[data-feedback-founder-row]')][1];
+  type(second, 0, 'Grace');                         // a part-filled row still counts
   doc.querySelector('[data-feedback-feature]').checked = true;
 
   const send = doc.querySelector('[data-feedback-send]');
@@ -330,18 +387,26 @@ console.log('\nSend posts once, with the names the Worker expects');
     posts[0].url === 'https://time-rich-forms.timerich.workers.dev/feedback', posts[0].url);
 
   const body = posts[0].body;
-  const WANT = ['Name', 'Email', 'Rating', 'Most useful', 'One thing to change',
-    'LinkedIn recommendation', 'LinkedIn video post', 'OK to feature', 'Source', '_gotcha'];
+  const WANT = ['Name', 'Email', 'Built so far', 'Time saved', 'Slowing me down',
+    'Would recommend', 'Learn in last sessions', 'Win or change', 'Founders to invite',
+    'OK to feature', 'Source', '_gotcha'];
   check('exactly the expected field names',
     JSON.stringify(Object.keys(body).sort()) === JSON.stringify([...WANT].sort()),
     Object.keys(body));
-  check('and "LinkedIn recommendation link" is not among them',
-    !('LinkedIn recommendation link' in body));
   check('the name came off the session', body.Name === 'Eve', body.Name);
-  check('the answers are carried', body.Email === 'eve@example.com' && body.Rating === '9' &&
-    body['Most useful'] === 'The hot seats.' && body['One thing to change'] === 'More prompts.',
-    body);
-  check('the toggle on sends Done', body['LinkedIn recommendation'] === 'Done');
+  check('the email is carried', body.Email === 'eve@example.com', body.Email);
+  check('the multi-select is the labels, joined with a comma',
+    body['Built so far'] === 'Business Hub, Daily number', body['Built so far']);
+  check('the single choices are the labels themselves',
+    body['Time saved'] === '3–5 hours' && body['Slowing me down'] === 'Finding the time' &&
+    body['Would recommend'] === 'Yes',
+    [body['Time saved'], body['Slowing me down'], body['Would recommend']]);
+  check('the written answers are carried',
+    body['Learn in last sessions'] === 'More on agents.' &&
+    body['Win or change'] === 'The hot seats.', body);
+  check('the founders are one field, a line each, piped',
+    body['Founders to invite'] === 'Ada | linkedin.com/in/ada | ada@example.com\nGrace |  | ',
+    body['Founders to invite']);
   check('the checkbox ticked sends Yes', body['OK to feature'] === 'Yes');
   check('and Source is club-feedback', body.Source === 'club-feedback');
 
@@ -350,7 +415,7 @@ console.log('\nSend posts once, with the names the Worker expects');
   dom.window.close();
 }
 
-console.log('\nthe toggle off and the box unticked send the other value');
+console.log('\nnothing tapped and nothing typed still sends');
 {
   const dom = await openPage('feedback.html');
   const doc = dom.window.document;
@@ -359,24 +424,12 @@ console.log('\nthe toggle off and the box unticked send the other value');
   clickOn(doc, '[data-feedback-send]');
   await tick();
   const body = dom.window.posts[0].body;
-  check('an untouched toggle sends Not yet', body['LinkedIn recommendation'] === 'Not yet', body['LinkedIn recommendation']);
+  check('every unanswered question sends empty, not missing',
+    body['Built so far'] === '' && body['Time saved'] === '' &&
+    body['Slowing me down'] === '' && body['Would recommend'] === '', body);
+  check('the empty founder row is dropped', body['Founders to invite'] === '',
+    body['Founders to invite']);
   check('and an unticked box sends No', body['OK to feature'] === 'No', body['OK to feature']);
-  dom.window.close();
-}
-
-console.log('\n"Skip, just send my feedback" posts once too');
-{
-  const dom = await openPage('feedback.html');
-  const doc = dom.window.document;
-  fill(doc);
-  clickOn(doc, '[data-feedback-next]');
-  const skip = doc.querySelector('[data-feedback-skip]');
-  skip.dispatchEvent(new dom.window.MouseEvent('click', { bubbles: true }));
-  skip.dispatchEvent(new dom.window.MouseEvent('click', { bubbles: true }));
-  await tick();
-  check('one POST', dom.window.posts.length === 1, dom.window.posts.length);
-  check('carrying the feedback that was filled in',
-    dom.window.posts[0].body.Rating === '9');
   dom.window.close();
 }
 
@@ -391,8 +444,6 @@ console.log('\nthe thank-you eases in, then settles');
   const doc = dom.window.document;
   fill(doc);
   clickOn(doc, '[data-feedback-next]');
-  doc.querySelector('[data-feedback-rec]').checked = true;
-  doc.querySelector('[name="LinkedIn video post"]').value = 'https://www.linkedin.com/posts/eve_123';
   clickOn(doc, '[data-feedback-send]');
   await tick();
 
@@ -419,9 +470,13 @@ console.log('\nthe thank-you eases in, then settles');
     /animation: trp-fb-draw 400ms/.test(CSS));
   check('it says Thank you!!',
     /Thank you!! 💚/.test(thanks.textContent), thanks.textContent);
-  check('and because they did both halves, it names the prize',
-    thanks.textContent.includes("You're in the running for the Testimonial Prize."),
+  check('it thanks them for the feedback itself',
+    thanks.textContent.includes('This genuinely shapes what we build next.'),
     thanks.textContent);
+  check('and points at the testimonial page, which is the next thing to do',
+    thanks.querySelector('[data-feedback-testimonial-link]') !== null &&
+    thanks.querySelector('[data-feedback-testimonial-link]').getAttribute('href') ===
+      '/club/testimonial');
 
   // Then it settles, in the same spot.
   await new Promise((r) => setTimeout(r, 320));
@@ -434,23 +489,9 @@ console.log('\nthe thank-you eases in, then settles');
   check('with a way back to the course',
     done !== null && done.getAttribute('href') === '/club/curriculum',
     done && done.getAttribute('href'));
+  check('the settled state points at the testimonial page too',
+    thanks.querySelector('[data-feedback-testimonial-link]') !== null);
   check('and the page did not go blank', doc.querySelector('.trp-fb-wrap') !== null);
-  dom.window.close();
-}
-
-console.log('\nonly one half done gets the other line');
-{
-  const dom = await openPage('feedback.html', { settleMs: 9999 });
-  const doc = dom.window.document;
-  fill(doc);
-  clickOn(doc, '[data-feedback-next]');
-  doc.querySelector('[data-feedback-rec]').checked = true;      // written only
-  clickOn(doc, '[data-feedback-send]');
-  await new Promise((r) => setTimeout(r, 260));
-  const thanks = doc.querySelector('[data-feedback-thanks]');
-  check('it thanks them without promising the prize',
-    thanks.textContent.includes('This genuinely shapes what we build next.') &&
-    !thanks.textContent.includes('Testimonial Prize'), thanks.textContent);
   dom.window.close();
 }
 
@@ -474,7 +515,7 @@ console.log('\non an error the form stays put and keeps what they typed');
 {
   const dom = await openPage('feedback.html', { httpOk: false, reply: { ok: false, error: 'Notion is down.' } });
   const doc = dom.window.document;
-  fill(doc, { useful: 'Keep this.' });
+  fill(doc, { saved: '6+ hours', win: 'Keep this.' });
   clickOn(doc, '[data-feedback-next]');
   clickOn(doc, '[data-feedback-send]');
   await tick();
@@ -489,10 +530,11 @@ console.log('\non an error the form stays put and keeps what they typed');
   check('and it sits above the buttons',
     err.nextElementSibling !== null && err.nextElementSibling.classList.contains('trp-fb-foot'));
 
-  check('everything they typed is still in the fields',
+  check('everything they typed and tapped is still there',
     doc.querySelector('input[name="Email"]').value === 'eve@example.com' &&
-    doc.querySelector('textarea[name="Most useful"]').value === 'Keep this.' &&
-    doc.querySelector('input[name="Rating"][value="9"]').checked === true);
+    doc.querySelector('textarea[name="Win or change"]').value === 'Keep this.' &&
+    [...doc.querySelectorAll('.trp-fb-chips input')]
+      .some((n) => n.value === '6+ hours' && n.checked));
   check('and Send it can be pressed again',
     doc.querySelector('[data-feedback-send]').disabled === false &&
     doc.querySelector('[data-feedback-send]').textContent === 'Send it');
@@ -519,7 +561,7 @@ console.log('\nthe pill is on every Club page but the form and sign-in');
   check('signin.html does not load the chrome at all',
     !read('club/signin.html').includes('portal-chrome.js'));
   check('and the pill would refuse that address anyway',
-    /NO_PILL = \/\\\/club\\\/\(feedback\|signin\)/.test(CHROME),
+    /NO_PILL = .*feedback\|testimonial\|signin/.test(CHROME),
     (CHROME.match(/var NO_PILL = .*/) || [])[0]);
 }
 
@@ -726,7 +768,8 @@ console.log('\na submit from the panel posts the same fields as the page');
   const email = panel.querySelector('input[name="Email"]');
   email.value = 'eve@example.com';
   email.dispatchEvent(new dom.window.Event('input', { bubbles: true }));
-  const chip = panel.querySelector('input[name="Rating"][value="7"]');
+  const chip = [...panel.querySelectorAll('.trp-fb-chips input')]
+    .find((n) => n.value === '6+ hours');
   chip.checked = true;
   chip.dispatchEvent(new dom.window.Event('change', { bubbles: true }));
   panel.querySelector('[data-feedback-next]')
@@ -737,12 +780,15 @@ console.log('\na submit from the panel posts the same fields as the page');
   await tick();
 
   check('one POST from the panel', dom.window.posts.length === 1, dom.window.posts.length);
-  const WANT = ['Name', 'Email', 'Rating', 'Most useful', 'One thing to change',
-    'LinkedIn recommendation', 'LinkedIn video post', 'OK to feature', 'Source', '_gotcha'];
+  const WANT = ['Name', 'Email', 'Built so far', 'Time saved', 'Slowing me down',
+    'Would recommend', 'Learn in last sessions', 'Win or change', 'Founders to invite',
+    'OK to feature', 'Source', '_gotcha'];
   check('with the same field names as the page',
     JSON.stringify(Object.keys(dom.window.posts[0].body).sort()) === JSON.stringify([...WANT].sort()),
     Object.keys(dom.window.posts[0].body));
-  check('and the rating that was picked', dom.window.posts[0].body.Rating === '7');
+  check('and the answer that was tapped',
+    dom.window.posts[0].body['Time saved'] === '6+ hours',
+    dom.window.posts[0].body['Time saved']);
 
   // It shows the same thank-you, then closes itself.
   await new Promise((r) => setTimeout(r, 300));
@@ -773,6 +819,352 @@ console.log('\nthe footer still points at the page as well');
   }
   check('and every week still ends by asking',
     /How's it going\? Tell us in 2 minutes/.test(read('club/curriculum.html')));
+}
+
+/* ---- the testimonial page ---------------------------------------------- */
+
+/* Ella, 9 Nov: members cannot do the feedback and the video in one sitting,
+   so the video testimonial is its own page they can come back to. Same
+   shell as the feedback page, no side panel, and the video link is the one
+   thing it will not send without. */
+
+const TEST_HTML = read('club/testimonial.html');
+
+console.log('\nthe testimonial page is the same shell as the feedback page');
+{
+  const doc = new JSDOM(TEST_HTML, { virtualConsole: new VirtualConsole() }).window.document;
+
+  check('the session gate is on it', /<html[^>]*data-trp-gate/.test(TEST_HTML));
+  check('and it loads the gate script', TEST_HTML.includes('portal-access.js'));
+  check('it loads the chrome that builds the form', TEST_HTML.includes('portal-chrome.js'));
+  check('with no form markup of its own', doc.querySelector('form') === null);
+  check('one container for the component', doc.querySelectorAll('[data-testimonial-mount]').length === 1);
+  check('and not the feedback one', doc.querySelector('[data-feedback-mount]') === null);
+
+  check('one centred column, the same as the feedback page',
+    doc.querySelectorAll('.trp-fb-wrap').length === 1 &&
+    doc.querySelector('.trp-fb-wrap > .trp-fb-back') !== null);
+  check('the back link goes to the course',
+    doc.querySelector('.trp-fb-back').getAttribute('href') === 'curriculum' &&
+    doc.querySelector('.trp-fb-back').textContent.trim().endsWith('Back to the course'));
+
+  const head = doc.querySelector('.trp-fb-head');
+  check('the eyebrow reads Testimonial',
+    head.querySelector('.trp-fb-eyebrow').textContent === 'Testimonial');
+  check('the h1 is Ella\'s line',
+    head.querySelector('h1').textContent.replace(/\s+/g, ' ') === '🏆 Your testimonial: WIN',
+    head.querySelector('h1').textContent);
+  check('and the line under it names the prize and the date',
+    head.querySelector('.trp-fb-lede').textContent ===
+    'Do both by Mon 16 Nov to enter the Testimonial Prize (3 winners): a 30-minute strategy call with our mentors.',
+    head.querySelector('.trp-fb-lede').textContent);
+
+  check('it is its own canonical address',
+    TEST_HTML.includes('<link rel="canonical" href="https://timerich.ai/club/testimonial" />') &&
+    !TEST_HTML.includes('timerich.ai/club/feedback'));
+  check('with its own title', /<title>Your testimonial \| Time Rich Club<\/title>/.test(TEST_HTML));
+  check('and the theme control has an id of its own, not the feedback page\'s',
+    TEST_HTML.includes('id="theme-testimonial"') && !TEST_HTML.includes('theme-feedback'));
+  check('the footer is the Club footer',
+    TEST_HTML.includes('<a href="/club/feedback" class="trp-foot-link">Give feedback</a>'));
+  check('and the prefetch rules already cover a new /club page',
+    /"href_matches": "\/club\/:page"/.test(TEST_HTML));
+}
+
+console.log('\nthe testimonial form asks for the recommendation, then the video');
+{
+  const dom = await openPage('testimonial.html');
+  const doc = dom.window.document;
+  const form = doc.querySelector('[data-testimonial-form]');
+  check('the form is built into the page', form !== null);
+  check('and it is not the two-step feedback form',
+    doc.querySelector('[data-feedback-form]') === null &&
+    doc.querySelector('.trp-fb-steps') === null);
+
+  check('email is first, and required',
+    form.querySelector('input[name="Email"]') !== null &&
+    form.querySelector('input[name="Email"]').required === true);
+  check('with the same helper line as the feedback form',
+    /So we can thank you, and reach you about the Testimonial Prize\./
+      .test(form.textContent.replace(/\s+/g, ' ')));
+
+  const tiles = [...form.querySelectorAll('.trp-fb-tile')];
+  check('two numbered tiles', tiles.length === 2, tiles.length);
+
+  const one = tiles[0].textContent.replace(/\s+/g, ' ');
+  check('the first is the recommendation, with Ella\'s own words',
+    /1\. Recommend Ella on LinkedIn/.test(one) &&
+    /On her profile, click More, then Recommend\./.test(one), one);
+  const ella = tiles[0].querySelector('a');
+  check('a secondary button opens her profile in a new tab',
+    ella.getAttribute('href') === 'https://www.linkedin.com/in/ellamolonycook/' &&
+    ella.getAttribute('target') === '_blank' && /noopener/.test(ella.getAttribute('rel')) &&
+    ella.classList.contains('is-soft') && /Open Ella’s LinkedIn ↗/.test(ella.textContent),
+    [ella.getAttribute('href'), ella.textContent]);
+  check('and the switch from the old step 2 is reused',
+    tiles[0].querySelector('[data-feedback-rec]') !== null &&
+    tiles[0].querySelector('.trp-fb-switch .trp-fb-track') !== null &&
+    /I’ve done it/.test(one));
+
+  const two = tiles[1].textContent.replace(/\s+/g, ' ');
+  check('the second asks for a 1 to 2 minute video',
+    /2\. Send us a 1 to 2 minute video/.test(two) && /Hit these points:/.test(two), two);
+  const points = [...tiles[1].querySelectorAll('.trp-fb-points li')].map((l) => l.textContent);
+  check('with Ella\'s five points, in order',
+    points.join('|') === ['Who you are (30 seconds)', 'Your biggest takeaway',
+      'Your outcome: what you built or changed', 'Your mindset shift',
+      'Why you’d tell a founder to join, and what the community gave you'].join('|'),
+    points);
+
+  const video = form.querySelector('[name="Video link"]');
+  check('the video link field is there and required',
+    video !== null && video.required === true);
+  check('labelled for the four places a video can live',
+    doc.querySelector('label[for="' + video.id + '"]').textContent ===
+    'Paste your video link (Loom, Google Drive, YouTube or Vimeo)',
+    doc.querySelector('label[for="' + video.id + '"]').textContent);
+  check('with the Google Drive sharing note',
+    /Google Drive: set sharing to Anyone with the link\./.test(two), two);
+
+  const post = form.querySelector('[name="LinkedIn video post"]');
+  check('the LinkedIn post is a second, optional field', post !== null);
+  check('and says so', /Posted it on LinkedIn too\? Paste the link \(optional\)/.test(two), two);
+
+  check('one checkbox, unticked, about sharing the testimonial',
+    form.querySelector('[data-feedback-feature]').checked === false &&
+    /Time Rich can share my testimonial/.test(form.textContent.replace(/\s+/g, ' ')));
+  check('and a single Send it button',
+    form.querySelectorAll('[data-feedback-send]').length === 1 &&
+    form.querySelector('[data-feedback-send]').textContent === 'Send it');
+  check('no file upload box in this round: links only',
+    form.querySelector('input[type="file"]') === null);
+
+  const vip = doc.querySelector('[data-testimonial-vip]').textContent.replace(/\s+/g, ' ');
+  check('the VIP prize sits under the form',
+    vip === 'Posting about the Accelerator every week too? That’s the Stanley VIP Prize: ' +
+      'a $1K Stanley setup and 12 months of Wispr Flow.', vip);
+  const vipLinks = [...doc.querySelector('[data-testimonial-vip]').querySelectorAll('a')];
+  check('with Stanley and Wispr Flow both linked',
+    vipLinks.map((a) => a.getAttribute('href')).join('|') ===
+    'https://x.getstanley.ai/r/mz4y9g|https://wisprflow.ai/info/redeem-promo?code=TIMERICH6&months=6',
+    vipLinks.map((a) => a.getAttribute('href')));
+  dom.window.close();
+}
+
+console.log('\nthe video link is checked before it is sent');
+{
+  const dom = await openPage('testimonial.html');
+  const doc = dom.window.document;
+  const form = doc.querySelector('[data-testimonial-form]');
+  const email = form.querySelector('input[name="Email"]');
+  const video = form.querySelector('[name="Video link"]');
+  const err = doc.querySelector('[data-testimonial-video-error]');
+  email.value = 'eve@example.com';
+  email.dispatchEvent(new dom.window.Event('input', { bubbles: true }));
+
+  // Nothing pasted: it will not send, and says why.
+  clickOn(doc, '[data-feedback-send]');
+  await tick();
+  check('with no video it does not post', dom.window.posts.length === 0, dom.window.posts.length);
+  check('and the message is the Worker\'s own wording',
+    err.hidden === false &&
+    err.textContent === 'Please paste a Loom, Google Drive, YouTube or Vimeo link.',
+    err.textContent);
+  check('the field is marked invalid', video.getAttribute('aria-invalid') === 'true');
+
+  for (const bad of ['https://example.com/video.mp4', 'https://loom.com.evil.test/share/a',
+                     'http://www.loom.com/share/a', 'dropbox.com/s/a']) {
+    video.value = bad;
+    video.dispatchEvent(new dom.window.FocusEvent('blur'));
+    check('"' + bad.slice(0, 30) + '" is refused inline', err.hidden === false, err.textContent);
+  }
+  for (const ok of ['https://www.loom.com/share/abc', 'https://drive.google.com/file/d/a/view',
+                    'https://youtu.be/abc', 'https://vimeo.com/1', 'https://www.youtube.com/watch?v=a']) {
+    video.value = ok;
+    video.dispatchEvent(new dom.window.FocusEvent('blur'));
+    check('"' + ok.slice(0, 32) + '" is accepted', err.hidden === true, err.textContent);
+  }
+  check('the page holds the same hosts the Worker does',
+    ['loom.com', 'drive.google.com', 'docs.google.com', 'youtube.com', 'youtu.be',
+     'vimeo.com', 'linkedin.com'].every((h) => CHROME.includes("'" + h + "'") &&
+       read('worker/src/index.js').includes('"' + h + '"')));
+
+  // The LinkedIn post is optional, but a link that is not LinkedIn is refused.
+  const post = form.querySelector('[name="LinkedIn video post"]');
+  const postErr = doc.querySelector('[data-feedback-video-error]');
+  post.value = 'https://example.com/post';
+  post.dispatchEvent(new dom.window.FocusEvent('blur'));
+  check('a non-LinkedIn post link is refused inline',
+    postErr.hidden === false && /linkedin\.com\/posts/.test(postErr.textContent), postErr.textContent);
+  post.value = '';
+  post.dispatchEvent(new dom.window.FocusEvent('blur'));
+  check('and leaving it empty is fine', postErr.hidden === true);
+  dom.window.close();
+}
+
+console.log('\nthe testimonial posts the names the Worker expects');
+{
+  const dom = await openPage('testimonial.html', { settleMs: 400 });
+  const doc = dom.window.document;
+  const form = doc.querySelector('[data-testimonial-form]');
+  const email = form.querySelector('input[name="Email"]');
+  email.value = 'eve@example.com';
+  email.dispatchEvent(new dom.window.Event('input', { bubbles: true }));
+  form.querySelector('[data-feedback-rec]').checked = true;
+  form.querySelector('[name="Video link"]').value = 'https://www.loom.com/share/abc123';
+  form.querySelector('[name="LinkedIn video post"]').value = 'https://www.linkedin.com/posts/eve_123';
+  form.querySelector('[data-feedback-feature]').checked = true;
+
+  const send = doc.querySelector('[data-feedback-send]');
+  send.dispatchEvent(new dom.window.MouseEvent('click', { bubbles: true }));
+  send.dispatchEvent(new dom.window.MouseEvent('click', { bubbles: true }));
+  await tick();
+
+  check('one POST, not two', dom.window.posts.length === 1, dom.window.posts.length);
+  check('to the same /feedback route',
+    dom.window.posts[0].url === 'https://time-rich-forms.timerich.workers.dev/feedback',
+    dom.window.posts[0].url);
+  const body = dom.window.posts[0].body;
+  const WANT = ['Name', 'Email', 'LinkedIn recommendation', 'Video link',
+    'LinkedIn video post', 'OK to feature', 'Source', '_gotcha'];
+  check('exactly the expected field names',
+    JSON.stringify(Object.keys(body).sort()) === JSON.stringify([...WANT].sort()),
+    Object.keys(body));
+  check('the name came off the session', body.Name === 'Eve', body.Name);
+  check('the switch on sends Done', body['LinkedIn recommendation'] === 'Done');
+  check('the video link is carried', body['Video link'] === 'https://www.loom.com/share/abc123');
+  check('the checkbox ticked sends Yes', body['OK to feature'] === 'Yes');
+  check('and Source is club-testimonial', body.Source === 'club-testimonial', body.Source);
+  check('none of the feedback form\'s fields come with it',
+    !('Built so far' in body) && !('Founders to invite' in body) && !('Rating' in body));
+
+  // The thank-you is the same component, with Ella's line.
+  await new Promise((r) => setTimeout(r, 260));
+  const thanks = doc.querySelector('[data-feedback-thanks]');
+  check('the same thank-you card is shown',
+    thanks.hidden === false && thanks.querySelector('.trp-fb-thanks-ring svg') !== null &&
+    thanks.getAttribute('role') === 'status');
+  check('reading "You\'re in the draw. Thank you!!"',
+    /You’re in the draw\. Thank you!!/.test(thanks.textContent), thanks.textContent);
+  await new Promise((r) => setTimeout(r, 450));
+  check('then settling with a way back to the course',
+    thanks.querySelector('[data-feedback-done]') !== null &&
+    thanks.querySelector('[data-feedback-done]').getAttribute('href') === '/club/curriculum');
+  dom.window.close();
+}
+
+console.log('\nan untouched switch and box send the other values');
+{
+  const dom = await openPage('testimonial.html');
+  const doc = dom.window.document;
+  const form = doc.querySelector('[data-testimonial-form]');
+  const email = form.querySelector('input[name="Email"]');
+  email.value = 'eve@example.com';
+  email.dispatchEvent(new dom.window.Event('input', { bubbles: true }));
+  form.querySelector('[name="Video link"]').value = 'https://vimeo.com/123456';
+  clickOn(doc, '[data-feedback-send]');
+  await tick();
+  const body = dom.window.posts[0].body;
+  check('an untouched switch sends Not yet', body['LinkedIn recommendation'] === 'Not yet');
+  check('and an unticked box sends No', body['OK to feature'] === 'No');
+  check('an empty LinkedIn post is sent empty, not missing',
+    body['LinkedIn video post'] === '');
+  dom.window.close();
+}
+
+console.log('\nthe email is still required here');
+{
+  const dom = await openPage('testimonial.html');
+  const doc = dom.window.document;
+  const form = doc.querySelector('[data-testimonial-form]');
+  form.querySelector('[name="Video link"]').value = 'https://vimeo.com/123456';
+  clickOn(doc, '[data-feedback-send]');
+  await tick();
+  check('with no email it does not post', dom.window.posts.length === 0, dom.window.posts.length);
+  const err = doc.querySelector('[data-feedback-error]');
+  check('and it asks for one', err.hidden === false && /email/i.test(err.textContent),
+    err.textContent);
+  dom.window.close();
+}
+
+console.log('\nthe testimonial pill is on every Club page, beside the feedback one');
+{
+  for (const page of ['index.html', 'dashboard.html', 'curriculum.html',
+                      'resources.html', 'prompts.html', 'members.html']) {
+    const dom = await openPage(page);
+    const win = dom.window.document.querySelector('[data-testimonial-pill]');
+    check(page + ': the testimonial pill is built', win !== null);
+    dom.window.close();
+  }
+
+  const onPage = await openPage('testimonial.html');
+  check('testimonial.html: no pill, the page is the form',
+    onPage.window.document.querySelector('[data-testimonial-pill]') === null &&
+    onPage.window.document.querySelector('[data-feedback-pill]') === null);
+  onPage.window.close();
+
+  const dom = await openPage('curriculum.html');
+  const doc = dom.window.document;
+  const win = doc.querySelector('[data-testimonial-pill]');
+  check('it is a link to the testimonial page, not a button',
+    win.tagName === 'A' && win.getAttribute('href') === '/club/testimonial',
+    [win.tagName, win.getAttribute('href')]);
+  check('reading as Ella wrote it',
+    win.querySelector('.trp-pill-text').textContent === 'Upload your video testimonial to WIN' &&
+    win.querySelector('.trp-pill-emoji').textContent === '🏆',
+    win.textContent);
+  check('with an accessible name for the phone version',
+    win.getAttribute('aria-label') === 'Upload your video testimonial to WIN');
+  check('it wears the same pill styling', win.classList.contains('trp-pill'));
+  check('and stacks a pill\'s height above the feedback one',
+    /\.trp-pill\.is-second \{ bottom: calc\(20px \+ env\(safe-area-inset-bottom\) \+ var\(--trp-pill-lift, 0px\) \+ 50px\)/.test(CSS));
+  check('still clear of each other on a phone, where both are circles',
+    /@media \(max-width: 639px\) \{[\s\S]*?\.trp-pill\.is-second \{ bottom: calc\(16px[\s\S]*?\+ 54px\)/.test(CSS));
+  check('the emoji stays when the words are hidden on a phone',
+    /@media \(max-width: 639px\)[\s\S]*?\.trp-pill-text \{ display: none/.test(CSS) &&
+    !/\.trp-pill-emoji \{[^}]*display: none/.test(CSS));
+  check('and the page leaves room for both, so nothing ends under them',
+    /html\.trp-has-pills main \{ padding-bottom: 126px/.test(CSS) &&
+    doc.documentElement.classList.contains('trp-has-pills'));
+
+  // Both come in together and go away together.
+  const api = dom.window.TRFeedbackPill;
+  await new Promise((r) => setTimeout(r, 2050));
+  check('both are showing once they are let in',
+    !api.el.classList.contains('is-away') && !win.classList.contains('is-away') &&
+    win.hidden === false);
+  const menu = doc.getElementById('mobile-menu');
+  menu.classList.remove('-translate-x-full');
+  api.refresh();
+  check('the mobile menu puts both away',
+    api.el.classList.contains('is-away') && win.classList.contains('is-away'));
+  check('and hides them from a screen reader too',
+    win.getAttribute('aria-hidden') === 'true');
+  menu.classList.add('-translate-x-full');
+  api.refresh();
+  check('and brings both back',
+    !api.el.classList.contains('is-away') && !win.classList.contains('is-away'));
+  api.setFooterInView(true);
+  check('the footer lifts both',
+    api.el.style.getPropertyValue('--trp-pill-lift') !== '' &&
+    win.style.getPropertyValue('--trp-pill-lift') ===
+      api.el.style.getPropertyValue('--trp-pill-lift'),
+    win.style.getPropertyValue('--trp-pill-lift'));
+  dom.window.close();
+}
+
+console.log('\nthe feedback pill and the end-of-week ask are switched back on');
+{
+  check('the chrome has the feedback pill on',
+    /var FEEDBACK_ON = true;/.test(CHROME));
+  check('and so does the curriculum, for the ask at the foot of the week',
+    /var FEEDBACK_ON = true;/.test(read('club/curriculum.html')));
+  check('nothing hides the footer link any more',
+    !/display:none!important/.test(CHROME) ||
+    !/trp-foot-link\[href="\/club\/feedback"\]\{display:none/.test(
+      CHROME.slice(CHROME.indexOf('var FEEDBACK_ON = true'),
+                   CHROME.indexOf('function mountFeedbackPill'))
+        .replace(/if \(!FEEDBACK_ON\) \{[\s\S]*?\}/, '')));
 }
 
 console.log('\n' + pass + ' passed, ' + fail + ' failed');
