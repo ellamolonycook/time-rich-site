@@ -584,6 +584,12 @@
 
     /* the loading placeholder is the same shapes, inked out */
     .trp-cw .trp-skel .trp-cw-week { cursor: default; }
+
+    /* The sandbox preview's flag. It sits above the nav in the flow, so it
+       scrolls away with the top of the page rather than covering it, and
+       takes its colours from the tokens so it reads in both themes. It is
+       only ever in the page on a Cloudflare preview asked for by hand. */
+    .trp-preview-flag { padding: 7px 16px; background: var(--trp-sagelt); color: var(--trp-green); font-size: 12.5px; font-weight: 600; letter-spacing: .02em; text-align: center; }
   </style>
 
   
@@ -1430,6 +1436,89 @@ When you finish:
         if (W1_SECTIONS.indexOf(hash) !== -1) wantSection = hash;
       } catch (e) { /* no hash to honour */ }
 
+      /* ---- the sandbox preview of a week that is not open yet -----------
+         The team reads a week through before it goes live, which the
+         payload cannot show them: a locked week comes down with no items.
+         So on the Cloudflare preview only, and only when the URL asks for
+         it, the week's rows are read from a file in the repo and the week
+         is drawn as though it were open.
+
+         Both have to be true, so neither a stray query string on
+         timerich.ai nor a plain visit to the sandbox can turn it on. On
+         the live site, or without ?preview=week3, not a line of this runs
+         and the payload is drawn exactly as it arrived. */
+      var PREVIEW_WEEK = 3;
+      var PREVIEW_SRC = '/club/preview/week3.json';
+      var PREVIEW_HOST = 'time-rich-site.pages.dev';
+
+      function previewWanted() {
+        try {
+          var host = String(window.location.hostname || '').toLowerCase();
+          var sandbox = host === PREVIEW_HOST ||
+            host.slice(-(PREVIEW_HOST.length + 1)) === '.' + PREVIEW_HOST;
+          if (!sandbox) return false;
+          return new URLSearchParams(window.location.search).get('preview') === 'week3';
+        } catch (e) { return false; }   // no URL to read: behave like the live site
+      }
+
+      var previewOn = previewWanted();
+      var previewRows = null;   // the week's rows, once the file has landed
+      var previewDone = !previewOn;   // the fetch has finished, however it went
+      var previewHeld = null;   // a payload waiting for the file
+
+      /* The file is asked for as soon as the page runs, so it is normally
+         already here when the payload lands. Whatever happens -- a 404, a
+         file that is not an array -- previewDone is set and the page is
+         drawn: a preview that cannot load leaves the real payload alone
+         rather than holding the page empty. */
+      function previewLoad() {
+        if (!previewOn) return;
+        fetch(PREVIEW_SRC, { cache: 'no-store' })
+          .then(function (res) { return res.ok ? res.json() : null; })
+          .then(function (rows) { if (Array.isArray(rows)) previewRows = rows; })
+          .catch(function () { /* drawn without the preview */ })
+          .then(function () {
+            previewDone = true;
+            var held = previewHeld;
+            previewHeld = null;
+            if (held) render(held);
+          });
+      }
+
+      /* A copy, never the payload itself: window.TR_PORTAL_DATA is shared
+         with the header, the progress bar and every other listener, and
+         the preview is this page's view of one week, not a change to what
+         the member actually has. Every other week is passed straight
+         through, the same objects the payload arrived with. */
+      function previewPatch(data) {
+        if (!previewOn || !previewRows) return data;
+        if (!data || !Array.isArray(data.weeks)) return data;
+        var out = {};
+        Object.keys(data).forEach(function (k) { out[k] = data[k]; });
+        out.weeks = data.weeks.map(function (w) {
+          if (L.num(w && w.id) !== PREVIEW_WEEK) return w;
+          var week = {};
+          Object.keys(w).forEach(function (k) { week[k] = w[k]; });
+          week.unlocked = true;
+          week.items = previewRows;
+          return week;
+        });
+        return out;
+      }
+
+      /* Says, at the top of the page, that this is not what a member sees.
+         Drawn once, above the nav, so it is the first thing read and
+         cannot be taken for part of the live page. */
+      function previewBanner() {
+        if (!previewOn || document.querySelector('[data-preview-flag]')) return;
+        var bar = document.createElement('div');
+        bar.className = 'trp-preview-flag';
+        bar.setAttribute('data-preview-flag', '');
+        bar.setAttribute('role', 'status');
+        bar.textContent = 'Sandbox preview: Week 3 (not live)';
+        document.body.insertBefore(bar, document.body.firstChild);
+      }
+
       function pad(n) { return n < 10 ? '0' + n : String(n); }
 
       /* Week titles are stored the way the curriculum writes them,
@@ -1584,9 +1673,10 @@ When you finish:
       // Tool names in a lesson's text link to where you get them.
       var NAME_LINKS = {
         'Wispr Flow': 'https://wisprflow.ai/info/redeem-promo?code=TIMERICH6&months=6',
-        'Stanley': 'https://x.getstanley.ai/r/mz4y9g'   // Stanley's tracking link (Ella, 6 Nov)
+        'Stanley': 'https://x.getstanley.ai/r/mz4y9g',  // Stanley's tracking link (Ella, 6 Nov)
+        'timerichclub.com': 'https://www.timerichclub.com/subscribe'   // Club sign-up (Ella, 9 Nov)
       };
-      var NAME_RE = /(Wispr Flow|Stanley)/;
+      var NAME_RE = /(Wispr Flow|Stanley|timerichclub\.com)/;
       function linkNames(p, line) {
         line.split(NAME_RE).forEach(function (bit, n) {
           if (!bit) return;
@@ -2490,27 +2580,28 @@ Anything you've done twice should never need you again. A skill is your way of d
       ];
 
       /* Week 3 in the same shape as Week 2 (Ella, 6 Nov: "We need
-         consistency"). Strategy first, then tools, as Ella's Loom asks;
-         then the first post, Content OS and the week's wrap-up. The rows
-         sit at 30s, 40s, 50s, 60-89 and 90+. */
+         consistency"). Stanley and the content home first, then the
+         strategy, then the machine that runs on it; Content OS and the
+         week's wrap-up close the week. The rows sit at 30s, 40s, 50s,
+         60-89 and 90+. */
       var WEEK3_SECTIONS = [
         { upto: 29, title: 'Start here' },
         {
           upto: 39,
-          title: '1. Build your content strategy',
-          lead: `Say who you are out loud. AI turns it into your content strategy, and Stanley writes every post from it.`
+          title: '1. Set up Stanley and your content home',
+          lead: `Stanley is your AI head of content: a voice note goes in, drafts in your voice come out, you approve, it posts. Free for 6 months with code TIMERICH6.
+! /portal/assets/week3-stanley-flow.png | An AI head of content: from a voice note to a scheduled post`
         },
         {
           upto: 49,
-          title: '2. Connect your tools',
-          lead: `Stanley is your AI head of content. Set it up free for 6 months with code TIMERICH6, then hand it your strategy.`
+          title: '2. Build your content strategy',
+          lead: `Your Business COMPASS already knows who you are and who you serve. Add what you worked on with ViKA on Monday, and AI turns it into your content strategy.`
         },
         {
           upto: 59,
-          title: '3. Write your first post',
-          lead: `"Its deep knowledge of your past LinkedIn performance is what differentiates it from any other tool I've used." Hannah Zhang, who tripled her LinkedIn audience in one year
-
-Save the skill once. Then hand Stanley a story and it drafts in your voice.`
+          title: '3. Run your content machine',
+          lead: `One hour of talking. 20 to 50 pieces of content.
+! /portal/assets/week3-content-waterfall.png | One voice memo becomes a month of content`
         },
         { upto: 89, title: 'Content OS' },
         { upto: Infinity, title: 'This week, and what you\'ve built' }
@@ -2977,6 +3068,13 @@ Save the skill once. Then hand Stanley a story and it drafts in your voice.`
       }
 
       function render(data) {
+        /* The sandbox preview holds the first draw until the week's rows
+           are here, so the week is never drawn locked and then swapped
+           under the reader. The placeholder stays up meanwhile, which is
+           what the page shows while the payload is in flight anyway. */
+        if (previewOn && !previewDone) { previewHeld = data; return; }
+        data = previewPatch(data);
+
         var live = document.querySelector('[data-curriculum-live]');
         var statik = document.querySelector('[data-curriculum-static]');
         if (!live) return;
@@ -3074,6 +3172,12 @@ Save the skill once. Then hand Stanley a story and it drafts in your voice.`
         var tab = document.getElementById('cw-tab-' + id);
         if (tab) tab.focus();
       }
+
+      /* Both are no-ops unless the sandbox preview is on. The file is
+         asked for before the payload has even arrived, so holding the
+         first draw for it usually costs nothing. */
+      previewLoad();
+      previewBanner();
 
       document.addEventListener('trportal:data', function (event) {
         render(event && event.detail);

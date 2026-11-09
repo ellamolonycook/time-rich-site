@@ -1,0 +1,162 @@
+[
+ {
+  "id": 140,
+  "week_id": 3,
+  "kind": "text",
+  "sort": 1,
+  "title": "Week 3 homework",
+  "body": "Leave this week with your content machine running: your strategy in Stanley and a week of posts drafted.\n1. Set up Stanley. It's your AI head of content. It learns your voice and drafts your posts, so you show up more without hours of writing.\n2. Watch the Storytelling for GTM replay. What you work on with ViKA feeds straight into your strategy in step 3.\n3. Build your content strategy with the prompt, then find 5 industry leaders to study. Why the prompt: it reads your Business COMPASS and only asks what's missing. In about 10 minutes you know what to post about, who it's for, and your first week of posts. Without a strategy, Stanley is guessing.\n4. Run your content machine. Draft your week of posts in Stanley, one at a time. Post your first one by Fri 13 Nov with #timerichclub.\nStuck or have questions? Jump on Friday's live session (Fri 13 Nov, 12pm ET). There'll be breakout rooms to ask your questions.",
+  "url": null,
+  "published": true
+ },
+ {
+  "id": 142,
+  "week_id": 3,
+  "kind": "text",
+  "sort": 30,
+  "title": "Sign up to Stanley (6 months free)",
+  "body": "Video: https://www.loom.com/share/be6db9ceb94344afb9b56244c9e517f2\nSign up on your laptop. Don't use \"Message Stanley\" on the homepage: it skips the code.\n1. Go to Stanley and click Log in.\n2. Click Sign up, then Sign up with email or Google.\n3. Enter your email and a password, then click Continue.\n4. Enter the code Stanley emails you, then choose \"No, I'm new to Stanley\".\n5. Pick a plan and click Start your 14-day free trial.\n6. At checkout, click Add promotion code, enter TIMERICH6 and click Apply. You'll see 100% off and $0.00 due today.\n7. Add a payment method and click Start trial. You can connect iMessage, WhatsApp or Telegram later.\n+ Already on Stanley's free plan?\nLog in, click Upgrade, then follow steps 5 to 7.",
+  "url": null,
+  "published": true
+ },
+ {
+  "id": 143,
+  "week_id": 3,
+  "kind": "text",
+  "sort": 31,
+  "title": "Connect your tools to Stanley",
+  "body": "Video: https://www.loom.com/share/4d80c14f76b843389285aa391edea560\n1. In Stanley, open the left sidebar and click Connectors.\n2. Click Wispr Flow, sign in, and click Allow access. Do this one first. Talking out loud is how Stanley learns your voice.\n3. Connect iMessage, WhatsApp or Telegram, so you can send Stanley ideas on the go.\n4. Connect LinkedIn and anywhere else you post, so Stanley learns from your posts and can post for you. Founding Members: add Notion too.\n! /portal/assets/visibility-stanley-connectors.png | Stanley's Connectors screen: Core, Meetings (with Wispr Flow), Newsletters and Other (with Stanley MCP). Connected apps carry a green tick.",
+  "url": null,
+  "published": true
+ },
+ {
+  "id": 155,
+  "week_id": 3,
+  "kind": "text",
+  "sort": 32,
+  "title": "Use Stanley inside your current AI tool",
+  "body": "Use Stanley right inside the AI you already work in, without switching apps.\nCopy your Stanley MCP link\n1. In Stanley, open the left sidebar and click Connectors.\n2. Scroll to Stanley MCP and copy the link.\n+ In Claude\n1. Click your name (bottom left), then Settings.\n2. Click Customize, then the Connectors tab.\n3. Click + Add (top right), then Add custom connector.\n4. Name: Stanley. MCP server URL: paste your link. Click Continue.\n5. Sign in to Stanley when asked and click Allow.\n6. In a chat, click + (bottom left), then Connectors, and switch Stanley on.\nOn the free Claude plan you can add one custom connector.\n+ In ChatGPT (Plus or higher)\n1. Click your profile, then Settings.\n2. Open Apps & Connectors, scroll to Advanced settings and turn on Developer mode.\n3. Back in Apps & Connectors, click Create.\n4. Name it Stanley, paste your link as the Connector URL, choose OAuth and click Create.\n5. Sign in to Stanley and allow access.",
+  "url": null,
+  "published": true
+ },
+ {
+  "id": 156,
+  "week_id": 3,
+  "kind": "text",
+  "sort": 33,
+  "title": "Notion Content Operating System",
+  "body": "Founding Members: your Content Hub is inside your Superhuman OS in Notion.\nClub members: we emailed you the Content Hub template (\"Notion Content Hub 🎁 Time Rich Edition\").\nEveryone else: Stanley is your content machine. Your strategy, drafts and calendar all live there. Want the Notion Content Hub? Join the Time Rich Club at timerichclub.com.",
+  "url": null,
+  "published": true
+ },
+ {
+  "id": 157,
+  "week_id": 3,
+  "kind": "text",
+  "sort": 40,
+  "title": "Bank your stories (from Week 2)",
+  "body": "Did this last week? Skip to the next card. If not, run it in your Business Hub first. It finds the stories you already tell, so your strategy and posts are built on real moments.\n\n= Copy the prompt\nYou are my story producer. Find the real stories I already tell and bank them so I can use them again on stage, in posts and on sales calls. Look through the last 90 days of my calls, voice notes, podcast transcripts, posts and newsletters. A story is one specific moment with a before, a turning point and an after. Never invent: every detail must come from my material, and if something is missing, leave it blank and ask me. For each story give me: Story Name | The Hook (one line, in my words) | Type (Badass, Party, Tough, Shit to Shift, Core Story) | Status | Takeaway | Question it answers | Conflict | Resolution | How I fit in | Times told | Audience evidence | Next place to tell it | Source. Mark Tough stories \"Hold\". Leave out anything confidential. Put the table first and skip the intro.\n\nBefore you start: restate my goal in one line and tell me if it's the right goal. Don't assume; if you need more context, ask me up to 3 questions first. When you finish: rate your work out of 10, say what would make it a 10, then fix it. Push back on me: where is my thinking weak, what could go wrong, what am I missing? Tell me the one thing to do next, and what you learned about me that should be saved to my Business COMPASS.\n=",
+  "url": null,
+  "published": true
+ },
+ {
+  "id": 145,
+  "week_id": 3,
+  "kind": "text",
+  "sort": 41,
+  "title": "Turn your COMPASS into your content strategy",
+  "body": "Open a new chat in your Business Hub, so it reads your COMPASS. No Hub? Attach your COMPASS doc to the chat. Paste the prompt, then answer out loud with Wispr Flow: hold fn (Windows: Ctrl + Win). Messy is great.\n+ Redeem Wispr Flow first (6 months Pro)\n1. Open Wispr Flow on your laptop. Go to Settings, then Plans and Billing.\n2. Click the promo link at the very bottom.\n3. Enter TIMERICH6.\nThe code works in the desktop app only.\n+ Stuck on an answer? Say these out loud\nWhat you want most from your content right now. What people always ask you about. What you could talk about for an hour, for free. A story from the last 2 weeks.\n\n= Copy the prompt\nMy Business COMPASS: [insert your Business COMPASS here, or attach it]\n\nYou are the best personal brand strategist in the world: warm, sharp, and focused on founders building a business. Build my content strategy with me, then fill out my Personal Branding worksheet and plan my first week of posts. The whole thing should take about 10 minutes.\n\nStart from what you already know\n- Read my Business COMPASS first. My North Star is under Current focus.\n- Pre-fill everything you can from it. Only ask me what it doesn't already answer.\n- If you can't find my COMPASS, say so and ask me to insert it before you start.\n\nHow to run the interview\n- Open with 2 sentences: what you already know about me from my COMPASS, and that we'll go through 6 short sections.\n- Keep every message short and in plain language. Explain any term like \"funnel\" or \"positioning\" in one line.\n- Do the heavy lifting for me: draft, suggest, and pre-fill, so I mostly react and edit instead of starting from a blank page.\n- If an answer is vague, ask one quick follow-up for a real example, number, or result. Then move on.\n- Never invent credentials, results, or stories, and don't add reasons or causes I didn't give you. Only use what I told you or what my COMPASS says.\n- Tell me which section we're in (e.g. \"Section 2 of 6\").\n\nThe sections, in order\n\nSection 1 · Your goal\nFrom my North Star, suggest the ONE goal that matters most right now, with one line on why, and ask me to confirm or switch:\n1. Winning customers (the right buyers find me through inbound)\n2. Raising money (investors know who I am before I pitch)\n3. Hiring (great people want to work for my company)\n4. Partnerships (the right partners and distributors come to me)\n5. Launching something new (my content proves demand before I build it)\n6. Owning my market (I'm the name people think of in my category)\n\nSection 2 · Your topic Venn diagram\nExplain in one line: your topic sits where four circles overlap.\n- PROOF: credibility you have that others don't (companies you've built, results, numbers, things you've lived through)\n- DEMAND: what people already ask you about\n- PERSON: who cares most about what you say (often your ideal customer)\n- PASSION: what you'd talk about for an hour, for free\nPre-fill PROOF and PERSON from my COMPASS. Then ask me, in one message, only for what's missing. Then propose a one-line overlap (\"what I could post about\") and ask me to confirm or tweak it.\n\nSection 3 · Your positioning\nExplain in one line: positioning is your topic, one level deeper, so the right person instantly thinks \"that's for me.\"\nPre-fill the template using my COMPASS and my answers so far, then ask me to make it my own (edit any line, or say \"looks good\"):\n- FOR (who it's for, from PERSON)\n- I AM A (who I am)\n- WHO PROVIDES (the value or outcome I give)\n- UNLIKE (the usual alternative people turn to)\n- BECAUSE I BRING (my edge, from PROOF)\nOnce I confirm, combine it into one sentence I'd say out loud or put in my LinkedIn headline.\n\nSection 4 · Your content pillars\nExplain the three pillars in one line each:\n- Reach (top of funnel): brings new people in. Broad, easy-to-share topics.\n- Trust (middle of funnel): turns viewers into followers. My story, opinions, how I think.\n- Proof (bottom of funnel): turns followers into customers, investors and hires. Results, receipts, work shown in public.\nDon't ask me to come up with these. Using everything so far, suggest a topic and a sample hook (the first line of a post that stops the scroll) for each pillar, specific to me. Ask me to keep, tweak, or swap any of them.\n\nSection 5 · Your platform and cadence\nAsk in one message:\n- Which platform (recommend one based on my goal and audience, with a one-line reason)\n- How many posts per week I can sustain on a busy week, not my best week\n- What day and time I'll protect to write or film\nIf my number sounds like a best-week number, push back once.\n\nSection 6 · Your first week of posts\nPlan as many posts as I said I can sustain each week. For each one, give the pillar, the topic, the story or proof it's built on, and a hook. Spread them across the three pillars. Only use stories and proof I've told you or that are in my COMPASS. If a post needs a story I haven't given you, ask me for it in one message.\n\nFinal output\nFill in the worksheet below using my words wherever possible. Output it as ONE markdown code block so I can copy it and paste it straight into a Google Doc. Mark the goal I picked with [x] and leave the rest as [ ]. Keep every heading and label exactly as written. Repeat the Post block once per post. Don't add commentary inside the block.\n\nPersonal Branding\n\nYour Goal\n- [ ] Winning customers (the right buyers find me through inbound)\n- [ ] Raising money (investors know who I am before I pitch)\n- [ ] Hiring (great people want to work for my company)\n- [ ] Partnerships (the right partners and distributors come to me)\n- [ ] Launching something new (my content proves demand before I build it)\n- [ ] Owning my market (I'm the name people think of in my category)\n\nPart 1 · Your topic Venn diagram\n**PROOF — credibility you have that others don't:** ...\n**DEMAND — what people already ask you about:** ...\n**PERSON — who cares most about what you say:** ...\n**PASSION — what you'd talk about for an hour, for free:** ...\n**The overlap, in one line, what I could post about:** ...\n\nPart 2 · Your positioning\n**FOR** ...\n**I AM A** ...\n**WHO PROVIDES** ...\n**UNLIKE** ...\n**BECAUSE I BRING** ...\n\n**My positioning, in one sentence:** ...\n\nPart 3 · Your content pillars\n**Reach · top of funnel**\nTopic: ...\nSample hook: \"...\"\n\n**Trust · middle of funnel**\nTopic: ...\nSample hook: \"...\"\n\n**Proof · bottom of funnel**\nTopic: ...\nSample hook: \"...\"\n\nYour platform and cadence\n**Platform:** ...\n**Posts per week I can sustain on a busy week:** ...\n**When I'll write or film (day and time I'm protecting):** ...\n\nPart 4 · Your first week of posts\n**Post 1**\nPillar: ...\nTopic: ...\nStory or proof: ...\nHook: \"...\"\n\nAfter the block, tell me to paste the worksheet into a Google Doc on my Google Drive.\n\nStart now.\n=\nSave the worksheet as a Google Doc.",
+  "url": null,
+  "published": true
+ },
+ {
+  "id": 158,
+  "week_id": 3,
+  "kind": "text",
+  "sort": 42,
+  "title": "Find industry leaders to study their content conversion",
+  "body": "Stay in the same Business Hub chat, so the AI has your worksheet. Paste the prompt and answer out loud with Wispr Flow. In about 5 minutes you'll know what kind of creator you are and who to learn from.\n\n= Copy the prompt\nMy Business COMPASS and my Personal Branding worksheet are in this chat. If you can't find them, say so and ask me to paste them before you start.\n\nYou are a social media growth strategist who studies one thing: which creators actually turn posting into revenue, and how. Help me find out which type of creator I am, then pick 5 creators I should study.\n\nKeep every message short and in plain language. Do the heavy lifting: suggest, then let me react.\n\nStep 1 · The 6 creator types that make money\nShow me this list in one short message, one line each:\n1. The Builder: shares the company as it grows (numbers, wins, mistakes). Makes money from the business itself: customers, investors, hires.\n2. The Teacher: turns know-how into frameworks and how-tos. Makes money from courses, cohorts and workshops.\n3. The Storyteller: shares a personal journey and lessons. Makes money from speaking, books and brand deals.\n4. The Expert: owns one narrow topic with a sharp point of view. Makes money from consulting and high-ticket services.\n5. The Curator: breaks down news, trends and other people's work. Makes money from a newsletter and sponsors.\n6. The Connector: spotlights people and brings them together. Makes money from a community, events and memberships.\nAdd one line: most people who earn from content are one main type plus one supporting type.\n\nStep 2 · Find my type\nUsing my COMPASS and worksheet, especially my goal, positioning and pillars, tell me my main type and my supporting type. Give one line on why for each. Then tell me how that combination usually makes money and whether it fits my goal. If it doesn't fit, say so and suggest what to change.\nIf you can't tell, ask me up to 3 quick questions first, then decide.\nAsk me to confirm or switch.\n\nStep 3 · Pick 5 creators to study\nPick 5 real creators who post on LinkedIn or X:\n- 2 at the top of my type, so I can see where it leads\n- 3 a few steps ahead of me: similar audience, industry or business model, small enough that I can copy what they do this month\nAt least one should share my main type and at least one my supporting type.\nIf you can search the web, check each profile exists and is active before you suggest it. Never make up a person, a link or how much someone earns. If you can't check a link, give the name and write \"search on LinkedIn\" in place of a link.\n\nStep 4 · What to steal\nFor each creator, tell me:\n- their type\n- why they're right for me (one line)\n- one thing to study: a post format, a hook pattern, or how they sell from their content\n\nFinal output\nGive me ONE plain text code block so I can paste it into Stanley's Brain under Topics and Creators. Use this layout and don't add commentary inside the block:\n\nMy creator type: [main] + [supporting]\nHow I'll make money from content: [one line]\n\nCreators I study:\n1. [Name] · [type] · [LinkedIn or X link]\n   Study: [the one thing]\n(repeat for all 5)\n\nAfter the block, tell me to paste it into Stanley: profile → Brain → Topics and Creators.\n\nStart now.\n=",
+  "url": null,
+  "published": true
+ },
+ {
+  "id": 146,
+  "week_id": 3,
+  "kind": "text",
+  "sort": 43,
+  "title": "How to use your Stanley Brain",
+  "body": "Video: https://www.loom.com/share/d2f889283f5e486f8d141803a81dba8e\n1. In Stanley, click your profile, then Brain.\n2. Strategy: paste the content strategy you just built.\n3. My Human: paste a short overview of who you are. Quick way: ask your Business Hub \"Put together everything you know about me that would help someone write my content\", then paste the answer.\n4. Instructions: add your must-follow rules, one per line, e.g. \"Use contractions: don't, not do not.\"\n5. Topics and Creators: paste the creators list from the last step.\nStanley keeps adding to your Brain as you talk to it. You can edit anything, anytime.\n! /portal/assets/visibility-stanley-files.png | Stanley's Brain panel with Files open and the + button beside it.",
+  "url": null,
+  "published": true
+ },
+ {
+  "id": 147,
+  "week_id": 3,
+  "kind": "text",
+  "sort": 50,
+  "title": "Add the LinkedIn skill to Stanley",
+  "body": "1. Copy the skill below.\n2. In Stanley, go to Brain, then Skills. Click + and name it linkedin-content.\n3. Paste the skill in and save it.\n! /portal/assets/visibility-stanley-skills.png | Stanley's Brain panel with Skills open and linkedin-content saved under it.\n\n= Copy the skill\nCreate LinkedIn Content\n\nHelp the user turn a topic into a short LinkedIn post in approximately 10 minutes.\n\nUse relevant context files and available connectors to understand their content strategy, audience, voice, and existing content. Keep the workflow conversational and concise.\n\nDo not write the full post until the user has selected an angle and hook, unless they explicitly ask to skip ahead.\n\n1. Read context and get the topic\n\nFind and read the relevant content strategy file first. Follow its references to audience and voice guidance where available.\n\nReview three to five relevant past posts. Prefer examples with performance data or explicit user approval. Learn from their openings, specificity, rhythm, and storytelling without copying them.\n\nDistinguish measured performance from editorial judgment. Never describe a post as high-performing without evidence.\n\nUse the topic or notes the user provided. Ask for a topic only if none was supplied.\n\nIf a context source is unavailable, acknowledge the gap briefly and proceed with accessible material. Ask only for information necessary to continue; do not let research consume the session.\n\n2. Run a short interview\n\nBudget approximately three minutes for context gathering and the interview combined.\n\nAsk up to three questions together, covering what is still missing:\n\n- Who is this for, and what should they think, feel, or do afterward?\n- What is the main takeaway or opinion?\n- What story, example, observation, or result supports it?\n\nAdapt the questions to the topic. Invite rough bullets or conversational answers. Do not repeat questions already answered in the user's notes or context.\n\nUse at most one brief follow-up round with one or two questions to uncover specifics or clarify the claim. Examples:\n\n- What happened that made you realize this?\n- What was different from what you expected?\n- Can you give one concrete example?\n- Is that something you observed or your interpretation?\n- What would be overstating your point?\n\nDo not force a personal story, framework, lesson, or dramatic turning point. An opinion, observation, announcement, or useful explanation can stand on its own.\n\nStop when there is enough substance. Reflect the core point in one sentence before presenting angles. Clearly label proposed interpretations; do not add a separate confirmation round.\n\n3. Present five angles and flows\n\nBudget approximately two minutes, including the user's choice.\n\nOffer five genuinely different approaches. Vary the central argument, reader payoff, or narrative approach, rather than rephrasing the same idea.\n\nFor each option, provide:\n\n- A short name and the point the reader takes away.\n- A one-line flow: opening → development or evidence → ending.\n\nKeep each option to two short lines. Use available material and identify any missing evidence instead of inventing it.\n\nRecommend one angle with a one-sentence reason.\n\nWait for the user to choose, combine, or revise an angle.\n\n4. Present five hooks and recommend length\n\nBudget approximately two minutes, including the user's choice.\n\nWrite five distinct hooks for the selected angle, each one or two short lines.\n\nUse effective patterns from the user's existing content where available. Adapt the pattern to the topic without copying old wording or claiming unsupported performance.\n\nEach hook should:\n\n- Make the topic relevant to the intended audience.\n- Introduce a specific situation, tension, observation, or promise.\n- Give a clear reason to keep reading.\n- Create curiosity the body will satisfy.\n- Match the user's voice.\n\nAvoid vague cliffhangers, fabricated numbers, fake controversy, unsupported claims, and recycled “nobody talks about this” openings.\n\nRecommend one hook with a brief reason.\n\nIn the same message, suggest the shortest suitable length:\n\n- 80–120 words for a compact observation or opinion.\n- 120–180 words by default.\n- 180–250 words when the story or explanation needs room.\n\nThese are editorial guidelines, not performance guarantees. If the user selects only a hook, use the recommended length.\n\nWait for the user's hook selection before drafting.\n\n5. Draft and remove AI-writing patterns\n\nBudget approximately three minutes for drafting, editing, and scoring combined.\n\nUse the selected angle, flow, hook, and length. Keep one main point. Deliver the hook's promise with concrete support and minimal setup.\n\nApply the following principles while writing, then silently edit the draft before showing it:\n\n- Preserve the user's vocabulary, opinions, humor, uncertainty, and natural rhythm.\n- Use plain words, concrete details, and direct verbs.\n- Cut generic introductions, filler, corporate language, and inflated importance.\n- Avoid stock phrases such as “delve,” “game changer,” “in today's world,” and “it's worth noting.”\n- Avoid formulaic contrasts such as “It's not about X. It's about Y.”\n- Cut fake-insight setups such as “Here's what nobody tells you.”\n- Avoid forced groups of three, identical paragraph shapes, excessive em dashes, and stacked dramatic fragments.\n- Let evidence demonstrate the point rather than declaring it important or surprising.\n- Keep useful nuance, honest uncertainty, and distinctive sentences.\n- Cut fake-profound endings and unnecessary recaps.\n- Never invent experiences, dialogue, emotions, results, or facts to make writing feel human.\n\nTreat these as editing principles, not a mechanical blacklist. Preserve natural expression and accurate meaning.\n\nUse plain text and natural paragraph breaks suitable for LinkedIn. Include lists only when helpful. Follow known preferences for emojis and hashtags; otherwise omit them.\n\nDo not require a named framework, “TAKEAWAY:” label, personal tagline, or CTA. End naturally. Include a question or CTA only when it serves the post.\n\n6. Score and deliver\n\nEvaluate the draft for the intended audience:\n\n**Shareability: 1–5**\n\nWould this reader send it to someone or share it publicly because it is useful, relatable, or expresses something they care about?\n\n**Curiosity: 1–5**\n\nDoes the opening create a specific reason to continue, and does the body reward that interest?\n\nUse this scale:\n\n- 1: Weak.\n- 2: Needs substantial work.\n- 3: Solid but ordinary.\n- 4: Strong.\n- 5: Exceptional for this audience.\n\nScores are editorial judgments, not predictions of reach. Do not inflate them.\n\nIf either score is 3 or lower, make one focused revision before presenting the draft. If improvement requires missing facts, identify the gap instead of inventing them. Avoid repeated revision loops.\n\nReturn:\n\n1. The finished post, ready to copy.\n2. Word count and intended audience.\n3. Shareability score with one short reason.\n4. Curiosity score with one short reason.\n\nKeep the assessment brief and outside the post.\n\nWorking rules\n\n- Target a 10-minute session, including user replies, without promising an exact duration.\n- Keep explanations short and batch questions.\n- If time runs short, reduce optional follow-ups and commentary. Do not silently select an angle or hook.\n- Respect requests to skip, combine, or revisit stages.\n- Preserve the chosen direction during revisions unless the user requests a change.\n- Never publish or schedule without explicit user instruction.\n=",
+  "url": null,
+  "published": true
+ },
+ {
+  "id": 148,
+  "week_id": 3,
+  "kind": "text",
+  "sort": 51,
+  "title": "Draft your week of posts",
+  "body": "Send Stanley this, then answer its questions with Wispr Flow. One post at a time, until your week is drafted.\n\n= Copy the message\nUse my linkedin-content skill. Draft post 1 from \"Your first week of posts\" in my content strategy. When we finish, move to post 2.\n=\n+ Stuck for a story?\nBe discovered: a frustration your clients share, or why you waited so long to share your work.\nBe trusted: a how-to, or a lesson from a client conversation.\nBe chosen: a client result, or what working with you looks like.",
+  "url": null,
+  "published": true
+ },
+ {
+  "id": 159,
+  "week_id": 3,
+  "kind": "text",
+  "sort": 52,
+  "title": "Turn one memo into a week of content",
+  "body": "Record one voice memo or call with the Wispr Flow Notetaker (with everyone's OK). Then send Stanley:\n\n= Copy the message\nHere's my voice memo: [paste the transcript]. Using my content strategy, turn it into 3 LinkedIn posts, 1 carousel and 1 reel script, in my voice. Keep my words. Add nothing that isn't in the memo.\n=",
+  "url": null,
+  "published": true
+ },
+ {
+  "id": 149,
+  "week_id": 3,
+  "kind": "text",
+  "sort": 53,
+  "title": "Switch on one ritual",
+  "body": "Video: https://www.loom.com/share/c99bec0bc57c48d197e761a50e01ff88\n1. In Stanley, open the left sidebar and click Rituals.\n2. Scroll through and read what each one does. For example, the Evening report sums up what you posted, how your posts are doing and who engaged. Your TIMERICH6 code unlocks all of them.\n3. Switch one on.\n4. Want your own? Click to add a new ritual and describe it in plain words, with a day and time. For example: \"Every morning, ask me 3 personal questions to get my content ideas flowing.\"\nYou can change or turn off any ritual from the Rituals page.",
+  "url": null,
+  "published": true
+ },
+ {
+  "id": 160,
+  "week_id": 3,
+  "kind": "text",
+  "sort": 54,
+  "title": "Turn one post into many",
+  "body": "Video: https://www.loom.com/share/324de2dd44a249a78c83fa37b81a9a4f\n1. Open any draft in Stanley.\n2. Ask: \"Turn this into 3 posts for X and 1 reel script for Instagram, and put them in my drafts.\"\n3. Check them, click Mark as ready, and schedule.\nAsk for more (e.g. 10 posts) and one post becomes a week of content.",
+  "url": null,
+  "published": true
+ },
+ {
+  "id": 150,
+  "week_id": 3,
+  "kind": "text",
+  "sort": 60,
+  "title": "Stanley video guides",
+  "body": "| Video | What it shows |\n| Connectors :: https://www.loom.com/share/4d80c14f76b843389285aa391edea560 | Connect Wispr Flow and your tools |\n| MCP connector :: https://www.loom.com/share/ba045aa4570f4c6abb7db97e59a12342 | Plug Stanley into Claude or ChatGPT |\n| Keep the brain updated :: https://www.loom.com/share/d2f889283f5e486f8d141803a81dba8e | Every edit teaches it your voice |\n| Custom rituals :: https://www.loom.com/share/c99bec0bc57c48d197e761a50e01ff88 | Tasks it runs on repeat |\n| Post across platforms :: https://www.loom.com/share/324de2dd44a249a78c83fa37b81a9a4f | One idea, every platform |",
+  "url": null,
+  "published": true
+ },
+ {
+  "id": 151,
+  "week_id": 3,
+  "kind": "text",
+  "sort": 90,
+  "title": "Share your week in #audacious-wins",
+  "body": "By Fri 13 Nov, post your positioning in one sentence and the link to your first post (with #timerichclub) in #audacious-wins on Slack.",
+  "url": null,
+  "published": true
+ }
+]
