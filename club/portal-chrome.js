@@ -598,10 +598,21 @@
     learn.label.appendChild(document.createTextNode(')'));
     sec1.appendChild(learn.box);
 
-    var win = areaField(opts, 'Win or change');
-    win.label.appendChild(document.createTextNode('One win, or one thing to change '));
-    win.label.appendChild(el('span', 'trp-fb-opt', '(optional)'));
-    sec1.appendChild(win.box);
+    /* The three open questions Ella asked for (9 Nov), in her order, in
+       place of the single win-or-change box. All optional: a member who
+       taps the chips and sends is still a submission worth having. */
+    var OPEN_QUESTIONS = [
+      ['Biggest unlock', 'What was the biggest unlock for you?'],
+      ['Favorite teachers', 'Who were your favorite teachers?'],
+      ['How can we improve', 'How can we improve?']
+    ];
+    var open1 = OPEN_QUESTIONS.map(function (q) {
+      var field = areaField(opts, q[0]);
+      field.label.appendChild(document.createTextNode(q[1] + ' '));
+      field.label.appendChild(el('span', 'trp-fb-opt', '(optional)'));
+      sec1.appendChild(field.box);
+      return field;
+    });
 
     var foot1 = el('div', 'trp-fb-foot');
     var hint1 = el('p', 'trp-fb-msg');
@@ -782,7 +793,9 @@
         'Slowing me down': slowing.value(),
         'Would recommend': recommend.value(),
         'Learn in last sessions': learn.area.value.trim(),
-        'Win or change': win.area.value.trim(),
+        'Biggest unlock': open1[0].area.value.trim(),
+        'Favorite teachers': open1[1].area.value.trim(),
+        'How can we improve': open1[2].area.value.trim(),
         'Founders to invite': foundersValue(),
         'OK to feature': feature.checked ? 'Yes' : 'No',
         Source: 'club-feedback',
@@ -793,7 +806,8 @@
     function hasInput() {
       return Boolean(mail.input.value.trim() || built.value() || saved.value() ||
         slowing.value() || recommend.value() || learn.area.value.trim() ||
-        win.area.value.trim() || foundersValue() || feature.checked);
+        open1.some(function (f) { return f.area.value.trim() !== ''; }) ||
+        foundersValue() || feature.checked);
     }
 
     var post = sender({
@@ -1111,16 +1125,18 @@
        A link rather than a button: it goes to a page of its own, so a
        middle click should open it in a tab like any other link.
 
-       Its label is short because it sits beside the feedback pill rather
-       than above it; the aria-label carries the whole of what it does, and
-       on a narrow phone the trophy carries it alone. */
+       It carries both of its labels and the CSS picks between them: the
+       whole ask on a laptop, the short one on a phone, where two pills fit
+       side by side only if one gives up some words. The aria-label says
+       the whole of it either way. */
     var winPill = el('a', 'trp-pill is-win');
     winPill.setAttribute('data-testimonial-pill', '');
     winPill.href = TESTIMONIAL_PAGE;
     winPill.hidden = true;
     winPill.appendChild(el('span', 'trp-pill-emoji', '🏆'));
-    winPill.appendChild(el('span', 'trp-pill-text', 'Win'));
-    winPill.setAttribute('aria-label', 'Upload your video testimonial to WIN');
+    winPill.appendChild(el('span', 'trp-pill-text', 'Submit testimonial & win'));
+    winPill.appendChild(el('span', 'trp-pill-short', 'Testimonial'));
+    winPill.setAttribute('aria-label', 'Submit your video testimonial and win');
 
     /* One row holds both, so the gap between them is the row's and neither
        has to know how wide the other is. Feedback sits nearest the corner,
@@ -1220,16 +1236,18 @@
       });
     }
 
-    /* It arrives a couple of seconds in, once, and never moves again. */
-    window.setTimeout(function () {
-      letIn = true;
-      pill.hidden = false;
-      winPill.hidden = false;
-      void pill.offsetWidth;
-      pill.classList.add('is-shown');
-      winPill.classList.add('is-shown');
-      refresh();
-    }, 2000);
+    /* Both are there as soon as the page is drawn. They used to arrive on a
+       two-second timer, which read as the pills only turning up once you
+       had started scrolling (Ella, 9 Nov) -- by the time they faded in, a
+       member was usually already moving down the page. is-shown goes on in
+       the same tick as the unhiding, so they are simply there rather than
+       fading in from nothing. */
+    letIn = true;
+    pill.hidden = false;
+    winPill.hidden = false;
+    pill.classList.add('is-shown');
+    winPill.classList.add('is-shown');
+    refresh();
 
     /* When the footer comes on screen the pill rides up above it, so it
        never sits on the footer links and never disappears either: a member

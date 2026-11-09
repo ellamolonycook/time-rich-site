@@ -699,6 +699,9 @@ body { animation: trp-fade-in 180ms ease-out both; }
 .trp-pill:hover { background: var(--trp-mid); }
 .trp-pill:focus-visible { outline: 2px solid var(--trp-ink); outline-offset: 3px; }
 .trp-pill-emoji { font-size: 15px; line-height: 1; }
+/* The testimonial pill's phone label. Only one of the two is ever in the
+   pill, so it never measures wider than the words you can see. */
+.trp-pill-short { display: none; }
 
 /* Hidden until it is let in, and whenever anything would be covered by it. */
 .trp-pill[hidden] { display: none; }
@@ -715,13 +718,10 @@ body { animation: trp-fade-in 180ms ease-out both; }
   /* Feedback has been an icon-only circle on a phone since it shipped. */
   .trp-pill.is-feedback { width: 44px; padding: 0; gap: 0; }
   .trp-pill.is-feedback .trp-pill-text { display: none; }
-}
-
-/* Narrower than this there is no room for two labelled pills side by side,
-   so the trophy carries it alone. The aria-label says the rest. */
-@media (max-width: 479px) {
-  .trp-pill.is-win { width: 44px; padding: 0; gap: 0; }
+  /* The testimonial pill keeps a word, just a shorter one, so the row is
+     a circle and a pill rather than two unreadable circles. */
   .trp-pill.is-win .trp-pill-text { display: none; }
+  .trp-pill.is-win .trp-pill-short { display: inline; }
 }
 
 /* The last line of any page clears the row, so nothing ever ends under it. */

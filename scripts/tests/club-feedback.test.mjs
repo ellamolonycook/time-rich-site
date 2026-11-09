@@ -190,11 +190,24 @@ console.log('\nthe component mounts on the page, in two steps');
   check('the chosen chip fills dark green',
     /\.trp-fb-chips input:checked \+ \.trp-fb-chip \{[^}]*background: rgb\(var\(--c-green\)\)/.test(CSS));
 
-  // The two written answers.
+  // The written answers: the sessions question, then Ella's three open ones.
   const areas = [...step1.querySelectorAll('textarea')];
-  check('two written answers, named for the Notion columns',
-    areas.length === 2 && areas[0].name === 'Learn in last sessions' &&
-    areas[1].name === 'Win or change', areas.map((a) => a.name));
+  check('four written answers, named for the Notion columns, in Ella’s order',
+    areas.map((a) => a.name).join('|') === ['Learn in last sessions', 'Biggest unlock',
+      'Favorite teachers', 'How can we improve'].join('|'), areas.map((a) => a.name));
+  const labelOf = (area) => doc.querySelector('label[for="' + area.id + '"]')
+    .textContent.replace(/\s+/g, ' ');
+  check('asking what the biggest unlock was',
+    labelOf(areas[1]) === 'What was the biggest unlock for you? (optional)', labelOf(areas[1]));
+  check('who their favourite teachers were',
+    labelOf(areas[2]) === 'Who were your favorite teachers? (optional)', labelOf(areas[2]));
+  check('and how we can improve',
+    labelOf(areas[3]) === 'How can we improve? (optional)', labelOf(areas[3]));
+  check('all three optional, so nothing new blocks Send',
+    areas.slice(1).every((a) => a.required === false));
+  check('and the old win-or-change box is gone',
+    step1.querySelector('[name="Win or change"]') === null &&
+    !/One win, or one thing to change/.test(CHROME));
   check('both grow as you type, capped around six lines',
     /function autoGrow/.test(CHROME) && /line \* 6/.test(CHROME));
   const learnLabel = doc.querySelector('label[for="' + areas[0].id + '"]');
@@ -206,9 +219,8 @@ console.log('\nthe component mounts on the page, in two steps');
     wispr.getAttribute('href') === 'https://wisprflow.ai/info/redeem-promo?code=TIMERICH6&months=6' &&
     wispr.getAttribute('target') === '_blank' && /noopener/.test(wispr.getAttribute('rel')),
     wispr.getAttribute('href'));
-  check('the win-or-change answer is marked optional',
-    /One win, or one thing to change \(optional\)/
-      .test(doc.querySelector('label[for="' + areas[1].id + '"]').textContent.replace(/\s+/g, ' ')));
+  check('every written answer grows the same way',
+    areas.every((a) => a.rows === 2 && a.className === 'trp-fb-area'));
 
   // What the old form had and this one does not.
   check('the 1 to 10 rating is gone',
@@ -230,7 +242,7 @@ console.log('\nthe component mounts on the page, in two steps');
 /* Email is the only thing step 1 insists on now, so the helper fills that
    by default and takes the taps and the typing as extras. */
 function fill(doc, { email = 'eve@example.com', built, saved, slowing,
-                     recommend, learn, win } = {}) {
+                     recommend, learn, unlock, teachers, improve } = {}) {
   const form = doc.querySelector('[data-feedback-form]');
   const view = doc.defaultView;
   const set = (node, value) => {
@@ -249,7 +261,9 @@ function fill(doc, { email = 'eve@example.com', built, saved, slowing,
   if (slowing) tap(2, slowing);
   if (recommend) tap(3, recommend);
   if (learn) set(form.querySelector('textarea[name="Learn in last sessions"]'), learn);
-  if (win) set(form.querySelector('textarea[name="Win or change"]'), win);
+  if (unlock) set(form.querySelector('textarea[name="Biggest unlock"]'), unlock);
+  if (teachers) set(form.querySelector('textarea[name="Favorite teachers"]'), teachers);
+  if (improve) set(form.querySelector('textarea[name="How can we improve"]'), improve);
   return form;
 }
 const clickOn = (doc, sel) => {
@@ -360,7 +374,9 @@ console.log('\nSend posts once, with the names the Worker expects');
     slowing: 'Finding the time',
     recommend: 'Yes',
     learn: 'More on agents.',
-    win: 'The hot seats.',
+    unlock: 'Delegating to an agent.',
+    teachers: 'Ella and the hot seats.',
+    improve: 'More time on the prompts.',
   });
   clickOn(doc, '[data-feedback-next]');
 
@@ -388,8 +404,8 @@ console.log('\nSend posts once, with the names the Worker expects');
 
   const body = posts[0].body;
   const WANT = ['Name', 'Email', 'Built so far', 'Time saved', 'Slowing me down',
-    'Would recommend', 'Learn in last sessions', 'Win or change', 'Founders to invite',
-    'OK to feature', 'Source', '_gotcha'];
+    'Would recommend', 'Learn in last sessions', 'Biggest unlock', 'Favorite teachers',
+    'How can we improve', 'Founders to invite', 'OK to feature', 'Source', '_gotcha'];
   check('exactly the expected field names',
     JSON.stringify(Object.keys(body).sort()) === JSON.stringify([...WANT].sort()),
     Object.keys(body));
@@ -403,7 +419,9 @@ console.log('\nSend posts once, with the names the Worker expects');
     [body['Time saved'], body['Slowing me down'], body['Would recommend']]);
   check('the written answers are carried',
     body['Learn in last sessions'] === 'More on agents.' &&
-    body['Win or change'] === 'The hot seats.', body);
+    body['Biggest unlock'] === 'Delegating to an agent.' &&
+    body['Favorite teachers'] === 'Ella and the hot seats.' &&
+    body['How can we improve'] === 'More time on the prompts.', body);
   check('the founders are one field, a line each, piped',
     body['Founders to invite'] === 'Ada | linkedin.com/in/ada | ada@example.com\nGrace |  | ',
     body['Founders to invite']);
@@ -515,7 +533,7 @@ console.log('\non an error the form stays put and keeps what they typed');
 {
   const dom = await openPage('feedback.html', { httpOk: false, reply: { ok: false, error: 'Notion is down.' } });
   const doc = dom.window.document;
-  fill(doc, { saved: '6+ hours', win: 'Keep this.' });
+  fill(doc, { saved: '6+ hours', unlock: 'Keep this.' });
   clickOn(doc, '[data-feedback-next]');
   clickOn(doc, '[data-feedback-send]');
   await tick();
@@ -532,7 +550,7 @@ console.log('\non an error the form stays put and keeps what they typed');
 
   check('everything they typed and tapped is still there',
     doc.querySelector('input[name="Email"]').value === 'eve@example.com' &&
-    doc.querySelector('textarea[name="Win or change"]').value === 'Keep this.' &&
+    doc.querySelector('textarea[name="Biggest unlock"]').value === 'Keep this.' &&
     [...doc.querySelectorAll('.trp-fb-chips input')]
       .some((n) => n.value === '6+ hours' && n.checked));
   check('and Send it can be pressed again',
@@ -589,8 +607,10 @@ console.log('\nthe pill looks and sits where Ella asked');
   check('no hard-coded colour anywhere in its rules',
     !/\.trp-pill[^{]*\{[^}]*#[0-9a-fA-F]{3,6}/.test(CSS));
 
-  check('it starts hidden and arrives on a timer',
-    /window\.setTimeout\(function \(\) \{[\s\S]*?letIn = true;[\s\S]*?\}, 2000\)/.test(CHROME));
+  check('it is there as soon as the page is drawn, not on a timer',
+    pill.hidden === false && pill.classList.contains('is-shown') &&
+    !/letIn = true;[\s\S]*?\}, 2000\)/.test(CHROME),
+    [pill.hidden, pill.className]);
   check('fading up over 250ms, and never moving again',
     /\.trp-pill \{[\s\S]*?transition: opacity 250ms/.test(CSS) &&
     /\.trp-pill\.is-shown:hover \{ transform: translateY\(-1px\)/.test(CSS));
@@ -606,7 +626,6 @@ console.log('\nthe pill steps aside rather than covering anything');
   const doc = dom.window.document;
   const api = dom.window.TRFeedbackPill;
   const pill = api.el;
-  await new Promise((r) => setTimeout(r, 2050));     // let it in
   check('it is showing to begin with', !pill.classList.contains('is-away'));
 
   api.setFooterInView(true);
@@ -734,7 +753,6 @@ console.log('\nfocus is trapped in the panel and comes back to the pill');
   fakeLayout(dom.window);
   const doc = dom.window.document;
   const api = dom.window.TRFeedbackPill;
-  await new Promise((r) => setTimeout(r, 2050));
 
   api.open();
   check('focus starts on the first field',
@@ -763,7 +781,6 @@ console.log('\na submit from the panel posts the same fields as the page');
   fakeLayout(dom.window);
   const doc = dom.window.document;
   const api = dom.window.TRFeedbackPill;
-  await new Promise((r) => setTimeout(r, 2050));
   api.open();
 
   const panel = api.panel;
@@ -783,8 +800,8 @@ console.log('\na submit from the panel posts the same fields as the page');
 
   check('one POST from the panel', dom.window.posts.length === 1, dom.window.posts.length);
   const WANT = ['Name', 'Email', 'Built so far', 'Time saved', 'Slowing me down',
-    'Would recommend', 'Learn in last sessions', 'Win or change', 'Founders to invite',
-    'OK to feature', 'Source', '_gotcha'];
+    'Would recommend', 'Learn in last sessions', 'Biggest unlock', 'Favorite teachers',
+    'How can we improve', 'Founders to invite', 'OK to feature', 'Source', '_gotcha'];
   check('with the same field names as the page',
     JSON.stringify(Object.keys(dom.window.posts[0].body).sort()) === JSON.stringify([...WANT].sort()),
     Object.keys(dom.window.posts[0].body));
@@ -1111,12 +1128,16 @@ console.log('\nthe testimonial pill is on every Club page, beside the feedback o
   check('it is a link to the testimonial page, not a button',
     win.tagName === 'A' && win.getAttribute('href') === '/club/testimonial',
     [win.tagName, win.getAttribute('href')]);
-  check('reading 🏆 Win, short enough to sit beside the other pill',
+  check('reading 🏆 Submit testimonial & win on a laptop',
     win.querySelector('.trp-pill-emoji').textContent === '🏆' &&
-    win.querySelector('.trp-pill-text').textContent === 'Win',
+    win.querySelector('.trp-pill-text').textContent === 'Submit testimonial & win',
     win.textContent);
-  check('with an accessible name for the phone version',
-    win.getAttribute('aria-label') === 'Upload your video testimonial to WIN');
+  check('with 🏆 Testimonial standing in on a phone',
+    win.querySelector('.trp-pill-short').textContent === 'Testimonial',
+    win.textContent);
+  check('and one accessible name whichever is showing',
+    win.getAttribute('aria-label') === 'Submit your video testimonial and win',
+    win.getAttribute('aria-label'));
   check('it wears the same pill styling', win.classList.contains('trp-pill'));
 
   // Side by side in one row, not stacked.
@@ -1136,12 +1157,12 @@ console.log('\nthe testimonial pill is on every Club page, beside the feedback o
   check('so both are the same height, 40px on a laptop and 44px on a phone',
     /\.trp-pill \{[\s\S]*?height: 40px/.test(CSS) &&
     /@media \(max-width: 639px\) \{[\s\S]*?\.trp-pill \{ height: 44px; \}/.test(CSS));
-  check('under 480px the trophy carries it alone',
-    /@media \(max-width: 479px\) \{\s*\.trp-pill\.is-win \{ width: 44px; padding: 0; gap: 0; \}\s*\.trp-pill\.is-win \.trp-pill-text \{ display: none/.test(CSS));
-  check('and the word is still there between 480px and 640px',
-    !/\.trp-pill\.is-win \.trp-pill-text \{ display: none/
-      .test(CSS.slice(CSS.indexOf('@media (max-width: 639px)'),
-                      CSS.indexOf('@media (max-width: 479px)'))));
+  check('the long label gives way to the short one under 640px',
+    /@media \(max-width: 639px\) \{[\s\S]*?\.trp-pill\.is-win \.trp-pill-text \{ display: none; \}\s*\.trp-pill\.is-win \.trp-pill-short \{ display: inline; \}/.test(CSS));
+  check('and only one of the two is ever in the pill',
+    /\.trp-pill-short \{ display: none; \}/.test(CSS));
+  check('so the testimonial pill keeps a word on a phone, unlike feedback',
+    !/\.trp-pill\.is-win \{ width: 44px/.test(CSS));
   check('the emoji is never hidden, so the circle still says something',
     !/\.trp-pill-emoji \{[^}]*display: none/.test(CSS));
   check('and the page leaves room for the row',
@@ -1150,7 +1171,6 @@ console.log('\nthe testimonial pill is on every Club page, beside the feedback o
 
   // Both come in together and go away together.
   const api = dom.window.TRFeedbackPill;
-  await new Promise((r) => setTimeout(r, 2050));
   check('both are showing once they are let in',
     !api.el.classList.contains('is-away') && !win.classList.contains('is-away') &&
     win.hidden === false);

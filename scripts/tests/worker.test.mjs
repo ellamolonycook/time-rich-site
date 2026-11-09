@@ -2466,7 +2466,9 @@ console.log('\n/feedback — the Club feedback form and the video testimonial');
       'Slowing me down': { type: 'select' },
       'Would recommend': { type: 'select' },
       'Learn in last sessions': { type: 'rich_text' },
-      'Win or change': { type: 'rich_text' },
+      'Biggest unlock': { type: 'rich_text' },
+      'Favorite teachers': { type: 'rich_text' },
+      'How can we improve': { type: 'rich_text' },
       'Founders to invite': { type: 'rich_text' },
       'LinkedIn recommendation': { type: 'select' },
       'LinkedIn recommendation link': { type: 'url' },
@@ -2509,7 +2511,9 @@ console.log('\n/feedback — the Club feedback form and the video testimonial');
     'Slowing me down': 'Finding the time',
     'Would recommend': 'Yes',
     'Learn in last sessions': 'More on agents.',
-    'Win or change': 'The hot seats.',
+    'Biggest unlock': 'Delegating to an agent.',
+    'Favorite teachers': 'Ella and the hot seats.',
+    'How can we improve': 'More time on the prompts.',
     'Founders to invite': 'Ada | linkedin.com/in/ada | ada@example.com',
     'OK to feature': 'Yes',
     Source: 'club-feedback',
@@ -2534,10 +2538,13 @@ console.log('\n/feedback — the Club feedback form and the video testimonial');
     props['Slowing me down'].select.name === 'Finding the time' &&
     props['Would recommend'].select.name === 'Yes',
     [props['Time saved'], props['Slowing me down'], props['Would recommend']]);
-  check('both written answers are mapped',
+  check('all four written answers are mapped',
     props['Learn in last sessions'].rich_text[0].text.content === 'More on agents.' &&
-    props['Win or change'].rich_text[0].text.content === 'The hot seats.',
-    [props['Learn in last sessions'], props['Win or change']]);
+    props['Biggest unlock'].rich_text[0].text.content === 'Delegating to an agent.' &&
+    props['Favorite teachers'].rich_text[0].text.content === 'Ella and the hot seats.' &&
+    props['How can we improve'].rich_text[0].text.content === 'More time on the prompts.',
+    [props['Learn in last sessions'], props['Biggest unlock'],
+     props['Favorite teachers'], props['How can we improve']]);
   check('the founders are kept as one field, a line each',
     props['Founders to invite'].rich_text[0].text.content ===
     'Ada | linkedin.com/in/ada | ada@example.com',
