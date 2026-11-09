@@ -5,17 +5,7 @@
   "kind": "text",
   "sort": 1,
   "title": "Week 3 homework",
-  "body": "Leave this week with your content machine running: your strategy in Stanley and a week of posts drafted.\n1. Set up Stanley. It's your AI head of content. It learns your voice and drafts your posts, so you show up more without hours of writing.\n2. Watch the Storytelling for GTM replay. What you work on with ViKA feeds straight into your strategy in step 3.\n3. Build your content strategy with the prompt, then find the 5 creators to study. Why the prompt: it reads your Business COMPASS and only asks what's missing. In about 10 minutes you know what to post about, who it's for, and your first week of posts. Without a strategy, Stanley is guessing.\n4. Run your content machine. Draft your week of posts in Stanley, one at a time. Post your first one by Fri 13 Nov with #timerichclub.\nStuck or have questions? Jump on Friday's live session (Fri 13 Nov, 12pm ET). There'll be breakout rooms to ask your questions.",
-  "url": null,
-  "published": true
- },
- {
-  "id": 155,
-  "week_id": 3,
-  "kind": "text",
-  "sort": 5,
-  "title": "Use Stanley inside Claude or ChatGPT",
-  "body": "Use Stanley right inside the AI you already work in, without switching apps. Set up Stanley first (below), then come back here.\nCopy your Stanley MCP link\n1. In Stanley, open the left sidebar and click Connectors.\n2. Scroll to Stanley MCP and copy the link.\n+ In Claude\n1. Click your name (bottom left), then Settings.\n2. Click Customize, then the Connectors tab.\n3. Click + Add (top right), then Add custom connector.\n4. Name: Stanley. MCP server URL: paste your link. Click Continue.\n5. Sign in to Stanley when asked and click Allow.\n6. In a chat, click + (bottom left), then Connectors, and switch Stanley on.\nOn the free Claude plan you can add one custom connector.\n+ In ChatGPT (Plus or higher)\n1. Click your profile, then Settings.\n2. Open Apps & Connectors, scroll to Advanced settings and turn on Developer mode.\n3. Back in Apps & Connectors, click Create.\n4. Name it Stanley, paste your link as the Connector URL, choose OAuth and click Create.\n5. Sign in to Stanley and allow access.",
+  "body": "Leave this week with your content machine running: your strategy in Stanley and a week of posts drafted.\n1. Set up Stanley. It's your AI head of content. It learns your voice and drafts your posts, so you show up more without hours of writing.\n2. Watch the Storytelling for GTM replay. What you work on with ViKA feeds straight into your strategy in step 3.\n3. Build your content strategy with the prompt, then find 5 industry leaders to study. Why the prompt: it reads your Business COMPASS and only asks what's missing. In about 10 minutes you know what to post about, who it's for, and your first week of posts. Without a strategy, Stanley is guessing.\n4. Run your content machine. Draft your week of posts in Stanley, one at a time. Post your first one by Fri 13 Nov with #timerichclub.\nStuck or have questions? Jump on Friday's live session (Fri 13 Nov, 12pm ET). There'll be breakout rooms to ask your questions.",
   "url": null,
   "published": true
  },
@@ -40,11 +30,21 @@
   "published": true
  },
  {
-  "id": 156,
+  "id": 155,
   "week_id": 3,
   "kind": "text",
   "sort": 32,
-  "title": "Where your content lives",
+  "title": "Use Stanley inside your current AI tool",
+  "body": "Use Stanley right inside the AI you already work in, without switching apps.\nCopy your Stanley MCP link\n1. In Stanley, open the left sidebar and click Connectors.\n2. Scroll to Stanley MCP and copy the link.\n+ In Claude\n1. Click your name (bottom left), then Settings.\n2. Click Customize, then the Connectors tab.\n3. Click + Add (top right), then Add custom connector.\n4. Name: Stanley. MCP server URL: paste your link. Click Continue.\n5. Sign in to Stanley when asked and click Allow.\n6. In a chat, click + (bottom left), then Connectors, and switch Stanley on.\nOn the free Claude plan you can add one custom connector.\n+ In ChatGPT (Plus or higher)\n1. Click your profile, then Settings.\n2. Open Apps & Connectors, scroll to Advanced settings and turn on Developer mode.\n3. Back in Apps & Connectors, click Create.\n4. Name it Stanley, paste your link as the Connector URL, choose OAuth and click Create.\n5. Sign in to Stanley and allow access.",
+  "url": null,
+  "published": true
+ },
+ {
+  "id": 156,
+  "week_id": 3,
+  "kind": "text",
+  "sort": 33,
+  "title": "Notion Content Operating System",
   "body": "Founding Members: your Content Hub is inside your Superhuman OS in Notion.\nClub members: we emailed you the Content Hub template (\"Notion Content Hub 🎁 Time Rich Edition\").\nEveryone else: Stanley is your content machine. Your strategy, drafts and calendar all live there. Want the Notion Content Hub? Join the Time Rich Club at timerichclub.com.",
   "url": null,
   "published": true
@@ -74,7 +74,7 @@
   "week_id": 3,
   "kind": "text",
   "sort": 42,
-  "title": "Find the creators to study",
+  "title": "Find industry leaders to study their content conversion",
   "body": "Stay in the same Business Hub chat, so the AI has your worksheet. Paste the prompt and answer out loud with Wispr Flow. In about 5 minutes you'll know what kind of creator you are and who to learn from.\n\n= Copy the prompt\nMy Business COMPASS and my Personal Branding worksheet are in this chat. If you can't find them, say so and ask me to paste them before you start.\n\nYou are a social media growth strategist who studies one thing: which creators actually turn posting into revenue, and how. Help me find out which type of creator I am, then pick 5 creators I should study.\n\nKeep every message short and in plain language. Do the heavy lifting: suggest, then let me react.\n\nStep 1 · The 6 creator types that make money\nShow me this list in one short message, one line each:\n1. The Builder: shares the company as it grows (numbers, wins, mistakes). Makes money from the business itself: customers, investors, hires.\n2. The Teacher: turns know-how into frameworks and how-tos. Makes money from courses, cohorts and workshops.\n3. The Storyteller: shares a personal journey and lessons. Makes money from speaking, books and brand deals.\n4. The Expert: owns one narrow topic with a sharp point of view. Makes money from consulting and high-ticket services.\n5. The Curator: breaks down news, trends and other people's work. Makes money from a newsletter and sponsors.\n6. The Connector: spotlights people and brings them together. Makes money from a community, events and memberships.\nAdd one line: most people who earn from content are one main type plus one supporting type.\n\nStep 2 · Find my type\nUsing my COMPASS and worksheet, especially my goal, positioning and pillars, tell me my main type and my supporting type. Give one line on why for each. Then tell me how that combination usually makes money and whether it fits my goal. If it doesn't fit, say so and suggest what to change.\nIf you can't tell, ask me up to 3 quick questions first, then decide.\nAsk me to confirm or switch.\n\nStep 3 · Pick 5 creators to study\nPick 5 real creators who post on LinkedIn or X:\n- 2 at the top of my type, so I can see where it leads\n- 3 a few steps ahead of me: similar audience, industry or business model, small enough that I can copy what they do this month\nAt least one should share my main type and at least one my supporting type.\nIf you can search the web, check each profile exists and is active before you suggest it. Never make up a person, a link or how much someone earns. If you can't check a link, give the name and write \"search on LinkedIn\" in place of a link.\n\nStep 4 · What to steal\nFor each creator, tell me:\n- their type\n- why they're right for me (one line)\n- one thing to study: a post format, a hook pattern, or how they sell from their content\n\nFinal output\nGive me ONE plain text code block so I can paste it into Stanley's Brain under Topics and Creators. Use this layout and don't add commentary inside the block:\n\nMy creator type: [main] + [supporting]\nHow I'll make money from content: [one line]\n\nCreators I study:\n1. [Name] · [type] · [LinkedIn or X link]\n   Study: [the one thing]\n(repeat for all 5)\n\nAfter the block, tell me to paste it into Stanley: profile → Brain → Topics and Creators.\n\nStart now.\n=",
   "url": null,
   "published": true
@@ -84,7 +84,7 @@
   "week_id": 3,
   "kind": "text",
   "sort": 43,
-  "title": "Give your strategy to Stanley",
+  "title": "How to use your Stanley Brain",
   "body": "Video: https://www.loom.com/share/d2f889283f5e486f8d141803a81dba8e\n1. In Stanley, click your profile, then Brain.\n2. Strategy: paste the content strategy you just built.\n3. My Human: paste a short overview of who you are. Quick way: ask your Business Hub \"Put together everything you know about me that would help someone write my content\", then paste the answer.\n4. Instructions: add your must-follow rules, one per line, e.g. \"Use contractions: don't, not do not.\"\n5. Topics and Creators: paste the creators list from the last step.\nStanley keeps adding to your Brain as you talk to it. You can edit anything, anytime.\n! /portal/assets/visibility-stanley-files.png | Stanley's Brain panel with Files open and the + button beside it.",
   "url": null,
   "published": true
