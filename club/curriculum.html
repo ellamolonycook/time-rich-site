@@ -1584,9 +1584,10 @@ When you finish:
       // Tool names in a lesson's text link to where you get them.
       var NAME_LINKS = {
         'Wispr Flow': 'https://wisprflow.ai/info/redeem-promo?code=TIMERICH6&months=6',
-        'Stanley': 'https://x.getstanley.ai/r/mz4y9g'   // Stanley's tracking link (Ella, 6 Nov)
+        'Stanley': 'https://x.getstanley.ai/r/mz4y9g',  // Stanley's tracking link (Ella, 6 Nov)
+        'timerichclub.com': 'https://www.timerichclub.com/subscribe'   // Club sign-up (Ella, 9 Nov)
       };
-      var NAME_RE = /(Wispr Flow|Stanley)/;
+      var NAME_RE = /(Wispr Flow|Stanley|timerichclub\.com)/;
       function linkNames(p, line) {
         line.split(NAME_RE).forEach(function (bit, n) {
           if (!bit) return;
@@ -2490,27 +2491,28 @@ Anything you've done twice should never need you again. A skill is your way of d
       ];
 
       /* Week 3 in the same shape as Week 2 (Ella, 6 Nov: "We need
-         consistency"). Strategy first, then tools, as Ella's Loom asks;
-         then the first post, Content OS and the week's wrap-up. The rows
-         sit at 30s, 40s, 50s, 60-89 and 90+. */
+         consistency"). Stanley and the content home first, then the
+         strategy, then the machine that runs on it; Content OS and the
+         week's wrap-up close the week. The rows sit at 30s, 40s, 50s,
+         60-89 and 90+. */
       var WEEK3_SECTIONS = [
         { upto: 29, title: 'Start here' },
         {
           upto: 39,
-          title: '1. Build your content strategy',
-          lead: `Say who you are out loud. AI turns it into your content strategy, and Stanley writes every post from it.`
+          title: '1. Set up Stanley and your content home',
+          lead: `Stanley is your AI head of content: a voice note goes in, drafts in your voice come out, you approve, it posts. Free for 6 months with code TIMERICH6.
+! /portal/assets/week3-stanley-flow.png | An AI head of content: from a voice note to a scheduled post`
         },
         {
           upto: 49,
-          title: '2. Connect your tools',
-          lead: `Stanley is your AI head of content. Set it up free for 6 months with code TIMERICH6, then hand it your strategy.`
+          title: '2. Build your content strategy',
+          lead: `Your Business COMPASS already knows who you are and who you serve. Add what you worked on with ViKA on Monday, and AI turns it into your content strategy.`
         },
         {
           upto: 59,
-          title: '3. Write your first post',
-          lead: `"Its deep knowledge of your past LinkedIn performance is what differentiates it from any other tool I've used." Hannah Zhang, who tripled her LinkedIn audience in one year
-
-Save the skill once. Then hand Stanley a story and it drafts in your voice.`
+          title: '3. Run your content machine',
+          lead: `One hour of talking. 20 to 50 pieces of content.
+! /portal/assets/week3-content-waterfall.png | One voice memo becomes a month of content`
         },
         { upto: 89, title: 'Content OS' },
         { upto: Infinity, title: 'This week, and what you\'ve built' }
