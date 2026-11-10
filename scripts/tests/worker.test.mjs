@@ -2479,27 +2479,55 @@ console.log('\n/feedback — the Club feedback form and the video testimonial');
       Source: { type: 'rich_text' },
     },
   };
-  const fbEnv = { ...env, NOTION_FEEDBACK_DATABASE_ID: 'db-feedback' };
+  const FORMS_HOOK = 'https://hooks.slack.test/forms';
+  const fbEnv = {
+    ...env,
+    NOTION_FEEDBACK_DATABASE_ID: 'db-feedback',
+    SLACK_FORMS_WEBHOOK_URL: FORMS_HOOK,
+  };
+  let slackPosts = [];
+  let slackDown = false;
+  let notionGivesUrl = true;
   const fbFetch = async (url, init) => {
     calls.push({ url: String(url), init });
+    if (String(url) === FORMS_HOOK) {
+      slackPosts.push(JSON.parse(init.body));
+      return slackDown
+        ? new Response('no_service', { status: 500 })
+        : new Response('ok', { status: 200 });
+    }
     if (String(url).includes('/v1/databases/')) {
       return new Response(JSON.stringify(fbSchema), { status: 200 });
     }
-    return new Response(JSON.stringify({ id: 'page-fb' }), { status: 200 });
+    // Notion answers with the page it made, url included.
+    return new Response(JSON.stringify(notionGivesUrl
+      ? { id: 'page-fb', url: 'https://www.notion.so/page-fb' }
+      : { id: 'page-fb' }), { status: 200 });
   };
 
-  async function feedback(body) {
+  /* Posts as the page does, with a ctx whose waitUntil() work we then wait on
+     -- the Worker runtime does the same thing after the response has already
+     gone back to the browser. */
+  async function feedback(body, opts = {}) {
     globalThis.fetch = fbFetch;
     calls = [];
+    slackPosts = [];
+    slackDown = opts.slackDown === true;
+    notionGivesUrl = opts.notionUrl !== false;
+    const pending = [];
     const res = await worker.fetch(new Request('https://w.dev/feedback', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json', Origin: 'https://timerich.ai' },
       body: JSON.stringify(body),
-    }), fbEnv);
+    }), opts.env || fbEnv, opts.noCtx ? undefined : { waitUntil: (p) => pending.push(p) });
+    await Promise.all(pending);
     globalThis.fetch = baseFetch;
     return res;
   }
   const filed = () => JSON.parse(calls.find((c) => c.url.endsWith('/v1/pages')).init.body);
+  // The one block that carries the answers, as the channel would read it.
+  const slackBody = () => (slackPosts[0] ? slackPosts[0].blocks[1].text.text : '');
+  const slackHead = () => (slackPosts[0] ? slackPosts[0].blocks[0].text.text : '');
 
   /* ---- the feedback form ---- */
 
@@ -2686,6 +2714,140 @@ console.log('\n/feedback — the Club feedback form and the video testimonial');
   check('and nothing is written to Notion',
     !calls.some((c) => c.url.endsWith('/v1/pages')),
     calls.map((c) => c.url));
+  check('so a bot cannot post to the channel either',
+    slackPosts.length === 0, slackPosts.length);
+
+  /* ---- the Slack post ---- */
+
+  /* The row is saved first and the post goes out behind the response, so
+     nothing here is allowed to change what the member sees. */
+
+  res = await feedback(GOOD);
+  check('a feedback row posts once to the forms webhook',
+    slackPosts.length === 1 && calls.filter((c) => c.url === FORMS_HOOK).length === 1,
+    slackPosts.length);
+  check('after the row is saved, not before',
+    calls.findIndex((c) => c.url.endsWith('/v1/pages')) <
+    calls.findIndex((c) => c.url === FORMS_HOOK),
+    calls.map((c) => c.url));
+  check('under the feedback header', slackHead() === '📝 *New feedback*', slackHead());
+  check('with a fallback line for the notification',
+    slackPosts[0].text === 'New feedback — Eve', slackPosts[0].text);
+  check('and links left unfurled, so the channel stays readable',
+    slackPosts[0].unfurl_links === false);
+
+  check('the answers are in Ella’s order',
+    slackBody().split('\n').map((l) => l.replace(/^\*(.+?):\*.*$/, '$1')).join('|') ===
+    ['Name', 'Email', 'Built so far', 'Time saved', 'Slowing me down', 'Would recommend',
+     'Biggest unlock', 'Favorite teachers', 'How can we improve', 'Learn in last sessions',
+     'Founders invited', 'OK to feature'].join('|'),
+    slackBody());
+  check('each one reading label then answer',
+    slackBody().includes('*Time saved:* 3–5 hours') &&
+    slackBody().includes('*Would recommend:* Yes') &&
+    slackBody().includes('*Biggest unlock:* Delegating to an agent.'),
+    slackBody());
+  check('the founders are counted, not pasted in',
+    slackBody().includes('*Founders invited:* 1') &&
+    !slackBody().includes('linkedin.com/in/ada'), slackBody());
+  check('and the row is one click away',
+    slackPosts[0].blocks[2].elements[0].text ===
+    '<https://www.notion.so/page-fb|View in Notion →>',
+    slackPosts[0].blocks[2]);
+
+  // Two founders on two lines, and a blank line that should not count.
+  res = await feedback({ ...GOOD, 'Founders to invite': 'Ada | a | a@x.com\n\nGrace |  | ' });
+  check('an empty founder line is not counted',
+    slackBody().includes('*Founders invited:* 2'), slackBody());
+
+  // Only what was filled in.
+  res = await feedback({
+    Name: 'Eve', Email: 'eve@example.com', 'Time saved': '6+ hours',
+    'OK to feature': 'No', Source: 'club-feedback', _gotcha: '',
+  });
+  check('an unanswered question is left out rather than printed as a dash',
+    slackBody() === ['*Name:* Eve', '*Email:* eve@example.com', '*Time saved:* 6+ hours',
+      '*OK to feature:* No'].join('\n'), slackBody());
+
+  // The testimonial reads differently: it is a link to go and watch.
+  res = await feedback(TESTIMONIAL);
+  check('a testimonial posts under its own header',
+    slackHead() === '🏆 *New video testimonial*', slackHead());
+  check('with its own fallback line',
+    slackPosts[0].text === 'New video testimonial — Eve', slackPosts[0].text);
+  check('the video is a link, not a bare string',
+    slackBody().includes(
+      '*Video link:* <https://www.loom.com/share/abc123|https://www.loom.com/share/abc123>'),
+    slackBody());
+  check('the recommendation and the post come with it',
+    slackBody().includes('*LinkedIn recommendation:* Done') &&
+    slackBody().includes('*LinkedIn video post:* <https://www.linkedin.com/posts/'),
+    slackBody());
+  check('in the order Ella asked for',
+    slackBody().split('\n').map((l) => l.replace(/^\*(.+?):\*.*$/, '$1')).join('|') ===
+    ['Name', 'Email', 'Video link', 'LinkedIn recommendation', 'LinkedIn video post',
+     'OK to feature'].join('|'), slackBody());
+  check('and none of the feedback form’s questions are in it',
+    !/Built so far|Founders invited|Biggest unlock/.test(slackBody()), slackBody());
+
+  res = await feedback({ ...TESTIMONIAL, 'LinkedIn video post': '' });
+  check('no LinkedIn post means no line for it',
+    !slackBody().includes('LinkedIn video post') && slackBody().includes('*Video link:*'),
+    slackBody());
+
+  /* ---- what a member types cannot break the message ---- */
+
+  res = await feedback({
+    ...GOOD,
+    Name: 'Eve & <script>alert(1)</script>',
+    'Biggest unlock': 'a < b & b > c',
+  });
+  check('the three characters mrkdwn reads are escaped',
+    slackBody().includes('*Name:* Eve &amp; &lt;script&gt;alert(1)&lt;/script&gt;') &&
+    slackBody().includes('*Biggest unlock:* a &lt; b &amp; b &gt; c'),
+    slackBody());
+  check('and nothing raw is left in the block',
+    !/[<>]/.test(slackBody().replace(/<https:[^>]*>/g, '')), slackBody());
+
+  const long = 'x'.repeat(400);
+  res = await feedback({ ...GOOD, 'How can we improve': long, 'Favorite teachers': long });
+  const improve = slackBody().split('\n').find((l) => l.startsWith('*How can we improve:*'));
+  check('a long answer is cut at 300 characters',
+    improve === '*How can we improve:* ' + 'x'.repeat(300), improve && improve.length);
+  check('and the cap is per answer, so one does not eat the others',
+    slackBody().includes('*Favorite teachers:* ' + 'x'.repeat(300)) &&
+    slackBody().includes('*OK to feature:* Yes'), slackBody().length);
+
+  /* ---- Slack can never be the reason a submission looks broken ---- */
+
+  res = await feedback(GOOD, { slackDown: true });
+  check('a webhook that answers 500 still returns success', res.status === 200, res.status);
+  check('and the row is still in Notion',
+    calls.some((c) => c.url.endsWith('/v1/pages')), calls.map((c) => c.url));
+
+  res = await feedback(GOOD, { env: { ...fbEnv, SLACK_FORMS_WEBHOOK_URL: '' } });
+  check('no webhook configured still returns success', res.status === 200, res.status);
+  check('and nothing is posted', slackPosts.length === 0, slackPosts.length);
+  check('the row is saved all the same',
+    calls.some((c) => c.url.endsWith('/v1/pages')), calls.map((c) => c.url));
+
+  res = await feedback(GOOD, { notionUrl: false });
+  check('a page whose url we cannot read still posts, without the link',
+    res.status === 200 && slackPosts.length === 1 && slackPosts[0].blocks.length === 2,
+    slackPosts[0] && slackPosts[0].blocks.length);
+
+  res = await feedback(GOOD, { noCtx: true });
+  check('without a ctx the post is still made', res.status === 200 && slackPosts.length === 1,
+    [res.status, slackPosts.length]);
+
+  // A refused submission never reaches Notion, so there is nothing to post.
+  res = await feedback({ ...TESTIMONIAL, 'Video link': '' });
+  check('a 400 posts nothing', res.status === 400 && slackPosts.length === 0,
+    [res.status, slackPosts.length]);
+  res = await feedback({ ...GOOD, Email: '' });
+  check('and neither does a missing email', res.status === 400 && slackPosts.length === 0,
+    [res.status, slackPosts.length]);
+
 }
 
 console.log('\n' + pass + ' passed, ' + fail + ' failed');
