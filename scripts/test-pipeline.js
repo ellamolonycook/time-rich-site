@@ -35,7 +35,7 @@ async function runTests() {
   }
 
   await checkRoute('/accelerator/', 'Sales Page (/accelerator)');
-  await checkRoute('/join/', 'Join Capture Page (/join)');
+  await checkRoute('/join/', 'Waitlist redirect (/join -> /accelerator/#waitlist)');
   await checkRoute('/onboard/', 'Onboarding Page (/onboard)');
 
   // 2. Cloudflare Worker Endpoint Unit Tests (Mock Environment)
