@@ -2445,12 +2445,14 @@ console.log('\nThe /os email gate: POST /os-email');
 
 globalThis.fetch = baseFetch;
 
-/* ---- /feedback: the Club feedback and testimonial form ------------------
-   Everything past the rating is optional, so the tests below are mostly
-   about what the route refuses: a rating that would make the average
-   meaningless, and a "LinkedIn" link that is not one. */
+/* ---- /feedback: the Club feedback form and the video testimonial --------
+   Two forms post here. /club/feedback sends the week's answers (Source
+   club-feedback) and /club/testimonial sends the video (Source
+   club-testimonial). Email is the only field either must have, plus the
+   video link on the testimonial, so the tests below are mostly about what
+   the route refuses and what it quietly drops. */
 
-console.log('\n/feedback — the Club feedback and testimonial form');
+console.log('\n/feedback — the Club feedback form and the video testimonial');
 {
   // The real database's columns, so the mapping is tested against the
   // schema the route will actually meet rather than a two-column stub.
@@ -2459,46 +2461,88 @@ console.log('\n/feedback — the Club feedback and testimonial form');
       Name: { type: 'title' },
       Email: { type: 'email' },
       Rating: { type: 'number' },
-      'Most useful': { type: 'rich_text' },
-      'One thing to change': { type: 'rich_text' },
+      'Built so far': { type: 'rich_text' },
+      'Time saved': { type: 'select' },
+      'Slowing me down': { type: 'select' },
+      'Would recommend': { type: 'select' },
+      'Learn in last sessions': { type: 'rich_text' },
+      'Biggest unlock': { type: 'rich_text' },
+      'Favorite teachers': { type: 'rich_text' },
+      'How can we improve': { type: 'rich_text' },
+      'Founders to invite': { type: 'rich_text' },
       'LinkedIn recommendation': { type: 'select' },
       'LinkedIn recommendation link': { type: 'url' },
+      'Video link': { type: 'url' },
       'LinkedIn video post': { type: 'url' },
       'OK to feature': { type: 'select' },
       Status: { type: 'select' },
       Source: { type: 'rich_text' },
     },
   };
-  const fbEnv = { ...env, NOTION_FEEDBACK_DATABASE_ID: 'db-feedback' };
+  const FORMS_HOOK = 'https://hooks.slack.test/forms';
+  const fbEnv = {
+    ...env,
+    NOTION_FEEDBACK_DATABASE_ID: 'db-feedback',
+    SLACK_FORMS_WEBHOOK_URL: FORMS_HOOK,
+  };
+  let slackPosts = [];
+  let slackDown = false;
+  let notionGivesUrl = true;
   const fbFetch = async (url, init) => {
     calls.push({ url: String(url), init });
+    if (String(url) === FORMS_HOOK) {
+      slackPosts.push(JSON.parse(init.body));
+      return slackDown
+        ? new Response('no_service', { status: 500 })
+        : new Response('ok', { status: 200 });
+    }
     if (String(url).includes('/v1/databases/')) {
       return new Response(JSON.stringify(fbSchema), { status: 200 });
     }
-    return new Response(JSON.stringify({ id: 'page-fb' }), { status: 200 });
+    // Notion answers with the page it made, url included.
+    return new Response(JSON.stringify(notionGivesUrl
+      ? { id: 'page-fb', url: 'https://www.notion.so/page-fb' }
+      : { id: 'page-fb' }), { status: 200 });
   };
 
-  async function feedback(body) {
+  /* Posts as the page does, with a ctx whose waitUntil() work we then wait on
+     -- the Worker runtime does the same thing after the response has already
+     gone back to the browser. */
+  async function feedback(body, opts = {}) {
     globalThis.fetch = fbFetch;
     calls = [];
+    slackPosts = [];
+    slackDown = opts.slackDown === true;
+    notionGivesUrl = opts.notionUrl !== false;
+    const pending = [];
     const res = await worker.fetch(new Request('https://w.dev/feedback', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json', Origin: 'https://timerich.ai' },
       body: JSON.stringify(body),
-    }), fbEnv);
+    }), opts.env || fbEnv, opts.noCtx ? undefined : { waitUntil: (p) => pending.push(p) });
+    await Promise.all(pending);
     globalThis.fetch = baseFetch;
     return res;
   }
+  const filed = () => JSON.parse(calls.find((c) => c.url.endsWith('/v1/pages')).init.body);
+  // The one block that carries the answers, as the channel would read it.
+  const slackBody = () => (slackPosts[0] ? slackPosts[0].blocks[1].text.text : '');
+  const slackHead = () => (slackPosts[0] ? slackPosts[0].blocks[0].text.text : '');
+
+  /* ---- the feedback form ---- */
 
   const GOOD = {
     Name: 'Eve',
     Email: 'eve@example.com',
-    Rating: '9',
-    'Most useful': 'The hot seats.',
-    'One thing to change': 'More time on the prompts.',
-    'LinkedIn recommendation': 'Done',
-    'LinkedIn recommendation link': 'https://www.linkedin.com/in/ellamolonycook/',
-    'LinkedIn video post': 'https://www.linkedin.com/posts/eve-mcdavid_trcsuperhuman-activity-123?utm_source=share',
+    'Built so far': 'Business Hub, Sales Floor / CRM',
+    'Time saved': '3–5 hours',
+    'Slowing me down': 'Finding the time',
+    'Would recommend': 'Yes',
+    'Learn in last sessions': 'More on agents.',
+    'Biggest unlock': 'Delegating to an agent.',
+    'Favorite teachers': 'Ella and the hot seats.',
+    'How can we improve': 'More time on the prompts.',
+    'Founders to invite': 'Ada | linkedin.com/in/ada | ada@example.com',
     'OK to feature': 'Yes',
     Source: 'club-feedback',
     _gotcha: '',
@@ -2507,72 +2551,155 @@ console.log('\n/feedback — the Club feedback and testimonial form');
   let res = await feedback(GOOD);
   check('a good submission is accepted', res.status === 200, res.status);
 
-  const page = JSON.parse(calls.find((c) => c.url.endsWith('/v1/pages')).init.body);
+  const page = filed();
   check('it is filed in the feedback database',
     page.parent.database_id === 'db-feedback', page.parent);
 
   const props = page.properties;
   check('the name is the title', props.Name.title[0].text.content === 'Eve', props.Name);
   check('the email lands on the email column', props.Email.email === 'eve@example.com', props.Email);
-  check('the rating is a number, not text', props.Rating.number === 9, props.Rating);
-  check('both written answers are mapped',
-    props['Most useful'].rich_text[0].text.content === 'The hot seats.' &&
-    props['One thing to change'].rich_text[0].text.content === 'More time on the prompts.',
-    [props['Most useful'], props['One thing to change']]);
-  check('the recommendation is Done', props['LinkedIn recommendation'].select.name === 'Done',
-    props['LinkedIn recommendation']);
-  check('the recommendation link is kept', props['LinkedIn recommendation link'].url ===
-    'https://www.linkedin.com/in/ellamolonycook/', props['LinkedIn recommendation link']);
-  check('the video post is kept, with the share tracking stripped',
-    props['LinkedIn video post'].url ===
-    'https://www.linkedin.com/posts/eve-mcdavid_trcsuperhuman-activity-123',
-    props['LinkedIn video post']);
+  check('what they have built is mapped',
+    props['Built so far'].rich_text[0].text.content === 'Business Hub, Sales Floor / CRM',
+    props['Built so far']);
+  check('the three single answers land on their select columns',
+    props['Time saved'].select.name === '3–5 hours' &&
+    props['Slowing me down'].select.name === 'Finding the time' &&
+    props['Would recommend'].select.name === 'Yes',
+    [props['Time saved'], props['Slowing me down'], props['Would recommend']]);
+  check('all four written answers are mapped',
+    props['Learn in last sessions'].rich_text[0].text.content === 'More on agents.' &&
+    props['Biggest unlock'].rich_text[0].text.content === 'Delegating to an agent.' &&
+    props['Favorite teachers'].rich_text[0].text.content === 'Ella and the hot seats.' &&
+    props['How can we improve'].rich_text[0].text.content === 'More time on the prompts.',
+    [props['Learn in last sessions'], props['Biggest unlock'],
+     props['Favorite teachers'], props['How can we improve']]);
+  check('the founders are kept as one field, a line each',
+    props['Founders to invite'].rich_text[0].text.content ===
+    'Ada | linkedin.com/in/ada | ada@example.com',
+    props['Founders to invite']);
   check('OK to feature is Yes', props['OK to feature'].select.name === 'Yes', props['OK to feature']);
   check('the route stamps Status = New', props.Status.select.name === 'New', props.Status);
   check('and Source = club-feedback',
     props.Source.rich_text[0].text.content === 'club-feedback', props.Source);
 
-  // The rating is the one required answer, and the one that has to be a
-  // whole 1 to 10: Notion's number column would take 40 or 7.5 happily.
-  for (const bad of ['0', '11', '40', '7.5', '', 'nine', '-3']) {
-    res = await feedback({ ...GOOD, Rating: bad });
-    const body = await res.json();
-    check('a rating of "' + bad + '" is refused',
-      res.status === 400 && body.error === 'Please pick a number from 1 to 10.',
-      [res.status, body.error]);
-  }
+  // Email is what the generic intake requires of every form.
+  res = await feedback({ ...GOOD, Email: '' });
+  check('a submission with no email is refused', res.status === 400, res.status);
+
+  /* ---- the rating, which the form no longer asks for ---- */
+
+  /* It used to be required. The form asks the week's questions with chips
+     now, so a rating only turns up from an old page left open in a tab: a
+     whole 1 to 10 is kept, anything else is dropped, and neither fails a
+     form that no longer has the field. */
+  res = await feedback(GOOD);
+  check('no rating at all is accepted now',
+    res.status === 200 && !('Rating' in filed().properties),
+    [res.status, Object.keys(filed().properties)]);
+
   for (const ok of ['1', '10', '5']) {
     res = await feedback({ ...GOOD, Rating: ok });
-    check('a rating of ' + ok + ' is accepted', res.status === 200, res.status);
+    check('a rating of ' + ok + ' is still kept, as a number',
+      res.status === 200 && filed().properties.Rating.number === Number(ok),
+      [res.status, filed().properties.Rating]);
+  }
+  for (const bad of ['0', '11', '40', '7.5', 'nine', '-3']) {
+    res = await feedback({ ...GOOD, Rating: bad });
+    check('a rating of "' + bad + '" is dropped, not refused',
+      res.status === 200 && !('Rating' in filed().properties),
+      [res.status, Object.keys(filed().properties)]);
   }
 
-  // The video post is the Testimonial Prize entry, so a link nobody can
-  // read is refused rather than filed.
-  for (const bad of ['https://example.com/post/1', 'https://twitter.com/eve/status/1', 'not a link',
-                     'https://linkedin.com.evil.test/posts/1']) {
-    res = await feedback({ ...GOOD, 'LinkedIn video post': bad });
-    const body = await res.json();
-    check('a video link of "' + bad.slice(0, 34) + '" is refused',
-      res.status === 400 && /LinkedIn post/.test(body.error || ''),
-      [res.status, body.error]);
+  /* ---- the video link ---- */
+
+  const VIDEO_ERR = 'Please paste a Loom, Google Drive, YouTube or Vimeo link.';
+
+  for (const ok of ['https://www.loom.com/share/abc123',
+                    'https://drive.google.com/file/d/abc/view?usp=sharing',
+                    'https://docs.google.com/file/d/abc',
+                    'https://www.youtube.com/watch?v=abc123',
+                    'https://youtu.be/abc123',
+                    'https://vimeo.com/123456',
+                    'https://www.linkedin.com/posts/eve_123']) {
+    res = await feedback({ ...GOOD, 'Video link': ok });
+    check('a video on ' + new URL(ok).hostname + ' is accepted',
+      res.status === 200 && filed().properties['Video link'].url === ok,
+      [res.status, filed().properties['Video link']]);
   }
-  res = await feedback({ ...GOOD, 'LinkedIn video post': 'linkedin.com/posts/eve_123' });
+  check('the query string is kept, since YouTube and Drive put the id there',
+    true);
+
+  for (const bad of ['https://example.com/video.mp4',
+                     'https://loom.com.evil.test/share/abc',
+                     'http://www.loom.com/share/abc',
+                     'not a link',
+                     'https://dropbox.com/s/abc']) {
+    res = await feedback({ ...GOOD, 'Video link': bad });
+    const body = await res.json();
+    check('a video link of "' + bad.slice(0, 32) + '" is refused',
+      res.status === 400 && body.error === VIDEO_ERR, [res.status, body.error]);
+  }
+
+  res = await feedback({ ...GOOD, 'Video link': '' });
+  check('no video link on the feedback form is fine', res.status === 200, res.status);
+
+  /* ---- the testimonial form ---- */
+
+  const TESTIMONIAL = {
+    Name: 'Eve',
+    Email: 'eve@example.com',
+    'LinkedIn recommendation': 'Done',
+    'Video link': 'https://www.loom.com/share/abc123',
+    'LinkedIn video post': 'https://www.linkedin.com/posts/eve_trcsuperhuman-activity-123?utm_source=share',
+    'OK to feature': 'Yes',
+    Source: 'club-testimonial',
+    _gotcha: '',
+  };
+
+  res = await feedback(TESTIMONIAL);
+  check('a testimonial is accepted', res.status === 200, res.status);
+  const tProps = filed().properties;
+  check('it keeps Source = club-testimonial',
+    tProps.Source.rich_text[0].text.content === 'club-testimonial', tProps.Source);
+  check('the video link is filed', tProps['Video link'].url === 'https://www.loom.com/share/abc123',
+    tProps['Video link']);
+  check('the recommendation is Done', tProps['LinkedIn recommendation'].select.name === 'Done',
+    tProps['LinkedIn recommendation']);
+  check('and the LinkedIn post is kept, with the share tracking stripped',
+    tProps['LinkedIn video post'].url ===
+    'https://www.linkedin.com/posts/eve_trcsuperhuman-activity-123',
+    tProps['LinkedIn video post']);
+
+  // The video is what that form exists to collect, so it cannot be skipped.
+  for (const missing of ['', '   ']) {
+    res = await feedback({ ...TESTIMONIAL, 'Video link': missing });
+    const body = await res.json();
+    check('a testimonial with no video is refused',
+      res.status === 400 && body.error === VIDEO_ERR, [res.status, body.error]);
+  }
+
+  // The LinkedIn post is a second place the video lives, not the entry.
+  res = await feedback({ ...TESTIMONIAL, 'LinkedIn video post': '' });
+  check('a testimonial with no LinkedIn post is fine', res.status === 200, res.status);
+  for (const bad of ['https://example.com/post/1', 'https://twitter.com/eve/status/1']) {
+    res = await feedback({ ...TESTIMONIAL, 'LinkedIn video post': bad });
+    const body = await res.json();
+    check('but a LinkedIn post link of "' + bad.slice(0, 30) + '" is refused',
+      res.status === 400 && /LinkedIn post/.test(body.error || ''), [res.status, body.error]);
+  }
+  res = await feedback({ ...TESTIMONIAL, 'LinkedIn video post': 'linkedin.com/posts/eve_123' });
   check('a bare linkedin.com address is accepted and made absolute',
     res.status === 200 &&
-    JSON.parse(calls.find((c) => c.url.endsWith('/v1/pages')).init.body)
-      .properties['LinkedIn video post'].url === 'https://linkedin.com/posts/eve_123',
+    filed().properties['LinkedIn video post'].url === 'https://linkedin.com/posts/eve_123',
     res.status);
 
-  // Half a testimonial is still worth having, so an empty video field is
-  // not an error.
-  res = await feedback({ ...GOOD, 'LinkedIn video post': '' });
-  check('no video link at all is fine', res.status === 200, res.status);
+  /* ---- what is dropped rather than refused ---- */
 
   /* The recommendation link is a convenience, not the entry: the
      recommendation lives on Ella's profile either way. So a wrong one is
      dropped rather than failing a form somebody has already filled in. */
   res = await feedback({ ...GOOD, 'LinkedIn recommendation link': 'https://example.com/nope' });
-  const dropped = JSON.parse(calls.find((c) => c.url.endsWith('/v1/pages')).init.body);
+  const dropped = filed();
   check('a non-LinkedIn recommendation link is dropped, not refused',
     res.status === 200 && !('LinkedIn recommendation link' in dropped.properties),
     [res.status, Object.keys(dropped.properties)]);
@@ -2581,16 +2708,146 @@ console.log('\n/feedback — the Club feedback and testimonial form');
     dropped.children);
 
   // The honeypot answers before anything is validated, so a bot never
-  // learns which field it got wrong.
-  res = await feedback({ ...GOOD, Rating: '', _gotcha: 'i am a robot' });
+  // learns which field it got wrong -- not even the video link.
+  res = await feedback({ ...TESTIMONIAL, 'Video link': '', _gotcha: 'i am a robot' });
   check('the honeypot is accepted silently', res.status === 200, res.status);
   check('and nothing is written to Notion',
     !calls.some((c) => c.url.endsWith('/v1/pages')),
     calls.map((c) => c.url));
+  check('so a bot cannot post to the channel either',
+    slackPosts.length === 0, slackPosts.length);
 
-  // Email is what the generic intake requires of every form.
+  /* ---- the Slack post ---- */
+
+  /* The row is saved first and the post goes out behind the response, so
+     nothing here is allowed to change what the member sees. */
+
+  res = await feedback(GOOD);
+  check('a feedback row posts once to the forms webhook',
+    slackPosts.length === 1 && calls.filter((c) => c.url === FORMS_HOOK).length === 1,
+    slackPosts.length);
+  check('after the row is saved, not before',
+    calls.findIndex((c) => c.url.endsWith('/v1/pages')) <
+    calls.findIndex((c) => c.url === FORMS_HOOK),
+    calls.map((c) => c.url));
+  check('under the feedback header', slackHead() === '📝 *New feedback*', slackHead());
+  check('with a fallback line for the notification',
+    slackPosts[0].text === 'New feedback — Eve', slackPosts[0].text);
+  check('and links left unfurled, so the channel stays readable',
+    slackPosts[0].unfurl_links === false);
+
+  check('the answers are in Ella’s order',
+    slackBody().split('\n').map((l) => l.replace(/^\*(.+?):\*.*$/, '$1')).join('|') ===
+    ['Name', 'Email', 'Built so far', 'Time saved', 'Slowing me down', 'Would recommend',
+     'Biggest unlock', 'Favorite teachers', 'How can we improve', 'Learn in last sessions',
+     'Founders invited', 'OK to feature'].join('|'),
+    slackBody());
+  check('each one reading label then answer',
+    slackBody().includes('*Time saved:* 3–5 hours') &&
+    slackBody().includes('*Would recommend:* Yes') &&
+    slackBody().includes('*Biggest unlock:* Delegating to an agent.'),
+    slackBody());
+  check('the founders are counted, not pasted in',
+    slackBody().includes('*Founders invited:* 1') &&
+    !slackBody().includes('linkedin.com/in/ada'), slackBody());
+  check('and the row is one click away',
+    slackPosts[0].blocks[2].elements[0].text ===
+    '<https://www.notion.so/page-fb|View in Notion →>',
+    slackPosts[0].blocks[2]);
+
+  // Two founders on two lines, and a blank line that should not count.
+  res = await feedback({ ...GOOD, 'Founders to invite': 'Ada | a | a@x.com\n\nGrace |  | ' });
+  check('an empty founder line is not counted',
+    slackBody().includes('*Founders invited:* 2'), slackBody());
+
+  // Only what was filled in.
+  res = await feedback({
+    Name: 'Eve', Email: 'eve@example.com', 'Time saved': '6+ hours',
+    'OK to feature': 'No', Source: 'club-feedback', _gotcha: '',
+  });
+  check('an unanswered question is left out rather than printed as a dash',
+    slackBody() === ['*Name:* Eve', '*Email:* eve@example.com', '*Time saved:* 6+ hours',
+      '*OK to feature:* No'].join('\n'), slackBody());
+
+  // The testimonial reads differently: it is a link to go and watch.
+  res = await feedback(TESTIMONIAL);
+  check('a testimonial posts under its own header',
+    slackHead() === '🏆 *New video testimonial*', slackHead());
+  check('with its own fallback line',
+    slackPosts[0].text === 'New video testimonial — Eve', slackPosts[0].text);
+  check('the video is a link, not a bare string',
+    slackBody().includes(
+      '*Video link:* <https://www.loom.com/share/abc123|https://www.loom.com/share/abc123>'),
+    slackBody());
+  check('the recommendation and the post come with it',
+    slackBody().includes('*LinkedIn recommendation:* Done') &&
+    slackBody().includes('*LinkedIn video post:* <https://www.linkedin.com/posts/'),
+    slackBody());
+  check('in the order Ella asked for',
+    slackBody().split('\n').map((l) => l.replace(/^\*(.+?):\*.*$/, '$1')).join('|') ===
+    ['Name', 'Email', 'Video link', 'LinkedIn recommendation', 'LinkedIn video post',
+     'OK to feature'].join('|'), slackBody());
+  check('and none of the feedback form’s questions are in it',
+    !/Built so far|Founders invited|Biggest unlock/.test(slackBody()), slackBody());
+
+  res = await feedback({ ...TESTIMONIAL, 'LinkedIn video post': '' });
+  check('no LinkedIn post means no line for it',
+    !slackBody().includes('LinkedIn video post') && slackBody().includes('*Video link:*'),
+    slackBody());
+
+  /* ---- what a member types cannot break the message ---- */
+
+  res = await feedback({
+    ...GOOD,
+    Name: 'Eve & <script>alert(1)</script>',
+    'Biggest unlock': 'a < b & b > c',
+  });
+  check('the three characters mrkdwn reads are escaped',
+    slackBody().includes('*Name:* Eve &amp; &lt;script&gt;alert(1)&lt;/script&gt;') &&
+    slackBody().includes('*Biggest unlock:* a &lt; b &amp; b &gt; c'),
+    slackBody());
+  check('and nothing raw is left in the block',
+    !/[<>]/.test(slackBody().replace(/<https:[^>]*>/g, '')), slackBody());
+
+  const long = 'x'.repeat(400);
+  res = await feedback({ ...GOOD, 'How can we improve': long, 'Favorite teachers': long });
+  const improve = slackBody().split('\n').find((l) => l.startsWith('*How can we improve:*'));
+  check('a long answer is cut at 300 characters',
+    improve === '*How can we improve:* ' + 'x'.repeat(300), improve && improve.length);
+  check('and the cap is per answer, so one does not eat the others',
+    slackBody().includes('*Favorite teachers:* ' + 'x'.repeat(300)) &&
+    slackBody().includes('*OK to feature:* Yes'), slackBody().length);
+
+  /* ---- Slack can never be the reason a submission looks broken ---- */
+
+  res = await feedback(GOOD, { slackDown: true });
+  check('a webhook that answers 500 still returns success', res.status === 200, res.status);
+  check('and the row is still in Notion',
+    calls.some((c) => c.url.endsWith('/v1/pages')), calls.map((c) => c.url));
+
+  res = await feedback(GOOD, { env: { ...fbEnv, SLACK_FORMS_WEBHOOK_URL: '' } });
+  check('no webhook configured still returns success', res.status === 200, res.status);
+  check('and nothing is posted', slackPosts.length === 0, slackPosts.length);
+  check('the row is saved all the same',
+    calls.some((c) => c.url.endsWith('/v1/pages')), calls.map((c) => c.url));
+
+  res = await feedback(GOOD, { notionUrl: false });
+  check('a page whose url we cannot read still posts, without the link',
+    res.status === 200 && slackPosts.length === 1 && slackPosts[0].blocks.length === 2,
+    slackPosts[0] && slackPosts[0].blocks.length);
+
+  res = await feedback(GOOD, { noCtx: true });
+  check('without a ctx the post is still made', res.status === 200 && slackPosts.length === 1,
+    [res.status, slackPosts.length]);
+
+  // A refused submission never reaches Notion, so there is nothing to post.
+  res = await feedback({ ...TESTIMONIAL, 'Video link': '' });
+  check('a 400 posts nothing', res.status === 400 && slackPosts.length === 0,
+    [res.status, slackPosts.length]);
   res = await feedback({ ...GOOD, Email: '' });
-  check('a submission with no email is refused', res.status === 400, res.status);
+  check('and neither does a missing email', res.status === 400 && slackPosts.length === 0,
+    [res.status, slackPosts.length]);
+
 }
 
 console.log('\n' + pass + ' passed, ' + fail + ' failed');

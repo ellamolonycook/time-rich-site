@@ -13,6 +13,7 @@
 #   npx wrangler secret put SLACK_CHANNEL_ID      # e.g. C0123ABCD — invite the bot to it first
 #   npx wrangler secret put SLACK_WEBHOOK_URL     # incoming webhook for /qualify submission alerts
 #   npx wrangler secret put SLACK_QUESTIONNAIRE_WEBHOOK_URL  # questionnaire alerts and failed member photos
+#   npx wrangler secret put SLACK_FORMS_WEBHOOK_URL   # incoming webhook for /feedback and testimonial alerts
 #   npx wrangler secret put SUPABASE_URL          # portal project URL, for /portal-download and Time Rich Members
 #   npx wrangler secret put SUPABASE_SERVICE_ROLE_KEY  # service role key, Worker only, never in the browser
 #   npx wrangler secret put DIRECTORY_SYNC_SECRET # guards POST /portal-directory-sync (the Members backfill)

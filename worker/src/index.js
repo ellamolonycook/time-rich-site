@@ -312,9 +312,11 @@ export default {
     }
 
     // Route: Club feedback and testimonials (POST /feedback) -> its own
-    // Notion database. Everything past the rating is optional: the point of
-    // the form is that it takes two minutes, so a member who answers only
-    // the rating is still a submission worth having.
+    // Notion database. Two forms post here: the feedback form at
+    // /club/feedback (Source club-feedback) and the video testimonial at
+    // /club/testimonial (Source club-testimonial). Email is the only field
+    // either one must have -- plus the video link on the testimonial, which
+    // is the whole point of that form.
     if (path.endsWith("/feedback")) {
       // The honeypot is answered before anything is checked, so a bot gets
       // the same silent 200 as everywhere else rather than a 400 telling it
@@ -323,16 +325,35 @@ export default {
         return createApplication(data, env, cors, env.NOTION_FEEDBACK_DATABASE_ID, { Status: "New", Source: "club-feedback" });
       }
 
-      // 1 to 10, whole numbers. Notion's number column would take 7.5 or
-      // 40 quite happily, and then the average means nothing.
+      /* The 1 to 10 rating is no longer asked for: the week's questions are
+         chips now (Ella, 9 Nov). One that still arrives -- an old page left
+         open in a tab -- is kept when it is a whole 1 to 10 and dropped when
+         it is not, rather than failing a form that no longer has the field.
+         Notion's number column would take 7.5 or 40 quite happily, and then
+         the average means nothing. */
       const rating = String(data["Rating"] || "").trim();
-      if (!/^\d+$/.test(rating) || Number(rating) < 1 || Number(rating) > 10) {
-        return json({ ok: false, error: "Please pick a number from 1 to 10." }, 400, cors);
+      if (rating) {
+        data = { ...data };
+        const whole = /^\d+$/.test(rating) && Number(rating) >= 1 && Number(rating) <= 10;
+        if (!whole) delete data["Rating"];
       }
 
-      // The video post is the Testimonial Prize entry, so it is held to the
-      // same check as the content workshop draw: a linkedin.com link or
-      // nothing. Empty is fine -- the video half is optional.
+      /* The video is the Testimonial Prize entry, so it has to be something
+         we can actually watch: https, on one of the hosts members use. It is
+         what the testimonial form exists to collect, so that form cannot be
+         sent without it; anywhere else it is optional. */
+      const videoRaw = String(data["Video link"] || "").trim();
+      if (videoRaw) {
+        const cleaned = videoUrl(videoRaw);
+        if (!cleaned) return json({ ok: false, error: VIDEO_LINK_ERROR }, 400, cors);
+        data = { ...data, "Video link": cleaned };
+      } else if (String(data["Source"] || "").trim() === "club-testimonial") {
+        return json({ ok: false, error: VIDEO_LINK_ERROR }, 400, cors);
+      }
+
+      // The LinkedIn post is a second place the video lives, not the entry,
+      // so it is held to the same check as the content workshop draw -- a
+      // linkedin.com link or nothing. Empty is fine: it is optional.
       const post = String(data["LinkedIn video post"] || "").trim();
       if (post) {
         const cleaned = linkedinPostUrl(post);
@@ -353,7 +374,15 @@ export default {
         else { data = { ...data }; delete data["LinkedIn recommendation link"]; }
       }
 
-      return createApplication(data, env, cors, env.NOTION_FEEDBACK_DATABASE_ID, { Status: "New", Source: "club-feedback" });
+      /* The row is in, so tell the channel -- in the background, so a slow
+         or broken Slack can neither delay nor fail the submission.
+         notifyFormsSlack() never rejects; it logs and swallows. */
+      return createApplication(data, env, cors, env.NOTION_FEEDBACK_DATABASE_ID,
+        { Status: "New", Source: "club-feedback" },
+        (notionUrl) => {
+          const posting = notifyFormsSlack(env, data, notionUrl);
+          if (ctx && typeof ctx.waitUntil === "function") ctx.waitUntil(posting);
+        });
     }
 
     // Route: AI Revenue Accelerator application -> its own Notion database.
@@ -391,6 +420,128 @@ export default {
   },
 };
 
+/* One compact post per Club form submission, to the forms channel.
+ *
+ * Two forms come through /feedback and they want reading differently: the
+ * feedback form is a page of answers, the testimonial is a link to watch. So
+ * the Source picks the header and the rows, and only what was actually filled
+ * in is shown -- an empty answer is left out rather than printed as a dash,
+ * because a feedback row with four of twelve answers should look short.
+ *
+ * Anything that goes wrong in here is logged and swallowed. The form has
+ * already succeeded by the time this runs and this must never be the reason
+ * it looks like it did not. The webhook URL is a secret and is never logged,
+ * not even inside an error message.
+ */
+const SLACK_ANSWER_MAX = 300;
+
+async function notifyFormsSlack(env, data, notionUrl) {
+  const url = env.SLACK_FORMS_WEBHOOK_URL;
+  if (!url) {
+    console.log("feedback: SLACK_FORMS_WEBHOOK_URL not set, skipping Slack post");
+    return;
+  }
+  // Everything from here down is inside one try: building the message is as
+  // capable of throwing on a strange value as sending it is, and neither may
+  // surface.
+  try {
+    const field = (key) => String(data[key] == null ? "" : data[key]).trim();
+    // A member's words, escaped for mrkdwn and cut to something a channel can
+    // read. The cap is per answer, so one long answer cannot push the rest of
+    // them past Slack's own limit on a block.
+    const say = (key) => calEsc(clip(field(key), SLACK_ANSWER_MAX));
+    // A bare URL can carry the three characters mrkdwn reserves for links.
+    const safeUrl = (u) => String(u || "").replace(/[<>|]/g, "");
+
+    const lines = [];
+    const row = (label, value) => { if (value) lines.push(`*${label}:* ${value}`); };
+    const link = (label, raw) => {
+      const value = field(raw);
+      if (!value) return;
+      lines.push(`*${label}:* <${safeUrl(value)}|${calEsc(clip(value, SLACK_ANSWER_MAX))}>`);
+    };
+
+    const testimonial = field("Source") === "club-testimonial";
+    const header = testimonial ? "🏆 *New video testimonial*" : "📝 *New feedback*";
+
+    row("Name", say("Name"));
+    row("Email", say("Email"));
+
+    if (testimonial) {
+      link("Video link", "Video link");
+      row("LinkedIn recommendation", say("LinkedIn recommendation"));
+      link("LinkedIn video post", "LinkedIn video post");
+    } else {
+      row("Built so far", say("Built so far"));
+      row("Time saved", say("Time saved"));
+      row("Slowing me down", say("Slowing me down"));
+      row("Would recommend", say("Would recommend"));
+      row("Biggest unlock", say("Biggest unlock"));
+      row("Favorite teachers", say("Favorite teachers"));
+      row("How can we improve", say("How can we improve"));
+      row("Learn in last sessions", say("Learn in last sessions"));
+      /* The founders are one field of piped lines, which is unreadable in a
+         channel and is the kind of thing to go and look at in Notion. The
+         count is what tells somebody whether it is worth the trip. */
+      const founders = field("Founders to invite")
+        .split("\n").map((l) => l.trim()).filter((l) => l !== "").length;
+      if (founders) row("Founders invited", String(founders));
+    }
+    row("OK to feature", say("OK to feature"));
+
+    const blocks = [
+      { type: "section", text: { type: "mrkdwn", text: header } },
+      { type: "section", text: { type: "mrkdwn", text: lines.join("\n") } },
+    ];
+    // Straight to the row, so whoever is reading the channel can act on it.
+    if (notionUrl) {
+      blocks.push({
+        type: "context",
+        elements: [{ type: "mrkdwn", text: `<${safeUrl(notionUrl)}|View in Notion →>` }],
+      });
+    }
+
+    const who = field("Name") || field("Email") || "a member";
+    const text = testimonial
+      ? `New video testimonial — ${who}`
+      : `New feedback — ${who}`;
+
+    const res = await fetch(url, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ text, blocks, unfurl_links: false }),
+    });
+    // Webhooks answer a plain "ok"; anything else is a rejection worth seeing.
+    if (!res.ok) console.log("feedback: Slack post failed", res.status, clip(await res.text(), 200));
+  } catch (err) {
+    // A network error can quote the URL it was trying to reach - redact it.
+    console.log("feedback: Slack post failed", String((err && err.message) || err).split(url).join("[webhook]"));
+  }
+}
+
+/* Where a video testimonial is allowed to live. Members send Looms, Drive
+   files, YouTube and Vimeo links, and sometimes the LinkedIn post itself.
+   The page checks the same list before it will submit; this is the check
+   that holds when the page is bypassed. */
+const VIDEO_HOSTS = ["loom.com", "drive.google.com", "docs.google.com",
+  "youtube.com", "youtu.be", "vimeo.com", "linkedin.com"];
+const VIDEO_LINK_ERROR = "Please paste a Loom, Google Drive, YouTube or Vimeo link.";
+
+/* The link, or "" if it is not one we can take. The host is matched on the
+   parsed hostname rather than anywhere in the string, so a link merely
+   containing "loom.com" is refused, and http is refused with it. The query
+   string is kept: it is where YouTube and Drive put the file id. */
+function videoUrl(raw) {
+  const value = String(raw == null ? "" : raw).trim();
+  if (!value) return "";
+  let url;
+  try { url = new URL(value); } catch { return ""; }
+  if (url.protocol !== "https:") return "";
+  const host = url.hostname.toLowerCase().replace(/^www\./, "");
+  const ok = VIDEO_HOSTS.some((h) => host === h || host.endsWith("." + h));
+  return ok ? url.toString() : "";
+}
+
 /* A link to something on LinkedIn, cleaned, or "" if it is not one. Used by
    the content workshop draw and the Club feedback form, which both take a
    post link off a member and both have to refuse everything else: the whole
@@ -411,7 +562,7 @@ function linkedinPostUrl(raw) {
 
 // Generic application intake: reads the target database schema, maps matching
 // fields, and always dumps the full submission into the page body.
-async function createApplication(data, env, cors, dbId, defaults) {
+async function createApplication(data, env, cors, dbId, defaults, onSaved) {
   if (!env.NOTION_TOKEN || !dbId) {
     return json({ error: "Server not configured" }, 500, cors);
   }
@@ -474,6 +625,20 @@ async function createApplication(data, env, cors, dbId, defaults) {
     });
     if (!createRes.ok) {
       return json({ error: "Notion create failed", detail: await createRes.text() }, 502, cors);
+    }
+
+    /* The row is in. A route can ask to be told, so it can post the row to a
+       channel or anything else of its own. Notion answers with the page it
+       made, url included, but that is read in its own try: the row exists
+       whether or not the body parses, and a link we cannot read must not
+       turn a success into an error. The hook is called in a try for the
+       same reason -- it runs after the form has already succeeded. */
+    if (typeof onSaved === "function") {
+      let notionUrl = null;
+      try { notionUrl = (await createRes.json()).url || null; } catch { }
+      try { onSaved(notionUrl); } catch (err) {
+        console.log("createApplication: onSaved threw", String((err && err.message) || err));
+      }
     }
     return json({ ok: true }, 200, cors);
   } catch (err) {

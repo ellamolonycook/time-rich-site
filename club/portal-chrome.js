@@ -296,355 +296,154 @@
     return fit;
   }
 
-  function buildFeedback(opts) {
-    opts = opts || {};
+  /* ---- the pieces both forms are built from --------------------------- */
 
-    var wrap = el('div', 'trp-fb-wrap');
-    wrap.setAttribute('data-feedback', '');
+  var WISPR = 'https://wisprflow.ai/info/redeem-promo?code=TIMERICH6&months=6';
+  var ELLA_LINKEDIN = 'https://www.linkedin.com/in/ellamolonycook/';
+  var STANLEY = 'https://x.getstanley.ai/r/mz4y9g';
+  var TESTIMONIAL_PAGE = '/club/testimonial';
 
-    /* ---- the step indicator ---- */
-    var stepper = el('div', 'trp-fb-steps');
-    function stepPip(n, label) {
-      var box = el('span', 'trp-fb-step' + (n === 1 ? ' is-on' : ''));
-      box.setAttribute('data-step', String(n));
-      box.appendChild(el('span', 'trp-fb-step-n', String(n)));
-      box.appendChild(el('span', '', label));
-      return box;
-    }
-    var pip1 = stepPip(1, 'Feedback');
-    var pip2 = stepPip(2, 'Testimonial');
-    stepper.appendChild(pip1);
-    stepper.appendChild(el('span', 'trp-fb-step-line'));
-    stepper.appendChild(pip2);
-    wrap.appendChild(stepper);
-
-    /* ---- the form card ---- */
-    var form = el('form', 'trp-fb-card');
-    form.setAttribute('data-feedback-form', '');
-    form.noValidate = true;
-    wrap.appendChild(form);
-
-    var nameField = el('input');
-    nameField.type = 'hidden';
-    nameField.name = 'Name';
-    nameField.setAttribute('data-feedback-name', '');
-    form.appendChild(nameField);
-
-    var sourceField = el('input');
-    sourceField.type = 'hidden';
-    sourceField.name = 'Source';
-    sourceField.value = 'club-feedback';
-    form.appendChild(sourceField);
-
-    // Off-screen rather than display:none: some bots skip what is not
-    // rendered at all.
-    var pot = el('input', 'trp-fb-pot');
-    pot.type = 'text';
-    pot.name = '_gotcha';
-    pot.tabIndex = -1;
-    pot.setAttribute('autocomplete', 'off');
-    pot.setAttribute('aria-hidden', 'true');
-    form.appendChild(pot);
-
-    /* ---- step 1 ---- */
-    var step1 = el('div', 'trp-fb-sections');
-    step1.setAttribute('data-feedback-step', '1');
-    form.appendChild(step1);
-
-    var sec1 = el('div', 'trp-fb-section');
-    step1.appendChild(sec1);
-
-    var emailBox = el('div', 'trp-fb-field');
-    var emailLabel = el('label', 'trp-fb-label', 'Your email');
-    var email = el('input', 'trp-fb-input');
-    email.type = 'email';
-    email.name = 'Email';
-    email.id = 'trp-fb-email-' + (opts.idSuffix || 'page');
-    email.setAttribute('autocomplete', 'email');
-    email.setAttribute('inputmode', 'email');
-    email.required = true;
-    emailLabel.setAttribute('for', email.id);
-    emailBox.appendChild(emailLabel);
-    emailBox.appendChild(email);
-    emailBox.appendChild(el('span', 'trp-fb-help',
+  /* The email field, identical on both forms: the one field either form
+     refuses to send without, and the only way we can reach a winner. */
+  function emailField(opts) {
+    var box = el('div', 'trp-fb-field');
+    var label = el('label', 'trp-fb-label', 'Your email');
+    var input = el('input', 'trp-fb-input');
+    input.type = 'email';
+    input.name = 'Email';
+    input.id = 'trp-fb-email-' + (opts.idSuffix || 'page');
+    input.setAttribute('autocomplete', 'email');
+    input.setAttribute('inputmode', 'email');
+    input.required = true;
+    label.setAttribute('for', input.id);
+    box.appendChild(label);
+    box.appendChild(input);
+    box.appendChild(el('span', 'trp-fb-help',
       'So we can thank you, and reach you about the Testimonial Prize.'));
-    sec1.appendChild(emailBox);
+    return { box: box, input: input };
+  }
 
-    var rateBox = el('fieldset', 'trp-fb-field');
-    rateBox.appendChild(el('legend', 'trp-fb-label', "How's the accelerator going for you?"));
-    var scale = el('div', 'trp-fb-scale');
-    var chips = [];
-    for (var n = 1; n <= 10; n++) {
+  function emailValid(value) { return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(String(value).trim()); }
+
+  /* A row of chips that answer a question by being tapped. `multi` makes
+     them checkboxes and the answer every label picked, joined with a
+     comma; otherwise they are radios and the answer is the one label.
+
+     The value posted is the label itself, not a code: the Notion column is
+     read by people, and a label that changes here should change there. */
+  function chipGroup(opts, key, label, choices, multi) {
+    var box = el('fieldset', 'trp-fb-field');
+    var legend = el('legend', 'trp-fb-label');
+    legend.appendChild(document.createTextNode(label));
+    box.appendChild(legend);
+    var row = el('div', 'trp-fb-chips');
+    var inputs = [];
+    var group = 'trp-fb-' + key.replace(/\s+/g, '-').toLowerCase() + '-' + (opts.idSuffix || 'page');
+    choices.forEach(function (text) {
       var pick = el('label');
-      var radio = el('input');
-      radio.type = 'radio';
-      radio.name = 'Rating';
-      radio.value = String(n);
-      pick.appendChild(radio);
-      pick.appendChild(el('span', 'trp-fb-chip', String(n)));
-      scale.appendChild(pick);
-      chips.push(radio);
-    }
-    rateBox.appendChild(scale);
-    var ends = el('div', 'trp-fb-ends');
-    ends.appendChild(el('span', '', '1 · not great'));
-    ends.appendChild(el('span', '', '10 · brilliant'));
-    rateBox.appendChild(ends);
-    sec1.appendChild(rateBox);
-
-    var two = el('div', 'trp-fb-two');
-    function answer(name, label) {
-      var box = el('div', 'trp-fb-field');
-      var lab = el('label', 'trp-fb-label');
-      lab.appendChild(document.createTextNode(label + ' '));
-      lab.appendChild(el('span', 'trp-fb-opt', '(optional)'));
-      var area = el('textarea', 'trp-fb-area');
-      area.name = name;
-      area.rows = 2;
-      area.id = 'trp-fb-' + name.replace(/\s+/g, '-').toLowerCase() + '-' + (opts.idSuffix || 'page');
-      lab.setAttribute('for', area.id);
-      autoGrow(area);
-      box.appendChild(lab);
-      box.appendChild(area);
-      two.appendChild(box);
-      return area;
-    }
-    var useful = answer('Most useful', 'Most useful so far');
-    var change = answer('One thing to change', 'One thing to change');
-    sec1.appendChild(two);
-
-    var foot1 = el('div', 'trp-fb-foot');
-    var hint1 = el('p', 'trp-fb-msg');
-    hint1.hidden = true;
-    /* Next carries aria-disabled rather than the disabled attribute. A
-       disabled button fires no click, and the brief asks for a hint when it
-       is tapped early -- so it stays clickable, says it is unavailable, and
-       explains itself instead of doing nothing. */
-    var next = el('button', 'trp-fb-btn', 'Next →');
-    next.type = 'button';
-    next.setAttribute('data-feedback-next', '');
-    var right1 = el('div', 'trp-fb-foot-right');
-    right1.appendChild(next);
-    foot1.appendChild(hint1);
-    foot1.appendChild(right1);
-    step1.appendChild(foot1);
-
-    /* ---- step 2 ---- */
-    var step2 = el('div', 'trp-fb-sections');
-    step2.setAttribute('data-feedback-step', '2');
-    step2.hidden = true;
-    form.appendChild(step2);
-
-    var sec2 = el('div', 'trp-fb-section');
-    step2.appendChild(sec2);
-
-    var head2 = el('h2', 'trp-fb-label', 'Your testimonial (optional)');
-    head2.tabIndex = -1;
-    head2.setAttribute('data-feedback-step2-head', '');
-    sec2.appendChild(head2);
-
-    var prize = el('div', 'trp-fb-prize');
-    prize.appendChild(el('span', '', '🏆'));
-    prize.appendChild(el('span', '',
-      'Do both to enter the Testimonial Prize: a 30-minute strategy call with our mentors.'));
-    sec2.appendChild(prize);
-
-    var tiles = el('div', 'trp-fb-tiles');
-    sec2.appendChild(tiles);
-
-    // Written
-    var tileA = el('div', 'trp-fb-tile');
-    tileA.appendChild(el('span', 'trp-fb-tile-title', 'Recommend Ella'));
-    tileA.appendChild(el('span', 'trp-fb-help', 'On her profile: More, then Recommend.'));
-    var ella = el('a', 'trp-fb-btn is-soft', "Open Ella's LinkedIn ↗");
-    ella.href = 'https://www.linkedin.com/in/ellamolonycook/';
-    ella.target = '_blank';
-    ella.rel = 'noopener';
-    tileA.appendChild(ella);
-    var switchFoot = el('div', 'trp-fb-tile-foot');
-    var recLabel = el('label', 'trp-fb-switch');
-    var rec = el('input');
-    rec.type = 'checkbox';
-    rec.setAttribute('data-feedback-rec', '');
-    recLabel.appendChild(rec);
-    recLabel.appendChild(el('span', 'trp-fb-track'));
-    recLabel.appendChild(el('span', '', "I've done it"));
-    switchFoot.appendChild(recLabel);
-    tileA.appendChild(switchFoot);
-    tiles.appendChild(tileA);
-
-    // Video
-    var tileB = el('div', 'trp-fb-tile');
-    tileB.appendChild(el('span', 'trp-fb-tile-title', 'Post a video'));
-    tileB.appendChild(el('span', 'trp-fb-help',
-      '30 to 60 seconds on LinkedIn about what you’ve built. Tag Ella Molony Cook and use #trcsuperhuman.'));
-    var videoFoot = el('div', 'trp-fb-tile-foot trp-fb-field');
-    var videoLabel = el('label', 'trp-fb-label', 'Paste your LinkedIn post link');
-    var video = el('input', 'trp-fb-input');
-    video.type = 'url';
-    video.name = 'LinkedIn video post';
-    video.id = 'trp-fb-video-' + (opts.idSuffix || 'page');
-    video.placeholder = 'https://www.linkedin.com/posts/...';
-    video.setAttribute('autocomplete', 'off');
-    videoLabel.setAttribute('for', video.id);
-    var videoErr = el('span', 'trp-fb-msg is-err');
-    videoErr.hidden = true;
-    videoErr.setAttribute('data-feedback-video-error', '');
-    videoFoot.appendChild(videoLabel);
-    videoFoot.appendChild(video);
-    videoFoot.appendChild(videoErr);
-    tileB.appendChild(videoFoot);
-    tiles.appendChild(tileB);
-
-    var featureLabel = el('label', 'trp-fb-check');
-    var feature = el('input');
-    feature.type = 'checkbox';
-    feature.setAttribute('data-feedback-feature', '');
-    featureLabel.appendChild(feature);
-    featureLabel.appendChild(el('span', '', 'Time Rich can share my feedback and testimonial'));
-    sec2.appendChild(featureLabel);
-
-    var foot2 = el('div', 'trp-fb-foot');
-    var back = el('button', 'trp-fb-quiet', '← Back');
-    back.type = 'button';
-    back.setAttribute('data-feedback-back', '');
-    var skip = el('button', 'trp-fb-quiet', 'Skip, just send my feedback');
-    skip.type = 'button';
-    skip.setAttribute('data-feedback-skip', '');
-    var send = el('button', 'trp-fb-btn', 'Send it');
-    send.type = 'submit';
-    send.setAttribute('data-feedback-send', '');
-    var err2 = el('p', 'trp-fb-msg is-err');
-    err2.hidden = true;
-    err2.setAttribute('data-feedback-error', '');
-    var right2 = el('div', 'trp-fb-foot-right');
-    right2.appendChild(skip);
-    right2.appendChild(send);
-    foot2.appendChild(back);
-    foot2.appendChild(right2);
-    step2.appendChild(err2);
-    step2.appendChild(foot2);
-
-    /* ---- the thank-you, which replaces the card ---- */
-    var thanks = el('div', 'trp-fb-card');
-    thanks.hidden = true;
-    thanks.setAttribute('data-feedback-thanks', '');
-    thanks.setAttribute('role', 'status');
-    thanks.setAttribute('aria-live', 'polite');
-    thanks.tabIndex = -1;
-    wrap.appendChild(thanks);
-
-    /* ---- behaviour ---- */
-
-    function rating() {
-      for (var i = 0; i < chips.length; i++) if (chips[i].checked) return chips[i].value;
-      return '';
-    }
-    function emailOk() { return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email.value.trim()); }
-    function step1Ready() { return emailOk() && rating() !== ''; }
-
-    function refreshNext() {
-      var ready = step1Ready();
-      next.setAttribute('aria-disabled', ready ? 'false' : 'true');
-      next.classList.toggle('is-off', !ready);
-      if (ready) { hint1.hidden = true; hint1.textContent = ''; }
-    }
-    email.addEventListener('input', refreshNext);
-    chips.forEach(function (r) { r.addEventListener('change', refreshNext); });
-    refreshNext();
-
-    function show(step) {
-      var to2 = step === 2;
-      // The outgoing half fades and lifts, the incoming one eases in, and
-      // the card keeps its place so the page never jumps.
-      (to2 ? step1 : step2).hidden = true;
-      var into = to2 ? step2 : step1;
-      into.hidden = false;
-      into.classList.remove('trp-fb-anim-in');
-      void into.offsetWidth;
-      into.classList.add('trp-fb-anim-in');
-      pip1.classList.toggle('is-on', !to2);
-      pip2.classList.toggle('is-on', to2);
-      if (to2 && head2.focus) head2.focus();
-    }
-
-    next.addEventListener('click', function () {
-      if (!step1Ready()) {
-        hint1.hidden = false;
-        hint1.className = 'trp-fb-msg is-err';
-        hint1.textContent = !emailOk()
-          ? 'Add your email, and pick a number from 1 to 10.'
-          : 'Pick a number from 1 to 10.';
-        (emailOk() ? chips[0] : email).focus();
-        return;
-      }
-      show(2);
+      var input = el('input');
+      input.type = multi ? 'checkbox' : 'radio';
+      input.name = group;
+      input.value = text;
+      pick.appendChild(input);
+      pick.appendChild(el('span', 'trp-fb-chip', text));
+      row.appendChild(pick);
+      inputs.push(input);
     });
-    back.addEventListener('click', function () { show(1); });
+    box.appendChild(row);
+    return {
+      box: box,
+      legend: legend,
+      inputs: inputs,
+      value: function () {
+        return inputs.filter(function (i) { return i.checked; })
+          .map(function (i) { return i.value; }).join(', ');
+      }
+    };
+  }
 
-    function videoOk() {
-      var value = video.value.trim();
-      if (!value || isLinkedIn(value)) { videoErr.hidden = true; video.removeAttribute('aria-invalid'); return true; }
-      videoErr.hidden = false;
-      videoErr.textContent = 'Paste the link to your LinkedIn post, like https://www.linkedin.com/posts/...';
-      video.setAttribute('aria-invalid', 'true');
-      return false;
-    }
-    video.addEventListener('input', function () { if (videoErr.hidden === false) videoOk(); });
-    video.addEventListener('blur', videoOk);
+  /* A question answered in the member's own words. Two lines tall, growing
+     to six, so a long answer is readable without the card running off. */
+  function areaField(opts, name) {
+    var box = el('div', 'trp-fb-field');
+    var lab = el('label', 'trp-fb-label');
+    var area = el('textarea', 'trp-fb-area');
+    area.name = name;
+    area.rows = 2;
+    area.id = 'trp-fb-' + name.replace(/\s+/g, '-').toLowerCase() + '-' + (opts.idSuffix || 'page');
+    lab.setAttribute('for', area.id);
+    autoGrow(area);
+    box.appendChild(lab);
+    box.appendChild(area);
+    return { box: box, label: lab, area: area };
+  }
 
-    function collect() {
-      return {
-        Name: nameField.value,
-        Email: email.value.trim(),
-        Rating: rating(),
-        'Most useful': useful.value.trim(),
-        'One thing to change': change.value.trim(),
-        'LinkedIn recommendation': rec.checked ? 'Done' : 'Not yet',
-        'LinkedIn video post': video.value.trim(),
-        'OK to feature': feature.checked ? 'Yes' : 'No',
-        Source: 'club-feedback',
-        _gotcha: pot.value.trim()
-      };
-    }
+  function link(text, href) {
+    var a = el('a', 'trp-fb-link', text);
+    a.href = href;
+    a.target = '_blank';
+    a.rel = 'noopener';
+    return a;
+  }
 
-    function hasInput() {
-      return Boolean(email.value.trim() || rating() || useful.value.trim() ||
-        change.value.trim() || video.value.trim() || rec.checked || feature.checked);
-    }
+  /* The way from the feedback form to the testimonial page. Ella, 9 Nov:
+     members cannot do the feedback and the video in one sitting, so the
+     video is its own place they can come back to -- and this is the line
+     that sends them there, on step 2 and again once they have sent. */
+  function testimonialLine() {
+    var line = el('p', 'trp-fb-nudge');
+    line.appendChild(document.createTextNode('🏆 Got a minute later? '));
+    var go = el('a', 'trp-fb-link', 'Upload your video testimonial to WIN');
+    go.href = TESTIMONIAL_PAGE;
+    go.setAttribute('data-feedback-testimonial-link', '');
+    line.appendChild(go);
+    return line;
+  }
 
+  /* The thank-you card, the spinner on the button and the POST are the same
+     on both forms, so they are built once here and handed what differs:
+     the lines to show and what to put under them. */
+  function sender(parts) {
+    var form = parts.form, send = parts.send, err = parts.err, thanks = parts.thanks;
     var sending = false;
+
+    function fail(message) {
+      sending = false;
+      send.disabled = false;
+      while (send.firstChild) send.removeChild(send.firstChild);
+      send.appendChild(document.createTextNode(parts.sendText));
+      err.hidden = false;
+      err.textContent = message;
+    }
 
     function settle() {
       while (thanks.firstChild) thanks.removeChild(thanks.firstChild);
       var box = el('div', 'trp-fb-settled');
-      box.appendChild(el('p', 'trp-fb-settled-line', 'Feedback sent ✓'));
+      box.appendChild(el('p', 'trp-fb-settled-line', parts.settledLine));
       var go = el('a', 'trp-fb-btn is-soft', 'Back to the course');
       go.href = '/club/curriculum';
       go.setAttribute('data-feedback-done', '');
       box.appendChild(go);
+      if (parts.after) box.appendChild(parts.after());
       thanks.appendChild(box);
       thanks.classList.remove('trp-fb-anim-in');
       void thanks.offsetWidth;
       thanks.classList.add('trp-fb-anim-settle');
-      if (typeof opts.onSettled === 'function') opts.onSettled();
+      if (typeof parts.onSettled === 'function') parts.onSettled();
     }
 
     function succeed(data) {
       form.classList.add('trp-fb-anim-out');
-      stepper.hidden = true;
+      if (parts.stepper) parts.stepper.hidden = true;
       window.setTimeout(function () {
         form.hidden = true;
-
-        var both = data['LinkedIn recommendation'] === 'Done' && Boolean(data['LinkedIn video post']);
         var box = el('div', 'trp-fb-thanks');
         var ring = el('div', 'trp-fb-thanks-ring');
         ring.appendChild(icon('M5 13l4 4L19 7', '2.5'));
         box.appendChild(ring);
-        box.appendChild(el('p', 'trp-fb-thanks-title', 'Thank you!! 💚'));
-        box.appendChild(el('p', 'trp-fb-thanks-line', both
-          ? "You're in the running for the Testimonial Prize."
-          : 'This genuinely shapes what we build next.'));
+        box.appendChild(el('p', 'trp-fb-thanks-title', parts.thanksTitle));
+        box.appendChild(el('p', 'trp-fb-thanks-line', parts.thanksLine(data)));
+        if (parts.after) box.appendChild(parts.after());
         thanks.appendChild(box);
         thanks.hidden = false;
         thanks.classList.add('trp-fb-anim-in');
@@ -653,24 +452,11 @@
       }, 200);
     }
 
-    function fail(message) {
-      sending = false;
-      send.disabled = false;
-      while (send.firstChild) send.removeChild(send.firstChild);
-      send.appendChild(document.createTextNode('Send it'));
-      err2.hidden = false;
-      err2.textContent = message;
-    }
-
-    function submit() {
+    return function post(data) {
       if (sending) return;                       // double-click safe
-      if (!step1Ready()) { show(1); refreshNext(); next.click(); return; }
-      if (!videoOk()) { show(2); video.focus(); return; }
-
-      var data = collect();
       sending = true;
       send.disabled = true;
-      err2.hidden = true;
+      err.hidden = true;
       while (send.firstChild) send.removeChild(send.firstChild);
       send.appendChild(el('span', 'trp-fb-spin'));
       send.appendChild(document.createTextNode('Sending…'));
@@ -692,37 +478,631 @@
       }).catch(function () {
         fail('That didn’t go through. Check your connection and try again.');
       });
-    }
+    };
+  }
 
-    form.addEventListener('submit', function (event) { event.preventDefault(); submit(); });
-    skip.addEventListener('click', submit);
-
-    /* The member's first name, off the session the portal already loaded.
-       The email cannot come from there: the browser keeps the session token
-       after sign-in and never the address. */
+  /* The member's first name, off the session the portal already loaded. The
+     email cannot come from there: the browser keeps the session token after
+     sign-in and never the address. */
+  function fillNameInto(field) {
     function fillName(data) {
       var first = data && data.member && data.member.first_name;
-      if (first && !nameField.value) nameField.value = String(first);
+      if (first && !field.value) field.value = String(first);
     }
     document.addEventListener('trportal:data', function (e) { fillName(e && e.detail); });
     if (window.TR_PORTAL_DATA) fillName(window.TR_PORTAL_DATA);
+  }
+
+  function hiddenField(form, name, value) {
+    var field = el('input');
+    field.type = 'hidden';
+    field.name = name;
+    if (value != null) field.value = value;
+    form.appendChild(field);
+    return field;
+  }
+
+  // Off-screen rather than display:none: some bots skip what is not
+  // rendered at all.
+  function honeypot(form) {
+    var pot = el('input', 'trp-fb-pot');
+    pot.type = 'text';
+    pot.name = '_gotcha';
+    pot.tabIndex = -1;
+    pot.setAttribute('autocomplete', 'off');
+    pot.setAttribute('aria-hidden', 'true');
+    form.appendChild(pot);
+    return pot;
+  }
+
+  /* ---- the feedback form ---------------------------------------------- */
+
+  var BUILT_SO_FAR = ['Business Hub', 'Business COMPASS', 'Sales Floor / CRM',
+    'Daily number', 'Stanley set up', 'First post live', 'An agent running'];
+  var TIME_SAVED = ['None yet', '1–2 hours', '3–5 hours', '6+ hours'];
+  var SLOWING = ['Finding the time', 'Tech setup', 'Not sure what to do next',
+    'Knowing what to post', 'Nothing, I’m flying'];
+  var RECOMMEND = ['Yes', 'Maybe', 'Not yet'];
+
+  var MAX_FOUNDERS = 5;
+
+  function buildFeedback(opts) {
+    opts = opts || {};
+
+    var wrap = el('div', 'trp-fb-wrap');
+    wrap.setAttribute('data-feedback', '');
+
+    /* ---- the step indicator ---- */
+    var stepper = el('div', 'trp-fb-steps');
+    function stepPip(n, label) {
+      var box = el('span', 'trp-fb-step' + (n === 1 ? ' is-on' : ''));
+      box.setAttribute('data-step', String(n));
+      box.appendChild(el('span', 'trp-fb-step-n', String(n)));
+      box.appendChild(el('span', '', label));
+      return box;
+    }
+    var pip1 = stepPip(1, 'Feedback');
+    var pip2 = stepPip(2, 'Next cohort');
+    stepper.appendChild(pip1);
+    stepper.appendChild(el('span', 'trp-fb-step-line'));
+    stepper.appendChild(pip2);
+    wrap.appendChild(stepper);
+
+    /* ---- the form card ---- */
+    var form = el('form', 'trp-fb-card');
+    form.setAttribute('data-feedback-form', '');
+    form.noValidate = true;
+    wrap.appendChild(form);
+
+    var nameField = hiddenField(form, 'Name');
+    nameField.setAttribute('data-feedback-name', '');
+    hiddenField(form, 'Source', 'club-feedback');
+    var pot = honeypot(form);
+
+    /* ---- step 1: how it is going ---- */
+    var step1 = el('div', 'trp-fb-sections');
+    step1.setAttribute('data-feedback-step', '1');
+    form.appendChild(step1);
+
+    var sec1 = el('div', 'trp-fb-section');
+    step1.appendChild(sec1);
+
+    var head1 = el('div', 'trp-fb-field');
+    var head1Title = el('h2', 'trp-fb-label', 'How’s it going?');
+    head1Title.setAttribute('data-feedback-step1-head', '');
+    head1.appendChild(head1Title);
+    head1.appendChild(el('span', 'trp-fb-help', 'Tap to answer.'));
+    sec1.appendChild(head1);
+
+    var mail = emailField(opts);
+    sec1.appendChild(mail.box);
+
+    var built = chipGroup(opts, 'Built so far',
+      'What have you built so far? (tap all that apply)', BUILT_SO_FAR, true);
+    sec1.appendChild(built.box);
+
+    var saved = chipGroup(opts, 'Time saved', 'Time saved this week?', TIME_SAVED, false);
+    sec1.appendChild(saved.box);
+
+    var slowing = chipGroup(opts, 'Slowing me down', 'What’s slowing you down?', SLOWING, false);
+    sec1.appendChild(slowing.box);
+
+    var recommend = chipGroup(opts, 'Would recommend',
+      'Would you tell a founder friend to join the next cohort?', RECOMMEND, false);
+    sec1.appendChild(recommend.box);
+
+    var learn = areaField(opts, 'Learn in last sessions');
+    learn.label.appendChild(document.createTextNode(
+      'What do you want to learn in our last two sessions? (say it with '));
+    learn.label.appendChild(link('Wispr Flow', WISPR));
+    learn.label.appendChild(document.createTextNode(')'));
+    sec1.appendChild(learn.box);
+
+    /* The three open questions Ella asked for (9 Nov), in her order, in
+       place of the single win-or-change box. All optional: a member who
+       taps the chips and sends is still a submission worth having. */
+    var OPEN_QUESTIONS = [
+      ['Biggest unlock', 'What was the biggest unlock for you?'],
+      ['Favorite teachers', 'Who were your favorite teachers?'],
+      ['How can we improve', 'How can we improve?']
+    ];
+    var open1 = OPEN_QUESTIONS.map(function (q) {
+      var field = areaField(opts, q[0]);
+      field.label.appendChild(document.createTextNode(q[1] + ' '));
+      field.label.appendChild(el('span', 'trp-fb-opt', '(optional)'));
+      sec1.appendChild(field.box);
+      return field;
+    });
+
+    var foot1 = el('div', 'trp-fb-foot');
+    var hint1 = el('p', 'trp-fb-msg');
+    hint1.hidden = true;
+    /* Next carries aria-disabled rather than the disabled attribute. A
+       disabled button fires no click, and the brief asks for a hint when it
+       is tapped early -- so it stays clickable, says it is unavailable, and
+       explains itself instead of doing nothing. */
+    var next = el('button', 'trp-fb-btn', 'Next →');
+    next.type = 'button';
+    next.setAttribute('data-feedback-next', '');
+    var right1 = el('div', 'trp-fb-foot-right');
+    right1.appendChild(next);
+    foot1.appendChild(hint1);
+    foot1.appendChild(right1);
+    step1.appendChild(foot1);
+
+    /* ---- step 2: who should be in the next cohort ---- */
+    var step2 = el('div', 'trp-fb-sections');
+    step2.setAttribute('data-feedback-step', '2');
+    step2.hidden = true;
+    form.appendChild(step2);
+
+    var sec2 = el('div', 'trp-fb-section');
+    step2.appendChild(sec2);
+
+    var head2 = el('h2', 'trp-fb-label');
+    head2.appendChild(document.createTextNode('Who should be in the next cohort? '));
+    head2.appendChild(el('span', 'trp-fb-opt', '(optional)'));
+    head2.tabIndex = -1;
+    head2.setAttribute('data-feedback-step2-head', '');
+    sec2.appendChild(head2);
+
+    sec2.appendChild(el('span', 'trp-fb-label',
+      'Which founders in your network should join the next cohort?'));
+
+    /* Up to five founders, one row each, the first row always there. The
+       rows are read back in order on submit, and a row with nothing in it
+       is dropped rather than posted as a row of empty pipes. */
+    var rows = el('div', 'trp-fb-rows');
+    rows.setAttribute('data-feedback-founders', '');
+    sec2.appendChild(rows);
+
+    var founders = [];
+    function addRow() {
+      if (founders.length >= MAX_FOUNDERS) return null;
+      var n = founders.length + 1;
+      var row = el('div', 'trp-fb-row');
+      row.setAttribute('data-feedback-founder-row', '');
+      function cell(key, label, type, hint) {
+        var box = el('div', 'trp-fb-field');
+        var lab = el('label', 'trp-fb-rowlabel', label);
+        var input = el('input', 'trp-fb-input');
+        input.type = type;
+        input.id = 'trp-fb-founder-' + key + '-' + n + '-' + (opts.idSuffix || 'page');
+        input.setAttribute('autocomplete', 'off');
+        if (hint) input.placeholder = hint;
+        lab.setAttribute('for', input.id);
+        box.appendChild(lab);
+        box.appendChild(input);
+        row.appendChild(box);
+        return input;
+      }
+      var entry = {
+        name: cell('name', 'Name', 'text', ''),
+        linkedin: cell('linkedin', 'LinkedIn', 'url', 'linkedin.com/in/…'),
+        email: cell('email', 'Email', 'email', '')
+      };
+      founders.push(entry);
+      rows.appendChild(row);
+      return entry;
+    }
+    addRow();
+
+    var more = el('button', 'trp-fb-quiet', '+ Add another');
+    more.type = 'button';
+    more.setAttribute('data-feedback-founder-add', '');
+    more.addEventListener('click', function () {
+      var entry = addRow();
+      if (entry && entry.name.focus) entry.name.focus();
+      if (founders.length >= MAX_FOUNDERS) more.hidden = true;
+    });
+    sec2.appendChild(more);
+
+    function foundersValue() {
+      return founders.map(function (f) {
+        var name = f.name.value.trim();
+        var li = f.linkedin.value.trim();
+        var to = f.email.value.trim();
+        if (!name && !li && !to) return '';
+        return [name, li, to].join(' | ');
+      }).filter(function (line) { return line !== ''; }).join('\n');
+    }
+
+    var featureLabel = el('label', 'trp-fb-check');
+    var feature = el('input');
+    feature.type = 'checkbox';
+    feature.setAttribute('data-feedback-feature', '');
+    featureLabel.appendChild(feature);
+    featureLabel.appendChild(el('span', '', 'Time Rich can share my feedback'));
+    sec2.appendChild(featureLabel);
+
+    sec2.appendChild(testimonialLine());
+
+    var foot2 = el('div', 'trp-fb-foot');
+    var back = el('button', 'trp-fb-quiet', '← Back');
+    back.type = 'button';
+    back.setAttribute('data-feedback-back', '');
+    var send = el('button', 'trp-fb-btn', 'Send it');
+    send.type = 'submit';
+    send.setAttribute('data-feedback-send', '');
+    var err2 = el('p', 'trp-fb-msg is-err');
+    err2.hidden = true;
+    err2.setAttribute('data-feedback-error', '');
+    var right2 = el('div', 'trp-fb-foot-right');
+    right2.appendChild(send);
+    foot2.appendChild(back);
+    foot2.appendChild(right2);
+    step2.appendChild(err2);
+    step2.appendChild(foot2);
+
+    /* ---- the thank-you, which replaces the card ---- */
+    var thanks = el('div', 'trp-fb-card');
+    thanks.hidden = true;
+    thanks.setAttribute('data-feedback-thanks', '');
+    thanks.setAttribute('role', 'status');
+    thanks.setAttribute('aria-live', 'polite');
+    thanks.tabIndex = -1;
+    wrap.appendChild(thanks);
+
+    /* ---- behaviour ---- */
+
+    function emailOk() { return emailValid(mail.input.value); }
+    function step1Ready() { return emailOk(); }
+
+    function refreshNext() {
+      var ready = step1Ready();
+      next.setAttribute('aria-disabled', ready ? 'false' : 'true');
+      next.classList.toggle('is-off', !ready);
+      if (ready) { hint1.hidden = true; hint1.textContent = ''; }
+    }
+    mail.input.addEventListener('input', refreshNext);
+    refreshNext();
+
+    function show(step) {
+      var to2 = step === 2;
+      // The outgoing half fades and lifts, the incoming one eases in, and
+      // the card keeps its place so the page never jumps.
+      (to2 ? step1 : step2).hidden = true;
+      var into = to2 ? step2 : step1;
+      into.hidden = false;
+      into.classList.remove('trp-fb-anim-in');
+      void into.offsetWidth;
+      into.classList.add('trp-fb-anim-in');
+      pip1.classList.toggle('is-on', !to2);
+      pip2.classList.toggle('is-on', to2);
+      if (to2 && head2.focus) head2.focus();
+    }
+
+    next.addEventListener('click', function () {
+      if (!step1Ready()) {
+        hint1.hidden = false;
+        hint1.className = 'trp-fb-msg is-err';
+        hint1.textContent = 'Add your email so we can reach you.';
+        mail.input.focus();
+        return;
+      }
+      show(2);
+    });
+    back.addEventListener('click', function () { show(1); });
+
+    function collect() {
+      return {
+        Name: nameField.value,
+        Email: mail.input.value.trim(),
+        'Built so far': built.value(),
+        'Time saved': saved.value(),
+        'Slowing me down': slowing.value(),
+        'Would recommend': recommend.value(),
+        'Learn in last sessions': learn.area.value.trim(),
+        'Biggest unlock': open1[0].area.value.trim(),
+        'Favorite teachers': open1[1].area.value.trim(),
+        'How can we improve': open1[2].area.value.trim(),
+        'Founders to invite': foundersValue(),
+        'OK to feature': feature.checked ? 'Yes' : 'No',
+        Source: 'club-feedback',
+        _gotcha: pot.value.trim()
+      };
+    }
+
+    function hasInput() {
+      return Boolean(mail.input.value.trim() || built.value() || saved.value() ||
+        slowing.value() || recommend.value() || learn.area.value.trim() ||
+        open1.some(function (f) { return f.area.value.trim() !== ''; }) ||
+        foundersValue() || feature.checked);
+    }
+
+    var post = sender({
+      form: form, send: send, err: err2, thanks: thanks, stepper: stepper,
+      sendText: 'Send it',
+      thanksTitle: 'Thank you!! 💚',
+      thanksLine: function () { return 'This genuinely shapes what we build next.'; },
+      settledLine: 'Feedback sent ✓',
+      after: testimonialLine,
+      onSettled: opts.onSettled
+    });
+
+    function submit() {
+      if (!step1Ready()) { show(1); refreshNext(); next.click(); return; }
+      post(collect());
+    }
+
+    form.addEventListener('submit', function (event) { event.preventDefault(); submit(); });
+
+    fillNameInto(nameField);
 
     return {
       root: wrap,
       hasInput: hasInput,
-      focusFirst: function () { if (email.focus) email.focus(); }
+      focusFirst: function () { if (mail.input.focus) mail.input.focus(); }
+    };
+  }
+
+  /* ---- the testimonial form ------------------------------------------- */
+
+  /* Its own page rather than a step on the feedback form: Ella, 9 Nov --
+     members cannot do the feedback and the video in one sitting, and the
+     video is the thing worth coming back for.
+
+     Links only in this round. A file upload box needs somewhere to put the
+     file, which is a bigger change than this one. */
+
+  var VIDEO_POINTS = [
+    'Who you are (30 seconds)',
+    'Your biggest takeaway',
+    'Your outcome: what you built or changed',
+    'Your mindset shift',
+    'Why you’d tell a founder to join, and what the community gave you'
+  ];
+
+  /* The hosts a video can live on, matched on the host itself rather than
+     anywhere in the string, so loom.com.example.test is not one of them.
+     The Worker holds the same list and refuses the same links: this is the
+     half that tells the member before they send. */
+  var VIDEO_HOSTS = ['loom.com', 'drive.google.com', 'docs.google.com',
+    'youtube.com', 'youtu.be', 'vimeo.com', 'linkedin.com'];
+  var VIDEO_ERROR = 'Please paste a Loom, Google Drive, YouTube or Vimeo link.';
+
+  function videoLinkOk(raw) {
+    var value = String(raw == null ? '' : raw).trim();
+    if (!value) return false;
+    var url;
+    try { url = new URL(value); } catch (e) { return false; }
+    if (url.protocol !== 'https:') return false;
+    var host = url.hostname.toLowerCase().replace(/^www\./, '');
+    for (var i = 0; i < VIDEO_HOSTS.length; i++) {
+      var ok = VIDEO_HOSTS[i];
+      if (host === ok || host.slice(-(ok.length + 1)) === '.' + ok) return true;
+    }
+    return false;
+  }
+
+  function buildTestimonial(opts) {
+    opts = opts || {};
+
+    var wrap = el('div', 'trp-fb-wrap');
+    wrap.setAttribute('data-testimonial', '');
+
+    var form = el('form', 'trp-fb-card');
+    form.setAttribute('data-testimonial-form', '');
+    form.noValidate = true;
+    wrap.appendChild(form);
+
+    var nameField = hiddenField(form, 'Name');
+    nameField.setAttribute('data-feedback-name', '');
+    hiddenField(form, 'Source', 'club-testimonial');
+    var pot = honeypot(form);
+
+    var sec = el('div', 'trp-fb-section');
+    form.appendChild(sec);
+
+    var mail = emailField(opts);
+    sec.appendChild(mail.box);
+
+    /* ---- 1. the written recommendation ---- */
+    var tileA = el('div', 'trp-fb-tile');
+    tileA.appendChild(el('span', 'trp-fb-tile-title', '1. Recommend Ella on LinkedIn'));
+    tileA.appendChild(el('span', 'trp-fb-help', 'On her profile, click More, then Recommend.'));
+    var ella = el('a', 'trp-fb-btn is-soft', 'Open Ella’s LinkedIn ↗');
+    ella.href = ELLA_LINKEDIN;
+    ella.target = '_blank';
+    ella.rel = 'noopener';
+    tileA.appendChild(ella);
+    var switchFoot = el('div', 'trp-fb-tile-foot');
+    var recLabel = el('label', 'trp-fb-switch');
+    var rec = el('input');
+    rec.type = 'checkbox';
+    rec.setAttribute('data-feedback-rec', '');
+    recLabel.appendChild(rec);
+    recLabel.appendChild(el('span', 'trp-fb-track'));
+    recLabel.appendChild(el('span', '', 'I’ve done it'));
+    switchFoot.appendChild(recLabel);
+    tileA.appendChild(switchFoot);
+    sec.appendChild(tileA);
+
+    /* ---- 2. the video ---- */
+    var tileB = el('div', 'trp-fb-tile');
+    tileB.appendChild(el('span', 'trp-fb-tile-title', '2. Send us a 1 to 2 minute video'));
+    tileB.appendChild(el('span', 'trp-fb-help', 'Hit these points:'));
+    var points = el('ul', 'trp-fb-points');
+    VIDEO_POINTS.forEach(function (text) { points.appendChild(el('li', '', text)); });
+    tileB.appendChild(points);
+
+    var videoBox = el('div', 'trp-fb-field');
+    var videoLabel = el('label', 'trp-fb-label',
+      'Paste your video link (Loom, Google Drive, YouTube or Vimeo)');
+    var video = el('input', 'trp-fb-input');
+    video.type = 'url';
+    video.name = 'Video link';
+    video.id = 'trp-fb-videolink-' + (opts.idSuffix || 'page');
+    video.required = true;
+    video.placeholder = 'https://www.loom.com/share/...';
+    video.setAttribute('autocomplete', 'off');
+    videoLabel.setAttribute('for', video.id);
+    var videoErr = el('span', 'trp-fb-msg is-err');
+    videoErr.hidden = true;
+    videoErr.setAttribute('data-testimonial-video-error', '');
+    videoBox.appendChild(videoLabel);
+    videoBox.appendChild(video);
+    videoBox.appendChild(el('span', 'trp-fb-help',
+      'Google Drive: set sharing to Anyone with the link.'));
+    videoBox.appendChild(videoErr);
+    tileB.appendChild(videoBox);
+
+    var postBox = el('div', 'trp-fb-field');
+    var postLabel = el('label', 'trp-fb-label');
+    postLabel.appendChild(document.createTextNode('Posted it on LinkedIn too? Paste the link '));
+    postLabel.appendChild(el('span', 'trp-fb-opt', '(optional)'));
+    var postLink = el('input', 'trp-fb-input');
+    postLink.type = 'url';
+    postLink.name = 'LinkedIn video post';
+    postLink.id = 'trp-fb-video-' + (opts.idSuffix || 'page');
+    postLink.placeholder = 'https://www.linkedin.com/posts/...';
+    postLink.setAttribute('autocomplete', 'off');
+    postLabel.setAttribute('for', postLink.id);
+    var postErr = el('span', 'trp-fb-msg is-err');
+    postErr.hidden = true;
+    postErr.setAttribute('data-feedback-video-error', '');
+    postBox.appendChild(postLabel);
+    postBox.appendChild(postLink);
+    postBox.appendChild(postErr);
+    tileB.appendChild(postBox);
+    sec.appendChild(tileB);
+
+    var featureLabel = el('label', 'trp-fb-check');
+    var feature = el('input');
+    feature.type = 'checkbox';
+    feature.setAttribute('data-feedback-feature', '');
+    featureLabel.appendChild(feature);
+    featureLabel.appendChild(el('span', '', 'Time Rich can share my testimonial'));
+    sec.appendChild(featureLabel);
+
+    var foot = el('div', 'trp-fb-foot is-end');
+    var send = el('button', 'trp-fb-btn', 'Send it');
+    send.type = 'submit';
+    send.setAttribute('data-feedback-send', '');
+    var err = el('p', 'trp-fb-msg is-err');
+    err.hidden = true;
+    err.setAttribute('data-feedback-error', '');
+    var right = el('div', 'trp-fb-foot-right');
+    right.appendChild(send);
+    foot.appendChild(right);
+    form.appendChild(err);
+    form.appendChild(foot);
+
+    var thanks = el('div', 'trp-fb-card');
+    thanks.hidden = true;
+    thanks.setAttribute('data-feedback-thanks', '');
+    thanks.setAttribute('role', 'status');
+    thanks.setAttribute('aria-live', 'polite');
+    thanks.tabIndex = -1;
+    wrap.appendChild(thanks);
+
+    /* ---- behaviour ---- */
+
+    function videoOk() {
+      if (videoLinkOk(video.value)) {
+        videoErr.hidden = true;
+        video.removeAttribute('aria-invalid');
+        return true;
+      }
+      videoErr.hidden = false;
+      videoErr.textContent = VIDEO_ERROR;
+      video.setAttribute('aria-invalid', 'true');
+      return false;
+    }
+    video.addEventListener('input', function () { if (videoErr.hidden === false) videoOk(); });
+    video.addEventListener('blur', function () { if (video.value.trim()) videoOk(); });
+
+    /* The LinkedIn post is optional, so only a link that is there and wrong
+       is refused. */
+    function postOk() {
+      var value = postLink.value.trim();
+      if (!value || isLinkedIn(value)) {
+        postErr.hidden = true;
+        postLink.removeAttribute('aria-invalid');
+        return true;
+      }
+      postErr.hidden = false;
+      postErr.textContent = 'Paste the link to your LinkedIn post, like https://www.linkedin.com/posts/...';
+      postLink.setAttribute('aria-invalid', 'true');
+      return false;
+    }
+    postLink.addEventListener('input', function () { if (postErr.hidden === false) postOk(); });
+    postLink.addEventListener('blur', postOk);
+
+    function collect() {
+      return {
+        Name: nameField.value,
+        Email: mail.input.value.trim(),
+        'LinkedIn recommendation': rec.checked ? 'Done' : 'Not yet',
+        'Video link': video.value.trim(),
+        'LinkedIn video post': postLink.value.trim(),
+        'OK to feature': feature.checked ? 'Yes' : 'No',
+        Source: 'club-testimonial',
+        _gotcha: pot.value.trim()
+      };
+    }
+
+    function hasInput() {
+      return Boolean(mail.input.value.trim() || video.value.trim() ||
+        postLink.value.trim() || rec.checked || feature.checked);
+    }
+
+    /* The Stanley VIP Prize, for the members posting every week. It sits
+       under the form, where it is an aside rather than another thing to
+       fill in. */
+    var vip = el('p', 'trp-fb-nudge');
+    vip.setAttribute('data-testimonial-vip', '');
+    vip.appendChild(document.createTextNode(
+      'Posting about the Accelerator every week too? That’s the '));
+    vip.appendChild(link('Stanley', STANLEY));
+    vip.appendChild(document.createTextNode(' VIP Prize: a $1K Stanley setup and 12 months of '));
+    vip.appendChild(link('Wispr Flow', WISPR));
+    vip.appendChild(document.createTextNode('.'));
+    wrap.appendChild(vip);
+
+    var post = sender({
+      form: form, send: send, err: err, thanks: thanks, stepper: null,
+      sendText: 'Send it',
+      thanksTitle: 'You’re in the draw. Thank you!!',
+      thanksLine: function () {
+        return 'We will be in touch about the Testimonial Prize.';
+      },
+      settledLine: 'Testimonial sent ✓',
+      onSettled: opts.onSettled
+    });
+
+    function submit() {
+      if (!emailValid(mail.input.value)) {
+        err.hidden = false;
+        err.textContent = 'Add your email so we can reach you.';
+        mail.input.focus();
+        return;
+      }
+      if (!videoOk()) { video.focus(); return; }
+      if (!postOk()) { postLink.focus(); return; }
+      post(collect());
+    }
+
+    form.addEventListener('submit', function (event) { event.preventDefault(); submit(); });
+
+    fillNameInto(nameField);
+
+    return {
+      root: wrap,
+      hasInput: hasInput,
+      focusFirst: function () { if (mail.input.focus) mail.input.focus(); }
     };
   }
 
   /* ---- the pill, and the panel it opens -------------------------------- */
 
-  var NO_PILL = /\/club\/(feedback|signin)(\.html)?\/?$/;
+  var NO_PILL = /\/club\/(feedback|testimonial|signin)(\.html)?\/?$/;
 
-  /* The pill and every "Give feedback" link are switched off until Ella
-     approves the new feedback form (8 Nov). The /club/feedback page still
-     works if someone has the link. Set FEEDBACK_ON to true to bring back
-     the pill and the footer links together. */
-  var FEEDBACK_ON = false;
+  /* Switched off on 8 Nov until Ella approved the new feedback form; her
+     9 Nov brief is that approval, so the pill, the footer links and the
+     end-of-week ask are back on. Setting FEEDBACK_ON to false hides all
+     three again, the testimonial pill with them. */
+  var FEEDBACK_ON = true;
   if (!FEEDBACK_ON) {
     var hideFb = document.createElement('style');
     hideFb.textContent = 'a.trp-foot-link[href="/club/feedback"]{display:none!important}';
@@ -733,14 +1113,39 @@
     if (!FEEDBACK_ON) return;
     if (NO_PILL.test(window.location.pathname)) return;
 
-    var pill = el('button', 'trp-pill');
+    var pill = el('button', 'trp-pill is-feedback');
     pill.type = 'button';
     pill.setAttribute('data-feedback-pill', '');
     pill.hidden = true;
     pill.appendChild(icon('M21 11.5a8.38 8.38 0 01-.9 3.8 8.5 8.5 0 01-7.6 4.7 8.38 8.38 0 01-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 01-.9-3.8 8.5 8.5 0 014.7-7.6 8.38 8.38 0 013.8-.9h.5a8.48 8.48 0 018 8v.5z'));
     pill.appendChild(el('span', 'trp-pill-text', 'Feedback'));
     pill.setAttribute('aria-label', 'Give feedback');
-    document.body.appendChild(pill);
+
+    /* The way to the video testimonial, on every Club page (Ella, 9 Nov).
+       A link rather than a button: it goes to a page of its own, so a
+       middle click should open it in a tab like any other link.
+
+       It carries both of its labels and the CSS picks between them: the
+       whole ask on a laptop, the short one on a phone, where two pills fit
+       side by side only if one gives up some words. The aria-label says
+       the whole of it either way. */
+    var winPill = el('a', 'trp-pill is-win');
+    winPill.setAttribute('data-testimonial-pill', '');
+    winPill.href = TESTIMONIAL_PAGE;
+    winPill.hidden = true;
+    winPill.appendChild(el('span', 'trp-pill-emoji', '🏆'));
+    winPill.appendChild(el('span', 'trp-pill-text', 'Submit testimonial & win'));
+    winPill.appendChild(el('span', 'trp-pill-short', 'Testimonial'));
+    winPill.setAttribute('aria-label', 'Submit your video testimonial and win');
+
+    /* One row holds both, so the gap between them is the row's and neither
+       has to know how wide the other is. Feedback sits nearest the corner,
+       where it has always been. */
+    var pills = el('div', 'trp-pills');
+    pills.setAttribute('data-feedback-pills', '');
+    pills.appendChild(winPill);
+    pills.appendChild(pill);
+    document.body.appendChild(pills);
     document.documentElement.classList.add('trp-has-pill');
 
     var dim = el('div', 'trp-panel-dim');
@@ -825,18 +1230,24 @@
       var away = blocked();
       if (away === wasAway) return;
       wasAway = away;
-      pill.classList.toggle('is-away', away);
-      pill.setAttribute('aria-hidden', away ? 'true' : 'false');
+      [pill, winPill].forEach(function (one) {
+        one.classList.toggle('is-away', away);
+        one.setAttribute('aria-hidden', away ? 'true' : 'false');
+      });
     }
 
-    /* It arrives a couple of seconds in, once, and never moves again. */
-    window.setTimeout(function () {
-      letIn = true;
-      pill.hidden = false;
-      void pill.offsetWidth;
-      pill.classList.add('is-shown');
-      refresh();
-    }, 2000);
+    /* Both are there as soon as the page is drawn. They used to arrive on a
+       two-second timer, which read as the pills only turning up once you
+       had started scrolling (Ella, 9 Nov) -- by the time they faded in, a
+       member was usually already moving down the page. is-shown goes on in
+       the same tick as the unhiding, so they are simply there rather than
+       fading in from nothing. */
+    letIn = true;
+    pill.hidden = false;
+    winPill.hidden = false;
+    pill.classList.add('is-shown');
+    winPill.classList.add('is-shown');
+    refresh();
 
     /* When the footer comes on screen the pill rides up above it, so it
        never sits on the footer links and never disappears either: a member
@@ -851,7 +1262,7 @@
       }
       if (by === lift) return;
       lift = by;
-      pill.style.setProperty('--trp-pill-lift', by + 'px');
+      pills.style.setProperty('--trp-pill-lift', by + 'px');
     }
     var placing = false;
     function placeSoon() {
@@ -966,6 +1377,8 @@
        both things jsdom does not have. Nothing on the page uses this. */
     window.TRFeedbackPill = {
       el: pill,
+      testimonial: winPill,
+      row: pills,
       panel: panel,
       refresh: refresh,
       open: function () { setOpen(true); },
@@ -982,6 +1395,17 @@
     var host = document.querySelector('[data-feedback-mount]');
     if (!host) return;
     var built = buildFeedback({ idSuffix: 'page' });
+    host.appendChild(built.root);
+  }
+
+  /* The testimonial page, the same way: the page leaves a container and
+     the component fills it. It has no panel of its own -- the video is
+     not something a member does in a side panel between two other
+     things, which is the whole reason it is its own page. */
+  function mountTestimonialPage() {
+    var host = document.querySelector('[data-testimonial-mount]');
+    if (!host) return;
+    var built = buildTestimonial({ idSuffix: 'page' });
     host.appendChild(built.root);
   }
 
@@ -1002,7 +1426,8 @@
   /* Each piece is mounted inside its own try: a feedback form that throws is
    * not worth taking the menu or the theme control down with it. */
   function mountAll() {
-    var each = [mountMenu, mountAppearance, mountFeedbackPage, mountFeedbackPill];
+    var each = [mountMenu, mountAppearance, mountFeedbackPage,
+      mountTestimonialPage, mountFeedbackPill];
     for (var i = 0; i < each.length; i++) {
       try { each[i](); } catch (err) { /* chrome is not worth a broken page */ }
     }
