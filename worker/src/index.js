@@ -312,9 +312,11 @@ export default {
     }
 
     // Route: Club feedback and testimonials (POST /feedback) -> its own
-    // Notion database. Everything past the rating is optional: the point of
-    // the form is that it takes two minutes, so a member who answers only
-    // the rating is still a submission worth having.
+    // Notion database. Two forms post here: the feedback form at
+    // /club/feedback (Source club-feedback) and the video testimonial at
+    // /club/testimonial (Source club-testimonial). Email is the only field
+    // either one must have -- plus the video link on the testimonial, which
+    // is the whole point of that form.
     if (path.endsWith("/feedback")) {
       // The honeypot is answered before anything is checked, so a bot gets
       // the same silent 200 as everywhere else rather than a 400 telling it
@@ -323,16 +325,35 @@ export default {
         return createApplication(data, env, cors, env.NOTION_FEEDBACK_DATABASE_ID, { Status: "New", Source: "club-feedback" });
       }
 
-      // 1 to 10, whole numbers. Notion's number column would take 7.5 or
-      // 40 quite happily, and then the average means nothing.
+      /* The 1 to 10 rating is no longer asked for: the week's questions are
+         chips now (Ella, 9 Nov). One that still arrives -- an old page left
+         open in a tab -- is kept when it is a whole 1 to 10 and dropped when
+         it is not, rather than failing a form that no longer has the field.
+         Notion's number column would take 7.5 or 40 quite happily, and then
+         the average means nothing. */
       const rating = String(data["Rating"] || "").trim();
-      if (!/^\d+$/.test(rating) || Number(rating) < 1 || Number(rating) > 10) {
-        return json({ ok: false, error: "Please pick a number from 1 to 10." }, 400, cors);
+      if (rating) {
+        data = { ...data };
+        const whole = /^\d+$/.test(rating) && Number(rating) >= 1 && Number(rating) <= 10;
+        if (!whole) delete data["Rating"];
       }
 
-      // The video post is the Testimonial Prize entry, so it is held to the
-      // same check as the content workshop draw: a linkedin.com link or
-      // nothing. Empty is fine -- the video half is optional.
+      /* The video is the Testimonial Prize entry, so it has to be something
+         we can actually watch: https, on one of the hosts members use. It is
+         what the testimonial form exists to collect, so that form cannot be
+         sent without it; anywhere else it is optional. */
+      const videoRaw = String(data["Video link"] || "").trim();
+      if (videoRaw) {
+        const cleaned = videoUrl(videoRaw);
+        if (!cleaned) return json({ ok: false, error: VIDEO_LINK_ERROR }, 400, cors);
+        data = { ...data, "Video link": cleaned };
+      } else if (String(data["Source"] || "").trim() === "club-testimonial") {
+        return json({ ok: false, error: VIDEO_LINK_ERROR }, 400, cors);
+      }
+
+      // The LinkedIn post is a second place the video lives, not the entry,
+      // so it is held to the same check as the content workshop draw -- a
+      // linkedin.com link or nothing. Empty is fine: it is optional.
       const post = String(data["LinkedIn video post"] || "").trim();
       if (post) {
         const cleaned = linkedinPostUrl(post);
@@ -390,6 +411,29 @@ export default {
     return createApplication(data, env, cors, env.NOTION_DATABASE_ID);
   },
 };
+
+/* Where a video testimonial is allowed to live. Members send Looms, Drive
+   files, YouTube and Vimeo links, and sometimes the LinkedIn post itself.
+   The page checks the same list before it will submit; this is the check
+   that holds when the page is bypassed. */
+const VIDEO_HOSTS = ["loom.com", "drive.google.com", "docs.google.com",
+  "youtube.com", "youtu.be", "vimeo.com", "linkedin.com"];
+const VIDEO_LINK_ERROR = "Please paste a Loom, Google Drive, YouTube or Vimeo link.";
+
+/* The link, or "" if it is not one we can take. The host is matched on the
+   parsed hostname rather than anywhere in the string, so a link merely
+   containing "loom.com" is refused, and http is refused with it. The query
+   string is kept: it is where YouTube and Drive put the file id. */
+function videoUrl(raw) {
+  const value = String(raw == null ? "" : raw).trim();
+  if (!value) return "";
+  let url;
+  try { url = new URL(value); } catch { return ""; }
+  if (url.protocol !== "https:") return "";
+  const host = url.hostname.toLowerCase().replace(/^www\./, "");
+  const ok = VIDEO_HOSTS.some((h) => host === h || host.endsWith("." + h));
+  return ok ? url.toString() : "";
+}
 
 /* A link to something on LinkedIn, cleaned, or "" if it is not one. Used by
    the content workshop draw and the Club feedback form, which both take a

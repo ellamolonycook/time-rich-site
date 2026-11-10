@@ -32,6 +32,7 @@ const PAGES = [
   'club/prompts.html',
   'club/members.html',
   'club/feedback.html',
+  'club/testimonial.html',
 ];
 
 let pass = 0, fail = 0;

@@ -80,7 +80,7 @@
        twice. -->
   <link rel="preload" href="../brand/fonts/SpaceGrotesk-Variable.woff2" as="font" type="font/woff2" crossorigin/>
   <link rel="preload" href="../brand/fonts/Inter-Variable.woff2" as="font" type="font/woff2" crossorigin/>
-  <link rel="stylesheet" href="portal-content.css?v=20261025">
+  <link rel="stylesheet" href="portal-content.css?v=20261109">
   <!-- The Curriculum's own layout: four week cards you tap between and one
        panel for the week that is picked (canvas board 3). Every rule is
        scoped under .trp-cw and every colour comes from the --trp-* palette
@@ -219,6 +219,24 @@
     .trp-cw-session .trp-cw-session-copy { align-self: stretch; }
     .trp-cw-session-copy > :nth-last-child(2) { margin-bottom: 8px; }
     .trp-cw-session .trp-cw-btn { margin-top: auto; align-self: flex-start; background: rgb(var(--c-surface)); color: var(--trp-deep); }
+    .trp-cw-session .trp-cw-btn:hover { background: var(--trp-sagelt); }
+
+    /* In the dark theme --c-surface is #272824, which is exactly the card's
+       own --trp-sage, so Watch replay drew as an invisible pill on the card
+       (Ella, 9 Nov). It takes the primary button's pair of tokens there
+       instead: in the dark theme --trp-green is a light cream and
+       --trp-offwhite the near-black, so the button reads the way it does in
+       the light theme -- a light filled pill with dark type -- with a hover
+       and a ring that both show against the card. */
+    :root[data-theme='dark'] .trp-cw-session .trp-cw-btn { background: var(--trp-green); color: var(--trp-offwhite); }
+    :root[data-theme='dark'] .trp-cw-session .trp-cw-btn:hover { background: var(--trp-mid); }
+    :root[data-theme='dark'] .trp-cw-session .trp-cw-btn:focus-visible { outline-color: var(--trp-deep); }
+
+    @media (prefers-color-scheme: dark) {
+      :root[data-theme='system'] .trp-cw-session .trp-cw-btn { background: var(--trp-green); color: var(--trp-offwhite); }
+      :root[data-theme='system'] .trp-cw-session .trp-cw-btn:hover { background: var(--trp-mid); }
+      :root[data-theme='system'] .trp-cw-session .trp-cw-btn:focus-visible { outline-color: var(--trp-deep); }
+    }
 
     /* The replay lightbox: the video itself over the page, from a call
        card's Watch replay button (Ella, 30 Oct). The box is a column, so
@@ -2720,9 +2738,10 @@ Anything you've done twice should never need you again. A skill is your way of d
          Last in the panel, so it never comes before the week's own work, and
          on a week that has not opened yet as well -- the form asks how the
          accelerator is going, which is a fair question either way. */
-      /* Switched off until Ella approves the new feedback form (8 Nov).
-         Turn back on by setting FEEDBACK_ON to true. */
-      var FEEDBACK_ON = false;
+      /* Switched off on 8 Nov until Ella approved the new feedback form;
+         her 9 Nov brief is that approval, so the ask is back. Set
+         FEEDBACK_ON to false to take it off the foot of the week again. */
+      var FEEDBACK_ON = true;
       function feedbackAsk() {
         if (!FEEDBACK_ON) return document.createDocumentFragment();
         var ask = L.el('a', 'trp-cw-ask', "How's it going? Tell us in 2 minutes");
