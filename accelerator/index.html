@@ -11,17 +11,17 @@
   src="https://www.facebook.com/tr?id=1790181495468842&amp;ev=PageView&amp;noscript=1" /></noscript>
 <title>Superhuman Accelerator | Time Rich</title>
 <meta name="theme-color" content="#FFFDFB" />
-<meta name="description" content="Four weeks to build the AI operating system that runs your business. 10 live sessions, one trained agent running. Cohort starts Mon 26 Oct." />
+<meta name="description" content="Five weeks to build the AI operating system that runs your business. Live every Monday and Friday, one trained agent running. Cohort 2 &middot; February 2027 &mdash; join the waitlist." />
 <link rel="canonical" href="https://timerich.ai/accelerator/" />
 <meta property="og:type" content="website" />
 <meta property="og:site_name" content="Time Rich" />
 <meta property="og:title" content="Superhuman Accelerator | Time Rich" />
-<meta property="og:description" content="Four weeks to build the AI operating system that runs your business. 10 live sessions, one trained agent running. Cohort starts Mon 26 Oct." />
+<meta property="og:description" content="Five weeks to build the AI operating system that runs your business. Live every Monday and Friday, one trained agent running. Cohort 2 &middot; February 2027 &mdash; join the waitlist." />
 <meta property="og:url" content="https://timerich.ai/accelerator/" />
 <meta property="og:image" content="https://timerich.ai/og-time-rich.png" />
 <meta name="twitter:card" content="summary_large_image" />
 <meta name="twitter:title" content="Superhuman Accelerator | Time Rich" />
-<meta name="twitter:description" content="Four weeks to build the AI operating system that runs your business. 10 live sessions, one trained agent running. Cohort starts Mon 26 Oct." />
+<meta name="twitter:description" content="Five weeks to build the AI operating system that runs your business. Live every Monday and Friday, one trained agent running. Cohort 2 &middot; February 2027 &mdash; join the waitlist." />
 <meta name="twitter:image" content="https://timerich.ai/og-time-rich.png" />
 <meta property="og:image:width" content="1200" />
 <meta property="og:image:height" content="630" />
@@ -878,6 +878,10 @@ html{scroll-padding-top:110px}
   padding:30px 44px 30px 30px;border-left:1px solid rgba(103,118,46,.22);min-height:100%}
 .num:first-child{border-left:0}
 .num b{font-weight:500;font-size:clamp(44px,4.4vw,58px);line-height:.9;letter-spacing:-.05em;color:var(--ink);font-variant-numeric:tabular-nums;align-self:start}
+/* The middle tile says a word, not a count: the cohort's session total is not
+   something we state any more (Ella, 10 Nov). Smaller, so it still sits on the
+   same line as the two numerals beside it. */
+.num--word b{font-size:clamp(30px,2.8vw,38px);letter-spacing:-.02em;line-height:1.05}
 .num p{grid-column:2;margin:0;font-size:16px;line-height:1.5;color:var(--ink);max-width:24ch;text-wrap:pretty;
   min-height:calc(3 * 1.5em)}
 .num .more{grid-column:1 / -1}
@@ -969,7 +973,7 @@ html{scroll-padding-top:110px}
   .s-nums .num{opacity:1;transform:none;pointer-events:auto}
 }
 
-/* ---- 9. the 4 weeks ---------------------------------------------------
+/* ---- 9. the weekly build ----------------------------------------------
    Four cards in a 2x2 grid, one per week: a mono "Week 01" label, the week's
    theme as the heading, then its sessions as rows of mono date + title.
    Nothing here opens or closes; the panels this replaced were empty. */
@@ -1006,47 +1010,6 @@ html{scroll-padding-top:110px}
   .s-weeks .wk-title{font-size:16px}
 }
 
-/* ---- 15. before you join ----
-   One question per screen, like /qualifyform. The screens box keeps a steady
-   height so the section does not jump as questions swap. */
-.s-form h2{font-size:clamp(26px,3.4vw,40px)}
-.s-form .form-sub{margin-top:10px;font-size:16px;color:var(--ink2)}
-.qflow{max-width:680px;margin:var(--space-head) 0 0}
-.qintro{display:flex}
-.qprogress{display:flex;align-items:center;gap:14px;margin-bottom:var(--space-head)}
-.qbar{flex:1 1 auto;height:3px;border-radius:3px;background:rgba(103,118,46,.18);overflow:hidden}
-.qbar span{display:block;height:100%;width:12.5%;background:var(--tr);border-radius:3px;transition:width .45s cubic-bezier(.32,.72,0,1)}
-.qcount{flex:0 0 auto;font-family:var(--monolbl);font-size:10.5px;letter-spacing:.12em;text-transform:uppercase;color:var(--ink2)}
-.qscreens{position:relative;min-height:232px}
-.q-eyebrow{display:block;font-family:var(--monolbl);font-size:10.5px;letter-spacing:.14em;text-transform:uppercase;color:var(--ink2)}
-.q-title{margin:10px 0 18px;font-family:'DM Serif Display',Georgia,serif;font-weight:400;
-  font-size:clamp(22px,2.2vw,30px);line-height:1.2;letter-spacing:-.01em;color:var(--ink)}
-.q-title label{cursor:pointer}
-.s-form input[type=text],.s-form input[type=email],.s-form textarea{
-  width:100%;box-sizing:border-box;font:inherit;font-size:15px;color:var(--ink);
-  background:#fff;border:1px solid var(--hair);border-radius:10px;padding:11px 13px;transition:border-color .15s ease}
-.s-form textarea{resize:vertical;min-height:72px;line-height:1.45}
-.s-form input:focus,.s-form textarea:focus{outline:0;border-color:var(--tr)}
-.s-form ::placeholder{color:#A8A29E}
-.pair{display:grid;grid-template-columns:1fr 1fr;gap:10px}
-.pair.seat2{margin-top:12px}
-.opts{display:flex;flex-wrap:wrap;gap:8px}
-.opt{display:inline-flex;align-items:center;gap:8px;cursor:pointer;background:transparent;
-  border:1px solid var(--hair);border-radius:999px;padding:9px 15px;font:inherit;font-size:14px;color:var(--ink2);
-  transition:border-color .15s ease,background .15s ease,color .15s ease}
-.opt-key{font-family:var(--monolbl);font-size:10px;color:var(--ink2);opacity:.65}
-.opt:hover{border-color:rgba(103,118,46,.5);color:var(--ink)}
-.opt[aria-pressed=true]{background:var(--tint);border-color:rgba(103,118,46,.55);color:var(--ink)}
-.q-actions{display:flex;align-items:center;gap:14px;margin-top:20px}
-.q-actions [hidden]{display:none}
-.q-back{background:none;border:0;padding:0;font:inherit;font-size:13.5px;color:var(--ink2);cursor:pointer;text-decoration:underline;text-underline-offset:3px}
-.q-back:hover{color:var(--ink)}
-.qscreen.is-in{animation:qIn .38s cubic-bezier(.32,.72,0,1) both}
-.qscreen.is-in.is-back{animation-name:qInBack}
-@keyframes qIn{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:none}}
-@keyframes qInBack{from{opacity:0;transform:translateY(-14px)}to{opacity:1;transform:none}}
-@media (prefers-reduced-motion:reduce){.qscreen.is-in{animation:none}}
-
 /* ---- 17. book a call ---- */
 .s-call .inner{max-width:640px}
 .s-call h2{font-size:clamp(26px,3.4vw,40px)}
@@ -1078,10 +1041,6 @@ html{scroll-padding-top:110px}
 @media (prefers-reduced-motion:reduce){.s-final .cta-lg,.s-final .cta-lg:hover{transition:none;transform:none}}
 
 @media (max-width:820px){
-  .qflow{margin-top:var(--space-head)}
-  .qscreens{min-height:268px}
-  .q-title{font-size:21px;margin-bottom:16px}
-  .opt{font-size:13.5px;padding:8px 13px}
   .s-final .inner{text-align:left}
   .s-final .final-line{font-size:clamp(24px,7vw,30px)}
   .s-final .final-meta{font-size:11px;letter-spacing:.08em}
@@ -1169,7 +1128,6 @@ html{scroll-padding-top:110px}
   .nav2 .brand{font-size:18px}
   .s-incl h2,
   .s-weeks h2,
-  .s-form h2,
   .s-call h2,
   .seats h2,
   .why .txt h2,
@@ -1199,7 +1157,7 @@ html{scroll-padding-top:110px}
 
 <!-- ANNOUNCEMENT BAR + NAV: one sticky block -->
 <div class="topstick">
-<a class="annc" href="/join/" onclick="openJoinModal(event); track('join_announce')"><span class="annc-price"><strong>$1,297</strong><span class="annc-seats"> &middot; 2 Seats For 1</span></span></a>
+<a class="annc" href="/accelerator/#waitlist" onclick="openWaitlist(event); track('join_announce')"><span class="annc-price"><strong>Cohort 2</strong><span class="annc-seats"> &middot; February 2027 &middot; Join the waitlist</span></span></a>
 
 <!-- NAV -->
 <nav class="v2 nav2" aria-label="Page">
@@ -1212,7 +1170,7 @@ html{scroll-padding-top:110px}
       <a href="#includes">What's included</a>
     </div>
     <div class="nav-right">
-      <a class="cta" href="/join/" onclick="openJoinModal(event); track('join_nav')">Join the cohort &middot; $1,297 &middot; 2 seats</a>
+      <a class="cta" href="/accelerator/#waitlist" onclick="openWaitlist(event); track('join_nav')">Join the waitlist</a>
       <button class="nav-burger" id="navBurger" type="button" aria-label="Menu" aria-haspopup="dialog" aria-controls="navMenu">
         <svg width="22" height="22" viewBox="0 0 22 22" aria-hidden="true"><path d="M3 6h16M3 11h16M3 16h16" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
       </button>
@@ -1228,7 +1186,7 @@ html{scroll-padding-top:110px}
       <a href="#proof">Proof</a>
       <a href="#includes">What's included</a>
     </div>
-    <a class="cta cta-lg" href="/join/" onclick="openJoinModal(event); track('join_menu')">Join the cohort &middot; $1,297 &middot; 2 seats</a>
+    <a class="cta cta-lg" href="/accelerator/#waitlist" onclick="openWaitlist(event); track('join_menu')">Join the waitlist</a>
   </dialog>
   <script>
   (function(){
@@ -1253,10 +1211,10 @@ html{scroll-padding-top:110px}
              src="../revenue/img/rev-01.jpg" alt="Ella Molony Cook, founder of Time Rich" />
       </div>
       <div class="hero-copy">
-      <h1>Imagine your own AI Operating System, built by you in 4 weeks.</h1>
-      <p class="sub"><span class="l s-quiet">Think of the money, stress and time you&rsquo;ll save once you learn how to become superhuman with AI.</span> <span class="l s-welcome">Welcome to Superhuman Accelerator.</span> <span class="l s-cred">A 4-week live intensive, designed by exited founders.</span></p>
-      <a class="cta cta-lg" href="/join/" onclick="openJoinModal(event); track('join_hero')">Join the cohort &middot; $1,297 &middot; 2 seats</a>
-      <p class="two"><strong>BONUS: 2 seats for the price of 1</strong> - bring who you want to win beside you.</p>
+      <h1>Imagine your own AI Operating System, built by you in 5 weeks.</h1>
+      <p class="sub"><span class="l s-quiet">Think of the money, stress and time you&rsquo;ll save once you learn how to become superhuman with AI.</span> <span class="l s-welcome">Welcome to Superhuman Accelerator.</span> <span class="l s-cred">A 5-week live intensive, designed by exited founders.</span></p>
+      <a class="cta cta-lg" href="/accelerator/#waitlist" onclick="openWaitlist(event); track('join_hero')">Join the waitlist</a>
+      <p class="two"><strong>BONUS: a second seat included</strong> - bring who you want to win beside you.</p>
       <!-- Anchor sponsor. The same lockup closes the page. -->
       <a class="powered" href="https://x.getstanley.ai/r/mz4y9g" target="_blank" rel="noopener sponsored" onclick="track('stanley_hero')">
         <span class="lbl">Powered by</span>
@@ -1430,17 +1388,17 @@ html{scroll-padding-top:110px}
     <!-- Live tiles: hover (desktop) or tap (touch) expands the detail list.
          On phone the three tiles stack normally — no scroll-stage swipe. -->
     <div class="num" tabindex="0" role="button" aria-expanded="false">
-      <b>4</b><p>weeks from overwhelmed to operating on AI</p>
+      <b>5</b><p>weeks from overwhelmed to operating on AI</p>
       <span class="plus" aria-hidden="true"></span>
       <div class="more"><ul>
-        <li><em>Wk 1</em>Mon 26 Oct</li>
-        <li><em>Wk 2</em>Mon 2 Nov</li>
-        <li><em>Wk 3</em>Mon 9 Nov</li>
-        <li><em>Wk 4</em>Mon 16 Nov &middot; ends Fri 20 Nov</li>
+        <li><em>Mondays</em>A 90-minute live build with an expert</li>
+        <li><em>Fridays</em>Breakout rooms</li>
+        <li><em>Every seat</em>Live and recorded, 12pm ET</li>
+        <li><em>Cohort 2</em>February 2027</li>
       </ul></div>
     </div>
-    <div class="num" tabindex="0" role="button" aria-expanded="false">
-      <b>9</b><p>live sessions coached by exited founders, investors and enterprise AI experts</p>
+    <div class="num num--word" tabindex="0" role="button" aria-expanded="false">
+      <b>Live</b><p>every Monday and Friday, coached by exited founders, investors and enterprise AI experts</p>
       <span class="plus" aria-hidden="true"></span>
       <div class="more"><ul>
         <li><em>12pm ET</em>Live and recorded</li>
@@ -1451,7 +1409,7 @@ html{scroll-padding-top:110px}
       </ul></div>
     </div>
     <div class="num" tabindex="0" role="button" aria-expanded="false">
-      <b>2</b><p>seats for the price of 1</p>
+      <b>2</b><p>seats per ticket, so you and one other build it together</p>
       <span class="plus" aria-hidden="true"></span>
       <div class="more"><ul>
         <li><em>Seat 1</em>You</li>
@@ -1486,22 +1444,22 @@ html{scroll-padding-top:110px}
      between them, and the row expands to a details panel Ella supplies later. -->
 <section class="v2 s-weeks" id="weeks">
   <div class="wrap">
-    <h2>The 4 weeks</h2>
+    <h2>The weekly build</h2>
     <ol class="wk-grid">
       <li class="wk-card">
         <p class="wk-label">Week 01</p>
         <h3 class="wk-theme">Open Business Surgery</h3>
         <ul class="wk-items">
           <li class="wk-item">
-            <span class="wk-date">Mon 26 Oct</span>
+            <span class="wk-date">Monday</span>
             <span class="wk-title">Open Business Surgery</span>
           </li>
           <li class="wk-item">
-            <span class="wk-date">Wed 28 Oct</span>
+            <span class="wk-date">Wednesday</span>
             <span class="wk-title">Multi-LLM &amp; Setting Your Harness<span class="wk-pill">Bonus</span></span>
           </li>
           <li class="wk-item">
-            <span class="wk-date">Fri 30 Oct</span>
+            <span class="wk-date">Friday</span>
             <span class="wk-title">Training Your Agent</span>
           </li>
         </ul>
@@ -1511,11 +1469,11 @@ html{scroll-padding-top:110px}
         <h3 class="wk-theme">Your AI Operating System</h3>
         <ul class="wk-items">
           <li class="wk-item">
-            <span class="wk-date">Mon 2 Nov</span>
+            <span class="wk-date">Monday</span>
             <span class="wk-title">Your AI Operating System</span>
           </li>
           <li class="wk-item">
-            <span class="wk-date">Fri 6 Nov</span>
+            <span class="wk-date">Friday</span>
             <span class="wk-title">Expert Q&amp;A</span>
           </li>
         </ul>
@@ -1525,11 +1483,11 @@ html{scroll-padding-top:110px}
         <h3 class="wk-theme">Storytelling for GTM</h3>
         <ul class="wk-items">
           <li class="wk-item">
-            <span class="wk-date">Mon 9 Nov</span>
+            <span class="wk-date">Monday</span>
             <span class="wk-title">Storytelling for GTM</span>
           </li>
           <li class="wk-item">
-            <span class="wk-date">Fri 13 Nov</span>
+            <span class="wk-date">Friday</span>
             <span class="wk-title">The AI Content Machine + Q&amp;A</span>
           </li>
         </ul>
@@ -1539,15 +1497,15 @@ html{scroll-padding-top:110px}
         <h3 class="wk-theme">Unfair AI Advantage</h3>
         <ul class="wk-items">
           <li class="wk-item">
-            <span class="wk-date">Mon 16 Nov</span>
+            <span class="wk-date">Monday</span>
             <span class="wk-title">Unfair AI Advantage</span>
           </li>
           <li class="wk-item">
-            <span class="wk-date">Wed 18 Nov</span>
+            <span class="wk-date">Wednesday</span>
             <span class="wk-title">Networking Session</span>
           </li>
           <li class="wk-item">
-            <span class="wk-date">Fri 20 Nov</span>
+            <span class="wk-date">Friday</span>
             <span class="wk-title">Q&amp;A: Exited Founder</span>
           </li>
         </ul>
@@ -1555,8 +1513,8 @@ html{scroll-padding-top:110px}
     </ol>
     <p class="wk-foot">All sessions 12pm ET.</p>
     <div class="act">
-      <a class="cta cta-lg" href="/join/" onclick="openJoinModal(event); track('join_weeks')">Join the cohort &middot; $1,297 &middot; 2 seats</a>
-      <p class="cta-note">Payment plan available.</p>
+      <a class="cta cta-lg" href="/accelerator/#waitlist" onclick="openWaitlist(event); track('join_weeks')">Join the waitlist</a>
+      
     </div>
   </div>
 </section>
@@ -1586,7 +1544,7 @@ html{scroll-padding-top:110px}
     <div class="cards">
       <div class="card" tabindex="0" role="button" aria-expanded="false">
         <h3>The Accelerator</h3>
-        <p class="tease">10 live sessions, all hands on.</p>
+        <p class="tease">Live every Monday and Friday, all hands on.</p>
         <span class="plus" aria-hidden="true"></span>
         <div class="more"><p>We break every build down step by step until you can run it yourself. Then the expert Q&amp;A rooms, where you ask your question to venture backed founders, creators and investors building in the arena.</p></div>
       </div>
@@ -1613,8 +1571,8 @@ html{scroll-padding-top:110px}
          unlocks Stanley is a member thing and lives in the portal. -->
     <p class="cta-note incl-perks">Plus partner perks: 6 months of Stanley, your AI head of content, and 6 months of Wispr Flow Pro.</p>
     <div class="act">
-      <a class="cta cta-lg" href="/join/" onclick="openJoinModal(event); track('join_includes')">Join the cohort &middot; $1,297 &middot; 2 seats</a>
-      <p class="cta-note">Payment plan available.</p>
+      <a class="cta cta-lg" href="/accelerator/#waitlist" onclick="openWaitlist(event); track('join_includes')">Join the waitlist</a>
+      
     </div>
   </div>
   <script>
@@ -1647,17 +1605,17 @@ html{scroll-padding-top:110px}
       <img width="1206" height="1365" loading="lazy" decoding="async" src="img/two-seats.jpg" alt="Two founders standing together, the pair this ticket is built for" />
     </div>
     <div class="body">
-      <h2>2 seats for the price of 1.</h2>
+      <h2>Two seats, one ticket.</h2>
       <p>So your ticket comes with a second seat. Your co-founder, ops lead, EA or business partner.</p>
       <ul class="ticks">
         <li><span class="tick" aria-hidden="true">&#10003;</span>Both live in every session</li>
         <li><span class="tick" aria-hidden="true">&#10003;</span>Both get their own portal login</li>
         <li><span class="tick" aria-hidden="true">&#10003;</span>Both keep the Notion operating system and the community</li>
       </ul>
-      <p>$1,297 for two seats. That's under $650 a head.</p>
+      <p>Two people, one ticket. You both do the work, so the system lives with the two of you rather than in one person&rsquo;s notes.</p>
     </div>
     <div class="act">
-      <a class="cta cta-lg" href="/join/" onclick="openJoinModal(event); track('join_seats')">Claim both seats &middot; $1,297</a>
+      <a class="cta cta-lg" href="/accelerator/#waitlist" onclick="openWaitlist(event); track('join_seats')">Join the waitlist</a>
     </div>
   </div>
 </section>
@@ -1669,7 +1627,7 @@ html{scroll-padding-top:110px}
   <div class="wrap">
     <div class="guarantee">
       <h2>Your first trained agent runs, or you get your money back.</h2>
-      <p>Show up to the first two build sessions (Mon 26 Oct and Mon 2 Nov) and do the work. If your first trained agent isn&rsquo;t running by Fri 6 Nov, we will refund you in full.</p>
+      <p>Show up to the first two Monday build sessions and do the work. If your first trained agent isn&rsquo;t running by the end of week 2, we will refund you in full.</p>
     </div>
   </div>
 </section>
@@ -1733,7 +1691,7 @@ html{scroll-padding-top:110px}
 
         <p>I love being in a room with ambitious people. So I started running live build sessions. They grew into a community, and the feedback was the same every time: "This is the first time AI clicked."</p>
 
-        <p>Superhuman is the accelerated version of that. Four weeks. Tactical builds. Real build-along demos. Live Q&A. No AI jargon allowed. Taught by founders who are building right now.</p>
+        <p>Superhuman is the accelerated version of that. Five weeks. Tactical builds. Real build-along demos. Live Q&A. No AI jargon allowed. Taught by founders who are building right now.</p>
         <p>You don't learn this alone. You learn it next to people who push you. Let's build, break, fix and learn together.</p>
         <div class="sig">
           <span class="sig-name">Ella Molony Cook</span>
@@ -1801,191 +1759,7 @@ html{scroll-padding-top:110px}
   </div>
 </section>
 
-<!-- ======================== 15. BEFORE YOU JOIN ========================
-     One question at a time, same flow as /qualifyform: options advance on the
-     first pick, typed answers advance on Continue or Enter, Back steps
-     through. Nothing submits - the last screen links to the checkout. -->
-<section class="v2 s-form" id="before-you-join">
-  <div class="wrap">
-    <div class="form-head">
-      <h2>Tell us what you&rsquo;re building</h2>
-      <p class="form-sub">8 questions, 3 minutes. Your answers shape week one and your first hot seat.</p>
-    </div>
 
-    <div class="qflow" id="qflow">
-      <!-- Closed by default: the form opens on click, then runs straight
-           through to checkout - there is no qualification gate here. -->
-      <div class="qintro" id="qintro">
-        <button type="button" class="cta cta-lg" id="qstart" aria-expanded="false" aria-controls="qbody">Start &rarr;</button>
-      </div>
-
-      <div class="qbody" id="qbody" hidden>
-      <div class="qprogress">
-        <div class="qbar" role="progressbar" aria-valuemin="1" aria-valuemax="8" aria-valuenow="1" aria-label="Progress"><span id="qbarFill"></span></div>
-        <span class="qcount" id="qcount">1 of 8</span>
-      </div>
-
-      <div class="qscreens">
-        <div class="qscreen" data-step="1">
-          <span class="q-eyebrow">Question 1</span>
-          <h3 class="q-title">Name and email</h3>
-          <div class="pair">
-            <input type="text" autocomplete="name" aria-label="Name" placeholder="Name" />
-            <input type="email" autocomplete="email" aria-label="Email" placeholder="Email" />
-          </div>
-          <div class="q-actions"><button type="button" class="cta" data-next>Continue</button></div>
-        </div>
-
-        <div class="qscreen" data-step="2" hidden>
-          <span class="q-eyebrow">Question 2</span>
-          <h3 class="q-title"><label for="q-business">What&rsquo;s your business, or what do you make?</label></h3>
-          <input id="q-business" type="text" />
-          <div class="q-actions"><button type="button" class="cta" data-next>Continue</button><button type="button" class="q-back" data-back>Back</button></div>
-        </div>
-
-        <div class="qscreen" data-step="3" data-select hidden>
-          <span class="q-eyebrow">Question 3</span>
-          <h3 class="q-title">Which part do you want running on AI by 13 November?</h3>
-          <div class="opts" role="group">
-          <button type="button" class="opt" data-value="Sales"><span class="opt-key">1</span><span>Sales</span></button>
-          <button type="button" class="opt" data-value="Content"><span class="opt-key">2</span><span>Content</span></button>
-          <button type="button" class="opt" data-value="Ops"><span class="opt-key">3</span><span>Ops</span></button>
-          <button type="button" class="opt" data-value="Client delivery"><span class="opt-key">4</span><span>Client delivery</span></button>
-          <button type="button" class="opt" data-value="Not sure yet"><span class="opt-key">5</span><span>Not sure yet</span></button>
-          </div>
-          <div class="q-actions"><button type="button" class="q-back" data-back>Back</button></div>
-        </div>
-
-        <div class="qscreen" data-step="4" data-select hidden>
-          <span class="q-eyebrow">Question 4</span>
-          <h3 class="q-title">What have you built with AI so far?</h3>
-          <div class="opts" role="group">
-          <button type="button" class="opt" data-value="Nothing yet"><span class="opt-key">1</span><span>Nothing yet</span></button>
-          <button type="button" class="opt" data-value="Prompts"><span class="opt-key">2</span><span>Prompts</span></button>
-          <button type="button" class="opt" data-value="One agent"><span class="opt-key">3</span><span>One agent</span></button>
-          <button type="button" class="opt" data-value="Several running"><span class="opt-key">4</span><span>Several running</span></button>
-          </div>
-          <div class="q-actions"><button type="button" class="q-back" data-back>Back</button></div>
-        </div>
-
-        <div class="qscreen" data-step="5" data-select hidden>
-          <span class="q-eyebrow">Question 5</span>
-          <h3 class="q-title">Who else is in your business?</h3>
-          <div class="opts" role="group">
-          <button type="button" class="opt" data-value="Just me"><span class="opt-key">1</span><span>Just me</span></button>
-          <button type="button" class="opt" data-value="One or two"><span class="opt-key">2</span><span>One or two</span></button>
-          <button type="button" class="opt" data-value="Three to ten"><span class="opt-key">3</span><span>Three to ten</span></button>
-          <button type="button" class="opt" data-value="More"><span class="opt-key">4</span><span>More</span></button>
-          </div>
-          <div class="q-actions"><button type="button" class="q-back" data-back>Back</button></div>
-        </div>
-
-        <div class="qscreen" data-step="6" data-select hidden>
-          <span class="q-eyebrow">Question 6</span>
-          <h3 class="q-title">Your second seat is included. Who&rsquo;s taking it?</h3>
-          <div class="opts" role="group">
-          <button type="button" class="opt" data-value="Their name and email" data-reveal="seat2"><span class="opt-key">1</span><span>Their name and email</span></button>
-          <button type="button" class="opt" data-value="I'll name them later"><span class="opt-key">2</span><span>I'll name them later</span></button>
-          <button type="button" class="opt" data-value="I'm coming alone"><span class="opt-key">3</span><span>I'm coming alone</span></button>
-          </div>
-          <div class="pair seat2" id="seat2" hidden>
-            <input type="text" aria-label="Their name" placeholder="Their name" />
-            <input type="email" aria-label="Their email" placeholder="Their email" />
-          </div>
-          <div class="q-actions"><button type="button" class="cta" data-next hidden>Continue</button><button type="button" class="q-back" data-back>Back</button></div>
-        </div>
-
-        <div class="qscreen" data-step="7" hidden>
-          <span class="q-eyebrow">Question 7</span>
-          <h3 class="q-title"><label for="q-week">What&rsquo;s eating your week right now?</label></h3>
-          <textarea id="q-week" rows="3"></textarea>
-          <div class="q-actions"><button type="button" class="cta" data-next>Continue</button><button type="button" class="q-back" data-back>Back</button></div>
-        </div>
-
-        <div class="qscreen" data-step="8" hidden>
-          <span class="q-eyebrow">Question 8</span>
-          <h3 class="q-title"><label for="q-hotseat">What would you bring to a hot seat?</label></h3>
-          <textarea id="q-hotseat" rows="3"></textarea>
-          <div class="q-actions"><button type="button" class="cta" data-next>Continue</button><button type="button" class="q-back" data-back>Back</button></div>
-        </div>
-
-        <div class="qscreen qscreen--end" data-step="8" data-end hidden>
-          <span class="q-eyebrow">Last step</span>
-          <h3 class="q-title">That&rsquo;s everything.</h3>
-          <div class="q-actions">
-            <a class="cta cta-lg" data-checkout href="https://checkout.timerich.ai/accelerator/" onclick="track('join_form')">Continue to checkout &rarr;</a>
-            <button type="button" class="q-back" data-back>Back</button>
-          </div>
-        </div>
-      </div>
-      </div>
-    </div>
-  </div>
-  <script>
-  // One question at a time. Options advance on the first pick; typed answers
-  // advance on Continue or Enter. Nothing is stored or submitted.
-  (function(){
-    var flow = document.getElementById('qflow'); if (!flow) return;
-    var screens = [].slice.call(flow.querySelectorAll('.qscreen'));
-    var fill = document.getElementById('qbarFill'), count = document.getElementById('qcount');
-    var bar = flow.querySelector('.qbar'), seat2 = document.getElementById('seat2');
-    var reduce = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-    var intro = document.getElementById('qintro'), body = document.getElementById('qbody');
-    var start = document.getElementById('qstart');
-    var i = 0, picked = {};
-
-    function show(next, quiet){
-      if (next < 0 || next >= screens.length) return;
-      var from = screens[i], to = screens[next], back = next < i;
-      i = next;
-      screens.forEach(function(s){ if (s !== to) s.hidden = true; });
-      to.hidden = false;
-      if (!reduce) {
-        to.classList.remove('is-in','is-back'); void to.offsetWidth;
-        to.classList.add('is-in'); if (back) to.classList.add('is-back');
-      }
-      var step = to.getAttribute('data-step');
-      count.textContent = to.hasAttribute('data-end') ? 'All 8 answered' : step + ' of 8';
-      fill.style.width = (step / 8 * 100) + '%';
-      bar.setAttribute('aria-valuenow', step);
-      if (quiet) return;
-      var field = to.querySelector('input:not([type=hidden]), textarea');
-      if (field && !reduce) setTimeout(function(){ try{ field.focus({preventScroll:true}); }catch(e){} }, 260);
-    }
-
-    flow.addEventListener('click', function(e){
-      if (e.target.closest('[data-next]')) { show(i + 1); return; }
-      if (e.target.closest('[data-back]')) { show(i - 1); return; }
-      var opt = e.target.closest('.opt'); if (!opt) return;
-      var screen = opt.closest('.qscreen'), first = !picked[screen.getAttribute('data-step')];
-      picked[screen.getAttribute('data-step')] = true;
-      screen.querySelectorAll('.opt').forEach(function(b){ b.setAttribute('aria-pressed', b === opt ? 'true' : 'false'); });
-      if (seat2 && screen.contains(seat2)) {
-        var reveal = opt.hasAttribute('data-reveal');
-        seat2.hidden = !reveal;
-        screen.querySelector('[data-next]').hidden = !reveal;
-        if (reveal) return;                       // they have fields to fill first
-      }
-      if (first) setTimeout(function(){ if (screens[i] === screen) show(i + 1); }, 220);
-    });
-
-    // Enter advances from the single-line fields; textareas keep their newlines.
-    flow.addEventListener('keydown', function(e){
-      if (e.key === 'Enter' && e.target.tagName === 'INPUT') { e.preventDefault(); show(i + 1); }
-    });
-    // The form opens on click; until then the section is just the invitation.
-    start.addEventListener('click', function(){
-      intro.hidden = true; body.hidden = false;
-      start.setAttribute('aria-expanded', 'true');
-      show(0);
-      var first = body.querySelector('input, textarea');
-      if (first) { try { first.focus({preventScroll:true}); } catch(e) {} }
-      track('form_open');
-    });
-    show(0, true);
-  })();
-  </script>
-</section>
 
 
 
@@ -2027,8 +1801,8 @@ html{scroll-padding-top:110px}
         <div class="faq-a"><div class="faq-a-inner"><p>Yes &mdash; some of the best people in this cohort are building alongside something else. That's the whole point of a system: it has to hold when your week doesn't.</p></div></div></div>
       </div>
       <div class="faq-item">
-        <div class="faq-summary"><h3>What does it cost?</h3></div><div class="faq-a-wrap">
-        <div class="faq-a"><div class="faq-a-inner"><p>$1,297 for two seats. Payment plan available.</p></div></div></div>
+        <div class="faq-summary"><h3>How do I get a seat?</h3></div><div class="faq-a-wrap">
+        <div class="faq-a"><div class="faq-a-inner"><p>Cohort 2 opens to the waitlist first. Join it and you&rsquo;ll hear everything from us before it goes public.</p></div></div></div>
       </div>
     </div>
   </div>
@@ -2038,12 +1812,12 @@ html{scroll-padding-top:110px}
 <section class="v2 s-final" id="final">
   <div class="wrap">
     <div class="inner">
-      <span class="lbl">Cohort starts Monday 26 October</span>
+      <span class="lbl">Cohort 2 &middot; February 2027</span>
       <h2 class="final-line">One part of your business, running on AI.</h2>
-      <p class="final-meta">4 weeks &middot; 10 live sessions &middot; 2 seats for the price of 1</p>
+      <p class="final-meta">5 weeks &middot; live every Monday and Friday &middot; 2 seats per ticket</p>
       <div class="act">
-        <a class="cta cta-lg" href="/join/" onclick="openJoinModal(event); track('join_final')">Join the cohort &middot; $1,297 &middot; 2 seats</a>
-        <p class="cta-note">Payment plan available.</p>
+        <a class="cta cta-lg" href="/accelerator/#waitlist" onclick="openWaitlist(event); track('join_final')">Join the waitlist</a>
+        
       </div>
       <!-- Anchor sponsor, same lockup as the hero. It sits inside the closing
            band rather than in a strip of its own: the band's wash is a pair of
@@ -2067,8 +1841,8 @@ html{scroll-padding-top:110px}
 
 <!-- STICKY APPLY BAR -->
 <div class="stickybar" id="stickybar" aria-hidden="true">
-  <span class="sb-txt">Founding cohort &middot; Limited spots</span>
-  <a class="btn" href="/join/" onclick="openJoinModal(event); track('join_sticky')">Join the cohort &middot; $1,297 &middot; 2 seats</a>
+  <span class="sb-txt">Cohort 2 &middot; February 2027</span>
+  <a class="btn" href="/accelerator/#waitlist" onclick="openWaitlist(event); track('join_sticky')">Join the waitlist</a>
 </div>
 
 <script>
@@ -2176,7 +1950,7 @@ function track(name, params){
 })();
 </script>
 
-<!-- Pre-checkout Join Pop-Up Modal -->
+<!-- Waitlist modal styles -->
 <style id="join-modal-styles">
 .join-modal-backdrop {
   position: fixed; inset: 0; z-index: 10000;
@@ -2217,6 +1991,21 @@ function track(name, params){
 
 .m-q-step { display: none; opacity: 0; transform: translateY(12px); transition: all 0.25s ease; }
 .m-q-step.active { display: block; opacity: 1; transform: translateY(0); }
+/* The waitlist asks for both fields at once, so its two steps are both on
+   and need a gap between them; the old flow showed one at a time. */
+.m-q-step.active + .m-q-step.active { margin-top: 18px; }
+.m-q-step .m-q-title { font-size: 16px; margin-bottom: 8px; }
+.m-q-step .m-q-title label { cursor: pointer; }
+
+/* The honeypot, parked off-screen rather than display:none: some bots skip
+   what is not rendered, and this field is there to be filled in. */
+.m-pot { position: absolute !important; left: -10000px !important; top: auto; width: 1px; height: 1px; overflow: hidden; opacity: 0; }
+
+/* What the form says back, in the same card. */
+.m-note { font-size: 13.5px; line-height: 1.5; margin-top: 14px; font-weight: 500; }
+.m-note[hidden] { display: none; }
+.m-note.is-err { color: #A8492F; }
+.m-note.is-ok { color: #67762E; }
 
 .m-q-label { display: block; font-family: 'Archivo', -apple-system, sans-serif; font-size: 12px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.1em; color: #67762E; margin-bottom: 6px; }
 .m-q-title { font-family: 'Space Grotesk', -apple-system, sans-serif; font-size: 20px; font-weight: 600; color: #333A28; margin-bottom: 16px; line-height: 1.3; }
@@ -2233,7 +2022,7 @@ textarea.m-input { resize: vertical; min-height: 95px; }
 .m-error-msg { font-size: 12.5px; color: #A8492F; margin-top: 6px; display: none; font-weight: 500; }
 .m-error-msg.visible { display: block; }
 
-.m-actions { display: flex; align-items: center; justify-content: space-between; margin-top: 24px; padding-top: 16px; border-top: 1px solid rgba(66,75,54,0.20); }
+.m-actions { display: flex; align-items: center; justify-content: flex-end; margin-top: 24px; padding-top: 16px; border-top: 1px solid rgba(66,75,54,0.20); }
 .m-btn-back { background: transparent; border: 1px solid rgba(66,75,54,0.34); border-radius: 8px; padding: 10px 16px; font-family: 'Archivo', -apple-system, sans-serif; font-size: 13.5px; font-weight: 600; color: #5B6449; cursor: pointer; }
 .m-btn-back:hover { border-color: #424B36; color: #333A28; }
 .m-btn-back:disabled { opacity: 0.4; pointer-events: none; }
@@ -2243,224 +2032,172 @@ textarea.m-input { resize: vertical; min-height: 95px; }
 .m-btn-next:disabled { opacity: 0.6; cursor: not-allowed; }
 </style>
 
-<div class="join-modal-backdrop" id="joinModalBackdrop" onclick="closeJoinModalOnBackdrop(event)">
+<!-- WAITLIST MODAL
+     Cohort 2 is a waitlist, not a checkout (Ella, 10 Nov), so every button on
+     the page opens this instead of the ThriveCart flow that used to live here.
+     Two fields and a honeypot: a name to write to, an address to write at.
+
+     The id is on the backdrop so /accelerator/#waitlist opens it -- an emailed
+     or shared link lands on the form rather than beside it. -->
+<div class="join-modal-backdrop" id="waitlist" onclick="closeWaitlistOnBackdrop(event)">
   <div class="join-modal-card">
-    <button type="button" class="join-modal-close" onclick="closeJoinModal()" aria-label="Close modal">&times;</button>
+    <button type="button" class="join-modal-close" onclick="closeWaitlist()" aria-label="Close modal">&times;</button>
     <div class="join-modal-header">
-      <h2>Before you grab your seat.</h2>
-      <p>Three questions. Thirty seconds.</p>
+      <h2>Join the waitlist.</h2>
+      <p>Cohort 2 opens in February 2027. The waitlist hears first.</p>
     </div>
 
-    <div class="join-modal-progress">
-      <div class="join-progress-bar"><div class="join-progress-fill" id="mProgressFill"></div></div>
-      <span class="join-progress-text" id="mProgressText">1 of 3</span>
-    </div>
-
-    <form id="modalJoinForm" onsubmit="handleModalSubmit(event)" novalidate>
-      <div class="m-q-step active" id="mStep1">
-        <span class="m-q-label">Question 1 of 3</span>
-        <h3 class="m-q-title">What is your first name?</h3>
-        <input type="text" id="mFirstName" class="m-input" placeholder="e.g. Alex" autocomplete="given-name" required onkeydown="handleModalKey(event, 1)" />
-        <div class="m-error-msg" id="mError1">Please enter your first name.</div>
+    <form id="waitlistForm" onsubmit="handleWaitlistSubmit(event)" novalidate>
+      <div class="m-q-step active">
+        <h3 class="m-q-title"><label for="wFirstName">First name</label></h3>
+        <input type="text" id="wFirstName" name="first_name" class="m-input" placeholder="e.g. Alex" autocomplete="given-name" required />
+        <div class="m-error-msg" id="wError1">Please enter your first name.</div>
       </div>
 
-      <div class="m-q-step" id="mStep2">
-        <span class="m-q-label">Question 2 of 3</span>
-        <h3 class="m-q-title">What is your best email address?</h3>
-        <input type="email" id="mEmail" class="m-input" placeholder="alex@company.com" autocomplete="email" required onblur="validateModalEmailOnBlur()" onkeydown="handleModalKey(event, 2)" />
-        <div class="m-error-msg" id="mError2">Please enter a valid email address.</div>
+      <div class="m-q-step active">
+        <h3 class="m-q-title"><label for="wEmail">Email</label></h3>
+        <input type="email" id="wEmail" name="email" class="m-input" placeholder="alex@company.com" autocomplete="email" inputmode="email" required />
+        <div class="m-error-msg" id="wError2">Please enter a valid email address.</div>
       </div>
 
-      <div class="m-q-step" id="mStep3">
-        <span class="m-q-label">Question 3 of 3</span>
-        <h3 class="m-q-title">What will make you become superhuman?</h3>
-        <textarea id="mSuperhumanAnswer" class="m-input" placeholder="The one thing in your business you'd hand to AI tomorrow." required></textarea>
-        <div class="m-error-msg" id="mError3">Please tell us what would make you superhuman.</div>
-      </div>
+      <!-- Off to the left rather than display:none: some bots skip what is
+           not rendered at all, and this field exists to be filled in. -->
+      <input type="text" id="wGotcha" name="_gotcha" class="m-pot" tabindex="-1" autocomplete="off" aria-hidden="true" />
 
       <div class="m-actions">
-        <button type="button" class="m-btn-back" id="mBtnBack" onclick="prevModalStep()" disabled>← Back</button>
-        <button type="button" class="m-btn-next" id="mBtnNext" onclick="nextModalStep()">Next →</button>
+        <button type="submit" class="m-btn-next" id="wBtnSubmit">Join the waitlist</button>
       </div>
+      <p class="m-note" id="wNote" role="status" aria-live="polite" hidden></p>
     </form>
   </div>
 </div>
 
-<script id="join-modal-script">
+<script id="waitlist-script">
 (function() {
-  var mCurrentStep = 1;
-  var mTotalSteps = 3;
-  var JOIN_WORKER_ENDPOINT = 'https://time-rich-forms.timerich.workers.dev/join';
-  var THRIVECART_CLEAN_URL = 'https://checkout.timerich.ai/accelerator/';
+  var WAITLIST_ENDPOINT = 'https://time-rich-forms.timerich.workers.dev/waitlist';
 
-  window.openJoinModal = function(e) {
+  function card() { return document.getElementById('waitlist'); }
+
+  window.openWaitlist = function(e) {
+    // A modified click is somebody opening it in a tab on purpose; the href
+    // is a real address, so let the browser have it.
     if (e && (e.ctrlKey || e.metaKey || e.shiftKey || (e.button && e.button !== 0))) return;
     if (e && e.preventDefault) e.preventDefault();
-    var backdrop = document.getElementById('joinModalBackdrop');
-    if (backdrop) {
-      backdrop.classList.add('is-open');
-      document.body.style.overflow = 'hidden';
-      showModalStep(1);
-    }
+    var backdrop = card();
+    if (!backdrop) return;
+    backdrop.classList.add('is-open');
+    document.body.style.overflow = 'hidden';
+    setTimeout(function() {
+      var first = document.getElementById('wFirstName');
+      if (first && first.focus) first.focus();
+    }, 80);
   };
 
-  window.closeJoinModal = function() {
-    var backdrop = document.getElementById('joinModalBackdrop');
-    if (backdrop) {
-      backdrop.classList.remove('is-open');
-      document.body.style.overflow = '';
-    }
+  window.closeWaitlist = function() {
+    var backdrop = card();
+    if (!backdrop) return;
+    backdrop.classList.remove('is-open');
+    document.body.style.overflow = '';
   };
 
-  window.closeJoinModalOnBackdrop = function(e) {
-    if (e.target === document.getElementById('joinModalBackdrop')) closeJoinModal();
+  window.closeWaitlistOnBackdrop = function(e) {
+    if (e.target === card()) closeWaitlist();
   };
 
   document.addEventListener('keydown', function(e) {
-    if (e.key === 'Escape') closeJoinModal();
+    if (e.key === 'Escape') closeWaitlist();
   });
 
-  function updateModalProgress() {
-    var fill = document.getElementById('mProgressFill');
-    var text = document.getElementById('mProgressText');
-    var backBtn = document.getElementById('mBtnBack');
-    var nextBtn = document.getElementById('mBtnNext');
-
-    if (fill) fill.style.width = (mCurrentStep / mTotalSteps * 100) + '%';
-    if (text) text.textContent = mCurrentStep + ' of ' + mTotalSteps;
-    if (backBtn) backBtn.disabled = mCurrentStep === 1;
-
-    if (nextBtn) {
-      if (mCurrentStep === mTotalSteps) {
-        nextBtn.innerHTML = 'Continue to checkout →';
-        nextBtn.type = 'submit';
-      } else {
-        nextBtn.innerHTML = 'Next →';
-        nextBtn.type = 'button';
-      }
-    }
+  // /accelerator/#waitlist opens the form, on arrival and on a later hash
+  // change, so a link in an email or a Slack message lands on it.
+  function openFromHash() {
+    if (window.location.hash === '#waitlist') openWaitlist();
+  }
+  window.addEventListener('hashchange', openFromHash);
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', openFromHash);
+  } else {
+    openFromHash();
   }
 
-  function showModalStep(step) {
-    for (var i = 1; i <= mTotalSteps; i++) {
-      var screen = document.getElementById('mStep' + i);
-      if (screen) {
-        if (i === step) screen.classList.add('active');
-        else screen.classList.remove('active');
-      }
-    }
-    mCurrentStep = step;
-    updateModalProgress();
-    setTimeout(function() {
-      if (step === 1 && document.getElementById('mFirstName')) document.getElementById('mFirstName').focus();
-      if (step === 2 && document.getElementById('mEmail')) document.getElementById('mEmail').focus();
-      if (step === 3 && document.getElementById('mSuperhumanAnswer')) document.getElementById('mSuperhumanAnswer').focus();
-    }, 80);
+  function say(message, isError) {
+    var note = document.getElementById('wNote');
+    if (!note) return;
+    note.hidden = false;
+    note.textContent = message;
+    note.className = isError ? 'm-note is-err' : 'm-note is-ok';
   }
 
-  window.validateModalEmailOnBlur = function() {
-    var input = document.getElementById('mEmail');
-    var error = document.getElementById('mError2');
-    if (!input) return true;
-    var val = input.value.trim();
-    if (val && !/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(val)) {
-      input.classList.add('invalid');
-      if (error) { error.textContent = 'Please enter a valid email address format.'; error.classList.add('visible'); }
-      return false;
-    } else {
-      input.classList.remove('invalid');
-      if (error) error.classList.remove('visible');
-      return true;
-    }
-  };
+  function emailOk(value) { return /^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(value); }
 
-  function validateModalStep(step) {
-    if (step === 1) {
-      var i1 = document.getElementById('mFirstName');
-      var e1 = document.getElementById('mError1');
-      if (!i1 || !i1.value.trim()) {
-        if (i1) i1.classList.add('invalid');
-        if (e1) e1.classList.add('visible');
-        return false;
-      }
-      i1.classList.remove('invalid'); if (e1) e1.classList.remove('visible'); return true;
-    }
-    if (step === 2) {
-      var i2 = document.getElementById('mEmail');
-      var e2 = document.getElementById('mError2');
-      var val = i2 ? i2.value.trim() : '';
-      if (!val || !/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(val)) {
-        if (i2) i2.classList.add('invalid');
-        if (e2) { e2.textContent = !val ? 'Email address is required.' : 'Please enter a valid email address.'; e2.classList.add('visible'); }
-        return false;
-      }
-      if (i2) i2.classList.remove('invalid'); if (e2) e2.classList.remove('visible'); return true;
-    }
-    if (step === 3) {
-      var i3 = document.getElementById('mSuperhumanAnswer');
-      var e3 = document.getElementById('mError3');
-      if (!i3 || !i3.value.trim()) {
-        if (i3) i3.classList.add('invalid');
-        if (e3) e3.classList.add('visible');
-        return false;
-      }
-      if (i3) i3.classList.remove('invalid'); if (e3) e3.classList.remove('visible'); return true;
-    }
-    return true;
+  function invalid(input, errorId, show) {
+    var error = document.getElementById(errorId);
+    if (input) input.classList.toggle('invalid', show);
+    if (error) error.classList.toggle('visible', show);
   }
 
-  window.nextModalStep = function() {
-    if (!validateModalStep(mCurrentStep)) return;
-    if (mCurrentStep < mTotalSteps) showModalStep(mCurrentStep + 1);
-    else submitModalForm();
-  };
+  var sending = false;
 
-  window.prevModalStep = function() {
-    if (mCurrentStep > 1) showModalStep(mCurrentStep - 1);
-  };
+  window.handleWaitlistSubmit = function(e) {
+    if (e && e.preventDefault) e.preventDefault();
+    if (sending) return;
 
-  window.handleModalKey = function(e, step) {
-    if (e.key === 'Enter') { e.preventDefault(); nextModalStep(); }
-  };
+    var nameInput = document.getElementById('wFirstName');
+    var mailInput = document.getElementById('wEmail');
+    var pot = document.getElementById('wGotcha');
+    var first = nameInput ? nameInput.value.trim() : '';
+    var email = mailInput ? mailInput.value.trim() : '';
 
-  function submitModalForm() {
-    if (!validateModalStep(1) || !validateModalStep(2) || !validateModalStep(3)) {
-      if (!validateModalStep(1)) showModalStep(1);
-      else if (!validateModalStep(2)) showModalStep(2);
-      else showModalStep(3);
-      return;
-    }
-    var fn = document.getElementById('mFirstName').value.trim();
-    var em = document.getElementById('mEmail').value.trim();
-    var sa = document.getElementById('mSuperhumanAnswer').value.trim();
-    var btn = document.getElementById('mBtnNext');
-    if (btn) {
-      btn.disabled = true;
-      btn.innerHTML = 'Redirecting to checkout...';
+    invalid(nameInput, 'wError1', !first);
+    invalid(mailInput, 'wError2', !emailOk(email));
+    if (!first) { if (nameInput) nameInput.focus(); return; }
+    if (!emailOk(email)) { if (mailInput) mailInput.focus(); return; }
+
+    var btn = document.getElementById('wBtnSubmit');
+    sending = true;
+    if (btn) { btn.disabled = true; btn.textContent = 'Joining…'; }
+
+    function failed(message) {
+      sending = false;
+      if (btn) { btn.disabled = false; btn.textContent = 'Join the waitlist'; }
+      say(message, true);
     }
 
-    var trackingId = typeof crypto !== 'undefined' && crypto.randomUUID ? crypto.randomUUID() : ('tr_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9));
-
-    try {
-      fetch(JOIN_WORKER_ENDPOINT, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ firstName: fn, email: em, superhumanAnswer: sa, trackingId: trackingId })
-      }).catch(function(err) { console.warn('Modal intent capture failed silently:', err); });
-    } catch (err) { console.warn('Modal intent dispatch error:', err); }
-
-    // Every other query parameter still goes: the Worker keeps the capture
-    // record for email matching, so nothing needs carrying but the affiliate
-    // tag, which is ThriveCart's own and is the one an affiliate is paid on.
-    var redirectUrl = window.TR_AFFILIATE
-      ? window.TR_AFFILIATE.tag(THRIVECART_CLEAN_URL)
-      : THRIVECART_CLEAN_URL;
-    setTimeout(function() { window.location.href = redirectUrl; }, 150);
-  }
-
-  window.handleModalSubmit = function(e) {
-    e.preventDefault();
-    submitModalForm();
+    fetch(WAITLIST_ENDPOINT, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        first_name: first,
+        email: email,
+        _gotcha: pot ? pot.value.trim() : ''
+      })
+    }).then(function(res) {
+      return res.json().catch(function() { return {}; }).then(function(body) {
+        return { ok: res.ok && body.ok !== false, body: body };
+      });
+    }).then(function(out) {
+      if (!out.ok) {
+        // The Worker's own wording, so a rejected email says why.
+        return failed((out.body && out.body.error) ||
+          'That didn’t go through. Try again in a moment.');
+      }
+      var form = document.getElementById('waitlistForm');
+      if (form) form.hidden = true;
+      var header = document.querySelector('#waitlist .join-modal-header');
+      if (header) {
+        header.innerHTML = '';
+        var h = document.createElement('h2');
+        h.textContent = 'You’re on the waitlist!!';
+        var line = document.createElement('p');
+        line.textContent = 'We’ll email you first when Cohort 2 opens.';
+        header.appendChild(h);
+        header.appendChild(line);
+      }
+      // The confirmation matters more than the event, so this cannot throw.
+      if (typeof track === 'function') track('waitlist_joined');
+    }).catch(function() {
+      failed('That didn’t go through. Check your connection and try again.');
+    });
   };
 })();
 </script>
