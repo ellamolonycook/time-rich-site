@@ -38,7 +38,7 @@ a{color:#424B36}a:hover{color:#333A28}
 /* At 320px the step titles are the longest line on the page ("Set up Stanley
    and your content home"), and the badge, the count and the chevron each take
    their width off it first. Give the title back what they can spare. */
-@container page (max-width: 420px){.stepsum{gap:10px;padding:14px}.stepbadge{width:28px;height:28px;font-size:13px}.steptitle{font-size:17px}.stepbody{padding:4px 14px 18px}}
+@container page (max-width: 420px){.stepsum{gap:10px;padding:14px}.stepbadge{width:28px;height:28px;font-size:13px}.steptitle{font-size:17px}.stepbody{padding:4px 14px 18px}/* The timing chip is wider than the column it would share with "Step 2", so give it its own line. */.steptiming{display:block;width:-moz-fit-content;width:fit-content;margin-left:0;margin-top:4px}}
 
 /* ---- the numbered step dropdowns ------------------------------------
    Each step is a <details>: the browser opens and closes it, so it works
@@ -58,6 +58,13 @@ a{color:#424B36}a:hover{color:#333A28}
 .stepbox[data-done="yes"] .stepbadge{background:#424B36;color:#FFFDFB}
 .stepsumtext{flex:1 1 auto;min-width:0;display:flex;flex-direction:column;gap:3px}
 .stepkicker{font-family:'Inter',sans-serif;font-size:11px;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:#57534E}
+/* When each step is meant to happen. Ella, 11 Nov: Stanley and Wispr Flow
+   are set up before the session, the strategy interview is not done on the
+   call, and the content machine comes after. It rides beside "Step 1" so it
+   sits above the title and still reads as one small eyebrow line. */
+.steptiming{display:inline-block;background:#D8D9B9;color:#333A28;border-radius:999px;padding:3px 8px;margin-left:6px}
+.stepbox[data-done="yes"] .steptiming{background:#E5E6CF}
+.stepwhen{margin:0;font-size:15.5px;line-height:1.55;color:#1A1816;background:#E5E6CF;border-radius:12px;padding:12px 14px;max-width:62ch}
 .steptitle{font-family:'Space Grotesk',system-ui,sans-serif;font-weight:600;font-size:clamp(19px,2.6cqi,24px);letter-spacing:-.03em;line-height:1.15}
 .stepcount{flex:0 0 auto;font-family:'Inter',sans-serif;font-size:12px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:#57534E;white-space:nowrap}
 .stepchev{flex:0 0 auto;color:#57534E;transition:transform .18s ease}
@@ -117,6 +124,26 @@ a{color:#424B36}a:hover{color:#333A28}
 .cw-acc-ol { margin: 0; padding-left: 20px; display: flex; flex-direction: column; gap: 6px; }
 .cw-acc-note { font-size: 14px; background: #E5E6CF; border-radius: 10px; padding: 10px 12px; color: #1A1816 !important; }
 @media (prefers-reduced-motion: reduce) { .cw-acc-chev { transition: none; } }
+/* The draw: one card, one form. It was two forms and a prize box before the
+   page went public; this is the light one, kept as it was. */
+.drawband { background: #D8D9B9; border: 1px solid rgba(103,118,46,.22); border-radius: 20px; padding: clamp(20px, 4cqi, 32px); display: grid; grid-template-columns: repeat(auto-fit, minmax(min(340px, 100%), 1fr)); gap: 20px 32px; align-items: center; }
+.drawband h2 { font-family: 'Space Grotesk', system-ui, sans-serif; font-weight: 600; font-size: clamp(22px, 3cqi, 30px); letter-spacing: -.02em; line-height: 1.12; margin: 6px 0 10px; text-wrap: balance; }
+.drawband p { margin: 0; font-size: 15.5px; line-height: 1.55; color: #57534E; }
+.drawband p a { color: #424B36; font-weight: 500; }
+.drawkicker { font-family: 'Inter', sans-serif; font-size: 12px; letter-spacing: .08em; font-weight: 600; text-transform: uppercase; color: #57534E; }
+.drawform { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin: 0; }
+.drawform label { display: flex; flex-direction: column; gap: 4px; min-width: 0; }
+.drawform label.wide, .drawform button, .drawform .drawmsg { grid-column: 1 / -1; }
+.drawform label span { font-size: 13px; font-weight: 600; color: #1A1816; }
+.drawform input { font: 400 15px 'Inter', sans-serif; min-height: 46px; padding: 0 14px; border-radius: 10px; border: 1px solid rgba(26,24,22,.2); background: #FFFDFB; color: #1A1816; min-width: 0; width: 100%; box-sizing: border-box; }
+.drawform input:focus { outline: 2px solid #424B36; outline-offset: 1px; }
+.drawform button { font: 500 13px 'Inter', sans-serif; letter-spacing: .06em; text-transform: uppercase; min-height: 48px; border: 0; border-radius: 10px; background: #424B36; color: #FFFDFB; cursor: pointer; }
+.drawform button:hover:not(:disabled) { background: #333A28; }
+.drawform button:disabled { opacity: .6; cursor: default; }
+.drawform .drawmsg { margin: 0; min-height: 1.4em; font-size: 14.5px; line-height: 1.45; color: #1A1816; }
+.drawform .drawmsg.is-err { color: #9A2B1E; }
+.drawtrap { position: absolute !important; left: -9999px !important; width: 1px !important; height: 1px !important; opacity: 0; }
+@media (max-width: 480px) { .drawform { grid-template-columns: 1fr; } }
 </style></head>
 <body>
 <div style="font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; color: #1A1816; background: #FFFDFB; min-height: 100vh; container-type: inline-size; container-name: page">
@@ -137,7 +164,7 @@ a{color:#424B36}a:hover{color:#333A28}
 <div style="flex: 999 1 540px; min-width: 0">
 <span style="display: block; font-family: 'Inter', sans-serif; font-size: 12px; letter-spacing: .08em; font-weight: 600; text-transform: uppercase; color: #57534E; margin-bottom: 20px">Free guide &middot; Time Rich</span>
 <h1 style="font-family: 'Space Grotesk', system-ui, sans-serif; font-weight: 600; font-size: clamp(36px, 6cqi, 58px); line-height: 1.06; letter-spacing: -.022em; margin: 0 0 20px; text-wrap: balance">Build your content system.</h1>
-<p style="font-size: 17px; line-height: 1.6; color: #57534E; margin: 0; max-width: 56ch">Set up Stanley and Wispr Flow, build your content strategy, then draft a week of posts. Every code, prompt and link is here. Tick each step off as you go.</p>
+<p style="font-size: 17px; line-height: 1.6; color: #57534E; margin: 0; max-width: 56ch">Set up Stanley and Wispr Flow before the session, then build your content strategy and draft a week of posts. Every code, prompt and link is here. Tick each step off as you go.</p>
 </div>
 <div class="heroside" style="flex: 1 1 320px; background: #D8D9B9; border: 1px solid rgba(103,118,46,.22); border-radius: 20px; padding: 22px 24px; display: flex; flex-direction: column; gap: 14px">
 <div style="display: flex; flex-direction: column; gap: 10px"><div style="font-size: 14px; line-height: 1.5; color: #57534E">Hosted by <a href="#hosts" style="color: #1A1816; font-weight: 600">Ella Molony Cook</a>. Powered by</div><div style="display: flex; flex-wrap: wrap; gap: 8px"><span style="display: inline-flex; align-items: center; gap: 8px; background: #FFFDFB; border: 1px solid rgba(26,24,22,.1); border-radius: 999px; padding: 5px 12px 5px 5px"><img src="/os/img/stanley.png" alt="" width="26" height="26" style="width: 26px; height: 26px; border-radius: 50%; background: #EEEBFF; object-fit: contain; display: block"><span style="font-size: 14px; font-weight: 600; color: #1A1816">Stanley</span></span><span style="display: inline-flex; align-items: center; gap: 8px; background: #FFFDFB; border: 1px solid rgba(26,24,22,.1); border-radius: 999px; padding: 5px 12px 5px 5px"><img src="/os/img/wispr-flow.png" alt="" width="26" height="26" style="width: 26px; height: 26px; border-radius: 50%; background: #1A1816; object-fit: contain; display: block"><span style="font-size: 14px; font-weight: 600; color: #1A1816">Wispr Flow</span></span></div></div>
@@ -153,7 +180,7 @@ a{color:#424B36}a:hover{color:#333A28}
 
 <div style="background: #FFFFFF; border: 1px solid rgba(26,24,22,.12); border-radius: 16px; padding: 20px; display: flex; flex-direction: column; gap: 12px">
 <span style="font-family: 'Inter', sans-serif; font-size: 12px; letter-spacing: .08em; font-weight: 600; text-transform: uppercase; color: #57534E; display: inline-flex; align-items: center; gap: 8px"><img src="/os/img/wispr-flow.png" alt="" width="22" height="22" style="width: 22px; height: 22px; border-radius: 6px; display: block">Wispr Flow &middot; 6 months Pro</span>
-<div style="font-size: 15px">Voice dictation and Notetaker. Wispr it instead of typing it. <a href="#step-2" style="font-weight: 500; white-space: nowrap">How to redeem ↓</a> · <a href="https://app.notion.com/p/superhumanos/Superhuman-Hacks-Wispr-Flow-400ca5ebe5578194a147f07bd667c21a" target="_blank" rel="noopener" style="font-weight: 500; white-space: nowrap">Setup guide and prompts ↗</a></div>
+<div style="font-size: 15px">Voice dictation and Notetaker. Wispr it instead of typing it. <a href="#step-1" style="font-weight: 500; white-space: nowrap">How to redeem ↓</a> · <a href="https://app.notion.com/p/superhumanos/Superhuman-Hacks-Wispr-Flow-400ca5ebe5578194a147f07bd667c21a" target="_blank" rel="noopener" style="font-weight: 500; white-space: nowrap">Setup guide and prompts ↗</a></div>
 <div style="display: flex; align-items: center; justify-content: space-between; gap: 10px; background: #D8D9B9; border-radius: 12px; padding: 8px 8px 8px 14px; margin-top: auto">
 <span style="font-family: 'Inter', sans-serif; font-size: 16px; font-weight: 700" id="wisprcode">TIMERICH6</span>
 <button type="button" class="copybtn" data-copy="wispr" style="flex: 0 0 auto; font: 500 13px 'Inter', sans-serif; letter-spacing: .06em; text-transform: uppercase; background: #424B36; color: #FFFFFF; border: 0; border-radius: 10px; padding: 0 16px; min-height: 44px; cursor: pointer">Copy</button>
@@ -184,7 +211,28 @@ a{color:#424B36}a:hover{color:#333A28}
 <li>5 creators to study</li>
 <li>A week of LinkedIn posts drafted in your voice</li>
 </ul>
-<p style="margin: 0; font-size: 15.5px; line-height: 1.55; color: #57534E">Three steps. Do them in order: each one feeds the next.</p>
+<p style="margin: 0; font-size: 15.5px; line-height: 1.55; color: #57534E">Step 1 before the session. Steps 2 and 3 before or after: each one feeds the next.</p>
+</section>
+
+<!-- ============================================================
+     THE DRAW. One card, one form, filed in Notion by the forms
+     worker. The prize is a spot in the next Superhuman Accelerator
+     and nothing else: no extras, no months of anything, no price.
+     ============================================================ -->
+<section id="enter" aria-labelledby="enterh" class="drawband">
+<div>
+<span class="drawkicker">Win a spot</span>
+<h2 id="enterh">Win a spot in the next Superhuman Accelerator</h2>
+<p>Post on LinkedIn about building your content system, tag <a href="https://www.linkedin.com/in/ellamolonycook/" target="_blank" rel="noopener">Ella Molony Cook</a>, Stanley and Wispr Flow, then paste your post link below. Winner drawn <span id="drawwhen"></span>.</p>
+</div>
+<form class="drawform" data-drawform novalidate>
+<label><span>Your name</span><input name="Name" type="text" autocomplete="name" required></label>
+<label><span>Email</span><input name="Email" type="email" autocomplete="email" required></label>
+<label class="wide"><span>LinkedIn post URL</span><input name="LinkedIn post" type="url" inputmode="url" placeholder="https://www.linkedin.com/posts/..." required></label>
+<input name="_gotcha" type="text" tabindex="-1" autocomplete="off" aria-hidden="true" class="drawtrap">
+<button type="submit">Enter the draw</button>
+<p class="drawmsg" role="status" aria-live="polite"></p>
+</form>
 </section>
 
 <!-- ============================================================
@@ -197,7 +245,7 @@ a{color:#424B36}a:hover{color:#333A28}
 <summary class="stepsum" data-sum="1">
 <span class="stepbadge" data-stepbadge="1"></span>
 <span class="stepsumtext">
-<span class="stepkicker">Step 1</span>
+<span class="stepkicker">Step 1 <span class="steptiming">Before the session</span></span>
 <span class="steptitle">Set up Stanley and your content home</span>
 </span>
 <span class="stepcount" data-stepcount="1"></span>
@@ -205,9 +253,24 @@ a{color:#424B36}a:hover{color:#333A28}
 </summary>
 <div class="stepbody">
 <p class="steplead">Stanley is your AI head of content: a voice note goes in, drafts in your voice come out, you approve, it posts. Free for 6 months with code TIMERICH6.</p>
+<p class="stepwhen">Come to the session with Stanley and Wispr Flow set up and connected.</p>
 <figure class="shot" style="margin: 0; max-width: 1724px"><a href="/portal/assets/week3-stanley-flow.png" target="_blank" rel="noopener"><img src="/portal/assets/week3-stanley-flow.png" alt="An AI head of content: from a voice note to a scheduled post" width="1724" height="960" loading="lazy" decoding="async"></a><figcaption class="shotcap">Tap to open it full size.</figcaption></figure>
 
 <ol class="itemlist">
+
+<li>
+<button type="button" class="itemrow" data-item="w1" aria-pressed="false">
+<span data-itembox="w1"></span>
+<span class="itemtext">
+<span class="itemname">Redeem Wispr Flow (6 months Pro)</span>
+<span class="itemhelp">Voice dictation, so you can talk your answers instead of typing them.</span>
+</span>
+</button>
+<div class="itempanel">
+<p class="itemnote">Hold <strong>fn</strong>, speak, let go. Your words appear wherever your cursor is. Mac without fn: <strong>Ctrl + Opt</strong>. Windows: <strong>Ctrl + Win</strong>.</p>
+<div class="cw-acc-group"><details class="cw-acc"><summary>How to redeem<svg class="cw-acc-chev" viewBox="0 0 24 24" aria-hidden="true"><path d="M9 6l6 6-6 6"/></svg></summary><div class="cw-acc-body"><ol class="cw-acc-ol"><li>Install Wispr Flow on your laptop through <a href="https://wisprflow.ai/info/redeem-promo?code=TIMERICH6&amp;months=6" target="_blank" rel="noopener sponsored">wisprflow.ai</a>.</li><li>Open it and go to <strong>Settings &rarr; Plans and Billing</strong>.</li><li>Scroll to the very bottom and click the promo link.</li><li>Enter <strong>TIMERICH6</strong> for 6 months Pro.</li></ol></div></details><details class="cw-acc"><summary>Good to know<svg class="cw-acc-chev" viewBox="0 0 24 24" aria-hidden="true"><path d="M9 6l6 6-6 6"/></svg></summary><div class="cw-acc-body"><p>The code only works in the desktop app, and does nothing if you already pay for Wispr.</p><p class="cw-acc-note">No laptop? Use the free phone app for now and add the code on your laptop later.</p></div></details><a class="cw-acc cw-acc-link" style="border-bottom: 0" href="https://superhumanos.notion.site/Superhuman-Hacks-Wispr-Flow-free-guide-400ca5ebe55781f59f9ee69c08c680f0" target="_blank" rel="noopener">Wispr Flow setup guide<svg class="cw-acc-chev" viewBox="0 0 24 24" aria-hidden="true"><path d="M7 17L17 7M9 7h8v8"/></svg></a></div>
+</div>
+</li>
 
 <li>
 <button type="button" class="itemrow" data-item="s1" aria-pressed="false">
@@ -294,7 +357,7 @@ a{color:#424B36}a:hover{color:#333A28}
 <summary class="stepsum" data-sum="2">
 <span class="stepbadge" data-stepbadge="2"></span>
 <span class="stepsumtext">
-<span class="stepkicker">Step 2</span>
+<span class="stepkicker">Step 2 <span class="steptiming">Before or after the session</span></span>
 <span class="steptitle">Build your content strategy</span>
 </span>
 <span class="stepcount" data-stepcount="2"></span>
@@ -302,22 +365,9 @@ a{color:#424B36}a:hover{color:#333A28}
 </summary>
 <div class="stepbody">
 <p class="steplead">Tell AI who you are and who you serve, and it turns that into your content strategy in about 10 minutes.</p>
+<p class="stepwhen">This one&rsquo;s an interview, about 10 minutes, and we don&rsquo;t do it on the call. Get ahead before the session, or finish it after.</p>
 
 <ol class="itemlist">
-
-<li>
-<button type="button" class="itemrow" data-item="w1" aria-pressed="false">
-<span data-itembox="w1"></span>
-<span class="itemtext">
-<span class="itemname">Redeem Wispr Flow (6 months Pro)</span>
-<span class="itemhelp">Voice dictation, so you can talk your answers instead of typing them.</span>
-</span>
-</button>
-<div class="itempanel">
-<p class="itemnote">Hold <strong>fn</strong>, speak, let go. Your words appear wherever your cursor is. Mac without fn: <strong>Ctrl + Opt</strong>. Windows: <strong>Ctrl + Win</strong>.</p>
-<div class="cw-acc-group"><details class="cw-acc"><summary>How to redeem<svg class="cw-acc-chev" viewBox="0 0 24 24" aria-hidden="true"><path d="M9 6l6 6-6 6"/></svg></summary><div class="cw-acc-body"><ol class="cw-acc-ol"><li>Install Wispr Flow on your laptop through <a href="https://wisprflow.ai/info/redeem-promo?code=TIMERICH6&amp;months=6" target="_blank" rel="noopener sponsored">wisprflow.ai</a>.</li><li>Open it and go to <strong>Settings &rarr; Plans and Billing</strong>.</li><li>Scroll to the very bottom and click the promo link.</li><li>Enter <strong>TIMERICH6</strong> for 6 months Pro.</li></ol></div></details><details class="cw-acc"><summary>Good to know<svg class="cw-acc-chev" viewBox="0 0 24 24" aria-hidden="true"><path d="M9 6l6 6-6 6"/></svg></summary><div class="cw-acc-body"><p>The code only works in the desktop app, and does nothing if you already pay for Wispr.</p><p class="cw-acc-note">No laptop? Use the free phone app for now and add the code on your laptop later.</p></div></details><a class="cw-acc cw-acc-link" style="border-bottom: 0" href="https://superhumanos.notion.site/Superhuman-Hacks-Wispr-Flow-free-guide-400ca5ebe55781f59f9ee69c08c680f0" target="_blank" rel="noopener">Wispr Flow setup guide<svg class="cw-acc-chev" viewBox="0 0 24 24" aria-hidden="true"><path d="M7 17L17 7M9 7h8v8"/></svg></a></div>
-</div>
-</li>
 
 <li>
 <button type="button" class="itemrow" data-item="p1" aria-pressed="false">
@@ -407,7 +457,7 @@ a{color:#424B36}a:hover{color:#333A28}
 <summary class="stepsum" data-sum="3">
 <span class="stepbadge" data-stepbadge="3"></span>
 <span class="stepsumtext">
-<span class="stepkicker">Step 3</span>
+<span class="stepkicker">Step 3 <span class="steptiming">After the session</span></span>
 <span class="steptitle">Run your content machine</span>
 </span>
 <span class="stepcount" data-stepcount="3"></span>
@@ -1031,6 +1081,39 @@ Start now.`
   one('#strategyprompt').textContent = WORKSHOP.strategyPrompt;
   one('#creatorsprompt').textContent = WORKSHOP.creatorsPrompt;
   one('#donetotal').textContent = String(ALL_ITEMS.length);
+
+  /* ---- the draw -------------------------------------------------------
+     The form posts to the forms worker, which files the entry in Notion
+     ("Content Workshop Draw Entries"). Only a linkedin.com link goes.
+
+     The date is said twice -- in the card and in the message after a good
+     submit -- and a date that is right in one place and stale in the other
+     is worse than either, so there is one of it and both read it. */
+  var DRAW = { when: 'Monday 16 November' };
+  var DRAW_ENDPOINT = 'https://time-rich-forms.timerich.workers.dev/draw-entry';
+
+  one('#drawwhen').textContent = DRAW.when;
+
+  all('[data-drawform]').forEach(function (f) {
+    var msg = f.querySelector('.drawmsg'), btn = f.querySelector('button');
+    function say(t, err) { msg.textContent = t; msg.classList.toggle('is-err', !!err); }
+    f.addEventListener('submit', function (ev) {
+      ev.preventDefault();
+      var d = {}; Array.prototype.forEach.call(f.elements, function (el) { if (el.name) d[el.name] = el.value.trim(); });
+      if (!d.Name) return say('Add your name.', true);
+      if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(d.Email)) return say('Add a valid email so we can reach you if you win.', true);
+      if (!/linkedin\.com\/./i.test(d['LinkedIn post'])) return say('Paste the link to your LinkedIn post, like https://www.linkedin.com/posts/...', true);
+      btn.disabled = true; say('Sending…');
+      fetch(DRAW_ENDPOINT, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(d) })
+        .then(function (r) { return r.json().catch(function () { return {}; }).then(function (j) { return { ok: r.ok && j.ok !== false, j: j }; }); })
+        .then(function (res) {
+          if (!res.ok) { btn.disabled = false; return say((res.j && res.j.error) || 'That didn’t go through. Try again in a moment.', true); }
+          f.reset(); btn.disabled = false;
+          say('You’re in the draw! Winner drawn ' + DRAW.when + '.');
+        })
+        .catch(function () { btn.disabled = false; say('That didn’t go through. Check your connection and try again.', true); });
+    });
+  });
 
   /* ---- copy buttons ---------------------------------------------------
      Everything copied here is also on the page, so each button reads its

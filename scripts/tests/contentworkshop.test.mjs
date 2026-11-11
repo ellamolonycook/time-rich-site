@@ -21,8 +21,8 @@ const COPY_KEYS = ['wispr', 'stanley', 'p1', 'p3', 'sk', 'p2', 'p4'];
 
 // The rows, step by step, in the order the brief lists them.
 const ROWS = {
-  1: ['s1', 's2', 's3'],
-  2: ['w1', 'p1', 'p3', 'b1'],
+  1: ['w1', 's1', 's2', 's3'],
+  2: ['p1', 'p3', 'b1'],
   3: ['sk', 'p2', 'p4', 'r1', 'x1']
 };
 const TOTAL_ROWS = Object.values(ROWS).reduce((n, r) => n + r.length, 0);
@@ -151,8 +151,8 @@ console.log('\n/contentworkshop — the hero is the public guide, not a build ni
     hero.textContent.trim() === 'Build your content system.', hero.textContent.trim());
   check('the eyebrow says it is a free guide',
     /Free guide · Time Rich/.test(hero.parentElement.textContent));
-  check('the sub-head names the three things it does',
-    /Set up Stanley and Wispr Flow, build your content strategy, then draft a week of posts\./
+  check('the sub-head puts the setup before the session',
+    /Set up Stanley and Wispr Flow before the session, then build your content strategy and draft a week of posts\./
       .test(hero.parentElement.querySelector('p').textContent),
     hero.parentElement.querySelector('p').textContent.trim());
   check('and still says to tick each step off',
@@ -170,8 +170,8 @@ console.log('\n/contentworkshop — the build night, the draw and the winners ar
     ['tonight', /tonight/i],
     ['the live build night', /build night|live build/i],
     ['New York as a venue', /Live build night · New York|all night/i],
-    ['the draw', /\bdraw\b/i],
-    ['winners', /\bwinners?\b/i],
+    ['the old Thursday deadline', /thursday/i],
+    ['the old "Winners announced" wording', /winners announced/i],
     ['an Accelerator seat to win', /seat to win|win 1 seat|1 seat in the/i],
     ['the person next to you', /person next to you/i],
     ['waving at a host', /wave at a host/i],
@@ -183,16 +183,13 @@ console.log('\n/contentworkshop — the build night, the draw and the winners ar
 
   check('the sticky announcement bar is gone',
     !HTML.includes('class="annc"') && document.getElementById('anncwhen') === null);
-  check('the draw form and its markup are gone',
-    !HTML.includes('data-drawform') && !HTML.includes('drawband') &&
-    document.getElementById('enter') === null &&
-    document.querySelectorAll('form').length === 0,
-    document.querySelectorAll('form').length);
-  check('the worker endpoint it posted to is gone with it',
-    !HTML.includes('draw-entry'));
-  check('the "Win 1 seat" box and its ids are gone',
+  check('the "Win 1 seat" box, the second form and their ids are gone',
     ['win', 'winh', 'winnerswhen', 'vipprize', 'vipwhen']
-      .every((id) => document.getElementById(id) === null));
+      .every((id) => document.getElementById(id) === null) &&
+    !HTML.includes('is-dark'));
+  check('and so is the old prize line',
+    !/VIP setup|Stanley Premium|12 months of Wispr Flow Pro|1,000|1,297/.test(HTML),
+    (HTML.match(/.{0,40}(VIP setup|Stanley Premium|1,297).{0,40}/) || [])[0]);
   check('WORKSHOP.winnersWhen is gone, and nothing reads it',
     !/winnersWhen/.test(HTML));
   check('the laptop-and-charger checklist is gone',
@@ -202,6 +199,153 @@ console.log('\n/contentworkshop — the build night, the draw and the winners ar
   check('the funnel topic tabs and the ritual cards are gone',
     document.getElementById('funneltabs') === null &&
     document.getElementById('ritualcards') === null);
+}
+
+console.log('\n/contentworkshop — each step says when to do it');
+{
+  const { document } = load();
+  const boxes = [...document.querySelectorAll('details.stepbox')];
+  check('all three steps carry a timing chip',
+    boxes.every((b) => b.querySelector('.stepkicker .steptiming') !== null));
+  check('and they are the three Ella set, in order',
+    boxes.map((b) => b.querySelector('.steptiming').textContent).join(' | ') ===
+      'Before the session | Before or after the session | After the session',
+    boxes.map((b) => b.querySelector('.steptiming').textContent));
+  check('the chip sits above the step title, not after it',
+    boxes.every((b) => (b.querySelector('.steptiming')
+      .compareDocumentPosition(b.querySelector('.steptitle')) & 4) !== 0));
+
+  const when = (n) => ((document.querySelector('#step-' + n + ' .stepwhen') || {}).textContent || '')
+    .replace(/\s+/g, ' ').trim();
+  check('Step 1 says to arrive with both tools set up and connected',
+    when(1) === 'Come to the session with Stanley and Wispr Flow set up and connected.',
+    when(1));
+  check('Step 2 says the interview is not done on the call',
+    when(2) === 'This one\u2019s an interview, about 10 minutes, and we don\u2019t do it on ' +
+      'the call. Get ahead before the session, or finish it after.',
+    when(2));
+  check('Step 3 needs no extra line: the chip says it', when(3) === '', when(3));
+
+  // Ella, 11 Nov: the session time belongs with the draw, nowhere else. No
+  // Zoom link and no other date on the page.
+  const text = visibleText(document);
+  check('the page names no Zoom link',
+    !/zoom\.us|zoom link/i.test(text), (text.match(/.{0,30}zoom.{0,30}/i) || [])[0]);
+  check('and no time of day anywhere',
+    !/\d\s?(am|pm)\b/i.test(text), (text.match(/.{0,30}\d\s?[ap]m\b.{0,30}/i) || [])[0]);
+  check('the only date on the page is the draw date',
+    (text.match(/\b\d{1,2} (January|February|March|April|May|June|July|August|September|October|November|December)\b/g) || [])
+      .join(',') === '16 November',
+    (text.match(/\b\d{1,2} [A-Z][a-z]+\b/g) || []));
+}
+
+console.log('\n/contentworkshop — the draw: win a spot in the next Accelerator');
+{
+  const { document } = load();
+  const card = document.getElementById('enter');
+  const forms = [...document.querySelectorAll('form')];
+
+  check('there is exactly one draw form', forms.length === 1, forms.length);
+  check('it lives in its own card', card !== null && card.contains(forms[0]));
+  check('the card sits after the start card and before Step 1',
+    (document.getElementById('start').compareDocumentPosition(card) & 4) !== 0 &&
+    (card.compareDocumentPosition(document.getElementById('step-1')) & 4) !== 0);
+  check('it is not a tickable row, so it never counts toward the progress',
+    card.querySelector('[data-item]') === null &&
+    document.querySelectorAll('[data-item]').length === TOTAL_ROWS);
+
+  check('the eyebrow reads "Win a spot"',
+    card.querySelector('.drawkicker').textContent.trim() === 'Win a spot',
+    card.querySelector('.drawkicker').textContent);
+  check('the title is the spot in the next Accelerator',
+    document.getElementById('enterh').textContent.trim() ===
+      'Win a spot in the next Superhuman Accelerator',
+    document.getElementById('enterh').textContent);
+  check('the ask is a LinkedIn post tagging all three',
+    card.querySelector('p').textContent.replace(/\s+/g, ' ').trim() ===
+      'Post on LinkedIn about building your content system, tag Ella Molony Cook, ' +
+      'Stanley and Wispr Flow, then paste your post link below. ' +
+      'Winner drawn Monday 16 November.',
+    card.querySelector('p').textContent.replace(/\s+/g, ' ').trim());
+  check('Ella is the only link in that line, and it is her LinkedIn',
+    [...card.querySelectorAll('p a')].map((a) => a.getAttribute('href')).join(',') ===
+      'https://www.linkedin.com/in/ellamolonycook/' &&
+    card.querySelector('p a').textContent === 'Ella Molony Cook',
+    [...card.querySelectorAll('p a')].map((a) => a.getAttribute('href')));
+
+  // The prize is a spot and nothing else: no dollar figure in the card.
+  check('no price is named in the draw card',
+    !/\$/.test(card.textContent), (card.textContent.match(/.{0,30}\$.{0,30}/) || [])[0]);
+
+  check('the fields are the ones the worker files',
+    [...forms[0].elements].filter((el) => el.name).map((el) => el.name).join(',') ===
+      'Name,Email,LinkedIn post,_gotcha',
+    [...forms[0].elements].filter((el) => el.name).map((el) => el.name));
+  check('the labels read as Ella wrote them',
+    [...forms[0].querySelectorAll('label span')].map((n) => n.textContent).join(' \u00b7 ') ===
+      'Your name \u00b7 Email \u00b7 LinkedIn post URL',
+    [...forms[0].querySelectorAll('label span')].map((n) => n.textContent));
+  check('the LinkedIn field shows the shape of the link it wants',
+    forms[0].querySelector('[name="LinkedIn post"]').getAttribute('placeholder') ===
+      'https://www.linkedin.com/posts/...');
+  check('the button says Enter the draw',
+    forms[0].querySelector('button').textContent.trim() === 'Enter the draw',
+    forms[0].querySelector('button').textContent);
+  check('the honeypot is there and hidden from everyone',
+    forms[0].querySelector('[name="_gotcha"]') !== null &&
+    forms[0].querySelector('[name="_gotcha"]').classList.contains('drawtrap') &&
+    forms[0].querySelector('[name="_gotcha"]').getAttribute('aria-hidden') === 'true' &&
+    /\.drawtrap \{[^}]*left: -9999px/.test(HTML));
+  check('it posts to the forms worker, unchanged',
+    HTML.includes("'https://time-rich-forms.timerich.workers.dev/draw-entry'"));
+  check('the message line is a live region, so a screen reader hears it',
+    forms[0].querySelector('.drawmsg').getAttribute('role') === 'status' &&
+    forms[0].querySelector('.drawmsg').getAttribute('aria-live') === 'polite');
+
+  // One constant for the date, read everywhere it shows.
+  check('the draw date lives in one constant',
+    /var DRAW = \{ when: 'Monday 16 November' \};/.test(HTML));
+  check('and the card reads it from there',
+    document.getElementById('drawwhen').textContent === 'Monday 16 November',
+    document.getElementById('drawwhen').textContent);
+  check('the success message reads it from the same place, not a second copy',
+    /Winner drawn ' \+ DRAW\.when \+ '\./.test(HTML));
+}
+
+console.log('\n/contentworkshop — the draw form says no before it sends');
+{
+  const { document } = load();
+  const form = document.querySelector('form[data-drawform]');
+  const msg = form.querySelector('.drawmsg');
+  const field = (name) => form.querySelector('[name="' + name + '"]');
+  const submit = () => form.dispatchEvent(
+    new document.defaultView.Event('submit', { bubbles: true, cancelable: true }));
+
+  // jsdom has no fetch here, so every path below has to stop at validation.
+  // That is the point: nothing leaves the page until all three are good.
+  submit();
+  check('an empty name is caught', msg.textContent === 'Add your name.', msg.textContent);
+  check('and marked as an error', msg.classList.contains('is-err'));
+
+  field('Name').value = 'Ada Lovelace';
+  submit();
+  check('a missing email is caught',
+    msg.textContent === 'Add a valid email so we can reach you if you win.', msg.textContent);
+
+  field('Email').value = 'not-an-email';
+  submit();
+  check('and so is one that is not an address',
+    msg.textContent === 'Add a valid email so we can reach you if you win.', msg.textContent);
+
+  field('Email').value = 'ada@example.com';
+  field('LinkedIn post').value = 'https://example.com/my-post';
+  submit();
+  check('a link that is not LinkedIn is turned away',
+    msg.textContent ===
+      'Paste the link to your LinkedIn post, like https://www.linkedin.com/posts/...',
+    msg.textContent);
+  check('the button was never disabled, so they can fix it and try again',
+    form.querySelector('button').disabled === false);
 }
 
 console.log('\n/contentworkshop — no Club-only content leaked onto the public page');
@@ -229,7 +373,7 @@ console.log('\n/contentworkshop — no Club-only content leaked onto the public 
 console.log('\n/contentworkshop — the page reads top to bottom in the order Ella set');
 {
   const { document } = load();
-  const order = ['h1', '#essentials', '#start', '#step-1', '#step-2', '#step-3',
+  const order = ['h1', '#essentials', '#start', '#enter', '#step-1', '#step-2', '#step-3',
     '#hostsh', '#community'];
   const nodes = order.map((sel) => document.querySelector(sel));
   check('every landmark is on the page', nodes.every(Boolean), order.filter((s, i) => !nodes[i]));
@@ -275,8 +419,9 @@ console.log('\n/contentworkshop — "What you\'ll leave with"');
       '5 creators to study',
       'A week of LinkedIn posts drafted in your voice'].join('|'),
     [...card.querySelectorAll('li')].map((n) => n.textContent));
-  check('with the line about doing them in order',
-    /Three steps\. Do them in order: each one feeds the next\./.test(card.textContent));
+  check('with the line about which step happens when',
+    /Step 1 before the session\. Steps 2 and 3 before or after: each one feeds the next\./
+      .test(card.textContent), card.textContent.replace(/\s+/g, ' ').trim().slice(-90));
 }
 
 console.log('\n/contentworkshop — the essentials, and the two codes');
@@ -299,8 +444,8 @@ console.log('\n/contentworkshop — the essentials, and the two codes');
   const redeem = [...document.querySelectorAll('a')]
     .filter((a) => /How to redeem/.test(a.textContent))
     .map((a) => a.getAttribute('href'));
-  check('"How to redeem" points at Step 2 for Wispr and Step 1 for Stanley',
-    redeem.join(',') === '#step-2,#step-1', redeem);
+  check('"How to redeem" points at Step 1 for both, which is where the setup is',
+    redeem.join(',') === '#step-1,#step-1', redeem);
 }
 
 console.log('\n/contentworkshop — every Stanley link is the tracking link');
@@ -350,7 +495,7 @@ console.log('\n/contentworkshop — how Wispr Flow is described');
   check('the steps never say Notetaker without Wispr Flow in front of it',
     [1, 2, 3].every((n) => !/(?<!Wispr Flow )Notetaker/.test(
       document.getElementById('step-' + n).textContent.replace(/\s+/g, ' '))));
-  check('Step 2 says how to turn on dictation, on Mac and Windows',
+  check('Step 1 says how to turn on dictation, on Mac and Windows',
     /Hold <strong>fn<\/strong>, speak, let go/.test(HTML) &&
     /Ctrl \+ Opt/.test(HTML) && /Ctrl \+ Win/.test(HTML));
 
@@ -358,8 +503,9 @@ console.log('\n/contentworkshop — how Wispr Flow is described');
   check('Granola is not named anywhere on the page',
     !/granola/i.test(HTML), (HTML.match(/.{0,50}granola.{0,50}/i) || [])[0]);
 
-  // The redeem steps, as Wispr Flow asked for them, now in Step 2.
-  const text = document.getElementById('step-2').textContent.replace(/\s+/g, ' ');
+  // The redeem steps, as Wispr Flow asked for them. Ella, 11 Nov: redeeming
+  // Wispr Flow is setup, so it sits in Step 1 with Stanley, not in Step 2.
+  const text = document.getElementById('step-1').textContent.replace(/\s+/g, ' ');
   check('the redeem steps say to install on a laptop, through the referral link',
     /Install Wispr Flow on your laptop through/.test(text),
     (text.match(/Install Wispr Flow[^.]*\./) || [])[0]);
@@ -407,7 +553,8 @@ console.log('\n/contentworkshop — the build is three numbered dropdowns');
     titles.join(' | ') === 'Set up Stanley and your content home | ' +
       'Build your content strategy | Run your content machine',
     titles);
-  const kickers = boxes.map((b) => b.querySelector('.stepkicker').textContent.trim());
+  const kickers = boxes.map((b) =>
+    b.querySelector('.stepkicker').firstChild.textContent.trim());
   check('and they are kicked off as Step 1, 2 and 3',
     kickers.join(',') === 'Step 1,Step 2,Step 3', kickers);
 
@@ -431,14 +578,18 @@ console.log('\n/contentworkshop — the build is three numbered dropdowns');
 
   const names = (n) => [...document.querySelectorAll('#step-' + n + ' .itemname')]
     .map((s) => s.textContent.replace(/\s+Optional$/, '').trim());
-  check('Step 1 is sign up, connect, and the optional MCP connector',
-    names(1).join(' | ') === 'Sign up to Stanley (6 months free) | ' +
-      'Connect your tools to Stanley | Use Stanley inside your current AI tool',
+  check('Step 1 is the whole setup: both tools, then the optional MCP connector',
+    names(1).join(' | ') === 'Redeem Wispr Flow (6 months Pro) | ' +
+      'Sign up to Stanley (6 months free) | Connect your tools to Stanley | ' +
+      'Use Stanley inside your current AI tool',
     names(1));
-  check('Step 2 is Wispr Flow, the strategy, the creators and the Brain',
-    names(2).join(' | ') === 'Redeem Wispr Flow (6 months Pro) | ' +
-      'Build your content strategy | Find 5 industry leaders to study | ' +
-      'Set up your Stanley Brain',
+  check('and the Wispr Flow redeem is the first row of it',
+    names(1)[0] === 'Redeem Wispr Flow (6 months Pro)' &&
+    document.querySelector('#step-1 [data-item]').getAttribute('data-item') === 'w1',
+    document.querySelector('#step-1 [data-item]').getAttribute('data-item'));
+  check('Step 2 is the strategy, the creators and the Brain',
+    names(2).join(' | ') === 'Build your content strategy | ' +
+      'Find 5 industry leaders to study | Set up your Stanley Brain',
     names(2));
   check('Step 3 is the skill, the week, the memo, a ritual and the repurpose',
     names(3).join(' | ') === 'Add the LinkedIn skill to Stanley | ' +
@@ -451,6 +602,9 @@ console.log('\n/contentworkshop — the build is three numbered dropdowns');
       .map((b) => b.getAttribute('data-item')).join(',') === 's3' &&
     document.querySelector('[data-item="s3"] .itemopt') !== null);
 
+  check('Step 1 holds the Wispr Flow redeem link, not Step 2',
+    boxes[0].querySelector('a[href*="wisprflow.ai"]') !== null &&
+    boxes[1].querySelector('a[href*="wisprflow.ai"]') === null);
   check('Step 2 holds the strategy prompt and its copy button',
     boxes[1].querySelector('#strategyprompt') !== null &&
     boxes[1].querySelector('[data-copy="p1"]') !== null);
@@ -833,7 +987,7 @@ console.log('\n/contentworkshop — each step is a checklist');
   check('every row starts un-ticked',
     [1, 2, 3].every((n) => items(n).every((i) => i.getAttribute('aria-pressed') === 'false')));
   check('the header counts them, long and short',
-    countOf(1) === '0 of 3 done0/3', countOf(1));
+    countOf(1) === '0 of 4 done0/4', countOf(1));
   check('and shows the step number while it is unfinished',
     badge(1) === '1' && box(1).getAttribute('data-done') === 'no', badge(1));
 
@@ -848,18 +1002,19 @@ console.log('\n/contentworkshop — each step is a checklist');
   check('Step 2 is shut while Step 1 is unfinished', box(2).open === false);
   clickOn(document, items(1)[0]);
   clickOn(document, items(1)[1]);
-  check('the two required rows read 2 of 3', countOf(1) === '2 of 3 done2/3', countOf(1));
+  clickOn(document, items(1)[2]);
+  check('the three required rows read 3 of 4', countOf(1) === '3 of 4 done3/4', countOf(1));
   check('and the step is done without the optional row',
     box(1).getAttribute('data-done') === 'yes' && badge(1) === '✓', badge(1));
   check('finishing a step opens the next one', box(2).open === true);
-  clickOn(document, items(1)[2]);
-  check('ticking the optional row too reads 3 of 3', countOf(1) === '3 of 3 done3/3', countOf(1));
+  clickOn(document, items(1)[3]);
+  check('ticking the optional row too reads 4 of 4', countOf(1) === '4 of 4 done4/4', countOf(1));
   check('and leaves the step done', box(1).getAttribute('data-done') === 'yes');
 
   // Un-ticking takes it back, and does not shut the next step under anyone.
   clickOn(document, items(1)[0]);
   check('un-ticking a required row drops the step again',
-    box(1).getAttribute('data-done') === 'no' && countOf(1) === '2 of 3 done2/3', countOf(1));
+    box(1).getAttribute('data-done') === 'no' && countOf(1) === '3 of 4 done3/4', countOf(1));
   check('and the step it opened stays open', box(2).open === true);
 
   // Step 3's five rows all count.
@@ -940,10 +1095,12 @@ console.log('\n/contentworkshop — the step nav');
   clickOn(document, dots[2]);
   check('clicking its dot opens it', document.getElementById('step-3').open === true);
 
-  // So does "How to redeem" in the code cards.
+  // So does "How to redeem" in the code cards. Both point at Step 1 now, which
+  // is open on load, so shut it first or the check proves nothing.
   const redeem = [...document.querySelectorAll('a')].find((a) => /How to redeem/.test(a.textContent));
+  document.getElementById('step-1').open = false;
   clickOn(document, redeem);
-  check('and so does "How to redeem"', document.getElementById('step-2').open === true);
+  check('and so does "How to redeem"', document.getElementById('step-1').open === true);
 }
 
 console.log('\n/contentworkshop — a refresh does not lose the work');
@@ -951,15 +1108,15 @@ console.log('\n/contentworkshop — a refresh does not lose the work');
   const first = load();
   [...first.document.querySelectorAll('#step-1 [data-item]')]
     .forEach((el) => clickOn(first.document, el));
-  check('three rows are ticked before the refresh',
-    first.document.getElementById('donecount').textContent === '3',
+  check('four rows are ticked before the refresh',
+    first.document.getElementById('donecount').textContent === '4',
     first.document.getElementById('donecount').textContent);
   check('and something was written to storage',
     Object.keys(first.store).length === 1, Object.keys(first.store));
 
   // The same storage, a brand new page: the refresh.
   const again = load(first.store);
-  check('the ticks come back', again.document.getElementById('donecount').textContent === '3',
+  check('the ticks come back', again.document.getElementById('donecount').textContent === '4',
     again.document.getElementById('donecount').textContent);
   check('row by row, not just the count',
     [...again.document.querySelectorAll('#step-1 [data-item]')]
@@ -984,7 +1141,7 @@ console.log('\n/contentworkshop — storage that is blocked costs nothing');
     .forEach((el) => clickOn(document, el));
   check('and ticking still works',
     document.getElementById('step-1').getAttribute('data-done') === 'yes' &&
-    document.getElementById('donecount').textContent === '3',
+    document.getElementById('donecount').textContent === '4',
     document.getElementById('donecount').textContent);
 }
 
@@ -1003,6 +1160,12 @@ console.log('\n/contentworkshop — phone first');
   check('and a long prompt line wraps instead of scrolling sideways',
     /\.promptbox pre\{[^}]*white-space:pre-wrap/.test(HTML) &&
     /\.promptbox pre\{[^}]*overflow-wrap:anywhere/.test(HTML));
+  check('the long timing chip drops to its own line on a phone',
+    (() => {
+      const at = HTML.indexOf('@container page (max-width: 420px)');
+      const rule = HTML.indexOf('.steptiming{display:block', at);
+      return at !== -1 && rule !== -1 && rule - at < 700;
+    })());
   check('the step nav still collapses to badges on a narrow screen',
     /@container page \(max-width: 560px\)\{(?:[^{}]*\{[^{}]*\})*?\.stepshort\{display:none\}/.test(HTML));
 }
