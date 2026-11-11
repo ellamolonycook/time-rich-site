@@ -5,16 +5,15 @@
   <link rel="apple-touch-icon" sizes="180x180" href="/rocketship-icon-180.png" />
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <meta name="robots" content="noindex" />
   <title>Content Workshop &middot; Time Rich</title>
-  <meta name="description" content="Everything you need for the Time Rich content workshop: every code, prompt and link. Set up, then three steps. Build your content system in one evening." />
+  <meta name="description" content="Everything you need to build your content system with Stanley and Wispr Flow: every code, prompt and link. Set up, then three steps." />
   <link rel="canonical" href="https://timerich.ai/contentworkshop" />
   <meta name="theme-color" content="#FFFDFB" />
   <meta property="og:type" content="website" />
   <meta property="og:site_name" content="Time Rich" />
   <meta property="og:url" content="https://timerich.ai/contentworkshop" />
   <meta property="og:title" content="Content Workshop &middot; Time Rich" />
-  <meta property="og:description" content="Everything you need for the Time Rich content workshop: every code, prompt and link. Set up, then three steps. Build your content system in one evening." />
+  <meta property="og:description" content="Everything you need to build your content system with Stanley and Wispr Flow: every code, prompt and link. Set up, then three steps." />
   <meta property="og:image" content="https://timerich.ai/og-time-rich.png" />
   <meta name="twitter:card" content="summary_large_image" />
   <meta property="og:image:width" content="1200" />
@@ -30,20 +29,25 @@ a{color:#424B36}a:hover{color:#333A28}
 .copylt:hover{background:#E5E6CF !important}
 .ghostbtn:hover{background:rgba(216,217,185,.16)}
 .stepdot:hover{background:#E5E6CF}
-.checkrow:hover{background:#E5E6CF}
 .ctabtn:hover{background:#333A28 !important}
 .joinbtn:hover{border-color:#424B36 !important;box-shadow:0 16px 34px -24px rgba(26,24,22,.4)}
-.annc:hover{background:#333A28 !important}
 .stepnav::-webkit-scrollbar{display:none}
 .social:hover{border-color:#CCEEA0 !important;color:#1A1816 !important}
 @container page (max-width: 560px){.donect{display:none !important}.stepshort{display:none}.heroside{padding:18px 20px !important}.countlong{display:none}}
 @container page (min-width: 561px){.countshort{display:none}}
+/* At 320px the step titles are the longest line on the page ("Set up Stanley
+   and your content home"), and the badge, the count and the chevron each take
+   their width off it first. Give the title back what they can spare. */
+@container page (max-width: 420px){.stepsum{gap:10px;padding:14px}.stepbadge{width:28px;height:28px;font-size:13px}.steptitle{font-size:17px}.stepbody{padding:4px 14px 18px}}
 
 /* ---- the numbered step dropdowns ------------------------------------
    Each step is a <details>: the browser opens and closes it, so it works
-   with no JavaScript at all and a keyboard gets it for free. The script
-   only fills in the tickable rows and reads the counts back out. */
+   with no JavaScript at all and a keyboard gets it for free. The rich
+   panel under every tickable row is written in the markup; the script
+   only reads the rows back out to count them and open the next step. */
 .stepbox{background:#FFFFFF;border:1px solid rgba(26,24,22,.12);border-radius:20px;overflow:hidden}
+/* The nav is sticky, so a jump to a step or a section has to land below it. */
+.stepbox,#start,#hosts,#community{scroll-margin-top:76px}
 .stepbox[open]{border-color:rgba(66,75,54,.4);box-shadow:0 16px 34px -28px rgba(26,24,22,.4)}
 .stepbox[data-done="yes"]{background:#F7F8EE;border-color:rgba(103,118,46,.4)}
 .stepsum{display:flex;align-items:center;gap:14px;padding:16px 18px;min-height:44px;cursor:pointer;list-style:none;user-select:none}
@@ -60,9 +64,12 @@ a{color:#424B36}a:hover{color:#333A28}
 .stepbox[open] .stepchev{transform:rotate(180deg)}
 @media(prefers-reduced-motion:reduce){.stepchev{transition:none}}
 .stepbody{display:flex;flex-direction:column;gap:18px;padding:4px 18px 22px}
+.steplead{font-size:17px;line-height:1.6;color:#57534E;margin:0;max-width:62ch}
+.stepnote{margin:0;font-size:15.5px;line-height:1.55;color:#57534E;background:#E5E6CF;border-radius:14px;padding:14px 16px}
+.stepnote strong{color:#1A1816;font-weight:600}
 
 /* ---- the tickable rows inside a step -------------------------------- */
-.itemlist{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:10px}
+.itemlist{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:14px}
 .itemrow{width:100%;display:flex;align-items:flex-start;gap:12px;text-align:left;background:#FFFDFB;border:1px solid rgba(26,24,22,.12);border-radius:14px;padding:14px;min-height:44px;cursor:pointer;font:inherit;color:#1A1816;transition:border-color .18s ease,background .18s ease}
 .itemrow:hover{background:#F2F3E4}
 .itemrow:focus-visible{outline:2px solid #424B36;outline-offset:2px}
@@ -71,12 +78,30 @@ a{color:#424B36}a:hover{color:#333A28}
 .itemname{font-size:16.5px;font-weight:600;line-height:1.4}
 .itemhelp{font-size:15px;line-height:1.5;color:#57534E}
 .itemopt{font-family:'Inter',sans-serif;font-size:11px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:#57534E}
+
+/* The panel under a row: the how-to for that one row, and nothing else. */
+.itempanel{margin:10px 0 0;display:flex;flex-direction:column;gap:12px;font-size:15.5px;line-height:1.55;color:#1A1816}
+.itempanel p{margin:0}
+.itempanel ol,.itempanel ul{margin:0;padding-left:20px;display:flex;flex-direction:column;gap:7px}
+.itempanel strong{font-weight:600}
+.itemsub{font-family:'Inter',sans-serif;font-size:12px;letter-spacing:.08em;font-weight:600;text-transform:uppercase;color:#57534E}
+.itemnote{font-size:14.5px;line-height:1.55;background:#E5E6CF;border-radius:10px;padding:10px 12px}
+.loomwrap{position:relative;aspect-ratio:4 / 3;border-radius:12px;overflow:hidden;background:#1A1816}
+.loomwrap iframe{position:absolute;inset:0;width:100%;height:100%;border:0}
 .shot{margin:10px 0 0;display:block;width:100%}
 .shot a{display:block;border-radius:12px;overflow:hidden;border:1px solid rgba(26,24,22,.14);background:#FFFFFF}
 .shot img{display:block;width:100%;height:auto}
 .shotcap{display:block;margin-top:6px;font-size:13px;line-height:1.45;color:#57534E}
 
-/* Setup cards: two matching cards, slim rows with hairlines and a chevron. */
+/* The dark panel a prompt, a skill or a message to Stanley sits in. */
+.promptbox{background:#333A28;color:#FFFDFB;border-radius:16px;padding:clamp(16px,3cqi,22px);display:flex;flex-direction:column;gap:14px}
+.promptbox pre{margin:0;white-space:pre-wrap;font-family:'Inter',sans-serif;font-size:15.5px;line-height:1.65;color:#FFFDFB;background:rgba(255,253,251,.07);border-radius:12px;padding:18px;overflow-wrap:anywhere}
+.promptbox .promptscroll{max-height:340px;overflow-y:auto}
+.prompthead{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap}
+.promptlabel{font-family:'Inter',sans-serif;font-size:12px;letter-spacing:.08em;font-weight:600;text-transform:uppercase;color:#D8D9B9}
+.promptfoot{font-size:14px;line-height:1.5;color:#D8D9B9}
+
+/* Slim accordion rows with hairlines and a chevron. */
 .cw-acc-group { border-top: 1px solid rgba(26,24,22,.12); }
 .cw-acc { display: block; border-bottom: 1px solid rgba(26,24,22,.12); }
 .cw-acc summary, .cw-acc-link { display: flex; align-items: center; justify-content: space-between; gap: 12px; min-height: 50px; padding: 4px 2px; cursor: pointer; list-style: none; font-size: 15.5px; font-weight: 500; color: #1A1816; text-decoration: none; }
@@ -92,41 +117,17 @@ a{color:#424B36}a:hover{color:#333A28}
 .cw-acc-ol { margin: 0; padding-left: 20px; display: flex; flex-direction: column; gap: 6px; }
 .cw-acc-note { font-size: 14px; background: #E5E6CF; border-radius: 10px; padding: 10px 12px; color: #1A1816 !important; }
 @media (prefers-reduced-motion: reduce) { .cw-acc-chev { transition: none; } }
-/* The draw form: once at the top of the page, once inside the win card. */
-.drawband { background: #D8D9B9; border: 1px solid rgba(103,118,46,.22); border-radius: 20px; padding: clamp(20px, 4cqi, 32px); display: grid; grid-template-columns: repeat(auto-fit, minmax(min(340px, 100%), 1fr)); gap: 20px 32px; align-items: center; }
-.drawband h2 { font-family: 'Space Grotesk', system-ui, sans-serif; font-weight: 600; font-size: clamp(22px, 3cqi, 30px); letter-spacing: -.02em; line-height: 1.12; margin: 6px 0 10px; text-wrap: balance; }
-.drawband p { margin: 0; font-size: 15.5px; line-height: 1.55; color: #57534E; }
-.drawband p a { color: #424B36; font-weight: 500; }
-.drawkicker { font-family: 'Inter', sans-serif; font-size: 12px; letter-spacing: .08em; font-weight: 600; text-transform: uppercase; color: #57534E; }
-.drawform { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin: 0; }
-.drawform label { display: flex; flex-direction: column; gap: 4px; min-width: 0; }
-.drawform label.wide, .drawform button, .drawform .drawmsg { grid-column: 1 / -1; }
-.drawform label span { font-size: 13px; font-weight: 600; color: #1A1816; }
-.drawform input { font: 400 15px 'Inter', sans-serif; min-height: 46px; padding: 0 14px; border-radius: 10px; border: 1px solid rgba(26,24,22,.2); background: #FFFDFB; color: #1A1816; min-width: 0; width: 100%; box-sizing: border-box; }
-.drawform input:focus { outline: 2px solid #424B36; outline-offset: 1px; }
-.drawform button { font: 500 13px 'Inter', sans-serif; letter-spacing: .06em; text-transform: uppercase; min-height: 48px; border: 0; border-radius: 10px; background: #424B36; color: #FFFDFB; cursor: pointer; }
-.drawform button:disabled { opacity: .6; cursor: default; }
-.drawform .drawmsg { margin: 0; min-height: 1.4em; font-size: 14.5px; line-height: 1.45; color: #1A1816; }
-.drawform .drawmsg.is-err { color: #9A2B1E; }
-.drawform.is-dark label span { color: #E5E6CF; }
-.drawform.is-dark input { background: rgba(255,253,251,.95); }
-.drawform.is-dark button { background: #CCEEA0; color: #2C3422; }
-.drawform.is-dark .drawmsg { color: #FFFDFB; }
-.drawform.is-dark .drawmsg.is-err { color: #F5C6BE; }
-.drawtrap { position: absolute !important; left: -9999px !important; width: 1px !important; height: 1px !important; opacity: 0; }
-@media (max-width: 480px) { .drawform { grid-template-columns: 1fr; } }
 </style></head>
 <body>
 <div style="font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; color: #1A1816; background: #FFFDFB; min-height: 100vh; container-type: inline-size; container-name: page">
 
 <div style="position: sticky; top: 0; z-index: 10">
-<a href="#win" class="annc" style="display: block; background: #424B36; color: #FFFDFB; text-decoration: none; text-align: center; font-size: 13.5px; line-height: 1.4; padding: 9px 16px"><strong style="font-weight: 600">Win 1 Accelerator seat.</strong> Winners announced <span id="anncwhen"></span>. →</a>
-<nav aria-label="Workshop steps" style="background: rgba(255,253,251,.96); border-bottom: 1px solid rgba(26,24,22,.12)">
+<nav aria-label="Guide steps" style="background: rgba(255,253,251,.96); border-bottom: 1px solid rgba(26,24,22,.12)">
 <div style="max-width: 1120px; margin: 0 auto; padding: 0 24px; display: flex; align-items: center; gap: 16px; min-height: 60px">
 <span style="flex: 0 0 auto; font-weight: 500; font-size: 18px; letter-spacing: -.03em; line-height: 1">Time Rich<span style="color: #424B36">.</span></span>
 <div class="stepnav" id="stepnav" style="flex: 1 1 auto; min-width: 0; display: flex; align-items: center; gap: 4px; overflow-x: auto; scrollbar-width: none; padding: 8px 0">
 </div>
-<span class="donect" style="flex: 0 0 auto; font-family: 'Inter', sans-serif; font-size: 12px; font-weight: 600; letter-spacing: .08em; text-transform: uppercase; color: #57534E; white-space: nowrap"><span id="donecount">0</span>/5 done</span>
+<span class="donect" style="flex: 0 0 auto; font-family: 'Inter', sans-serif; font-size: 12px; font-weight: 600; letter-spacing: .08em; text-transform: uppercase; color: #57534E; white-space: nowrap"><span id="donecount">0</span>/<span id="donetotal">12</span> done</span>
 </div>
 </nav>
 </div>
@@ -134,9 +135,9 @@ a{color:#424B36}a:hover{color:#333A28}
 <section style="padding: clamp(40px, 7cqi, 72px) 0">
 <div style="max-width: 1120px; margin: 0 auto; padding: 0 24px; display: flex; flex-wrap: wrap; gap: 40px; align-items: flex-end">
 <div style="flex: 999 1 540px; min-width: 0">
-<span style="display: block; font-family: 'Inter', sans-serif; font-size: 12px; letter-spacing: .08em; font-weight: 600; text-transform: uppercase; color: #57534E; margin-bottom: 20px">Live build night · New York</span>
-<h1 style="font-family: 'Space Grotesk', system-ui, sans-serif; font-weight: 600; font-size: clamp(36px, 6cqi, 58px); line-height: 1.06; letter-spacing: -.022em; margin: 0 0 20px; text-wrap: balance">Build your content system. Tonight.</h1>
-<p style="font-size: 17px; line-height: 1.6; color: #57534E; margin: 0; max-width: 56ch">Set up first, then three steps, start to finish. Keep this page open all night: every code, prompt and link is here. Tick each step off as you go.</p>
+<span style="display: block; font-family: 'Inter', sans-serif; font-size: 12px; letter-spacing: .08em; font-weight: 600; text-transform: uppercase; color: #57534E; margin-bottom: 20px">Free guide &middot; Time Rich</span>
+<h1 style="font-family: 'Space Grotesk', system-ui, sans-serif; font-weight: 600; font-size: clamp(36px, 6cqi, 58px); line-height: 1.06; letter-spacing: -.022em; margin: 0 0 20px; text-wrap: balance">Build your content system.</h1>
+<p style="font-size: 17px; line-height: 1.6; color: #57534E; margin: 0; max-width: 56ch">Set up Stanley and Wispr Flow, build your content strategy, then draft a week of posts. Every code, prompt and link is here. Tick each step off as you go.</p>
 </div>
 <div class="heroside" style="flex: 1 1 320px; background: #D8D9B9; border: 1px solid rgba(103,118,46,.22); border-radius: 20px; padding: 22px 24px; display: flex; flex-direction: column; gap: 14px">
 <div style="display: flex; flex-direction: column; gap: 10px"><div style="font-size: 14px; line-height: 1.5; color: #57534E">Hosted by <a href="#hosts" style="color: #1A1816; font-weight: 600">Ella Molony Cook</a>. Powered by</div><div style="display: flex; flex-wrap: wrap; gap: 8px"><span style="display: inline-flex; align-items: center; gap: 8px; background: #FFFDFB; border: 1px solid rgba(26,24,22,.1); border-radius: 999px; padding: 5px 12px 5px 5px"><img src="/os/img/stanley.png" alt="" width="26" height="26" style="width: 26px; height: 26px; border-radius: 50%; background: #EEEBFF; object-fit: contain; display: block"><span style="font-size: 14px; font-weight: 600; color: #1A1816">Stanley</span></span><span style="display: inline-flex; align-items: center; gap: 8px; background: #FFFDFB; border: 1px solid rgba(26,24,22,.1); border-radius: 999px; padding: 5px 12px 5px 5px"><img src="/os/img/wispr-flow.png" alt="" width="26" height="26" style="width: 26px; height: 26px; border-radius: 50%; background: #1A1816; object-fit: contain; display: block"><span style="font-size: 14px; font-weight: 600; color: #1A1816">Wispr Flow</span></span></div></div>
@@ -146,30 +147,13 @@ a{color:#424B36}a:hover{color:#333A28}
 
 <main style="max-width: 1120px; margin: 0 auto; padding: 0 24px 24px; display: flex; flex-direction: column; gap: clamp(56px, 8cqi, 80px)">
 
-<section id="enter" aria-labelledby="enterh" class="drawband">
-<div>
-<span class="drawkicker">Win 1 seat in the Superhuman Accelerator</span>
-<h2 id="enterh">Submit your LinkedIn post URL to enter the draw!</h2>
-<p>Post on LinkedIn and submit your post to go in the draw. Winners announced <span id="enterwhen"></span>. <a href="#win">How it works &darr;</a></p>
-</div>
-<form class="drawform" data-drawform novalidate>
-<label><span>Your name</span><input name="Name" type="text" autocomplete="name" required></label>
-<label><span>Email</span><input name="Email" type="email" autocomplete="email" required></label>
-<label class="wide"><span>LinkedIn post URL</span><input name="LinkedIn post" type="url" inputmode="url" placeholder="https://www.linkedin.com/posts/..." required></label>
-<input name="_gotcha" type="text" tabindex="-1" autocomplete="off" aria-hidden="true" class="drawtrap">
-<button type="submit">Enter the draw</button>
-<p class="drawmsg" role="status" aria-live="polite"></p>
-</form>
-</section>
-
-
 <section aria-labelledby="essentials" style="display: flex; flex-direction: column; gap: 16px">
-<h2 id="essentials" style="font-family: 'Inter', sans-serif; font-size: 12px; letter-spacing: .08em; font-weight: 600; text-transform: uppercase; color: #57534E; margin: 0">Tonight's essentials</h2>
+<h2 id="essentials" style="font-family: 'Inter', sans-serif; font-size: 12px; letter-spacing: .08em; font-weight: 600; text-transform: uppercase; color: #57534E; margin: 0">Your essentials</h2>
 <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(min(240px, 100%), 1fr)); gap: 16px">
 
 <div style="background: #FFFFFF; border: 1px solid rgba(26,24,22,.12); border-radius: 16px; padding: 20px; display: flex; flex-direction: column; gap: 12px">
-<span style="font-family: 'Inter', sans-serif; font-size: 12px; letter-spacing: .08em; font-weight: 600; text-transform: uppercase; color: #57534E; display: inline-flex; align-items: center; gap: 8px"><img src="/os/img/wispr-flow.png" alt="" width="22" height="22" style="width: 22px; height: 22px; border-radius: 6px; display: block">Wispr Flow · 6 months Pro</span>
-<div style="font-size: 15px">Voice dictation and Notetaker. Wispr it instead of typing it. <a href="#step-0" style="font-weight: 500; white-space: nowrap">How to redeem ↓</a> · <a href="https://app.notion.com/p/superhumanos/Superhuman-Hacks-Wispr-Flow-400ca5ebe5578194a147f07bd667c21a" target="_blank" rel="noopener" style="font-weight: 500; white-space: nowrap">Setup guide and prompts ↗</a></div>
+<span style="font-family: 'Inter', sans-serif; font-size: 12px; letter-spacing: .08em; font-weight: 600; text-transform: uppercase; color: #57534E; display: inline-flex; align-items: center; gap: 8px"><img src="/os/img/wispr-flow.png" alt="" width="22" height="22" style="width: 22px; height: 22px; border-radius: 6px; display: block">Wispr Flow &middot; 6 months Pro</span>
+<div style="font-size: 15px">Voice dictation and Notetaker. Wispr it instead of typing it. <a href="#step-2" style="font-weight: 500; white-space: nowrap">How to redeem ↓</a> · <a href="https://app.notion.com/p/superhumanos/Superhuman-Hacks-Wispr-Flow-400ca5ebe5578194a147f07bd667c21a" target="_blank" rel="noopener" style="font-weight: 500; white-space: nowrap">Setup guide and prompts ↗</a></div>
 <div style="display: flex; align-items: center; justify-content: space-between; gap: 10px; background: #D8D9B9; border-radius: 12px; padding: 8px 8px 8px 14px; margin-top: auto">
 <span style="font-family: 'Inter', sans-serif; font-size: 16px; font-weight: 700" id="wisprcode">TIMERICH6</span>
 <button type="button" class="copybtn" data-copy="wispr" style="flex: 0 0 auto; font: 500 13px 'Inter', sans-serif; letter-spacing: .06em; text-transform: uppercase; background: #424B36; color: #FFFFFF; border: 0; border-radius: 10px; padding: 0 16px; min-height: 44px; cursor: pointer">Copy</button>
@@ -177,8 +161,8 @@ a{color:#424B36}a:hover{color:#333A28}
 </div>
 
 <div style="background: #FFFFFF; border: 1px solid rgba(26,24,22,.12); border-radius: 16px; padding: 20px; display: flex; flex-direction: column; gap: 12px">
-<span style="font-family: 'Inter', sans-serif; font-size: 12px; letter-spacing: .08em; font-weight: 600; text-transform: uppercase; color: #57534E; display: inline-flex; align-items: center; gap: 8px"><img src="/os/img/stanley.png" alt="" width="22" height="22" style="width: 22px; height: 22px; border-radius: 6px; background: #EEEBFF; display: block">Stanley · 6 months free</span>
-<div style="font-size: 15px">Your AI head of content. <a href="#step-0" style="font-weight: 500; white-space: nowrap">How to redeem ↓</a></div>
+<span style="font-family: 'Inter', sans-serif; font-size: 12px; letter-spacing: .08em; font-weight: 600; text-transform: uppercase; color: #57534E; display: inline-flex; align-items: center; gap: 8px"><img src="/os/img/stanley.png" alt="" width="22" height="22" style="width: 22px; height: 22px; border-radius: 6px; background: #EEEBFF; display: block">Stanley &middot; 6 months free</span>
+<div style="font-size: 15px">Your AI head of content. <a href="#step-1" style="font-weight: 500; white-space: nowrap">How to redeem ↓</a></div>
 <div style="display: flex; align-items: center; justify-content: space-between; gap: 10px; background: #D8D9B9; border-radius: 12px; padding: 8px 8px 8px 14px; margin-top: auto">
 <span style="font-family: 'Inter', sans-serif; font-size: 16px; font-weight: 700; min-width: 0; overflow-wrap: anywhere" id="stanleycode">TIMERICH6</span>
 <button type="button" class="copybtn" data-copy="stanley" style="flex: 0 0 auto; font: 500 13px 'Inter', sans-serif; letter-spacing: .06em; text-transform: uppercase; background: #424B36; color: #FFFFFF; border: 0; border-radius: 10px; padding: 0 16px; min-height: 44px; cursor: pointer">Copy</button>
@@ -189,54 +173,120 @@ a{color:#424B36}a:hover{color:#333A28}
 </section>
 
 <!-- ============================================================
-     BEFORE YOU START. Always open, never a dropdown: it is the one
-     thing everybody needs in the first ten minutes and a closed box
-     would have the room hunting for their codes.
+     START HERE. A short card, not a step: what the three steps
+     add up to, so nobody has to read to the bottom to find out.
      ============================================================ -->
-<section id="step-0" aria-labelledby="h0" style="display: flex; flex-direction: column; gap: 20px">
-<div style="display: flex; align-items: center; gap: 12px; flex-wrap: wrap">
-<span style="font-family: 'Inter', sans-serif; font-size: 12px; font-weight: 700; letter-spacing: .1em; background: #424B36; color: #FFFDFB; border-radius: 999px; padding: 6px 12px">BEFORE YOU START</span>
-<span style="font-family: 'Inter', sans-serif; font-size: 12px; letter-spacing: .1em; text-transform: uppercase; color: #57534E">10 min</span>
-</div>
-<h2 id="h0" style="font-family: 'Space Grotesk', system-ui, sans-serif; font-weight: 600; font-size: clamp(28px, 4.4cqi, 40px); letter-spacing: -.022em; line-height: 1.08; margin: 0">Set up your tools</h2>
-<p style="font-size: 17px; line-height: 1.6; color: #57534E; margin: 0; max-width: 62ch">Done at home already? Tick it off and help the person next to you. Not yet? We'll walk you through it now.</p>
-
-<div style="display: flex; flex-direction: column; gap: 16px">
-<div id="setuplist" style="background: #D8D9B9; border: 1px solid rgba(103,118,46,.22); border-radius: 16px; padding: 8px; display: grid; grid-template-columns: repeat(auto-fit, minmax(min(260px, 100%), 1fr))">
-</div>
-</div>
-<div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(min(300px, 100%), 1fr)); gap: 16px">
-<div style="background: #FFFFFF; border: 1px solid rgba(26,24,22,.12); border-radius: 16px; padding: 22px; display: flex; flex-direction: column; gap: 14px">
-<h3 style="font-family: 'Space Grotesk', system-ui, sans-serif; font-weight: 600; font-size: 20px; letter-spacing: -.03em; margin: 0; display: flex; align-items: center; gap: 10px"><img src="/os/img/wispr-flow.png" alt="" width="32" height="32" style="width: 32px; height: 32px; border-radius: 8px; display: block"><span style="display: flex; flex-direction: column; gap: 2px">Redeem Wispr Flow<span style="font-family: Inter, sans-serif; font-size: 13px; font-weight: 500; letter-spacing: 0; color: #57534E">6 months Pro · code TIMERICH6</span></span></h3>
-<div class="cw-acc-group"><details class="cw-acc"><summary>How to redeem<svg class="cw-acc-chev" viewBox="0 0 24 24" aria-hidden="true"><path d="M9 6l6 6-6 6"/></svg></summary><div class="cw-acc-body"><ol class="cw-acc-ol"><li>Install Wispr Flow on your laptop through <a href="https://wisprflow.ai/info/redeem-promo?code=TIMERICH6&amp;months=6" target="_blank" rel="noopener sponsored">wisprflow.ai</a>.</li><li>Open it and go to <strong>Settings &rarr; Plans and Billing</strong>.</li><li>Scroll to the very bottom and click the promo link.</li><li>Enter <strong>TIMERICH6</strong> for 6 months Pro.</li></ol></div></details><details class="cw-acc"><summary>Good to know<svg class="cw-acc-chev" viewBox="0 0 24 24" aria-hidden="true"><path d="M9 6l6 6-6 6"/></svg></summary><div class="cw-acc-body"><p>The code only works in the desktop app, and does nothing if you already pay for Wispr.</p><p class="cw-acc-note">No laptop? Use the free phone app tonight and add the code on your laptop later.</p></div></details><a class="cw-acc cw-acc-link" href="https://superhumanos.notion.site/Superhuman-Hacks-Wispr-Flow-free-guide-400ca5ebe55781f59f9ee69c08c680f0" target="_blank" rel="noopener">Wispr Flow setup guide<svg class="cw-acc-chev" viewBox="0 0 24 24" aria-hidden="true"><path d="M7 17L17 7M9 7h8v8"/></svg></a></div>
-</div>
-<div style="background: #FFFFFF; border: 1px solid rgba(26,24,22,.12); border-radius: 16px; padding: 22px; display: flex; flex-direction: column; gap: 14px">
-<h3 style="font-family: 'Space Grotesk', system-ui, sans-serif; font-weight: 600; font-size: 20px; letter-spacing: -.03em; margin: 0; display: flex; align-items: center; gap: 10px"><img src="/os/img/stanley.png" alt="" width="32" height="32" style="width: 32px; height: 32px; border-radius: 8px; background: #EEEBFF; display: block"><span style="display: flex; flex-direction: column; gap: 2px">Redeem Stanley<span style="font-family: Inter, sans-serif; font-size: 13px; font-weight: 500; letter-spacing: 0; color: #57534E">6 months free · code TIMERICH6</span></span></h3>
-<div class="cw-acc-group"><details class="cw-acc"><summary>Watch the step-by-step video<svg class="cw-acc-chev" viewBox="0 0 24 24" aria-hidden="true"><path d="M9 6l6 6-6 6"/></svg></summary><div class="cw-acc-body"><div style="position: relative; aspect-ratio: 4 / 3; border-radius: 12px; overflow: hidden; background: #1A1816"><iframe src="https://www.loom.com/embed/be6db9ceb94344afb9b56244c9e517f2?hide_owner=true&hide_share=true&hide_title=true&hideEmbedTopBar=true" title="How to get 6 months of Stanley free" loading="lazy" allow="fullscreen" allowfullscreen style="position: absolute; inset: 0; width: 100%; height: 100%; border: 0"></iframe></div><a href="https://www.loom.com/share/be6db9ceb94344afb9b56244c9e517f2" target="_blank" rel="noopener" style="font-size: 14px; font-weight: 500">Watch it full screen on Loom &#8599;</a></div></details><details class="cw-acc"><summary>New to Stanley? Get started<svg class="cw-acc-chev" viewBox="0 0 24 24" aria-hidden="true"><path d="M9 6l6 6-6 6"/></svg></summary><div class="cw-acc-body"><p class="cw-acc-note"><strong>Before you start:</strong> don&rsquo;t click &ldquo;Message Stanley&rdquo; on the homepage. That route skips the promo code. Go in through email first. You can connect iMessage, WhatsApp or Telegram later.</p><ol class="cw-acc-ol"><li>On your laptop, go to <a href="https://x.getstanley.ai/r/mz4y9g" target="_blank" rel="noopener sponsored">getstanley.ai</a>.</li><li>Click <strong>Log in</strong> (top of the page, not &ldquo;Message Stanley&rdquo;).</li><li>Click <strong>Sign up</strong>.</li><li>Choose <strong>Sign up with email or Google</strong>. Ignore the iMessage option on this screen.</li><li>Enter your email and create a password. Use the email you want tied to your account. Click <strong>Continue</strong>.</li><li>Verify your email. Check your inbox for a login code and enter it.</li><li>Answer the duplicate account check. If you&rsquo;ve never texted Stanley before, click <strong>No, I&rsquo;m new to Stanley</strong>. The next page can take a few seconds to load.</li><li>Pick the <strong>$49/month</strong> plan. Click <strong>Start your 14-day free trial</strong>. Checkout opens.</li><li>Click <strong>Pay without Link</strong> to pay by card.</li><li>Click <strong>Add promotion code</strong>, enter <strong>TIMERICH6</strong> and click <strong>Apply</strong>. You should see 100% off for the next 6 billing cycles.</li><li>Enter a payment method and click <strong>Start trial</strong>. You won&rsquo;t be charged during the 6 free months.</li></ol></div></details><details class="cw-acc"><summary>Already on the free plan? Upgrade<svg class="cw-acc-chev" viewBox="0 0 24 24" aria-hidden="true"><path d="M9 6l6 6-6 6"/></svg></summary><div class="cw-acc-body"><p class="cw-acc-note"><strong>Before you start:</strong> don&rsquo;t click &ldquo;Message Stanley&rdquo; on the homepage. That route skips the promo code. Go in through email first. You can connect iMessage, WhatsApp or Telegram later.</p><ol class="cw-acc-ol"><li>On your laptop, go to <a href="https://x.getstanley.ai/r/mz4y9g" target="_blank" rel="noopener sponsored">getstanley.ai</a> and log in.</li><li>Go to <strong>Upgrade</strong> and pick the <strong>$49/month</strong> plan. Click <strong>Start your 14-day free trial</strong>. Checkout opens.</li><li>Click <strong>Pay without Link</strong> to pay by card.</li><li>Click <strong>Add promotion code</strong>, enter <strong>TIMERICH6</strong> and click <strong>Apply</strong>. You should see 100% off for the next 6 billing cycles.</li><li>Enter a payment method and click <strong>Start trial</strong>. You won&rsquo;t be charged during the 6 free months.</li></ol></div></details></div>
-</div>
-</div>
+<section id="start" aria-labelledby="starth" style="background: #D8D9B9; border: 1px solid rgba(103,118,46,.22); border-radius: 20px; padding: clamp(20px, 4cqi, 32px); display: flex; flex-direction: column; gap: 14px">
+<span style="font-family: 'Inter', sans-serif; font-size: 12px; letter-spacing: .08em; font-weight: 600; text-transform: uppercase; color: #57534E">Start here</span>
+<h2 id="starth" style="font-family: 'Space Grotesk', system-ui, sans-serif; font-weight: 600; font-size: clamp(24px, 3.4cqi, 32px); letter-spacing: -.022em; line-height: 1.1; margin: 0">What you&rsquo;ll leave with</h2>
+<ul style="margin: 0; padding-left: 20px; display: flex; flex-direction: column; gap: 8px; font-size: 16.5px; line-height: 1.55">
+<li>Your content strategy, saved in Stanley</li>
+<li>5 creators to study</li>
+<li>A week of LinkedIn posts drafted in your voice</li>
+</ul>
+<p style="margin: 0; font-size: 15.5px; line-height: 1.55; color: #57534E">Three steps. Do them in order: each one feeds the next.</p>
 </section>
 
 <!-- ============================================================
      THE BUILD: Step 1 to Step 3, each a numbered dropdown that is
-     also a checklist. The <details> shell and the rich panels are
-     written here; the tickable rows and their screenshots are
-     rendered into [data-items] by the script at the foot of the
-     page, which is also what counts them and opens the next step.
+     also a checklist. Every tickable row carries its own panel of
+     how-to right underneath it, so nobody has to hold a step in
+     their head while scrolling to find the video for it.
      ============================================================ -->
 <details class="stepbox" id="step-1" data-step="1" open>
 <summary class="stepsum" data-sum="1">
 <span class="stepbadge" data-stepbadge="1"></span>
 <span class="stepsumtext">
 <span class="stepkicker">Step 1</span>
-<span class="steptitle" id="h2t">Connect your tools</span>
+<span class="steptitle">Set up Stanley and your content home</span>
 </span>
 <span class="stepcount" data-stepcount="1"></span>
 <svg class="stepchev" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6"></path></svg>
 </summary>
 <div class="stepbody">
-<p style="font-size: 17px; line-height: 1.6; color: #57534E; margin: 0; max-width: 62ch">Stanley writes in your voice once it knows you. Plug it in first.</p>
-<ol class="itemlist" data-items="1"></ol>
+<p class="steplead">Stanley is your AI head of content: a voice note goes in, drafts in your voice come out, you approve, it posts. Free for 6 months with code TIMERICH6.</p>
+<figure class="shot" style="margin: 0; max-width: 1724px"><a href="/portal/assets/week3-stanley-flow.png" target="_blank" rel="noopener"><img src="/portal/assets/week3-stanley-flow.png" alt="An AI head of content: from a voice note to a scheduled post" width="1724" height="960" loading="lazy" decoding="async"></a><figcaption class="shotcap">Tap to open it full size.</figcaption></figure>
+
+<ol class="itemlist">
+
+<li>
+<button type="button" class="itemrow" data-item="s1" aria-pressed="false">
+<span data-itembox="s1"></span>
+<span class="itemtext">
+<span class="itemname">Sign up to Stanley (6 months free)</span>
+<span class="itemhelp">Sign up on your laptop. Don&rsquo;t use &ldquo;Message Stanley&rdquo; on the homepage: it skips the code.</span>
+</span>
+</button>
+<div class="itempanel">
+<div class="cw-acc-group"><details class="cw-acc" style="border-bottom: 0"><summary>Watch the video<svg class="cw-acc-chev" viewBox="0 0 24 24" aria-hidden="true"><path d="M9 6l6 6-6 6"/></svg></summary><div class="cw-acc-body"><div class="loomwrap"><iframe src="https://www.loom.com/embed/be6db9ceb94344afb9b56244c9e517f2?hide_owner=true&amp;hide_share=true&amp;hide_title=true&amp;hideEmbedTopBar=true" title="How to sign up to Stanley and get 6 months free" loading="lazy" allow="fullscreen" allowfullscreen></iframe></div><a href="https://www.loom.com/share/be6db9ceb94344afb9b56244c9e517f2" target="_blank" rel="noopener" style="font-size: 14px; font-weight: 500">Watch it full screen on Loom &#8599;</a></div></details></div>
+<ol>
+<li>Go to <a href="https://x.getstanley.ai/r/mz4y9g" target="_blank" rel="noopener sponsored">Stanley</a> and click <strong>Log in</strong>.</li>
+<li>Click <strong>Sign up</strong>, then <strong>Sign up with email or Google</strong>.</li>
+<li>Enter your email and a password, then click <strong>Continue</strong>.</li>
+<li>Enter the code Stanley emails you, then choose <strong>No, I&rsquo;m new to Stanley</strong>.</li>
+<li>Pick a plan and click <strong>Start your 14-day free trial</strong>.</li>
+<li>At checkout, click <strong>Add promotion code</strong>, enter <strong>TIMERICH6</strong> and click <strong>Apply</strong>. You&rsquo;ll see 100% off and $0.00 due today.</li>
+<li>Add a payment method and click <strong>Start trial</strong>. You can connect iMessage, WhatsApp or Telegram later.</li>
+</ol>
+<div class="cw-acc-group"><details class="cw-acc" style="border-bottom: 0"><summary>Already on Stanley&rsquo;s free plan?<svg class="cw-acc-chev" viewBox="0 0 24 24" aria-hidden="true"><path d="M9 6l6 6-6 6"/></svg></summary><div class="cw-acc-body"><p>Log in, click <strong>Upgrade</strong>, then follow steps 5 to 7.</p></div></details></div>
+</div>
+</li>
+
+<li>
+<button type="button" class="itemrow" data-item="s2" aria-pressed="false">
+<span data-itembox="s2"></span>
+<span class="itemtext">
+<span class="itemname">Connect your tools to Stanley</span>
+<span class="itemhelp">Wispr Flow first, then the apps you message on and the places you post.</span>
+</span>
+</button>
+<div class="itempanel">
+<div class="cw-acc-group"><details class="cw-acc" style="border-bottom: 0"><summary>Watch the video<svg class="cw-acc-chev" viewBox="0 0 24 24" aria-hidden="true"><path d="M9 6l6 6-6 6"/></svg></summary><div class="cw-acc-body"><div class="loomwrap"><iframe src="https://www.loom.com/embed/4d80c14f76b843389285aa391edea560?hide_owner=true&amp;hide_share=true&amp;hide_title=true&amp;hideEmbedTopBar=true" title="How to connect your tools to Stanley" loading="lazy" allow="fullscreen" allowfullscreen></iframe></div><a href="https://www.loom.com/share/4d80c14f76b843389285aa391edea560" target="_blank" rel="noopener" style="font-size: 14px; font-weight: 500">Watch it full screen on Loom &#8599;</a></div></details></div>
+<ol>
+<li>In Stanley, open the left sidebar and click <strong>Connectors</strong>.</li>
+<li>Click <strong>Wispr Flow</strong>, sign in, and click <strong>Allow access</strong>. Do this one first. Talking out loud is how Stanley learns your voice.</li>
+<li>Connect <strong>iMessage, WhatsApp or Telegram</strong>, so you can send Stanley ideas on the go.</li>
+<li>Connect <strong>LinkedIn</strong> and anywhere else you post, so Stanley learns from your posts and can post for you.</li>
+</ol>
+<figure class="shot" style="margin: 0; max-width: 1146px"><a href="/portal/assets/visibility-stanley-connectors.png" target="_blank" rel="noopener"><img src="/portal/assets/visibility-stanley-connectors.png" alt="Stanley's Connectors screen. Connected apps carry a green tick." width="1146" height="907" loading="lazy" decoding="async"></a><figcaption class="shotcap">Tap to open it full size.</figcaption></figure>
+</div>
+</li>
+
+<li>
+<button type="button" class="itemrow" data-item="s3" data-opt aria-pressed="false">
+<span data-itembox="s3"></span>
+<span class="itemtext">
+<span class="itemname">Use Stanley inside your current AI tool <span class="itemopt">Optional</span></span>
+<span class="itemhelp">Use Stanley right inside the AI you already work in, without switching apps.</span>
+</span>
+</button>
+<div class="itempanel">
+<div class="cw-acc-group"><details class="cw-acc" style="border-bottom: 0"><summary>Watch the video<svg class="cw-acc-chev" viewBox="0 0 24 24" aria-hidden="true"><path d="M9 6l6 6-6 6"/></svg></summary><div class="cw-acc-body"><div class="loomwrap"><iframe src="https://www.loom.com/embed/ba045aa4570f4c6abb7db97e59a12342?hide_owner=true&amp;hide_share=true&amp;hide_title=true&amp;hideEmbedTopBar=true" title="How to plug Stanley into Claude or ChatGPT with the MCP connector" loading="lazy" allow="fullscreen" allowfullscreen></iframe></div><a href="https://www.loom.com/share/ba045aa4570f4c6abb7db97e59a12342" target="_blank" rel="noopener" style="font-size: 14px; font-weight: 500">Watch it full screen on Loom &#8599;</a></div></details></div>
+<span class="itemsub">Copy your Stanley MCP link</span>
+<ol>
+<li>In Stanley, open the left sidebar and click <strong>Connectors</strong>.</li>
+<li>Scroll to <strong>Stanley MCP</strong> and copy the link.</li>
+</ol>
+<div class="cw-acc-group"><details class="cw-acc"><summary>In Claude<svg class="cw-acc-chev" viewBox="0 0 24 24" aria-hidden="true"><path d="M9 6l6 6-6 6"/></svg></summary><div class="cw-acc-body"><ol class="cw-acc-ol">
+<li>Click your name (bottom left), then <strong>Settings</strong>.</li>
+<li>Click <strong>Customize</strong>, then the <strong>Connectors</strong> tab.</li>
+<li>Click <strong>+ Add</strong> (top right), then <strong>Add custom connector</strong>.</li>
+<li>Name: <strong>Stanley</strong>. MCP server URL: paste your link. Click <strong>Continue</strong>.</li>
+<li>Sign in to Stanley when asked and click <strong>Allow</strong>.</li>
+<li>In a chat, click <strong>+</strong> (bottom left), then <strong>Connectors</strong>, and switch Stanley on.</li>
+</ol><p class="cw-acc-note">On the free Claude plan you can add one custom connector.</p></div></details><details class="cw-acc" style="border-bottom: 0"><summary>In ChatGPT (Plus or higher)<svg class="cw-acc-chev" viewBox="0 0 24 24" aria-hidden="true"><path d="M9 6l6 6-6 6"/></svg></summary><div class="cw-acc-body"><ol class="cw-acc-ol">
+<li>Click your profile, then <strong>Settings</strong>.</li>
+<li>Open <strong>Apps &amp; Connectors</strong>, scroll to <strong>Advanced settings</strong> and turn on <strong>Developer mode</strong>.</li>
+<li>Back in <strong>Apps &amp; Connectors</strong>, click <strong>Create</strong>.</li>
+<li>Name it <strong>Stanley</strong>, paste your link as the <strong>Connector URL</strong>, choose <strong>OAuth</strong> and click <strong>Create</strong>.</li>
+<li>Sign in to Stanley and allow access.</li>
+</ol></div></details></div>
+</div>
+</li>
+
+</ol>
+
+<p class="stepnote"><strong>Your content home.</strong> Stanley holds your strategy, drafts and calendar. Want the Notion Content Hub too? It comes with the <a href="#community">Time Rich Club</a>.</p>
 </div>
 </details>
 
@@ -245,26 +295,42 @@ a{color:#424B36}a:hover{color:#333A28}
 <span class="stepbadge" data-stepbadge="2"></span>
 <span class="stepsumtext">
 <span class="stepkicker">Step 2</span>
-<span class="steptitle" id="h1s">Introduce yourself</span>
+<span class="steptitle">Build your content strategy</span>
 </span>
 <span class="stepcount" data-stepcount="2"></span>
 <svg class="stepchev" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6"></path></svg>
 </summary>
 <div class="stepbody">
-<p style="font-size: 17px; line-height: 1.6; color: #57534E; margin: 0; max-width: 62ch">Turn on Wispr Flow, introduce yourself to the person next to you, then turn what you said into your content strategy. The prompt is built on principles from Hannah Zhang (@itshannahzhang), product marketer and creator.</p>
-<div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(min(260px, 100%), 1fr)); gap: 16px">
-<div style="background: #E5E6CF; border-radius: 16px; padding: 18px 20px; display: flex; flex-direction: column; gap: 8px">
-<span style="font-family: 'Inter', sans-serif; font-size: 12px; letter-spacing: .08em; font-weight: 600; text-transform: uppercase; color: #57534E">Option 1 · Wispr Flow dictation</span>
-<span style="font-size: 15.5px; line-height: 1.55">Hold <strong style="font-weight: 600">fn</strong>, speak, let go. Your words appear wherever your cursor is. Mac without fn: <strong style="font-weight: 600">Ctrl + Opt</strong>. Windows: <strong style="font-weight: 600">Ctrl + Win</strong>.</span>
+<p class="steplead">Tell AI who you are and who you serve, and it turns that into your content strategy in about 10 minutes.</p>
+
+<ol class="itemlist">
+
+<li>
+<button type="button" class="itemrow" data-item="w1" aria-pressed="false">
+<span data-itembox="w1"></span>
+<span class="itemtext">
+<span class="itemname">Redeem Wispr Flow (6 months Pro)</span>
+<span class="itemhelp">Voice dictation, so you can talk your answers instead of typing them.</span>
+</span>
+</button>
+<div class="itempanel">
+<p class="itemnote">Hold <strong>fn</strong>, speak, let go. Your words appear wherever your cursor is. Mac without fn: <strong>Ctrl + Opt</strong>. Windows: <strong>Ctrl + Win</strong>.</p>
+<div class="cw-acc-group"><details class="cw-acc"><summary>How to redeem<svg class="cw-acc-chev" viewBox="0 0 24 24" aria-hidden="true"><path d="M9 6l6 6-6 6"/></svg></summary><div class="cw-acc-body"><ol class="cw-acc-ol"><li>Install Wispr Flow on your laptop through <a href="https://wisprflow.ai/info/redeem-promo?code=TIMERICH6&amp;months=6" target="_blank" rel="noopener sponsored">wisprflow.ai</a>.</li><li>Open it and go to <strong>Settings &rarr; Plans and Billing</strong>.</li><li>Scroll to the very bottom and click the promo link.</li><li>Enter <strong>TIMERICH6</strong> for 6 months Pro.</li></ol></div></details><details class="cw-acc"><summary>Good to know<svg class="cw-acc-chev" viewBox="0 0 24 24" aria-hidden="true"><path d="M9 6l6 6-6 6"/></svg></summary><div class="cw-acc-body"><p>The code only works in the desktop app, and does nothing if you already pay for Wispr.</p><p class="cw-acc-note">No laptop? Use the free phone app for now and add the code on your laptop later.</p></div></details><a class="cw-acc cw-acc-link" style="border-bottom: 0" href="https://superhumanos.notion.site/Superhuman-Hacks-Wispr-Flow-free-guide-400ca5ebe55781f59f9ee69c08c680f0" target="_blank" rel="noopener">Wispr Flow setup guide<svg class="cw-acc-chev" viewBox="0 0 24 24" aria-hidden="true"><path d="M7 17L17 7M9 7h8v8"/></svg></a></div>
 </div>
-<div id="wisprnotetaker" style="background: #E5E6CF; border-radius: 16px; padding: 18px 20px; display: flex; flex-direction: column; gap: 8px">
-<span style="font-family: 'Inter', sans-serif; font-size: 12px; letter-spacing: .08em; font-weight: 600; text-transform: uppercase; color: #57534E">Option 2 · Wispr Flow Notetaker</span>
-<span style="font-size: 15.5px; line-height: 1.55">Open <strong style="font-weight: 600">Wispr Flow Notetaker</strong> to record your intro. No bot joins: it records from your laptop and gives you a summary and transcript. Record, with everyone’s OK.</span>
-</div>
-</div>
+</li>
+
+<li>
+<button type="button" class="itemrow" data-item="p1" aria-pressed="false">
+<span data-itembox="p1"></span>
+<span class="itemtext">
+<span class="itemname">Build your content strategy</span>
+<span class="itemhelp">About 10 minutes with Claude or ChatGPT, and you leave with a finished worksheet.</span>
+</span>
+</button>
+<div class="itempanel">
+<p>Open a new chat, paste the prompt, then answer out loud with Wispr Flow. Messy is great.</p>
 <div id="introprompts" style="background: #FFFFFF; border: 1px solid rgba(26,24,22,.12); border-radius: 16px; padding: 18px 20px; display: flex; flex-direction: column; gap: 10px">
-<span style="font-family: 'Inter', sans-serif; font-size: 12px; letter-spacing: .08em; font-weight: 600; text-transform: uppercase; color: #57534E">What to say in your intro</span>
-<p style="margin: 0; font-size: 15.5px; line-height: 1.55"><strong style="font-weight: 600">Keep it under 3 minutes.</strong> You both need to speak, then paste the prompt below into Claude along with your intro. Already have a Claude project? Amazing, use that.</p>
+<span class="itemsub">What to say</span>
 <ol style="margin: 0; padding-left: 20px; display: flex; flex-direction: column; gap: 6px; font-size: 15.5px; line-height: 1.55">
 <li>Who you are, and what your company does.</li>
 <li>What you want most from your content right now: customers, investors, hires or partners.</li>
@@ -276,56 +342,103 @@ a{color:#424B36}a:hover{color:#333A28}
 </ol>
 <span style="font-size: 14.5px; line-height: 1.5; color: #57534E">Answer these out loud and you've already done most of the interview.</span>
 </div>
-<ol class="itemlist" data-items-top="2"></ol>
-<div style="background: #333A28; color: #FFFDFB; border-radius: 20px; padding: clamp(16px, 3cqi, 24px); display: flex; flex-direction: column; gap: 14px">
-<div style="display: flex; align-items: center; justify-content: space-between; gap: 12px; flex-wrap: wrap">
-<span style="font-family: 'Inter', sans-serif; font-size: 12px; letter-spacing: .08em; font-weight: 600; text-transform: uppercase; color: #D8D9B9">Prompt · Content strategy interview</span>
+<div class="promptbox">
+<div class="prompthead">
+<span class="promptlabel">Prompt &middot; Content strategy</span>
 <div style="display: flex; gap: 8px; flex-wrap: wrap">
 <a href="https://claude.ai/new" data-ai="claude" target="_blank" rel="noopener" class="ghostbtn" style="display: inline-flex; align-items: center; color: #FFFDFB; text-decoration: none; border: 1px solid rgba(216,217,185,.4); border-radius: 10px; padding: 0 14px; font-size: 14px; font-weight: 500; min-height: 44px">Open Claude</a>
 <a href="https://chatgpt.com/" data-ai="chatgpt" target="_blank" rel="noopener" class="ghostbtn" style="display: inline-flex; align-items: center; color: #FFFDFB; text-decoration: none; border: 1px solid rgba(216,217,185,.4); border-radius: 10px; padding: 0 14px; font-size: 14px; font-weight: 500; min-height: 44px">Open ChatGPT</a>
 <button type="button" class="copylt" data-copy="p1" style="font: 500 13px 'Inter', sans-serif; letter-spacing: .06em; text-transform: uppercase; background: #D8D9B9; color: #1A1816; border: 0; border-radius: 10px; padding: 0 16px; min-height: 44px; cursor: pointer">Copy prompt</button>
 </div>
 </div>
-<pre style="margin: 0; white-space: pre-wrap; font-family: 'Inter', sans-serif; font-size: 15.5px; line-height: 1.65; color: #FFFDFB; background: rgba(255,253,251,.07); border-radius: 12px; padding: 18px; max-height: 340px; overflow-y: auto" id="mikaprompt" tabindex="0" aria-label="The Step 2 prompt"></pre>
-<div style="font-size: 14px; line-height: 1.5; color: #D8D9B9">Tip: hold fn and talk like you're telling a friend. Messy is great.</div>
+<pre class="promptscroll" id="strategyprompt" tabindex="0" aria-label="The content strategy prompt"></pre>
+<div class="promptfoot">Save the worksheet as a Google Doc.</div>
 </div>
-<ol class="itemlist" data-items="2"></ol>
+</div>
+</li>
 
-<!-- TODO screenshots: nothing has been supplied for this step yet.
-     Drop the files into contentworkshop/img/ named step1-1.png,
-     step1-2.png and so on, then add a shot/alt pair to the matching
-     item in the STEPS table at the foot of this page. They will be
-     drawn under the sub-step they belong to. -->
+<li>
+<button type="button" class="itemrow" data-item="p3" aria-pressed="false">
+<span data-itembox="p3"></span>
+<span class="itemtext">
+<span class="itemname">Find 5 industry leaders to study</span>
+<span class="itemhelp">About 5 minutes, and you know what kind of creator you are and who to learn from.</span>
+</span>
+</button>
+<div class="itempanel">
+<p>Stay in the same chat, so the AI has your worksheet. Paste the prompt and answer out loud with Wispr Flow. In about 5 minutes you&rsquo;ll know what kind of creator you are and who to learn from.</p>
+<div class="promptbox">
+<div class="prompthead">
+<span class="promptlabel">Prompt &middot; Creators to study</span>
+<button type="button" class="copylt" data-copy="p3" style="font: 500 13px 'Inter', sans-serif; letter-spacing: .06em; text-transform: uppercase; background: #D8D9B9; color: #1A1816; border: 0; border-radius: 10px; padding: 0 16px; min-height: 44px; cursor: pointer">Copy prompt</button>
+</div>
+<pre class="promptscroll" id="creatorsprompt" tabindex="0" aria-label="The creators to study prompt"></pre>
+</div>
+</div>
+</li>
+
+<li>
+<button type="button" class="itemrow" data-item="b1" aria-pressed="false">
+<span data-itembox="b1"></span>
+<span class="itemtext">
+<span class="itemname">Set up your Stanley Brain</span>
+<span class="itemhelp">Your strategy, your story, your rules and your creators, all in one place Stanley reads every time.</span>
+</span>
+</button>
+<div class="itempanel">
+<div class="cw-acc-group"><details class="cw-acc" style="border-bottom: 0"><summary>Watch the video<svg class="cw-acc-chev" viewBox="0 0 24 24" aria-hidden="true"><path d="M9 6l6 6-6 6"/></svg></summary><div class="cw-acc-body"><div class="loomwrap"><iframe src="https://www.loom.com/embed/d2f889283f5e486f8d141803a81dba8e?hide_owner=true&amp;hide_share=true&amp;hide_title=true&amp;hideEmbedTopBar=true" title="How to set up and keep your Stanley Brain updated" loading="lazy" allow="fullscreen" allowfullscreen></iframe></div><a href="https://www.loom.com/share/d2f889283f5e486f8d141803a81dba8e" target="_blank" rel="noopener" style="font-size: 14px; font-weight: 500">Watch it full screen on Loom &#8599;</a></div></details></div>
+<ol>
+<li>In Stanley, click your profile, then <strong>Brain</strong>.</li>
+<li><strong>Strategy:</strong> paste the content strategy you just built.</li>
+<li><strong>My Human:</strong> paste a short overview of who you are. Quick way: ask the same AI chat &ldquo;Put together everything you know about me that would help someone write my content&rdquo;, then paste the answer.</li>
+<li><strong>Instructions:</strong> add your must-follow rules, one per line, e.g. &ldquo;Use contractions: don&rsquo;t, not do not.&rdquo;</li>
+<li><strong>Topics and Creators:</strong> paste the creators list from the last step.</li>
+</ol>
+<p>Stanley keeps adding to your Brain as you talk to it. You can edit anything, anytime.</p>
+<figure class="shot" style="margin: 0; max-width: 503px"><a href="/portal/assets/visibility-stanley-files.png" target="_blank" rel="noopener"><img src="/portal/assets/visibility-stanley-files.png" alt="Stanley's Brain panel" width="503" height="403" loading="lazy" decoding="async"></a><figcaption class="shotcap">Tap to open it full size.</figcaption></figure>
+</div>
+</li>
+
+</ol>
 </div>
 </details>
+
 <details class="stepbox" id="step-3" data-step="3">
 <summary class="stepsum" data-sum="3">
 <span class="stepbadge" data-stepbadge="3"></span>
 <span class="stepsumtext">
 <span class="stepkicker">Step 3</span>
-<span class="steptitle" id="h3s">Prompt Stanley</span>
+<span class="steptitle">Run your content machine</span>
 </span>
 <span class="stepcount" data-stepcount="3"></span>
 <svg class="stepchev" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6"></path></svg>
 </summary>
 <div class="stepbody">
-<p style="font-size: 17px; line-height: 1.6; color: #57534E; margin: 0; max-width: 62ch">A skill is a saved set of instructions Stanley follows every time you ask. This one collects your context, interviews you, offers five angles and five hooks, drafts in your voice and scores the post for shareability and curiosity. Save it, then hand Stanley your story. Posting tonight is optional. Drafting is the win.</p>
-<!-- Hannah Zhang's Stanley Creator Spotlight: the screenshot and her own
-     words on why she drafts in Stanley rather than Claude. -->
-<figure id="hannahquote" style="margin: 0; background: #F7F8EE; border: 1px solid rgba(103,118,46,.25); border-radius: 20px; overflow: hidden; display: flex; flex-direction: column">
-<img src="img/hannah-stanley.webp" alt="Stanley's blog: How Hannah Tripled Her LinkedIn Audience and Became a Top Voice In One Year, a Stanley Creator Spotlight on Hannah Zhang." width="2000" height="513" loading="lazy" decoding="async" style="display: block; width: 100%; height: auto">
-<blockquote style="margin: 0; padding: clamp(18px, 3cqi, 26px); display: flex; flex-direction: column; gap: 10px">
-<p style="margin: 0; font-family: 'Space Grotesk', system-ui, sans-serif; font-weight: 500; font-size: clamp(18px, 2.4cqi, 22px); line-height: 1.4; letter-spacing: -.01em; color: #1A1816">“Before, I would just use Claude for drafts. But what I’ve found with Stanley is that it’s much more optimized for LinkedIn. Its deep knowledge of your past LinkedIn performance is what differentiates it from any other tool I’ve used.”</p>
-<figcaption style="font-size: 14.5px; line-height: 1.5; color: #57534E">Hannah Zhang (@itshannahzhang), who tripled her LinkedIn audience and became a Top Voice in one year</figcaption>
-</blockquote>
-</figure>
-<ol class="itemlist" data-items-top="3"></ol>
-<div style="background: #333A28; color: #FFFDFB; border-radius: 20px; padding: clamp(16px, 3cqi, 24px); display: flex; flex-direction: column; gap: 14px">
-<div style="display: flex; align-items: center; justify-content: space-between; gap: 12px; flex-wrap: wrap">
-<span style="font-family: 'Inter', sans-serif; font-size: 12px; letter-spacing: .08em; font-weight: 600; text-transform: uppercase; color: #D8D9B9">Skill · linkedin-content</span>
+<p class="steplead">One hour of talking. 20 to 50 pieces of content.</p>
+<figure class="shot" style="margin: 0; max-width: 1718px"><a href="/portal/assets/week3-content-waterfall.png" target="_blank" rel="noopener"><img src="/portal/assets/week3-content-waterfall.png" alt="One voice memo becomes a month of content" width="1718" height="954" loading="lazy" decoding="async"></a><figcaption class="shotcap">Tap to open it full size.</figcaption></figure>
+
+<ol class="itemlist">
+
+<li>
+<button type="button" class="itemrow" data-item="sk" aria-pressed="false">
+<span data-itembox="sk"></span>
+<span class="itemtext">
+<span class="itemname">Add the LinkedIn skill to Stanley</span>
+<span class="itemhelp">A saved set of instructions Stanley follows every time you ask for a post.</span>
+</span>
+</button>
+<div class="itempanel">
+<ol>
+<li>Copy the skill below.</li>
+<li>In Stanley, go to <strong>Brain</strong>, then <strong>Skills</strong>. Click <strong>+</strong> and name it <strong>linkedin-content</strong>.</li>
+<li>Paste the skill in and save it.</li>
+</ol>
+<div class="promptbox">
+<div class="prompthead">
+<span class="promptlabel">Skill &middot; linkedin-content</span>
 <button type="button" class="copylt" data-copy="sk" style="font: 500 13px 'Inter', sans-serif; letter-spacing: .06em; text-transform: uppercase; background: #D8D9B9; color: #1A1816; border: 0; border-radius: 10px; padding: 0 16px; min-height: 44px; cursor: pointer">Copy skill</button>
 </div>
-<pre id="skilltext" tabindex="0" style="margin: 0; white-space: pre-wrap; font-family: 'Inter', sans-serif; font-size: 14.5px; line-height: 1.6; color: #FFFDFB; background: rgba(255,253,251,.07); border-radius: 12px; padding: 18px; max-height: 320px; overflow: auto">Create LinkedIn Content
+<pre class="promptscroll" id="skilltext" tabindex="0" style="font-size: 14.5px; line-height: 1.6">Create LinkedIn Content
 
 Help the user turn a topic into a short LinkedIn post in approximately 10 minutes.
 
@@ -485,93 +598,115 @@ Working rules
 - Never publish or schedule without explicit user instruction.
 </pre>
 </div>
-<ol class="itemlist" data-items="3"></ol>
-<div style="background: #333A28; color: #FFFDFB; border-radius: 20px; padding: clamp(16px, 3cqi, 24px); display: flex; flex-direction: column; gap: 14px">
-<div style="display: flex; align-items: center; justify-content: space-between; gap: 12px; flex-wrap: wrap">
-<span style="font-family: 'Inter', sans-serif; font-size: 12px; letter-spacing: .08em; font-weight: 600; text-transform: uppercase; color: #D8D9B9">Say this to Stanley</span>
-<button type="button" class="copylt" data-copy="p2" style="font: 500 13px 'Inter', sans-serif; letter-spacing: .06em; text-transform: uppercase; background: #D8D9B9; color: #1A1816; border: 0; border-radius: 10px; padding: 0 16px; min-height: 44px; cursor: pointer">Copy prompt</button>
+<figure class="shot" style="margin: 0; max-width: 509px"><a href="/portal/assets/visibility-stanley-skills.png" target="_blank" rel="noopener"><img src="/portal/assets/visibility-stanley-skills.png" alt="Stanley's Brain panel with linkedin-content saved under Skills." width="509" height="437" loading="lazy" decoding="async"></a><figcaption class="shotcap">Tap to open it full size.</figcaption></figure>
+<!-- Hannah Zhang's Stanley Creator Spotlight: the screenshot and her own
+     words on why she drafts in Stanley rather than Claude. It sits with
+     the LinkedIn skill, which is the thing she is talking about. -->
+<figure id="hannahquote" style="margin: 0; background: #F7F8EE; border: 1px solid rgba(103,118,46,.25); border-radius: 20px; overflow: hidden; display: flex; flex-direction: column">
+<img src="img/hannah-stanley.webp" alt="Stanley's blog: How Hannah Tripled Her LinkedIn Audience and Became a Top Voice In One Year, a Stanley Creator Spotlight on Hannah Zhang." width="2000" height="513" loading="lazy" decoding="async" style="display: block; width: 100%; height: auto">
+<blockquote style="margin: 0; padding: clamp(18px, 3cqi, 26px); display: flex; flex-direction: column; gap: 10px">
+<p style="margin: 0; font-family: 'Space Grotesk', system-ui, sans-serif; font-weight: 500; font-size: clamp(18px, 2.4cqi, 22px); line-height: 1.4; letter-spacing: -.01em; color: #1A1816">“Before, I would just use Claude for drafts. But what I’ve found with Stanley is that it’s much more optimized for LinkedIn. Its deep knowledge of your past LinkedIn performance is what differentiates it from any other tool I’ve used.”</p>
+<figcaption style="font-size: 14.5px; line-height: 1.5; color: #57534E">Hannah Zhang (@itshannahzhang), who tripled her LinkedIn audience and became a Top Voice in one year</figcaption>
+</blockquote>
+</figure>
 </div>
-<pre style="margin: 0; white-space: pre-wrap; font-family: 'Inter', sans-serif; font-size: 15.5px; line-height: 1.65; color: #FFFDFB; background: rgba(255,253,251,.07); border-radius: 12px; padding: 18px">Use my linkedin-content skill. My topic: [paste your 2 minute story]</pre>
-</div>
-<div style="font-size: 16px; line-height: 1.5; font-weight: 600">Stuck for a story? Pick a topic that matches your goal.</div>
-<div id="funneltabs" role="tablist" aria-label="Funnel stage" style="display: flex; gap: 8px; flex-wrap: wrap">
-</div>
-<div style="background: #D8D9B9; border: 1px solid rgba(103,118,46,.22); border-radius: 16px; padding: 22px; display: flex; flex-direction: column; gap: 14px">
-<div style="font-size: 16px; line-height: 1.5"><strong style="font-weight: 600" id="stagetitle"></strong> <span style="color: #57534E" id="stagehelp"></span></div>
-<div id="topicchips" style="display: flex; flex-wrap: wrap; gap: 10px">
-</div>
-</div>
-<div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(min(260px, 100%), 1fr)); gap: 16px">
-<div style="background: #E5E6CF; border-radius: 16px; padding: 18px 20px; font-size: 15.5px; line-height: 1.55"><strong style="font-weight: 600">Our demo post</strong> is about tonight. Tag Stanley, Wispr Flow and Ella.</div>
-<div style="background: #E5E6CF; border-radius: 16px; padding: 18px 20px; font-size: 15.5px; line-height: 1.55"><strong style="font-weight: 600">Take a group photo.</strong> It goes into your Stanley photos folder, ready for your post.</div>
-</div>
-</div>
-</details>
+</li>
 
-<!-- ============================================================
-     AFTER TONIGHT. The last dropdown, and the one nobody has to
-     finish in the room: the rituals run from here on.
-     ============================================================ -->
-<details class="stepbox" id="step-4" data-step="4">
-<summary class="stepsum" data-sum="4">
-<span class="stepbadge" data-stepbadge="4"></span>
-<span class="stepsumtext">
-<span class="stepkicker">After tonight · Led by Ella</span>
-<span class="steptitle" id="h4s">Turn on your rituals</span>
+<li>
+<button type="button" class="itemrow" data-item="p2" aria-pressed="false">
+<span data-itembox="p2"></span>
+<span class="itemtext">
+<span class="itemname">Draft your week of posts</span>
+<span class="itemhelp">One post at a time, until your week is drafted.</span>
 </span>
-<span class="stepcount" data-stepcount="4"></span>
-<svg class="stepchev" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6"></path></svg>
-</summary>
-<div class="stepbody">
-<p style="font-size: 17px; line-height: 1.6; color: #57534E; margin: 0; max-width: 62ch">LinkedIn only, to keep it simple. Switch on two or three and Stanley runs them for you.</p>
-<div id="ritualcards" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(min(260px, 100%), 1fr)); gap: 16px">
+</button>
+<div class="itempanel">
+<p>Send Stanley this, then answer its questions with Wispr Flow. One post at a time, until your week is drafted.</p>
+<div class="promptbox">
+<div class="prompthead">
+<span class="promptlabel">Say this to Stanley</span>
+<button type="button" class="copylt" data-copy="p2" style="font: 500 13px 'Inter', sans-serif; letter-spacing: .06em; text-transform: uppercase; background: #D8D9B9; color: #1A1816; border: 0; border-radius: 10px; padding: 0 16px; min-height: 44px; cursor: pointer">Copy</button>
 </div>
+<pre id="draftweek">Use my linkedin-content skill. Draft post 1 from "Your first week of posts" in my content strategy. When we finish, move to post 2.</pre>
+</div>
+<div class="cw-acc-group"><details class="cw-acc" style="border-bottom: 0"><summary>Stuck for a story?<svg class="cw-acc-chev" viewBox="0 0 24 24" aria-hidden="true"><path d="M9 6l6 6-6 6"/></svg></summary><div class="cw-acc-body">
+<p><strong>Be discovered:</strong> a frustration your clients share, or why you waited so long to share your work.</p>
+<p><strong>Be trusted:</strong> a how-to, or a lesson from a client conversation.</p>
+<p><strong>Be chosen:</strong> a client result, or what working with you looks like.</p>
+</div></details></div>
+</div>
+</li>
+
+<li>
+<button type="button" class="itemrow" data-item="p4" aria-pressed="false">
+<span data-itembox="p4"></span>
+<span class="itemtext">
+<span class="itemname">Turn one memo into a week of content</span>
+<span class="itemhelp">One recording, three posts, a carousel and a reel script.</span>
+</span>
+</button>
+<div class="itempanel" id="wisprnotetaker">
+<p>Record one voice memo or call with the <strong>Wispr Flow Notetaker</strong> (with everyone&rsquo;s OK). Then send Stanley:</p>
+<div class="promptbox">
+<div class="prompthead">
+<span class="promptlabel">Say this to Stanley</span>
+<button type="button" class="copylt" data-copy="p4" style="font: 500 13px 'Inter', sans-serif; letter-spacing: .06em; text-transform: uppercase; background: #D8D9B9; color: #1A1816; border: 0; border-radius: 10px; padding: 0 16px; min-height: 44px; cursor: pointer">Copy</button>
+</div>
+<pre id="memoprompt">Here's my voice memo: [paste the transcript]. Using my content strategy, turn it into 3 LinkedIn posts, 1 carousel and 1 reel script, in my voice. Keep my words. Add nothing that isn't in the memo.</pre>
+</div>
+</div>
+</li>
+
+<li>
+<button type="button" class="itemrow" data-item="r1" aria-pressed="false">
+<span data-itembox="r1"></span>
+<span class="itemtext">
+<span class="itemname">Switch on one ritual</span>
+<span class="itemhelp">A task Stanley runs for you on repeat. Your TIMERICH6 code unlocks all of them.</span>
+</span>
+</button>
+<div class="itempanel">
+<div class="cw-acc-group"><details class="cw-acc" style="border-bottom: 0"><summary>Watch the video<svg class="cw-acc-chev" viewBox="0 0 24 24" aria-hidden="true"><path d="M9 6l6 6-6 6"/></svg></summary><div class="cw-acc-body"><div class="loomwrap"><iframe src="https://www.loom.com/embed/c99bec0bc57c48d197e761a50e01ff88?hide_owner=true&amp;hide_share=true&amp;hide_title=true&amp;hideEmbedTopBar=true" title="How to switch on a Stanley ritual, and write your own" loading="lazy" allow="fullscreen" allowfullscreen></iframe></div><a href="https://www.loom.com/share/c99bec0bc57c48d197e761a50e01ff88" target="_blank" rel="noopener" style="font-size: 14px; font-weight: 500">Watch it full screen on Loom &#8599;</a></div></details></div>
+<ol>
+<li>In Stanley, open the left sidebar and click <strong>Rituals</strong>.</li>
+<li>Scroll through and read what each one does. For example, the <strong>Evening report</strong> sums up what you posted, how your posts are doing and who engaged. Your <strong>TIMERICH6</strong> code unlocks all of them.</li>
+<li>Switch one on.</li>
+<li>Want your own? Click to add a new ritual and describe it in plain words, with a day and time. For example: &ldquo;Every morning, ask me 3 personal questions to get my content ideas flowing.&rdquo;</li>
+</ol>
+<p>You can change or turn off any ritual from the Rituals page.</p>
+</div>
+</li>
+
+<li>
+<button type="button" class="itemrow" data-item="x1" aria-pressed="false">
+<span data-itembox="x1"></span>
+<span class="itemtext">
+<span class="itemname">Turn one post into many</span>
+<span class="itemhelp">One idea, every platform, straight into your drafts.</span>
+</span>
+</button>
+<div class="itempanel">
+<div class="cw-acc-group"><details class="cw-acc" style="border-bottom: 0"><summary>Watch the video<svg class="cw-acc-chev" viewBox="0 0 24 24" aria-hidden="true"><path d="M9 6l6 6-6 6"/></svg></summary><div class="cw-acc-body"><div class="loomwrap"><iframe src="https://www.loom.com/embed/324de2dd44a249a78c83fa37b81a9a4f?hide_owner=true&amp;hide_share=true&amp;hide_title=true&amp;hideEmbedTopBar=true" title="How to post one idea across every platform from Stanley" loading="lazy" allow="fullscreen" allowfullscreen></iframe></div><a href="https://www.loom.com/share/324de2dd44a249a78c83fa37b81a9a4f" target="_blank" rel="noopener" style="font-size: 14px; font-weight: 500">Watch it full screen on Loom &#8599;</a></div></details></div>
+<ol>
+<li>Open any draft in Stanley.</li>
+<li>Ask: &ldquo;Turn this into 3 posts for X and 1 reel script for Instagram, and put them in my drafts.&rdquo;</li>
+<li>Check them, click <strong>Mark as ready</strong>, and schedule.</li>
+</ol>
+<p>Ask for more (e.g. 10 posts) and one post becomes a week of content.</p>
+</div>
+</li>
+
+</ol>
 </div>
 </details>
 
-<section id="win" aria-labelledby="winh" style="position: relative; scroll-margin-top: 120px; background: #424B36; color: #FFFDFB; border-radius: 24px; padding: clamp(24px, 5cqi, 48px); display: flex; flex-direction: column; gap: 28px">
-<span style="position: absolute; right: clamp(12px, 3cqi, 28px); top: -14px; transform: rotate(6deg); background: #CCEEA0; color: #2C3422; font-family: 'Inter', sans-serif; font-size: 11px; letter-spacing: .12em; text-transform: uppercase; padding: 9px 13px; border-radius: 999px; box-shadow: 0 10px 24px -12px rgba(26,24,22,.45); white-space: nowrap">1 SEAT TO WIN</span>
-<div style="display: flex; flex-wrap: wrap; gap: 32px; align-items: flex-start">
-<div style="flex: 999 1 460px; min-width: 0; display: flex; flex-direction: column; gap: 14px">
-<span style="font-family: 'Inter', sans-serif; font-size: 12px; letter-spacing: .08em; font-weight: 600; text-transform: uppercase; color: #D8D9B9">Superhuman Accelerator · Win a seat</span>
-<h2 id="winh" style="font-family: 'Space Grotesk', system-ui, sans-serif; font-weight: 600; font-size: clamp(28px, 4.4cqi, 40px); letter-spacing: -.022em; line-height: 1.08; margin: 0; color: #FFFDFB; text-wrap: balance">Win 1 seat in the Superhuman Accelerator</h2>
-<p style="font-size: 17px; line-height: 1.6; margin: 0; color: #E5E6CF; max-width: 56ch">Gifted to tonight's room by Stanley and Wispr Flow. 4 weeks to BECOME VISIBLE, INCREASE REVENUE &amp; BUILD YOUR AI OS.</p>
-<a href="https://timerich.ai/accelerator" class="ctabtn" style="align-self: flex-start; display: inline-flex; align-items: center; background: #FFFDFB; color: #1A1816; text-decoration: none; font-weight: 500; font-size: 13px; letter-spacing: .06em; text-transform: uppercase; border-radius: 10px; padding: 0 20px; min-height: 48px; margin-top: 6px">See the accelerator</a>
-</div>
-<div style="flex: 1 1 340px; min-width: 0; background: rgba(255,253,251,.08); border: 1px solid rgba(216,217,185,.28); border-radius: 16px; padding: 22px; display: flex; flex-direction: column; gap: 14px">
-<span style="font-family: 'Inter', sans-serif; font-size: 12px; letter-spacing: .08em; font-weight: 600; text-transform: uppercase; color: #D8D9B9">How to enter</span>
-<ol style="list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 14px">
-<li style="display: flex; gap: 12px; align-items: flex-start"><span style="flex: 0 0 auto; width: 24px; height: 24px; margin-top: 1px; border-radius: 50%; background: #D8D9B9; color: #333A28; font-size: 12px; font-weight: 700; display: inline-flex; align-items: center; justify-content: center">1</span><span style="font-size: 16px; line-height: 1.5">Post on LinkedIn about building in public or about the workshop.</span></li>
-<li style="display: flex; gap: 12px; align-items: flex-start"><span style="flex: 0 0 auto; width: 24px; height: 24px; margin-top: 1px; border-radius: 50%; background: #D8D9B9; color: #333A28; font-size: 12px; font-weight: 700; display: inline-flex; align-items: center; justify-content: center">2</span><span style="font-size: 16px; line-height: 1.5">Submit the LinkedIn post URL.</span></li>
-<li style="display: flex; gap: 12px; align-items: flex-start"><span style="flex: 0 0 auto; width: 24px; height: 24px; margin-top: 1px; border-radius: 50%; background: #D8D9B9; color: #333A28; font-size: 12px; font-weight: 700; display: inline-flex; align-items: center; justify-content: center">3</span><span style="font-size: 16px; line-height: 1.5">Winners announced <span id="winnerswhen"></span>.</span></li>
-</ol>
-<form class="drawform is-dark" data-drawform novalidate>
-<label><span>Your name</span><input name="Name" type="text" autocomplete="name" required></label>
-<label><span>Email</span><input name="Email" type="email" autocomplete="email" required></label>
-<label class="wide"><span>LinkedIn post URL</span><input name="LinkedIn post" type="url" inputmode="url" placeholder="https://www.linkedin.com/posts/..." required></label>
-<input name="_gotcha" type="text" tabindex="-1" autocomplete="off" aria-hidden="true" class="drawtrap">
-<button type="submit">Submit post URL</button>
-<p class="drawmsg" role="status" aria-live="polite"></p>
-</form>
-</div>
-</div>
-
-<!-- What the best post wins: the one Accelerator seat, plus the Stanley
-     VIP setup and Wispr Flow Pro. Its own band across the foot of the card.
-
-     The VIP setup here is part of the prize. Everyone in the room gets 6 months of
-     Stanley free on TIMERICH6, which is what the code card at the top of the
-     page says.
-
-     The draw date comes from WORKSHOP.winnersWhen, the same value the "How
-     to enter" list above reads. It is said twice on this page now, and a
-     date that is right in one place and stale in the other is worse than
-     either -- so there is still only one of it. -->
-<div id="vipprize" style="display: flex; align-items: flex-start; gap: 14px; background: rgba(255,253,251,.08); border: 1px solid rgba(216,217,185,.28); border-left: 4px solid #CCEEA0; border-radius: 16px; padding: 18px 20px">
-<img src="/os/img/stanley.png" alt="" width="32" height="32" style="flex: 0 0 auto; width: 32px; height: 32px; border-radius: 8px; background: #EEEBFF; object-fit: contain; display: block"/>
-<span style="font-size: 16.5px; line-height: 1.55; color: #FFFDFB; min-width: 0">Best post wins: 1 seat in the Superhuman Accelerator, a VIP setup by the Stanley team: brain, voice and rituals built with you ($1,000 value), plus 6 months of Stanley Premium. 12 months of Wispr Flow Pro. Winners announced <span id="vipwhen"></span>.</span>
-</div>
-</section>
+<div style="background: #FFFFFF; border: 1px solid rgba(26,24,22,.12); border-radius: 16px; padding: 4px 22px"><div class="cw-acc-group" style="border-top: 0"><details class="cw-acc" style="border-bottom: 0"><summary>Bonus: Stanley video guides, 5 short videos<svg class="cw-acc-chev" viewBox="0 0 24 24" aria-hidden="true"><path d="M9 6l6 6-6 6"/></svg></summary><div class="cw-acc-body"><ol class="cw-acc-ol">
+<li><a href="https://www.loom.com/share/4d80c14f76b843389285aa391edea560" target="_blank" rel="noopener">Connectors</a>: connect Wispr Flow and your tools</li>
+<li><a href="https://www.loom.com/share/ba045aa4570f4c6abb7db97e59a12342" target="_blank" rel="noopener">MCP connector</a>: plug Stanley into Claude or ChatGPT</li>
+<li><a href="https://www.loom.com/share/d2f889283f5e486f8d141803a81dba8e" target="_blank" rel="noopener">Keep the brain updated</a>: every edit teaches it your voice</li>
+<li><a href="https://www.loom.com/share/c99bec0bc57c48d197e761a50e01ff88" target="_blank" rel="noopener">Custom rituals</a>: tasks it runs on repeat</li>
+<li><a href="https://www.loom.com/share/324de2dd44a249a78c83fa37b81a9a4f" target="_blank" rel="noopener">Post across platforms</a>: one idea, every platform</li>
+</ol></div></details></div></div>
 
 <section id="hosts" aria-labelledby="hostsh" style="display: flex; flex-direction: column; gap: 20px">
 <span style="font-family: 'Inter', sans-serif; font-size: 12px; letter-spacing: .08em; font-weight: 600; text-transform: uppercase; color: #57534E">Your host</span>
@@ -586,7 +721,7 @@ Working rules
 </section>
 
 <section aria-labelledby="community" style="display: flex; flex-direction: column; gap: 20px">
-<span style="font-family: 'Inter', sans-serif; font-size: 12px; letter-spacing: .08em; font-weight: 600; text-transform: uppercase; color: #57534E">After tonight</span>
+<span style="font-family: 'Inter', sans-serif; font-size: 12px; letter-spacing: .08em; font-weight: 600; text-transform: uppercase; color: #57534E">Keep going</span>
 <h2 id="community" style="font-family: 'Space Grotesk', system-ui, sans-serif; font-weight: 600; font-size: clamp(28px, 4.4cqi, 40px); letter-spacing: -.022em; line-height: 1.08; margin: 0">Join the Time Rich Club</h2>
 <p style="font-size: 17px; line-height: 1.6; color: #57534E; margin: 0; max-width: 62ch">Time Rich Club is for founders, leaders and investors who refuse to choose between ambition and a life they love. Members get mentorship to build a life of impact: become visible, build authority, and build the delegation system that gives them their time back. Real wealth isn&rsquo;t only financial. It&rsquo;s a deeper relationship with yourself and your mission, and the freedom to spend your time how you choose.</p>
 <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(min(300px, 100%), 1fr)); gap: 28px 16px; padding-top: 14px"><div style="position: relative; background: #D8D9B9; border: 1px solid rgba(26,24,22,.55); border-radius: 20px; padding: 28px 24px 24px; display: flex; flex-direction: column; gap: 14px"><span style="position: absolute; top: -13px; right: 20px; font-family: 'Inter', sans-serif; font-size: 12px; font-weight: 600; letter-spacing: .1em; text-transform: uppercase; background: #424B36; color: #FFFDFB; border-radius: 999px; padding: 6px 14px">Substack</span><span style="font-family: 'Inter', sans-serif; font-size: 12px; letter-spacing: .12em; font-weight: 600; text-transform: uppercase; color: #67762E">Time Rich Club</span><span style="font-family: 'Space Grotesk', system-ui, sans-serif; font-weight: 600; font-size: 24px; letter-spacing: -.02em; line-height: 1.1">Member</span><span style="font-family: 'Space Grotesk', system-ui, sans-serif; font-weight: 700; font-size: clamp(36px, 6cqi, 48px); letter-spacing: -.03em; line-height: 1; color: #333A28">$77 <span style="font-size: .7em">p.a</span></span><ul style="margin: 0; padding-left: 20px; display: flex; flex-direction: column; gap: 6px; font-size: 15.5px; line-height: 1.5; color: #1A1816; flex: 1 1 auto"><li>Private content, <strong style="font-weight: 600">resources</strong> &amp; pep talks</li><li>Every <strong style="font-weight: 600">free Time Rich workshop</strong> added to your calendar automatically, so you never miss a live session</li><li>All <strong style="font-weight: 600">replays</strong> of free sessions + partnership perks</li></ul><a href="https://www.timerichclub.com/subscribe" target="_blank" rel="noopener" style="align-self: flex-start; display: inline-flex; align-items: center; gap: 8px; min-height: 48px; padding: 0 22px; border-radius: 14px; background: #F1ECF8; color: #1A1816; text-decoration: none; font-size: 14px; font-weight: 600; letter-spacing: .1em; text-transform: uppercase">Join the club &rarr;</a></div><div style="position: relative; background: #D8D9B9; border: 1px solid rgba(26,24,22,.55); border-radius: 20px; padding: 28px 24px 24px; display: flex; flex-direction: column; gap: 14px"><span style="position: absolute; top: -13px; right: 20px; font-family: 'Inter', sans-serif; font-size: 12px; font-weight: 600; letter-spacing: .1em; text-transform: uppercase; background: #E0A0A0; color: #1A1816; border-radius: 999px; padding: 6px 14px">Increasing to $650 p.a</span><span style="font-family: 'Inter', sans-serif; font-size: 12px; letter-spacing: .12em; font-weight: 600; text-transform: uppercase; color: #67762E">Time Rich Club</span><span style="font-family: 'Space Grotesk', system-ui, sans-serif; font-weight: 600; font-size: 24px; letter-spacing: -.02em; line-height: 1.1">Founding Member</span><span style="font-family: 'Space Grotesk', system-ui, sans-serif; font-weight: 700; font-size: clamp(36px, 6cqi, 48px); letter-spacing: -.03em; line-height: 1; color: #333A28">$350 <span style="font-size: .7em">p.a</span></span><ul style="margin: 0; padding-left: 20px; display: flex; flex-direction: column; gap: 6px; font-size: 15.5px; line-height: 1.5; color: #1A1816; flex: 1 1 auto"><li>Monthly drop of the <strong style="font-weight: 600">Time Rich</strong> &amp; Growth Strategies</li><li><strong style="font-weight: 600">LIVE</strong> fireside chats with TRC mentors</li><li>Time Rich Club <strong style="font-weight: 600">comms in Slack with TRC mentors</strong></li><li><strong style="font-weight: 600">Notion Superhuman OS</strong></li><li><strong style="font-weight: 600">Join the next Superhuman Accelerator (Feb)</strong></li></ul><a href="https://www.timerichclub.com/subscribe" target="_blank" rel="noopener" style="align-self: flex-start; display: inline-flex; align-items: center; gap: 8px; min-height: 48px; padding: 0 22px; border-radius: 14px; background: #D4EBA8; color: #1A1816; text-decoration: none; font-size: 14px; font-weight: 600; letter-spacing: .1em; text-transform: uppercase">Founding member &rarr;</a></div></div>
@@ -615,8 +750,6 @@ Working rules
 </div>
 </section>
 
-<div style="background: #FFFFFF; border: 1px solid rgba(26,24,22,.12); border-radius: 16px; padding: 4px 22px"><div class="cw-acc-group" style="border-top: 0"><details class="cw-acc" style="border-bottom: 0"><summary>Bonus: Stanley video guides, 5 short videos<svg class="cw-acc-chev" viewBox="0 0 24 24" aria-hidden="true"><path d="M9 6l6 6-6 6"/></svg></summary><div class="cw-acc-body"><p><strong>Part 1: Get set up</strong></p><ol class="cw-acc-ol"><li><a href="https://www.loom.com/share/4d80c14f76b843389285aa391edea560" target="_blank" rel="noopener">Connect Wispr Flow + Connectors</a>: talk instead of type</li><li><a href="https://www.loom.com/share/ba045aa4570f4c6abb7db97e59a12342" target="_blank" rel="noopener">The MCP Connector</a>: plug Stanley into the AI you already use (Claude, ChatGPT or any tool that supports MCP), so your agents can read your content brain and hand Stanley ideas, drafts and posts without copy-pasting</li></ol><p><strong>Part 2: Make it yours</strong></p><ol class="cw-acc-ol" start="3"><li><a href="https://www.loom.com/share/d2f889283f5e486f8d141803a81dba8e" target="_blank" rel="noopener">Keeping the Brain Updated</a>: every edit teaches it your voice</li><li><a href="https://www.loom.com/share/c99bec0bc57c48d197e761a50e01ff88" target="_blank" rel="noopener">Custom Rituals</a>: tasks it runs for you on repeat</li></ol><p><strong>Part 3: Ship content</strong></p><ol class="cw-acc-ol" start="5"><li><a href="https://www.loom.com/share/324de2dd44a249a78c83fa37b81a9a4f" target="_blank" rel="noopener">Posting Across Platforms</a>: one idea, every platform</li></ol></div></details></div></div>
-
 </main>
 
 <footer style="border-top: 1px solid rgba(26,24,22,.12); margin-top: 48px">
@@ -626,8 +759,7 @@ Working rules
 <div style="display: flex; flex-direction: column; gap: 10px"><span style="font-family: 'Inter', sans-serif; font-size: 12px; font-weight: 600; letter-spacing: .08em; text-transform: uppercase; color: #57534E">Partners</span><div style="display: flex; flex-wrap: wrap; gap: 8px"><span style="display: inline-flex; align-items: center; gap: 8px; background: #FFFDFB; border: 1px solid rgba(26,24,22,.1); border-radius: 999px; padding: 5px 12px 5px 5px"><img src="/os/img/stanley.png" alt="" width="26" height="26" style="width: 26px; height: 26px; border-radius: 50%; background: #EEEBFF; object-fit: contain; display: block"><span style="font-size: 14px; font-weight: 600; color: #1A1816">Stanley</span></span><span style="display: inline-flex; align-items: center; gap: 8px; background: #FFFDFB; border: 1px solid rgba(26,24,22,.1); border-radius: 999px; padding: 5px 12px 5px 5px"><img src="/os/img/wispr-flow.png" alt="" width="26" height="26" style="width: 26px; height: 26px; border-radius: 50%; background: #1A1816; object-fit: contain; display: block"><span style="font-size: 14px; font-weight: 600; color: #1A1816">Wispr Flow</span></span></div></div>
 </div>
 <div style="display: flex; flex-wrap: wrap; gap: 12px; justify-content: space-between; font-size: 14px; color: #57534E; border-top: 1px solid rgba(26,24,22,.08); padding-top: 18px">
-<span>Time Rich Club · New York</span>
-<span>Stuck? Wave at a host, or ask the person next to you.</span>
+<span>Time Rich Club</span>
 </div>
 </div>
 </footer>
@@ -638,33 +770,41 @@ Working rules
   'use strict';
 
   /* ====================================================================
-     THE TWO OPEN ANSWERS. Each one is a single edit here, nowhere else.
-     While either value below still has [square brackets] in it, the page
-     keeps <meta name="robots" content="noindex"> in the head.
+     THE TWO PROMPTS. Each one is a single edit here, nowhere else: they
+     are long enough that the markup would be unreadable with them in it,
+     and the Open Claude and Open ChatGPT buttons need the strategy one
+     as a string to hang off a ?q=.
 
      The codes are final and live in the markup above, not here: Wispr Flow
      TIMERICH6 (6 months Pro) and Stanley TIMERICH6 (6 months free).
      Each copy button reads the code off the page, so editing it in the
-     markup is enough.
+     markup is enough. Same for the three short messages to Stanley.
      ==================================================================== */
   var WORKSHOP = {
 
-    /* 1. The Step 1 prompt. Shown in the dark panel and copied by its button. */
-    mikaPrompt: `You are the best personal brand strategist in the world: warm, sharp, and focused on founders building a business. Interview me, a founder who may know nothing about personal branding or content, and at the end fill out my Personal Branding worksheet using my answers. The whole thing should take about 10 minutes.
+    /* 1. Step 2's content strategy prompt. Shown in the dark panel, copied
+          by its button, and carried by Open Claude / Open ChatGPT. */
+    strategyPrompt: `About me and my business: [say or paste your answers to the 7 questions above]
+
+You are the best personal brand strategist in the world: warm, sharp, and focused on founders building a business. Build my content strategy with me, then fill out my Personal Branding worksheet and plan my first week of posts. The whole thing should take about 10 minutes.
+
+Start from what you already know
+- Read what I told you about me and my business first.
+- Pre-fill everything you can from it. Only ask me what it doesn't already answer.
+- If I haven't told you about my business yet, ask me the 7 questions in one message before you start.
 
 How to run the interview
-
-- Start with a 2-sentence intro (about 10 minutes, 5 quick sections, you'll hand me a finished worksheet at the end), then ask my name, my company and what it does.
+- Open with 2 sentences: what you already know about me, and that we'll go through 6 short sections.
 - Keep every message short and in plain language. Explain any term like "funnel" or "positioning" in one line.
 - Do the heavy lifting for me: draft, suggest, and pre-fill, so I mostly react and edit instead of starting from a blank page.
 - If an answer is vague, ask one quick follow-up for a real example, number, or result. Then move on.
-- Never invent credentials, results, or stories. Only use what I told you.
-- Tell me which section we're in (e.g. "Section 2 of 5").
+- Never invent credentials, results, or stories, and don't add reasons or causes I didn't give you. Only use what I told you.
+- Tell me which section we're in (e.g. "Section 2 of 6").
 
 The sections, in order
 
 Section 1 · Your goal
-Ask me to pick the ONE that matters most right now:
+From what I told you I want most from my content, suggest the ONE goal that matters most right now, with one line on why, and ask me to confirm or switch:
 1. Winning customers (the right buyers find me through inbound)
 2. Raising money (investors know who I am before I pitch)
 3. Hiring (great people want to work for my company)
@@ -673,12 +813,12 @@ Ask me to pick the ONE that matters most right now:
 6. Owning my market (I'm the name people think of in my category)
 
 Section 2 · Your topic Venn diagram
-Explain in one line: your topic sits where four circles overlap. Then ask all four in a single message, so I can answer them together:
+Explain in one line: your topic sits where four circles overlap.
 - PROOF: credibility you have that others don't (companies you've built, results, numbers, things you've lived through)
 - DEMAND: what people already ask you about
 - PERSON: who cares most about what you say (often your ideal customer)
 - PASSION: what you'd talk about for an hour, for free
-Then propose a one-line overlap ("what I could post about") and ask me to confirm or tweak it.
+Pre-fill all four from what I told you. Then ask me, in one message, only for what's missing. Then propose a one-line overlap ("what I could post about") and ask me to confirm or tweak it.
 
 Section 3 · Your positioning
 Explain in one line: positioning is your topic, one level deeper, so the right person instantly thinks "that's for me."
@@ -704,8 +844,11 @@ Ask in one message:
 - What day and time I'll protect to write or film
 If my number sounds like a best-week number, push back once.
 
+Section 6 · Your first week of posts
+Plan as many posts as I said I can sustain each week. For each one, give the pillar, the topic, the story or proof it's built on, and a hook. Spread them across the three pillars. Only use stories and proof I've told you. If a post needs a story I haven't given you, ask me for it in one message.
+
 Final output
-Fill in the worksheet below using my words wherever possible. Output it as ONE markdown code block so I can copy it and paste it straight into a Google Doc. Mark the goal I picked with [x] and leave the rest as [ ]. Keep every heading and label exactly as written. Don't add commentary inside the block.
+Fill in the worksheet below using my words wherever possible. Output it as ONE markdown code block so I can copy it and paste it straight into a Google Doc. Mark the goal I picked with [x] and leave the rest as [ ]. Keep every heading and label exactly as written. Repeat the Post block once per post. Don't add commentary inside the block.
 
 Personal Branding
 
@@ -751,12 +894,67 @@ Your platform and cadence
 **Posts per week I can sustain on a busy week:** ...
 **When I'll write or film (day and time I'm protecting):** ...
 
+Part 4 · Your first week of posts
+**Post 1**
+Pillar: ...
+Topic: ...
+Story or proof: ...
+Hook: "..."
+
 After the block, tell me to paste the worksheet into a Google Doc on my Google Drive.
 
-Start the interview now.`,
+Start now.`,
 
-    /* 2. When the Accelerator winner is announced. */
-    winnersWhen: "Thursday at 5pm ET"
+    /* 2. Step 2's creators prompt. Run in the same chat as the one above,
+          so it already has the worksheet. */
+    creatorsPrompt: `My Personal Branding worksheet is in this chat. If you can't find it, say so and ask me to paste it before you start.
+
+You are a social media growth strategist who studies one thing: which creators actually turn posting into revenue, and how. Help me find out which type of creator I am, then pick 5 creators I should study.
+
+Keep every message short and in plain language. Do the heavy lifting: suggest, then let me react.
+
+Step 1 · The 6 creator types that make money
+Show me this list in one short message, one line each:
+1. The Builder: shares the company as it grows (numbers, wins, mistakes). Makes money from the business itself: customers, investors, hires.
+2. The Teacher: turns know-how into frameworks and how-tos. Makes money from courses, cohorts and workshops.
+3. The Storyteller: shares a personal journey and lessons. Makes money from speaking, books and brand deals.
+4. The Expert: owns one narrow topic with a sharp point of view. Makes money from consulting and high-ticket services.
+5. The Curator: breaks down news, trends and other people's work. Makes money from a newsletter and sponsors.
+6. The Connector: spotlights people and brings them together. Makes money from a community, events and memberships.
+Add one line: most people who earn from content are one main type plus one supporting type.
+
+Step 2 · Find my type
+Using my worksheet, especially my goal, positioning and pillars, tell me my main type and my supporting type. Give one line on why for each. Then tell me how that combination usually makes money and whether it fits my goal. If it doesn't fit, say so and suggest what to change.
+If you can't tell, ask me up to 3 quick questions first, then decide.
+Ask me to confirm or switch.
+
+Step 3 · Pick 5 creators to study
+Pick 5 real creators who post on LinkedIn or X:
+- 2 at the top of my type, so I can see where it leads
+- 3 a few steps ahead of me: similar audience, industry or business model, small enough that I can copy what they do this month
+At least one should share my main type and at least one my supporting type.
+If you can search the web, check each profile exists and is active before you suggest it. Never make up a person, a link or how much someone earns. If you can't check a link, give the name and write "search on LinkedIn" in place of a link.
+
+Step 4 · What to steal
+For each creator, tell me:
+- their type
+- why they're right for me (one line)
+- one thing to study: a post format, a hook pattern, or how they sell from their content
+
+Final output
+Give me ONE plain text code block so I can paste it into Stanley's Brain under Topics and Creators. Use this layout and don't add commentary inside the block:
+
+My creator type: [main] + [supporting]
+How I'll make money from content: [one line]
+
+Creators I study:
+1. [Name] · [type] · [LinkedIn or X link]
+   Study: [the one thing]
+(repeat for all 5)
+
+After the block, tell me to paste it into Stanley: profile → Brain → Topics and Creators.
+
+Start now.`
   };
 
   /* ==================================================================== */
@@ -767,156 +965,88 @@ Start the interview now.`,
     return String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
   };
 
-  /* ---- what the page remembers ---------------------------------------
-     One map of ticks, keyed by item, shared by the setup rows at the top
-     and by every sub-step inside the dropdowns. The copy buttons write
-     into the same map, under the key their item carries, so there is one
-     answer to "is this done?" and not two.
+  /* ---- the open answers, and the noindex guard ------------------------
+     Nothing on this page waits on an answer any more: it is an evergreen
+     public guide, the codes are final and both prompts are written, so
+     OPEN is empty and the page is indexable. Put a value back in it
+     with a [PLACEHOLDER] still in it and the page goes noindex again,
+     which is what used to keep a half-written page out of Google. */
+  var OPEN = [];
+  if (OPEN.some(function (v) { return /\[[A-Z][^\]]*\]/.test(String(v)); })) {
+    var robots = document.createElement('meta');
+    robots.setAttribute('name', 'robots');
+    robots.setAttribute('content', 'noindex');
+    document.head.appendChild(robots);
+  }
 
-     Kept in localStorage so a refresh in the middle of the night does not
-     lose the evening. Every touch is wrapped: a private window, or blocked
+  /* ---- what the page remembers ---------------------------------------
+     One map of ticks, keyed by item, shared by every row on the page. The
+     copy buttons write into the same map, under the key their own row
+     carries, so there is one answer to "is this done?" and not two.
+
+     Kept in localStorage so a refresh in the middle of a step does not
+     lose the work. Every touch is wrapped: a private window, or blocked
      site data, must leave the page working and simply not remember. */
   var STORE = 'tr_contentworkshop';
 
-  var state = { copied: null, stage: 0, done: {}, rituals: { 0: true } };
+  var state = { copied: null, done: {} };
 
   function load() {
     try {
       var saved = JSON.parse(window.localStorage.getItem(STORE) || 'null');
       if (!saved || typeof saved !== 'object') { return; }
       if (saved.done && typeof saved.done === 'object') { state.done = saved.done; }
-      if (saved.rituals && typeof saved.rituals === 'object') { state.rituals = saved.rituals; }
-      if (typeof saved.stage === 'number') { state.stage = saved.stage; }
     } catch (e) { /* nothing remembered, which is not a broken page */ }
   }
 
   function save() {
     try {
-      window.localStorage.setItem(STORE, JSON.stringify({
-        done: state.done, rituals: state.rituals, stage: state.stage
-      }));
-    } catch (e) { /* the evening still works, it just will not survive a refresh */ }
+      window.localStorage.setItem(STORE, JSON.stringify({ done: state.done }));
+    } catch (e) { /* the work still happens, it just will not survive a refresh */ }
   }
 
-  var SETUP_KEYS = ['s0', 's1', 's2', 's3'];
-  var SETUP = [
-    'Laptop and charger',
-    'ChatGPT or Claude installed and signed in',
-    'LinkedIn signed in on your laptop',
-    'Phone with iMessage or WhatsApp (for Stanley)'
-  ];
+  var STEP_NAMES = ['Set up', 'Strategy', 'Content machine'];
 
-  var STEP_NAMES = ['Set up', 'Tools', 'Intro', 'Stanley', 'Rituals'];
+  /* ---- the steps, read back off the page ------------------------------
+     Every tickable row and the panel of how-to under it is written in the
+     markup, which is where a step's content belongs: the video, the
+     numbered list and the screenshot sit with the row they explain. So
+     the script does not hold a second copy of the list -- it reads the
+     rows out of each dropdown.
 
-  /* ---- the sub-steps, one list per dropdown ---------------------------
-     `key`   the tick's name in state.done. Three of them -- p1, sk, p2 --
-             are also what a copy button writes, so copying the prompt
-             ticks that row and nothing else.
-     `opt`   shown as optional and not required for the step to complete,
-             but still counted in "2 of 3 done".
-     `shot`  a file in contentworkshop/img/, drawn under the row it
-             belongs to. `alt` is what it says with images off.
-
-     Step 2 has no screenshots yet: nothing was supplied for it.
-     Add a file to contentworkshop/img/ and a `shot`/`alt` pair here. */
-  var STEPS = [
-    { n: 1, items: [
-      { key: 'i2b', name: 'Connect your tools',
-        help: 'In Connectors, add Wispr Flow, LinkedIn and any other platforms you use.',
-        shot: 'step2-2.png', w: 1146, h: 907,
-        alt: "Stanley's Connectors screen, with the apps grouped into Core, Meetings, Newsletters and Other. Connected ones carry a green tick." },
-      { key: 'i1t', name: 'Choose how Stanley talks to you',
-        help: 'iMessage or text message. Pick the one you check all day.' }
-    ] },
-    { n: 2, items: [
-      { key: 'i3w', top: true, name: 'Turn on Wispr Flow',
-        help: 'Wispr Flow dictation or Wispr Flow Notetaker, your pick. How to do both is at the top of this step.' },
-      { key: 'i3s', top: true, name: 'Introduce yourself to the person next to you',
-        help: 'Use the list above. Under 3 minutes in total, so you both get to speak.' },
-      { key: 'p1', top: true, name: 'Copy the prompt and open Claude or ChatGPT',
-        help: 'The buttons below open either one in a new tab.' },
-      { key: 'i1b', top: true, name: 'Answer its questions out loud with Wispr',
-        help: 'Hold fn, speak, let go. Your words appear wherever your cursor is. Mac without fn: Ctrl + Opt. Windows: Ctrl + Win. Or paste in your Wispr Flow Notetaker transcript from the intro. Messy is great.' },
-      { key: 'i2a', name: 'Save the worksheet as a Google Doc',
-        help: 'Set sharing to anyone with the link, copy it and paste it to Stanley: by text, WhatsApp or straight into Stanley.' },
-      { key: 'i2c', name: 'Share your website and any other context',
-        help: 'Past posts, newsletters, creators you rate. More context, a better brain.' }
-    ] },
-    { n: 3, items: [
-      { key: 'sk', top: true, name: 'Copy the skill',
-        help: 'The whole thing, from the panel below.' },
-      { key: 'i3b', top: true, name: 'In Stanley, go to Brain → Skills, click + and name it linkedin-content',
-        help: 'The name matters: it is what you call below.',
-        shot: 'step3-1.png', w: 509, h: 437,
-        alt: "Stanley's Brain panel: the Skills section is open with a skill named linkedin-content under it." },
-      { key: 'i3c', top: true, name: 'Paste the skill in and save it',
-        help: 'From then on it collects your context, interviews you, offers angles and hooks, and scores the draft.' },
-      { key: 'p2', name: 'Prompt Stanley with your story',
-        help: 'Answer its interview with Wispr, then refine the draft.' }
-    ] }
-  ];
-
-  /* How many rituals count as "switched on". The member picks which two. */
-  var RITUALS_NEEDED = 2;
-
-  var ITEMS_BY_STEP = {};
-  STEPS.forEach(function (step) { ITEMS_BY_STEP[step.n] = step.items; });
-
-  var STAGES = [
-    { name: 'Top: be discovered', title: 'Top of funnel.', help: 'Help new people discover you. Pick one:', topics: ['Relatable frustration: plenty of ideas, until you open a blank draft', 'Opinion: your best content is hiding in your clients’ questions', 'Personal story: why I waited so long to share my work publicly'] },
-    { name: 'Middle: be trusted', title: 'Middle of funnel.', help: 'Build trust in your expertise. Pick one:', topics: ['How-to: turn one customer conversation into five post ideas', 'Teardown: how I’d rewrite a weak LinkedIn hook, and why', 'Lesson learned: what changed when I started interviewing clients before writing'] },
-    { name: 'Bottom: be chosen', title: 'Bottom of funnel.', help: 'Help someone choose you. Pick one:', topics: ['Client result: how I helped a client get a clear result', 'Your process: what the first week of working with me looks like', 'Buying decision: when to hire someone like me versus do it yourself'] },
-    { name: 'Workshop recap', title: 'Workshop recap.', help: 'Share your experience tonight. Pick one:', topics: ['Takeaway: one thing from today’s workshop I’ll try this week', 'What you created: the post idea I came in with, and what I left with', 'Tag the host and tools: Wispr Flow, Stanley and Ella Molony Cook'] }
-  ];
-
-  var RITUALS = [
-    { name: 'Repurpose Winners', desc: 'Takes your best-performing posts and turns them into fresh ones.' },
-    { name: 'Repackage Old Posts', desc: 'Brings back old posts that still hold up, rewritten for today.' },
-    { name: 'Good Morning', desc: 'A daily read of what’s moving in your world, with post ideas. Start here if you have no posts yet.' }
-  ];
-
-  /* ---- the open answers, written into the page ------------------------ */
-  one('#mikaprompt').textContent = WORKSHOP.mikaPrompt;
-  one('#winnerswhen').textContent = WORKSHOP.winnersWhen;
-  one('#vipwhen').textContent = WORKSHOP.winnersWhen;
-  one('#anncwhen').textContent = WORKSHOP.winnersWhen;
-  one('#enterwhen').textContent = WORKSHOP.winnersWhen;
-
-  // The draw: both forms post to the forms worker, which files the entry in
-  // Notion ("Content Workshop Draw Entries"). Only a linkedin.com link goes.
-  var DRAW_ENDPOINT = 'https://time-rich-forms.timerich.workers.dev/draw-entry';
-  Array.prototype.forEach.call(document.querySelectorAll('[data-drawform]'), function (f) {
-    var msg = f.querySelector('.drawmsg'), btn = f.querySelector('button');
-    function say(t, err) { msg.textContent = t; msg.classList.toggle('is-err', !!err); }
-    f.addEventListener('submit', function (ev) {
-      ev.preventDefault();
-      var d = {}; Array.prototype.forEach.call(f.elements, function (el) { if (el.name) d[el.name] = el.value.trim(); });
-      if (!d.Name) return say('Add your name.', true);
-      if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(d.Email)) return say('Add a valid email so we can reach you if you win.', true);
-      if (!/linkedin\.com\/./i.test(d['LinkedIn post'])) return say('Paste the link to your LinkedIn post, like https://www.linkedin.com/posts/...', true);
-      btn.disabled = true; say('Sending…');
-      fetch(DRAW_ENDPOINT, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(d) })
-        .then(function (r) { return r.json().catch(function () { return {}; }).then(function (j) { return { ok: r.ok && j.ok !== false, j: j }; }); })
-        .then(function (res) {
-          if (!res.ok) { btn.disabled = false; return say((res.j && res.j.error) || 'That didn’t go through. Try again in a moment.', true); }
-          f.reset(); btn.disabled = false;
-          say('You’re in the draw! Winners announced ' + WORKSHOP.winnersWhen + '.');
-        })
-        .catch(function () { btn.disabled = false; say('That didn’t go through. Check your connection and try again.', true); });
-    });
+     `data-opt` on a row marks it optional: it still counts in "2 of 4
+     done", but the step completes without it. */
+  var STEPS = [1, 2, 3].map(function (n) {
+    return {
+      n: n,
+      items: all('#step-' + n + ' [data-item]').map(function (btn) {
+        return { key: btn.getAttribute('data-item'), opt: btn.hasAttribute('data-opt') };
+      })
+    };
   });
 
-  /* ---- copy buttons --------------------------------------------------- */
-  /* Everything copied here is also on the page, so each button reads its
-     own text back out of the DOM rather than keeping a second copy. */
+  var ALL_ITEMS = STEPS.reduce(function (acc, step) { return acc.concat(step.items); }, []);
+
+  /* ---- the prompts, written into the page ----------------------------- */
+  one('#strategyprompt').textContent = WORKSHOP.strategyPrompt;
+  one('#creatorsprompt').textContent = WORKSHOP.creatorsPrompt;
+  one('#donetotal').textContent = String(ALL_ITEMS.length);
+
+  /* ---- copy buttons ---------------------------------------------------
+     Everything copied here is also on the page, so each button reads its
+     own text back out of the DOM rather than keeping a second copy. The
+     `done` key is the row the copy ticks: copying a prompt ticks that one
+     row and nothing else. */
   var fromPage = function (sel) { return function () { return one(sel).textContent; }; };
 
   var COPY = {
     wispr: { idle: 'Copy', text: fromPage('#wisprcode') },
     stanley: { idle: 'Copy', text: fromPage('#stanleycode') },
-    p1: { idle: 'Copy prompt', text: function () { return WORKSHOP.mikaPrompt; }, done: 'p1' },
-    p2: { idle: 'Copy prompt', text: function () { return 'Use my linkedin-content skill. My topic: '; }, done: 'p2' },
-    sk: { idle: 'Copy skill', text: fromPage('#skilltext'), done: 'sk' }
+    p1: { idle: 'Copy prompt', text: fromPage('#strategyprompt'), done: 'p1' },
+    p3: { idle: 'Copy prompt', text: fromPage('#creatorsprompt'), done: 'p3' },
+    sk: { idle: 'Copy skill', text: fromPage('#skilltext'), done: 'sk' },
+    p2: { idle: 'Copy', text: fromPage('#draftweek'), done: 'p2' },
+    p4: { idle: 'Copy', text: fromPage('#memoprompt'), done: 'p4' }
   };
 
   all('[data-copy]').forEach(function (btn) {
@@ -940,11 +1070,11 @@ Start the interview now.`,
 
   /* ---- Open Claude / Open ChatGPT, with the prompt already in the box ----
      Both AIs read a ?q= on their new-chat URL and drop it into the message
-     box, so the button carries Mika's prompt with it. The prompt is long, so
-     past MAX_URL the button falls back to the plain new-chat page. Either
-     way the click also copies the prompt, ticks the Step 2 row and says so,
-     so if an AI ever ignores ?q= the member just pastes. Real links, opened
-     by the browser: no window.open for a popup blocker to stop. */
+     box, so the button carries the strategy prompt with it. The prompt is
+     long, so past MAX_URL the button falls back to the plain new-chat page.
+     Either way the click also copies the prompt, ticks the Step 2 row and
+     says so, so if an AI ever ignores ?q= the reader just pastes. Real
+     links, opened by the browser: no window.open for a blocker to stop. */
   var AIS = {
     claude: { home: 'https://claude.ai/new', q: 'https://claude.ai/new?q=' },
     chatgpt: { home: 'https://chatgpt.com/', q: 'https://chatgpt.com/?q=' }
@@ -974,10 +1104,10 @@ Start the interview now.`,
   all('[data-ai]').forEach(function (a) {
     var ai = AIS[a.getAttribute('data-ai')];
     if (!ai) { return; }
-    a.href = aiHref(ai, WORKSHOP.mikaPrompt);
+    a.href = aiHref(ai, WORKSHOP.strategyPrompt);
     a.addEventListener('click', function () {
       try {
-        var w = navigator.clipboard.writeText(WORKSHOP.mikaPrompt);
+        var w = navigator.clipboard.writeText(WORKSHOP.strategyPrompt);
         if (w && w.catch) { w.catch(function () {}); }
       } catch (e) {}
       state.done.p1 = true;
@@ -995,110 +1125,18 @@ Start the interview now.`,
     return 'flex: 0 0 auto; width: 24px; height: 24px; border-radius: 50%; display: inline-flex; align-items: center; justify-content: center; font-weight: 700; font-size: 13px; margin-top: 1px; '
       + (on ? 'background: #424B36; color: #FFFDFB; border: 2px solid #424B36' : 'background: #FFFDFB; color: transparent; border: 2px solid rgba(66,75,54,.45)');
   }
-  function tabStyle(sel) {
-    return 'font: 500 15px Inter, sans-serif; border-radius: 999px; padding: 0 18px; min-height: 44px; cursor: pointer; '
-      + (sel ? 'background: #424B36; color: #FFFDFB; border: 1px solid #424B36' : 'background: #FFFDFB; color: #1A1816; border: 1px solid rgba(66,75,54,.35)');
-  }
-  function cardStyle(on) {
-    return 'display: flex; flex-direction: column; align-items: flex-start; gap: 10px; cursor: pointer; border-radius: 16px; padding: 22px; min-height: 44px; font: inherit; color: #1A1816; transition: border-color .18s ease, box-shadow .18s ease; '
-      + (on ? 'background: #D8D9B9; border: 2px solid #424B36; box-shadow: 0 16px 34px -24px rgba(26,24,22,.4)' : 'background: #FFFFFF; border: 1px solid rgba(26,24,22,.12)');
-  }
-  function pillStyle(on) {
-    return 'flex: 0 0 auto; font-family: Inter, sans-serif; font-size: 11px; font-weight: 700; letter-spacing: .1em; text-transform: uppercase; border-radius: 999px; padding: 6px 12px; '
-      + (on ? 'background: #424B36; color: #FFFDFB' : 'background: #E5E6CF; color: #57534E');
-  }
 
-  /* ---- the repeated bits, built once ---------------------------------
-     Built here and then only patched by render(), so ticking a row never
-     replaces the element under the pointer, and a keyboard user keeps
-     focus on the row they just pressed. */
+  /* ---- the step nav, built once --------------------------------------- */
   one('#stepnav').innerHTML = STEP_NAMES.map(function (n, i) {
-    return '<a href="#step-' + i + '" class="stepdot" style="flex: 0 0 auto; display: flex; align-items: center; gap: 8px; text-decoration: none; color: #1A1816; padding: 8px 12px 8px 8px; border-radius: 999px; min-height: 28px">'
-      + '<span data-badge="' + i + '"></span>'
+    return '<a href="#step-' + (i + 1) + '" class="stepdot" style="flex: 0 0 auto; display: flex; align-items: center; gap: 8px; text-decoration: none; color: #1A1816; padding: 8px 12px 8px 8px; border-radius: 999px; min-height: 28px">'
+      + '<span data-badge="' + (i + 1) + '"></span>'
       + '<span class="stepshort" style="font-size: 14px; font-weight: 500; white-space: nowrap">' + esc(n) + '</span>'
       + '</a>';
   }).join('');
 
-  one('#setuplist').innerHTML = SETUP.map(function (label, i) {
-    return '<button type="button" class="checkrow" data-setup="' + i + '" aria-pressed="false" style="width: 100%; display: flex; align-items: center; gap: 12px; text-align: left; background: transparent; border: 0; border-radius: 12px; padding: 12px; min-height: 44px; cursor: pointer; font: 16px \'Inter\', sans-serif; line-height: 1.45; color: #1A1816">'
-      + '<span data-box="' + i + '"></span>'
-      + '<span>' + esc(label) + '</span>'
-      + '</button>';
-  }).join('');
-
-  /* One <li> per sub-step: the tickable row, and under it the screenshot of
-     the screen that row is talking about. The image is a link to the file
-     itself, so a tap opens it full size. */
-  function itemMarkup(item) {
-    /* The card's full width on a phone, which is where this page is read,
-       but never wider than the file itself: these are small captures and a
-       503px screenshot stretched across a 1120px desktop card is a blur.
-       w and h are the file's own pixels, so nothing shifts as it loads. */
-    var shot = item.shot
-      ? '<figure class="shot" style="max-width: ' + item.w + 'px">'
-        + '<a href="img/' + esc(item.shot) + '" target="_blank" rel="noopener">'
-        + '<img src="img/' + esc(item.shot) + '" alt="' + esc(item.alt || '') + '"'
-        + ' width="' + item.w + '" height="' + item.h + '" loading="lazy" decoding="async">'
-        + '</a>'
-        + '<figcaption class="shotcap">Tap to open it full size.</figcaption>'
-        + '</figure>'
-      : '';
-    return '<li>'
-      + '<button type="button" class="itemrow" data-item="' + esc(item.key) + '" aria-pressed="false">'
-      + '<span data-itembox="' + esc(item.key) + '"></span>'
-      + '<span class="itemtext">'
-      + '<span class="itemname">' + esc(item.name) + (item.opt ? ' <span class="itemopt">Optional</span>' : '') + '</span>'
-      + '<span class="itemhelp">' + esc(item.help) + '</span>'
-      + '</span>'
-      + '</button>'
-      + shot
-      + '</li>';
-  }
-
-  /* Rows marked top go in the step's upper list when it has one, the rest
-     below: Step 2's prompt rows sit above the prompt, Step 3's story row
-     sits under the skill. */
-  STEPS.forEach(function (step) {
-    var top = one('[data-items-top="' + step.n + '"]');
-    var isTop = function (item) { return !!(top && item.top); };
-    if (top) { top.innerHTML = step.items.filter(isTop).map(itemMarkup).join(''); }
-    one('[data-items="' + step.n + '"]').innerHTML = step.items
-      .filter(function (item) { return !isTop(item); }).map(itemMarkup).join('');
-  });
-
-  one('#funneltabs').innerHTML = STAGES.map(function (s, i) {
-    return '<button type="button" role="tab" data-stage="' + i + '" aria-selected="false" style="">' + esc(s.name) + '</button>';
-  }).join('');
-
-  one('#ritualcards').innerHTML = RITUALS.map(function (r, i) {
-    return '<button type="button" data-ritual="' + i + '" aria-pressed="false" style="">'
-      + '<span style="display: flex; align-items: center; justify-content: space-between; gap: 12px; width: 100%">'
-      + '<span style="font-family: \'Space Grotesk\', system-ui, sans-serif; font-weight: 600; font-size: 20px; letter-spacing: -.03em; text-align: left">' + esc(r.name) + '</span>'
-      + '<span data-pill="' + i + '"></span>'
-      + '</span>'
-      + '<span style="font-size: 15.5px; line-height: 1.55; text-align: left; color: #57534E">' + esc(r.desc) + '</span>'
-      + '</button>';
-  }).join('');
-
   /* ---- toggles -------------------------------------------------------- */
-  function delegate(sel, attr, fn) {
-    one(sel).addEventListener('click', function (e) {
-      var btn = e.target && e.target.closest ? e.target.closest('[' + attr + ']') : null;
-      if (!btn) { return; }
-      fn(btn.getAttribute(attr));
-      render();
-    });
-  }
-
-  delegate('#setuplist', 'data-setup', function (i) {
-    var key = SETUP_KEYS[Number(i)];
-    state.done[key] = !state.done[key];
-  });
-  delegate('#funneltabs', 'data-stage', function (i) { state.stage = Number(i); });
-  delegate('#ritualcards', 'data-ritual', function (i) { state.rituals[i] = !state.rituals[i]; });
-
-  /* The sub-step rows live inside the dropdowns, so this one is delegated
-     from the document rather than from a single container. */
+  /* The rows live inside the dropdowns, so this one is delegated from the
+     document rather than from a single container. */
   document.addEventListener('click', function (e) {
     var btn = e.target && e.target.closest ? e.target.closest('[data-item]') : null;
     if (!btn) { return; }
@@ -1116,14 +1154,18 @@ Start the interview now.`,
     if (box && box.tagName === 'DETAILS') { box.open = true; }
   });
 
-  /* ---- which steps count as done --------------------------------------
-     One rule for the whole page: a step is done when every sub-step that
-     is not marked optional is ticked. Set-up is its four rows, and the
-     rituals are the two the member has to switch on.
+  /* The two "How to redeem" links in the code cards point at a dropdown
+     too, and the same rule applies: open it, then let the jump happen. */
+  all('a[href^="#step-"]').forEach(function (link) {
+    link.addEventListener('click', function () {
+      var box = document.querySelector(link.getAttribute('href'));
+      if (box && box.tagName === 'DETAILS') { box.open = true; }
+    });
+  });
 
-     The copy buttons feed the same map of ticks, under the key their own
-     row carries, so copying the Step 2 prompt ticks that row and nothing
-     else -- the trigger that used to complete the whole step. */
+  /* ---- which steps count as done --------------------------------------
+     One rule for the whole page: a step is done when every row in it that
+     is not marked optional is ticked. */
   function itemsDone(items) {
     var done = 0;
     items.forEach(function (item) { if (state.done[item.key]) { done++; } });
@@ -1134,56 +1176,37 @@ Start the interview now.`,
     return items.every(function (item) { return item.opt || !!state.done[item.key]; });
   }
 
-  function ritualsOn() {
-    return RITUALS.filter(function (_, i) { return !!state.rituals[i]; }).length;
-  }
-
-  /* Index 0 is set-up, 1 to 3 are the build, 4 is the rituals. */
   function stepDone() {
-    return [
-      SETUP_KEYS.every(function (key) { return !!state.done[key]; }),
-      stepReady(ITEMS_BY_STEP[1]),
-      stepReady(ITEMS_BY_STEP[2]),
-      stepReady(ITEMS_BY_STEP[3]),
-      ritualsOn() >= RITUALS_NEEDED
-    ];
+    return STEPS.map(function (step) { return stepReady(step.items); });
   }
 
-  /* The dropdown's own header: the number or a tick, and "2 of 3 done". */
-  function paintHeader(n, done, count, total, word) {
+  /* The dropdown's own header: the number or a tick, and "2 of 4 done". */
+  function paintHeader(n, done, count, total) {
     var box = document.getElementById('step-' + n);
     var badge = one('[data-stepbadge="' + n + '"]');
     var label = one('[data-stepcount="' + n + '"]');
     if (box) { box.setAttribute('data-done', done ? 'yes' : 'no'); }
     if (badge) { badge.textContent = done ? '✓' : String(n); }
     if (label) {
-      label.innerHTML = '<span class="countlong">' + count + ' of ' + total + ' ' + word + '</span>'
+      label.innerHTML = '<span class="countlong">' + count + ' of ' + total + ' done</span>'
         + '<span class="countshort">' + count + '/' + total + '</span>';
     }
   }
 
-  /* ---- render: patch what the state changed, nothing else ------------- */
+  /* ---- render: patch what the state changed, nothing else -------------
+     Built in the markup and then only patched here, so ticking a row never
+     replaces the element under the pointer, and a keyboard user keeps
+     focus on the row they just pressed. */
   var wasDone = null;
 
   function render() {
     var dn = stepDone();
 
-    STEP_NAMES.forEach(function (n, i) {
-      var badge = one('[data-badge="' + i + '"]');
+    STEPS.forEach(function (step, i) {
+      var badge = one('[data-badge="' + step.n + '"]');
       badge.setAttribute('style', badgeStyle(dn[i]));
-      badge.textContent = dn[i] ? '✓' : String(i);
-    });
-    one('#donecount').textContent = dn.filter(Boolean).length;
+      badge.textContent = dn[i] ? '✓' : String(step.n);
 
-    SETUP.forEach(function (label, i) {
-      var on = !!state.done[SETUP_KEYS[i]];
-      one('[data-setup="' + i + '"]').setAttribute('aria-pressed', on ? 'true' : 'false');
-      var box = one('[data-box="' + i + '"]');
-      box.setAttribute('style', boxStyle(on));
-      box.textContent = on ? '✓' : '';
-    });
-
-    STEPS.forEach(function (step) {
       step.items.forEach(function (item) {
         var on = !!state.done[item.key];
         one('[data-item="' + item.key + '"]').setAttribute('aria-pressed', on ? 'true' : 'false');
@@ -1191,32 +1214,12 @@ Start the interview now.`,
         box.setAttribute('style', boxStyle(on));
         box.textContent = on ? '✓' : '';
       });
-      paintHeader(step.n, dn[step.n], itemsDone(step.items), step.items.length, 'done');
+      paintHeader(step.n, dn[i], itemsDone(step.items), step.items.length);
     });
-    paintHeader(4, dn[4], ritualsOn(), RITUALS.length, 'on');
 
-    STAGES.forEach(function (s, i) {
-      var sel = state.stage === i;
-      var tab = one('[data-stage="' + i + '"]');
-      tab.setAttribute('aria-selected', sel ? 'true' : 'false');
-      tab.setAttribute('style', tabStyle(sel));
-    });
-    var st = STAGES[state.stage];
-    one('#stagetitle').textContent = st.title;
-    one('#stagehelp').textContent = st.help;
-    one('#topicchips').innerHTML = st.topics.map(function (t) {
-      return '<span style="border: 1px dashed rgba(66,75,54,.45); border-radius: 12px; padding: 10px 14px; font-size: 15px; background: #FFFDFB">' + esc(t) + '</span>';
-    }).join('');
-
-    RITUALS.forEach(function (r, i) {
-      var on = !!state.rituals[i];
-      var card = one('[data-ritual="' + i + '"]');
-      card.setAttribute('aria-pressed', on ? 'true' : 'false');
-      card.setAttribute('style', cardStyle(on));
-      var pill = one('[data-pill="' + i + '"]');
-      pill.setAttribute('style', pillStyle(on));
-      pill.textContent = on ? 'On ✓' : 'Off';
-    });
+    /* The top bar counts the rows, not the steps: it is the one number
+       that says how much of the guide is left. */
+    one('#donecount').textContent = String(itemsDone(ALL_ITEMS));
 
     all('[data-copy]').forEach(function (btn) {
       var key = btn.getAttribute('data-copy');
@@ -1224,13 +1227,13 @@ Start the interview now.`,
     });
 
     /* A step that has just been finished hands over to the next one. Only
-       on the change, so a member who shuts a finished step again does not
+       on the change, so a reader who shuts a finished step again does not
        have it reopened under them on the next tick. The first render has
        nothing to compare against, so it opens nothing. */
     if (wasDone) {
       dn.forEach(function (done, i) {
         if (done && !wasDone[i]) {
-          var next = document.getElementById('step-' + (i + 1));
+          var next = document.getElementById('step-' + (i + 2));
           if (next && next.tagName === 'DETAILS') { next.open = true; }
         }
       });

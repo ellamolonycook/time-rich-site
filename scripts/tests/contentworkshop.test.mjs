@@ -1,18 +1,31 @@
-// /contentworkshop, the workshop page the room keeps open all evening.
+// /contentworkshop, the public guide to building a content system.
+//
+// Ella, 11 Nov: "Please update timerich.ai/contentworkshop to have the same
+// flow that is in Week 3 but for the public." So the New York build night and
+// its LinkedIn draw are gone and the page is an evergreen guide: three steps,
+// twelve tickable rows, every code, prompt and link on the page.
 //
 // It was ported by hand from a design-tool export, so the first rule it pins
 // is that nothing from that export leaked through: no {{hole}}, no <sc-for>,
 // no /_blob/ image that would 404 on the site. The rest is run for real in
 // jsdom, because the page's own inline script is what wires every copy
-// button, tab and toggle, and a stale code in the room is a worse failure
+// button and tick, and a stale code on a public page is a worse failure
 // than a stale page.
 import { JSDOM } from 'jsdom';
 import { readFileSync, existsSync } from 'node:fs';
 
 const HTML = readFileSync(new URL('../../contentworkshop/index.html', import.meta.url), 'utf8');
 
-// The five the brief names, by the data-copy key each button carries.
-const COPY_KEYS = ['wispr', 'stanley', 'sk'];
+// Every copy button the page carries, by the data-copy key it wears.
+const COPY_KEYS = ['wispr', 'stanley', 'p1', 'p3', 'sk', 'p2', 'p4'];
+
+// The rows, step by step, in the order the brief lists them.
+const ROWS = {
+  1: ['s1', 's2', 's3'],
+  2: ['w1', 'p1', 'p3', 'b1'],
+  3: ['sk', 'p2', 'p4', 'r1', 'x1']
+};
+const TOTAL_ROWS = Object.values(ROWS).reduce((n, r) => n + r.length, 0);
 
 let pass = 0, fail = 0;
 function check(name, cond, extra) {
@@ -22,7 +35,7 @@ function check(name, cond, extra) {
 
 /** A fresh page with its inline script run, plus the clipboard it reaches for.
  *  `store` is the backing object behind localStorage, so a test can hand the
- *  page an evening already half ticked off, or read back what it saved. */
+ *  page a guide already half ticked off, or read back what it saved. */
 function load(store = {}) {
   const dom = new JSDOM(HTML, {
     url: 'https://timerich.ai/contentworkshop',
@@ -66,9 +79,26 @@ function loadWithoutStorage() {
   return { dom, document: dom.window.document };
 }
 
+/** What a visitor can actually read: the body with the inline script and the
+ *  stylesheet taken out. jsdom counts script text as body text, and a code
+ *  comment about the page's history is not something anyone reads. */
+function visibleText(document) {
+  const clone = document.body.cloneNode(true);
+  [...clone.querySelectorAll('script, style')].forEach((n) => n.remove());
+  return clone.textContent.replace(/\s+/g, ' ');
+}
+
 const clickCopy = (document, key) =>
   document.querySelector('[data-copy="' + key + '"]').dispatchEvent(
     new document.defaultView.MouseEvent('click', { bubbles: true }));
+
+const clickOn = (document, el) =>
+  el.dispatchEvent(new document.defaultView.MouseEvent('click', { bubbles: true }));
+
+/** A file the page points at, resolved from the repo root for an absolute
+ *  src and from contentworkshop/ for a relative one. */
+const fileFor = (src) => new URL(
+  (src.startsWith('/') ? '../..' + src : '../../contentworkshop/' + src), import.meta.url);
 
 console.log('\n/contentworkshop — nothing left over from the design export');
 {
@@ -87,141 +117,254 @@ console.log('\n/contentworkshop — the page basics');
   const { document } = load();
   check('title is the one the brief asked for',
     document.title === 'Content Workshop · Time Rich', document.title);
-  check('has a description meta',
-    (document.querySelector('meta[name="description"]') || {}).content ? true : false);
   check('has the favicon other pages use',
     HTML.includes('/rocketship-icon-32.png'));
   check('off-white #FFFDFB ground, as on /accelerator', HTML.includes('#FFFDFB'));
-  // Placeholders are still in, so the page must not be indexed yet.
-  const bracketed = /\[[A-Z][^\]]*\]/.test(HTML);
-  const noindex = (document.querySelector('meta[name="robots"]') || {}).content === 'noindex';
-  check('while a [PLACEHOLDER] is left, the page is noindex',
-    bracketed ? noindex : true, { bracketed, noindex });
-}
 
-console.log('\n/contentworkshop — the page says how many steps it has');
-{
-  // The build is "Before you start", then Steps 1 to 3. The page used to say
-  // "five steps" in three places, written before the steps were numbered.
-  const { document } = load();
-
-  check('the hero does not promise five steps',
-    !/five steps/i.test(HTML), (HTML.match(/.{0,50}five steps.{0,50}/i) || [])[0]);
-
-  const hero = document.querySelector('h1').parentElement.querySelector('p');
-  check('it describes the set-up and the three steps instead',
-    /set up first, then three steps/i.test(hero.textContent), hero.textContent.trim());
+  // The page is public now, so it has to be indexable -- and it has to stay
+  // indexable after the script has run, which is where the guard lives.
+  check('the markup carries no robots meta at all',
+    !/name="robots"/.test(HTML));
+  check('and the page is not noindex once the script has run',
+    document.querySelector('meta[name="robots"]') === null,
+    (document.querySelector('meta[name="robots"]') || {}).content);
+  check('the noindex guard is still there for the next open answer',
+    /var OPEN = \[\];/.test(HTML) && /content', 'noindex'/.test(HTML));
 
   const desc = (sel) => (document.querySelector(sel) || {}).content || '';
-  check('the meta description says the same thing',
-    /set up, then three steps/i.test(desc('meta[name="description"]')), desc('meta[name="description"]'));
-  check('and so does the og description, which is what a share card reads',
-    /set up, then three steps/i.test(desc('meta[property="og:description"]')),
-    desc('meta[property="og:description"]'));
-  check('the two are word for word the same',
-    desc('meta[name="description"]') === desc('meta[property="og:description"]'));
-
-  // Twitter has no description tag of its own here and falls back to og:.
+  const WANT = 'Everything you need to build your content system with Stanley and Wispr Flow: ' +
+    'every code, prompt and link. Set up, then three steps.';
+  check('the meta description is the one Ella wrote',
+    desc('meta[name="description"]') === WANT, desc('meta[name="description"]'));
+  check('and the og description, which is what a share card reads, matches it',
+    desc('meta[property="og:description"]') === WANT, desc('meta[property="og:description"]'));
   check('the Twitter card is set up to fall back to the og description',
     desc('meta[name="twitter:card"]') === 'summary_large_image' &&
     document.querySelector('meta[name="twitter:description"]') === null);
-
-  // The count the page actually keeps is five groups: Before you start, the
-  // three steps, and After tonight. That is what the top bar totals.
-  check('and the progress total counts all five groups',
-    HTML.includes('/5 done'));
 }
 
-console.log('\n/contentworkshop — the prizes, and who gets what');
+console.log('\n/contentworkshop — the hero is the public guide, not a build night');
 {
   const { document } = load();
-  const win = document.getElementById('win');
-  const vip = document.getElementById('vipprize');
+  const hero = document.querySelector('h1');
+  check('the h1 is "Build your content system."',
+    hero.textContent.trim() === 'Build your content system.', hero.textContent.trim());
+  check('the eyebrow says it is a free guide',
+    /Free guide · Time Rich/.test(hero.parentElement.textContent));
+  check('the sub-head names the three things it does',
+    /Set up Stanley and Wispr Flow, build your content strategy, then draft a week of posts\./
+      .test(hero.parentElement.querySelector('p').textContent),
+    hero.parentElement.querySelector('p').textContent.trim());
+  check('and still says to tick each step off',
+    /Tick each step off as you go\./.test(hero.parentElement.querySelector('p').textContent));
+  check('Ella and the two partners are still named at the top',
+    /Hosted by Ella Molony Cook\. Powered by/.test(visibleText(document)));
+}
 
-  check('the VIP prize sits in the challenge section, beside the five seats',
-    vip !== null && win !== null && win.contains(vip));
-  check('and after the five-seat heading, not before it',
-    vip !== null && (document.getElementById('winh').compareDocumentPosition(vip) & 4) !== 0);
+console.log('\n/contentworkshop — the build night, the draw and the winners are gone');
+{
+  const { document } = load();
+  const text = visibleText(document);
 
-  check('it reads exactly as Ella wrote it, draw date and all',
-    vip !== null && vip.textContent.replace(/\s+/g, ' ').trim() ===
-      'Best post wins: 1 seat in the Superhuman Accelerator, a VIP setup by the Stanley team: ' +
-      'brain, voice and rituals built with you ($1,000 value), plus 6 months of Stanley Premium. ' +
-      '12 months of Wispr Flow Pro. ' +
-      'Winners announced Thursday at 5pm ET.',
-    vip && vip.textContent.replace(/\s+/g, ' ').trim());
+  for (const [what, re] of [
+    ['tonight', /tonight/i],
+    ['the live build night', /build night|live build/i],
+    ['New York as a venue', /Live build night · New York|all night/i],
+    ['the draw', /\bdraw\b/i],
+    ['winners', /\bwinners?\b/i],
+    ['an Accelerator seat to win', /seat to win|win 1 seat|1 seat in the/i],
+    ['the person next to you', /person next to you/i],
+    ['waving at a host', /wave at a host/i],
+    ['being led by Ella', /Led by Ella/i],
+    ['after tonight', /after tonight/i]
+  ]) {
+    check('no mention of ' + what, !re.test(text), (text.match(re) || [])[0]);
+  }
 
-  check('it is one prize for the best post, not another five-seat line',
-    vip !== null && /Best post wins/.test(vip.textContent) &&
-    !/5 seats|five seats/i.test(vip.textContent));
+  check('the sticky announcement bar is gone',
+    !HTML.includes('class="annc"') && document.getElementById('anncwhen') === null);
+  check('the draw form and its markup are gone',
+    !HTML.includes('data-drawform') && !HTML.includes('drawband') &&
+    document.getElementById('enter') === null &&
+    document.querySelectorAll('form').length === 0,
+    document.querySelectorAll('form').length);
+  check('the worker endpoint it posted to is gone with it',
+    !HTML.includes('draw-entry'));
+  check('the "Win 1 seat" box and its ids are gone',
+    ['win', 'winh', 'winnerswhen', 'vipprize', 'vipwhen']
+      .every((id) => document.getElementById(id) === null));
+  check('WORKSHOP.winnersWhen is gone, and nothing reads it',
+    !/winnersWhen/.test(HTML));
+  check('the laptop-and-charger checklist is gone',
+    !/Laptop and charger/.test(HTML) && document.getElementById('setuplist') === null);
+  check('and "Before you start" is gone with it',
+    !/BEFORE YOU START/.test(HTML) && document.getElementById('step-0') === null);
+  check('the funnel topic tabs and the ritual cards are gone',
+    document.getElementById('funneltabs') === null &&
+    document.getElementById('ritualcards') === null);
+}
 
-  // The date is said twice on the page now -- here and in "How to enter" --
-  // and one of them going stale is worse than either. Both read the same
-  // value, so there is still only one date to edit.
-  check('the draw date comes from WORKSHOP.winnersWhen, not a second copy',
-    /one\('#vipwhen'\)\.textContent = WORKSHOP\.winnersWhen;/.test(HTML));
-  check('so both lines say the same thing',
-    document.getElementById('vipwhen').textContent ===
-    document.getElementById('winnerswhen').textContent &&
-    document.getElementById('vipwhen').textContent === 'Thursday at 5pm ET',
-    [document.getElementById('vipwhen').textContent,
-     document.getElementById('winnerswhen').textContent]);
+console.log('\n/contentworkshop — no Club-only content leaked onto the public page');
+{
+  const { document } = load();
+  const text = visibleText(document);
+  const prompts = document.getElementById('strategyprompt').textContent + '\n' +
+    document.getElementById('creatorsprompt').textContent;
 
-  // Everyone in the room gets 6 months of Stanley free on TIMERICH6, and the
-  // code card, the redeem card and the steps all have to say the same thing.
-  const offer = document.getElementById('stanleycode').closest('div[style]').parentElement;
+  for (const [what, re] of [
+    ['COMPASS', /compass/i],
+    ['the Business Hub', /business hub/i],
+    ['replays of Club calls', /#audacious-wins|#timerichclub/i],
+    ['Founding Member notes', /founding member note/i]
+  ]) {
+    check('the page never mentions ' + what, !re.test(text), (text.match(re) || [])[0]);
+  }
+
+  check('neither prompt mentions COMPASS', !/compass/i.test(prompts));
+  check('neither prompt mentions the Business Hub', !/business hub/i.test(prompts));
+  check('no ViKA or Monday-of-the-week wording either',
+    !/\bvika\b/i.test(text), (text.match(/.{0,40}vika.{0,40}/i) || [])[0]);
+}
+
+console.log('\n/contentworkshop — the page reads top to bottom in the order Ella set');
+{
+  const { document } = load();
+  const order = ['h1', '#essentials', '#start', '#step-1', '#step-2', '#step-3',
+    '#hostsh', '#community'];
+  const nodes = order.map((sel) => document.querySelector(sel));
+  check('every landmark is on the page', nodes.every(Boolean), order.filter((s, i) => !nodes[i]));
+  check('and each one comes after the one before it',
+    nodes.every((n, i) => i === 0 ||
+      (nodes[i - 1].compareDocumentPosition(n) & 4) !== 0),
+    order);
+
+  const bonus = [...document.querySelectorAll('summary')]
+    .find((s) => /Stanley video guides/.test(s.textContent));
+  check('the Stanley video guides row sits between Step 3 and Meet Ella',
+    bonus !== undefined &&
+    (document.getElementById('step-3').compareDocumentPosition(bonus) & 4) !== 0 &&
+    (bonus.compareDocumentPosition(document.getElementById('hostsh')) & 4) !== 0);
+
+  check('the hosts section still introduces Ella alone',
+    /Meet Ella$/.test((document.getElementById('hostsh') || {}).textContent || ''));
+  check('the Club section is headed "Keep going", not "After tonight"',
+    /Keep going/.test(document.getElementById('community').parentElement.textContent) &&
+    document.getElementById('community').textContent.trim() === 'Join the Time Rich Club');
+  check('and both Club prices are untouched',
+    HTML.includes('$77 ') && HTML.includes('$350 ') &&
+    HTML.includes('Increasing to $650 p.a'));
+  check('the two WhatsApp communities are still there',
+    [...document.querySelectorAll('a[href*="chat.whatsapp.com"]')].length === 2);
+  check('the partners footer is still there',
+    /Partners/.test(visibleText(document)) &&
+    HTML.includes('Follow Ella Molony Cook'));
+}
+
+console.log('\n/contentworkshop — "What you\'ll leave with"');
+{
+  const { document } = load();
+  const card = document.getElementById('start');
+  check('the start-here card is a plain section, not a dropdown',
+    card !== null && card.tagName === 'SECTION', card && card.tagName);
+  check('it is titled "What you\'ll leave with"',
+    /What you’ll leave with/.test(document.getElementById('starth').textContent),
+    document.getElementById('starth').textContent);
+  check('and lists the three things, word for word',
+    [...card.querySelectorAll('li')].map((n) => n.textContent).join('|') ===
+    ['Your content strategy, saved in Stanley',
+      '5 creators to study',
+      'A week of LinkedIn posts drafted in your voice'].join('|'),
+    [...card.querySelectorAll('li')].map((n) => n.textContent));
+  check('with the line about doing them in order',
+    /Three steps\. Do them in order: each one feeds the next\./.test(card.textContent));
+}
+
+console.log('\n/contentworkshop — the essentials, and the two codes');
+{
+  const { document } = load();
+  check('the label is "Your essentials", not "Tonight\'s essentials"',
+    document.getElementById('essentials').textContent.trim() === 'Your essentials',
+    document.getElementById('essentials').textContent.trim());
+  check('the Wispr code on the page is TIMERICH6',
+    document.getElementById('wisprcode').textContent === 'TIMERICH6');
   check('the Stanley code on the page is TIMERICH6',
     document.getElementById('stanleycode').textContent === 'TIMERICH6');
-  check('and the offer beside it reads 6 months free',
-    /6 months free/.test(offer.textContent), offer.textContent.replace(/\s+/g, ' ').trim());
-  check('the redeem steps say 100% off for 6 billing cycles too',
-    /100% off for the next 6 billing cycles/.test(HTML));
-  check('the redeem steps tell people to enter TIMERICH6 for Stanley',
-    /Add promotion code<\/strong>, enter <strong[^>]*>TIMERICH6<\/strong>/.test(HTML));
-  check('no STANLEY1MONTH or "1 month free" is left anywhere',
+  check('the Wispr offer reads 6 months Pro', HTML.includes('Wispr Flow &middot; 6 months Pro'));
+  check('the Stanley offer reads 6 months free', HTML.includes('Stanley &middot; 6 months free'));
+  check('no stale STANLEY1MONTH or 1-month Stanley offer is left',
     !HTML.includes('STANLEY1MONTH') && !/1 month free/i.test(HTML));
+
+  // Both "How to redeem" links used to point at "Before you start", which is
+  // gone: Stanley is redeemed in Step 1 and Wispr Flow in Step 2.
+  const redeem = [...document.querySelectorAll('a')]
+    .filter((a) => /How to redeem/.test(a.textContent))
+    .map((a) => a.getAttribute('href'));
+  check('"How to redeem" points at Step 2 for Wispr and Step 1 for Stanley',
+    redeem.join(',') === '#step-2,#step-1', redeem);
+}
+
+console.log('\n/contentworkshop — every Stanley link is the tracking link');
+{
+  const { document } = load();
+  const STANLEY = 'https://x.getstanley.ai/r/mz4y9g';
+  const links = [...document.querySelectorAll('a[href*="getstanley"]')];
+  check('there is at least one Stanley link', links.length >= 1, links.length);
+  check('and every one of them is the tracking link',
+    links.every((a) => a.getAttribute('href') === STANLEY),
+    links.map((a) => a.getAttribute('href')));
+  check('no bare getstanley.ai URL is left anywhere in the markup',
+    (HTML.match(/getstanley\.ai/g) || []).length === links.length,
+    (HTML.match(/https?:\/\/[^"' ]*getstanley[^"' ]*/g) || []));
+  check('"Go to Stanley" in the sign-up steps is that link',
+    links.some((a) => /Stanley/.test(a.textContent) &&
+      /Go to/.test(a.parentElement.textContent)));
+  check('each opens in a new tab, marked sponsored',
+    links.every((a) => a.getAttribute('target') === '_blank' &&
+      /\bnoopener\b/.test(a.getAttribute('rel') || '') &&
+      /\bsponsored\b/.test(a.getAttribute('rel') || '')),
+    links.map((a) => a.getAttribute('rel')));
 }
 
 console.log('\n/contentworkshop — how Wispr Flow is described');
 {
-  // Wispr Flow's own words for the product, and their line for anywhere the
-  // page asks someone to bring a note-taker to a call.
   const { document } = load();
 
   check('Wispr Flow is named as voice dictation and Notetaker',
     /Voice dictation and Notetaker/.test(HTML),
     (HTML.match(/.{0,40}Notetaker.{0,40}/) || [])[0]);
 
-  const recording = HTML.match(/Record, with everyone\u2019s OK/g) || [];
-  check('and recording a call is asked for in their words',
+  const recording = HTML.match(/with everyone&rsquo;s OK/g) || [];
+  check('and recording a call is asked for in their words, once',
     recording.length === 1, recording.length);
 
-  // The Notetaker option in Step 1 is the one place that asks for it, so the
-  // line has to be on that card rather than loose somewhere on the page.
+  // The memo row is the one place that asks for a recording, so the line has
+  // to be on that row rather than loose somewhere on the page.
   const row = document.getElementById('wisprnotetaker');
-  check('the line sits on the Notetaker option',
-    row !== null && /Record, with everyone\u2019s OK/.test(row.textContent),
+  check('the line sits with the voice-memo row',
+    row !== null && /with everyone’s OK/.test(row.textContent),
     row && row.textContent.replace(/\s+/g, ' ').trim());
-  check('which also names the Notetaker rather than just "your meetings"',
+  check('which also names the Notetaker rather than just "a recording"',
     row !== null && /Wispr Flow Notetaker/.test(row.textContent));
-  check('Step 2 never says Notetaker without Wispr Flow in front of it',
-    !/(?<!Wispr Flow )Notetaker/.test(document.getElementById('step-2').textContent.replace(/\s+/g, ' ')));
+  // The essentials card names the product in Wispr Flow's own words ("Voice
+  // dictation and Notetaker"); inside the steps it is always Wispr Flow Notetaker.
+  check('the steps never say Notetaker without Wispr Flow in front of it',
+    [1, 2, 3].every((n) => !/(?<!Wispr Flow )Notetaker/.test(
+      document.getElementById('step-' + n).textContent.replace(/\s+/g, ' '))));
   check('Step 2 says how to turn on dictation, on Mac and Windows',
-    /Hold <strong[^>]*>fn<\/strong>, speak, let go/.test(HTML) &&
+    /Hold <strong>fn<\/strong>, speak, let go/.test(HTML) &&
     /Ctrl \+ Opt/.test(HTML) && /Ctrl \+ Win/.test(HTML));
 
   // Wispr Flow asked for no mention of Granola on this page.
   check('Granola is not named anywhere on the page',
     !/granola/i.test(HTML), (HTML.match(/.{0,50}granola.{0,50}/i) || [])[0]);
 
-  // The set-up steps in "Before you start", as Wispr Flow asked for them.
-  const setup = document.getElementById('step-0');
-  const text = setup.textContent.replace(/\s+/g, ' ');
-  check('the set-up says to install on a laptop, through the referral link',
+  // The redeem steps, as Wispr Flow asked for them, now in Step 2.
+  const text = document.getElementById('step-2').textContent.replace(/\s+/g, ' ');
+  check('the redeem steps say to install on a laptop, through the referral link',
     /Install Wispr Flow on your laptop through/.test(text),
     (text.match(/Install Wispr Flow[^.]*\./) || [])[0]);
-  check('and that the code goes in Settings \u2192 Plans and Billing',
-    /Settings \u2192 Plans and Billing/.test(text));
+  check('and that the code goes in Settings → Plans and Billing',
+    /Settings → Plans and Billing/.test(text));
   check('at the promo link at the bottom',
     /Scroll to the very bottom and click the promo link/.test(text));
   check('for 6 months Pro',
@@ -229,14 +372,12 @@ console.log('\n/contentworkshop — how Wispr Flow is described');
     (text.match(/.{0,24}TIMERICH6.{0,24}/g) || []));
   check('it warns the code is desktop-only and useless to a paying customer',
     /The code only works in the desktop app, and does nothing if you already pay for Wispr\./.test(text));
-  check('and it tells anyone without a laptop what to do tonight',
-    /No laptop\? Use the free phone app tonight and add the code on your laptop later\./.test(text));
-  check('the old "not on your phone" line is gone, since the phone app is now the fallback',
-    !/Not on your phone/.test(HTML));
+  check('and it tells anyone without a laptop what to do instead',
+    /No laptop\? Use the free phone app for now and add the code on your laptop later\./.test(text));
 
   // The one link out to Wispr Flow is the redeem page, same as the portal.
   const links = [...document.querySelectorAll('a[href*="wisprflow.ai"]')];
-  check('the download link is the redeem page',
+  check('the download link is the TIMERICH6 6-month redeem page',
     links.length === 1 && links[0].getAttribute('href') === 'https://wisprflow.ai/info/redeem-promo?code=TIMERICH6&months=6',
     links.map((a) => a.getAttribute('href')));
   check('and it opens in a new tab, marked sponsored',
@@ -246,36 +387,363 @@ console.log('\n/contentworkshop — how Wispr Flow is described');
     links.length === 1 && links[0].getAttribute('rel'));
 }
 
-console.log('\n/contentworkshop — the WORKSHOP config, one place for the open answers');
+console.log('\n/contentworkshop — the build is three numbered dropdowns');
 {
-  check('a const WORKSHOP block exists', /const WORKSHOP\s*=\s*\{|var WORKSHOP\s*=\s*\{/.test(HTML));
-  check('mikaPrompt is in it', /mikaPrompt\s*:/.test(HTML));
-  check('winnersWhen is in it', /winnersWhen\s*:/.test(HTML));
   const { document } = load();
-  check('the strategy reaches Stanley as a shared Google Doc link, not Brain → Files',
-    ['Save the worksheet as a Google Doc', 'anyone with the link', 'paste it to Stanley', 'Share your website']
-      .every((t) => HTML.includes(t)) && !/Brain → Files/.test(HTML));
-  check('Step 3 carries Hannah Zhang\'s Stanley quote and spotlight screenshot',
-    (() => { const { document } = load(); const q = document.querySelector('#step-3 #hannahquote');
-      return q !== null && /Before, I would just use Claude for drafts\./.test(q.textContent) &&
-        q.querySelector('img').getAttribute('src') === 'img/hannah-stanley.webp' &&
-        existsSync(new URL('../../contentworkshop/img/hannah-stanley.webp', import.meta.url)); })());
-  check('no markdown # headings in the prompt or the skill',
-    (() => { const { document } = load();
-      return !/^#/m.test(document.getElementById('mikaprompt').textContent) &&
-        !/^#/m.test(document.getElementById('skilltext').textContent); })());
-  check('the strategy prompt is written for founders',
-    /Interview me, a founder who/.test(HTML) && !/Growing my career|Pivoting my career/.test(HTML));
-  check('the strategy prompt is rendered into the page',
-    document.getElementById('mikaprompt').textContent.trim().length > 0);
-  check('the top banner and the draw form say the same line',
-    ['anncwhen', 'enterwhen'].every((id) =>
-      document.getElementById(id).textContent === 'Thursday at 5pm ET' &&
-      /Winners announced Thursday at 5pm ET\./.test(document.getElementById(id).parentElement.textContent)));
-  check('the old 12pm deadline is gone', !/12pm/.test(HTML));
-  check('the winners line is rendered into the page',
-    document.getElementById('winnerswhen').textContent === 'Thursday at 5pm ET',
-    document.getElementById('winnerswhen').textContent);
+  const boxes = [...document.querySelectorAll('details.stepbox')];
+
+  check('there are exactly three steps', boxes.length === 3, boxes.length);
+  check('and they are numbered in order',
+    boxes.map((b) => b.id).join(',') === 'step-1,step-2,step-3',
+    boxes.map((b) => b.id));
+  check('each one is a real <details>, so it works without JavaScript',
+    boxes.every((b) => b.tagName === 'DETAILS' && b.querySelector('summary') !== null));
+  check('only Step 1 is open to begin with',
+    boxes.filter((b) => b.open).map((b) => b.id).join(',') === 'step-1',
+    boxes.filter((b) => b.open).map((b) => b.id));
+
+  const titles = boxes.map((b) => b.querySelector('.steptitle').textContent.trim());
+  check('the three titles are the ones from Week 3',
+    titles.join(' | ') === 'Set up Stanley and your content home | ' +
+      'Build your content strategy | Run your content machine',
+    titles);
+  const kickers = boxes.map((b) => b.querySelector('.stepkicker').textContent.trim());
+  check('and they are kicked off as Step 1, 2 and 3',
+    kickers.join(',') === 'Step 1,Step 2,Step 3', kickers);
+
+  const leads = boxes.map((b) => b.querySelector('.steplead').textContent.trim());
+  check('Step 1 leads with what Stanley is, and the 6 free months',
+    /^Stanley is your AI head of content: a voice note goes in, drafts in your voice come out, you approve, it posts\. Free for 6 months with code TIMERICH6\.$/
+      .test(leads[0]), leads[0]);
+  check('Step 2 leads with the 10-minute strategy',
+    /^Tell AI who you are and who you serve, and it turns that into your content strategy in about 10 minutes\.$/
+      .test(leads[1]), leads[1]);
+  check('Step 3 leads with one hour of talking',
+    /^One hour of talking\. 20 to 50 pieces of content\.$/.test(leads[2]), leads[2]);
+
+  // Rows, step by step, in order.
+  for (const n of [1, 2, 3]) {
+    const keys = [...document.querySelectorAll('#step-' + n + ' [data-item]')]
+      .map((b) => b.getAttribute('data-item'));
+    check('Step ' + n + ' has its ' + ROWS[n].length + ' rows, in order',
+      keys.join(',') === ROWS[n].join(','), keys);
+  }
+
+  const names = (n) => [...document.querySelectorAll('#step-' + n + ' .itemname')]
+    .map((s) => s.textContent.replace(/\s+Optional$/, '').trim());
+  check('Step 1 is sign up, connect, and the optional MCP connector',
+    names(1).join(' | ') === 'Sign up to Stanley (6 months free) | ' +
+      'Connect your tools to Stanley | Use Stanley inside your current AI tool',
+    names(1));
+  check('Step 2 is Wispr Flow, the strategy, the creators and the Brain',
+    names(2).join(' | ') === 'Redeem Wispr Flow (6 months Pro) | ' +
+      'Build your content strategy | Find 5 industry leaders to study | ' +
+      'Set up your Stanley Brain',
+    names(2));
+  check('Step 3 is the skill, the week, the memo, a ritual and the repurpose',
+    names(3).join(' | ') === 'Add the LinkedIn skill to Stanley | ' +
+      'Draft your week of posts | Turn one memo into a week of content | ' +
+      'Switch on one ritual | Turn one post into many',
+    names(3));
+
+  check('only the MCP row is optional, and it says so',
+    [...document.querySelectorAll('[data-item][data-opt]')]
+      .map((b) => b.getAttribute('data-item')).join(',') === 's3' &&
+    document.querySelector('[data-item="s3"] .itemopt') !== null);
+
+  check('Step 2 holds the strategy prompt and its copy button',
+    boxes[1].querySelector('#strategyprompt') !== null &&
+    boxes[1].querySelector('[data-copy="p1"]') !== null);
+  check('Step 2 holds the creators prompt and its copy button',
+    boxes[1].querySelector('#creatorsprompt') !== null &&
+    boxes[1].querySelector('[data-copy="p3"]') !== null);
+  check('Step 3 holds the skill and its copy button',
+    boxes[2].querySelector('#skilltext') !== null &&
+    boxes[2].querySelector('[data-copy="sk"]') !== null);
+
+  check('Step 1 closes with the note about your content home',
+    /Your content home\./.test(boxes[0].querySelector('.stepnote').textContent) &&
+    /Notion Content Hub/.test(boxes[0].querySelector('.stepnote').textContent));
+  check('and that note links to the Club section on this page',
+    boxes[0].querySelector('.stepnote a').getAttribute('href') === '#community',
+    boxes[0].querySelector('.stepnote a').getAttribute('href'));
+
+  // Ella's Loom of 4 Nov was her instructions to the team, not for members
+  // (Gideon, 6 Nov), so it must not be on this page.
+  check("Ella's internal Loom is not on the page",
+    !HTML.includes('73d3636a71e14dfb9872d35c62f04e68'));
+}
+
+console.log('\n/contentworkshop — every row carries its own how-to');
+{
+  const { document } = load();
+  const rows = [...document.querySelectorAll('[data-item]')];
+  check('there are ' + TOTAL_ROWS + ' rows in all', rows.length === TOTAL_ROWS, rows.length);
+  check('each row is followed by the panel that explains it',
+    rows.every((r) => {
+      const panel = r.parentElement.querySelector('.itempanel');
+      return r.parentElement.tagName === 'LI' && panel !== null &&
+        (r.compareDocumentPosition(panel) & 4) !== 0;
+    }));
+  check('each row says in one line what it is for',
+    rows.every((r) => (r.querySelector('.itemhelp').textContent || '').length > 20),
+    rows.map((r) => r.querySelector('.itemhelp').textContent.length));
+}
+
+console.log('\n/contentworkshop — the Looms, embedded and linked');
+{
+  const { document } = load();
+  // The six Ella named, by the row each one belongs with.
+  const WANT = [
+    ['s1', 'be6db9ceb94344afb9b56244c9e517f2'],
+    ['s2', '4d80c14f76b843389285aa391edea560'],
+    ['s3', 'ba045aa4570f4c6abb7db97e59a12342'],
+    ['b1', 'd2f889283f5e486f8d141803a81dba8e'],
+    ['r1', 'c99bec0bc57c48d197e761a50e01ff88'],
+    ['x1', '324de2dd44a249a78c83fa37b81a9a4f']
+  ];
+
+  for (const [key, id] of WANT) {
+    const panel = document.querySelector('[data-item="' + key + '"]')
+      .parentElement.querySelector('.itempanel');
+    const frame = panel.querySelector('iframe');
+    check('the ' + key + ' row embeds its Loom',
+      frame !== null && frame.getAttribute('src').includes('loom.com/embed/' + id),
+      frame && frame.getAttribute('src'));
+    check('and offers it full screen on Loom too',
+      [...panel.querySelectorAll('a')].some((a) =>
+        a.getAttribute('href') === 'https://www.loom.com/share/' + id &&
+        /Watch it full screen on Loom/.test(a.textContent)));
+  }
+
+  const frames = [...document.querySelectorAll('iframe')];
+  check('every embed is lazy, full-screen capable and titled',
+    frames.every((f) => f.getAttribute('loading') === 'lazy' &&
+      f.hasAttribute('allowfullscreen') &&
+      (f.getAttribute('title') || '').length > 10),
+    frames.map((f) => f.getAttribute('title')));
+  check('and every one sits inside a closed drop-down, so nothing loads unasked',
+    frames.every((f) => f.closest('details') !== null &&
+      f.closest('details').open === false));
+  check('the six embeds are the six Looms, no more',
+    frames.length === WANT.length, frames.length);
+}
+
+console.log('\n/contentworkshop — the Stanley video guides row');
+{
+  const { document } = load();
+  const row = [...document.querySelectorAll('details.cw-acc')]
+    .find((d) => /Stanley video guides/.test(d.querySelector('summary').textContent));
+  check('the bonus row is still there, and still says 5 videos',
+    row !== undefined && /5 short videos/.test(row.querySelector('summary').textContent));
+
+  const links = [...row.querySelectorAll('a')];
+  check('it lists the five Ella picked, in her order',
+    links.map((a) => a.getAttribute('href').split('/share/')[1]).join(',') ===
+    ['4d80c14f76b843389285aa391edea560', 'ba045aa4570f4c6abb7db97e59a12342',
+      'd2f889283f5e486f8d141803a81dba8e', 'c99bec0bc57c48d197e761a50e01ff88',
+      '324de2dd44a249a78c83fa37b81a9a4f'].join(','),
+    links.map((a) => a.getAttribute('href')));
+  check('each is named and says what it shows',
+    links.map((a) => a.textContent).join(' | ') ===
+    'Connectors | MCP connector | Keep the brain updated | Custom rituals | Post across platforms' &&
+    /Connect Wispr Flow and your tools/i.test(row.textContent) &&
+    /Plug Stanley into Claude or ChatGPT/i.test(row.textContent) &&
+    /Every edit teaches it your voice/i.test(row.textContent) &&
+    /Tasks it runs on repeat/i.test(row.textContent) &&
+    /One idea, every platform/i.test(row.textContent),
+    links.map((a) => a.textContent));
+  check('each opens in a new tab, noopener',
+    links.every((a) => a.getAttribute('target') === '_blank' &&
+      /noopener/.test(a.getAttribute('rel') || '')));
+  check('and the old Part 1 / Part 2 / Part 3 grouping is gone',
+    !/Part 1: Get set up/.test(HTML));
+}
+
+console.log('\n/contentworkshop — the screenshots, on the page');
+{
+  const { document } = load();
+  const shots = [...document.querySelectorAll('figure.shot')];
+
+  check('five screenshots are drawn', shots.length === 5, shots.length);
+  check('they are the five files Ella named, in order',
+    shots.map((f) => f.querySelector('img').getAttribute('src')).join(',') ===
+    ['/portal/assets/week3-stanley-flow.png',
+      '/portal/assets/visibility-stanley-connectors.png',
+      '/portal/assets/visibility-stanley-files.png',
+      '/portal/assets/week3-content-waterfall.png',
+      '/portal/assets/visibility-stanley-skills.png'].join(','),
+    shots.map((f) => f.querySelector('img').getAttribute('src')));
+  check('and every one of those files is actually in the repo',
+    shots.every((f) => existsSync(fileFor(f.querySelector('img').getAttribute('src')))),
+    shots.map((f) => f.querySelector('img').getAttribute('src'))
+      .filter((s) => !existsSync(fileFor(s))));
+
+  // A flow diagram belongs to its step; a screen of Stanley belongs to the
+  // row that tells you to go to that screen.
+  const inRow = shots.filter((f) => f.parentElement.classList.contains('itempanel'));
+  check('the three screens of Stanley sit in the panel of the row they explain',
+    inRow.length === 3 && inRow.every((f) => {
+      const row = f.closest('li').querySelector('[data-item]');
+      return row !== null && (row.compareDocumentPosition(f) & 4) !== 0;
+    }), inRow.length);
+  check('and the two flow diagrams sit at the top of their step, under the lead',
+    shots.filter((f) => f.parentElement.classList.contains('stepbody')).length === 2);
+
+  const imgs = shots.map((f) => f.querySelector('img'));
+  check('each is lazy-loaded', imgs.every((i) => i.getAttribute('loading') === 'lazy'));
+  check('each carries the alt text from the brief',
+    imgs.map((i) => i.getAttribute('alt')).join(' | ') ===
+    ['An AI head of content: from a voice note to a scheduled post',
+      "Stanley's Connectors screen. Connected apps carry a green tick.",
+      "Stanley's Brain panel",
+      'One voice memo becomes a month of content',
+      "Stanley's Brain panel with linkedin-content saved under Skills."].join(' | '),
+    imgs.map((i) => i.getAttribute('alt')));
+  check('each declares its own width and height, so nothing shifts as it loads',
+    imgs.every((i) => /^\d+$/.test(i.getAttribute('width') || '') &&
+                      /^\d+$/.test(i.getAttribute('height') || '')),
+    imgs.map((i) => i.getAttribute('width') + 'x' + i.getAttribute('height')));
+
+  // And those numbers are the file's own, read off the front of the PNG.
+  // A screenshot recropped or replaced without the attributes following it
+  // is a step that jumps as the image lands, and the page caps each one at
+  // its declared width so a wrong number also draws it at the wrong size.
+  check('the declared size is the size the file actually is',
+    imgs.every((i) => {
+      const bytes = readFileSync(fileFor(i.getAttribute('src')));
+      return bytes.subarray(1, 4).toString('latin1') === 'PNG' &&
+        bytes.readUInt32BE(16) === Number(i.getAttribute('width')) &&
+        bytes.readUInt32BE(20) === Number(i.getAttribute('height'));
+    }),
+    imgs.map((i) => {
+      const bytes = readFileSync(fileFor(i.getAttribute('src')));
+      return i.getAttribute('src') + ': declared ' + i.getAttribute('width') + 'x' +
+        i.getAttribute('height') + ', file ' + bytes.readUInt32BE(16) + 'x' + bytes.readUInt32BE(20);
+    }));
+
+  check('a tap opens the file full size, in its own tab',
+    shots.every((f) => {
+      const a = f.querySelector('a');
+      return a !== null && a.getAttribute('href') === f.querySelector('img').getAttribute('src') &&
+        a.getAttribute('target') === '_blank' && /\bnoopener\b/.test(a.getAttribute('rel') || '');
+    }));
+  check('the image fills the card on a phone',
+    /\.shot img\{[^}]*width:100%/.test(HTML));
+
+  // Hannah Zhang moved to Step 3, beside the LinkedIn skill she is talking about.
+  const q = document.querySelector('#step-3 #hannahquote');
+  check("Hannah Zhang's quote and photo sit with the LinkedIn skill",
+    q !== null &&
+    /Before, I would just use Claude for drafts\./.test(q.textContent) &&
+    q.querySelector('img').getAttribute('src') === 'img/hannah-stanley.webp' &&
+    existsSync(fileFor('img/hannah-stanley.webp')) &&
+    (document.querySelector('[data-item="sk"]').compareDocumentPosition(q) & 4) !== 0);
+}
+
+console.log('\n/contentworkshop — the two prompts');
+{
+  const { document } = load();
+  check('a WORKSHOP block holds them, one place for the long text',
+    /var WORKSHOP\s*=\s*\{/.test(HTML) &&
+    /strategyPrompt\s*:/.test(HTML) && /creatorsPrompt\s*:/.test(HTML));
+  check('mikaPrompt is gone, and so is every trace of Mika',
+    !/mikaPrompt/.test(HTML) &&
+    !/mika|reyes|adeli/i.test(visibleText(document)),
+    (visibleText(document).match(/.{0,40}(mika|reyes|adeli).{0,40}/i) || [])[0]);
+
+  const strategy = document.getElementById('strategyprompt').textContent;
+  const creators = document.getElementById('creatorsprompt').textContent;
+  check('both are rendered into the page',
+    strategy.length > 3000 && creators.length > 1500, [strategy.length, creators.length]);
+
+  check('the strategy prompt opens with the 7 answers',
+    strategy.startsWith('About me and my business: [say or paste your answers to the 7 questions above]'),
+    strategy.slice(0, 80));
+  check('it runs 6 sections, not 5',
+    /we'll go through 6 short sections/.test(strategy) &&
+    /"Section 2 of 6"/.test(strategy) &&
+    /Section 6 · Your first week of posts/.test(strategy) &&
+    !/Section 2 of 5/.test(strategy));
+  check('it plans the first week of posts and repeats the Post block',
+    /Repeat the Post block once per post\./.test(strategy) &&
+    /Part 4 · Your first week of posts/.test(strategy));
+  check('it ends with "Start now."',
+    strategy.trim().endsWith('Start now.'), strategy.trim().slice(-30));
+  check('it is written for founders, with no career options',
+    /focused on founders building a business/.test(strategy) &&
+    !/Growing my career|Pivoting my career/.test(strategy));
+
+  check('the creators prompt starts from the worksheet in the chat',
+    creators.startsWith('My Personal Branding worksheet is in this chat.'),
+    creators.slice(0, 60));
+  check('it lists the 6 creator types that make money',
+    /Step 1 · The 6 creator types that make money/.test(creators) &&
+    ['The Builder', 'The Teacher', 'The Storyteller', 'The Expert', 'The Curator', 'The Connector']
+      .every((t) => creators.includes(t)));
+  check('it picks 5 real creators and refuses to invent one',
+    /Pick 5 real creators who post on LinkedIn or X/.test(creators) &&
+    /Never make up a person, a link or how much someone earns\./.test(creators));
+  check('and it lands in Stanley under Topics and Creators',
+    /profile → Brain → Topics and Creators/.test(creators));
+  check('it ends with "Start now." too',
+    creators.trim().endsWith('Start now.'), creators.trim().slice(-30));
+
+  check('no markdown # headings in either prompt or in the skill',
+    !/^#/m.test(strategy) && !/^#/m.test(creators) &&
+    !/^#/m.test(document.getElementById('skilltext').textContent));
+  check('the strategy row says to save the worksheet as a Google Doc',
+    /Save the worksheet as a Google Doc\./.test(document.getElementById('step-2').textContent));
+
+  // The seven questions are Ella's, word for word, and they stay.
+  check('the "What to say" list still carries all seven',
+    document.querySelectorAll('#introprompts li').length === 7 &&
+    [...document.querySelectorAll('#introprompts li')].map((n) => n.textContent).join('|') ===
+    [
+      'Who you are, and what your company does.',
+      'What you want most from your content right now: customers, investors, hires or partners.',
+      "What you've done that most people haven't: the results, the numbers, the companies you've built.",
+      'What people always ask you about.',
+      'Who your ideal customer is.',
+      'What you could talk about for an hour, for free.',
+      'A story from the last 2 weeks: a win, a mistake, or a customer conversation that stuck with you.',
+    ].join('|'),
+    [...document.querySelectorAll('#introprompts li')].map((n) => n.textContent));
+  check('and the list is headed "What to say", with the intro wording gone',
+    /What to say/.test(document.getElementById('introprompts').textContent) &&
+    !/What to say in your intro/.test(HTML) && !/Keep it under 3 minutes/.test(HTML));
+}
+
+console.log('\n/contentworkshop — the three messages to Stanley');
+{
+  const { document } = load();
+  check('the week of posts is drafted one at a time',
+    document.getElementById('draftweek').textContent ===
+    'Use my linkedin-content skill. Draft post 1 from "Your first week of posts" ' +
+    'in my content strategy. When we finish, move to post 2.',
+    document.getElementById('draftweek').textContent);
+  check('the memo turns into 3 posts, a carousel and a reel script',
+    document.getElementById('memoprompt').textContent ===
+    "Here's my voice memo: [paste the transcript]. Using my content strategy, turn it into " +
+    "3 LinkedIn posts, 1 carousel and 1 reel script, in my voice. Keep my words. " +
+    "Add nothing that isn't in the memo.",
+    document.getElementById('memoprompt').textContent);
+  check('the skill is still the linkedin-content one, in full',
+    document.getElementById('skilltext').textContent.startsWith('Create LinkedIn Content') &&
+    document.getElementById('skilltext').textContent.length > 5000);
+  check('"Stuck for a story?" offers the three funnel stages',
+    (() => {
+      const d = [...document.querySelectorAll('#step-3 details.cw-acc')]
+        .find((x) => /Stuck for a story\?/.test(x.querySelector('summary').textContent));
+      return d !== undefined && /Be discovered:/.test(d.textContent) &&
+        /Be trusted:/.test(d.textContent) && /Be chosen:/.test(d.textContent);
+    })());
+  check('the ritual row names the Evening report and the TIMERICH6 unlock',
+    /Evening report/.test(document.getElementById('step-3').textContent) &&
+    /code unlocks all of them/.test(document.getElementById('step-3').textContent));
+  check('and the repurpose row asks for 3 posts for X and a reel script',
+    /Turn this into 3 posts for X and 1 reel script for Instagram/
+      .test(document.getElementById('step-3').textContent));
 }
 
 console.log('\n/contentworkshop — the copy buttons');
@@ -285,15 +753,8 @@ console.log('\n/contentworkshop — the copy buttons');
     check('the ' + key + ' copy button exists',
       !!document.querySelector('[data-copy="' + key + '"]'));
   }
-
-  // The codes are final. These are what the room types in, so pin the text.
-  check('the Wispr code on the page is TIMERICH6',
-    document.getElementById('wisprcode').textContent === 'TIMERICH6');
-  check('the Stanley code on the page is TIMERICH6',
-    document.getElementById('stanleycode').textContent === 'TIMERICH6');
-  check('the Stanley offer reads 6 months free', HTML.includes('Stanley · 6 months free'));
-  check('no stale STANLEY1MONTH or 1-month Stanley offer is left',
-    !HTML.includes('STANLEY1MONTH') && !HTML.includes('1 month free'));
+  check('there are no others', document.querySelectorAll('[data-copy]').length === COPY_KEYS.length,
+    [...document.querySelectorAll('[data-copy]')].map((b) => b.getAttribute('data-copy')));
 }
 
 console.log('\n/contentworkshop — copying actually copies, and says so');
@@ -308,154 +769,71 @@ console.log('\n/contentworkshop — copying actually copies, and says so');
 
   // The label is meant to go back by itself, after about two seconds.
   dom.window.setTimeout(() => {}, 0);
-  check('and it is not stuck on Copied forever',
-    HTML.includes('1600') || HTML.includes('2000'));
-
-  check('the Wi-Fi card is gone', document.getElementById('wifivalue') === null &&
-    !/P57_wifi_public/.test(HTML));
-
-  clickCopy(document, 'sk');
-  check('the skill button copies the whole skill, not a summary',
-    copied[1] && copied[1].startsWith('Create LinkedIn Content') && copied[1].length > 5000,
-    copied[1] && copied[1].length);
-  check('the copied skill is the same text the page shows',
-    copied[1] === document.getElementById('skilltext').textContent);
-  // Unused, but it keeps the idle label in the assertion record.
+  check('and it is not stuck on Copied forever', HTML.includes('1600'));
   check('the idle label was not blank to begin with', idle.length > 0, idle);
+
+  // Every button copies exactly what the page shows, character for character.
+  for (const [key, sel] of [
+    ['p1', '#strategyprompt'], ['p3', '#creatorsprompt'], ['sk', '#skilltext'],
+    ['p2', '#draftweek'], ['p4', '#memoprompt']
+  ]) {
+    const before = copied.length;
+    clickCopy(document, key);
+    check('the ' + key + ' button copies the whole of ' + sel + ', not a summary',
+      copied[before] === document.querySelector(sel).textContent,
+      [key, (copied[before] || '').slice(0, 60)]);
+  }
 }
 
 console.log('\n/contentworkshop — Open Claude / Open ChatGPT carry the strategy prompt');
 {
-  const { dom, document, copied } = load();
-  const prompt = document.getElementById('mikaprompt').textContent;
+  const { document, copied } = load();
+  const prompt = document.getElementById('strategyprompt').textContent;
   const claude = document.querySelector('a[data-ai="claude"]');
   const gpt = document.querySelector('a[data-ai="chatgpt"]');
   check('there is an Open Claude button', !!claude && /Open Claude/.test(claude.textContent));
   check('there is an Open ChatGPT button', !!gpt && /Open ChatGPT/.test(gpt.textContent));
-  check('Open Claude opens a new chat with the prompt filled in',
-    claude.href.startsWith('https://claude.ai/new?q=') &&
-    new URL(claude.href).searchParams.get('q') === prompt, claude.href.slice(0, 80));
-  check('Open ChatGPT opens a new chat with the prompt filled in',
-    gpt.href.startsWith('https://chatgpt.com/?q=') &&
-    new URL(gpt.href).searchParams.get('q') === prompt, gpt.href.slice(0, 80));
-  check('both stay under the 8000-character URL ceiling',
+  check('both sit with the strategy prompt, in Step 2',
+    claude.closest('#step-2') !== null && gpt.closest('#step-2') !== null);
+  // The strategy prompt is about 6,000 characters, which encodes to more than
+  // the 8,000-character ceiling the page keeps, so both buttons open a plain
+  // new chat rather than a URL long enough to be refused. The click copies the
+  // prompt and says so, which is what actually gets it into the box. Shorten
+  // the prompt under the ceiling and the ?q= comes back on its own.
+  check('the prompt is over the ceiling, so it cannot ride on a ?q=',
+    encodeURIComponent(prompt).length > 8000, encodeURIComponent(prompt).length);
+  check('Open Claude opens a plain new chat rather than a URL that would be refused',
+    claude.href === 'https://claude.ai/new', claude.href);
+  check('Open ChatGPT does the same',
+    gpt.href === 'https://chatgpt.com/', gpt.href);
+  check('neither link is anywhere near the ceiling',
     claude.href.length <= 8000 && gpt.href.length <= 8000, [claude.href.length, gpt.href.length]);
+  check('and the fallback is the page\'s own rule, not a dropped feature',
+    /var MAX_URL = 8000;/.test(HTML) &&
+    /full\.length <= MAX_URL \? full : ai\.home/.test(HTML));
   check('both open in a new tab, noopener',
     [claude, gpt].every((a) => a.target === '_blank' && /noopener/.test(a.rel)));
+
   claude.addEventListener('click', (e) => e.preventDefault(), { once: true });
   claude.click();
   check('clicking also copies the prompt, in case an AI ignores ?q=', copied[0] === prompt);
   check('and it says so', /Prompt copied/.test((document.getElementById('cwtoast') || {}).textContent || ''));
   const p1row = document.querySelector('[data-item="p1"]');
-  check('and ticks the strategy copy row', !!p1row && p1row.getAttribute('aria-pressed') === 'true');
-}
-
-console.log('\n/contentworkshop — the build is three numbered dropdowns');
-{
-  const { document } = load();
-  const boxes = [...document.querySelectorAll('details.stepbox')];
-
-  check('there are four dropdowns: Step 1 to 3, then After tonight',
-    boxes.length === 4, boxes.length);
-  check('and they are numbered in order',
-    boxes.map((b) => b.id).join(',') === 'step-1,step-2,step-3,step-4',
-    boxes.map((b) => b.id));
-
-  check('each one is a real <details>, so it works without JavaScript',
-    boxes.every((b) => b.tagName === 'DETAILS' && b.querySelector('summary') !== null));
-
-  // "Before you start" is not a dropdown: it stays open at the top.
-  const before = document.getElementById('step-0');
-  check('"Before you start" is still a plain section at the top, always open',
-    before !== null && before.tagName === 'SECTION', before && before.tagName);
-  check('and it comes before the first dropdown',
-    before !== null && boxes.length > 0 &&
-    (before.compareDocumentPosition(boxes[0]) & 4) !== 0);
-  check('it carries the set-up list',
-    HTML.includes('BEFORE YOU START') &&
-    document.getElementById('setuplist') !== null);
-
-  const titles = boxes.map((b) => b.querySelector('.steptitle').textContent.trim());
-  check('the three build steps are the ones from the call',
-    titles.slice(0, 3).join(' | ') ===
-      'Connect your tools | Introduce yourself | Prompt Stanley',
-    titles);
-  check('and Rituals is last, as "After tonight"',
-    titles[3] === 'Turn on your rituals' &&
-    boxes[3].querySelector('.stepkicker').textContent.includes('After tonight'),
-    boxes[3].querySelector('.stepkicker').textContent);
-
-  check('only Step 1 is open to begin with',
-    boxes.filter((b) => b.open).map((b) => b.id).join(',') === 'step-1',
-    boxes.filter((b) => b.open).map((b) => b.id));
-
-  // Each step's rich content moved inside its own dropdown.
-  check('Step 2 holds the strategy prompt and its copy button',
-    boxes[1].querySelector('#mikaprompt') !== null &&
-    boxes[1].querySelector('[data-copy="p1"]') !== null);
-  check('Step 2 gives them what to say in the intro',
-    boxes[1].querySelector('#introprompts') !== null &&
-    boxes[1].querySelectorAll('#introprompts li').length === 7,
-    boxes[1].querySelectorAll('#introprompts li').length);
-  check('and all seven questions read as Ella wrote them',
-    [...boxes[1].querySelectorAll('#introprompts li')].map((n) => n.textContent).join('|') ===
-    [
-      'Who you are, and what your company does.',
-      'What you want most from your content right now: customers, investors, hires or partners.',
-      "What you've done that most people haven't: the results, the numbers, the companies you've built.",
-      'What people always ask you about.',
-      'Who your ideal customer is.',
-      'What you could talk about for an hour, for free.',
-      'A story from the last 2 weeks: a win, a mistake, or a customer conversation that stuck with you.',
-    ].join('|'),
-    [...boxes[1].querySelectorAll('#introprompts li')].map((n) => n.textContent));
-
-  // Ella's Loom of 4 Nov was her instructions to the team, not for members
-  // (Gideon, 6 Nov), so it must not be on this page.
-  check("Ella's internal Loom is not on the page",
-    !HTML.includes('73d3636a71e14dfb9872d35c62f04e68'));
-  // Step 2's rows up to answering sit above the prompt; saving and context below.
-  const s2 = [...boxes[1].querySelectorAll('[data-item], #mikaprompt')]
-    .map((e) => e.id || e.getAttribute('data-item')).join(',');
-  check('Step 2 ticks Wispr Flow, the intro, copy and answer above the prompt',
-    s2 === 'i3w,i3s,p1,i1b,mikaprompt,i2a,i2c', s2);
-  const s3 = [...boxes[2].querySelectorAll('[data-item], #skilltext')]
-    .map((e) => e.id || e.getAttribute('data-item')).join(',');
-  check('Step 3 puts the story row under the skill',
-    s3 === 'sk,i3b,i3c,skilltext,p2', s3);
-  check('Step 1 is the tools: Wispr Flow, LinkedIn, and how Stanley talks to you',
-    /add Wispr Flow, LinkedIn and any other platforms/.test(HTML) &&
-    /Choose how Stanley talks to you/.test(HTML) && /iMessage or text message/.test(HTML));
-  check('Step 3 holds the skill and its copy button',
-    boxes[2].querySelector('#skilltext') !== null &&
-    boxes[2].querySelector('[data-copy="sk"]') !== null);
-  check('Step 3 holds the funnel tabs and its copy button',
-    boxes[2].querySelector('#funneltabs') !== null &&
-    boxes[2].querySelector('[data-copy="p2"]') !== null);
-  check('After tonight holds the ritual toggles',
-    boxes[3].querySelector('#ritualcards') !== null);
+  check('and ticks the strategy row', !!p1row && p1row.getAttribute('aria-pressed') === 'true');
 }
 
 console.log('\n/contentworkshop — each step is a checklist');
 {
   const { document } = load();
-  const click = (el) => el.dispatchEvent(
-    new document.defaultView.MouseEvent('click', { bubbles: true }));
   const box = (n) => document.getElementById('step-' + n);
   const items = (n) => [...box(n).querySelectorAll('[data-item]')];
   const countOf = (n) => box(n).querySelector('.stepcount').textContent;
   const badge = (n) => box(n).querySelector('.stepbadge').textContent;
 
-  const rowCounts = { 1: 2, 2: 6, 3: 4 };
-  for (const n of [1, 2, 3]) {
-    check('Step ' + n + ' has ' + rowCounts[n] + ' tickable sub-steps',
-      items(n).length === rowCounts[n], items(n).length);
-  }
-
   check('every row starts un-ticked',
     [1, 2, 3].every((n) => items(n).every((i) => i.getAttribute('aria-pressed') === 'false')));
   check('the header counts them, long and short',
-    countOf(1) === '0 of 2 done0/2', countOf(1));
+    countOf(1) === '0 of 3 done0/3', countOf(1));
   check('and shows the step number while it is unfinished',
     badge(1) === '1' && box(1).getAttribute('data-done') === 'no', badge(1));
 
@@ -465,121 +843,123 @@ console.log('\n/contentworkshop — each step is a checklist');
     /\.itemrow\{[^}]*min-height:44px/.test(HTML) &&
     /\.stepsum\{[^}]*min-height:44px/.test(HTML));
 
-  // Ticking every item in a step marks it done and opens the next.
+  // Step 1 completes on its two required rows: the optional MCP one counts in
+  // the header but is not in anyone's way.
   check('Step 2 is shut while Step 1 is unfinished', box(2).open === false);
-  items(1).forEach(click);
-  check('every item ticked reads 2 of 2', countOf(1) === '2 of 2 done2/2', countOf(1));
-  check('and the step is marked done, with a tick for its number',
-    box(1).getAttribute('data-done') === 'yes' && badge(1) === '✓',
-    badge(1));
+  clickOn(document, items(1)[0]);
+  clickOn(document, items(1)[1]);
+  check('the two required rows read 2 of 3', countOf(1) === '2 of 3 done2/3', countOf(1));
+  check('and the step is done without the optional row',
+    box(1).getAttribute('data-done') === 'yes' && badge(1) === '✓', badge(1));
   check('finishing a step opens the next one', box(2).open === true);
+  clickOn(document, items(1)[2]);
+  check('ticking the optional row too reads 3 of 3', countOf(1) === '3 of 3 done3/3', countOf(1));
+  check('and leaves the step done', box(1).getAttribute('data-done') === 'yes');
 
   // Un-ticking takes it back, and does not shut the next step under anyone.
-  click(items(1)[0]);
-  check('un-ticking a row drops the step again',
-    box(1).getAttribute('data-done') === 'no' && countOf(1) === '1 of 2 done1/2', countOf(1));
+  clickOn(document, items(1)[0]);
+  check('un-ticking a required row drops the step again',
+    box(1).getAttribute('data-done') === 'no' && countOf(1) === '2 of 3 done2/3', countOf(1));
   check('and the step it opened stays open', box(2).open === true);
 
+  // Step 3's five rows all count.
+  items(3).forEach((el) => clickOn(document, el));
+  check('all five Step 3 rows ticked completes it',
+    box(3).getAttribute('data-done') === 'yes' && countOf(3) === '5 of 5 done5/5', countOf(3));
 }
 
 console.log('\n/contentworkshop — the copy buttons tick their own row');
 {
-  // The old page used the copy as the whole step. It now ticks one sub-step,
-  // which is the same state map read a different way -- there is no second
-  // record of what is done.
+  // Copying ticks one row, not the whole step: it is the same map of ticks
+  // read a different way, so there is no second record of what is done.
   const { document } = load();
   const box = (n) => document.getElementById('step-' + n);
   const row = (key) => document.querySelector('[data-item="' + key + '"]');
 
-  for (const [key, step] of [['p1', 2], ['sk', 3], ['p2', 3]]) {
-    check('Step ' + step + ' has a row driven by the ' + key + ' copy button',
-      row(key) !== null);
+  for (const [key, step] of [['p1', 2], ['p3', 2], ['sk', 3], ['p2', 3], ['p4', 3]]) {
+    check('Step ' + step + ' has a row driven by the ' + key + ' copy button', row(key) !== null);
     clickCopy(document, key);
-    check('copying ticks that row',
-      row(key).getAttribute('aria-pressed') === 'true');
+    check('copying ticks that row', row(key).getAttribute('aria-pressed') === 'true');
     check('and does not finish the step on its own',
       box(step).getAttribute('data-done') === 'no',
       box(step).querySelector('.stepcount').textContent);
   }
+  check('the code buttons tick nothing: there is no row for a code',
+    (() => {
+      const before = document.getElementById('donecount').textContent;
+      clickCopy(document, 'wispr');
+      return document.getElementById('donecount').textContent === before;
+    })());
 }
 
-console.log('\n/contentworkshop — the step progress count');
+console.log('\n/contentworkshop — the progress count, which counts rows');
 {
   const { document } = load();
   const count = () => document.getElementById('donecount').textContent;
-  const click = (el) => el.dispatchEvent(
-    new document.defaultView.MouseEvent('click', { bubbles: true }));
 
-  // Five groups on the page -- Before you start, Steps 1 to 3, After tonight
-  // -- so the total says five.
-  check('the total counts all five', HTML.includes('/5 done'));
+  check('the total is the number of rows on the page',
+    document.getElementById('donetotal').textContent === String(TOTAL_ROWS) &&
+    document.querySelectorAll('[data-item]').length === TOTAL_ROWS,
+    document.getElementById('donetotal').textContent);
   check('starts at 0 done', count() === '0', count());
 
-  // Before you start only ticks once all four setup rows are ticked.
-  const rows = () => [...document.querySelectorAll('[data-setup]')];
-  check('there are four setup rows', rows().length === 4, rows().length);
-  rows().slice(0, 3).forEach(click);
-  check('three of four ticked is not yet a done step', count() === '0', count());
-  click(rows()[3]);
-  check('all four ticked counts it as done', count() === '1', count());
-
-  // A step counts once every required row in it is ticked.
-  [...document.querySelectorAll('#step-1 [data-item]')].forEach(click);
-  check('finishing Step 1 advances the count by exactly one', count() === '2', count());
-
-  const ctx = () => [...document.querySelectorAll('#step-2 [data-item]')];
-  check('there are six Step 2 rows', ctx().length === 6, ctx().length);
-  check('Step 2 is not done on the back of Step 1',
-    ctx().every((c) => c.getAttribute('aria-pressed') === 'false'));
-  ctx().slice(0, 5).forEach(click);
-  check('five of six Step 2 rows ticked is not yet a done step', count() === '2', count());
-  click(ctx()[5]);
-  check('all six Step 2 rows ticked completes Step 2', count() === '3', count());
-  click(ctx()[5]);
-  check('un-ticking a row drops Step 2 again', count() === '2', count());
-
-  // Ticking a setup row back off takes that step away again.
-  click(rows()[0]);
-  check('un-ticking a setup row drops Before you start again', count() === '1', count());
-}
-
-console.log('\n/contentworkshop — the count can never pass its total');
-{
-  const { document } = load();
-  const count = () => document.getElementById('donecount').textContent;
-  const click = (el) => el.dispatchEvent(
-    new document.defaultView.MouseEvent('click', { bubbles: true }));
-
-  [...document.querySelectorAll('[data-setup]')].forEach(click);
-  [...document.querySelectorAll('[data-item]')].forEach(click);
-  const rituals = [...document.querySelectorAll('[data-ritual]')];
-  rituals.filter((r) => r.getAttribute('aria-pressed') === 'false').forEach(click);
-
-  check('everything done reads exactly 5, the total', count() === '5', count());
+  const rows = [...document.querySelectorAll('[data-item]')];
+  clickOn(document, rows[0]);
+  check('one row ticked is 1 done', count() === '1', count());
+  rows.slice(1).forEach((el) => clickOn(document, el));
+  check('everything ticked reads exactly ' + TOTAL_ROWS + ', the total',
+    count() === String(TOTAL_ROWS), count());
   check('every step badge in the top bar shows a tick',
     [...document.querySelectorAll('[data-badge]')].every((b) => b.textContent === '✓'),
     [...document.querySelectorAll('[data-badge]')].map((b) => b.textContent));
   check('and so does every dropdown header',
     [...document.querySelectorAll('.stepbadge')].every((b) => b.textContent === '✓'),
     [...document.querySelectorAll('.stepbadge')].map((b) => b.textContent));
+
+  clickOn(document, rows[0]);
+  check('un-ticking one takes the count back down', count() === String(TOTAL_ROWS - 1), count());
 }
 
-console.log('\n/contentworkshop — a refresh does not lose the evening');
+console.log('\n/contentworkshop — the step nav');
+{
+  const { document } = load();
+  const dots = [...document.querySelectorAll('#stepnav a')];
+  check('there are three step dots', dots.length === 3, dots.length);
+  check('named for the three steps',
+    dots.map((a) => a.querySelector('.stepshort').textContent).join(',') ===
+      'Set up,Strategy,Content machine',
+    dots.map((a) => a.querySelector('.stepshort').textContent));
+  check('and each carries the badge that turns into a tick',
+    dots.every((a) => a.querySelector('[data-badge]') !== null));
+  check('each points at its own dropdown',
+    dots.map((a) => a.getAttribute('href')).join(',') === '#step-1,#step-2,#step-3',
+    dots.map((a) => a.getAttribute('href')));
+
+  // A dot points at a box that may be shut, so following it opens it first.
+  check('Step 3 is shut to begin with', document.getElementById('step-3').open === false);
+  clickOn(document, dots[2]);
+  check('clicking its dot opens it', document.getElementById('step-3').open === true);
+
+  // So does "How to redeem" in the code cards.
+  const redeem = [...document.querySelectorAll('a')].find((a) => /How to redeem/.test(a.textContent));
+  clickOn(document, redeem);
+  check('and so does "How to redeem"', document.getElementById('step-2').open === true);
+}
+
+console.log('\n/contentworkshop — a refresh does not lose the work');
 {
   const first = load();
-  const click = (el) => el.dispatchEvent(
-    new first.document.defaultView.MouseEvent('click', { bubbles: true }));
-
-  [...first.document.querySelectorAll('[data-setup]')].forEach(click);
-  [...first.document.querySelectorAll('#step-1 [data-item]')].forEach(click);
-  check('two groups are done before the refresh',
-    first.document.getElementById('donecount').textContent === '2');
+  [...first.document.querySelectorAll('#step-1 [data-item]')]
+    .forEach((el) => clickOn(first.document, el));
+  check('three rows are ticked before the refresh',
+    first.document.getElementById('donecount').textContent === '3',
+    first.document.getElementById('donecount').textContent);
   check('and something was written to storage',
     Object.keys(first.store).length === 1, Object.keys(first.store));
 
   // The same storage, a brand new page: the refresh.
   const again = load(first.store);
-  check('the ticks come back', again.document.getElementById('donecount').textContent === '2',
+  check('the ticks come back', again.document.getElementById('donecount').textContent === '3',
     again.document.getElementById('donecount').textContent);
   check('row by row, not just the count',
     [...again.document.querySelectorAll('#step-1 [data-item]')]
@@ -598,153 +978,14 @@ console.log('\n/contentworkshop — storage that is blocked costs nothing');
   // draw, and ticking has to work; it simply does not remember.
   const { document } = loadWithoutStorage();
   check('the page still renders its steps',
-    document.querySelectorAll('details.stepbox').length === 4);
-  const rows = [...document.querySelectorAll('#step-1 [data-item]')];
-  rows.forEach((el) => el.dispatchEvent(
-    new document.defaultView.MouseEvent('click', { bubbles: true })));
+    document.querySelectorAll('details.stepbox').length === 3);
+  check('and its prompts', document.getElementById('strategyprompt').textContent.length > 3000);
+  [...document.querySelectorAll('#step-1 [data-item]')]
+    .forEach((el) => clickOn(document, el));
   check('and ticking still works',
     document.getElementById('step-1').getAttribute('data-done') === 'yes' &&
-    document.getElementById('donecount').textContent === '1',
+    document.getElementById('donecount').textContent === '3',
     document.getElementById('donecount').textContent);
-}
-
-console.log('\n/contentworkshop — the screenshots, on the page');
-{
-  const { document } = load();
-
-  check('the link out to Mika\'s workshop notes is gone',
-    !/workshop notes/i.test(HTML) && !HTML.includes('Content-Creation-Workshop-10-26'));
-
-  const shots = [...document.querySelectorAll('figure.shot')];
-  check('two screenshots are drawn', shots.length === 2, shots.length);
-
-  check('each sits under the sub-step it belongs to',
-    shots.every((f) => {
-      const row = f.parentElement && f.parentElement.querySelector('[data-item]');
-      return f.parentElement.tagName === 'LI' && row !== null &&
-        (row.compareDocumentPosition(f) & 4) !== 0;
-    }));
-
-  check('they are the files in contentworkshop/img/, named by step and order',
-    shots.map((f) => f.querySelector('img').getAttribute('src')).join(',') ===
-      'img/step2-2.png,img/step3-1.png',
-    shots.map((f) => f.querySelector('img').getAttribute('src')));
-
-  check('and every one of those files is actually there',
-    shots.every((f) => existsSync(new URL(
-      '../../contentworkshop/' + f.querySelector('img').getAttribute('src'), import.meta.url))));
-
-  const imgs = shots.map((f) => f.querySelector('img'));
-  check('each is lazy-loaded', imgs.every((i) => i.getAttribute('loading') === 'lazy'));
-  check('each carries alt text that says what is on the screen',
-    imgs.every((i) => (i.getAttribute('alt') || '').length > 30),
-    imgs.map((i) => (i.getAttribute('alt') || '').length));
-  check('each declares its own width and height, so nothing shifts as it loads',
-    imgs.every((i) => /^\d+$/.test(i.getAttribute('width') || '') &&
-                      /^\d+$/.test(i.getAttribute('height') || '')),
-    imgs.map((i) => i.getAttribute('width') + 'x' + i.getAttribute('height')));
-
-  // And those numbers are the file's own, read off the front of the PNG.
-  // A screenshot recropped or replaced without the attributes following it
-  // is a step that jumps as the image lands, and the page caps each one at
-  // its declared width so a wrong number also draws it at the wrong size.
-  check('the declared size is the size the file actually is',
-    imgs.every((i) => {
-      const bytes = readFileSync(new URL(
-        '../../contentworkshop/' + i.getAttribute('src'), import.meta.url));
-      return bytes.subarray(1, 4).toString('latin1') === 'PNG' &&
-        bytes.readUInt32BE(16) === Number(i.getAttribute('width')) &&
-        bytes.readUInt32BE(20) === Number(i.getAttribute('height'));
-    }),
-    imgs.map((i) => {
-      const bytes = readFileSync(new URL(
-        '../../contentworkshop/' + i.getAttribute('src'), import.meta.url));
-      return i.getAttribute('src') + ': declared ' + i.getAttribute('width') + 'x' +
-        i.getAttribute('height') + ', file ' + bytes.readUInt32BE(16) + 'x' + bytes.readUInt32BE(20);
-    }));
-
-  check('a tap opens the file full size, in its own tab',
-    shots.every((f) => {
-      const a = f.querySelector('a');
-      return a !== null && a.getAttribute('href') === f.querySelector('img').getAttribute('src') &&
-        a.getAttribute('target') === '_blank' && /\bnoopener\b/.test(a.getAttribute('rel') || '');
-    }));
-
-  check('the image fills the card on a phone',
-    /\.shot img\{[^}]*width:100%/.test(HTML));
-
-  // Step 2 has no screenshots yet, so the page says where they go
-  // rather than inventing any.
-  check('the steps with nothing supplied carry a TODO instead of an invented image',
-    (HTML.match(/TODO screenshots/g) || []).length === 1 &&
-    document.querySelectorAll('#step-2 figure.shot').length === 0,
-    (HTML.match(/TODO screenshots/g) || []).length);
-}
-
-console.log('\n/contentworkshop — the funnel topic tabs');
-{
-  const { document } = load();
-  const tabs = () => [...document.querySelectorAll('[data-stage]')];
-  const chips = () => [...document.querySelectorAll('#topicchips span')].map((s) => s.textContent);
-  const selected = () => tabs().findIndex((t) => t.getAttribute('aria-selected') === 'true');
-
-  check('there are four funnel stages', tabs().length === 4, tabs().length);
-  check('the first stage is the one selected on load', selected() === 0, selected());
-  check('top of funnel shows its own topics',
-    chips().length === 3 && chips()[0].startsWith('Relatable frustration'), chips());
-  check('the stage panel names the stage',
-    document.getElementById('stagetitle').textContent === 'Top of funnel.');
-
-  tabs()[2].dispatchEvent(new document.defaultView.MouseEvent('click', { bubbles: true }));
-  check('clicking a tab selects it', selected() === 2, selected());
-  check('and swaps in that stage\'s topics',
-    chips()[0].startsWith('Client result'), chips());
-  check('and relabels the panel',
-    document.getElementById('stagetitle').textContent === 'Bottom of funnel.');
-}
-
-console.log('\n/contentworkshop — the ritual toggles');
-{
-  const { document } = load();
-  const cards = () => [...document.querySelectorAll('[data-ritual]')];
-  const on = () => cards().filter((c) => c.getAttribute('aria-pressed') === 'true').length;
-  const count = () => document.getElementById('donecount').textContent;
-
-  check('there are three rituals', cards().length === 3, cards().length);
-  check('the first one is on to begin with', on() === 1, on());
-  // The third ritual is named now, so no placeholder is left in this section.
-  check('the third ritual is Good Morning',
-    cards()[2].textContent.includes('Good Morning'), cards()[2].textContent.trim().slice(0, 40));
-  check('and it carries its description',
-    cards()[2].textContent.includes('A daily read of what') &&
-    cards()[2].textContent.includes('Start here if you have no posts yet.'));
-  check('no [RITUAL 3] placeholder is left', !HTML.includes('RITUAL 3'));
-  check('one ritual on is not yet enough for the last step', count() === '0', count());
-  check('and its header counts them as switched on, not as done',
-    document.querySelector('#step-4 .stepcount').textContent === '1 of 3 on1/3',
-    document.querySelector('#step-4 .stepcount').textContent);
-
-  cards()[1].dispatchEvent(new document.defaultView.MouseEvent('click', { bubbles: true }));
-  check('switching a second one on', on() === 2, on());
-  check('two rituals on completes the last step', count() === '1', count());
-  check('and the dropdown header says so',
-    document.getElementById('step-4').getAttribute('data-done') === 'yes');
-
-  cards()[0].dispatchEvent(new document.defaultView.MouseEvent('click', { bubbles: true }));
-  check('switching one back off un-completes it', count() === '0', count());
-}
-
-console.log('\n/contentworkshop — Mika is off the page (Ella, 29 Oct)');
-{
-  const { document } = load();
-  const text = document.body.textContent;
-  check('no Mika, Reyes or Adeli anywhere a visitor can read',
-    !/mika|reyes|adeli/i.test(text), (text.match(/.{0,40}(mika|reyes|adeli).{0,40}/i) || [])[0]);
-  check('no link to her site or socials',
-    ![...document.querySelectorAll('a')].some((a) => /mikareyes|tryadeli/i.test(a.getAttribute('href') || '')));
-  check('the footer has no Follow Mika group', !document.getElementById('followmika'));
-  check('the hosts section introduces Ella alone',
-    /Meet Ella$/.test((document.getElementById('hostsh') || {}).textContent || ''));
 }
 
 console.log('\n/contentworkshop — phone first');
@@ -757,6 +998,13 @@ console.log('\n/contentworkshop — phone first');
     .map((b) => b.getAttribute('style') || '')
     .filter((s) => !s.includes('min-height: 44px'));
   check('every copy button declares min-height: 44px', small.length === 0, small);
+  check('the long prompt panels scroll rather than running off the page',
+    /\.promptbox \.promptscroll\{max-height:340px;overflow-y:auto\}/.test(HTML));
+  check('and a long prompt line wraps instead of scrolling sideways',
+    /\.promptbox pre\{[^}]*white-space:pre-wrap/.test(HTML) &&
+    /\.promptbox pre\{[^}]*overflow-wrap:anywhere/.test(HTML));
+  check('the step nav still collapses to badges on a narrow screen',
+    /@container page \(max-width: 560px\)\{(?:[^{}]*\{[^{}]*\})*?\.stepshort\{display:none\}/.test(HTML));
 }
 
 console.log('\n' + pass + ' passed, ' + fail + ' failed');
