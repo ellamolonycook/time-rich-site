@@ -296,21 +296,23 @@ console.log('\nWispr Flow — the second credit');
 
 /* ---- one Wispr Flow URL, across the whole portal ------------------------- */
 
-// Every link to Wispr Flow is the same URL. It has been written more than
-// one way before, so this sweeps the folder rather than the footers, and
-// takes in /contentworkshop, which carries its own download link.
+// Every link to Wispr Flow inside the portal is the same URL. It has been
+// written more than one way before, so this sweeps the folder rather than the
+// footers.
+//
+// Ella, 12 Nov: /contentworkshop is no longer part of that sweep. It went
+// public on the 3-month partner offer (TIMERICH90, wisprflow.ai/partner/
+// timerich) while the members' portal stayed on the 6-month redeem link, so
+// the two are deliberately different now and each is pinned on its own below.
 console.log('\nevery Wispr Flow link is the one redeem URL');
 {
-  // Every link to Wispr Flow is the redeem page, which carries the promo
-  // code and the term. It replaced Ella's referral link everywhere on
-  // 25 Oct, the footers and /contentworkshop included, so this sweeps the
-  // folder rather than the footers. Written with &amp; in the markup, so
-  // it is matched as the sweep finds it.
+  // The portal's link is the redeem page, which carries the promo code and
+  // the term. It replaced Ella's referral link everywhere on 25 Oct. Written
+  // with &amp; in the markup, so it is matched as the sweep finds it.
   const WISPR = 'https://wisprflow.ai/info/redeem-promo?code=TIMERICH6&amp;months=6';
   const FILES = readdirSync(new URL('../../club/', import.meta.url))
     .filter((f) => /\.(html|js)$/.test(f))
-    .map((f) => ['club/' + f, read('club/' + f)])
-    .concat([['contentworkshop/index.html', read('contentworkshop/index.html')]]);
+    .map((f) => ['club/' + f, read('club/' + f)]);
 
   check('there are files to sweep', FILES.length > 10, FILES.length);
 
@@ -323,6 +325,18 @@ console.log('\nevery Wispr Flow link is the one redeem URL');
   check('and every one of those links is the redeem URL',
     found.every(([, url]) => url === WISPR),
     found.filter(([, url]) => url !== WISPR));
+
+  // /contentworkshop, pinned separately: one link, the public partner page,
+  // and no trace of the portal's code or term.
+  const cw = read('contentworkshop/index.html');
+  const cwLinks = [...cw.matchAll(/https?:\/\/[^"'\s<>)]*wisprflow\.ai[^"'\s<>)]*/g)]
+    .map((m) => m[0]);
+  check('/contentworkshop links to Wispr Flow once, at the partner page',
+    cwLinks.length === 1 && cwLinks[0] === 'https://wisprflow.ai/partner/timerich',
+    cwLinks);
+  check('and carries no TIMERICH6 or 6-month wording',
+    !cw.includes('TIMERICH6') && !/6 months/i.test(cw),
+    (cw.match(/.{0,40}(TIMERICH6|6 months).{0,40}/i) || [])[0]);
 
   // Named, rather than left to the sweep above, because this is the one that
   // was changed by hand and changed back.
