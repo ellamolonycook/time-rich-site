@@ -404,15 +404,18 @@ console.log('\n/contentworkshop — the page reads top to bottom in the order El
     HTML.includes('Follow Ella Molony Cook'));
 }
 
-console.log('\n/contentworkshop — "What you\'ll leave with"');
+console.log('\n/contentworkshop — the "Building your AI content machine" card');
 {
   const { document } = load();
   const card = document.getElementById('start');
   check('the start-here card is a plain section, not a dropdown',
     card !== null && card.tagName === 'SECTION', card && card.tagName);
-  check('it is titled "What you\'ll leave with"',
-    /What you’ll leave with/.test(document.getElementById('starth').textContent),
+  check('it is titled "Building your AI content machine"',
+    document.getElementById('starth').textContent.trim() ===
+      'Building your AI content machine',
     document.getElementById('starth').textContent);
+  check('and the old title is gone',
+    !/What you(’|')ll leave with/i.test(HTML));
   check('and lists the three things, word for word',
     [...card.querySelectorAll('li')].map((n) => n.textContent).join('|') ===
     ['Your content strategy, saved in Stanley',
@@ -430,14 +433,22 @@ console.log('\n/contentworkshop — the essentials, and the two codes');
   check('the label is "Your essentials", not "Tonight\'s essentials"',
     document.getElementById('essentials').textContent.trim() === 'Your essentials',
     document.getElementById('essentials').textContent.trim());
-  check('the Wispr code on the page is TIMERICH6',
-    document.getElementById('wisprcode').textContent === 'TIMERICH6');
-  check('the Stanley code on the page is TIMERICH6',
-    document.getElementById('stanleycode').textContent === 'TIMERICH6');
-  check('the Wispr offer reads 6 months Pro', HTML.includes('Wispr Flow &middot; 6 months Pro'));
-  check('the Stanley offer reads 6 months free', HTML.includes('Stanley &middot; 6 months free'));
-  check('no stale STANLEY1MONTH or 1-month Stanley offer is left',
-    !HTML.includes('STANLEY1MONTH') && !/1 month free/i.test(HTML));
+  check('the Wispr code on the page is TIMERICH90',
+    document.getElementById('wisprcode').textContent === 'TIMERICH90',
+    document.getElementById('wisprcode').textContent);
+  check('the Stanley code on the page is STANLEY1MONTH',
+    document.getElementById('stanleycode').textContent === 'STANLEY1MONTH',
+    document.getElementById('stanleycode').textContent);
+  check('the Wispr offer reads 3 months Pro', HTML.includes('Wispr Flow &middot; 3 months Pro'));
+  check('the Stanley offer reads 1 month free', HTML.includes('Stanley &middot; 1 month free'));
+  check('no TIMERICH6 is left anywhere on the page',
+    !HTML.includes('TIMERICH6'),
+    (HTML.match(/.{0,40}TIMERICH6.{0,40}/g) || []));
+  check('and no 6-month offer wording either',
+    !/6 months/i.test(HTML), (HTML.match(/.{0,40}6 months.{0,40}/i) || [])[0]);
+  check('the $0.00 line went with the old Stanley offer',
+    !HTML.includes('$0.00') && !/100% off/.test(HTML),
+    (HTML.match(/.{0,40}(\$0\.00|100% off).{0,40}/) || [])[0]);
 
   // Both "How to redeem" links used to point at "Before you start", which is
   // gone: Stanley is redeemed in Step 1 and Wispr Flow in Step 2.
@@ -513,9 +524,9 @@ console.log('\n/contentworkshop — how Wispr Flow is described');
     /Settings → Plans and Billing/.test(text));
   check('at the promo link at the bottom',
     /Scroll to the very bottom and click the promo link/.test(text));
-  check('for 6 months Pro',
-    /Enter TIMERICH6 for 6 months Pro/.test(text),
-    (text.match(/.{0,24}TIMERICH6.{0,24}/g) || []));
+  check('for 3 months Pro',
+    /Enter TIMERICH90 for 3 months Pro/.test(text),
+    (text.match(/.{0,24}TIMERICH90.{0,24}/g) || []));
   check('it warns the code is desktop-only and useless to a paying customer',
     /The code only works in the desktop app, and does nothing if you already pay for Wispr\./.test(text));
   check('and it tells anyone without a laptop what to do instead',
@@ -523,9 +534,12 @@ console.log('\n/contentworkshop — how Wispr Flow is described');
 
   // The one link out to Wispr Flow is the redeem page, same as the portal.
   const links = [...document.querySelectorAll('a[href*="wisprflow.ai"]')];
-  check('the download link is the TIMERICH6 6-month redeem page',
-    links.length === 1 && links[0].getAttribute('href') === 'https://wisprflow.ai/info/redeem-promo?code=TIMERICH6&months=6',
+  check('the download link is the public partner page',
+    links.length === 1 &&
+    links[0].getAttribute('href') === 'https://wisprflow.ai/partner/timerich',
     links.map((a) => a.getAttribute('href')));
+  check('and the old redeem-promo link is gone',
+    !HTML.includes('redeem-promo'));
   check('and it opens in a new tab, marked sponsored',
     links.length === 1 && links[0].getAttribute('target') === '_blank' &&
     /\bnoopener\b/.test(links[0].getAttribute('rel') || '') &&
@@ -559,8 +573,8 @@ console.log('\n/contentworkshop — the build is three numbered dropdowns');
     kickers.join(',') === 'Step 1,Step 2,Step 3', kickers);
 
   const leads = boxes.map((b) => b.querySelector('.steplead').textContent.trim());
-  check('Step 1 leads with what Stanley is, and the 6 free months',
-    /^Stanley is your AI head of content: a voice note goes in, drafts in your voice come out, you approve, it posts\. Free for 6 months with code TIMERICH6\.$/
+  check('Step 1 leads with what Stanley is, and the free month',
+    /^Stanley is your AI head of content: a voice note goes in, drafts in your voice come out, you approve, it posts\. Free for 1 month with code STANLEY1MONTH\.$/
       .test(leads[0]), leads[0]);
   check('Step 2 leads with the 10-minute strategy',
     /^Tell AI who you are and who you serve, and it turns that into your content strategy in about 10 minutes\.$/
@@ -579,12 +593,12 @@ console.log('\n/contentworkshop — the build is three numbered dropdowns');
   const names = (n) => [...document.querySelectorAll('#step-' + n + ' .itemname')]
     .map((s) => s.textContent.replace(/\s+Optional$/, '').trim());
   check('Step 1 is the whole setup: both tools, then the optional MCP connector',
-    names(1).join(' | ') === 'Redeem Wispr Flow (6 months Pro) | ' +
-      'Sign up to Stanley (6 months free) | Connect your tools to Stanley | ' +
+    names(1).join(' | ') === 'Redeem Wispr Flow (3 months Pro) | ' +
+      'Sign up to Stanley (1 month free) | Connect your tools to Stanley | ' +
       'Use Stanley inside your current AI tool',
     names(1));
   check('and the Wispr Flow redeem is the first row of it',
-    names(1)[0] === 'Redeem Wispr Flow (6 months Pro)' &&
+    names(1)[0] === 'Redeem Wispr Flow (3 months Pro)' &&
     document.querySelector('#step-1 [data-item]').getAttribute('data-item') === 'w1',
     document.querySelector('#step-1 [data-item]').getAttribute('data-item'));
   check('Step 2 is the strategy, the creators and the Brain',
@@ -892,9 +906,9 @@ console.log('\n/contentworkshop — the three messages to Stanley');
       return d !== undefined && /Be discovered:/.test(d.textContent) &&
         /Be trusted:/.test(d.textContent) && /Be chosen:/.test(d.textContent);
     })());
-  check('the ritual row names the Evening report and the TIMERICH6 unlock',
+  check('the ritual row names the Evening report, with no code unlock claim',
     /Evening report/.test(document.getElementById('step-3').textContent) &&
-    /code unlocks all of them/.test(document.getElementById('step-3').textContent));
+    !/code unlocks all of them/.test(HTML));
   check('and the repurpose row asks for 3 posts for X and a reel script',
     /Turn this into 3 posts for X and 1 reel script for Instagram/
       .test(document.getElementById('step-3').textContent));
@@ -918,7 +932,7 @@ console.log('\n/contentworkshop — copying actually copies, and says so');
   const idle = btn.textContent;
 
   clickCopy(document, 'stanley');
-  check('clicking copies the Stanley code', copied[0] === 'TIMERICH6', copied);
+  check('clicking copies the Stanley code', copied[0] === 'STANLEY1MONTH', copied);
   check('the label turns to Copied', /Copied/.test(btn.textContent), btn.textContent);
 
   // The label is meant to go back by itself, after about two seconds.
