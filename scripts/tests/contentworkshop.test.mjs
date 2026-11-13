@@ -235,7 +235,7 @@ console.log('\n/contentworkshop — each step says when to do it');
     !/\d\s?(am|pm)\b/i.test(text), (text.match(/.{0,30}\d\s?[ap]m\b.{0,30}/i) || [])[0]);
   check('the only date on the page is the draw date',
     (text.match(/\b\d{1,2} (January|February|March|April|May|June|July|August|September|October|November|December)\b/g) || [])
-      .join(',') === '16 November',
+      .join(',') === '17 November',
     (text.match(/\b\d{1,2} [A-Z][a-z]+\b/g) || []));
 }
 
@@ -265,7 +265,7 @@ console.log('\n/contentworkshop — the draw: win a spot in the next Accelerator
     card.querySelector('p').textContent.replace(/\s+/g, ' ').trim() ===
       'Post on LinkedIn about building your content system, tag Ella Molony Cook, ' +
       'Stanley and Wispr Flow, then paste your post link below. ' +
-      'Winner drawn Monday 16 November.',
+      'Winner drawn Tuesday 17 November.',
     card.querySelector('p').textContent.replace(/\s+/g, ' ').trim());
   check('Ella is the only link in that line, and it is her LinkedIn',
     [...card.querySelectorAll('p a')].map((a) => a.getAttribute('href')).join(',') ===
@@ -304,9 +304,9 @@ console.log('\n/contentworkshop — the draw: win a spot in the next Accelerator
 
   // One constant for the date, read everywhere it shows.
   check('the draw date lives in one constant',
-    /var DRAW = \{ when: 'Monday 16 November' \};/.test(HTML));
+    /var DRAW = \{ when: 'Tuesday 17 November' \};/.test(HTML));
   check('and the card reads it from there',
-    document.getElementById('drawwhen').textContent === 'Monday 16 November',
+    document.getElementById('drawwhen').textContent === 'Tuesday 17 November',
     document.getElementById('drawwhen').textContent);
   check('the success message reads it from the same place, not a second copy',
     /Winner drawn ' \+ DRAW\.when \+ '\./.test(HTML));
