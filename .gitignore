@@ -35,3 +35,4 @@ temp_interactive_push.bat
 worker/.dev.vars
 
 .cursor/
+config.bat
