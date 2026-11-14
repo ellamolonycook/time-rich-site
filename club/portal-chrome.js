@@ -523,6 +523,7 @@
   var SLOWING = ['Finding the time', 'Tech setup', 'Not sure what to do next',
     'Knowing what to post', 'Nothing, I’m flying'];
   var RECOMMEND = ['Yes', 'Maybe', 'Not yet'];
+  var SUPPORT_AFTER = ['AI strategy', 'AI systems', 'Clarity coaching', 'Not right now'];
 
   var MAX_FOUNDERS = 5;
 
@@ -590,6 +591,11 @@
     var recommend = chipGroup(opts, 'Would recommend',
       'Would you tell a founder friend to join the next cohort?', RECOMMEND, false);
     sec1.appendChild(recommend.box);
+
+    var support = chipGroup(opts, '1:1 support after',
+      'Do you want 1:1 support after the accelerator? (tap all that apply)',
+      SUPPORT_AFTER, true);
+    sec1.appendChild(support.box);
 
     var learn = areaField(opts, 'Learn in last sessions');
     learn.label.appendChild(document.createTextNode(
@@ -792,6 +798,7 @@
         'Time saved': saved.value(),
         'Slowing me down': slowing.value(),
         'Would recommend': recommend.value(),
+        '1:1 support after': support.value(),
         'Learn in last sessions': learn.area.value.trim(),
         'Biggest unlock': open1[0].area.value.trim(),
         'Favorite teachers': open1[1].area.value.trim(),
@@ -805,7 +812,8 @@
 
     function hasInput() {
       return Boolean(mail.input.value.trim() || built.value() || saved.value() ||
-        slowing.value() || recommend.value() || learn.area.value.trim() ||
+        slowing.value() || recommend.value() || support.value() ||
+        learn.area.value.trim() ||
         open1.some(function (f) { return f.area.value.trim() !== ''; }) ||
         foundersValue() || feature.checked);
     }
