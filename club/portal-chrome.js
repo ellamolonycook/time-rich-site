@@ -593,7 +593,7 @@
 
     var learn = areaField(opts, 'Learn in last sessions');
     learn.label.appendChild(document.createTextNode(
-      'What do you want to learn in our last two sessions? (say it with '));
+      'What would you like to request for Week 4? (say it with '));
     learn.label.appendChild(link('Wispr Flow', WISPR));
     learn.label.appendChild(document.createTextNode(')'));
     sec1.appendChild(learn.box);

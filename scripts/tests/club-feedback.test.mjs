@@ -255,7 +255,7 @@ console.log('\nthe component mounts on the page, in two steps');
     /function autoGrow/.test(CHROME) && /line \* 6/.test(CHROME));
   const learnLabel = doc.querySelector('label[for="' + areas[0].id + '"]');
   check('the sessions question says to say it with Wispr Flow',
-    /What do you want to learn in our last two sessions\? \(say it with Wispr Flow\)/
+    /What would you like to request for Week 4\? \(say it with Wispr Flow\)/
       .test(learnLabel.textContent.replace(/\s+/g, ' ')), learnLabel.textContent);
   const wispr = learnLabel.querySelector('a');
   check('and Wispr Flow is the promo link, in a new tab',
