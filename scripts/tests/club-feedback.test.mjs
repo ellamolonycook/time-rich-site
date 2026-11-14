@@ -200,16 +200,17 @@ console.log('\nthe component mounts on the page, in two steps');
 
   // The questions, in order, with the labels the brief gives.
   const legends = [...step1.querySelectorAll('legend')].map((l) => l.textContent);
-  check('four tapped questions, in Ella\'s order',
-    legends.length === 4 &&
+  check('five tapped questions, in Ella\'s order',
+    legends.length === 5 &&
     legends[0] === 'What have you built so far? (tap all that apply)' &&
     legends[1] === 'Time saved this week?' &&
     legends[2] === 'What’s slowing you down?' &&
-    legends[3] === 'Would you tell a founder friend to join the next cohort?',
+    legends[3] === 'Would you tell a founder friend to join the next cohort?' &&
+    legends[4] === 'Do you want 1:1 support after the accelerator? (tap all that apply)',
     legends);
 
   const groups = [...step1.querySelectorAll('.trp-fb-chips')];
-  check('each is a row of chips', groups.length === 4, groups.length);
+  check('each is a row of chips', groups.length === 5, groups.length);
   const vals = (i) => [...groups[i].querySelectorAll('input')].map((n) => n.value);
   check('"built so far" is multi-select, with the seven things',
     [...groups[0].querySelectorAll('input')].every((n) => n.type === 'checkbox') &&
@@ -226,6 +227,11 @@ console.log('\nthe component mounts on the page, in two steps');
   check('and the recommendation is Yes, Maybe or Not yet',
     [...groups[3].querySelectorAll('input')].every((n) => n.type === 'radio') &&
     vals(3).join('|') === 'Yes|Maybe|Not yet', vals(3));
+  check('1:1 support after is multi-select, with the four options',
+    legends[4] === 'Do you want 1:1 support after the accelerator? (tap all that apply)' &&
+    [...groups[4].querySelectorAll('input')].every((n) => n.type === 'checkbox') &&
+    vals(4).join('|') === 'AI strategy|AI systems|Clarity coaching|Not right now',
+    [legends[4], vals(4)]);
   check('a radio group is one group, so only one chip can be on at a time',
     new Set([...groups[1].querySelectorAll('input')].map((n) => n.name)).size === 1);
   check('the chips wrap rather than sitting on a grid of equal columns',
@@ -447,7 +453,8 @@ console.log('\nSend posts once, with the names the Worker expects');
 
   const body = posts[0].body;
   const WANT = ['Name', 'Email', 'Built so far', 'Time saved', 'Slowing me down',
-    'Would recommend', 'Learn in last sessions', 'Biggest unlock', 'Favorite teachers',
+    'Would recommend', '1:1 support after',
+    'Learn in last sessions', 'Biggest unlock', 'Favorite teachers',
     'How can we improve', 'Founders to invite', 'OK to feature', 'Source', '_gotcha'];
   check('exactly the expected field names',
     JSON.stringify(Object.keys(body).sort()) === JSON.stringify([...WANT].sort()),
@@ -487,7 +494,8 @@ console.log('\nnothing tapped and nothing typed still sends');
   const body = dom.window.posts[0].body;
   check('every unanswered question sends empty, not missing',
     body['Built so far'] === '' && body['Time saved'] === '' &&
-    body['Slowing me down'] === '' && body['Would recommend'] === '', body);
+    body['Slowing me down'] === '' && body['Would recommend'] === '' &&
+    body['1:1 support after'] === '', body);
   check('the empty founder row is dropped', body['Founders to invite'] === '',
     body['Founders to invite']);
   check('and an unticked box sends No', body['OK to feature'] === 'No', body['OK to feature']);
@@ -843,7 +851,8 @@ console.log('\na submit from the panel posts the same fields as the page');
 
   check('one POST from the panel', dom.window.posts.length === 1, dom.window.posts.length);
   const WANT = ['Name', 'Email', 'Built so far', 'Time saved', 'Slowing me down',
-    'Would recommend', 'Learn in last sessions', 'Biggest unlock', 'Favorite teachers',
+    'Would recommend', '1:1 support after',
+    'Learn in last sessions', 'Biggest unlock', 'Favorite teachers',
     'How can we improve', 'Founders to invite', 'OK to feature', 'Source', '_gotcha'];
   check('with the same field names as the page',
     JSON.stringify(Object.keys(dom.window.posts[0].body).sort()) === JSON.stringify([...WANT].sort()),
