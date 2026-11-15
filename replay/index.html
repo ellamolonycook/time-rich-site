@@ -86,6 +86,17 @@ a { color: inherit; }
 .intro h1 { font-family: var(--display); font-weight: 600; font-size: clamp(30px, 4.6vw, 46px); line-height: 1.06; letter-spacing: -.025em; margin: 0 0 12px; }
 .intro p { margin: 0; font-size: 17px; color: var(--soft); max-width: 60ch; }
 
+/* ---- the filter row --------------------------------------------------- */
+.filters { padding: 20px 0 0; }
+.filter-row { display: flex; flex-wrap: wrap; align-items: center; gap: 10px; }
+.filter-chips { display: flex; flex-wrap: wrap; gap: 8px; min-width: 0; }
+.filter-chips .pill { min-height: 40px; padding: 0 16px; font-size: 13.5px; }
+.filter-search { flex: 1 1 240px; min-width: 0; display: flex; }
+.filter-search input { flex: 1 1 auto; min-width: 0; min-height: 40px; padding: 0 16px; border-radius: 999px; border: 1px solid var(--line); background: var(--paper); color: var(--ink); font: inherit; font-size: 14px; }
+.filter-search input::placeholder { color: var(--soft); }
+.filter-search input:focus { outline: none; border-color: var(--green); }
+.filter-none { margin: 16px 0 0; font-size: 15px; color: var(--soft); }
+
 /* ---- the shelves ---------------------------------------------------- */
 .shelf { padding: 36px 0 8px; }
 .shelf-head { display: flex; align-items: baseline; justify-content: space-between; gap: 12px; margin-bottom: 18px; }
@@ -309,6 +320,8 @@ dialog.ep::backdrop { background: rgba(20, 22, 17, .78); backdrop-filter: blur(4
       <h1>The Time Rich Collection</h1>
       <p>Every workshop, on demand. Pick an episode, press play, and download the transcript to keep or hand to your AI.</p>
     </section>
+    <!-- The series chips and the search box, built below. -->
+    <div class="filters" data-filters></div>
     <div data-shelves></div>
     <noscript><p>Turn on JavaScript to browse and play the episodes.</p></noscript>
 
@@ -634,12 +647,102 @@ var EPISODES = [
       ['Test with trial reels', 'post early reels to non-followers first and publish only the ones that perform']
     ],
     speakers: ['Ella Molony Cook, Founder, Time Rich', 'Terry Rice, Keynote Speaker and AI Trainer']
+  },
+  {
+    id: 'e12', ep: 12, series: 'Accelerator: Cohort 1', cover: 'c-cream',
+    title: 'Open Business Surgery', date: '2026-10-26', minutes: 69, vimeo: '1239633646',
+    resources: [],
+    hook: 'Week 1 opener: set a Q4 North Star with a number, then live hot seats on founders\u2019 real businesses.',
+    overview: [
+      ['Your Q4 North Star', 'one target with a number by 31 Dec, what you\u2019ll stop doing, and a 1-hour daily commitment at the start of the day'],
+      ['Under $500K, sell', 'selling is the only North Star: outbound plus inbound built on visibility, trust and content'],
+      ['Context is the bottleneck', 'centralise your data, set up your Business Hub project and nail one ICP this week'],
+      ['Hot seats', 'stop hiding in systems and product tweaks, go sell, and show up where your ICP is']
+    ],
+    speakers: ['Ella Molony Cook, Founder, Time Rich', 'Hot seats with founders from the cohort']
+  },
+  {
+    id: 'e13', ep: 13, series: 'Accelerator: Cohort 1', cover: 'c-cream',
+    title: 'Multi-LLM & Setting Your Harness', date: '2026-10-28', minutes: 96, vimeo: '1240462816',
+    resources: [],
+    hook: 'Bonus session with Cien Solon: why your harness matters more than which model you pick, built live in LaunchLemonade.',
+    overview: [
+      ['Harness before model', 'the setup around your AI decides what it can do for you, not the model alone'],
+      ['Build your multi-LLM harness', 'setting up LaunchLemonade so you can work across models in one place'],
+      ['Setup support', 'a breakout room for anyone stuck getting LaunchLemonade running']
+    ],
+    speakers: ['Cien Solon, Founder, LaunchLemonade, and Time Rich Chief AI Officer', 'Ella Molony Cook, Founder, Time Rich']
+  },
+  {
+    id: 'e14', ep: 14, series: 'Accelerator: Cohort 1', cover: 'c-cream',
+    title: 'Training Your Agent', date: '2026-10-30', minutes: 98, vimeo: '1241440356',
+    resources: [],
+    hook: 'Cien Solon walks through four agent workflows in LaunchLemonade, plus hot seat coaching in breakout rooms.',
+    overview: [
+      ['Sales first', 'under $500K revenue, point your agents at sales'],
+      ['Four agent workflows', 'built live in LaunchLemonade, including a leads tool that found 30 new leads'],
+      ['Training is a mindset shift', 'use the breakout rooms when you\u2019re stuck and give yourself grace'],
+      ['Be realistic', 'an AI operating system takes about 3 months, not 4 weeks, so pick where you\u2019ll stay consistent']
+    ],
+    speakers: ['Cien Solon, Founder, LaunchLemonade', 'Ella Molony Cook, Founder, Time Rich', 'Breakout room led by Reimar Kosack, Time Rich Club mentor']
+  },
+  {
+    id: 'e15', ep: 15, series: 'Accelerator: Cohort 1', cover: 'c-cream',
+    title: 'Your AI Operating System', date: '2026-11-02', minutes: 112, vimeo: '1242572087',
+    resources: [],
+    hook: 'Week 2: build your AI operating system around your weakness first, with founders from the cohort sharing their setups.',
+    overview: [
+      ['Start with your weakness', 'build your AI operating system around the part of the business you\u2019re weakest at'],
+      ['Define done', 'be clear on what done looks like before you delegate, to AI or to people'],
+      ['Conviction needs data', 'sell it first and figure it out later'],
+      ['Be the coach, not the star player', 'nail one agent at a time, and ask AI to visualize your system']
+    ],
+    speakers: ['Ella Molony Cook, Founder, Time Rich', 'Founders from the cohort sharing their builds']
+  },
+  {
+    id: 'e16', ep: 16, series: 'Accelerator: Cohort 1', cover: 'c-cream',
+    title: 'Expert Q&A', date: '2026-11-06', minutes: 94, vimeo: '1244949491',
+    resources: [],
+    hook: 'Expert Q&A with Stanley, Wispr Flow and our TRC experts. This is the main room; the breakout rooms weren\u2019t recorded.',
+    overview: [
+      ['Move before you\u2019re comfortable', 'sell before the product is ready'],
+      ['Fewer tools', 'the best tool is the one you use; one CEO tool, with other AI tools as specialists that talk to each other'],
+      ['Personal branding', 'everyday stories are enough, and commenting on the right conversations gets you seen'],
+      ['Build a story bank', 'capture stories in Wispr Flow over the weekend']
+    ],
+    speakers: ['Ella Molony Cook, Founder, Time Rich', 'Hugh Goldstein, Wispr Flow', 'Alexandra Covucci and Vinny Purgato, Stanley', 'Jo O\u2019Kelly, Results2Go', 'Thiers Santos, 99x Americas', 'Terry Rice']
+  },
+  {
+    id: 'e17', ep: 17, series: 'Accelerator: Cohort 1', cover: 'c-cream',
+    title: 'Storytelling for GTM', date: '2026-11-09', minutes: 85, vimeo: '1245248752',
+    resources: [],
+    hook: 'ViKA Victoria on the stories that position you as an authority, and how to mix them with selling.',
+    overview: [
+      ['Start with the outcome', 'decide what you want from being visible before you put in the work'],
+      ['Read the room', 'a pitch, a client call or a stage each need a different story and a different length'],
+      ['Your story bank', 'collect the stories from your lived experience and check they position you as an authority'],
+      ['Conviction', 'it\u2019s what people hear when you speak, in a pitch or a meeting']
+    ],
+    speakers: ['ViKA Victoria, CEO, Brave New Story, and Time Rich Chief Storytelling Officer', 'Ella Molony Cook, Founder, Time Rich']
+  },
+  {
+    id: 'e18', ep: 18, series: 'Accelerator: Cohort 1', cover: 'c-cream',
+    title: 'The AI Content Machine', date: '2026-11-13', minutes: 87, vimeo: '1246744927',
+    resources: [['Stanley: 1 month free with code STANLEY1MONTH', 'Stanley, your AI head of content', 'https://x.getstanley.ai/r/mz4y9g']],
+    hook: 'The Stanley team builds your content machine live: your Brain, video in Studio, and every draft in one Content Calendar.',
+    overview: [
+      ['Feed your Brain', 'send Claude a one-liner and it saves your context straight to your Stanley Brain'],
+      ['Video in Studio', 'send up to 8 clips and ask for a reel, captions or a trim'],
+      ['One Content Calendar', 'review, edit and schedule every draft before it posts'],
+      ['Connect your tools', 'GitHub, Fathom and Notion give Stanley more to work with']
+    ],
+    speakers: ['Rudy, Alexandra Covucci and Vinny Purgato, Stanley', 'Ella Molony Cook, Founder, Time Rich']
   }
 ];
 
 /* The shelves, in the order they appear. A series with no episodes yet
    is simply not drawn. */
-var SERIES = ['AI Build Sessions', 'Leading with AI', 'Female Founder Circle'];
+var SERIES = ['Accelerator: Cohort 1', 'AI Build Sessions', 'Leading with AI', 'Female Founder Circle'];
 
 (function () {
   'use strict';
@@ -721,7 +824,7 @@ var SERIES = ['AI Build Sessions', 'Leading with AI', 'Female Founder Circle'];
     play.appendChild(icon(PLAY)); play.appendChild(document.createTextNode(e.vimeo ? 'Play episode' : 'Coming soon'));
     play.addEventListener('click', function () { open(e, play); });
     acts.appendChild(play);
-    acts.appendChild(transcriptLink(e, 'pill is-ghost'));
+    if (e.transcript) acts.appendChild(transcriptLink(e, 'pill is-ghost'));
     copy.appendChild(acts);
     wrap.appendChild(copy);
     wrap.appendChild(dvd(e, { bare: true }));
@@ -730,6 +833,10 @@ var SERIES = ['AI Build Sessions', 'Leading with AI', 'Female Founder Circle'];
   }
 
   /* ---- the shelves ----------------------------------------------------- */
+  /* One entry per shelf that was drawn, so the filter can show and hide
+     shelves and cases without rebuilding any of them. */
+  var SHELVES = [];
+
   function renderShelves() {
     var root = document.querySelector('[data-shelves]');
     if (!root) return;
@@ -743,21 +850,95 @@ var SERIES = ['AI Build Sessions', 'Leading with AI', 'Female Founder Circle'];
       var head = el('div', 'shelf-head');
       var h = el('h2', '', name); h.id = id;
       head.appendChild(h);
-      head.appendChild(el('span', '', list.length + (list.length === 1 ? ' episode' : ' episodes')));
+      var count = el('span', '', list.length + (list.length === 1 ? ' episode' : ' episodes'));
+      head.appendChild(count);
       sec.appendChild(head);
       var row = el('div', 'shelf-row');
+      var items = [];
       list.forEach(function (e) {
         var item = el('div', 'item');
         item.appendChild(dvd(e));
-        var dl = transcriptLink(e, 'item-dl', 'Transcript');
-        dl.setAttribute('aria-label', 'Download the transcript of ' + e.title);
-        item.appendChild(dl);
+        if (e.transcript) {
+          var dl = transcriptLink(e, 'item-dl', 'Transcript');
+          dl.setAttribute('aria-label', 'Download the transcript of ' + e.title);
+          item.appendChild(dl);
+        }
         row.appendChild(item);
+        items.push({ node: item, hay: (e.title + ' ' + (e.speakers || []).join(' ')).toLowerCase() });
       });
       sec.appendChild(row);
       sec.appendChild(el('div', 'shelf-board'));
       root.appendChild(sec);
+      SHELVES.push({ name: name, sec: sec, count: count, items: items });
     });
+  }
+
+  /* ---- the filter row ---------------------------------------------------
+     The chips show one series at a time; the search box narrows the cases
+     on the shelves that are showing, by title or speaker. A shelf with no
+     match left is hidden, and so is the row of cases inside it. */
+  function renderFilters() {
+    var root = document.querySelector('[data-filters]');
+    if (!root || !SHELVES.length) return;
+    var names = ['All'].concat(SERIES);
+    var picked = 'All';
+
+    var row = el('div', 'filter-row');
+    var chips = el('div', 'filter-chips');
+    chips.setAttribute('role', 'group');
+    chips.setAttribute('aria-label', 'Filter by series');
+    var buttons = names.map(function (name) {
+      var b = el('button', 'pill is-soft', name);
+      b.type = 'button';
+      b.addEventListener('click', function () { picked = name; paint(); });
+      chips.appendChild(b);
+      return b;
+    });
+    row.appendChild(chips);
+
+    var find = el('div', 'filter-search');
+    var lab = el('label', 'sr-only', 'Search by title or speaker');
+    lab.setAttribute('for', 'replay-search');
+    var box = document.createElement('input');
+    box.id = 'replay-search';
+    box.type = 'search';
+    box.placeholder = 'Search by title or speaker';
+    box.autocomplete = 'off';
+    box.addEventListener('input', paint);
+    find.appendChild(lab);
+    find.appendChild(box);
+    row.appendChild(find);
+    root.appendChild(row);
+
+    var none = el('p', 'filter-none', 'No episodes match. Try another series, or clear the search.');
+    none.setAttribute('role', 'status');
+    none.hidden = true;
+    root.appendChild(none);
+
+    function paint() {
+      var q = (box.value || '').trim().toLowerCase();
+      var showing = 0;
+      SHELVES.forEach(function (s) {
+        var on = picked === 'All' || s.name === picked;
+        var hits = 0;
+        s.items.forEach(function (it) {
+          var keep = on && (!q || it.hay.indexOf(q) !== -1);
+          it.node.hidden = !keep;
+          if (keep) hits++;
+        });
+        s.sec.hidden = !hits;
+        s.count.textContent = hits + (hits === 1 ? ' episode' : ' episodes');
+        showing += hits;
+      });
+      buttons.forEach(function (b, i) {
+        var on = names[i] === picked;
+        b.className = 'pill ' + (on ? 'is-green' : 'is-soft');
+        b.setAttribute('aria-pressed', on ? 'true' : 'false');
+      });
+      none.hidden = showing > 0;
+    }
+
+    paint();
   }
 
   function transcriptLink(e, cls, label) {
@@ -823,7 +1004,7 @@ var SERIES = ['AI Build Sessions', 'Leading with AI', 'Female Founder Circle'];
     main.appendChild(t);
     main.appendChild(el('p', 'ep-hook', e.hook));
     var ul = el('ul', 'ep-list');
-    e.overview.forEach(function (o) {
+    (e.overview || []).forEach(function (o) {
       var li = el('li');
       li.appendChild(el('b', '', o[0] + ': '));
       li.appendChild(document.createTextNode(o[1]));
@@ -839,7 +1020,7 @@ var SERIES = ['AI Build Sessions', 'Leading with AI', 'Female Founder Circle'];
     side.appendChild(info);
     var who = el('div', 'ep-box');
     who.appendChild(el('h3', '', 'Speakers'));
-    e.speakers.forEach(function (s) {
+    (e.speakers || []).forEach(function (s) {
       var ELLA = 'Ella Molony Cook';
       if (s.indexOf(ELLA) !== 0) { who.appendChild(el('p', '', s)); return; }
       var p = el('p');
@@ -850,37 +1031,47 @@ var SERIES = ['AI Build Sessions', 'Leading with AI', 'Female Founder Circle'];
       who.appendChild(p);
     });
     side.appendChild(who);
-    // What was shared in the chat on the day, then the sponsor codes,
-    // which live on the content workshop page so there is one place to
-    // keep them current.
-    var res = el('div', 'ep-box');
-    res.appendChild(el('h3', '', 'Resources'));
-    (e.resources || []).forEach(function (r) { res.appendChild(link(r[0], r[1], r[2])); });
-    res.appendChild(link('Wispr Flow: 6 months Pro free', 'Code TIMERICH6, in the desktop app', 'https://wisprflow.ai/info/redeem-promo?code=TIMERICH6&months=6'));
-    res.appendChild(link('Stanley: 6 months free', 'Code TIMERICH6, at checkout', 'https://x.getstanley.ai/r/mz4y9g'));
-    side.appendChild(res);
-    var acts = el('div', 'ep-actions');
-    acts.appendChild(transcriptLink(e, 'pill is-green'));
-    side.appendChild(acts);
+    // Everything Resources lists: what was shared in the chat on the day,
+    // then the sponsor codes, which live on the content workshop page so
+    // there is one place to keep them current. With nothing to list, the
+    // heading goes too.
+    var shared = (e.resources || []).concat([
+      ['Wispr Flow: 6 months Pro free', 'Code TIMERICH6, in the desktop app', 'https://wisprflow.ai/info/redeem-promo?code=TIMERICH6&months=6'],
+      ['Stanley: 6 months free', 'Code TIMERICH6, at checkout', 'https://x.getstanley.ai/r/mz4y9g']
+    ]);
+    if (shared.length) {
+      var res = el('div', 'ep-box');
+      res.appendChild(el('h3', '', 'Resources'));
+      shared.forEach(function (r) { res.appendChild(link(r[0], r[1], r[2])); });
+      side.appendChild(res);
+    }
+    if (e.transcript) {
+      var acts = el('div', 'ep-actions');
+      acts.appendChild(transcriptLink(e, 'pill is-green'));
+      side.appendChild(acts);
+    }
     body.appendChild(side);
 
-    var pr = el('section', 'ep-prompt');
-    pr.setAttribute('aria-label', 'Use it with your AI');
-    var ph = el('div', 'ep-prompt-head');
-    ph.appendChild(el('h3', '', 'Use it with your AI'));
-    var copy = el('button', 'pill is-soft', 'Copy prompt'); copy.type = 'button';
-    var text = promptFor(e);
-    copy.addEventListener('click', function () {
-      var done = function () { copy.textContent = 'Copied'; setTimeout(function () { copy.textContent = 'Copy prompt'; }, 1800); };
-      if (navigator.clipboard && navigator.clipboard.writeText) navigator.clipboard.writeText(text).then(done, function () {});
-    });
-    ph.appendChild(copy);
-    pr.appendChild(ph);
-    var steps = el('ol');
-    ['Download the transcript above.', 'Attach it in ChatGPT, Claude or Grok.', 'Paste this prompt and send.'].forEach(function (t) { steps.appendChild(el('li', '', t)); });
-    pr.appendChild(steps);
-    pr.appendChild(el('pre', '', text));
-    body.appendChild(pr);
+    // Only the episodes with a transcript have a prompt to use it with.
+    if ((e.prompt || []).length) {
+      var pr = el('section', 'ep-prompt');
+      pr.setAttribute('aria-label', 'Use it with your AI');
+      var ph = el('div', 'ep-prompt-head');
+      ph.appendChild(el('h3', '', 'Use it with your AI'));
+      var copy = el('button', 'pill is-soft', 'Copy prompt'); copy.type = 'button';
+      var text = promptFor(e);
+      copy.addEventListener('click', function () {
+        var done = function () { copy.textContent = 'Copied'; setTimeout(function () { copy.textContent = 'Copy prompt'; }, 1800); };
+        if (navigator.clipboard && navigator.clipboard.writeText) navigator.clipboard.writeText(text).then(done, function () {});
+      });
+      ph.appendChild(copy);
+      pr.appendChild(ph);
+      var steps = el('ol');
+      ['Download the transcript above.', 'Attach it in ChatGPT, Claude or Grok.', 'Paste this prompt and send.'].forEach(function (t) { steps.appendChild(el('li', '', t)); });
+      pr.appendChild(steps);
+      pr.appendChild(el('pre', '', text));
+      body.appendChild(pr);
+    }
 
     dialog.appendChild(body);
 
@@ -923,6 +1114,7 @@ var SERIES = ['AI Build Sessions', 'Leading with AI', 'Female Founder Circle'];
     if (main) main.hidden = false;
     renderNow();
     renderShelves();
+    renderFilters();
     // A link to an episode (timerich.ai/replay/#e03) opens it.
     var want = location.hash.replace('#', '');
     var hit = EPISODES.filter(function (e) { return e.id === want; })[0];
