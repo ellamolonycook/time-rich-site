@@ -90,6 +90,9 @@
     .trp-cw { max-width: 1120px; margin: 0 auto; padding: clamp(36px, 6vw, 64px) 24px 24px; display: flex; flex-direction: column; gap: 32px; }
     @media (max-width: 640px) { .trp-cw { padding-left: 16px; padding-right: 16px; } }
 
+    .trp-redline { margin: 0; padding: 10px 16px; border-radius: 10px; background: #9B4A45; color: #FFFCEB; font-size: 15px; font-weight: 600; line-height: 1.5; text-align: center; }
+    .trp-redline a { color: #FFFCEB; text-decoration: underline; text-underline-offset: 3px; }
+
     .trp-cw-head { display: flex; flex-wrap: wrap; align-items: flex-end; gap: 24px 48px; }
     .trp-cw-head-copy { flex: 999 1 520px; min-width: 0; display: flex; flex-direction: column; gap: 16px; }
     .trp-cw-head .trp-headbar { flex: 1 1 240px; max-width: 300px; }
@@ -737,6 +740,11 @@
   <!-- MAIN APP AREA -->
   <main class="flex-1 relative bg-transparent">
     <div class="trp-cw">
+
+      <!-- The price rise, until it is old news. The bar takes itself down
+           once the date in data-redline-until has passed; see the script at
+           the foot of the page. -->
+      <p class="trp-redline" data-redline-until="2026-11-20T20:00:00Z">Time Rich Club prices increase Friday, 3pm EST. <a href="https://www.timerichclub.com/subscribe" target="_blank" rel="noopener">Join the CLUB dance floor.</a></p>
 
       <!-- The page header, with the member's own count and bar beside it.
            The bar is filled by the renderer below, off the same numbers the
@@ -3190,6 +3198,13 @@ Anything you've done twice should never need you again. A skill is your way of d
      * browser's localStorage so a reload does not lose an hour's work.
      */
     (function () {
+      /* The price redline, taken down once its date has passed, so nobody
+         has to remember to come back and delete it. */
+      Array.prototype.forEach.call(document.querySelectorAll('[data-redline-until]'), function (bar) {
+        var until = Date.parse(bar.getAttribute('data-redline-until'));
+        if (until && Date.now() > until && bar.parentNode) bar.parentNode.removeChild(bar);
+      });
+
       var KEY = 'tr_audit_rows';
       var CELLS = ['task', 'hours', 'dollar', 'owner', 'compass'];
       var HEADS = ['Task (last week)', 'Hours', '$ or not', 'Owner', 'COMPASS check'];
