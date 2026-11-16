@@ -102,7 +102,29 @@ a { color: inherit; }
 .shelf-head { display: flex; align-items: baseline; justify-content: space-between; gap: 12px; margin-bottom: 18px; }
 .shelf-head h2 { font-family: var(--display); font-weight: 600; font-size: clamp(22px, 3vw, 28px); letter-spacing: -.02em; margin: 0; }
 .shelf-head span { font-size: 13px; color: var(--soft); white-space: nowrap; }
-.shelf-row { display: flex; gap: clamp(12px, 2vw, 24px); overflow-x: auto; padding: 8px 4px 22px; margin: 0 -4px; scroll-snap-type: x proximity; scrollbar-width: thin; }
+.shelf-nav { display: flex; align-items: center; gap: 8px; }
+/* the arrows that scroll a shelf, in place of a scrollbar */
+.shelf-arrow { width: 40px; height: 40px; flex: none; padding: 0; display: inline-flex; align-items: center; justify-content: center; border-radius: 50%; border: 1px solid var(--line); background: var(--paper); color: var(--green); cursor: pointer; transition: background-color .18s ease; }
+.shelf-arrow:hover { background: var(--sage-lt); }
+.shelf-arrow:focus-visible { outline: 2px solid var(--green); outline-offset: 2px; }
+.shelf-arrow:disabled { opacity: .35; cursor: default; }
+.shelf-arrow:disabled:hover { background: var(--paper); }
+.shelf-arrow svg { width: 18px; height: 18px; }
+/* The row scrolls with no scrollbar of its own, so the arrows and a fade
+   at each edge are what say there is more to see. The fade stops short of
+   the row's bottom padding, where the shelf board starts. */
+.shelf-viewport { position: relative; }
+.shelf-viewport::before, .shelf-viewport::after { content: ""; position: absolute; top: 0; bottom: 22px; width: 56px; z-index: 1; pointer-events: none; opacity: 0; transition: opacity .2s ease; }
+.shelf-viewport::before { left: 0; background: linear-gradient(to right, var(--paper), rgba(255, 253, 251, 0)); }
+.shelf-viewport::after { right: 0; background: linear-gradient(to left, var(--paper), rgba(255, 253, 251, 0)); }
+.shelf-viewport.can-left::before { opacity: 1; }
+.shelf-viewport.can-right::after { opacity: 1; }
+.shelf-row { display: flex; gap: clamp(12px, 2vw, 24px); overflow-x: auto; padding: 8px 4px 22px; margin: 0 -4px; scroll-snap-type: x mandatory; scroll-padding-left: 4px; overscroll-behavior-x: contain; scrollbar-width: none; }
+.shelf-row::-webkit-scrollbar { display: none; }
+@media (prefers-reduced-motion: reduce) {
+  .shelf-arrow { transition: none; }
+  .shelf-viewport::before, .shelf-viewport::after { transition: none; }
+}
 /* the shelf board the cases stand on */
 .shelf-board { height: 12px; border-radius: 0 0 6px 6px; background: linear-gradient(var(--sage), var(--sage-lt)); box-shadow: 0 10px 18px -12px rgba(26, 24, 22, .45); margin-top: -14px; position: relative; z-index: -1; }
 
@@ -144,6 +166,16 @@ a { color: inherit; }
 .item-dl:hover { background: var(--sage); }
 .item-dl:focus-visible { outline: 2px solid var(--ink); outline-offset: 2px; }
 .item-dl svg { width: 15px; height: 15px; }
+
+/* On a phone the shelf is swiped, not clicked: no arrows, no left fade,
+   and each case carries just a small margin, so about a card and a half
+   is on screen with no empty space between them. */
+@media (max-width: 640px) {
+  .shelf-arrow { display: none; }
+  .shelf-viewport::before { display: none; }
+  .shelf-viewport::after { width: 32px; }
+  .item { width: calc(var(--w) + 24px); }
+}
 
 /* cover colourways, one per series */
 .c-forest { --c1: #424B36; --c2: #2C3224; --c3: #FFFDFB; --c4: #CCEEA0; }
@@ -773,6 +805,8 @@ var SERIES = ['Accelerator: Cohort 1', 'AI Build Sessions', 'Leading with AI', '
   var PLAY = 'M7 4.5v15l12-7.5z';
   var DOWN = 'M12 4v11m0 0l-4.5-4.5M12 15l4.5-4.5M5 19.5h14';
   var CLOSE = 'M6 6l12 12M18 6L6 18';
+  var CHEV_L = 'M15 5l-7 7 7 7';
+  var CHEV_R = 'M9 5l7 7-7 7';
 
   /* ---- a DVD case ------------------------------------------------------ */
   function dvd(e, opts) {
@@ -851,9 +885,13 @@ var SERIES = ['Accelerator: Cohort 1', 'AI Build Sessions', 'Leading with AI', '
       var h = el('h2', '', name); h.id = id;
       head.appendChild(h);
       var count = el('span', '', list.length + (list.length === 1 ? ' episode' : ' episodes'));
-      head.appendChild(count);
+      var nav = el('div', 'shelf-nav');
+      nav.appendChild(count);
+      head.appendChild(nav);
       sec.appendChild(head);
+      var viewport = el('div', 'shelf-viewport');
       var row = el('div', 'shelf-row');
+      row.id = id + '-row';
       var items = [];
       list.forEach(function (e) {
         var item = el('div', 'item');
@@ -866,12 +904,60 @@ var SERIES = ['Accelerator: Cohort 1', 'AI Build Sessions', 'Leading with AI', '
         row.appendChild(item);
         items.push({ node: item, hay: (e.title + ' ' + (e.speakers || []).join(' ')).toLowerCase() });
       });
-      sec.appendChild(row);
+      viewport.appendChild(row);
+      sec.appendChild(viewport);
       sec.appendChild(el('div', 'shelf-board'));
       root.appendChild(sec);
-      SHELVES.push({ name: name, sec: sec, count: count, items: items });
+      var left = shelfArrow(row, name, -1);
+      var right = shelfArrow(row, name, 1);
+      nav.appendChild(left);
+      nav.appendChild(right);
+      var shelf = { name: name, sec: sec, count: count, items: items,
+                    row: row, viewport: viewport, left: left, right: right };
+      SHELVES.push(shelf);
+      row.addEventListener('scroll', function () { updateShelf(shelf); }, { passive: true });
     });
   }
+
+  function reducedMotion() {
+    return !!(window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches);
+  }
+
+  /* One arrow for one shelf: dir is -1 for left, 1 for right. A click
+     moves the row by almost a full screen of cases, which lands on a
+     snap point. */
+  function shelfArrow(row, name, dir) {
+    var b = el('button', 'shelf-arrow');
+    b.type = 'button';
+    b.setAttribute('aria-label', 'Scroll ' + name + (dir < 0 ? ' left' : ' right'));
+    b.setAttribute('aria-controls', row.id);
+    b.appendChild(icon(dir < 0 ? CHEV_L : CHEV_R));
+    b.addEventListener('click', function () {
+      var step = dir * (row.clientWidth * 0.9);
+      if (row.scrollBy) row.scrollBy({ left: step, behavior: reducedMotion() ? 'auto' : 'smooth' });
+      else row.scrollLeft += step;
+    });
+    return b;
+  }
+
+  /* How far a shelf can still scroll, which is all the arrows and the
+     edge fades need to know. A row that fits has neither. */
+  function updateShelf(s) {
+    var slack = s.row.scrollWidth - s.row.clientWidth;
+    var over = slack > 2;
+    var atStart = s.row.scrollLeft <= 2;
+    var atEnd = s.row.scrollLeft >= slack - 2;
+    s.left.hidden = !over;
+    s.right.hidden = !over;
+    s.left.disabled = !over || atStart;
+    s.right.disabled = !over || atEnd;
+    s.viewport.classList.toggle('can-left', over && !atStart);
+    s.viewport.classList.toggle('can-right', over && !atEnd);
+  }
+
+  function updateShelves() { SHELVES.forEach(function (s) { updateShelf(s); }); }
+
+  window.addEventListener('resize', updateShelves);
 
   /* ---- the filter row ---------------------------------------------------
      The chips show one series at a time; the search box narrows the cases
@@ -936,6 +1022,7 @@ var SERIES = ['Accelerator: Cohort 1', 'AI Build Sessions', 'Leading with AI', '
         b.setAttribute('aria-pressed', on ? 'true' : 'false');
       });
       none.hidden = showing > 0;
+      updateShelves();
     }
 
     paint();
@@ -1115,6 +1202,7 @@ var SERIES = ['Accelerator: Cohort 1', 'AI Build Sessions', 'Leading with AI', '
     renderNow();
     renderShelves();
     renderFilters();
+    updateShelves();
     // A link to an episode (timerich.ai/replay/#e03) opens it.
     var want = location.hash.replace('#', '');
     var hit = EPISODES.filter(function (e) { return e.id === want; })[0];
