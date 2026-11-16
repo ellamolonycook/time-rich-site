@@ -2536,7 +2536,35 @@ Anything you've done twice should never need you again. A skill is your way of d
         { upto: Infinity, title: 'This week, and what you\'ve built' }
       ];
 
-      var WEEK_SECTIONS = { 1: WEEK1_SECTIONS, 2: WEEK2_SECTIONS, 3: WEEK3_SECTIONS };
+      /* Week 4 in the same shape again: one section per agent, and the
+         member picks one of the four (Cien's prompts, Ella approved on
+         16 Nov). The rows sit at 30, 40, 50, 60 and 90+. */
+      var WEEK4_SECTIONS = [
+        { upto: 29, title: 'Start here' },
+        {
+          upto: 39,
+          title: '1. Sales agent: from prospect research to outreach',
+          lead: `Every weekday morning it finds new leads that fit, scores them, drafts a personal email for each one and updates your CRM. Nothing is sent until you approve it.`
+        },
+        {
+          upto: 49,
+          title: '2. Content agent: from industry news to scheduled posts',
+          lead: `Twice a week it finds a story your audience cares about, checks the facts, writes the post in your voice and gets it ready to publish. It publishes only with your approval.`
+        },
+        {
+          upto: 59,
+          title: '3. Meeting notes agent: from notes to tasks that get done',
+          lead: `Every weekday afternoon it reads your new meeting notes, turns decisions into tasks with owners and dates, and sends one short summary so nothing gets dropped.`
+        },
+        {
+          upto: 69,
+          title: '4. Competitor watch agent: from competitor changes to action',
+          lead: `Every Monday morning it checks five competitors, spots real changes in pricing, products and positioning, logs them and tells you what to do about them.`
+        },
+        { upto: Infinity, title: 'This week, and what you\'ve built' }
+      ];
+
+      var WEEK_SECTIONS = { 1: WEEK1_SECTIONS, 2: WEEK2_SECTIONS, 3: WEEK3_SECTIONS, 4: WEEK4_SECTIONS };
 
       // Which sections the member has opened or shut, kept across redraws.
       var masterOpen = {};
