@@ -565,13 +565,13 @@
       </div>
     </section>
 
-    <!-- ---- upcoming in new york, and the Collection ------------------ -->
+    <!-- ---- upcoming events, and the Collection ----------------------- -->
     <section class="tc-sec" aria-labelledby="events-heading" data-tc-rise>
       <div class="tc-wrap">
         <div class="tc-head">
           <div>
             <p class="tc-eyebrow">What&rsquo;s next</p>
-            <h2 id="events-heading" class="tc-h2">Upcoming in New York</h2>
+            <h2 id="events-heading" class="tc-h2">Upcoming events</h2>
           </div>
           <a class="tc-link" href="https://luma.com/timerich" target="_blank" rel="noopener noreferrer">
             All events <span aria-hidden="true">&rarr;</span>
@@ -579,25 +579,17 @@
         </div>
 
         <div class="tc-events">
-          <a class="tc-event" href="https://luma.com/contentsystem" target="_blank" rel="noopener noreferrer">
-            <img src="../brand/img/event-ai-content-machine.jpg" alt="" width="1200" height="1200" loading="lazy" decoding="async"/>
+          <a class="tc-event" href="https://luma.com/mv63t46x" target="_blank" rel="noopener noreferrer" data-ends="2026-11-19T19:00:00Z">
+            <img src="../brand/img/event-steal-my-setup.jpg" alt="" width="1200" height="1200" loading="lazy" decoding="async"/>
             <span class="min-w-0">
-              <span class="tc-event-when">Nov 04</span>
-              <span class="tc-event-t">AI Content System + Investor Fireside</span>
-              <span class="tc-event-d">The Ned. Build your content agents and leave with a week of posts scheduled.</span>
-              <span class="sr-only">4 November, opens in a new tab</span>
-            </span>
-          </a>
-          <a class="tc-event" href="https://luma.com/nycwomen" target="_blank" rel="noopener noreferrer">
-            <img src="../brand/img/event-womens-wealth.jpg" alt="" width="1200" height="1200" loading="lazy" decoding="async"/>
-            <span class="min-w-0">
-              <span class="tc-event-when">Nov 09</span>
-              <span class="tc-event-t">Women&rsquo;s Wealth Transfer</span>
-              <span class="tc-event-d">An honest panel with women who have exited and invested, then drinks. 6 to 9pm.</span>
-              <span class="sr-only">9 November, opens in a new tab</span>
+              <span class="tc-event-when">Nov 19</span>
+              <span class="tc-event-t">Steal my Superhuman Setup</span>
+              <span class="tc-event-d">Zoom, 12pm ET. Claudi and Ella show the 7 AI agents they run through Notion OS, live.</span>
+              <span class="sr-only">19 November, opens in a new tab</span>
             </span>
           </a>
         </div>
+        <p class="tc-events-empty tc-event-d" hidden>New events coming soon. <a href="https://luma.com/timerich" target="_blank" rel="noopener noreferrer">See all events &rarr;</a></p>
 
         <div class="tc-collection">
           <div class="min-w-0">
@@ -991,6 +983,24 @@
         requestAnimationFrame(tick);
       }
       requestAnimationFrame(tick);
+    })();
+
+    // The events that have been and gone. Each event card needs a data-ends
+    // date (UTC) so it disappears after the event; a card without one always
+    // shows. With nothing left on, the row goes and the note takes its place.
+    (function () {
+      var grid = document.querySelector('.tc-events');
+      if (!grid) return;
+      var live = 0;
+      grid.querySelectorAll('a.tc-event').forEach(function (card) {
+        var ends = Date.parse(card.getAttribute('data-ends'));
+        if (ends && Date.now() > ends) card.hidden = true;
+        if (!card.hidden) live++;
+      });
+      if (live) return;
+      grid.hidden = true;
+      var empty = document.querySelector('.tc-events-empty');
+      if (empty) empty.hidden = false;
     })();
   </script>
 
