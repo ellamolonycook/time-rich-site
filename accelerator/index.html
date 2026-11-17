@@ -848,13 +848,34 @@ html{scroll-padding-top:110px}
 .shot-dialog::backdrop{background:rgba(26,24,22,.72)}
 .shot-dialog img{display:block;max-width:100%;max-height:calc(100vh - 32px);width:auto;height:auto;border-radius:12px;background:#fff}
 .shot-close{position:absolute;top:8px;right:8px;width:40px;height:40px;border:0;border-radius:50%;background:rgba(26,24,22,.7);color:#fff;font-size:24px;line-height:1;cursor:pointer}
+/* The hint belongs to the phone lightbox only; on a desktop the whole
+   screenshot is already on screen. */
+.shot-hint{display:none}
+/* Opened on a phone, a contained screenshot is about 343px wide and its text
+   cannot be read at all. So the image is held at 900px and the frame it sits
+   in scrolls instead. One axis set to auto makes the other auto too, so a tall
+   one can be scrolled down as well as across. The close button is positioned
+   against the dialog, not this frame, so it stays put while the image moves.
+   This dialog is shared with the deck in s-why, so those six screenshots get
+   the same swipe. */
+@media (max-width:820px){
+  .shot-dialog{max-width:calc(100vw - 16px)}
+  .shot-hint{display:block;margin:0 48px 8px 0;color:#fff}
+  .shot-pan{overflow-x:auto;-webkit-overflow-scrolling:touch;touch-action:pan-x pan-y pinch-zoom;
+    border-radius:12px;background:#fff;scrollbar-width:none}
+  .shot-pan::-webkit-scrollbar{display:none}
+  /* max-height has to go with it: against a fixed width it would otherwise
+     squash the picture out of shape in landscape. */
+  .shot-dialog img{width:900px;max-width:none;height:auto;max-height:none;border-radius:0}
+  .shot-close{z-index:2}
+}
 /* The Cohort 1 screenshots are the same deck in a section of their own, so the
    only rule it needs is the CTA gap every other section sets for itself. */
 .s-cohort1 .act{margin-top:var(--space-act)}
 /* These eight are whole recommendations, not a single line, so in the 760px
    2:1 frame their text came out around 9px. Nothing short of a much wider
    frame fixes that, and .wrap would cap it at 1056px, so on desktop the deck
-   alone steps outside the wrap: it takes the viewport less 48px, up to 1440px,
+   alone steps outside the wrap: it takes the viewport less 48px, up to 1120px,
    and the negative inline margins pull it back out to centre. The 48px is
    what keeps a vertical scrollbar from ever turning into a sideways one. The
    hint line and the button are siblings, so they stay in the wrap.
@@ -863,9 +884,13 @@ html{scroll-padding-top:110px}
 @media (min-width:821px){
   .s-cohort1 .shots{
     max-width:none;
-    width:min(1440px, calc(100vw - 48px));
-    margin-inline:calc((100% - min(1440px, calc(100vw - 48px))) / 2);
+    width:min(1120px, calc(100vw - 48px));
+    margin-inline:calc((100% - min(1120px, calc(100vw - 48px))) / 2);
     aspect-ratio:11/5;padding-bottom:88px;
+    /* The ratio sets the height, this caps it: on a short laptop window the
+       frame stops growing and the screenshots, being contained, shrink with
+       it, so a whole card is always on screen. */
+    max-height:calc(100vh - 180px);
   }
   /* The fan is anchored to the bottom edge, so its peek is a flat 22 and 44px
      whatever the frame. Against a frame half again as tall that reads as a
@@ -1776,7 +1801,8 @@ html{scroll-padding-top:110px}
     <!-- Lightbox for the screenshots. Without JS the tiles are plain links to the full image. -->
     <dialog class="shot-dialog" id="shotDialog" aria-label="LinkedIn recommendation">
       <button class="shot-close" type="button" aria-label="Close">&times;</button>
-      <img alt="" />
+      <p class="cta-note shot-hint">Swipe sideways to read.</p>
+      <div class="shot-pan"><img alt="" /></div>
     </dialog>
     <script>
     (function(){
