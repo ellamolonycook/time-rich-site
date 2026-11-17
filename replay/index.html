@@ -304,6 +304,7 @@ dialog.ep::backdrop { background: rgba(20, 22, 17, .78); backdrop-filter: blur(4
 .event-meta { font-size: 13px; font-weight: 600; letter-spacing: .1em; text-transform: uppercase; color: var(--green); }
 .event-t { font-family: var(--display); font-weight: 600; font-size: 20px; letter-spacing: -.01em; line-height: 1.2; }
 .event-d { font-size: 15px; color: var(--soft); }
+.events-empty { margin: 0; font-size: 15px; color: var(--soft); }
 
 /* ---- footer --------------------------------------------------------- */
 .foot { border-top: 1px solid var(--line); margin-top: 48px; }
@@ -399,23 +400,18 @@ dialog.ep::backdrop { background: rgba(20, 22, 17, .78); backdrop-filter: blur(4
 
     <section class="block" aria-labelledby="events-title">
       <div class="block-head">
-        <h2 id="events-title">Upcoming in New York</h2>
+        <h2 id="events-title">Upcoming events</h2>
         <a href="https://luma.com/timerich" target="_blank" rel="noopener">All events &rarr;</a>
       </div>
       <div class="cards is-events">
-        <a class="event" href="https://luma.com/contentsystem" target="_blank" rel="noopener">
-          <img src="/brand/img/event-ai-content-machine.jpg" alt="" width="1200" height="1200" loading="lazy" decoding="async"/>
-          <span class="event-meta">Wed 4 Nov &middot; The Ned</span>
-          <span class="event-t">AI Content System + Investor Fireside</span>
-          <span class="event-d">Build your content agents and leave with a week of posts scheduled.</span>
-        </a>
-        <a class="event" href="https://luma.com/nycwomen" target="_blank" rel="noopener">
-          <img src="/brand/img/event-womens-wealth.jpg" alt="" width="1200" height="1200" loading="lazy" decoding="async"/>
-          <span class="event-meta">Mon 9 Nov &middot; 6 to 9pm</span>
-          <span class="event-t">Women&rsquo;s Wealth Transfer</span>
-          <span class="event-d">An honest panel with women who have exited and invested, then drinks.</span>
+        <a class="event" href="https://luma.com/mv63t46x" target="_blank" rel="noopener" data-ends="2026-11-19T19:00:00Z">
+          <img src="/brand/img/event-steal-my-setup.jpg" alt="" width="1200" height="1200" loading="lazy" decoding="async"/>
+          <span class="event-meta">Thu 19 Nov &middot; 12pm ET &middot; Zoom</span>
+          <span class="event-t">Steal my Superhuman Setup</span>
+          <span class="event-d">Claudi and Ella show the 7 AI agents they run through Notion OS, live.</span>
         </a>
       </div>
+      <p class="events-empty" hidden>New events coming soon. <a href="https://luma.com/timerich" target="_blank" rel="noopener">See all events &rarr;</a></p>
     </section>
   </div>
 
@@ -1202,6 +1198,24 @@ var SERIES = ['Accelerator: Cohort 1', 'AI Build Sessions', 'Leading with AI', '
   if (dialog) {
     dialog.addEventListener('cancel', function (ev) { ev.preventDefault(); close(); });   // Escape
     dialog.addEventListener('click', function (ev) { if (ev.target === dialog) close(); }); // backdrop
+  }
+
+  /* The events that have been and gone. Each event card needs a data-ends
+     date (UTC) so it disappears after the event; a card without one always
+     shows. With nothing left on, the row goes and the note takes its place. */
+  var eventGrid = document.querySelector('.cards.is-events');
+  if (eventGrid) {
+    var eventsLive = 0;
+    Array.prototype.forEach.call(eventGrid.querySelectorAll('a.event'), function (card) {
+      var ends = Date.parse(card.getAttribute('data-ends'));
+      if (ends && Date.now() > ends) card.hidden = true;
+      if (!card.hidden) eventsLive++;
+    });
+    if (!eventsLive) {
+      eventGrid.hidden = true;
+      var eventsEmpty = document.querySelector('.events-empty');
+      if (eventsEmpty) eventsEmpty.hidden = false;
+    }
   }
 
   /* The offer codes: copy on click. */
