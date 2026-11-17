@@ -436,8 +436,8 @@ console.log('\n/contentworkshop — the essentials, and the two codes');
   check('the Wispr code on the page is TIMERICH90',
     document.getElementById('wisprcode').textContent === 'TIMERICH90',
     document.getElementById('wisprcode').textContent);
-  check('the Stanley code on the page is STANLEY1MONTH',
-    document.getElementById('stanleycode').textContent === 'STANLEY1MONTH',
+  check('the Stanley code on the page is TIMERICH1MO',
+    document.getElementById('stanleycode').textContent === 'TIMERICH1MO',
     document.getElementById('stanleycode').textContent);
   check('the Wispr offer reads 3 months Pro', HTML.includes('Wispr Flow &middot; 3 months Pro'));
   check('the Stanley offer reads 1 month free', HTML.includes('Stanley &middot; 1 month free'));
@@ -574,7 +574,7 @@ console.log('\n/contentworkshop — the build is three numbered dropdowns');
 
   const leads = boxes.map((b) => b.querySelector('.steplead').textContent.trim());
   check('Step 1 leads with what Stanley is, and the free month',
-    /^Stanley is your AI head of content: a voice note goes in, drafts in your voice come out, you approve, it posts\. Free for 1 month with code STANLEY1MONTH\.$/
+    /^Stanley is your AI head of content: a voice note goes in, drafts in your voice come out, you approve, it posts\. Free for 1 month with code TIMERICH1MO\.$/
       .test(leads[0]), leads[0]);
   check('Step 2 leads with the 10-minute strategy',
     /^Tell AI who you are and who you serve, and it turns that into your content strategy in about 10 minutes\.$/
@@ -932,7 +932,7 @@ console.log('\n/contentworkshop — copying actually copies, and says so');
   const idle = btn.textContent;
 
   clickCopy(document, 'stanley');
-  check('clicking copies the Stanley code', copied[0] === 'STANLEY1MONTH', copied);
+  check('clicking copies the Stanley code', copied[0] === 'TIMERICH1MO', copied);
   check('the label turns to Copied', /Copied/.test(btn.textContent), btn.textContent);
 
   // The label is meant to go back by itself, after about two seconds.
