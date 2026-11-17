@@ -851,6 +851,41 @@ html{scroll-padding-top:110px}
 /* The Cohort 1 screenshots are the same deck in a section of their own, so the
    only rule it needs is the CTA gap every other section sets for itself. */
 .s-cohort1 .act{margin-top:var(--space-act)}
+/* These eight are whole recommendations, not a single line, so in the 760px
+   2:1 frame their text came out around 9px. Nothing short of a much wider
+   frame fixes that, and .wrap would cap it at 1056px, so on desktop the deck
+   alone steps outside the wrap: it takes the viewport less 48px, up to 1440px,
+   and the negative inline margins pull it back out to centre. The 48px is
+   what keeps a vertical scrollbar from ever turning into a sideways one. The
+   hint line and the button are siblings, so they stay in the wrap.
+   Every rule below is scoped to .s-cohort1 and sits inside a breakpoint, so
+   the deck in s-why keeps its own size exactly. */
+@media (min-width:821px){
+  .s-cohort1 .shots{
+    max-width:none;
+    width:min(1440px, calc(100vw - 48px));
+    margin-inline:calc((100% - min(1440px, calc(100vw - 48px))) / 2);
+    aspect-ratio:11/5;padding-bottom:88px;
+  }
+  /* The fan is anchored to the bottom edge, so its peek is a flat 22 and 44px
+     whatever the frame. Against a frame half again as tall that reads as a
+     sliver, so the offsets and the room under them grow with it. */
+  .s-cohort1 .shot{inset:0 0 88px}
+  .s-cohort1 .shot.is-next{transform:translateY(30px) scale(.95) rotate(-1.6deg)}
+  .s-cohort1 .shot.is-next2{transform:translateY(60px) scale(.9) rotate(1.8deg)}
+}
+/* Reduced motion: two columns rather than four, and the whole screenshot
+   instead of a cropped top-left corner. */
+@media (min-width:821px) and (prefers-reduced-motion:reduce){
+  .s-cohort1 .shots{grid-template-columns:repeat(2,1fr);width:auto;margin-inline:0;max-width:none;aspect-ratio:auto;padding-bottom:0}
+  .s-cohort1 .shot img{aspect-ratio:auto;object-fit:contain;object-position:center}
+}
+/* Phone: the card takes the whole screen width and the image keeps its own
+   height, so a tall recommendation is not letterboxed into a 2:1 band. */
+@media (max-width:820px){
+  .s-cohort1 .shot{flex:0 0 92%}
+  .s-cohort1 .shot img{height:auto;aspect-ratio:auto;object-fit:contain}
+}
 
 /* ---- promo video ----
    Fills the gap between Trusted by and the numbers panel. Shares that panel's
@@ -1558,6 +1593,7 @@ html{scroll-padding-top:110px}
       <a class="shot" href="img/cohort1-suo-lien.png"><img width="1600" height="837" loading="lazy" decoding="async" src="img/cohort1-suo-lien.png" alt="LinkedIn recommendation from Suo Lien, Founder of The Design Impact: I'm learning to build systems that give me more freedom." /></a>
       <a class="shot" href="img/cohort1-albulena-kadriu.png"><img width="1600" height="673" loading="lazy" decoding="async" src="img/cohort1-albulena-kadriu.png" alt="LinkedIn post from Albulena Kadriu, Founder and CEO of Fluxa.dev: it was not just a standard Zoom call, but speakers in separate rooms solving specific problems." /></a>
     </div>
+    <p class="cta-note">Tap a card to read it full size.</p>
     <div class="act">
       <a class="cta cta-lg" href="/accelerator/#waitlist" onclick="openWaitlist(event); track('join_cohort1_proof')">Join the Cohort 2 waitlist</a>
     </div>
