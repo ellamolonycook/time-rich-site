@@ -848,6 +848,9 @@ html{scroll-padding-top:110px}
 .shot-dialog::backdrop{background:rgba(26,24,22,.72)}
 .shot-dialog img{display:block;max-width:100%;max-height:calc(100vh - 32px);width:auto;height:auto;border-radius:12px;background:#fff}
 .shot-close{position:absolute;top:8px;right:8px;width:40px;height:40px;border:0;border-radius:50%;background:rgba(26,24,22,.7);color:#fff;font-size:24px;line-height:1;cursor:pointer}
+/* The Cohort 1 screenshots are the same deck in a section of their own, so the
+   only rule it needs is the CTA gap every other section sets for itself. */
+.s-cohort1 .act{margin-top:var(--space-act)}
 
 /* ---- promo video ----
    Fills the gap between Trusted by and the numbers panel. Shares that panel's
@@ -1537,6 +1540,31 @@ html{scroll-padding-top:110px}
 
 
 
+<!-- Cohort 1 proof, LinkedIn screenshots with the best lines underlined in red. -->
+<section class="v2 s-cohort1" id="cohort1">
+  <div class="wrap">
+    <div class="section-head">
+      <span class="eyebrow">Cohort 1</span>
+      <h2>Cohort 1, in their words</h2>
+    </div>
+    <p>4 weeks. Here's what founders said after.</p>
+    <div class="shots" id="shotsC1">
+      <a class="shot" href="img/cohort1-maria-kreutzer.png"><img width="1600" height="612" loading="lazy" decoding="async" src="img/cohort1-maria-kreutzer.png" alt="LinkedIn recommendation from Maria Kreutzer, AI and Systems Strategist: she cut her content time from 10 hours a week to 4 after three weeks in the Superhuman Accelerator." /></a>
+      <a class="shot" href="img/cohort1-jessica-elmore.png"><img width="1600" height="389" loading="lazy" decoding="async" src="img/cohort1-jessica-elmore.png" alt="LinkedIn recommendation from Jessica Elmore, Founder of Evla: Ella's Superhuman Accelerator gave me a system, not just ideas." /></a>
+      <a class="shot" href="img/cohort1-claudi-de-oliveira.png"><img width="1600" height="457" loading="lazy" decoding="async" src="img/cohort1-claudi-de-oliveira.png" alt="LinkedIn recommendation from Claudi de Oliveira, Founder of Woven Mirage: I already have a clearer plan than I've had all year." /></a>
+      <a class="shot" href="img/cohort1-emilia-ronchetti.png"><img width="1600" height="514" loading="lazy" decoding="async" src="img/cohort1-emilia-ronchetti.png" alt="LinkedIn recommendation from Emilia Ronchetti, Design Manager and AI Builder: I left with practical tools I'm already using in my company. I'd join again in a heartbeat." /></a>
+      <a class="shot" href="img/cohort1-ariana-tadler.png"><img width="1600" height="437" loading="lazy" decoding="async" src="img/cohort1-ariana-tadler.png" alt="LinkedIn recommendation from Ariana J. Tadler, Founder of Ariana Speaks: I look forward to her next accelerator, already signed up." /></a>
+      <a class="shot" href="img/cohort1-madalena-sutcliffe.png"><img width="1600" height="502" loading="lazy" decoding="async" src="img/cohort1-madalena-sutcliffe.png" alt="LinkedIn recommendation from Madalena Sutcliffe, Founder of Clarifayo: tools that save time instead of adding work." /></a>
+      <a class="shot" href="img/cohort1-suo-lien.png"><img width="1600" height="837" loading="lazy" decoding="async" src="img/cohort1-suo-lien.png" alt="LinkedIn recommendation from Suo Lien, Founder of The Design Impact: I'm learning to build systems that give me more freedom." /></a>
+      <a class="shot" href="img/cohort1-albulena-kadriu.png"><img width="1600" height="673" loading="lazy" decoding="async" src="img/cohort1-albulena-kadriu.png" alt="LinkedIn post from Albulena Kadriu, Founder and CEO of Fluxa.dev: it was not just a standard Zoom call, but speakers in separate rooms solving specific problems." /></a>
+    </div>
+    <div class="act">
+      <a class="cta cta-lg" href="/accelerator/#waitlist" onclick="openWaitlist(event); track('join_cohort1_proof')">Join the Cohort 2 waitlist</a>
+    </div>
+  </div>
+</section>
+
+
 <!-- ======================= 6. WHAT YOUR SEAT INCLUDES ======================= -->
 <section class="v2 s-incl" id="includes">
   <div class="wrap">
@@ -1716,44 +1744,51 @@ html{scroll-padding-top:110px}
     </dialog>
     <script>
     (function(){
-      var d = document.getElementById('shotDialog'), wrap = document.getElementById('shots');
-      if (!d || !wrap || typeof d.showModal !== 'function') return;
+      var d = document.getElementById('shotDialog'), decks = document.querySelectorAll('.shots');
+      if (!d || !decks.length || typeof d.showModal !== 'function') return;
       var img = d.querySelector('img');
-      wrap.addEventListener('click', function(e){
-        var a = e.target.closest('a.shot'); if (!a) return;
-        e.preventDefault();
-        img.src = a.href; img.alt = a.querySelector('img').alt;
-        d.showModal();
+      decks.forEach(function(wrap){
+        wrap.addEventListener('click', function(e){
+          var a = e.target.closest('a.shot'); if (!a) return;
+          e.preventDefault();
+          img.src = a.href; img.alt = a.querySelector('img').alt;
+          d.showModal();
+        });
       });
       d.addEventListener('click', function(e){ if (e.target === d || e.target.closest('.shot-close')) d.close(); });
     })();
     // Desktop deck: cycle the screenshots one after another. Pauses while the
     // pointer is over the deck or the lightbox is open; off under reduced motion.
+    // Every .shots deck on the page runs this, each on its own timer and
+    // pausing only for its own hover and focus.
     (function(){
-      var wrap = document.getElementById('shots'); if (!wrap) return;
-      var cards = wrap.querySelectorAll('.shot'), n = cards.length, i = 0, timer = null, paused = false;
+      var decks = document.querySelectorAll('.shots'); if (!decks.length) return;
       var desk = window.matchMedia('(min-width: 821px)'), rm = window.matchMedia('(prefers-reduced-motion: reduce)');
       var dialog = document.getElementById('shotDialog');
-      function paint(){
-        cards.forEach(function(c, k){
-          var d = (k - i + n) % n;
-          c.classList.toggle('is-active', d === 0);
-          c.classList.toggle('is-next', d === 1);
-          c.classList.toggle('is-next2', d === 2);
-          c.classList.toggle('is-past', d > 2);
-        });
-      }
-      function tick(){ if (!paused && !(dialog && dialog.open)) { i = (i + 1) % n; paint(); } }
-      function start(){ if (!timer) { paint(); timer = setInterval(tick, 4500); } }
-      function stop(){ clearInterval(timer); timer = null; cards.forEach(function(c){ c.className = 'shot'; }); }
-      function sync(){ if (desk.matches && !rm.matches) start(); else stop(); }
-      wrap.addEventListener('mouseenter', function(){ paused = true; });
-      wrap.addEventListener('mouseleave', function(){ paused = false; });
-      wrap.addEventListener('focusin', function(){ paused = true; });
-      wrap.addEventListener('focusout', function(){ paused = false; });
-      desk.addEventListener ? desk.addEventListener('change', sync) : desk.addListener(sync);
-      rm.addEventListener ? rm.addEventListener('change', sync) : rm.addListener(sync);
-      sync();
+      decks.forEach(function(wrap){
+        var cards = wrap.querySelectorAll('.shot'), n = cards.length, i = 0, timer = null, paused = false;
+        if (!n) return;
+        function paint(){
+          cards.forEach(function(c, k){
+            var d = (k - i + n) % n;
+            c.classList.toggle('is-active', d === 0);
+            c.classList.toggle('is-next', d === 1);
+            c.classList.toggle('is-next2', d === 2);
+            c.classList.toggle('is-past', d > 2);
+          });
+        }
+        function tick(){ if (!paused && !(dialog && dialog.open)) { i = (i + 1) % n; paint(); } }
+        function start(){ if (!timer) { paint(); timer = setInterval(tick, 4500); } }
+        function stop(){ clearInterval(timer); timer = null; cards.forEach(function(c){ c.className = 'shot'; }); }
+        function sync(){ if (desk.matches && !rm.matches) start(); else stop(); }
+        wrap.addEventListener('mouseenter', function(){ paused = true; });
+        wrap.addEventListener('mouseleave', function(){ paused = false; });
+        wrap.addEventListener('focusin', function(){ paused = true; });
+        wrap.addEventListener('focusout', function(){ paused = false; });
+        desk.addEventListener ? desk.addEventListener('change', sync) : desk.addListener(sync);
+        rm.addEventListener ? rm.addEventListener('change', sync) : rm.addListener(sync);
+        sync();
+      });
     })();
     </script>
   </div>
