@@ -912,6 +912,22 @@ html{scroll-padding-top:110px}
   .s-cohort1 .shot img{height:auto;aspect-ratio:auto;object-fit:contain}
 }
 
+/* ---------- NYC LIVE BUILD PHOTOS ----------
+   One big group shot left, two stacked right on desktop. Same border and
+   radius as the other page photos. Phone: group shot full width, the two
+   smaller ones side by side under it. */
+.s-room .room-grid{display:grid;grid-template-columns:2fr 1fr;grid-template-rows:1fr 1fr;gap:var(--space-gap);margin-top:var(--space-head)}
+.s-room figure{margin:0;min-width:0}
+.s-room .room-main{grid-row:1 / span 2}
+.s-room picture,.s-room img{display:block;width:100%;height:100%}
+.s-room img{object-fit:cover;border-radius:16px;border:1px solid var(--line);background:var(--panel)}
+.s-room .room-main img{object-position:center 40%}
+@media (max-width:700px){
+  .s-room .room-grid{grid-template-columns:1fr 1fr;grid-template-rows:auto}
+  .s-room .room-main{grid-column:1 / -1;grid-row:auto}
+  .s-room img{aspect-ratio:3/2;height:auto}
+}
+
 /* ---- promo video ----
    Fills the gap between Trusted by and the numbers panel. Shares that panel's
    .wrap, radius and tinted border so the two read as one column. The bottom
@@ -1621,6 +1637,37 @@ html{scroll-padding-top:110px}
     <p class="cta-note">Tap a card to read it full size.</p>
     <div class="act">
       <a class="cta cta-lg" href="/accelerator/#waitlist" onclick="openWaitlist(event); track('join_cohort1_proof')">Join the Cohort 2 waitlist</a>
+    </div>
+  </div>
+</section>
+
+
+<!-- NYC live build, Nov 2026: pro photos from the event (Ella, 17 Nov: "add the best pictures to the landing page") -->
+<section class="v2 s-room" id="room">
+  <div class="wrap">
+    <div class="section-head">
+      <span class="eyebrow">NYC live build &middot; November 2026</span>
+      <h2>Built in the room.</h2>
+    </div>
+    <div class="room-grid">
+      <figure class="room-main">
+        <picture>
+          <source type="image/webp" srcset="img/nyc-founders-group.webp">
+          <img width="2000" height="1335" loading="lazy" decoding="async" src="img/nyc-founders-group.jpg" alt="Founders smiling and waving together at the Time Rich NYC live build session">
+        </picture>
+      </figure>
+      <figure>
+        <picture>
+          <source type="image/webp" srcset="img/nyc-live-build-revenue.webp">
+          <img width="2000" height="1335" loading="lazy" decoding="async" src="img/nyc-live-build-revenue.jpg" alt="Ella Molony Cook presenting to founders working on laptops, with REVENUE on the screen behind her">
+        </picture>
+      </figure>
+      <figure>
+        <picture>
+          <source type="image/webp" srcset="img/nyc-ella-stanley-wispr-flow.webp">
+          <img width="2000" height="1335" loading="lazy" decoding="async" src="img/nyc-ella-stanley-wispr-flow.jpg" alt="Ella Molony Cook walking founders through the Wispr Flow to Stanley content flow on a big screen">
+        </picture>
+      </figure>
     </div>
   </div>
 </section>
