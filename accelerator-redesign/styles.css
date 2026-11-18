@@ -5437,3 +5437,29 @@ html { scroll-behavior: smooth; }
 
 /* Cohort 1 slider moves on its own (18 Nov): no swipe, centered dots */
 .tr-c1-nav{justify-content:center}
+
+/* Hero fits the first screen, matched cards (18 Nov QA) */
+#top{padding-top:7.5rem;padding-bottom:3.5rem}
+#top h1{font-size:clamp(2.1rem,4.1vw,3.4rem);margin-top:1.25rem;line-height:1}
+#top h1 + p{font-size:clamp(1.05rem,1.5vw,1.3rem);margin-top:1rem}
+#top ul{margin-top:1rem;font-size:14.5px}
+#top .mt-9{margin-top:1.5rem}
+#top .label-mono.mt-7{margin-top:1rem}
+#top .label-mono.mt-8{margin-top:.9rem}
+#top .btn-base.h-14{height:3.25rem}
+.tr-hphoto{max-width:22rem}
+.tr-hphoto img{aspect-ratio:4/5;object-position:top center}
+.tr-hcard{width:14rem;box-sizing:border-box}
+.tr-hcard p:nth-child(2){font-size:1.35rem;line-height:1.2}
+@media (min-width:1024px){
+  #top{padding-top:7rem;padding-bottom:3rem}
+  #top > div.relative.mx-auto{gap:3.5rem;grid-template-columns:0.8fr 1.2fr}
+  .tr-hphoto{max-width:none;width:100%}
+  .tr-hphoto img{max-height:min(66vh,30rem)}
+}
+@media (max-width:639px){
+  #top{padding-top:6.5rem;padding-bottom:2.5rem}
+  .tr-hphoto{max-width:20rem}
+  .tr-hcard{width:12.5rem;padding:.8rem}
+  .tr-hcard p:nth-child(2){font-size:1.15rem}
+}
