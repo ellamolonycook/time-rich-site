@@ -5463,3 +5463,29 @@ html { scroll-behavior: smooth; }
   .tr-hcard{width:12.5rem;padding:.8rem}
   .tr-hcard p:nth-child(2){font-size:1.15rem}
 }
+
+/* Hero QA round 2 (18 Nov): shorter win cards, photo first on phones like the original page */
+.tr-hcard{padding:.6rem .9rem}
+.tr-hcard p:first-child{font-size:10px}
+.tr-hcard p:nth-child(2){font-size:1.15rem;line-height:1.15;margin-top:.15rem}
+.tr-hcard p:nth-child(3){margin-top:.15rem}
+@media (min-width:1024px) and (max-width:1279px){.tr-hcard.tr-hcard{left:-1rem}}
+@media (max-width:1023px){
+  #top > div.relative.mx-auto{gap:1.75rem}
+  .tr-hphoto{order:-1;max-width:20rem}
+  .tr-hphoto img{aspect-ratio:1/1;object-position:center 22%}
+}
+@media (max-width:639px){
+  .tr-hphoto{max-width:18rem}
+  .tr-hcard{width:12.75rem;padding:.5rem .75rem}
+  .tr-hcard p:nth-child(3){white-space:nowrap}
+  .tr-hcard p:nth-child(2){font-size:1.05rem}
+}
+@media (max-width:1023px){
+  .tr-hphoto{margin-top:1.5rem;margin-bottom:1rem}
+  .tr-hphoto .tr-hcard.top-10{top:-1rem}
+  .tr-hphoto .tr-hcard.bottom-10{bottom:-1rem;left:auto;right:-1rem}
+}
+
+/* Audacious wins slider: real Slack screenshots (18 Nov) */
+.tr-wins-slider{margin-top:2.5rem}

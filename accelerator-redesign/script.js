@@ -180,9 +180,7 @@
 })();
 
 /* Cohort 1 screenshot slider (added 18 Nov) */
-(function () {
-  var slider = document.querySelector(".tr-c1-slider");
-  if (!slider) return;
+document.querySelectorAll(".tr-c1-slider").forEach(function (slider) {
   var track = slider.querySelector(".tr-c1-track");
   var slides = track.querySelectorAll(".tr-c1-slide");
   var dotsBox = slider.querySelector(".tr-c1-dots");
@@ -195,7 +193,7 @@
   Array.prototype.forEach.call(slides, function (s, i) {
     var d = document.createElement("button");
     d.type = "button";
-    d.setAttribute("aria-label", "Show recommendation " + (i + 1));
+    d.setAttribute("aria-label", "Show slide " + (i + 1));
     d.addEventListener("click", function () { go(i); });
     dotsBox.appendChild(d);
     dots.push(d);
@@ -222,7 +220,7 @@
   setInterval(function () {
     if (!paused && !document.hidden) go(current() + 1);
   }, 4500);
-})();
+});
 
 /* Testimonial carousel: arrows, dots and swipe (added 18 Nov) */
 (function () {
