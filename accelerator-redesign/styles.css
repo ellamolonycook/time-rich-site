@@ -5405,14 +5405,11 @@ html { scroll-behavior: smooth; }
 @media (max-width:700px){.tr-room-grid{grid-template-columns:1fr 1fr;grid-template-rows:auto}.tr-room-grid .tr-room-main{grid-column:1/-1;grid-row:auto}.tr-room-grid img{aspect-ratio:3/2;height:auto}}
 
 /* Cohort 1 slider: one at a time (18 Nov) */
-.tr-c1-slider{max-width:760px;margin:1.5rem auto 0}
+.tr-c1-slider{max-width:900px;margin:1.5rem auto 0}
 .tr-c1-track{display:flex;align-items:flex-start;overflow-x:auto;scroll-snap-type:x mandatory;scroll-behavior:smooth;scrollbar-width:none;padding:4px 0 30px;overflow-y:hidden;transition:height .3s ease}
 .tr-c1-track::-webkit-scrollbar{display:none}
 .tr-c1-slide{flex:0 0 100%;scroll-snap-align:center;margin:0;padding:0 6px;box-sizing:border-box}
 .tr-c1-slide img{display:block;width:100%;height:auto;border-radius:1rem;border:1px solid var(--border);background:var(--card);box-shadow:0 12px 30px -18px oklch(33.6% .032 125.3 / .35)}
-.tr-c1-quote{font-family:var(--font-display);font-size:clamp(1.15rem,2.4vw,1.6rem);line-height:1.3;font-weight:500;color:var(--foreground);margin:0 0 .5rem}
-.tr-c1-who{font-size:.9rem;color:var(--muted-foreground);margin:0 0 1rem}
-.tr-c1-who b{color:var(--foreground);font-weight:600}
 .tr-c1-nav{display:flex;align-items:center;justify-content:center;gap:1rem;margin-top:.25rem}
 .tr-c1-btn{width:44px;height:44px;border-radius:999px;border:1px solid var(--border-strong);background:var(--card);color:var(--primary);font-size:1.15rem;cursor:pointer}
 .tr-c1-btn:hover{background:var(--accent)}
