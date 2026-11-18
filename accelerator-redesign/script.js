@@ -61,7 +61,8 @@
       s: Math.floor((diff / 1000) % 60)
     };
     document.querySelectorAll("[data-countdown]").forEach(function (el) {
-      el.textContent = el.getAttribute("data-countdown").replace("{d}", parts.d);
+      var p2 = function (n) { return String(n).padStart(2, "0"); };
+      el.textContent = el.getAttribute("data-countdown").replace("{d}", parts.d).replace("{h}", p2(parts.h)).replace("{m}", p2(parts.m)).replace("{s}", p2(parts.s));
     });
     document.querySelectorAll("[data-cd]").forEach(function (el) {
       el.textContent = String(parts[el.getAttribute("data-cd")]).padStart(2, "0");
