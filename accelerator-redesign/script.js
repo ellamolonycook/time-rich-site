@@ -212,4 +212,55 @@
   });
   track.addEventListener("scroll", function () { window.requestAnimationFrame(mark); });
   mark();
+  /* Auto-advance one screenshot every 4.5s, like the original page.
+     Pauses while the pointer or focus is on the slider. */
+  var paused = false;
+  slider.addEventListener("mouseenter", function () { paused = true; });
+  slider.addEventListener("mouseleave", function () { paused = false; });
+  slider.addEventListener("focusin", function () { paused = true; });
+  slider.addEventListener("focusout", function () { paused = false; });
+  setInterval(function () {
+    if (!paused && !document.hidden) go(current() + 1);
+  }, 4500);
+})();
+
+/* Testimonial carousel: arrows, dots and swipe (added 18 Nov) */
+(function () {
+  var root = document.getElementById("results");
+  if (!root) return;
+  var track = root.querySelector(".tr-ttrack");
+  var dotsBox = root.querySelector(".tr-tdots");
+  if (!track || !dotsBox) return;
+  var slides = track.querySelectorAll(".tr-tslide");
+  var prev = root.querySelector('[aria-label="Previous testimonial"]');
+  var next = root.querySelector('[aria-label="Next testimonial"]');
+  function step() { return slides.length > 1 ? slides[1].offsetLeft - slides[0].offsetLeft : track.clientWidth; }
+  function perView() { return Math.max(1, Math.round(track.clientWidth / step())); }
+  function pages() { return Math.max(1, slides.length - perView() + 1); }
+  function current() { return Math.min(pages() - 1, Math.round(track.scrollLeft / step())); }
+  function go(i) {
+    var n = pages();
+    i = (i + n) % n;
+    track.scrollTo({ left: i * step(), behavior: "smooth" });
+  }
+  function build() {
+    dotsBox.innerHTML = "";
+    for (var i = 0; i < pages(); i++) {
+      var d = document.createElement("button");
+      d.type = "button";
+      d.setAttribute("aria-label", "Go to testimonial " + (i + 1));
+      d.addEventListener("click", (function (k) { return function () { go(k); }; })(i));
+      dotsBox.appendChild(d);
+    }
+    mark();
+  }
+  function mark() {
+    var c = current();
+    Array.prototype.forEach.call(dotsBox.children, function (d, i) { d.setAttribute("aria-current", i === c ? "true" : "false"); });
+  }
+  if (prev) prev.addEventListener("click", function () { go(current() - 1); });
+  if (next) next.addEventListener("click", function () { go(current() + 1); });
+  track.addEventListener("scroll", function () { window.requestAnimationFrame(mark); });
+  window.addEventListener("resize", build);
+  build();
 })();

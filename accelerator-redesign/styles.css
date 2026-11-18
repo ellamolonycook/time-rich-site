@@ -5406,7 +5406,7 @@ html { scroll-behavior: smooth; }
 
 /* Cohort 1 slider: one at a time (18 Nov) */
 .tr-c1-slider{max-width:900px;margin:1.5rem auto 0}
-.tr-c1-track{display:flex;align-items:flex-start;overflow-x:auto;scroll-snap-type:x mandatory;scroll-behavior:smooth;scrollbar-width:none;padding:4px 0 30px;overflow-y:hidden;transition:height .3s ease}
+.tr-c1-track{display:flex;align-items:flex-start;overflow-x:hidden;scroll-snap-type:x mandatory;scroll-behavior:smooth;scrollbar-width:none;padding:4px 0 30px;overflow-y:hidden;transition:height .3s ease}
 .tr-c1-track::-webkit-scrollbar{display:none}
 .tr-c1-slide{flex:0 0 100%;scroll-snap-align:center;margin:0;padding:0 6px;box-sizing:border-box}
 .tr-c1-slide img{display:block;width:100%;height:auto;border-radius:1rem;border:1px solid var(--border);background:var(--card);box-shadow:0 12px 30px -18px oklch(33.6% .032 125.3 / .35)}
@@ -5416,3 +5416,24 @@ html { scroll-behavior: smooth; }
 .tr-c1-dots{display:flex;gap:8px}
 .tr-c1-dots button{width:8px;height:8px;padding:0;border:0;border-radius:999px;background:var(--border-strong);cursor:pointer;transition:width .2s}
 .tr-c1-dots button[aria-current="true"]{width:22px;background:var(--primary)}
+/* Proof: Audacious wins + working testimonial carousel (added 18 Nov) */
+.tr-wins{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:1.25rem;margin-top:3.5rem}
+@media (max-width:1000px){.tr-wins{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media (max-width:640px){.tr-wins{grid-template-columns:1fr}}
+.tr-win{display:flex;flex-direction:column;margin:0;padding:1.75rem;border-radius:1.5rem}
+.tr-win-num{font-family:var(--font-display);font-size:2.4rem;line-height:1.05;font-weight:600;letter-spacing:-.03em;color:var(--primary-deep);margin:0}
+.tr-win-sub{font-size:.9rem;color:var(--muted-foreground);margin:.35rem 0 0}
+.tr-win-q{flex:1;margin:1.25rem 0 0;font-size:1rem;line-height:1.6;color:var(--foreground)}
+.tr-who{display:flex;align-items:center;gap:.75rem;margin-top:1.25rem;padding-top:1rem;border-top:1px solid var(--border)}
+.tr-who b{display:block;font-weight:600;color:var(--foreground);font-size:.95rem}
+.tr-who small{display:block;font-family:var(--font-mono);font-size:.7rem;letter-spacing:.12em;text-transform:uppercase;color:var(--subtle)}
+.tr-av{display:grid;place-items:center;flex:none;width:2.5rem;height:2.5rem;border-radius:999px;background:var(--accent);color:var(--accent-foreground);font-weight:600;font-size:.85rem}
+.tr-av-lg{width:3rem;height:3rem}
+.tr-ttrack{overflow-x:auto;scroll-snap-type:x mandatory;scroll-behavior:smooth;scrollbar-width:none}
+.tr-ttrack::-webkit-scrollbar{display:none}
+.tr-tslide{scroll-snap-align:start}
+.tr-tdots button{height:6px;width:6px;padding:0;border:0;border-radius:999px;background:var(--border-strong);cursor:pointer;transition:width .3s}
+.tr-tdots button[aria-current="true"]{width:32px;background:var(--primary)}
+
+/* Cohort 1 slider moves on its own (18 Nov): no swipe, centered dots */
+.tr-c1-nav{justify-content:center}
