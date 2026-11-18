@@ -5397,3 +5397,12 @@ html { scroll-behavior: smooth; }
   .sticky-cta, [data-progress] { transition: none; }
   .animate-marquee, .animate-pulse-dot { animation: none !important; }
 }
+
+/* NYC photos + Cohort 1 screenshots (added 18 Nov). Plain CSS, no Tailwind build needed. */
+.tr-room-grid{display:grid;grid-template-columns:2fr 1fr;grid-template-rows:1fr 1fr;gap:1.25rem;margin-top:1rem}
+.tr-room-grid img{display:block;width:100%;height:100%;object-fit:cover;border-radius:1.5rem;border:1px solid var(--border)}
+.tr-room-grid .tr-room-main{grid-row:1/span 2;object-position:center 40%}
+@media (max-width:700px){.tr-room-grid{grid-template-columns:1fr 1fr;grid-template-rows:auto}.tr-room-grid .tr-room-main{grid-column:1/-1;grid-row:auto}.tr-room-grid img{aspect-ratio:3/2;height:auto}}
+.tr-c1-grid{columns:3 300px;column-gap:1rem;margin-top:1.5rem}
+.tr-c1-grid a{display:block;break-inside:avoid;margin-bottom:1rem}
+.tr-c1-grid img{display:block;width:100%;height:auto;border-radius:1rem;border:1px solid var(--border);background:var(--card);box-shadow:var(--shadow-elegant)}
