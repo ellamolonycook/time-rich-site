@@ -5543,3 +5543,14 @@ a.tr-arena-name:hover{background:linear-gradient(180deg,transparent 64%,var(--sa
 @media (max-width:639px){.tr-hide-sm{display:none}.tr-show-sm{display:inline}}
 #sticky-cta .label-mono{white-space:nowrap;gap:.5rem}
 @media (max-width:360px){#sticky-cta .label-mono{font-size:10px;letter-spacing:.06em}}
+
+/* ---- QA batch 5: mentors typewriter (ported from the original accelerator page).
+   .tr-tw-sizer is an invisible copy of the longest line so the block keeps one
+   height and the headline never jumps while lines type and delete. */
+.tr-arena-tw{position:relative;width:62rem;max-width:calc(100vw - 5rem);line-height:1.35}
+@media (max-width:639px){.tr-arena-tw{max-width:calc(100vw - 2.5rem)}}
+.tr-tw-sizer{visibility:hidden;display:block}
+.tr-tw-live{position:absolute;inset:0}
+.tr-tw-caret{display:inline-block;width:2px;height:.95em;margin-left:3px;vertical-align:-.1em;background:currentColor;animation:trTwCaret 1s steps(1) infinite}
+@keyframes trTwCaret{50%{opacity:0}}
+@media (prefers-reduced-motion:reduce){.tr-tw-caret{animation:none;display:none}}

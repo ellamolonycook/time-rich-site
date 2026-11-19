@@ -263,3 +263,42 @@ document.querySelectorAll(".tr-c1-slider").forEach(function (slider) {
   window.addEventListener("resize", build);
   build();
 })();
+
+
+// ---- Mentors typewriter (ported from the original accelerator page) -------
+// Types each line, deletes it, types the next, loops. Starts when the section
+// is on screen. Reduced motion: the first line stays as written, caret hidden.
+(function () {
+  var el = document.getElementById("twText"); if (!el) return;
+  var lines = [
+    "Over the AI hype?",
+    "Still overwhelmed?",
+    "Want to learn AI from founders and creators who actually build?",
+    "From the trainer Google and Amazon hire?",
+    "Want to ask your burning question to an a16z backed founder, not sit through jargon?"
+  ];
+  if (window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+  var TYPE = 42, DEL = 18, HOLD = 1100, GAP = 350;
+  var li = 0, ci = 0, deleting = false;
+  function step() {
+    var line = lines[li];
+    if (!deleting) {
+      ci++;
+      el.textContent = line.slice(0, ci);
+      if (ci === line.length) { deleting = true; return setTimeout(step, HOLD); }
+      return setTimeout(step, TYPE);
+    }
+    ci--;
+    el.textContent = line.slice(0, ci);
+    if (ci === 0) { deleting = false; li = (li + 1) % lines.length; return setTimeout(step, GAP); }
+    setTimeout(step, DEL);
+  }
+  function start() { el.textContent = ""; setTimeout(step, 400); }
+  if (!window.IntersectionObserver) return start();
+  var io = new IntersectionObserver(function (entries) {
+    if (!entries[0].isIntersecting) return;
+    io.disconnect();
+    start();
+  }, { threshold: 0.4 });
+  io.observe(el.closest(".tr-arena-tw"));
+})();
