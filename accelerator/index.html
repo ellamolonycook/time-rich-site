@@ -732,6 +732,25 @@ ul.t-list li:last-child{padding-bottom:0}
   .annc-price{white-space:normal}
 }
 
+/* ---- Black Friday: the offer sits beside the waitlist ---------------
+   Every waitlist button is untouched; the checkout is a second button
+   next to it. Two inline-flex buttons otherwise touch, so they share a
+   row with a real gap, and they stack under 640px rather than shrink a
+   label to fit. */
+.cta-row{display:flex;flex-wrap:wrap;align-items:center;gap:12px}
+.hero-copy .cta-row{margin-top:var(--space-act)}
+.cta-row .cta-lg{margin-top:0}
+@media (max-width:640px){
+  .cta-row{flex-direction:column;align-items:stretch}
+  .cta-row .cta-lg{width:100%}
+}
+/* The bar says more than it used to, and .annc-price holds it on one
+   line until 520px. That line is now wider than a small tablet, so let
+   it wrap sooner; the desktop bar reads exactly as before. */
+@media (max-width:820px){
+  .annc-price{white-space:normal}
+}
+
 /* ---- nav ---- */
 nav.nav2{padding:0;border-bottom:1px solid var(--hair)}
 .nav2 .wrap{display:grid;grid-template-columns:auto 1fr auto;align-items:center;gap:16px;height:60px}
@@ -1157,7 +1176,7 @@ html{scroll-padding-top:110px}
 
 <!-- ANNOUNCEMENT BAR + NAV: one sticky block -->
 <div class="topstick">
-<a class="annc" href="/accelerator/#waitlist" onclick="openWaitlist(event); track('join_announce')"><span class="annc-price"><strong>Cohort 2</strong><span class="annc-seats"> &middot; February 2027 &middot; Join the waitlist</span></span></a>
+<a class="annc" href="https://checkout.timerich.ai/accelerator/" onclick="track('bf_announce')"><span class="annc-price"><strong>Black Friday</strong><span class="annc-seats"> &middot; 2 seats in Cohort 2 for $557 (normally $1,700) &middot; Grab the offer &rarr;</span></span></a>
 
 <!-- NAV -->
 <nav class="v2 nav2" aria-label="Page">
@@ -1213,7 +1232,10 @@ html{scroll-padding-top:110px}
       <div class="hero-copy">
       <h1>Imagine your own AI Operating System, built by you in 5 weeks.</h1>
       <p class="sub"><span class="l s-quiet">Think of the money, stress and time you&rsquo;ll save once you learn how to become superhuman with AI.</span> <span class="l s-welcome">Welcome to Superhuman Accelerator.</span> <span class="l s-cred">A 5-week live intensive, designed by exited founders.</span></p>
+      <div class="cta-row">
       <a class="cta cta-lg" href="/accelerator/#waitlist" onclick="openWaitlist(event); track('join_hero')">Join the waitlist</a>
+      <a class="cta cta-lg" href="https://checkout.timerich.ai/accelerator/" onclick="track('bf_hero')">Grab the Black Friday offer</a>
+      </div>
       <p class="two"><strong>BONUS: a second seat included</strong> - bring who you want to win beside you.</p>
       <!-- Anchor sponsor. The same lockup closes the page. -->
       <a class="powered" href="https://x.getstanley.ai/r/mz4y9g" target="_blank" rel="noopener sponsored" onclick="track('stanley_hero')">
@@ -1615,7 +1637,10 @@ html{scroll-padding-top:110px}
       <p>Two people, one ticket. You both do the work, so the system lives with the two of you rather than in one person&rsquo;s notes.</p>
     </div>
     <div class="act">
+      <div class="cta-row">
       <a class="cta cta-lg" href="/accelerator/#waitlist" onclick="openWaitlist(event); track('join_seats')">Join the waitlist</a>
+      <a class="cta cta-lg" href="https://checkout.timerich.ai/accelerator/" onclick="track('bf_seats')">Grab the Black Friday offer</a>
+      </div>
     </div>
   </div>
 </section>
