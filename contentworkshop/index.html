@@ -144,6 +144,34 @@ a{color:#424B36}a:hover{color:#333A28}
 .drawform .drawmsg.is-err { color: #9A2B1E; }
 .drawtrap { position: absolute !important; left: -9999px !important; width: 1px !important; height: 1px !important; opacity: 0; }
 @media (max-width: 480px) { .drawform { grid-template-columns: 1fr; } }
+
+/* ---- the email gate -------------------------------------------------
+   One card in the draw card's clothes: it reuses .drawband and .drawform
+   so the gate and the draw read as the same page, and only the two things
+   that differ live here. The nav is sticky, so a jump to the gate has to
+   land below it, same as a jump to a step. */
+/* .drawband sets display:grid, and an author display beats the UA rule
+   behind the hidden attribute, so the card needs to be told to go. */
+#cwgate[hidden] { display: none; }
+#cwgate { scroll-margin-top: 76px; }
+/* ---- what the gate holds back ---------------------------------------
+   <main> is a flex column with a gap between its children, and the
+   wrapper is now one child where there were many, so it carries the same
+   gap or everything inside it closes up. */
+#cwlocked { display: flex; flex-direction: column; gap: clamp(56px, 8cqi, 80px); }
+/* Same trap as the gate card above: an author display beats the UA rule
+   behind the hidden attribute, so it has to be said out loud. */
+#cwlocked[hidden] { display: none; }
+
+/* ---- the workshop video ---------------------------------------------
+   One of the page's white cards with a 16:9 box in it. The box holds its
+   own shape, so the player never pushes the card wider than the column
+   it sits in. */
+.cwvidcard { background: #FFFFFF; border: 1px solid rgba(26,24,22,.12); border-radius: 20px; padding: clamp(20px, 4cqi, 32px); display: flex; flex-direction: column; gap: 10px; }
+.cwvidcard h2 { font-family: 'Space Grotesk', system-ui, sans-serif; font-weight: 600; font-size: clamp(22px, 3cqi, 30px); letter-spacing: -.02em; line-height: 1.12; margin: 0; text-wrap: balance; }
+.cwvidcard p { margin: 0; font-size: 15.5px; line-height: 1.55; color: #57534E; }
+.cwvidframe { position: relative; aspect-ratio: 16 / 9; margin-top: 8px; border-radius: 12px; overflow: hidden; background: #1A1816; }
+.cwvidframe iframe { position: absolute; inset: 0; width: 100%; height: 100%; border: 0; }
 </style></head>
 <body>
 <div style="font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; color: #1A1816; background: #FFFDFB; min-height: 100vh; container-type: inline-size; container-name: page">
@@ -173,6 +201,57 @@ a{color:#424B36}a:hover{color:#333A28}
 </section>
 
 <main style="max-width: 1120px; margin: 0 auto; padding: 0 24px 24px; display: flex; flex-direction: column; gap: clamp(56px, 8cqi, 80px)">
+
+<!-- ============================================================
+     THE GATE. The hero and the draw card above are open to
+     everyone; the three steps below are the workshop, and they
+     wait behind an email.
+
+     It fails open, the way /os does: the steps are readable in the
+     markup and the script is what hides them, so a script that
+     never runs leaves a working page rather than an empty one.
+
+     Not a <form>, deliberately. The page has one form, the draw,
+     and it is the one the forms worker files; Enter is wired by
+     hand below instead.
+     ============================================================ -->
+<section id="cwgate" aria-labelledby="cwgateh" class="drawband" hidden>
+<div>
+<span class="drawkicker">Free workshop</span>
+<h2 id="cwgateh">Get the full AI Content Machine workshop</h2>
+<p>Free step-by-step: set up Stanley and your content home, build your content strategy, and leave with a week of LinkedIn posts drafted in your voice. Pop in your first name and email to unlock it.</p>
+</div>
+<div class="drawform cwgateform">
+<label><span>First name</span><input id="cwgatefirst" type="text" autocomplete="given-name" required></label>
+<label><span>Email</span><input id="cwgateemail" type="email" inputmode="email" autocomplete="email" required></label>
+<input id="cwgatetrap" name="_gotcha" type="text" tabindex="-1" autocomplete="off" aria-hidden="true" class="drawtrap">
+<button type="button" id="cwgatego">Unlock the workshop</button>
+<p class="drawmsg" id="cwgatemsg" role="status" aria-live="polite"></p>
+</div>
+</section>
+
+<!-- ============================================================
+     EVERYTHING THE GATE HOLDS BACK. One wrapper, so the script has
+     one thing to hide and the markup still carries all of it: the
+     workshop video, the codes, the draw and the build. "Meet Ella"
+     and the Club are outside it on purpose -- a visitor who has not
+     left an email can still see whose page this is.
+     ============================================================ -->
+<div id="cwlocked">
+
+<!-- ============================================================
+     THE WORKSHOP ITSELF. First thing behind the gate, because it is
+     what the email was for. The player stays on the page: no link
+     off to Vimeo, nothing to lose the reader to.
+     ============================================================ -->
+<section id="cwvideo" aria-labelledby="cwvideoh" class="cwvidcard">
+<span class="drawkicker">Watch the workshop</span>
+<h2 id="cwvideoh">The AI Content Machine workshop</h2>
+<p>The full 87-minute session with Stanley&rsquo;s team.</p>
+<div class="cwvidframe">
+<iframe src="https://player.vimeo.com/video/1246744927?dnt=1&amp;title=0&amp;byline=0&amp;portrait=0" title="The AI Content Machine workshop" allow="autoplay; fullscreen; picture-in-picture" allowfullscreen loading="lazy"></iframe>
+</div>
+</section>
 
 <section aria-labelledby="essentials" style="display: flex; flex-direction: column; gap: 16px">
 <h2 id="essentials" style="font-family: 'Inter', sans-serif; font-size: 12px; letter-spacing: .08em; font-weight: 600; text-transform: uppercase; color: #57534E; margin: 0">Your essentials</h2>
@@ -757,6 +836,8 @@ Working rules
 <li><a href="https://www.loom.com/share/324de2dd44a249a78c83fa37b81a9a4f" target="_blank" rel="noopener">Post across platforms</a>: one idea, every platform</li>
 </ol></div></details></div></div>
 
+</div>
+
 <section id="hosts" aria-labelledby="hostsh" style="display: flex; flex-direction: column; gap: 20px">
 <span style="font-family: 'Inter', sans-serif; font-size: 12px; letter-spacing: .08em; font-weight: 600; text-transform: uppercase; color: #57534E">Your host</span>
 <h2 id="hostsh" style="font-family: 'Space Grotesk', system-ui, sans-serif; font-weight: 600; font-size: clamp(28px, 4.4cqi, 40px); letter-spacing: -.022em; line-height: 1.08; margin: 0">Meet Ella</h2>
@@ -1088,7 +1169,7 @@ Start now.`
      The date is said twice -- in the card and in the message after a good
      submit -- and a date that is right in one place and stale in the other
      is worse than either, so there is one of it and both read it. */
-  var DRAW = { when: 'Tuesday 17 November' };
+  var DRAW = { when: 'Saturday 16 January' };
   var DRAW_ENDPOINT = 'https://time-rich-forms.timerich.workers.dev/draw-entry';
 
   one('#drawwhen').textContent = DRAW.when;
@@ -1113,6 +1194,148 @@ Start now.`
         .catch(function () { btn.disabled = false; say('That didn’t go through. Check your connection and try again.', true); });
     });
   });
+
+  /* ---- the email gate -------------------------------------------------
+     The hero and the draw card are open to everyone. The three steps are
+     the workshop, so they wait behind an email: the markup ships them
+     readable and this is what hides them, which means a script that never
+     runs leaves a page someone can still use.
+
+     Same worker and same route as /os, so there is one list and one shape
+     of body, and a reader who gave their email there is not asked twice
+     for a different reason. */
+  var GATE_ENDPOINT = 'https://time-rich-forms.timerich.workers.dev/os-email';
+  var GATE_STORE = 'tr_contentworkshop_unlocked';
+  /* The worker's own test, so the page and the route agree on "valid". */
+  var GATE_EMAIL = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  /* Nothing holds a reader longer than this, whatever the network does. */
+  var GATE_UNLOCK_AFTER = 5000;
+
+  var gate = one('#cwgate');
+  /* Everything the gate holds back, in one wrapper: the workshop video,
+     the codes, the draw, the three steps and the bonus guides. */
+  var gateWall = one('#cwlocked');
+  var gateLocked = false;
+
+  /* Storage throws in a private window and wherever site data is blocked,
+     so every touch is wrapped and a failure just means "not unlocked". */
+  function gateRecall() {
+    try { return !!window.localStorage.getItem(GATE_STORE); } catch (e) { return false; }
+  }
+  function gateRemember(v) {
+    try { window.localStorage.setItem(GATE_STORE, v); } catch (e) { /* this visit still opens */ }
+  }
+
+  /* Not every engine the page runs in has scrollIntoView, and a gate that
+     throws on the way to itself is worse than one that does not move. */
+  function gateScroll(el) {
+    if (!el) { return; }
+    try { el.scrollIntoView({ behavior: 'smooth', block: 'start' }); } catch (e) { /* it is still on screen */ }
+  }
+
+  function gateShut() {
+    gateLocked = true;
+    gate.hidden = false;
+    gateWall.hidden = true;
+  }
+
+  function gateUnlock(move) {
+    gateLocked = false;
+    gate.hidden = true;
+    gateWall.hidden = false;
+    if (move) { gateScroll(gateWall); }
+  }
+
+  if (gate && gateWall) {
+    /* A reader who has already left an email never sees the gate again. */
+    if (gateRecall()) { gateUnlock(false); } else { gateShut(); }
+
+    var gateMsg = one('#cwgatemsg');
+    var gateBtn = one('#cwgatego');
+    var gateMail = one('#cwgateemail');
+    var gateFirst = one('#cwgatefirst');
+    var gateTrap = one('#cwgatetrap');
+
+    var gateSay = function (t, err) {
+      gateMsg.textContent = t;
+      gateMsg.classList.toggle('is-err', !!err);
+    };
+
+    var gateSend = function () {
+      /* The one thing that still says no. Ella's rule is a first name and
+         an email, both, before anyone sees the workshop: a blank name or a
+         typo is the reader's to fix, and sending it would file someone we
+         cannot reach. */
+      var first = gateFirst ? gateFirst.value.trim() : '';
+      var email = gateMail.value.trim();
+      if (!first || !GATE_EMAIL.test(email)) {
+        gateSay('Add your first name and email to unlock it.', true);
+        (first ? gateMail : gateFirst).focus();
+        return;
+      }
+      gateSay('Unlocking\u2026');
+      gateBtn.disabled = true;
+
+      /* Past that point the workshop opens whatever happens next, the same
+         bargain /os makes: a reader who has handed over their email is
+         never held by our network. A capture the worker confirmed is
+         stored as "1"; an unlock we could not confirm is stored as
+         "unverified", so nobody is asked twice and the reason is still
+         legible in the browser afterwards. */
+      var timer = null;
+      var settled = false;
+      var open = function (reason) {
+        if (settled) { return; }
+        settled = true;
+        clearTimeout(timer);
+        if (reason) {
+          try { console.error('/contentworkshop email gate: unlocking anyway -', reason); } catch (e) { /* no console, no matter */ }
+        }
+        gateRemember(reason ? 'unverified' : '1');
+        gateSay('');
+        gateBtn.disabled = false;
+        gateUnlock(true);
+      };
+      timer = setTimeout(function () { open('the request took more than 5s'); }, GATE_UNLOCK_AFTER);
+
+      fetch(GATE_ENDPOINT, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          email: email,
+          first_name: first,
+          _gotcha: gateTrap ? gateTrap.value.trim() : ''
+        })
+      })
+        .then(function (r) {
+          if (!r.ok) { throw new Error('the worker answered ' + r.status); }
+          open();
+        })
+        .catch(function (err) { open(String((err && err.message) || err)); });
+    };
+
+    gateBtn.addEventListener('click', gateSend);
+
+    /* No <form>, so Enter is wired by hand rather than lost. */
+    [gateFirst, gateMail].forEach(function (field) {
+      if (!field) { return; }
+      field.addEventListener('keydown', function (ev) {
+        if (ev.key === 'Enter') { ev.preventDefault(); gateSend(); }
+      });
+    });
+
+    /* Every jump to a step -- the three nav dots and both "How to redeem"
+       links -- lands on the gate while it is shut. The handlers that open a
+       dropdown still run; this only stops the jump to a hidden box. */
+    document.addEventListener('click', function (ev) {
+      if (!gateLocked) { return; }
+      var link = ev.target && ev.target.closest ? ev.target.closest('a[href^="#step-"]') : null;
+      if (!link) { return; }
+      ev.preventDefault();
+      gateScroll(gate);
+      try { gateMail.focus({ preventScroll: true }); } catch (e) { /* the card is in view either way */ }
+    });
+  }
 
   /* ---- copy buttons ---------------------------------------------------
      Everything copied here is also on the page, so each button reads its
