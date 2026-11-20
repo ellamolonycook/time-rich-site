@@ -154,7 +154,24 @@ a{color:#424B36}a:hover{color:#333A28}
    behind the hidden attribute, so the card needs to be told to go. */
 #cwgate[hidden] { display: none; }
 #cwgate { scroll-margin-top: 76px; }
-.cwgateopt { font-family: 'Inter', sans-serif; font-size: 11px; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; color: #57534E; }
+/* ---- what the gate holds back ---------------------------------------
+   <main> is a flex column with a gap between its children, and the
+   wrapper is now one child where there were many, so it carries the same
+   gap or everything inside it closes up. */
+#cwlocked { display: flex; flex-direction: column; gap: clamp(56px, 8cqi, 80px); }
+/* Same trap as the gate card above: an author display beats the UA rule
+   behind the hidden attribute, so it has to be said out loud. */
+#cwlocked[hidden] { display: none; }
+
+/* ---- the workshop video ---------------------------------------------
+   One of the page's white cards with a 16:9 box in it. The box holds its
+   own shape, so the player never pushes the card wider than the column
+   it sits in. */
+.cwvidcard { background: #FFFFFF; border: 1px solid rgba(26,24,22,.12); border-radius: 20px; padding: clamp(20px, 4cqi, 32px); display: flex; flex-direction: column; gap: 10px; }
+.cwvidcard h2 { font-family: 'Space Grotesk', system-ui, sans-serif; font-weight: 600; font-size: clamp(22px, 3cqi, 30px); letter-spacing: -.02em; line-height: 1.12; margin: 0; text-wrap: balance; }
+.cwvidcard p { margin: 0; font-size: 15.5px; line-height: 1.55; color: #57534E; }
+.cwvidframe { position: relative; aspect-ratio: 16 / 9; margin-top: 8px; border-radius: 12px; overflow: hidden; background: #1A1816; }
+.cwvidframe iframe { position: absolute; inset: 0; width: 100%; height: 100%; border: 0; }
 </style></head>
 <body>
 <div style="font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; color: #1A1816; background: #FFFDFB; min-height: 100vh; container-type: inline-size; container-name: page">
@@ -184,6 +201,57 @@ a{color:#424B36}a:hover{color:#333A28}
 </section>
 
 <main style="max-width: 1120px; margin: 0 auto; padding: 0 24px 24px; display: flex; flex-direction: column; gap: clamp(56px, 8cqi, 80px)">
+
+<!-- ============================================================
+     THE GATE. The hero and the draw card above are open to
+     everyone; the three steps below are the workshop, and they
+     wait behind an email.
+
+     It fails open, the way /os does: the steps are readable in the
+     markup and the script is what hides them, so a script that
+     never runs leaves a working page rather than an empty one.
+
+     Not a <form>, deliberately. The page has one form, the draw,
+     and it is the one the forms worker files; Enter is wired by
+     hand below instead.
+     ============================================================ -->
+<section id="cwgate" aria-labelledby="cwgateh" class="drawband" hidden>
+<div>
+<span class="drawkicker">Free workshop</span>
+<h2 id="cwgateh">Get the full AI Content Machine workshop</h2>
+<p>Free step-by-step: set up Stanley and your content home, build your content strategy, and leave with a week of LinkedIn posts drafted in your voice. Pop in your first name and email to unlock it.</p>
+</div>
+<div class="drawform cwgateform">
+<label><span>First name</span><input id="cwgatefirst" type="text" autocomplete="given-name" required></label>
+<label><span>Email</span><input id="cwgateemail" type="email" inputmode="email" autocomplete="email" required></label>
+<input id="cwgatetrap" name="_gotcha" type="text" tabindex="-1" autocomplete="off" aria-hidden="true" class="drawtrap">
+<button type="button" id="cwgatego">Unlock the workshop</button>
+<p class="drawmsg" id="cwgatemsg" role="status" aria-live="polite"></p>
+</div>
+</section>
+
+<!-- ============================================================
+     EVERYTHING THE GATE HOLDS BACK. One wrapper, so the script has
+     one thing to hide and the markup still carries all of it: the
+     workshop video, the codes, the draw and the build. "Meet Ella"
+     and the Club are outside it on purpose -- a visitor who has not
+     left an email can still see whose page this is.
+     ============================================================ -->
+<div id="cwlocked">
+
+<!-- ============================================================
+     THE WORKSHOP ITSELF. First thing behind the gate, because it is
+     what the email was for. The player stays on the page: no link
+     off to Vimeo, nothing to lose the reader to.
+     ============================================================ -->
+<section id="cwvideo" aria-labelledby="cwvideoh" class="cwvidcard">
+<span class="drawkicker">Watch the workshop</span>
+<h2 id="cwvideoh">The AI Content Machine workshop</h2>
+<p>The full 87-minute session with Stanley&rsquo;s team.</p>
+<div class="cwvidframe">
+<iframe src="https://player.vimeo.com/video/1246744927?dnt=1&amp;title=0&amp;byline=0&amp;portrait=0" title="The AI Content Machine workshop" allow="autoplay; fullscreen; picture-in-picture" allowfullscreen loading="lazy"></iframe>
+</div>
+</section>
 
 <section aria-labelledby="essentials" style="display: flex; flex-direction: column; gap: 16px">
 <h2 id="essentials" style="font-family: 'Inter', sans-serif; font-size: 12px; letter-spacing: .08em; font-weight: 600; text-transform: uppercase; color: #57534E; margin: 0">Your essentials</h2>
@@ -244,34 +312,6 @@ a{color:#424B36}a:hover{color:#333A28}
 <button type="submit">Enter the draw</button>
 <p class="drawmsg" role="status" aria-live="polite"></p>
 </form>
-</section>
-
-<!-- ============================================================
-     THE GATE. The hero and the draw card above are open to
-     everyone; the three steps below are the workshop, and they
-     wait behind an email.
-
-     It fails open, the way /os does: the steps are readable in the
-     markup and the script is what hides them, so a script that
-     never runs leaves a working page rather than an empty one.
-
-     Not a <form>, deliberately. The page has one form, the draw,
-     and it is the one the forms worker files; Enter is wired by
-     hand below instead.
-     ============================================================ -->
-<section id="cwgate" aria-labelledby="cwgateh" class="drawband" hidden>
-<div>
-<span class="drawkicker">Free workshop</span>
-<h2 id="cwgateh">Get the full AI Content Machine workshop</h2>
-<p>Free step-by-step: set up Stanley and your content home, build your content strategy, and leave with a week of LinkedIn posts drafted in your voice. Pop in your email to unlock it.</p>
-</div>
-<div class="drawform cwgateform">
-<label><span>First name <span class="cwgateopt">Optional</span></span><input id="cwgatefirst" type="text" autocomplete="given-name"></label>
-<label><span>Email</span><input id="cwgateemail" type="email" inputmode="email" autocomplete="email" required></label>
-<input id="cwgatetrap" name="_gotcha" type="text" tabindex="-1" autocomplete="off" aria-hidden="true" class="drawtrap">
-<button type="button" id="cwgatego">Unlock the workshop</button>
-<p class="drawmsg" id="cwgatemsg" role="status" aria-live="polite"></p>
-</div>
 </section>
 
 <!-- ============================================================
@@ -796,6 +836,8 @@ Working rules
 <li><a href="https://www.loom.com/share/324de2dd44a249a78c83fa37b81a9a4f" target="_blank" rel="noopener">Post across platforms</a>: one idea, every platform</li>
 </ol></div></details></div></div>
 
+</div>
+
 <section id="hosts" aria-labelledby="hostsh" style="display: flex; flex-direction: column; gap: 20px">
 <span style="font-family: 'Inter', sans-serif; font-size: 12px; letter-spacing: .08em; font-weight: 600; text-transform: uppercase; color: #57534E">Your host</span>
 <h2 id="hostsh" style="font-family: 'Space Grotesk', system-ui, sans-serif; font-weight: 600; font-size: clamp(28px, 4.4cqi, 40px); letter-spacing: -.022em; line-height: 1.08; margin: 0">Meet Ella</h2>
@@ -1170,7 +1212,9 @@ Start now.`
   var GATE_UNLOCK_AFTER = 5000;
 
   var gate = one('#cwgate');
-  var gateBoxes = [1, 2, 3].map(function (n) { return one('#step-' + n); }).filter(Boolean);
+  /* Everything the gate holds back, in one wrapper: the workshop video,
+     the codes, the draw, the three steps and the bonus guides. */
+  var gateWall = one('#cwlocked');
   var gateLocked = false;
 
   /* Storage throws in a private window and wherever site data is blocked,
@@ -1192,20 +1236,17 @@ Start now.`
   function gateShut() {
     gateLocked = true;
     gate.hidden = false;
-    gateBoxes.forEach(function (box) { box.hidden = true; });
+    gateWall.hidden = true;
   }
 
   function gateUnlock(move) {
     gateLocked = false;
     gate.hidden = true;
-    gateBoxes.forEach(function (box) { box.hidden = false; });
-    if (move && gateBoxes[0]) {
-      gateBoxes[0].open = true;
-      gateScroll(gateBoxes[0]);
-    }
+    gateWall.hidden = false;
+    if (move) { gateScroll(gateWall); }
   }
 
-  if (gate && gateBoxes.length === 3) {
+  if (gate && gateWall) {
     /* A reader who has already left an email never sees the gate again. */
     if (gateRecall()) { gateUnlock(false); } else { gateShut(); }
 
@@ -1221,12 +1262,15 @@ Start now.`
     };
 
     var gateSend = function () {
-      /* The one thing that still says no. A typo here is the reader's to
-         fix, and sending it would file an address nobody can be reached at. */
+      /* The one thing that still says no. Ella's rule is a first name and
+         an email, both, before anyone sees the workshop: a blank name or a
+         typo is the reader's to fix, and sending it would file someone we
+         cannot reach. */
+      var first = gateFirst ? gateFirst.value.trim() : '';
       var email = gateMail.value.trim();
-      if (!GATE_EMAIL.test(email)) {
-        gateSay('Add a valid email so we can send you the workshop.', true);
-        gateMail.focus();
+      if (!first || !GATE_EMAIL.test(email)) {
+        gateSay('Add your first name and email to unlock it.', true);
+        (first ? gateMail : gateFirst).focus();
         return;
       }
       gateSay('Unlocking\u2026');
@@ -1259,7 +1303,7 @@ Start now.`
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           email: email,
-          first_name: gateFirst ? gateFirst.value.trim() : '',
+          first_name: first,
           _gotcha: gateTrap ? gateTrap.value.trim() : ''
         })
       })
