@@ -392,6 +392,7 @@
   var RE_LOOM  = /^[0-9a-fA-F]{32}$/;        // Loom share ids are 32 hex
   var RE_YT    = /^[A-Za-z0-9_-]{11}$/;      // YouTube ids are 11 chars
   var RE_VIMEO = /^[0-9]{6,12}$/;            // Vimeo ids are numeric
+  var RE_VHASH = /^[0-9a-f]{6,20}$/;         // and an unlisted video's private hash
 
   // Build an embed src from an allowed host. The original URL is never
   // reused: the src is assembled from a pattern-checked id. Takes the URL
@@ -427,7 +428,16 @@
 
     if (host === 'vimeo.com' || host === 'player.vimeo.com') {
       id = (parts[0] === 'video') ? parts[1] : parts[0];
-      if (id && RE_VIMEO.test(id)) return 'https://player.vimeo.com/video/' + id;
+      /* An unlisted video needs its private hash or the embed answers with a
+         privacy error. vimeo.com carries it in the path right after the id,
+         player.vimeo.com in ?h=. A public link has neither and is unchanged. */
+      var hash = (parts[0] === 'video') ? url.searchParams.get('h') : parts[1];
+      if (id && RE_VIMEO.test(id)) {
+        if (hash && RE_VHASH.test(hash)) {
+          return 'https://player.vimeo.com/video/' + id + '?h=' + hash;
+        }
+        return 'https://player.vimeo.com/video/' + id;
+      }
       return null;
     }
 
