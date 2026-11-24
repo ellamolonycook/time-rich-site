@@ -449,7 +449,7 @@
             <h3 class="tc-prog-t">Superhuman Accelerator</h3>
             <p class="tc-prog-d">
               Four weeks, live. Build the AI system behind your sales, your
-              systems, and your visibility. Kicks off Monday, 26 October, 12pm ET.
+              systems, and your visibility. <span data-club-kickoff>Kicks off Monday, 26 October, 12pm ET.</span>
             </p>
 
             <!-- The same "Cohort 1 is a wrap" note the Accelerator page
@@ -802,6 +802,7 @@
       var greet = document.querySelector('[data-club-greet]');
       var slot = document.querySelector('[data-club-progress]');
       var wrap = document.querySelector('[data-club-wrap]');
+      var kickoff = document.querySelector('[data-club-kickoff]');
       var WRAP_WAITLIST = 'https://timerich.ai/accelerator';
 
       function name(data) {
@@ -850,6 +851,8 @@
             two.appendChild(document.createTextNode('.'));
             wrap.appendChild(two);
             wrap.removeAttribute('hidden');
+            // "Kicks off" is past tense now. Left alone while the cohort runs.
+            if (kickoff) kickoff.textContent = 'Ran from 26 October to 20 November.';
           } else {
             wrap.setAttribute('hidden', '');
           }
