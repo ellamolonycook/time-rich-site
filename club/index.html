@@ -452,6 +452,10 @@
               systems, and your visibility. Kicks off Monday, 26 October, 12pm ET.
             </p>
 
+            <!-- The same "Cohort 1 is a wrap" note the Accelerator page
+                 carries, filled by the script below once the cohort is over. -->
+            <div class="tc-wrapup" data-club-wrap hidden></div>
+
             <!-- Filled from the same TRLive.userProgress the dashboard
                  reads. Stays out of the page until there is a count, so
                  the card never shows "0 of 0 done". -->
@@ -797,6 +801,8 @@
     (function () {
       var greet = document.querySelector('[data-club-greet]');
       var slot = document.querySelector('[data-club-progress]');
+      var wrap = document.querySelector('[data-club-wrap]');
+      var WRAP_WAITLIST = 'https://timerich.ai/accelerator';
 
       function name(data) {
         var m = data && data.member;
@@ -812,7 +818,44 @@
         }
 
         var L = window.TRLive;
-        if (!slot || !L || !L.userProgress) return;
+        if (!L) return;
+
+        /* Cohort 1 is finished, so the card says so, in the same words as
+           the Accelerator page. textContent throughout: no innerHTML. */
+        if (wrap) {
+          while (wrap.firstChild) wrap.removeChild(wrap.firstChild);
+          if (L.cohortEnded && L.cohortEnded(data)) {
+            var h = document.createElement('h4');
+            h.className = 'tc-wrapup-h';
+            h.textContent = 'Cohort 1 is a wrap \uD83C\uDF89';
+            wrap.appendChild(h);
+            var one = document.createElement('p');
+            one.className = 'tc-wrapup-p';
+            one.textContent = 'Thank you for building with us. Every replay, prompt and skill from the four weeks stays right here, so keep using them.';
+            wrap.appendChild(one);
+            var two = document.createElement('p');
+            two.className = 'tc-wrapup-p';
+            two.appendChild(document.createTextNode('Cohort 2 · February 2027. Know a founder who should be in the room? Send them to '));
+            var url = L.safeUrl ? L.safeUrl(WRAP_WAITLIST) : null;
+            if (url) {
+              // Same tab on purpose: the waitlist is where we want them to go next.
+              var a = document.createElement('a');
+              a.href = url.href;
+              a.rel = 'noopener';
+              a.textContent = 'the waitlist';
+              two.appendChild(a);
+            } else {
+              two.appendChild(document.createTextNode('the waitlist'));
+            }
+            two.appendChild(document.createTextNode('.'));
+            wrap.appendChild(two);
+            wrap.removeAttribute('hidden');
+          } else {
+            wrap.setAttribute('hidden', '');
+          }
+        }
+
+        if (!slot || !L.userProgress) return;
 
         var you = L.userProgress(data);
         if (!you || !you.total) { slot.setAttribute('hidden', ''); return; }

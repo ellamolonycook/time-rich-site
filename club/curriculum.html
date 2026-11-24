@@ -182,6 +182,12 @@
     .trp-cw-label { font-size: 12px; font-weight: 600; letter-spacing: .08em; text-transform: uppercase; color: var(--trp-soft); }
     .trp-cw-h2 { font-family: var(--trp-display); font-weight: 600; font-size: clamp(26px, 3.8vw, 36px); letter-spacing: -.02em; line-height: 1.1; margin: 0; color: var(--trp-deep); }
     .trp-cw-outcome { font-size: 16.5px; line-height: 1.6; color: var(--trp-soft); margin: 0; }
+    .trp-cw-wrap { padding: 18px 20px; border: 1px solid var(--trp-line); border-radius: 22px; background: var(--trp-sagelt); display: grid; gap: 8px; }
+    .trp-cw-wrap-h { font-family: var(--trp-display); font-weight: 600; font-size: clamp(18px, 2.2vw, 22px); letter-spacing: -.02em; line-height: 1.2; margin: 0; color: var(--trp-deep); }
+    .trp-cw-wrap-p { margin: 0; font-size: 14.5px; line-height: 1.55; color: var(--trp-soft); max-width: 62ch; }
+    .trp-cw-wrap-p a { color: var(--trp-deep); font-weight: 600; text-decoration: underline; text-underline-offset: 3px; }
+    .trp-cw-wrap-p a:focus-visible { outline: 2px solid var(--trp-green); outline-offset: 2px; border-radius: 4px; }
+    @media (max-width: 560px) { .trp-cw-wrap { padding: 16px; } }
     .trp-cw-headcard { padding: clamp(20px, 3.5vw, 32px); border-radius: 24px; background: var(--trp-sagelt); border: 1px solid var(--trp-line); }
     .trp-cw-headcard .trp-cw-panel-copy { max-width: none; width: 100%; gap: 10px; }
     .trp-cw-headcard .trp-cw-outcome { max-width: 60ch; color: var(--trp-deep); opacity: .82; }
@@ -1528,6 +1534,32 @@ When you finish:
         return L.num((open.length ? open[open.length - 1] : cards[0]).id);
       }
 
+      /* Cohort 1 finished on Fri 20 Nov. A small, calm note at the top of
+         the page says so, and points the next founder at the waitlist. Drawn
+         with textContent and L.el, like the rest of the page. */
+      var WRAP_WAITLIST = 'https://timerich.ai/accelerator';
+      function wrapUp() {
+        var box = L.el('section', 'trp-cw-wrap');
+        box.setAttribute('aria-label', 'Cohort 1 is a wrap');
+        box.appendChild(L.el('h2', 'trp-cw-wrap-h', 'Cohort 1 is a wrap \uD83C\uDF89'));
+        box.appendChild(L.el('p', 'trp-cw-wrap-p', 'Thank you for building with us. Every replay, prompt and skill from the four weeks stays right here, so keep using them.'));
+        var next = L.el('p', 'trp-cw-wrap-p');
+        next.appendChild(document.createTextNode('Cohort 2 · February 2027. Know a founder who should be in the room? Send them to '));
+        var url = L.safeUrl(WRAP_WAITLIST);
+        if (url) {
+          // Same tab on purpose: the waitlist is where we want them to go next.
+          var a = L.el('a', '', 'the waitlist');
+          a.href = url.href;
+          a.rel = 'noopener';
+          next.appendChild(a);
+        } else {
+          next.appendChild(document.createTextNode('the waitlist'));
+        }
+        next.appendChild(document.createTextNode('.'));
+        box.appendChild(next);
+        return box;
+      }
+
       function pinned(prep) {
         return prep ? L.items(prep).filter(function (it) { return L.num(it && it.sort) < PIN_BELOW; }) : [];
       }
@@ -2084,6 +2116,7 @@ When you finish:
       ];
       var prizesOpen = false;   // shut to begin with, kept across redraws
       var prizesNode = null;    // drawn once: nothing in it changes with a tick
+      var wrapNode = null;      // same: the wrap-up note never changes with a tick
       function prizes() {
         var box = document.createElement('details');
         box.className = 'trp-cw-prizes';
@@ -2790,6 +2823,7 @@ Anything you've done twice should never need you again. A skill is your way of d
         var open = isOpen(week, prep);
         var now = new Date();
         var pillar = PILLARS[n];
+        var ended = L.cohortEnded(data);
 
         var box = L.el('section', 'trp-cw-panel');
         box.id = 'cw-panel';
@@ -2869,7 +2903,7 @@ Anything you've done twice should never need you again. A skill is your way of d
         // This week's calls come first, above the lessons and the setup:
         // the call is the thing with a time on it.
         if (sessionList.length) {
-          box.appendChild(L.el('h3', 'trp-cw-group', "This week's live calls"));
+          box.appendChild(L.el('h3', 'trp-cw-group', ended ? 'Live calls' : "This week's live calls"));
           var tiles = L.el('div', 'trp-cw-sessions');
           sessionList.forEach(function (s) { tiles.appendChild(sessionTile(s, now, own)); });
           box.appendChild(tiles);
@@ -2907,7 +2941,7 @@ Anything you've done twice should never need you again. A skill is your way of d
           if (!setupLeft) lessons.forEach(function (p) {
             if (nextKey === null && L.isTrackable(p.it) && !L.isItemDone(p.it)) nextKey = rowKey(p.it, p.n);
           });
-          if (steps.length) box.appendChild(L.el('h3', 'trp-cw-group', setupLeft ? 'Then, this week' : 'This week'));
+          if (steps.length) box.appendChild(L.el('h3', 'trp-cw-group', setupLeft ? (ended ? 'Then' : 'Then, this week') : (ended ? 'Steps' : 'This week')));
           var sections = WEEK_SECTIONS[n];
           if (!sections) {
             var ul = L.el('ul', 'trp-cw-lessons');
@@ -3059,6 +3093,12 @@ Anything you've done twice should never need you again. A skill is your way of d
         // the page reloads it, which is what made a tick flash.
         var out = [];
 
+        /* With the cohort over, no week is "this week" any more: every badge
+           and tab says "Open". The tab that opens by itself is unchanged,
+           so members still land on the last week. */
+        var ended = L.cohortEnded(data);
+        if (ended) out.push(wrapNode || (wrapNode = wrapUp()));
+
         var parts = pinnedParts(prep);
         var hello = welcome(parts);
         if (hello) out.push(hello);
@@ -3072,7 +3112,7 @@ Anything you've done twice should never need you again. A skill is your way of d
         tabs.setAttribute('aria-label', 'Weeks');
         cards.forEach(function (w) {
           var id = L.num(w.id);
-          var card = weekCard(w, prep, id === selected, id === current);
+          var card = weekCard(w, prep, id === selected, !ended && id === current);
           card.setAttribute('data-cw-focus', 'tab-' + id);
           card.addEventListener('click', function () { pick(id); });
           tabs.appendChild(card);
@@ -3091,7 +3131,7 @@ Anything you've done twice should never need you again. A skill is your way of d
         });
         out.push(tabs);
 
-        out.push(panel(data, week, prep, Number(week.id) === Number(current)));
+        out.push(panel(data, week, prep, !ended && Number(week.id) === Number(current)));
 
         var next = whatsNext(cards, prep, data, week.id);
         if (next) out.push(next);

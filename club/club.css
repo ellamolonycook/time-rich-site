@@ -606,6 +606,14 @@ html.tc-story-on { overflow: hidden; }
 }
 .tc-prog-d + .tc-prog-d { margin-top: 8px; }
 
+/* "Cohort 1 is a wrap", on the dark Accelerator card. Small and calm: a
+   hairline panel, not a second hero. */
+.tc-prog [data-club-wrap] { margin-top: 24px; width: 100%; max-width: 28rem; padding: 14px 16px; border-radius: 14px; background: rgb(244 241 230 / .07); box-shadow: inset 0 0 0 1px rgb(244 241 230 / .14); }
+.tc-prog [data-club-wrap][hidden] { display: none; }
+.tc-wrapup-h { margin: 0; font-family: var(--trp-face); font-size: 18px; font-weight: 500; letter-spacing: -.02em; color: var(--tc-cream); }
+.tc-wrapup-p { margin-top: 8px; font-size: 13.5px; line-height: 1.6; color: rgb(244 241 230 / .72); }
+.tc-wrapup-p a { color: var(--tc-lime); text-decoration: underline; text-underline-offset: 3px; }
+
 /* Progress, filled by the script at the foot of club.html. The class names
    are the ones that script writes. */
 .tc-prog [data-club-progress] { margin: 28px 0 32px; width: 100%; max-width: 20rem; }
