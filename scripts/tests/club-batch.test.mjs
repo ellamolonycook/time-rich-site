@@ -543,11 +543,16 @@ function freeze(window, iso) {
   window.Date = Frozen;
 }
 
-function open(doneIds, hash) {
-  return openWith(payload(doneIds), hash);
+const MID_COHORT = '2026-10-27T12:00:00.000Z';
+/* Monday 23 November: the last call on the books ran on 30 October, so
+   TRLive.cohortEnded is true and the page is in its end-of-cohort state. */
+const AFTER_COHORT = '2026-11-23T15:00:00.000Z';
+
+function open(doneIds, hash, nowIso) {
+  return openWith(payload(doneIds), hash, nowIso);
 }
 
-function openWith(data, hash) {
+function openWith(data, hash, nowIso) {
   const dom = new JSDOM(HTML, {
     url: 'https://timerich.ai/club/curriculum' + (hash || ''),
     runScripts: 'dangerously',
@@ -559,7 +564,7 @@ function openWith(data, hash) {
       window.TR_PORTAL_CONFIG = { sessionUrl: 'https://worker.test/portal-session' };
       window.localStorage.setItem('tr_portal_session', JSON.stringify({ token: 'tok-ABCDE', expires_at: new Date(Date.now() + 30 * 864e5).toISOString() }));
       window.fetch = () => Promise.resolve(new globalThis.Response(JSON.stringify(data), { status: 200 }));
-      freeze(window, '2026-10-27T12:00:00.000Z');
+      freeze(window, nowIso || MID_COHORT);
       window.eval(LIVE);     // the page's inline renderer needs TRLive at parse time
     },
   });
@@ -1490,7 +1495,7 @@ console.log('\nAn open lesson folds from a click in its body, not from its contr
 
 console.log('\nThe Superhuman prizes sit above the week tabs');
 {
-  const p = open();
+  const p = open(null, null, MID_COHORT);
   const prizeDrops = (doc) => [...doc.querySelectorAll('[data-curriculum-live] > .trp-cw-prizes')]
     .filter((d) => d.querySelector('summary[data-cw-focus="prizes"]'));
   const prizes = prizeDrops(p.doc)[0] || null;
@@ -1516,6 +1521,84 @@ console.log('\nThe Superhuman prizes sit above the week tabs');
     prizes && prizes.tagName === 'DETAILS' && prizes.open === false);
   p.pick(2);
   check('and they stay when another week is picked', prizeDrops(p.doc).length === 1);
+  p.w.close();
+}
+
+/* Cohort 1's prizes closed with the cohort and the winners were
+   announced, so the same drop-down stops asking for entries. Before the
+   last call it is unchanged, which the block above holds. */
+console.log('\nOnce the cohort is over, the prizes box names the winners');
+{
+  const p = open(null, null, AFTER_COHORT);
+  const box = [...p.doc.querySelectorAll('[data-curriculum-live] > .trp-cw-prizes')]
+    .filter((d) => d.querySelector('summary[data-cw-focus="prizes"]'))[0] || null;
+  check('the box is still there, once, above the week tabs', box !== null &&
+    box.nextElementSibling && box.nextElementSibling.className === 'trp-cw-weeks');
+  check('headed "Cohort 1 winners", with the trophy',
+    box && box.querySelector('.trp-cw-prizes-h').textContent === '🏆 Cohort 1 winners',
+    box && box.querySelector('.trp-cw-prizes-h').textContent);
+  check('and the count beside it reads two winners, not two prizes',
+    box && box.querySelector('.trp-cw-prizes-count').textContent === '2 winners',
+    box && box.querySelector('.trp-cw-prizes-count').textContent);
+  check('the lead thanks everyone and keeps the membership line',
+    box && box.querySelector('.trp-cw-prizes-lead').textContent ===
+    'Thank you to everyone who posted and sent a testimonial. Every winner also gets 1 year of Time Rich Club membership.',
+    box && box.querySelector('.trp-cw-prizes-lead').textContent);
+
+  const rows = box ? [...box.querySelectorAll('.trp-cw-prize')] : [];
+  check('two rows, one per prize', rows.length === 2, rows.length);
+  const got = rows.map((li) => [
+    li.querySelector('.trp-cw-prize-name').textContent,
+    li.querySelector('.trp-cw-prize-winner') && li.querySelector('.trp-cw-prize-winner').textContent,
+    li.querySelector('.trp-cw-prize-win').textContent,
+  ]);
+  check('Katrina Starr won the Stanley VIP Prize',
+    JSON.stringify(got[0]) === JSON.stringify(
+      ['Stanley VIP Prize', 'Katrina Starr', 'Won: A $1K Stanley setup and 12 months of Wispr Flow']),
+    got[0]);
+  check('Izabella Soko won the Testimonial Prize',
+    JSON.stringify(got[1]) === JSON.stringify(
+      ['Testimonial Prize', 'Izabella Soko', 'Won: A 30-minute strategy call with mentors']),
+    got[1]);
+  check('the label reads Won, not Win',
+    rows.every((li) => li.querySelector('.trp-cw-prize-label').textContent === 'Won: '),
+    rows.map((li) => li.querySelector('.trp-cw-prize-label').textContent));
+  check('and no entry rules are left on any row',
+    rows.every((li) => li.querySelector('.trp-cw-prize-how') === null) &&
+    !/Post about the Accelerator|Leave a LinkedIn recommendation/.test(box.textContent),
+    box && box.textContent);
+  check('"Testimonial Prize" drops the "3 winners" it used to carry',
+    !/3 winners/.test(box.textContent));
+  check('still a drop-down that starts shut',
+    box && box.tagName === 'DETAILS' && box.open === false);
+
+  // The share card above it stops pointing at a draw that has been drawn.
+  const share = p.doc.querySelector('.trp-cw-share');
+  check('and the share card asks for posts without a draw',
+    share && share.querySelector('.trp-cw-share-lead').textContent ===
+    'Keep posting about your Superhuman journey. Tag us so we can cheer you on.',
+    share && share.querySelector('.trp-cw-share-lead').textContent);
+  p.w.close();
+}
+
+console.log('\nBefore the last call, the prizes box still invites entries');
+{
+  const p = open(null, null, MID_COHORT);
+  const box = [...p.doc.querySelectorAll('[data-curriculum-live] > .trp-cw-prizes')]
+    .filter((d) => d.querySelector('summary[data-cw-focus="prizes"]'))[0] || null;
+  check('headed "Superhuman prizes"',
+    box && box.querySelector('.trp-cw-prizes-h').textContent === '🔥 Superhuman prizes',
+    box && box.querySelector('.trp-cw-prizes-h').textContent);
+  check('with Win, the entry rules, and no winner named',
+    box && box.querySelector('.trp-cw-prize-label').textContent === 'Win: ' &&
+    box.querySelector('.trp-cw-prize-how') !== null &&
+    box.querySelector('.trp-cw-prize-winner') === null &&
+    !/Katrina Starr|Izabella Soko/.test(box.textContent));
+  const share = p.doc.querySelector('.trp-cw-share');
+  check('and the share card still points at the draw',
+    share && share.querySelector('.trp-cw-share-lead').textContent ===
+    'Post about your Superhuman journey to go in the draw to win the prizes below.',
+    share && share.querySelector('.trp-cw-share-lead').textContent);
   p.w.close();
 }
 

@@ -196,7 +196,7 @@ console.log('\nthe component mounts on the page, in two steps');
     form.querySelector('input[name="Email"]') !== null &&
     form.querySelector('input[name="Email"]').required === true);
   check('with the helper line Ella asked for',
-    /So we can thank you, and reach you about the Testimonial Prize\./.test(text1));
+    /So we can thank you\./.test(text1));
 
   // The questions, in order, with the labels the brief gives.
   const legends = [...step1.querySelectorAll('legend')].map((l) => l.textContent);
@@ -922,12 +922,15 @@ console.log('\nthe testimonial page is the same shell as the feedback page');
   const head = doc.querySelector('.trp-fb-head');
   check('the eyebrow reads Testimonial',
     head.querySelector('.trp-fb-eyebrow').textContent === 'Testimonial');
-  check('the h1 is Ella\'s line',
-    head.querySelector('h1').textContent.replace(/\s+/g, ' ') === '🏆 Your testimonial: WIN',
+  /* The Testimonial Prize is awarded, so the page keeps the trophy but
+     drops "WIN" and asks for its own reason instead of a draw. */
+  check('the h1 is Ella\'s line, with no prize on it',
+    head.querySelector('h1').textContent.replace(/\s+/g, ' ') === '🏆 Your testimonial',
     head.querySelector('h1').textContent);
-  check('and the line under it names the prize and the date',
+  check('and the line under it says why it helps, naming no prize',
     head.querySelector('.trp-fb-lede').textContent ===
-    'Do both by Mon 16 Nov to enter the Testimonial Prize (3 winners): a 30-minute strategy call with our mentors.',
+    'Share a video testimonial and recommend Ella on LinkedIn. It helps the next founders decide to join.' &&
+    !/prize|draw|win/i.test(head.querySelector('.trp-fb-lede').textContent),
     head.querySelector('.trp-fb-lede').textContent);
 
   check('it is its own canonical address',
@@ -956,7 +959,7 @@ console.log('\nthe testimonial form asks for the recommendation, then the video'
     form.querySelector('input[name="Email"]') !== null &&
     form.querySelector('input[name="Email"]').required === true);
   check('with the same helper line as the feedback form',
-    /So we can thank you, and reach you about the Testimonial Prize\./
+    /So we can thank you\./
       .test(form.textContent.replace(/\s+/g, ' ')));
 
   const tiles = [...form.querySelectorAll('.trp-fb-tile')];
@@ -1010,15 +1013,14 @@ console.log('\nthe testimonial form asks for the recommendation, then the video'
   check('no file upload box in this round: links only',
     form.querySelector('input[type="file"]') === null);
 
-  const vip = doc.querySelector('[data-testimonial-vip]').textContent.replace(/\s+/g, ' ');
-  check('the VIP prize sits under the form',
-    vip === 'Posting about the Accelerator every week too? That’s the Stanley VIP Prize: ' +
-      'a $1K Stanley setup and 12 months of Wispr Flow.', vip);
-  const vipLinks = [...doc.querySelector('[data-testimonial-vip]').querySelectorAll('a')];
-  check('with Stanley and Wispr Flow both linked',
-    vipLinks.map((a) => a.getAttribute('href')).join('|') ===
-    'https://x.getstanley.ai/r/mz4y9g|https://wisprflow.ai/info/redeem-promo?code=TIMERICH6&months=6',
-    vipLinks.map((a) => a.getAttribute('href')));
+  /* The Stanley VIP Prize nudge used to sit under the form. Cohort 1's
+     prizes are closed and the winners are named on the Accelerator page,
+     so the form points at no draw at all now. */
+  check('no VIP prize nudge under the form',
+    doc.querySelector('[data-testimonial-vip]') === null);
+  check('and nothing on the page still invites an entry',
+    !/VIP Prize|in the draw|to enter the|Testimonial Prize/i.test(doc.body.textContent),
+    (doc.body.textContent.match(/VIP Prize|in the draw|to enter the|Testimonial Prize/gi) || []));
   dom.window.close();
 }
 
@@ -1115,8 +1117,11 @@ console.log('\nthe testimonial posts the names the Worker expects');
   check('the same thank-you card is shown',
     thanks.hidden === false && thanks.querySelector('.trp-fb-thanks-ring svg') !== null &&
     thanks.getAttribute('role') === 'status');
-  check('reading "You\'re in the draw. Thank you!!"',
-    /You’re in the draw\. Thank you!!/.test(thanks.textContent), thanks.textContent);
+  check('reading "Thank you!!", with no draw to be in',
+    /Thank you!!/.test(thanks.textContent) &&
+    !/in the draw/.test(thanks.textContent), thanks.textContent);
+  check('and the line under it is "We read every one."',
+    /We read every one\./.test(thanks.textContent), thanks.textContent);
   await new Promise((r) => setTimeout(r, 450));
   check('then settling with a way back to the course',
     thanks.querySelector('[data-feedback-done]') !== null &&
