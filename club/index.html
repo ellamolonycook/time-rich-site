@@ -449,8 +449,12 @@
             <h3 class="tc-prog-t">Superhuman Accelerator</h3>
             <p class="tc-prog-d">
               Four weeks, live. Build the AI system behind your sales, your
-              systems, and your visibility. Kicks off Monday, 26 October, 12pm ET.
+              systems, and your visibility. <span data-club-kickoff>Kicks off Monday, 26 October, 12pm ET.</span>
             </p>
+
+            <!-- The same "Cohort 1 is a wrap" note the Accelerator page
+                 carries, filled by the script below once the cohort is over. -->
+            <div class="tc-wrapup" data-club-wrap hidden></div>
 
             <!-- Filled from the same TRLive.userProgress the dashboard
                  reads. Stays out of the page until there is a count, so
@@ -797,6 +801,9 @@
     (function () {
       var greet = document.querySelector('[data-club-greet]');
       var slot = document.querySelector('[data-club-progress]');
+      var wrap = document.querySelector('[data-club-wrap]');
+      var kickoff = document.querySelector('[data-club-kickoff]');
+      var WRAP_WAITLIST = 'https://timerich.ai/accelerator';
 
       function name(data) {
         var m = data && data.member;
@@ -812,7 +819,46 @@
         }
 
         var L = window.TRLive;
-        if (!slot || !L || !L.userProgress) return;
+        if (!L) return;
+
+        /* Cohort 1 is finished, so the card says so, in the same words as
+           the Accelerator page. textContent throughout: no innerHTML. */
+        if (wrap) {
+          while (wrap.firstChild) wrap.removeChild(wrap.firstChild);
+          if (L.cohortEnded && L.cohortEnded(data)) {
+            var h = document.createElement('h4');
+            h.className = 'tc-wrapup-h';
+            h.textContent = 'Cohort 1 is a wrap \uD83C\uDF89';
+            wrap.appendChild(h);
+            var one = document.createElement('p');
+            one.className = 'tc-wrapup-p';
+            one.textContent = 'Thank you for building with us. Every replay, prompt and skill from the four weeks stays right here, so keep using them.';
+            wrap.appendChild(one);
+            var two = document.createElement('p');
+            two.className = 'tc-wrapup-p';
+            two.appendChild(document.createTextNode('Cohort 2 · February 2027. Know a founder who should be in the room? Send them to '));
+            var url = L.safeUrl ? L.safeUrl(WRAP_WAITLIST) : null;
+            if (url) {
+              // Same tab on purpose: the waitlist is where we want them to go next.
+              var a = document.createElement('a');
+              a.href = url.href;
+              a.rel = 'noopener';
+              a.textContent = 'the waitlist';
+              two.appendChild(a);
+            } else {
+              two.appendChild(document.createTextNode('the waitlist'));
+            }
+            two.appendChild(document.createTextNode('.'));
+            wrap.appendChild(two);
+            wrap.removeAttribute('hidden');
+            // "Kicks off" is past tense now. Left alone while the cohort runs.
+            if (kickoff) kickoff.textContent = 'Ran from 26 October to 20 November.';
+          } else {
+            wrap.setAttribute('hidden', '');
+          }
+        }
+
+        if (!slot || !L.userProgress) return;
 
         var you = L.userProgress(data);
         if (!you || !you.total) { slot.setAttribute('hidden', ''); return; }

@@ -300,7 +300,6 @@
 
   var WISPR = 'https://wisprflow.ai/info/redeem-promo?code=TIMERICH6&months=6';
   var ELLA_LINKEDIN = 'https://www.linkedin.com/in/ellamolonycook/';
-  var STANLEY = 'https://x.getstanley.ai/r/mz4y9g';
   var TESTIMONIAL_PAGE = '/club/testimonial';
 
   /* The email field, identical on both forms: the one field either form
@@ -319,7 +318,7 @@
     box.appendChild(label);
     box.appendChild(input);
     box.appendChild(el('span', 'trp-fb-help',
-      'So we can thank you, and reach you about the Testimonial Prize.'));
+      'So we can thank you.'));
     return { box: box, input: input };
   }
 
@@ -1055,25 +1054,16 @@
         postLink.value.trim() || rec.checked || feature.checked);
     }
 
-    /* The Stanley VIP Prize, for the members posting every week. It sits
-       under the form, where it is an aside rather than another thing to
-       fill in. */
-    var vip = el('p', 'trp-fb-nudge');
-    vip.setAttribute('data-testimonial-vip', '');
-    vip.appendChild(document.createTextNode(
-      'Posting about the Accelerator every week too? That’s the '));
-    vip.appendChild(link('Stanley', STANLEY));
-    vip.appendChild(document.createTextNode(' VIP Prize: a $1K Stanley setup and 12 months of '));
-    vip.appendChild(link('Wispr Flow', WISPR));
-    vip.appendChild(document.createTextNode('.'));
-    wrap.appendChild(vip);
+    /* The Stanley VIP Prize nudge used to sit here. Cohort 1's prizes are
+       closed and the winners are announced on the Accelerator page, so the
+       form no longer points at a draw nobody can enter. */
 
     var post = sender({
       form: form, send: send, err: err, thanks: thanks, stepper: null,
       sendText: 'Send it',
-      thanksTitle: 'You’re in the draw. Thank you!!',
+      thanksTitle: 'Thank you!!',
       thanksLine: function () {
-        return 'We will be in touch about the Testimonial Prize.';
+        return 'We read every one.';
       },
       settledLine: 'Testimonial sent ✓',
       onSettled: opts.onSettled

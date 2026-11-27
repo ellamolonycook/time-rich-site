@@ -180,6 +180,21 @@
     return first === null || first - 12 * 3600 * 1000 <= at;
   }
 
+  /* Cohort 1 ran its last call on Fri 20 Nov, so nothing is "this week"
+     any more. The cohort has ended once every session is well behind us:
+     12 hours past a session's start, the same slack weekStarted() uses, so
+     the day of the last call still counts as live. No sessions at all means
+     nothing has been scheduled yet, which is not an ending. */
+  function cohortEnded(data, now) {
+    var at = (now || new Date()).getTime();
+    var list = sessions(data);
+    if (!list.length) return false;
+    return list.every(function (s) {
+      var d = toDate(s && s.starts_at);
+      return !!d && d.getTime() + 12 * 3600 * 1000 < at;
+    });
+  }
+
   // The newest week the member can actually open and that has started.
   function latestUnlockedWeek(data, now) {
     var open = weeks(data).filter(function (w) { return w && w.unlocked === true; });
@@ -868,6 +883,7 @@
     items: items,
     latestUnlockedWeek: latestUnlockedWeek,
     weekStarted: weekStarted,
+    cohortEnded: cohortEnded,
     nextSession: nextSession,
     dateKey: dateKey,
     isSessionUnlocked: isSessionUnlocked,

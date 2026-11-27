@@ -182,6 +182,12 @@
     .trp-cw-label { font-size: 12px; font-weight: 600; letter-spacing: .08em; text-transform: uppercase; color: var(--trp-soft); }
     .trp-cw-h2 { font-family: var(--trp-display); font-weight: 600; font-size: clamp(26px, 3.8vw, 36px); letter-spacing: -.02em; line-height: 1.1; margin: 0; color: var(--trp-deep); }
     .trp-cw-outcome { font-size: 16.5px; line-height: 1.6; color: var(--trp-soft); margin: 0; }
+    .trp-cw-wrap { padding: 18px 20px; border: 1px solid var(--trp-line); border-radius: 22px; background: var(--trp-sagelt); display: grid; gap: 8px; }
+    .trp-cw-wrap-h { font-family: var(--trp-display); font-weight: 600; font-size: clamp(18px, 2.2vw, 22px); letter-spacing: -.02em; line-height: 1.2; margin: 0; color: var(--trp-deep); }
+    .trp-cw-wrap-p { margin: 0; font-size: 14.5px; line-height: 1.55; color: var(--trp-soft); max-width: 62ch; }
+    .trp-cw-wrap-p a { color: var(--trp-deep); font-weight: 600; text-decoration: underline; text-underline-offset: 3px; }
+    .trp-cw-wrap-p a:focus-visible { outline: 2px solid var(--trp-green); outline-offset: 2px; border-radius: 4px; }
+    @media (max-width: 560px) { .trp-cw-wrap { padding: 16px; } }
     .trp-cw-headcard { padding: clamp(20px, 3.5vw, 32px); border-radius: 24px; background: var(--trp-sagelt); border: 1px solid var(--trp-line); }
     .trp-cw-headcard .trp-cw-panel-copy { max-width: none; width: 100%; gap: 10px; }
     .trp-cw-headcard .trp-cw-outcome { max-width: 60ch; color: var(--trp-deep); opacity: .82; }
@@ -423,6 +429,7 @@
     .trp-cw-prize-name { font-size: 16px; font-weight: 600; color: var(--trp-deep); }
     .trp-cw-prize-label { font-size: 11px; letter-spacing: .06em; text-transform: uppercase; color: var(--trp-soft); }
     .trp-cw-prize-how { grid-column: 1; font-size: 14px; line-height: 1.5; color: var(--trp-soft); }
+    .trp-cw-prize-winner { grid-column: 1; font-size: 14px; font-weight: 600; line-height: 1.5; color: var(--trp-deep); }
     .trp-cw-prize-win { grid-column: 2; grid-row: 1 / span 2; font-size: 14px; font-weight: 600; line-height: 1.45; color: var(--trp-green); }
     @media (max-width: 640px) {
       .trp-cw-prizes > summary { padding: 12px 16px; }
@@ -1528,6 +1535,32 @@ When you finish:
         return L.num((open.length ? open[open.length - 1] : cards[0]).id);
       }
 
+      /* Cohort 1 finished on Fri 20 Nov. A small, calm note at the top of
+         the page says so, and points the next founder at the waitlist. Drawn
+         with textContent and L.el, like the rest of the page. */
+      var WRAP_WAITLIST = 'https://timerich.ai/accelerator';
+      function wrapUp() {
+        var box = L.el('section', 'trp-cw-wrap');
+        box.setAttribute('aria-label', 'Cohort 1 is a wrap');
+        box.appendChild(L.el('h2', 'trp-cw-wrap-h', 'Cohort 1 is a wrap \uD83C\uDF89'));
+        box.appendChild(L.el('p', 'trp-cw-wrap-p', 'Thank you for building with us. Every replay, prompt and skill from the four weeks stays right here, so keep using them.'));
+        var next = L.el('p', 'trp-cw-wrap-p');
+        next.appendChild(document.createTextNode('Cohort 2 · February 2027. Know a founder who should be in the room? Send them to '));
+        var url = L.safeUrl(WRAP_WAITLIST);
+        if (url) {
+          // Same tab on purpose: the waitlist is where we want them to go next.
+          var a = L.el('a', '', 'the waitlist');
+          a.href = url.href;
+          a.rel = 'noopener';
+          next.appendChild(a);
+        } else {
+          next.appendChild(document.createTextNode('the waitlist'));
+        }
+        next.appendChild(document.createTextNode('.'));
+        box.appendChild(next);
+        return box;
+      }
+
       function pinned(prep) {
         return prep ? L.items(prep).filter(function (it) { return L.num(it && it.sort) < PIN_BELOW; }) : [];
       }
@@ -2049,7 +2082,8 @@ When you finish:
       ];
       var shareOpen = false;
       var shareNode = null;     // drawn once, like the prizes
-      function share() {
+      var shareEnded = null;    // redrawn if the cohort ends under an open page
+      function share(ended) {
         var box = document.createElement('details');
         box.className = 'trp-cw-prizes trp-cw-share';
         box.open = shareOpen;
@@ -2063,7 +2097,9 @@ When you finish:
         sum.appendChild(chevron());
         box.appendChild(sum);
         var inner = L.el('div', 'trp-cw-prizes-body');
-        inner.appendChild(L.el('p', 'trp-cw-share-lead', 'Post about your Superhuman journey to go in the draw to win the prizes below.'));
+        inner.appendChild(L.el('p', 'trp-cw-share-lead', ended
+          ? 'Keep posting about your Superhuman journey. Tag us so we can cheer you on.'
+          : 'Post about your Superhuman journey to go in the draw to win the prizes below.'));
         var ol = L.el('ol', 'trp-cw-share-steps');
         SHARE_STEPS.forEach(function (t) { ol.appendChild(L.el('li', '', t)); });
         inner.appendChild(ol);
@@ -2082,9 +2118,18 @@ When you finish:
         ['Stanley VIP Prize', 'Post about the Accelerator on LinkedIn and Instagram across all 4 weeks. Tag Ella, Stanley, Wispr Flow and Time Rich.', 'A $1K Stanley setup and 12 months of Wispr Flow'],
         ['Testimonial Prize, 3 winners', 'Leave a LinkedIn recommendation and a video testimonial.', 'A 30-minute strategy call with mentors']
       ];
+      /* Cohort 1's prizes are closed and the winners are announced, so the
+         same box stops asking for entries and names them instead. */
+      var WINNERS = [
+        ['Stanley VIP Prize', 'Katrina Starr', 'A $1K Stanley setup and 12 months of Wispr Flow'],
+        ['Testimonial Prize', 'Izabella Soko', 'A 30-minute strategy call with mentors']
+      ];
       var prizesOpen = false;   // shut to begin with, kept across redraws
       var prizesNode = null;    // drawn once: nothing in it changes with a tick
-      function prizes() {
+      var prizesEnded = null;   // except when the cohort ends under an open page
+      var wrapNode = null;      // same: the wrap-up note never changes with a tick
+      function prizes(ended) {
+        var rows = ended ? WINNERS : PRIZES;
         var box = document.createElement('details');
         box.className = 'trp-cw-prizes';
         box.open = prizesOpen;
@@ -2094,21 +2139,25 @@ When you finish:
         });
         var sum = document.createElement('summary');
         sum.setAttribute('data-cw-focus', 'prizes');
-        sum.appendChild(L.el('span', 'trp-cw-prizes-h', '\uD83D\uDD25 Superhuman prizes'));
-        sum.appendChild(L.el('span', 'trp-cw-prizes-count', PRIZES.length + ' prizes'));
+        sum.appendChild(L.el('span', 'trp-cw-prizes-h', ended ? '\uD83C\uDFC6 Cohort 1 winners' : '\uD83D\uDD25 Superhuman prizes'));
+        sum.appendChild(L.el('span', 'trp-cw-prizes-count', rows.length + (ended ? ' winners' : ' prizes')));
         sum.appendChild(chevron());
         box.appendChild(sum);
         var inner = L.el('div', 'trp-cw-prizes-body');
-        inner.appendChild(L.el('p', 'trp-cw-prizes-lead', 'Every prize winner also gets 1 year of Time Rich Club membership.'));
+        inner.appendChild(L.el('p', 'trp-cw-prizes-lead', ended
+          ? 'Thank you to everyone who posted and sent a testimonial. Every winner also gets 1 year of Time Rich Club membership.'
+          : 'Every prize winner also gets 1 year of Time Rich Club membership.'));
         var ul = L.el('ul', 'trp-cw-prizes-list');
-        PRIZES.forEach(function (p) {
+        rows.forEach(function (p) {
           var li = L.el('li', 'trp-cw-prize');
           li.appendChild(L.el('span', 'trp-cw-prize-name', p[0]));
           var win = L.el('span', 'trp-cw-prize-win');
-          win.appendChild(L.el('span', 'trp-cw-prize-label', 'Win: '));
+          win.appendChild(L.el('span', 'trp-cw-prize-label', ended ? 'Won: ' : 'Win: '));
           win.appendChild(document.createTextNode(p[2]));
           li.appendChild(win);
-          li.appendChild(L.el('span', 'trp-cw-prize-how', p[1]));
+          /* Once it is won, the entry rules are history: the second line is
+             who won it, not how to enter. */
+          li.appendChild(L.el('span', ended ? 'trp-cw-prize-winner' : 'trp-cw-prize-how', p[1]));
           ul.appendChild(li);
         });
         inner.appendChild(ul);
@@ -2790,6 +2839,7 @@ Anything you've done twice should never need you again. A skill is your way of d
         var open = isOpen(week, prep);
         var now = new Date();
         var pillar = PILLARS[n];
+        var ended = L.cohortEnded(data);
 
         var box = L.el('section', 'trp-cw-panel');
         box.id = 'cw-panel';
@@ -2869,7 +2919,7 @@ Anything you've done twice should never need you again. A skill is your way of d
         // This week's calls come first, above the lessons and the setup:
         // the call is the thing with a time on it.
         if (sessionList.length) {
-          box.appendChild(L.el('h3', 'trp-cw-group', "This week's live calls"));
+          box.appendChild(L.el('h3', 'trp-cw-group', ended ? 'Live calls' : "This week's live calls"));
           var tiles = L.el('div', 'trp-cw-sessions');
           sessionList.forEach(function (s) { tiles.appendChild(sessionTile(s, now, own)); });
           box.appendChild(tiles);
@@ -2907,7 +2957,7 @@ Anything you've done twice should never need you again. A skill is your way of d
           if (!setupLeft) lessons.forEach(function (p) {
             if (nextKey === null && L.isTrackable(p.it) && !L.isItemDone(p.it)) nextKey = rowKey(p.it, p.n);
           });
-          if (steps.length) box.appendChild(L.el('h3', 'trp-cw-group', setupLeft ? 'Then, this week' : 'This week'));
+          if (steps.length) box.appendChild(L.el('h3', 'trp-cw-group', setupLeft ? (ended ? 'Then' : 'Then, this week') : (ended ? 'Steps' : 'This week')));
           var sections = WEEK_SECTIONS[n];
           if (!sections) {
             var ul = L.el('ul', 'trp-cw-lessons');
@@ -3059,20 +3109,28 @@ Anything you've done twice should never need you again. A skill is your way of d
         // the page reloads it, which is what made a tick flash.
         var out = [];
 
+        /* With the cohort over, no week is "this week" any more: every badge
+           and tab says "Open". The tab that opens by itself is unchanged,
+           so members still land on the last week. */
+        var ended = L.cohortEnded(data);
+        if (ended) out.push(wrapNode || (wrapNode = wrapUp()));
+
         var parts = pinnedParts(prep);
         var hello = welcome(parts);
         if (hello) out.push(hello);
         var band = intro(parts);
         if (band) out.push(band);
-        out.push(shareNode || (shareNode = share()));
-        out.push(prizesNode || (prizesNode = prizes()));
+        if (shareNode === null || shareEnded !== ended) { shareNode = share(ended); shareEnded = ended; }
+        out.push(shareNode);
+        if (prizesNode === null || prizesEnded !== ended) { prizesNode = prizes(ended); prizesEnded = ended; }
+        out.push(prizesNode);
 
         var tabs = L.el('div', 'trp-cw-weeks');
         tabs.setAttribute('role', 'tablist');
         tabs.setAttribute('aria-label', 'Weeks');
         cards.forEach(function (w) {
           var id = L.num(w.id);
-          var card = weekCard(w, prep, id === selected, id === current);
+          var card = weekCard(w, prep, id === selected, !ended && id === current);
           card.setAttribute('data-cw-focus', 'tab-' + id);
           card.addEventListener('click', function () { pick(id); });
           tabs.appendChild(card);
@@ -3091,7 +3149,7 @@ Anything you've done twice should never need you again. A skill is your way of d
         });
         out.push(tabs);
 
-        out.push(panel(data, week, prep, Number(week.id) === Number(current)));
+        out.push(panel(data, week, prep, !ended && Number(week.id) === Number(current)));
 
         var next = whatsNext(cards, prep, data, week.id);
         if (next) out.push(next);
